@@ -30,6 +30,7 @@ class MainController extends Controller
     public function adminusers()
     {
       $usersData = User::orderBy('id', 'ASC')->get();
+      return $usersData;
 
       return view('admin.users', ['users' => $usersData]);
     }
