@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class Adminaccessusers extends Migration
+class PrivilegeMenuElement extends Migration
 {
     /**
      * Run the migrations.
@@ -12,8 +12,12 @@ class Adminaccessusers extends Migration
      */
     public function up()
     {
-      Schema::table('AdminAccess', function (Blueprint $table) {
-        $table->integer('id_users')->after('AccessLevel');
+      Schema::create('privilege_menu_element', function(Blueprint $table)
+      {
+        $table->increments('id');
+        $table->integer('id_element');
+        $table->integer('id_privilege_menu');
+        $table->timestamps();
       });
     }
 
@@ -24,8 +28,6 @@ class Adminaccessusers extends Migration
      */
     public function down()
     {
-      Schema::table('AdminAccess', function (Blueprint $table) {
-        $table->dropColumn('id_users');
-      });
+      Schema::drop('privilege_menu_element');
     }
 }

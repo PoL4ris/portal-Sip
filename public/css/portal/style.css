@@ -16,12 +16,11 @@
   cursor: pointer;
   overflow: hidden;
   position: relative;
-  width: 60px;
 }
-.b-tabs:hover {
-  max-width: 400px;
-  width: 260px;
-}
+/*.b-tabs:hover {*/
+  /*max-width: 400px;*/
+  /*width: 260px;*/
+/*}*/
 .tabs-content {
 }
 #bldlist-result {
@@ -71,6 +70,14 @@
   content: "";
 }
 #bldlist-result-limits .newdata.right::after {
+  background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
+  bottom: -13px;
+  content: "Next";
+  font-family: arial;
+  font-size: 11px;
+  left: 0;
+  position: absolute;
+  width: 100%;
 }
 .b-tabs #bld-tabs-cover {
   background: #f0f3f4 none repeat scroll 0 0;
@@ -576,4 +583,9 @@
 }
 .ital{
   font-style:italic;
+}
+.fix-size-scroll{
+  max-height: 650px;
+  overflow-x: hidden;
+  overflow-y: auto;
 }

@@ -3,49 +3,50 @@ var vistas = {
   global : function()
   {
     //TYPE OF SEARCH
-    $('.id-search').keyup(buscador("Simple"));
-    $('.id-checkbox-search').click(buscador("Complex"));
+    warpol('.id-search').keyup(buscador("Simple"));
+    warpol('.id-checkbox-search').click(buscador("Complex"));
     //ARROW FOR BUILDINGS LIST
-    $('.left-btn-trigg').click(buildingsList(0));
-    $('.right-btn-trigg').click(buildingsList(1));
-    $('.inp-img-form').change(imgPreview());
-    $('.btn-edit').click(editFormByType());
-    $('.display-ticket').click(createFancyBox());
-    $('#bg-black-window').click(bgWindowClick());
-    $('#add-service-btn').click(addServiceBtn());
-    $('.prod-id-select-option').click(displayServiceInfo());
-    $('.modif-service-btn').click(modifServiceBtn());
-    $('.action-confirm').click(confirmDialog());
-    $('.disabled-input').click(refeshDisabledInput());
-    $('.customer-seccion').click(changeSeccionView());
+    warpol('.left-btn-trigg').click(buildingsList(0));
+    warpol('.right-btn-trigg').click(buildingsList(1));
+    warpol('.baba').click(function(){alert('s');});
+    warpol('.inp-img-form').change(imgPreview());
+    warpol('.btn-edit').click(editFormByType());
+    warpol('.display-ticket').click(createFancyBox());
+    warpol('#bg-black-window').click(bgWindowClick());
+    warpol('#add-service-btn').click(addServiceBtn());
+    warpol('.prod-id-select-option').click(displayServiceInfo());
+    warpol('.modif-service-btn').click(modifServiceBtn());
+    warpol('.action-confirm').click(confirmDialog());
+    warpol('.disabled-input').click(refeshDisabledInput());
+    warpol('.customer-seccion').click(changeSeccionView());
     //AjaxUpdates
-    $('.save-btn').click(updateBtn());
+    warpol('.save-btn').click(updateBtn());
     //Creat tickets.
-    $('#create-customer-ticket').click(insertCustomerTicket());
-    $.notify.defaults({ className: "success" });
-//     $('.network-func-click').click(networkServices());
+    warpol('#create-customer-ticket').click(insertCustomerTicket());
+    warpol.notify.defaults({ className: "success" });
+//     warpol('.network-func-click').click(networkServices());
 
 
-    if(!$('.validation-form'))
+    if(!warpol('.validation-form'))
       return;
 
     validator.startValidations();
 
-    $(".date" ).datepicker({ dateFormat: 'yy-mm-dd' });
+    warpol(".date" ).datepicker({ dateFormat: 'yy-mm-dd' });
 
   },
   bgWindowCheck : function()
   {
-    if($('#bg-black-window').attr('typeoff') == 'close')
+    if(warpol('#bg-black-window').attr('typeoff') == 'close')
     {
-      $('#bg-black-window').fadeIn('slow');
-      $('#bg-black-window').attr('typeoff', 'open');
+      warpol('#bg-black-window').fadeIn('slow');
+      warpol('#bg-black-window').attr('typeoff', 'open');
       return 'open';
     }
     else
     {
-      $('#bg-black-window').fadeOut('slow');
-      $('#bg-black-window').attr('typeoff', 'close');
+      warpol('#bg-black-window').fadeOut('slow');
+      warpol('#bg-black-window').attr('typeoff', 'close');
       return 'close';
     }
   }

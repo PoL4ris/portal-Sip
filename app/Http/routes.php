@@ -19,6 +19,8 @@ Route::group(['middleware' => 'web'], function () {
 
 //    Route::get('/', 'HomeController@index');
   Route::get('/', 'MainController@dummy');
+  //MENU
+  Route::get('menumaker', 'MainController@menuMaker');
 
   //Route::get('/', 'MainController@main');
   Route::get('dummy', 'MainController@dummy');

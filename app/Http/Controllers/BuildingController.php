@@ -36,47 +36,46 @@ class BuildingController extends Controller
     //Check if specific Building.
     //Get info Building
     if ($request->id)
-//      $building = Building::where('id', $request->id)->get();
-      $building = ServiceLocation::where('LocID', $request->id)->get();
+      $building = Building::where('id', $request->id)->get();
+//      $building = ServiceLocation::where('LocID', $request->id)->get();
 //BUILDING TABLE
     else
-      $building = ServiceLocation::orderBy('LocID', 'desc')->get();
-//      $building = Building::orderBy('id', 'desc')->get();
+//      $building = ServiceLocation::orderBy('LocID', 'desc')->get();
+      $building = Building::orderBy('id', 'desc')->get();
 //BUILDING TABLE
 
     //Get nbg->building->name
-//    $bldNeigh = Neighborhood::where('id', $building[0]->id_neighborhood)->get();
+    $bldNeigh = Neighborhood::where('id', $building[0]->id_neighborhood)->get();
 //BUILDING TABLE
 
     //List of nbg's
-//    $neighborhoodList = $this->getNeighborhoodList();
+    $neighborhoodList = $this->getNeighborhoodList();
     //BUILDING TABLE
     //BuildingsDataList
-    $buildingsList = DB::table('serviceLocation')->skip($offset)->take($limit)->get();
-//    $buildingsList = DB::table('building')->skip($offset)->take($limit)->get();
+//    $buildingsList = DB::table('serviceLocation')->skip($offset)->take($limit)->get();
+    $buildingsList = DB::table('building')->skip($offset)->take($limit)->get();
 //BUILDING TABLE
     //BuildingsType
-//    $buildingsTypes = $this->getBuildingsType();
+    $buildingsTypes = $this->getBuildingsType();
 //BUILDING TABLE
-//    $buildingsInfo = $this->getBuildingsInfo($building[0]->id);
+    $buildingsInfo = $this->getBuildingsInfo($building[0]->id);
 //BUILDING TABLE
-//    $building[0]->neighborhoodname = $bldNeigh[0]->name;
+    $building[0]->neighborhoodname = $bldNeigh[0]->name;
 //BUILDING TABLE
 
-    return view('buildings.buildings', ['building' => $building[0],
-//                'neighborhood' => $neighborhoodList,
-//BUILDING TABLE
-//                'exist' => $buildingsInfo['exist'],
-//                'properties' => $buildingsInfo['properties'],
-//                'contact' => $buildingsInfo['contact'],
-//BUILDING TABLE
-                'buildingList' => $buildingsList,
-//                'retail' => $buildingsTypes['retail'],
-//                'comer' => $buildingsTypes['comer'],
-//BUILDING TABLE
-                'offset' => $offset,
-                'limit' => $limit
-              ]);
+    $data = ['building' => $building[0],
+      'neighborhood' => $neighborhoodList,
+      'exist' => $buildingsInfo['exist'],
+      'properties' => $buildingsInfo['properties'],
+      'contact' => $buildingsInfo['contact'],
+      'buildingList' => $buildingsList,
+      'retail' => $buildingsTypes['retail'],
+      'comer' => $buildingsTypes['comer'],
+      'offset' => $offset,
+      'limit' => $limit
+    ];
+    
+    return $data;
   }
   public function newbuildingform()
   {

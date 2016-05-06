@@ -42,15 +42,16 @@
 <div class="app app-header-fixed app-aside-folded">
 
 <!-- Our Website Content Goes Here -->
-<div ng-include='"/angularviews/templates/header.html"' class="app-header app-header navbar navbar-fixed-top"></div>
 <div ng-include='"/angularviews/templates/nav.html"' class="app-aside hidden-xs bg-dark"></div>
-<div ng-view></div>
+<div ng-include='"/angularviews/templates/header.html"' class="app-header app-header navbar navbar-fixed-top"></div>
+<div ng-view class="app-content"></div>
 <div ng-include='"/angularviews/templates/footer.html"' class="app-footer"></div>
 
-{{--</div>--}}
+</div>
+
 
 <!-- Vendor: Javascripts -->
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script src="/js/jquery/jquery.min.js"></script>
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 
 <!-- Vendor: Angular, followed by our custom Javascripts -->
@@ -76,10 +77,11 @@
 <script src="/js/portal/jquery.fancybox.js"></script>
 <script src="/js/portal/notify.js"></script>
 
+
+
 <script src="/js/portal/lib.js"></script>
 <script src="/js/portal/js.js"></script>
 <script src="/js/portal/exec.js"></script>
-
 
 
 </body>

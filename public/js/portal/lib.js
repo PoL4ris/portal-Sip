@@ -15,28 +15,29 @@ var createFancyBox = function ()
 {
   return function(data, textStatus, jqXHR)
   {
-    var typeoff = $(this).attr('typeoff');
+    var typeoff = warpol(this).attr('typeoff');
     if(typeoff == 'open')
     {
-      $("#bgblack-" + $(this).attr('ticket-id')).fadeIn("slow");
-      $("#fancy-" + $(this).attr('ticket-id')).fadeIn("slow");
+      warpol("#bgblack-" + warpol(this).attr('ticket-id')).fadeIn("slow");
+      warpol("#fancy-" + warpol(this).attr('ticket-id')).fadeIn("slow");
     }
     else
     {
-      $("#bgblack-" + $(this).attr('ticket-id')).fadeOut("slow");
-      $("#fancy-" + $(this).attr('ticket-id')).fadeOut("slow");
+      warpol("#bgblack-" + warpol(this).attr('ticket-id')).fadeOut("slow");
+      warpol("#fancy-" + warpol(this).attr('ticket-id')).fadeOut("slow");
     }
   }
 };
 //get building list OFFSET LIMIT
+//--->angular
 var buildingsList = function (position)
 {
   return function(data, textStatus, jqXHR)
   {
     //Get Data from current Info
-    var idDivResult    = $('#bldlist-result').attr('id');
-    var offset         = parseInt($('.' + idDivResult + '-limits-' + position).attr('offset'));
-    var limit          = parseInt($('.' + idDivResult + '-limits-' + position).attr('limit'));
+    var idDivResult    = warpol('#bldlist-result').attr('id');
+    var offset         = parseInt(warpol('.' + idDivResult + '-limits-' + position).attr('offset'));
+    var limit          = parseInt(warpol('.' + idDivResult + '-limits-' + position).attr('limit'));
     //Math var operations.
     var a              = parseInt(offset);
     var b              = parseInt(limit);
@@ -60,7 +61,7 @@ var buildingsList = function (position)
     //Main info to do request
     var query = {"offset": offset, "limit": limit, "position": position};
     //AJAX request
-    $.ajax(
+    warpol.ajax(
       {
         type: "GET",
         url: "buildingsList",
@@ -71,16 +72,16 @@ var buildingsList = function (position)
           //Result JsonParser to use data
           var resultData = jQuery.parseJSON(data);
 
-          $('#' + idDivResult).html('');
-          $.each(resultData, function (i, item) {
-            $('#' + idDivResult).append('<p>' + item.id + item.name + '</p>');
+          warpol('#' + idDivResult).html('');
+          warpol.each(resultData, function (i, item) {
+            warpol('#' + idDivResult).append('<p>' + item.id + item.name + '</p>');
           });
           //Rewrite LIMIT OFFSET fields for new calcRequest
-          $('.' + idDivResult + '-limits-' + 0).attr('offset',offset);
-          $('.' + idDivResult + '-limits-' + 0).attr('limit',limit);
-          $('.' + idDivResult + '-limits-' + 1).attr('offset',offset);
-          $('.' + idDivResult + '-limits-' + 1).attr('limit',limit);
-          $('#' + idDivResult).scrollTop(0);
+          warpol('.' + idDivResult + '-limits-' + 0).attr('offset',offset);
+          warpol('.' + idDivResult + '-limits-' + 0).attr('limit',limit);
+          warpol('.' + idDivResult + '-limits-' + 1).attr('offset',offset);
+          warpol('.' + idDivResult + '-limits-' + 1).attr('limit',limit);
+          warpol('#' + idDivResult).scrollTop(0);
         }
       }
     );
@@ -93,14 +94,14 @@ var buscador = function(searchType)
   {
 
     //id de quien solicita
-    idDivResult = idDivResult?idDivResult:$(this).attr('id');
+    idDivResult = idDivResult?idDivResult:warpol(this).attr('id');
 
     if (!idDivResult)
       return;
 
     //Clean search fields
-    $('#' + idDivResult + '-result').html('');
-    $('.resultadosComplex').html('');
+    warpol('#' + idDivResult + '-result').html('');
+    warpol('.resultadosComplex').html('');
 
     //checamos si es simple o complex
     if(document.getElementById('complexSearch'))
@@ -108,14 +109,14 @@ var buscador = function(searchType)
 
     if (searchType == 'Simple')
     {
-      $('.ntas-tmp').css('display', 'none');
-      query = {"querySearch" : $(this).val()};
+      warpol('.ntas-tmp').css('display', 'none');
+      query = {"querySearch" : warpol(this).val()};
     }
     else // if searchType == 'COMPLEX'
     {
-      index = $(this).attr('index');
+      index = warpol(this).attr('index');
       complexType[0] = 'complex';
-      complexType[index] = $(this).val();
+      complexType[index] = warpol(this).val();
       query = {"querySearch" : complexType };
     }
 
@@ -126,7 +127,7 @@ var buscador = function(searchType)
     urlTmp = urlTmp[1].split('-search');
 
     //AJAX request
-    $.ajax(
+    warpol.ajax(
       {type:"GET",
         url:"/"+ urlTmp[0] + "Search",
         data:query,
@@ -135,15 +136,15 @@ var buscador = function(searchType)
           //Validate info existing or die
           if (data == 'null')
           {
-            $('.ntas-tmp').fadeIn("slow");
+            warpol('.ntas-tmp').fadeIn("slow");
             return;
           }
-          
+
           //Result JsonParser tu use data
           var resultData = jQuery.parseJSON(data);
-          $('#' + idDivResult + '-result').append('<p>Results...( '+ resultData.length +' )</p>');
-          $('.resultadosComplex').append('<p>Results...( '+ resultData.length +' )</p>');
-          $.each(resultData,function(i, item)
+          warpol('#' + idDivResult + '-result').append('<p>Results...( '+ resultData.length +' )</p>');
+          warpol('.resultadosComplex').append('<p>Results...( '+ resultData.length +' )</p>');
+          warpol.each(resultData,function(i, item)
           {
             //Rewrite results
             if (urlTmp[0] == 'customers')
@@ -153,12 +154,12 @@ var buscador = function(searchType)
 
               if (path == '/supportdash')
               {
-                $('.resultadosComplex').append('<p id="name-CID-' + item.CID + '" onclick="refeshDisabledInput(' + item.CID + ');">' + item.Firstname+ ' ' + item.Lastname + '</p>');
+                warpol('.resultadosComplex').append('<p id="name-CID-' + item.CID + '" onclick="refeshDisabledInput(' + item.CID + ');">' + item.Firstname+ ' ' + item.Lastname + '</p>');
               }
               else
               {
-                $('#' + idDivResult + '-result').append('<p><a href="/'+ urlTmp[0] +'/'+ item.LocID +'"> ' + nombre + '</a></p>');
-                $('.resultadosComplex').append('<p><a href="/'+ urlTmp[0] +'/'+ item.CID +'"> ' + nombre + '</a></p>');
+                warpol('#' + idDivResult + '-result').append('<p><a href="/'+ urlTmp[0] +'/'+ item.LocID +'"> ' + nombre + '</a></p>');
+                warpol('.resultadosComplex').append('<p><a href="/'+ urlTmp[0] +'/'+ item.CID +'"> ' + nombre + '</a></p>');
               }
           });
         }
@@ -175,14 +176,14 @@ var imgPreview = function()
       var reader = new FileReader();
       reader.onload = function (e)
       {
-        $('.prvw-img-form').attr('src', e.target.result);
+        warpol('.prvw-img-form').attr('src', e.target.result);
       }
 
       reader.readAsDataURL(input.files[0]);
     }
   }
 
-  $(".inp-img-form").change(function()
+  warpol(".inp-img-form").change(function()
   {
     readURL(this);
   });
@@ -191,17 +192,17 @@ var validator = {
 
   startValidations : function(){
 
-    $('.validation-form').submit(function(e)
+    warpol('.validation-form').submit(function(e)
     {
 
       e.preventDefault();
 
       var validated = true;
 
-      $(this).find('input').each(function()
+      warpol(this).find('input').each(function()
       {
         try{
-          if(!validator.validateInput($(this).attr('class'),$(this).val(),$(this)))
+          if(!validator.validateInput(warpol(this).attr('class'),warpol(this).val(),warpol(this)))
           {
             validated = false;
           }
@@ -214,11 +215,11 @@ var validator = {
 
       if(validated)
       {
-        $(this).unbind().submit();
+        warpol(this).unbind().submit();
       }
       else
       {
-        $("<div class='message-validation'>Valida todos los datos requeridos</div>").dialog({"modal" : true});
+        warpol("<div class='message-validation'>Valida todos los datos requeridos</div>").dialog({"modal" : true});
       }
 
 
@@ -256,7 +257,7 @@ var validator = {
     switch(type){
 
       case "tel":
-        var patt = new RegExp("^[1-9]{10}$");
+        var patt = new RegExp("^[1-9]{10}warpol");
         var telefono = val;
         if (!patt.test(telefono))
         {
@@ -292,12 +293,12 @@ var validator = {
     switch(type){
 
       case "error":
-        $(selector).css({"color":"#cc0000"});
-        $(selector).parent().parent().find('.descripcion').css({"color":"#cc0000"});
+        warpol(selector).css({"color":"#cc0000"});
+        warpol(selector).parent().parent().find('.descripcion').css({"color":"#cc0000"});
         break;
       case "regular":
-        $(selector).css({"color":"inherit"});
-        $(selector).parent().parent().find('.descripcion').css({"color":"inherit"});
+        warpol(selector).css({"color":"inherit"});
+        warpol(selector).parent().parent().find('.descripcion').css({"color":"inherit"});
 
         break;
 
@@ -354,10 +355,10 @@ var utils = {
 
       table += body;
       table += "</table>";
-      $(selector).append(table);
+      warpol(selector).append(table);
 
 
-      $("#rand").DataTable();
+      warpol("#rand").DataTable();
       return true;
 
     }catch(err){
@@ -375,32 +376,32 @@ var editFormByType = function ()
 {
   return function(data, textStatus, jqXHR)
   {
-    var id = $(this).attr('id');
+    var id = warpol(this).attr('id');
     tempTicketID = id;
 
-    if ($('#' + id).attr('stand') == '1')
+    if (warpol('#' + id).attr('stand') == '1')
     {
-      $('.' + id + '-label').css('display','table-cell');
-      $('.' + id + '-edit').css('display','none');
-      $('#save-' + id).fadeOut( "slow" );
-      $('#' + id).html('Edit');
-      $('#' + id).switchClass('btn-danger', 'btn-info');
-      $('#' + id).attr('stand', '2');
+      warpol('.' + id + '-label').css('display','table-cell');
+      warpol('.' + id + '-edit').css('display','none');
+      warpol('#save-' + id).fadeOut( "slow" );
+      warpol('#' + id).html('Edit');
+      warpol('#' + id).switchClass('btn-danger', 'btn-info');
+      warpol('#' + id).attr('stand', '2');
       if(path == '/supportdash')
       {
-        $('.resultadosComplex').html('');
-        $('.dis-input').val('');
+        warpol('.resultadosComplex').html('');
+        warpol('.dis-input').val('');
       }
 
     }
     else
     {
-      $('.' + id + '-label').css('display','none');
-      $('.' + id + '-edit').fadeIn( "slow" );
-      $('#save-' + id).fadeIn( "slow" );
-      $('#' + id).html('Cancel');
-      $('#' + id).switchClass('btn-success', 'btn-danger');
-      $('#' + id).attr('stand', '1');
+      warpol('.' + id + '-label').css('display','none');
+      warpol('.' + id + '-edit').fadeIn( "slow" );
+      warpol('#save-' + id).fadeIn( "slow" );
+      warpol('#' + id).html('Cancel');
+      warpol('#' + id).switchClass('btn-success', 'btn-danger');
+      warpol('#' + id).attr('stand', '1');
     }
   };
 };
@@ -409,32 +410,32 @@ function refeshDisabledInput(id)
   if(!id)
     return;
 
-  var name = $('#name-CID-' + id).html();
+  var name = warpol('#name-CID-' + id).html();
 
-  $('.' + tempTicketID + '-input').val(name.replace(/&nbsp;/g, ''));
-  globalName = $('.' + tempTicketID + '-input').val();
-  $('.' + tempTicketID + '-hidden').val(id);
+  warpol('.' + tempTicketID + '-input').val(name.replace(/&nbsp;/g, ''));
+  globalName = warpol('.' + tempTicketID + '-input').val();
+  warpol('.' + tempTicketID + '-hidden').val(id);
 }
 var bgWindowClick = function ()
 {
   return function(data, textStatus, jqXHR)
   {
     vistas.bgWindowCheck();
-    var idshown = $('#bg-black-window').attr('idshown');
+    var idshown = warpol('#bg-black-window').attr('idshown');
     switch (idshown)
     {
       case 'updateservicecontentbox':
-        $('.type-'+ $('#bg-black-window').attr('tipo')).css('display', 'none');
-        $('#updateServiceId-'+ $('#bg-black-window').attr('usid')).css('display', 'none');
-        $('#updateservicecontentbox').fadeOut('slow');
-        $('.btn-display-service').fadeOut('slow');
-        $('#bg-black-window').attr('idshown', '');
-        $('#bg-black-window').attr('tipo', '');
-        $('#bg-black-window').attr('usid', '');
+        warpol('.type-'+ warpol('#bg-black-window').attr('tipo')).css('display', 'none');
+        warpol('#updateServiceId-'+ warpol('#bg-black-window').attr('usid')).css('display', 'none');
+        warpol('#updateservicecontentbox').fadeOut('slow');
+        warpol('.btn-display-service').fadeOut('slow');
+        warpol('#bg-black-window').attr('idshown', '');
+        warpol('#bg-black-window').attr('tipo', '');
+        warpol('#bg-black-window').attr('usid', '');
         break;
       case 'addservicecontentbox':
-        $('#addservicecontentbox').fadeOut('slow');
-        $('#bg-black-window').attr('idshown', '');
+        warpol('#addservicecontentbox').fadeOut('slow');
+        warpol('#bg-black-window').attr('idshown', '');
         break;
 
     }
@@ -449,13 +450,13 @@ var addServiceBtn = function ()
     var resultView = vistas.bgWindowCheck();
     if(resultView == 'open')
     {
-      $('#addservicecontentbox').fadeIn('slow');
-      $('#bg-black-window').attr('idshown', 'addservicecontentbox');
+      warpol('#addservicecontentbox').fadeIn('slow');
+      warpol('#bg-black-window').attr('idshown', 'addservicecontentbox');
     }
     else
     {
-      $('#addservicecontentbox').fadeOut('slow');
-      $('#bg-black-window').attr('idshown', '');
+      warpol('#addservicecontentbox').fadeOut('slow');
+      warpol('#bg-black-window').attr('idshown', '');
     }
 
   }
@@ -464,19 +465,19 @@ var displayServiceInfo = function ()
 {
   return function(data, textStatus, jqXHR)
   {
-    var existIdNow = $('#addservicecontentbox').attr('currentId');
+    var existIdNow = warpol('#addservicecontentbox').attr('currentId');
     if(existIdNow)
     {
-      $('#addServiceId-' + existIdNow).css('display', 'none');
-//       $('.addServiceBoton').css('display', 'none');
+      warpol('#addServiceId-' + existIdNow).css('display', 'none');
+//       warpol('.addServiceBoton').css('display', 'none');
     }
 
-    var idToSHow  = $(this).attr('value');
+    var idToSHow  = warpol(this).attr('value');
     if (idToSHow != '#')
     {
-      $('#addServiceId-' + idToSHow).fadeIn('slow');
-//       $('.addServiceBoton').fadeIn('slow');
-      $('#addservicecontentbox').attr('currentId', idToSHow);
+      warpol('#addServiceId-' + idToSHow).fadeIn('slow');
+//       warpol('.addServiceBoton').fadeIn('slow');
+      warpol('#addservicecontentbox').attr('currentId', idToSHow);
     }
   };
 };
@@ -486,23 +487,23 @@ var modifServiceBtn = function ()
   {
     displayServiceInfo();
     var resultView = vistas.bgWindowCheck();
-    var idToShow = $(this).attr('tipoid');
-    var kind = $(this).attr('kind');
-    var tipo = $(this).attr('tipo');
-    var serviceid = $(this).attr('serviceid');
+    var idToShow = warpol(this).attr('tipoid');
+    var kind = warpol(this).attr('kind');
+    var tipo = warpol(this).attr('tipo');
+    var serviceid = warpol(this).attr('serviceid');
 
     if(resultView == 'open')
     {
-      $('#updateservicecontentbox').fadeIn('slow');
-      $('.btn-display-service-' + serviceid).fadeIn('slow');
-      $('#bg-black-window').attr('idshown', 'updateservicecontentbox');
-      $('#bg-black-window').attr('tipo', tipo);
-      $('#bg-black-window').attr('usid', idToShow);
+      warpol('#updateservicecontentbox').fadeIn('slow');
+      warpol('.btn-display-service-' + serviceid).fadeIn('slow');
+      warpol('#bg-black-window').attr('idshown', 'updateservicecontentbox');
+      warpol('#bg-black-window').attr('tipo', tipo);
+      warpol('#bg-black-window').attr('usid', idToShow);
 
       if (kind == 'update')
       {
-        $('.type-'+ tipo).css('display', 'block');
-        $('#updateServiceId-'+ idToShow).css('display', 'block');
+        warpol('.type-'+ tipo).css('display', 'block');
+        warpol('#updateServiceId-'+ idToShow).css('display', 'block');
       }
       else
       {
@@ -511,11 +512,11 @@ var modifServiceBtn = function ()
     }
     else
     {
-      $('#updateservicecontentbox').fadeOut('slow');
-      $('.btn-display-service-' + serviceid).fadeOut('slow');
-      $('#bg-black-window').attr('idshown', '');
-      $('.type-'+ tipo).css('display', 'none');
-      $('#updateServiceId-'+ idToShow).css('display', 'none');
+      warpol('#updateservicecontentbox').fadeOut('slow');
+      warpol('.btn-display-service-' + serviceid).fadeOut('slow');
+      warpol('#bg-black-window').attr('idshown', '');
+      warpol('.type-'+ tipo).css('display', 'none');
+      warpol('#updateServiceId-'+ idToShow).css('display', 'none');
     }
 
   };
@@ -524,23 +525,23 @@ var confirmDialog = function ()
 {
   return function(data, textStatus, jqXHR)
   {
-    var service = $(this).attr('type');
-    var portID = $(this).attr('portid');
-    var serviceID = $(this).attr('serviceid');
-    var serviceStatus = $(this).attr('displaystatus');
-    var routeID = $(this).attr('route');
+    var service = warpol(this).attr('type');
+    var portID = warpol(this).attr('portid');
+    var serviceID = warpol(this).attr('serviceid');
+    var serviceStatus = warpol(this).attr('displaystatus');
+    var routeID = warpol(this).attr('route');
 
-    $('<div class="confirmBtn"></div>').appendTo('body')
+    warpol('<div class="confirmBtn"></div>').appendTo('body')
       .html('<div ><h6>Confirm this Action!</h6></div>')
       .dialog({
         modal: true, title: 'Please confirm', zIndex: 10000, autoOpen: true,
         width: 'auto', resizable: false,
         buttons: {
           Yes: function () {
-            // $(obj).removeAttr('onclick');
-            // $(obj).parents('.Parent').remove();
+            // warpol(obj).removeAttr('onclick');
+            // warpol(obj).parents('.Parent').remove();
 
-            $(this).dialog("close");
+            warpol(this).dialog("close");
             if (portID)
               networkServices(service, portID);
             else if(serviceID)
@@ -548,11 +549,11 @@ var confirmDialog = function ()
 
           },
           No: function () {
-            $(this).dialog("close");
+            warpol(this).dialog("close");
           }
         },
         close: function (event, ui) {
-          $(this).remove();
+          warpol(this).remove();
         }
       });
   };
@@ -565,12 +566,12 @@ var updateBtn = function ()
   return function(data, textStatus, jqXHR)
   {
 
-    var idType = $(this).attr('idType');
-    var bloque = $(this).attr('bloque');
-    var id = $(this).attr(idType);
-    var objects = $('#'+ bloque +'-form-' + id).serializeArray();
-    var table = $('#'+ bloque +'-form-' + id).attr('dbtable');
-    var route = $('#'+ bloque +'-form-' + id).attr('action');
+    var idType = warpol(this).attr('idType');
+    var bloque = warpol(this).attr('bloque');
+    var id = warpol(this).attr(idType);
+    var objects = warpol('#'+ bloque +'-form-' + id).serializeArray();
+    var table = warpol('#'+ bloque +'-form-' + id).attr('dbtable');
+    var route = warpol('#'+ bloque +'-form-' + id).attr('action');
     var infoData = {};
 
 //     console.log(objects);
@@ -592,7 +593,7 @@ var updateBtn = function ()
     infoData['bloque'] = bloque;
 
     //AJAX request
-    $.ajax(
+    warpol.ajax(
       {type:"POST",
         url:"/" + route,
         data:infoData,
@@ -601,19 +602,19 @@ var updateBtn = function ()
           switch(infoData['table'])
           {
             case 'supportTickets':
-              $('#block-' + id).click();
-              $.each(data[0], function(i, item)
+              warpol('#block-' + id).click();
+              warpol.each(data[0], function(i, item)
               {
                 if(i == '_token' || i == 'id')
                   return true;
                 else
                 {
-                  $('#' + i + '-' + id).html(item);
+                  warpol('#' + i + '-' + id).html(item);
                 }
               });
               break;
             case 'supportTicketHistory':
-              var tbodyData = $('#'+ bloque + '-tbody-' + id).html();
+              var tbodyData = warpol('#'+ bloque + '-tbody-' + id).html();
               var htmlContent = "<tr class='even' role='row'>";
               htmlContent += "<td class='sorting_1'>" + data[0]['TimeStamp'] +"</td>";
               htmlContent += "<td class='special-td'>" + data[0]['Comment'] +"</td>";
@@ -621,12 +622,12 @@ var updateBtn = function ()
               htmlContent += "<td>" + data[0]['Name'] +"</td>";
               htmlContent += '</tr> ';
 
-              $('#'+ bloque + '-tbody-' + id).html(htmlContent + tbodyData);
-              $('#'+ bloque +'-comment-' + id).val('');
+              warpol('#'+ bloque + '-tbody-' + id).html(htmlContent + tbodyData);
+              warpol('#'+ bloque +'-comment-' + id).val('');
 
               break;
             case 'customers':
-              $('#block-' + bloque).click();
+              warpol('#block-' + bloque).click();
 
               for(var objResp in objects )
               {
@@ -636,19 +637,19 @@ var updateBtn = function ()
                     if(objects[objResp]['name'] == 'CCscode')
                       continue;
                     else if(objects[objResp]['name'] == 'CCnumber')
-                      $('#' + bloque + '-' + objects[objResp]['name']).html(objects[objResp]['value'].substr(12, 4));
+                      warpol('#' + bloque + '-' + objects[objResp]['name']).html(objects[objResp]['value'].substr(12, 4));
                     else
-                      $('#' + bloque + '-' + objects[objResp]['name']).html(objects[objResp]['value']);
+                      warpol('#' + bloque + '-' + objects[objResp]['name']).html(objects[objResp]['value']);
                   else
-                    $('#' + bloque + '-' + objects[objResp]['name']).html(objects[objResp]['value']);
+                    warpol('#' + bloque + '-' + objects[objResp]['name']).html(objects[objResp]['value']);
               }
               break;
             case 'supportTicketsID':
 
-              $('.block-' + id + '-' + bloque).click();
-//               var newName = $('.block-' + id + '-getName-' + bloque ).val();
+              warpol('.block-' + id + '-' + bloque).click();
+//               var newName = warpol('.block-' + id + '-getName-' + bloque ).val();
 //               console.log('.bloque-' + id + '-CID-' + bloque);
-               $('#bloque-' + id + '-CID-' + bloque).html(globalName);
+               warpol('#bloque-' + id + '-CID-' + bloque).html(globalName);
 
 
               break;
@@ -666,7 +667,7 @@ var insertCustomerTicket = function ()
   return function(data, textStatus, jqXHR)
   {
 
-    var objects = $('#newticketform').serializeArray();
+    var objects = warpol('#newticketform').serializeArray();
     var infoData = {};
 
 
@@ -682,14 +683,14 @@ var insertCustomerTicket = function ()
     }
 
     //AJAX request
-    $.ajax(
+    warpol.ajax(
       {type:"POST",
         url:"/insertCustomerData",
         data:infoData,
         success: function(data)
         {
-          
-          $('#create-customer-ticket').notify('Ticket created.');
+
+          warpol('#create-customer-ticket').notify('Ticket created.');
           document.getElementById("newticketform").reset();
 
 
@@ -709,13 +710,13 @@ var networkServices = function (service, portID)
                   'networkSignUp',
                   'networkActivate'];
 
-    $('.network-functions').addClass('disabled');
-    
+    warpol('.network-functions').addClass('disabled');
+
     var service = service;
     var portID = portID;
 
     //AJAX request
-    $.ajax(
+    warpol.ajax(
       {type:"GET",
         url:"/" + routes[service],
         data:{'portid':portID},
@@ -724,41 +725,41 @@ var networkServices = function (service, portID)
           if (data == 'ERROR')
             alert(data);
 
-          $.each(data,function(i, item)
+          warpol.each(data,function(i, item)
           {
-            $('#' + i).html(item);
+            warpol('#' + i).html(item);
           });
-          $('#basic-info-net').notify('OK');
+          warpol('#basic-info-net').notify('OK');
 
           service = 1;
-          $.ajax(
+          warpol.ajax(
             {type:"GET",
               url:"/" + routes[service],
               data:{'portid':portID},
               success: function(data)
               {
-                $.each(data,function(i, item)
+                warpol.each(data,function(i, item)
                 {
-                  $('#' + i).html(item);
+                  warpol('#' + i).html(item);
                 });
               }
             }
           );
 
           service = 2;
-          $.ajax(
+          warpol.ajax(
             {type:"GET",
               url:"/" + routes[service],
               data:{'portid':portID},
               success: function(data)
               {
 
-                $('#IPs').notify('IPs Array.');
-                $('.network-functions').removeClass('disabled');
+                warpol('#IPs').notify('IPs Array.');
+                warpol('.network-functions').removeClass('disabled');
 
-//                   $.each(data,function(i, item)
+//                   warpol.each(data,function(i, item)
 //                   {
-//                     $('#' + i).html(item);
+//                     warpol('#' + i).html(item);
 //                   });
 
               }
@@ -771,19 +772,19 @@ var networkServices = function (service, portID)
 
       if (service == 5)
       {
-        $('.access-type-net').removeClass('btn-danger ');
-        $('.access-type-net').addClass('btn-info');
-        $('.access-type-net').html('Activate');
-        $('.access-type-net').attr('type','6');
-        $('#acces-network-id').html('signup');
+        warpol('.access-type-net').removeClass('btn-danger ');
+        warpol('.access-type-net').addClass('btn-info');
+        warpol('.access-type-net').html('Activate');
+        warpol('.access-type-net').attr('type','6');
+        warpol('#acces-network-id').html('signup');
       }
       else if ( service == 6 )
       {
-        $('.access-type-net').removeClass('btn-info')
-        $('.access-type-net').addClass('btn-danger')
-        $('.access-type-net').html('Send to Signup');
-        $('.access-type-net').attr('type','5');
-        $('#acces-network-id').html('yes');
+        warpol('.access-type-net').removeClass('btn-info')
+        warpol('.access-type-net').addClass('btn-danger')
+        warpol('.access-type-net').html('Send to Signup');
+        warpol('.access-type-net').attr('type','5');
+        warpol('#acces-network-id').html('yes');
       }
 
 };
@@ -792,11 +793,11 @@ var changeSeccionView = function ()
   return function(data, textStatus, jqXHR)
   {
     if (customerSeccion)
-      $(customerSeccion).css('display', 'none');
+      warpol(customerSeccion).css('display', 'none');
 
-    var window = $(this).attr('window');
+    var window = warpol(this).attr('window');
     customerSeccion = '.' + window;
-    $(customerSeccion).fadeIn("slow");
+    warpol(customerSeccion).fadeIn("slow");
   };
 };
 var servicesInfoUpdate = function (serviceID, serviceStatus, routeID)
@@ -804,10 +805,10 @@ var servicesInfoUpdate = function (serviceID, serviceStatus, routeID)
 
   var routes = ['updateCustomerServiceInfo'];
 
-//   $('.network-functions').addClass('disabled');
+//   warpol('.network-functions').addClass('disabled');
 
   //AJAX request
-  $.ajax(
+  warpol.ajax(
     {type:"GET",
       url:"/" + routes[routeID],
       data:{'serviceid':serviceID, 'status':serviceStatus},
@@ -818,21 +819,21 @@ var servicesInfoUpdate = function (serviceID, serviceStatus, routeID)
 
         if (serviceStatus == 'active')
         {
-          $('#serviceno-' + serviceID).addClass('disabled ital');
-          $('#serviceinfo-status-' + serviceID).html('disabled');
-          $('#xservice-btn-id-' + serviceID).attr('displaystatus','disabled');
-          $('#xservice-btn-id-' + serviceID).addClass('btn-success fa-check');
-          $('#xservice-btn-id-' + serviceID).removeClass('btn-dark');
-          $('#xservice-btn-id-' + serviceID).removeClass('fa-times');
+          warpol('#serviceno-' + serviceID).addClass('disabled ital');
+          warpol('#serviceinfo-status-' + serviceID).html('disabled');
+          warpol('#xservice-btn-id-' + serviceID).attr('displaystatus','disabled');
+          warpol('#xservice-btn-id-' + serviceID).addClass('btn-success fa-check');
+          warpol('#xservice-btn-id-' + serviceID).removeClass('btn-dark');
+          warpol('#xservice-btn-id-' + serviceID).removeClass('fa-times');
         }
         else
         {
-          $('#serviceno-' + serviceID).removeClass('disabled ital');
-          $('#serviceinfo-status-' + serviceID).html('active');
-          $('#xservice-btn-id-' + serviceID).attr('displaystatus','active');
-          $('#xservice-btn-id-' + serviceID).addClass('btn-dark fa-times');
-          $('#xservice-btn-id-' + serviceID).removeClass('btn-success');
-          $('#xservice-btn-id-' + serviceID).removeClass('fa-check');
+          warpol('#serviceno-' + serviceID).removeClass('disabled ital');
+          warpol('#serviceinfo-status-' + serviceID).html('active');
+          warpol('#xservice-btn-id-' + serviceID).attr('displaystatus','active');
+          warpol('#xservice-btn-id-' + serviceID).addClass('btn-dark fa-times');
+          warpol('#xservice-btn-id-' + serviceID).removeClass('btn-success');
+          warpol('#xservice-btn-id-' + serviceID).removeClass('fa-check');
         }
 
       }
@@ -842,14 +843,14 @@ var servicesInfoUpdate = function (serviceID, serviceStatus, routeID)
 function updateActiveServiceInfo (CSID, ProdIDc)
 {
 
-  var ProdID = $('#select-csiu').val();
+  var ProdID = warpol('#select-csiu').val();
 
   console.log(CSID);
   console.log(ProdID);
   console.log(ProdIDc);
 
   //AJAX request
-  $.ajax(
+  warpol.ajax(
     {type:"GET",
       url:"/updateCustomerActiveServiceInfo",
       data:{'CSID':CSID, 'ProdID':ProdID},
@@ -858,13 +859,13 @@ function updateActiveServiceInfo (CSID, ProdIDc)
         if (data == 'ERROR')
           alert(data);
 
-        $.each(data[0],function(i, item)
+        warpol.each(data[0],function(i, item)
         {
           console.log(i + '-'+ProdID+'::' + item);
-          $('#' + i + '-' + ProdIDc).html(item);
+          warpol('#' + i + '-' + ProdIDc).html(item);
         });
-        
-        $('.btn-display-service-'+CSID).notify('Service Updated');
+
+        warpol('.btn-display-service-'+CSID).notify('Service Updated');
 
 
       }
@@ -876,6 +877,43 @@ function updateActiveServiceInfo (CSID, ProdIDc)
 
 
 
+app.controller('globalController', ['$scope', '$http', function($scope, $http)
+{
+  console.log('inside');
+  $scope.displayBldData = function (idBld)
+  {
+    console.log(idBld);
+
+    $http.get("buildings/" + idBld)
+      .then(function (response) {
+      console.log(response.data);
+        $scope.bld = response.data;
+      });
+
+  }
+}]);
+
+
+app.controller('building', ['$scope', '$http', function($scope, $http)
+{
+  console.log(warpol(location).attr('href'));
+
+  $scope.displayBldData = function (idBld)
+  {
+    console.log(idBld);
+
+    $http.get("buildings/" + idBld)
+      .then(function (response) {
+      console.log(response.data);
+        $scope.bld = response.data;
+      });
+
+  }
+  $scope.testFunctionOne = function ()
+  {
+    console.log('W');
+  }
+}]);
 
 
 

@@ -1,3 +1,3 @@
-$(document).ready(function(){
+warpol(document).ready(function(){
   vistas.global();
 });

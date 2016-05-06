@@ -26,7 +26,21 @@ class MainController extends Controller
       return view('dummy');
 
     }
-    
+    public function menuMaker()
+    {
+
+      return DB::select('SELECT * FROM user U
+                                  JOIN rol R
+                                    ON U.id_rol = R.id
+                                  JOIN privilege_menu PM
+                                    ON PM.id_rol = R.id
+                                  JOIN menu M
+                                    ON M.id = PM.id_menu
+                                    where u.id = 1
+                                  ORDER BY M.id ASC
+                                  ');
+    }
+
     public function adminusers()
     {
       $usersData = User::orderBy('id', 'ASC')->get();

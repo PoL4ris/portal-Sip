@@ -68,39 +68,24 @@
   <!-- navbar collapse -->
   <div class="collapse pos-rlt navbar-collapse box-shadow bg-white-only">
 
+    <!--<div ng-controller="testController"></div>-->
+
+    <!--<div ng-controller="menuController">-->
+      <!--<ul>-->
+
+        <!--&lt;!&ndash;<li ng-if='(menu in SiteMenu | filter:{menu.id_parent: menu.id}).length > 0 '></li>&ndash;&gt;-->
+
+      <!--</ul>-->
+    <!--</div>-->
 
 
     <!--{{&#45;&#45; Direct Links &#45;&#45;}}-->
-    <ul class="nav navbar-nav hidden-sm">
-      <li>
-        <a href="/buildingsdash" class="dropdown-toggle">
-          <i class="glyphicon fa fa-building-o  "></i>
+    <ul class="nav navbar-nav hidden-sm" ng-controller="menuController">
+      <li ng-repeat="menu in SiteMenu">
+        <a href="{{ menu.url }}" class="dropdown-toggle">
+          <i class="{{ menu.ico }}"></i>
         </a>
-      </li>
-      <li>
-        <a href="/customersdash" class="dropdown-toggle">
-          <i class="glyphicon fa fa-users  "></i>
-        </a>
-      </li>
-      <li>
-        <a href="/supportdash" class="dropdown-toggle">
-          <i class="icon-earphones-alt  "></i>
-        </a>
-      </li>
-      <li>
-        <a href="/salesdash" class="dropdown-toggle">
-          <i class="icon-briefcase"></i>
-        </a>
-      </li>
-      <li>
-        <a href="/networkdash" class="dropdown-toggle">
-          <i class="icon-globe"></i>
-        </a>
-      </li>
-      <li>
-        <a href="#/adminusers" class="dropdown-toggle">
-          <i class="icon-user"></i>
-        </a>
+        <!--{{ menu.name }}-->
       </li>
     </ul>
     <!--{{&#45;&#45;END Direct Links&#45;&#45;}}-->
