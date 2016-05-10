@@ -241,7 +241,7 @@
 .building .bld {
   float: left;
   overflow: hidden;
-  width: 40%;
+  width: 50%;
 }
 .building .bld.block-a {
   max-height: 300px;

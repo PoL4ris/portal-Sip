@@ -8,11 +8,13 @@
   <meta name="description" content="Silver IP" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 
-  {{-- DEFAULT STYLES --}}
+   {{--DEFAULT STYLES --}}
   <link rel="stylesheet" href="/css/animate.css" type="text/css" />
   <link rel="stylesheet" href="/css/font-awesome.css" type="text/css" />
   <link rel="stylesheet" href="/css/simple-line-icons.css" type="text/css" />
+
   <link rel="stylesheet" href="/css/bootstrap.css" type="text/css" />
+
   <link rel="stylesheet" href="/css/font.css" type="text/css" />
   <link rel="stylesheet" href="/css/app.css" type="text/css" />
   <link rel="stylesheet" href="/css/jquery.fancybox.css" type="text/css" />
@@ -21,10 +23,8 @@
   <link rel="stylesheet" href="/css/plugins/smartadmin-production-plugins.min.css" type="text/css" />
   <link rel="stylesheet" href="/css/plugins/data_table.css" type="text/css" />
 
-  <!-- Vendor: Bootstrap Stylesheets http://getbootstrap.com -->
-  {{--<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">--}}
-  {{--<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">--}}
-  {{--<link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">--}}
+
+
 
   <!-- Our Website CSS Styles -->
   <link rel="stylesheet" href="/css/angular/main.css">
@@ -57,14 +57,11 @@
 <!-- Vendor: Angular, followed by our custom Javascripts -->
 <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular.min.js"></script>
 <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular-route.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-animate.js"></script>
 
 <!-- Our Website Javascripts -->
 <script src="/js/angular/main.js"></script>
 
-
-
-{{--<script src="/js/jquery.js"></script>--}}
-{{--<script src="/js/bootstrap.js"></script>--}}
 
 <script src="/js/ui-load.js"></script>
 <script src="/js/ui-jp.config.js"></script>

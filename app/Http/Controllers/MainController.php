@@ -26,6 +26,11 @@ class MainController extends Controller
       return view('dummy');
 
     }
+    public function test()
+    {
+      return view('test');
+
+    }
     public function menuMaker()
     {
 

@@ -81,6 +81,7 @@ class BuildingController extends Controller
   {
     $dynamicForm = new FormsController();
     $data = $dynamicForm->getFormType('building');
+    return $data;
     return view('buildings.newbuildingform',['form' => $data]);
   }
 
@@ -93,21 +94,21 @@ class BuildingController extends Controller
   }
   public function getBuildingsSearchSimple(Request $request)
   {
-    if($request->ajax())
-    {
+
       $txt = $request['querySearch'];
 
       if(empty($txt))
         return;
 
-//      $buildingData = Building::where('name', 'LIKE', '%'. $txt .'%')->get();
-//BUILDING TABLE
+      $buildingData = Building::where('name', 'LIKE', '%'. $txt .'%')->get();
+      //BUILDING TABLE
 
-      $buildingData = ServiceLocation::where('Name', 'LIKE', '%'. $txt .'%')->get();
+//      $buildingData = ServiceLocation::where('Name', 'LIKE', '%'. $txt .'%')->get();
 
+      return $buildingData;
+      
       return json_encode($buildingData);
-    }
-    return "ERROR:";
+
 
   }
   public function getBuildingsType()
@@ -133,8 +134,7 @@ class BuildingController extends Controller
   }
   public function getBuildingsList(Request $request)
   {
-    if($request->ajax())
-    {
+
       $offset = $request['offset'];
       $limit = 20;
 
@@ -142,9 +142,7 @@ class BuildingController extends Controller
 
       if(!empty($buildingList))
         return json_encode($buildingList);
-    }
-    else
-      return '';
+
   }
 
   //Building Insert's
