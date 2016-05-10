@@ -23,6 +23,7 @@
   <link rel="stylesheet" href="/css/plugins/smartadmin-production-plugins.min.css" type="text/css" />
   <link rel="stylesheet" href="/css/plugins/data_table.css" type="text/css" />
 
+  <link href="/css/angular/xeditable.css" rel="stylesheet">
 
 
 
@@ -70,10 +71,12 @@
 <script src="/js/ui-toggle.js"></script>
 <script src="/js/ui-client.js"></script>
 
+<!-- PLUGINS -->
 <script src="/js/js_jsDate.js"></script>
 <script src="/js/portal/jquery.fancybox.js"></script>
 <script src="/js/portal/notify.js"></script>
 
+<script src="/js/angular/xeditable.js"></script>
 
 
 <script src="/js/portal/lib.js"></script>

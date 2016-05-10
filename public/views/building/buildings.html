@@ -135,7 +135,10 @@
     <div class="col-lg-12" ng-if="bld">
 
       <!-- BUILDING INFO P1-->
-      <div id="building" class="building header-img">
+      <div id="building" class="building header-img" ng-controller="Ctrl">
+
+        <!--<a href="#" editable-text="xedit.name">{{ xedit.name || "empty" }}</a>-->
+
         <div class="bld block-a">
           <div class="img block-a-label"><img ng-src="/img/buildings/{{ bld.building.img_building?bld.building.img_building:'../logoLogin.png' }}" alt=""></div>
           <div class="block-a-edit form-group ">
@@ -146,10 +149,10 @@
         <div>
           <button class="btn m-b-xs w-xs btn-info btn-edit" id="block-a">Edit</button>
         </div>
-        <form action="{{ url('/buildingupdate') }}" class="xeditforms validation-form" method="POST">
+        <!--<form action="{{ url('/buildingupdate') }}" class="xeditforms validation-form" method="POST">-->
           <div class="bld block-b">
             <div class="bld-info-data">
-              <label class="bold-type">Name</label>           <label class="block-a-label" id="name">{{ bld.building.name?bld.building.name:bld.building.Name }}</label>
+              <label class="bold-type">Name</label>           <label class="block-a-label" id="name" editable-text="bld.building.name">{{ bld.building.name?bld.building.name:bld.building.Name }}</label>
               <input type="text" value="{{ bld.building.name?bld.building.name:bld.building.Name }}" name="name" class="block-a-edit form-control">
               <label class="bold-type">Address</label>        <label class="block-a-label" id="address">{{ bld.building.address?bld.building.address:bld.building.Address }}</label>
               <input type="text" value="{{ bld.building.address?bld.building.address:bld.building.Address }}" name="address" class="block-a-edit form-control">
@@ -177,11 +180,11 @@
           </div>
           <div class="bld block-c">
             <div class="bld-info-data">
-            DATA BLOQUE C
+              <label style="color: #000;">DATA BLOQUE C</label>
             </div>
           </div>
           <button class="btn m-b-xs w-xs btn-success save-btn" id="save-block-a">Save</button>
-        </form>
+        <!--</form>-->
       </div>
       <!-- END BUILDING INFO P1-->
       <!-- BUILDING INFO P2-->

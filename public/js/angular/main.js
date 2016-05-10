@@ -1,5 +1,6 @@
 
-var app = angular.module('app', ['ngRoute']);
+var app = angular.module('app', ['ngRoute', "xeditable"]);
+
 
 /**
  * Configure the Routes
@@ -27,6 +28,12 @@ app.config(['$routeProvider', function ($routeProvider) {
 
 
 }]);
+
+// var app = angular.module("app", );
+
+app.run(function(editableOptions) {
+  editableOptions.theme = 'bs3'; // bootstrap3 theme. Can be also 'bs2', 'default'
+});
 
 
 /* MENU */
