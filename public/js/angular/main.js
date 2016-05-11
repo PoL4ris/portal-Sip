@@ -58,6 +58,7 @@ app.controller('adminusers', function($scope, $http) {
       $scope.users = response.data;
     });
 });
+
 app.controller('admin', function($scope, $http) {
   $http.get("admin")
     .then(function (response) {
