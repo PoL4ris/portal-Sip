@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class PrivilegeMenuElement extends Migration
+class AccessAppElements extends Migration
 {
     /**
      * Run the migrations.
@@ -12,11 +12,11 @@ class PrivilegeMenuElement extends Migration
      */
     public function up()
     {
-      Schema::create('privilege_menu_element', function(Blueprint $table)
+      Schema::create('access_app_elements', function(Blueprint $table)
       {
         $table->increments('id');
         $table->integer('id_element');
-        $table->integer('id_privilege_menu');
+        $table->integer('id_access_app');
         $table->timestamps();
       });
     }
@@ -28,6 +28,6 @@ class PrivilegeMenuElement extends Migration
      */
     public function down()
     {
-      Schema::drop('privilege_menu_element');
+      Schema::drop('access_app_elements');
     }
 }

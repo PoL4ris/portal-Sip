@@ -20,11 +20,12 @@ class User extends Migration
         $table->string('email')->unique();
         $table->string('password');
         $table->string('remember_token', 100)->nullable();
+        $table->string('social_token', 100)->nullable();
         $table->text('avatar', 65535)->nullable();;
         $table->string('alias');
         $table->timestamps();
         $table->integer('status');
-        $table->integer('id_rol');
+        $table->integer('id_profile');
       });
     }
 

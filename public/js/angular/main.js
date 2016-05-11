@@ -7,6 +7,10 @@ var app = angular.module('app', ['ngRoute']);
 app.config(['$routeProvider', function ($routeProvider) {
   $routeProvider
     // Home
+    .when("/admin", {templateUrl: "/views/admin.html", controller:"admin"})
+
+
+
     .when("/buildingdash", {templateUrl: "/views/building/dashboard.html"})
     .when("/buildings", {templateUrl: "/views/building/buildings.html"})
 //     .when("/", {template: "partials/home.html"})
@@ -45,6 +49,12 @@ app.controller('adminusers', function($scope, $http) {
     .then(function (response) {
 //       console.log(response.data);
       $scope.users = response.data;
+    });
+});
+app.controller('admin', function($scope, $http) {
+  $http.get("admin")
+    .then(function (response) {
+      $scope.admin = response.data;
     });
 });
 

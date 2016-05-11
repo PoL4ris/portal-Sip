@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class Menu extends Migration
+class Apps extends Migration
 {
     /**
      * Run the migrations.
@@ -12,12 +12,12 @@ class Menu extends Migration
      */
     public function up()
     {
-      Schema::create('menu', function(Blueprint $table)
+      Schema::create('apps', function(Blueprint $table)
       {
         $table->increments('id');
         $table->integer('id_parent')->nullable();
         $table->string('name');
-        $table->string('ico');
+        $table->string('icon');
         $table->string('url');
         $table->timestamps();
       });
@@ -30,6 +30,6 @@ class Menu extends Migration
      */
     public function down()
     {
-      Schema::drop('menu');
+      Schema::drop('apps');
     }
 }

@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class PrivilegeMenu extends Migration
+class AccessApps extends Migration
 {
     /**
      * Run the migrations.
@@ -12,11 +12,11 @@ class PrivilegeMenu extends Migration
      */
     public function up()
     {
-      Schema::create('privilege_menu', function(Blueprint $table)
+      Schema::create('access_apps', function(Blueprint $table)
       {
         $table->increments('id');
-        $table->integer('id_menu');
-        $table->integer('id_rol');
+        $table->integer('id_app');
+        $table->integer('id_profile');
         $table->timestamps();
       });
     }
@@ -28,6 +28,6 @@ class PrivilegeMenu extends Migration
      */
     public function down()
     {
-      Schema::drop('privilege_menu');
+      Schema::drop('access_apps');
     }
 }
