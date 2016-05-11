@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class Rol extends Migration
+class Profiles extends Migration
 {
     /**
      * Run the migrations.
@@ -12,10 +12,11 @@ class Rol extends Migration
      */
     public function up()
     {
-      Schema::create('rol', function(Blueprint $table)
+      Schema::create('profiles', function(Blueprint $table)
       {
         $table->increments('id');
         $table->string('name');
+        $table->integer('id_user');
         $table->timestamps();
       });
     }
@@ -27,6 +28,6 @@ class Rol extends Migration
      */
     public function down()
     {
-      Schema::drop('rol');
+      Schema::drop('profiles');
     }
 }
