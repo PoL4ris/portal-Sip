@@ -873,7 +873,12 @@ function updateActiveServiceInfo (CSID, ProdIDc)
 }
 
 
-
+app.controller('Ctrl', function($scope) {
+  $scope.xedit = {
+    name: 'awesome user',
+    test: 'test coso'
+  };
+});
 
 
 
@@ -993,18 +998,13 @@ app.controller('buildingCtl', ['$scope','$route','$http', function($scope, $rout
 
   $scope.buscador = function(searchType, side)
   {
-    var query = {};
 
-    console.log(this.searchLeft);
-    console.log(this.searchRight);
+    var query = {};
 
     if (side == 'left')
       query = {'querySearch' : this.searchLeft};
     else
       query = {'querySearch' : this.searchRight};
-
-
-
 
     $http.get("buildingsSearch", {params:query})
       .then(function (response) {
@@ -1015,12 +1015,10 @@ app.controller('buildingCtl', ['$scope','$route','$http', function($scope, $rout
           $scope.bldSearchResultRight = response.data;
       });
 
-
-
-
-
-
 return;
+
+
+//END SEARCH TOOL
 
 
     //id de quien solicita
