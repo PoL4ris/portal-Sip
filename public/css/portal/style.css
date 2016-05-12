@@ -594,45 +594,67 @@
 
 
 
-
-.ng-animate{
-  -webkit-transition: 400ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
-  -moz-transition: 400ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
-  -ms-transition: 400ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
-  -o-transition: 400ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
-  transition: 400ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
-  position: relative;
-  display: block;
-  overflow: hidden;
-  text-overflow: clip;
-  white-space:nowrap;
+/* ------ */
+.text-center {
+  text-align: center;
+}
+li span {
+  float: right;
+  cursor: pointer;
 }
 
+.fade {
+  opacity:1;
+  transition: 1s linear all;
+  -webkit-transition: 1s linear all;
+}
+
+.fade.ng-enter {
+  opacity: 0;
+}
+
+.fade.ng-enter.ng-enter-active {
+  opacity: 1;
+}
+
+.fade.ng-leave {
+  opacity: 1;
+}
+
+.fade.ng-leave.ng-leave-active {
+  opacity: 0;
+}
+
+
 .animate-enter,
-.animate-leave
-{
-  -webkit-transition: 400ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
-  -moz-transition: 400ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
-  -ms-transition: 400ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
-  -o-transition: 400ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
-  transition: 400ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
+.animate-leave {
+  -webkit-transition: 1000ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
+  -moz-transition: 1000ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
+  -ms-transition: 1000ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
+  -o-transition: 1000ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
+  transition: 1000ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
   position: relative;
   display: block;
-  overflow: hidden;
-  text-overflow: clip;
-  white-space:nowrap;
 }
 
 .animate-leave.animate-leave-active,
 .animate-enter {
-  opacity: 0;
-  width: 0px;
+  -webkit-transform: scaleY(0);
+  -moz-transform: scaleY(0);
+  -ms-transform: scaleY(0);
+  -o-transform: scaleY(0);
+  transform: scaleY(0);
   height: 0px;
+  opacity: 0;
 }
 
 .animate-enter.animate-enter-active,
 .animate-leave {
-  opacity: 1;
-  width: 150px;
+  -webkit-transform: scaleY(1);
+  -moz-transform: scaleY(1);
+  -ms-transform: scaleY(1);
+  -o-transform: scaleY(1);
+  transform: scaleY(1);
   height: 30px;
+  opacity: 1;
 }

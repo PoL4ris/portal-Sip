@@ -9,11 +9,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 
    {{--DEFAULT STYLES --}}
-  <link rel="stylesheet" href="/css/animate.css" type="text/css" />
+  <link rel="stylesheet" href="/css/animate.min.css" type="text/css" />
+
   <link rel="stylesheet" href="/css/font-awesome.css" type="text/css" />
   <link rel="stylesheet" href="/css/simple-line-icons.css" type="text/css" />
 
   <link rel="stylesheet" href="/css/bootstrap.css" type="text/css" />
+
 
   <link rel="stylesheet" href="/css/font.css" type="text/css" />
   <link rel="stylesheet" href="/css/app.css" type="text/css" />
@@ -27,7 +29,7 @@
 
 
 
-  <!-- Our Website CSS Styles -->
+  {{-- Our Website CSS Styles --}}
   <link rel="stylesheet" href="/css/angular/main.css">
 
   {{-- NEW STYLES --}}
@@ -37,30 +39,32 @@
 </head>
 
 
-
 <body ng-app="app">
 
 <div class="app app-header-fixed app-aside-folded">
 
-<!-- Our Website Content Goes Here -->
-<div ng-include='"/angularviews/templates/nav.html"' class="app-aside hidden-xs bg-dark"></div>
-<div ng-include='"/angularviews/templates/header.html"' class="app-header app-header navbar navbar-fixed-top"></div>
-<div ng-view class="app-content"></div>
-<div ng-include='"/angularviews/templates/footer.html"' class="app-footer"></div>
+   {{--Our Website Content Goes Here --}}
+  <div ng-include='"/angularviews/templates/nav.html"' class="app-aside hidden-xs bg-dark"></div>
+  <div ng-include='"/angularviews/templates/header.html"' class="app-header app-header navbar navbar-fixed-top"></div>
+  <div ng-view class="app-content"></div>
+  <div ng-include='"/angularviews/templates/footer.html"' class="app-footer"></div>
 
 </div>
 
 
-<!-- Vendor: Javascripts -->
+ {{--Vendor: Javascripts --}}
 <script src="/js/jquery/jquery.min.js"></script>
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 
-<!-- Vendor: Angular, followed by our custom Javascripts -->
-<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular.min.js"></script>
-<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular-route.min.js"></script>
-<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-animate.js"></script>
+ {{--Vendor: Angular, followed by our custom Javascripts --}}
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-route.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.js"></script>
+<script src="/js/angular/xeditable.js"></script>
+<script src="/js/angular/angular-sanitize.js"></script>
 
-<!-- Our Website Javascripts -->
+
+ {{--Our Website Javascripts --}}
 <script src="/js/angular/main.js"></script>
 
 
@@ -71,12 +75,11 @@
 <script src="/js/ui-toggle.js"></script>
 <script src="/js/ui-client.js"></script>
 
-<!-- PLUGINS -->
+{{-- PLUGINS --}}
 <script src="/js/js_jsDate.js"></script>
 <script src="/js/portal/jquery.fancybox.js"></script>
 <script src="/js/portal/notify.js"></script>
 
-<script src="/js/angular/xeditable.js"></script>
 
 
 <script src="/js/portal/lib.js"></script>
@@ -85,4 +88,6 @@
 
 
 </body>
+
+
 </html>

@@ -22,6 +22,9 @@ Route::group(['middleware' => 'web'], function () {
   Route::get('test', 'MainController@test');
   //ADMIN
   Route::get('admin', 'AdminController@admin');
+  Route::get('adminProfile', 'AdminController@adminProfile');
+  Route::get('insertAdminForm', 'AdminController@insertAdminForm');
+
   //MENU
   Route::get('menumaker', 'MainController@menuMaker');
 
