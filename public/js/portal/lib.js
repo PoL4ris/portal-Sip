@@ -893,6 +893,79 @@ app.controller('globalController', ['$scope', '$http', function($scope, $http)
 }]);
 
 
+app.controller('adminusers', function($scope, $http) {
+  $http.get("adminusers")
+    .then(function (response) {
+//       console.log(response.data);
+      $scope.users = response.data;
+    });
+});
+
+
+
+
+
+
+
+
+app.controller('admin', function($scope, $http, $compile, $sce)
+{
+  $http.get("admin")
+    .then(function (response) {
+//       console.log(response.data);
+      $scope.userData = response.data;
+    });
+
+  $scope.callAdminView = function (view)
+  {
+    var compiledeHTML = $compile("<div my-View-"+view+"></div>")($scope);
+    warpol("#viewContents").html(compiledeHTML);
+    $scope.insertForm = '';
+  };
+
+  $scope.addNewForm = function (table)
+  {
+//     console.log(table);
+    $http.get("insertAdminForm", {params:{'table':table}})
+      .then(function (response) {
+        
+        var compiledeFormHTML = $compile(response.data)($scope);
+//       console.log(compiledeFormHTML[0]);
+        $scope.insertForm = $sce.trustAsHtml(response.data);
+
+      });
+  };
+
+})
+.directive('myViewUser', function() {
+  return {
+    templateUrl: '/views/admin/user.html'
+  };
+})
+.directive('myViewProfile', function() {
+  return {
+    templateUrl: '/views/admin/profile.html',
+    controller: 'adminProfileController'
+  };
+})
+.directive('myViewApp', function() {
+  return {
+    templateUrl: '/views/admin/app.html'
+  };
+})
+.directive('myViewElement', function() {
+  return {
+    templateUrl: '/views/admin/element.html'
+  };
+});
+app.controller('adminProfileController', function ($scope, $http)
+{
+  $http.get("adminProfile")
+    .then(function (response) {
+//       console.log(response.data);
+      $scope.profilesData = response.data;
+    });
+})
 
 
 
@@ -1104,24 +1177,6 @@ return;
 
 
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

@@ -1,1 +1,21 @@
-HOLA
+<div class="bg-light lter b-b wrapper-md">
+  <h1 class="m-n font-thin h3">Admin Panel</h1>
+</div>
+
+
+<div class="col-lg-2"></div>
+<div class="col-lg-8 text-center m-t-sm">
+  <button class="btn btn-dark btn-rounded fade animate" ng-click="callAdminView('User')">User's</button>
+  <button class="btn btn-dark btn-rounded fade animate" ng-click="callAdminView('Profile')">Profile's</button>
+  <button class="btn btn-dark btn-rounded fade animate" ng-click="callAdminView('App')">App's</button>
+  <button class="btn btn-dark btn-rounded fade animate" ng-click="callAdminView('Element')">Element's</button>
+</div>
+<div class="col-lg-2"></div>
+
+<div class="col-lg-12" id="viewContents">
+  <div my-View-User></div>
+</div>
+
+
+
+

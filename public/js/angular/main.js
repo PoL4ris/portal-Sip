@@ -1,5 +1,20 @@
 
-var app = angular.module('app', ['ngRoute', "xeditable"]);
+var app = angular.module('app', ['ngRoute', "xeditable", "ngAnimate", "ngSanitize"]);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 /**
@@ -8,22 +23,29 @@ var app = angular.module('app', ['ngRoute', "xeditable"]);
 app.config(['$routeProvider', function ($routeProvider) {
   $routeProvider
     // Home
+    .when("/", {templateUrl: "/views/admin.html", controller:"admin"})
     .when("/admin", {templateUrl: "/views/admin.html", controller:"admin"})
+
+
+
+
+    .when('#/', {templateUrl: '/angularviews/partials/page-home.html', controller: 'mainController'})
+    .when('#/about', {templateUrl: '/angularviews/partials/page-about.html', controller: 'aboutController'})
+    .when('#/contact', {templateUrl: '/angularviews/partials/page-contact.html', controller: 'contactController'})
 
 
 
     .when("/buildingdash", {templateUrl: "/views/building/dashboard.html"})
     .when("/buildings", {templateUrl: "/views/building/buildings.html"})
-//     .when("/", {template: "partials/home.html"})
-//     .when("/", {templateUrl: "/angularviews/partials/dummy.html", controller: "PageCtrl"})
     .when("/adminusers", {templateUrl: "/angularviews/partials/home.html", controller: "adminusers"})
-//     .when("/dummy", {templateUrl: "/angularviews/partials/dummy.html", controller: 'customersCtrl'})
-    // Pages
-    .when("/about", {templateUrl: "/angularviews/partials/about.html", controller: "PageCtrl"})
-    .when("/faq", {templateUrl: "/angularviews/partials/faq.html", controller: "PageCtrl"})
-    .when("/pricing", {templateUrl: "/angularviews/partials/pricing.html", controller: "PageCtrl"})
-    .when("/services", {templateUrl: "/angularviews/partials/services.html", controller: "PageCtrl"})
-    .when("/contact", {templateUrl: "/angularviews/partials/contact.html", controller: "PageCtrl"})
+
+
+
+
+
+
+
+
     // Blog
     .when("/blog", {templateUrl: "/angularviews/partials/blog.html", controller: "BlogCtrl"})
     .when("/blog/post", {templateUrl: "/angularviews/partials/blog_item.html", controller: "BlogCtrl"})
@@ -33,7 +55,7 @@ app.config(['$routeProvider', function ($routeProvider) {
 
 }]);
 
-// var app = angular.module("app", );
+
 
 app.run(function(editableOptions) {
   editableOptions.theme = 'bs3'; // bootstrap3 theme. Can be also 'bs2', 'default'
@@ -49,22 +71,6 @@ app.controller('menuController', ['$scope', '$http', function($scope, $http){
     alert('Error');
   }
 }]);
-
-
-app.controller('adminusers', function($scope, $http) {
-  $http.get("adminusers")
-    .then(function (response) {
-//       console.log(response.data);
-      $scope.users = response.data;
-    });
-});
-
-app.controller('admin', function($scope, $http) {
-  $http.get("admin")
-    .then(function (response) {
-      $scope.admin = response.data;
-    });
-});
 
 
 /**

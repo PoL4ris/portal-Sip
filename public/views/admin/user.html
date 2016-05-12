@@ -1,0 +1,39 @@
+<button class="btn btn-dark fade animate" ng-click="addNewForm('user')">Add new user</button>
+
+<div ng-if="insertForm" id="admin-insert-form" ng-bind-html="insertForm" class="fade"></div>
+
+<div ng-if="!insertForm">
+<div class="table table-bordered table-hover table-condensed bg-white-only">
+<div>
+  <p>id</p>
+  <p>Name</p>
+  <p>Last Name</p>
+  <p>Email</p>
+  <p>Password</p>
+  <p>Remember Token</p>
+  <p>Social Token</p>
+  <p>Avatar</p>
+  <p>Alias</p>
+  <p>Created At</p>
+  <p>Updated At</p>
+  <p>Status</p>
+  <p>Base Profile</p>
+</div>
+<div ng-repeat="userdata in userData">
+  <p>{{ userdata.id }}</p>
+  <p editable-text="userdata.name">{{ userdata.name || "empty" }}</p>
+  <p editable-text="userdata.last_name">{{ userdata.last_name }}</p>
+  <p editable-text="userdata.email">{{ userdata.email }}</p>
+  <p editable-text="userdata.password">{{ userdata.password }}</p>
+  <p>{{ userdata.remember_token }}</p>
+  <p>{{ userdata.social_token }}</p>
+  <p>{{ userdata.avatar }}</p>
+  <p editable-text="userdata.password">{{ userdata.alias }}</p>
+  <p>{{ userdata.created_at }}</p>
+  <p>{{ userdata.updated_at }}</p>
+  <p editable-text="userdata.password">{{ userdata.status }}</p>
+  <p editable-select="userdata.password">{{ userdata.id_profile }}</p>
+</div>
+
+</div>
+</div>
