@@ -106,6 +106,7 @@ class BuildingController extends Controller
 //      $buildingData = ServiceLocation::where('Name', 'LIKE', '%'. $txt .'%')->get();
 
       return $buildingData;
+      
       return json_encode($buildingData);
 
 
