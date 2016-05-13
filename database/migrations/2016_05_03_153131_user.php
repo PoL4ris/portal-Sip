@@ -18,14 +18,14 @@ class User extends Migration
         $table->string('name');
         $table->string('last_name');
         $table->string('email')->unique();
-        $table->string('password');
+        $table->string('password')->nullable();
         $table->string('remember_token', 100)->nullable();
         $table->string('social_token', 100)->nullable();
-        $table->text('avatar', 65535)->nullable();;
+        $table->text('avatar', 65535)->nullable();
         $table->string('alias');
         $table->timestamps();
-        $table->integer('status');
-        $table->integer('id_profile');
+        $table->integer('id_status')->nullable();
+        $table->integer('id_profiles');
       });
     }
 

@@ -1,0 +1,8 @@
+
+<button class="btn btn-dark fade animate" ng-click="addNewForm('status')">Add new Status</button>
+
+<div ng-if="insertForm" id="admin-insert-form" ng-bind-html="insertForm" class="fade"></div>
+
+<div ng-repeat="userdata in usersData" ng-if="!insertForm">
+  {{ userdata.id }}
+</div>

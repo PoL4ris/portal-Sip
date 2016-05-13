@@ -881,31 +881,12 @@ app.controller('Ctrl', function($scope) {
 });
 
 
-
-
-
-
-
-app.controller('globalController', ['$scope', '$http', function($scope, $http)
-{
-  console.log('inside');
-
-}]);
-
-
 app.controller('adminusers', function($scope, $http) {
   $http.get("adminusers")
     .then(function (response) {
-//       console.log(response.data);
       $scope.users = response.data;
     });
 });
-
-
-
-
-
-
 
 
 app.controller('admin', function($scope, $http, $compile, $sce)
@@ -936,6 +917,16 @@ app.controller('admin', function($scope, $http, $compile, $sce)
       });
   };
 
+  $scope.cancelForm = function ()
+  {
+    $scope.insertForm = null;
+  };
+
+  $scope.submitForm = function ()
+  {
+    console.log('TADA');
+  }
+
 })
 .directive('myViewUser', function() {
   return {
@@ -953,6 +944,11 @@ app.controller('admin', function($scope, $http, $compile, $sce)
     templateUrl: '/views/admin/app.html'
   };
 })
+.directive('myViewStatus', function() {
+  return {
+    templateUrl: '/views/admin/status.html'
+  };
+})
 .directive('myViewElement', function() {
   return {
     templateUrl: '/views/admin/element.html'
@@ -966,8 +962,6 @@ app.controller('adminProfileController', function ($scope, $http)
       $scope.profilesData = response.data;
     });
 })
-
-
 
 
 app.controller('buildingCtl', ['$scope','$route','$http', function($scope, $route, $http)
@@ -1192,9 +1186,6 @@ return;
 
 
 }]);
-
-
-
 
 
 app.controller('newbuildingform', ['$scope', '$http', function($scope, $http)
