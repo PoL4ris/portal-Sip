@@ -33,7 +33,8 @@ class FormsController extends Controller
 
     $extra = !empty($id) ? "&id={$id}" : "";
 
-    $form = "<form class='validation-form'  action='/insert{$tabla}Data' method='post' enctype='multipart/form-data' >";
+    $form = "";
+//    $form = "<form class='validation-form'  action='/insert{$tabla}Data' method='post' enctype='multipart/form-data' >";
 
     $object = DB::select(DB::raw("SHOW FULL COLUMNS FROM {$tabla}"));
     $query = json_decode(json_encode($object), True);
@@ -144,7 +145,18 @@ class FormsController extends Controller
                         </div>
                       </div>";
           }
-          else
+          else if($row['Type'] == "timestamp")
+          {
+            $form .= "<div class='form-group col-md-3'>
+                        <div class='row-abc'>
+                          <label class='descripcion'>{$description}</label>
+                          <p class='input {$row['Type']}-ico'>
+                            <input type='text' name='{$row['Field']}' class='{$row['Type']} $validation $isAjax form-control'  value='{$val}' readonly/>
+                          </p>
+                        </div>
+                      </div>";
+          }
+        else
           {
             $form .= "<div class='form-group col-md-3'>
                         <div class='row-abc'>
@@ -159,12 +171,12 @@ class FormsController extends Controller
       }
     }
 
-    if($type == "update")
-      $form .= '<input type="submit" value="Actualizar"/>';
-    else
-      $form .= '<div class=\'form-group col-md-12\'><div class="row-abc"><p class="input"><input type="submit" value="Insertar" class="btn m-b-xs w-xs btn-primary"/></p></div></div>';
+//    if($type == "update")
+//      $form .= '<input type="submit" value="Actualizar"/>';
+//    else
+//      $form .= '<div class=\'form-group col-md-12\'><div class="row-abc"><p class="input"><input type="submit" value="Insertar" class="btn m-b-xs w-xs btn-primary" ng-click="submitForm()" /></p></div></div>';
 
-    $form .= '</form>';
+//    $form .= '</form>';
 
   return $form;
   }

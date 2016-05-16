@@ -1,7 +1,23 @@
 
-<button class="btn btn-dark fade animate" ng-click="addNewForm('status')">Add new Status</button>
+<button class="btn btn-dark fade animate" ng-click="addNewForm('status')" ng-if="!insertForm">Add new Status</button>
+<button class="btn btn-danger fade animate" ng-click="cancelForm()" ng-if="insertForm">Cancel</button>
 
-<div ng-if="insertForm" id="admin-insert-form" ng-bind-html="insertForm" class="fade"></div>
+<div ng-if="insertForm" class="fade">
+
+  <form class='validation-form' id="admin-insert-form">
+
+    <div ng-bind-html="insertForm"></div>
+
+    <div class='form-group col-md-12'>
+      <div class="row-abc">
+        <p class="input"><input type="submit" value="Insertar" class="btn m-b-xs w-xs btn-primary" ng-click="submitForm()" /></p>
+      </div>
+    </div>
+
+  </form>
+
+</div>
+
 
 <div ng-repeat="userdata in usersData" ng-if="!insertForm">
   {{ userdata.id }}

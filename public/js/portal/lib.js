@@ -188,126 +188,6 @@ var imgPreview = function()
     readURL(this);
   });
 };
-var validator = {
-
-  startValidations : function(){
-
-    warpol('.validation-form').submit(function(e)
-    {
-
-      e.preventDefault();
-
-      var validated = true;
-
-      warpol(this).find('input').each(function()
-      {
-        try{
-          if(!validator.validateInput(warpol(this).attr('class'),warpol(this).val(),warpol(this)))
-          {
-            validated = false;
-          }
-        }
-        catch(err)
-        {
-          console.log(err);
-        }
-      });
-
-      if(validated)
-      {
-        warpol(this).unbind().submit();
-      }
-      else
-      {
-        warpol("<div class='message-validation'>Valida todos los datos requeridos</div>").dialog({"modal" : true});
-      }
-
-
-    });
-
-  },
-
-  validateInput : function(type, val, selector){
-
-    type = type.split(" ");
-    var valid = true;
-    for(var i = 0; i < type.length; i++)
-    {
-      var tmp = type[i];
-      tmp = tmp.split('validation-');
-
-      if(tmp.length > 1)
-      {
-
-        if(!validator.validator(tmp[1],val, selector)){
-          valid = false;
-
-        }
-      }
-    }
-
-    return valid;
-
-  },
-
-  validator : function(type, val, selector){
-
-    var validated = true;
-
-    switch(type){
-
-      case "tel":
-        var patt = new RegExp("^[1-9]{10}warpol");
-        var telefono = val;
-        if (!patt.test(telefono))
-        {
-          validated = false;
-        }
-        break;
-
-      default:
-        if(typeof val === "undefined" || val == "" )
-        {
-          validated = false;
-        }
-
-        break;
-    }
-
-    if(!validated)
-    {
-      validator.changeColor(selector,"error");
-    }
-    else
-    {
-      validator.changeColor(selector,"regular");
-    }
-
-    return validated;
-
-  },
-
-  changeColor : function(selector, type){
-
-
-    switch(type){
-
-      case "error":
-        warpol(selector).css({"color":"#cc0000"});
-        warpol(selector).parent().parent().find('.descripcion').css({"color":"#cc0000"});
-        break;
-      case "regular":
-        warpol(selector).css({"color":"inherit"});
-        warpol(selector).parent().parent().find('.descripcion').css({"color":"inherit"});
-
-        break;
-
-    }
-
-
-  }
-
-};
 var utils = {
 
   getParameterByName: function(name){
@@ -873,6 +753,17 @@ function updateActiveServiceInfo (CSID, ProdIDc)
 }
 
 
+
+/* MENU */
+app.controller('menuController', ['$scope', '$http', function($scope, $http){
+  $scope.SiteMenu = [];
+  $http.get('menumaker').then(function (data){
+    $scope.SiteMenu = data.data;
+  }), function (error){
+    alert('Error');
+  }
+}]);
+
 app.controller('Ctrl', function($scope) {
   $scope.xedit = {
     name: 'awesome user',
@@ -889,8 +780,12 @@ app.controller('adminusers', function($scope, $http) {
 });
 
 
+
+
+
 app.controller('admin', function($scope, $http, $compile, $sce)
 {
+
   $http.get("admin")
     .then(function (response) {
 //       console.log(response.data);
@@ -909,7 +804,7 @@ app.controller('admin', function($scope, $http, $compile, $sce)
 //     console.log(table);
     $http.get("insertAdminForm", {params:{'table':table}})
       .then(function (response) {
-        
+
         var compiledeFormHTML = $compile(response.data)($scope);
 //       console.log(compiledeFormHTML[0]);
         $scope.insertForm = $sce.trustAsHtml(response.data);
@@ -922,10 +817,15 @@ app.controller('admin', function($scope, $http, $compile, $sce)
     $scope.insertForm = null;
   };
 
-  $scope.submitForm = function ()
+  $scope.submitForm = function ($scope)
   {
     console.log('TADA');
+    var objects = warpol('#admin-insert-form').serializeArray();
+    console.log(objects);
+//     validator.startValidations;
+
   }
+
 
 })
 .directive('myViewUser', function() {
@@ -954,16 +854,13 @@ app.controller('admin', function($scope, $http, $compile, $sce)
     templateUrl: '/views/admin/element.html'
   };
 });
-app.controller('adminProfileController', function ($scope, $http)
-{
+app.controller('adminProfileController', function ($scope, $http){
   $http.get("adminProfile")
     .then(function (response) {
 //       console.log(response.data);
       $scope.profilesData = response.data;
     });
 })
-
-
 app.controller('buildingCtl', ['$scope','$route','$http', function($scope, $route, $http)
 {
 
@@ -1186,8 +1083,6 @@ return;
 
 
 }]);
-
-
 app.controller('newbuildingform', ['$scope', '$http', function($scope, $http)
 {
   $http.get("newbuildingform")
@@ -1198,7 +1093,114 @@ app.controller('newbuildingform', ['$scope', '$http', function($scope, $http)
 }]);
 
 
+function test ($scope)
+{
+  $scope.$emit.valueloco = 'a';
+}
 
+
+
+
+app.service('validator', function ($scope)
+{
+  $scope.startValidations = function()
+  {
+    console.log('Tada');
+  }
+//
+//   $scope.startValidations = function()
+//   {
+//     warpol('.validation-form').submit(function(e)
+//     {
+//       e.preventDefault();
+//       var validated = true;
+//       warpol(this).find('input').each(function()
+//       {
+//         try{
+//           if(!validator.validateInput(warpol(this).attr('class'),warpol(this).val(),warpol(this)))
+//           {
+//             validated = false;
+//           }
+//         }
+//         catch(err)
+//         {
+//           console.log(err);
+//         }
+//       });
+//
+//       if(validated)
+//         warpol(this).unbind().submit();
+//       else
+//         warpol("<div class='message-validation'>Valida todos los datos requeridos</div>").dialog({"modal" : true});
+//     });
+//   };
+//
+//   $scope.validateInput = function(type, val, selector, validator)
+//   {
+//     type = type.split(" ");
+//     var valid = true;
+//     for(var i = 0; i < type.length; i++)
+//     {
+//       var tmp = type[i];
+//       tmp = tmp.split('validation-');
+//       if(tmp.length > 1)
+//       {
+//         if(!validator.validator(tmp[1],val, selector)){
+//           valid = false;
+//         }
+//       }
+//     }
+//     return valid;
+//   };
+//
+//   $scope.validator = function(type, val, selector, validator)
+//   {
+//     var validated = true;
+//     switch(type)
+//     {
+//       case "tel":
+//         var patt = new RegExp("^[1-9]{10}$");
+//         var telefono = val;
+//         if (!patt.test(telefono))
+//         {
+//           validated = false;
+//         }
+//         break;
+//       default:
+//         if(typeof val === "undefined" || val == "" )
+//         {
+//           validated = false;
+//         }
+//         break;
+//     }
+//     if(!validated)
+//     {
+//       validator.changeColor(selector,"error");
+//     }
+//     else
+//     {
+//       validator.changeColor(selector,"regular");
+//     }
+//     return validated;
+//   };
+//
+//   $scope.changeColor = function(selector, type)
+//   {
+//     switch(type)
+//     {
+//       case "error":
+//         warpol(selector).css({"color":"#cc0000"});
+//         warpol(selector).parent().parent().find('.descripcion').css({"color":"#cc0000"});
+//         break;
+//       case "regular":
+//         warpol(selector).css({"color":"inherit"});
+//         warpol(selector).parent().parent().find('.descripcion').css({"color":"inherit"});
+//         break;
+//     }
+//   }
+
+
+});
 
 
 

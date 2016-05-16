@@ -30,7 +30,7 @@ var vistas = {
     if(!warpol('.validation-form'))
       return;
 
-    validator.startValidations();
+//     validator.startValidations();
 
     warpol(".date" ).datepicker({ dateFormat: 'yy-mm-dd' });
 
