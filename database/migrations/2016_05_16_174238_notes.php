@@ -16,8 +16,8 @@ class Notes extends Migration
       {
         $table->increments('id');
         $table->string('comment');
-        $table->string('created_by')->comment('-Created by');//FK to id_users?
-        $table->integer('id_customers')->nullable()->comment('-Customer');
+        $table->string('created_by')->comment('Created by');//FK to id_users?
+        $table->integer('id_customers')->nullable()->comment('Customer');
         $table->timestamps();
       });
     }

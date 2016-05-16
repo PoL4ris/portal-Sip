@@ -781,14 +781,10 @@ app.controller('adminusers', function($scope, $http) {
 
 
 
-
-
-app.controller('admin', function($scope, $http, $compile, $sce)
+app.controller('admin', function($scope, $http, $compile, $sce, notify)
 {
-
   $http.get("admin")
     .then(function (response) {
-//       console.log(response.data);
       $scope.userData = response.data;
     });
 
@@ -798,11 +794,9 @@ app.controller('admin', function($scope, $http, $compile, $sce)
     warpol("#viewContents").html(compiledeHTML);
     $scope.insertForm = '';
   };
-
   $scope.addNewForm = function (table)
   {
-//     console.log(table);
-    $http.get("insertAdminForm", {params:{'table':table}})
+    $http.get("getAdminForm", {params:{'table':table}})
       .then(function (response) {
 
         var compiledeFormHTML = $compile(response.data)($scope);
@@ -811,22 +805,40 @@ app.controller('admin', function($scope, $http, $compile, $sce)
 
       });
   };
-
   $scope.cancelForm = function ()
+  {
+    cancelForm();
+  };
+  $scope.submitForm = function ($scope)
+  {
+
+    var objects = warpol('#admin-insert-form').serializeArray();
+    var infoData = {};
+
+    for(var obj in objects )
+    {
+      if(objects[obj]['value'] == 'err' || objects[obj]['value'] == '')
+      {
+        alert('Verify ' + objects[obj]['name'] + ' Field');
+        return;
+      }
+
+      infoData[objects[obj]['name']] = objects[obj]['value'];
+    }
+//     validator.startValidations;
+
+    $http.get("insertAdminForm", {params:infoData})
+      .then(function (response) {
+        cancelForm();
+      });
+
+    notify({ message: 'Data inserted!', templateUrl:'/views/notify.html'} );
+
+  }
+  function cancelForm()
   {
     $scope.insertForm = null;
   };
-
-  $scope.submitForm = function ($scope)
-  {
-    console.log('TADA');
-    var objects = warpol('#admin-insert-form').serializeArray();
-    console.log(objects);
-//     validator.startValidations;
-
-  }
-
-
 })
 .directive('myViewUser', function() {
   return {
@@ -846,14 +858,40 @@ app.controller('admin', function($scope, $http, $compile, $sce)
 })
 .directive('myViewStatus', function() {
   return {
-    templateUrl: '/views/admin/status.html'
+    templateUrl: '/views/admin/status.html',
+    controller:('adminViewStatus')
   };
 })
 .directive('myViewElement', function() {
   return {
-    templateUrl: '/views/admin/element.html'
+    templateUrl: '/views/admin/element.html',
+    controller:('adminViewElements')
+  };
+})
+.directive('myViewCustomer', function() {
+  return {
+    templateUrl: '/views/customer.html'
   };
 });
+
+
+app.controller('adminViewStatus', function($scope, $http)
+{
+  $http.get("adminStatus")
+    .then(function (response) {
+      $scope.adminStatus = response.data;
+    });
+});
+app.controller('adminViewElements', function($scope, $http)
+{
+  $http.get("adminElements")
+    .then(function (response) {
+      $scope.adminElements = response.data;
+    });
+});
+
+
+
 app.controller('adminProfileController', function ($scope, $http){
   $http.get("adminProfile")
     .then(function (response) {

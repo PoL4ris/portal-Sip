@@ -15,12 +15,12 @@ class Payments extends Migration
       Schema::create('payments', function(Blueprint $table)
       {
         $table->increments('id');
-        $table->integer('account_number')->comment('acc_number-Account Number');
-        $table->integer('exp_month')->comment('-Exp Month');
-        $table->integer('exp_year')->comment('-Exp Year');
-        $table->integer('id_types')->comment('-Type');
-        $table->integer('id_address')->comment('-Address');
-        $table->integer('id_customers')->comment('-Customer');
+        $table->integer('account_number')->comment('Account Number');
+        $table->integer('exp_month')->comment('Exp Month');
+        $table->integer('exp_year')->comment('Exp Year');
+        $table->integer('id_types')->comment('Type');
+        $table->integer('id_address')->comment('Address');
+        $table->integer('id_customers')->comment('Customer');
         $table->timestamps();
       });
     }

@@ -15,7 +15,7 @@ class Apps extends Migration
       Schema::create('apps', function(Blueprint $table)
       {
         $table->increments('id');
-        $table->integer('id_parent')->nullable()->comment("-Parent");
+        $table->integer('id_apps')->nullable()->comment("Parent");
         $table->string('name');
         $table->string('icon');
         $table->string('url');

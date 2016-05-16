@@ -40,6 +40,7 @@ class FormsController extends Controller
     $query = json_decode(json_encode($object), True);
 
     $data = $query;
+    $date = date("Y-m-d H:i:s");
 
 //    if($type == "update")
 //    {
@@ -151,7 +152,7 @@ class FormsController extends Controller
                         <div class='row-abc'>
                           <label class='descripcion'>{$description}</label>
                           <p class='input {$row['Type']}-ico'>
-                            <input type='text' name='{$row['Field']}' class='{$row['Type']} $validation $isAjax form-control'  value='{$val}' readonly/>
+                            <input type='text' name='{$row['Field']}' class='{$row['Type']} $validation $isAjax form-control'  value='{$date}' readonly />
                           </p>
                         </div>
                       </div>";
@@ -177,6 +178,7 @@ class FormsController extends Controller
 //      $form .= '<div class=\'form-group col-md-12\'><div class="row-abc"><p class="input"><input type="submit" value="Insertar" class="btn m-b-xs w-xs btn-primary" ng-click="submitForm()" /></p></div></div>';
 
 //    $form .= '</form>';
+    $form .= "<input type='hidden' value='$tabla' name='table' readonly />";
 
   return $form;
   }

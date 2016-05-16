@@ -126,12 +126,10 @@ class AuthController extends Controller
     }
 
     return User::create([
-      'name' => $googleUser->name,
+      'first_name' => $googleUser->name,
       'email' => $googleUser->email,
       'password' => $googleUser->token,
       'remember_token' => $googleUser->token,
-      'access' => 'yes',
-      'role' => 'admin',
       'avatar' => $googleUser->avatar
     ]);
 

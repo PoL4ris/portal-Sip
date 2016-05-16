@@ -16,7 +16,7 @@ class Profiles extends Migration
       {
         $table->increments('id');
         $table->string('name');
-        $table->integer('id_users')->comment("-User");;
+        $table->integer('id_users')->comment("User");;
         $table->timestamps();
       });
     }

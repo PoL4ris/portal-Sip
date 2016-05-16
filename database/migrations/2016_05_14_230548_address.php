@@ -21,8 +21,8 @@ class Address extends Migration
         $table->integer('zip');
         $table->string('state');
         $table->string('country')->nullable();
-        $table->integer('id_customers')->nullable()->comment("-Customer");
-        $table->integer('id_buildings')->nullable()->comment("-Building");
+        $table->integer('id_customers')->nullable()->comment("Customer");
+        $table->integer('id_buildings')->nullable()->comment("Building");
         $table->timestamps();
       });
     }

@@ -15,8 +15,8 @@ class Contacts extends Migration
       Schema::create('contacts', function(Blueprint $table)
       {
         $table->increments('id');
-        $table->integer('id_customers')->nullable()->comment("-Customer");
-        $table->integer('id_types')->nullable()->comment("types-Type");
+        $table->integer('id_customers')->nullable()->comment("Customer");
+        $table->integer('id_types')->nullable()->comment("Type-Type");
         $table->string('value');
         $table->timestamps();
       });

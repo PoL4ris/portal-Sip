@@ -15,8 +15,8 @@ class AccessApps extends Migration
       Schema::create('access_apps', function(Blueprint $table)
       {
         $table->increments('id');
-        $table->integer('id_apps')->comment("-App");
-        $table->integer('id_profiles')->comment("-Profile");
+        $table->integer('id_apps')->comment("App");
+        $table->integer('id_profiles')->comment("Profile");
         $table->timestamps();
       });
     }

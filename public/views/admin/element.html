@@ -1,8 +1,34 @@
 
-<button class="btn btn-dark fade animate" ng-click="addNewForm('elements')">Add new Profile</button>
+<button class="btn btn-dark fade animate" ng-click="addNewForm('elements')" ng-if="!insertForm">Add new Element</button>
+<button class="btn btn-danger cancel-btn-action fade animate" ng-click="cancelForm()" ng-if="insertForm">Cancel</button>
 
-<div ng-if="insertForm" id="admin-insert-form" ng-bind-html="insertForm" class="fade"></div>
 
-<div ng-repeat="userdata in usersData" ng-if="!insertForm">
-  {{ userdata.id }}
+<div ng-if="insertForm" class="fade m-t">
+
+  <form class='validation-form' id="admin-insert-form">
+
+    <div ng-bind-html="insertForm"></div>
+
+    <div class='form-group col-md-12'>
+      <div class="row-abc">
+        <p class="input"><input type="submit" value="Insertar" class="btn m-b-xs w-xs btn-primary" ng-click="submitForm()" /></p>
+      </div>
+    </div>
+
+  </form>
+
+</div>
+
+
+<div ng-if="!insertForm" class="fade m-t">
+  <table class="table table-bordered table-hover table-condensed bg-white-only">
+    <tbody>
+    <tr>
+      <td>Name</td><td>Created At</td><td>Updated At</td>
+    </tr>
+    <tr ng-repeat="data in adminElements">
+      <td>{{data.name}}</td><td>{{data.created_at}}</td><td>{{data.updated_at}}</td>
+    </tr>
+    </tbody>
+  </table>
 </div>

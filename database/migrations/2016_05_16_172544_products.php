@@ -17,10 +17,10 @@ class Products extends Migration
         $table->increments('id');
         $table->string('name');
         $table->string('description');
-        $table->integer('id_types')->comment('-Type');
+        $table->integer('id_types')->comment('Type');
         $table->integer('amount');
         $table->string('frequency');
-        $table->integer('id_parent')->nullable()->comment('-Parent');
+        $table->integer('id_products')->nullable()->comment('Parent');
         $table->timestamps();
       });
     }

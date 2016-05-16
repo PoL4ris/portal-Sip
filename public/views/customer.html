@@ -1,0 +1,44 @@
+<button class="btn btn-warning fade animate" ng-click="addNewForm('customers')" ng-if="!insertForm">Add new Customer</button>
+<button class="btn btn-danger fade animate" ng-click="cancelForm()" ng-if="insertForm">Cancel</button>
+
+<div ng-if="insertForm" id="admin-insert-form" ng-bind-html="insertForm" class="fade"></div>
+
+<div ng-if="!insertForm">
+  <div class="table table-bordered table-hover table-condensed bg-white-only">
+    <table class="table">
+      <thead>
+        <tr>
+          <td>id</td>
+          <td>Name</td>
+          <td>Last Name</td>
+          <td>Email</td>
+          <td>Password</td>
+          <td>Remember Token</td>
+          <td>Social Token</td>
+          <td>Avatar</td>
+          <td>Alias</td>
+          <td>Created At</td>
+          <td>Updated At</td>
+          <td>Status</td>
+          <td>Base Profile</td>
+        </tr>
+      </thead>
+    </table>
+    <div ng-repeat="userdata in userData">
+      <p>{{ userdata.id }}</p>
+      <p editable-text="userdata.name">{{ userdata.name || "empty" }}</p>
+      <p editable-text="userdata.last_name">{{ userdata.last_name }}</p>
+      <p editable-text="userdata.email">{{ userdata.email }}</p>
+      <p editable-text="userdata.password">{{ userdata.password }}</p>
+      <p>{{ userdata.remember_token }}</p>
+      <p>{{ userdata.social_token }}</p>
+      <p>{{ userdata.avatar }}</p>
+      <p editable-text="userdata.password">{{ userdata.alias }}</p>
+      <p>{{ userdata.created_at }}</p>
+      <p>{{ userdata.updated_at }}</p>
+      <p editable-text="userdata.password">{{ userdata.status }}</p>
+      <p editable-select="userdata.password">{{ userdata.id_profile }}</p>
+    </div>
+
+  </div>
+</div>

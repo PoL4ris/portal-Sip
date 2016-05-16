@@ -15,9 +15,9 @@ class Terms extends Migration
       Schema::create('terms', function(Blueprint $table)
       {
         $table->increments('id');
-        $table->integer('id_products')->comment('-Product');
+        $table->integer('id_products')->comment('Product');
         $table->string('length');
-        $table->date('expires_at')->comment('-Expires at');
+        $table->date('expires_at')->comment('Expires at');
         $table->timestamps();
       });
     }

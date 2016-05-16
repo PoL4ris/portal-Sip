@@ -20,12 +20,12 @@ class Buildings extends Migration {
       $table->string('alias');
       $table->string('nickname');
       $table->string('address');
-      $table->integer('id_neighborhoods')->comment('-Neighborhood');
+      $table->integer('id_neighborhoods')->comment('Neighborhood');
       $table->string('code');
-      $table->string('id_types')->comment('-Type');
-      $table->string('legal_name')->comment('-Legal name');
+      $table->string('id_types')->comment('Type');
+      $table->string('legal_name')->comment('Legal name');
       $table->string('builder');
-      $table->date('year_built')->comment('-Year Built');
+      $table->date('year_built')->comment('Year Built');
       $table->integer('units');
       $table->integer('floors');
       $table->timestamps();

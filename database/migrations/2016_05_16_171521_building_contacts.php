@@ -15,9 +15,9 @@ class BuildingContacts extends Migration {
     Schema::create('building_contacts', function(Blueprint $table)
     {
       $table->increments('id');
-      $table->integer('id_buildings')->comment('-Building');
-      $table->string('first_name')->comment('-First Name');
-      $table->string('last_name')->comment('-Last Name');
+      $table->integer('id_buildings')->comment('Building');
+      $table->string('first_name')->comment('First Name');
+      $table->string('last_name')->comment('Last Name');
       $table->string('contact');
       $table->string('fax');
       $table->string('company');

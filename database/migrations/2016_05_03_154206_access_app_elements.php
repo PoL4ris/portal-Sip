@@ -15,8 +15,8 @@ class AccessAppElements extends Migration
       Schema::create('access_app_elements', function(Blueprint $table)
       {
         $table->increments('id');
-        $table->integer('id_elements')->comment("-Element");
-        $table->integer('id_access_apps')->comment("-Access");
+        $table->integer('id_elements')->comment("Element");
+        $table->integer('id_access_apps')->comment("Access");
         $table->timestamps();
       });
     }

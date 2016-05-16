@@ -26,6 +26,7 @@
   <link rel="stylesheet" href="/css/plugins/data_table.css" type="text/css" />
 
   <link href="/css/angular/xeditable.css" rel="stylesheet">
+  <link href="/css/angular/angular-notify.css" rel="stylesheet">
 
 
 
@@ -62,6 +63,7 @@
 <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.js"></script>
 <script src="/js/angular/xeditable.js"></script>
 <script src="/js/angular/angular-sanitize.js"></script>
+<script src="/js/angular/angular-notify.js"></script>
 
 
  {{--Our Website Javascripts --}}

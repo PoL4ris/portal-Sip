@@ -1,8 +1,9 @@
 
 <button class="btn btn-dark fade animate" ng-click="addNewForm('status')" ng-if="!insertForm">Add new Status</button>
-<button class="btn btn-danger fade animate" ng-click="cancelForm()" ng-if="insertForm">Cancel</button>
+<button class="btn btn-danger cancel-btn-action fade animate" ng-click="cancelForm()" ng-if="insertForm">Cancel</button>
 
-<div ng-if="insertForm" class="fade">
+
+<div ng-if="insertForm" class="fade m-t">
 
   <form class='validation-form' id="admin-insert-form">
 
@@ -19,6 +20,15 @@
 </div>
 
 
-<div ng-repeat="userdata in usersData" ng-if="!insertForm">
-  {{ userdata.id }}
+<div ng-if="!insertForm" class="fade m-t">
+  <table class="table table-bordered table-hover table-condensed bg-white-only">
+    <tbody>
+      <tr>
+        <td>Name</td><td>Created At</td><td>Updated At</td>
+      </tr>
+      <tr ng-repeat="data in adminStatus">
+        <td>{{data.name}}</td><td>{{data.created_at}}</td><td>{{data.updated_at}}</td>
+      </tr>
+    </tbody>
+  </table>
 </div>
