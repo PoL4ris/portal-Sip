@@ -1,5 +1,4 @@
-
-<button class="btn btn-warning animate" ng-click="addNewForm('customers')" ng-if="!insertForm">Add new Customer</button>
+<button class="btn btn-default animate" ng-click="addNewForm('access_apps')" ng-if="!insertForm">Create new relation Access APP</button>
 <button class="btn btn-danger cancel-btn-action animate" ng-click="cancelForm()" ng-if="insertForm">Cancel</button>
 
 
@@ -24,12 +23,10 @@
   <table class="table table-bordered table-hover table-condensed bg-white-only">
     <tbody>
     <tr>
-      <td>First Name</td><td>Last Name</td><td>Email</td><td>Password</td><td>Company</td>
-      <td>VIP</td><td>Type</td><td>Status</td><td>Signed up at</td><td>Canceled at</td>
-      <td>Created at</td><td>Updated at</td>
+      <td>App</td><td>Profile</td><td>Created at</td><td>Updated at</td>
     </tr>
-    <tr ng-repeat="data in adminCustomers">
-      <td>{{data.first_name}}</td><td>{{data.last_name}}</td><td>{{data.email}}</td><td>{{data.password}}</td><td>{{data.company}}</td><td>{{data.vip}}</td><td>{{data.id_types}}</td><td>{{data.id_status}}</td><td>{{data.signedup_at}}</td><td>{{data.canceled_at}}</td>
+    <tr ng-repeat="data in adminAccessApps">
+      <td>{{data.id_apps}}</td><td>{{data.id_profiles}}</td>
       <td>{{data.created_at}}</td><td>{{data.updated_at}}</td>
     </tr>
     </tbody>

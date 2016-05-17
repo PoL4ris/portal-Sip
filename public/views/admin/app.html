@@ -1,6 +1,5 @@
-
-<button class="btn btn-dark fade animate" ng-click="addNewForm('apps')" ng-if="!insertForm">Add new App</button>
-<button class="btn btn-danger cancel-btn-action fade animate" ng-click="cancelForm()" ng-if="insertForm">Cancel</button>
+<button class="btn btn-dark animate" ng-click="addNewForm('apps')" ng-if="!insertForm">Add new App</button>
+<button class="btn btn-danger cancel-btn-action animate" ng-click="cancelForm()" ng-if="insertForm">Cancel</button>
 
 
 <div ng-if="insertForm" class="fade m-t">
@@ -24,10 +23,10 @@
   <table class="table table-bordered table-hover table-condensed bg-white-only">
     <tbody>
     <tr>
-      <td>Name</td><td>Created At</td><td>Updated At</td>
+      <td>Parent</td><td>Name</td><td>Icon</td><td>Url</td><td>Created at</td><td>Updated at</td>
     </tr>
-    <tr ng-repeat="data in adminElements">
-      <td>{{data.name}}</td><td>{{data.created_at}}</td><td>{{data.updated_at}}</td>
+    <tr ng-repeat="data in adminApps">
+      <td>{{data.id_apps}}</td><td>{{data.name}}</td><td> <i class="{{data.icon}}"></i> {{data.icon}}</td><td>{{data.url}}</td><td>{{data.created_at}}</td><td>{{data.updated_at}}</td>
     </tr>
     </tbody>
   </table>

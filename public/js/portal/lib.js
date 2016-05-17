@@ -763,21 +763,21 @@ app.controller('menuController', ['$scope', '$http', function($scope, $http){
     alert('Error');
   }
 }]);
-
 app.controller('Ctrl', function($scope) {
   $scope.xedit = {
     name: 'awesome user',
     test: 'test coso'
   };
 });
-
-
 app.controller('adminusers', function($scope, $http) {
   $http.get("adminusers")
     .then(function (response) {
       $scope.users = response.data;
     });
 });
+
+
+
 
 
 
@@ -790,9 +790,7 @@ app.controller('admin', function($scope, $http, $compile, $sce, notify)
 
   $scope.callAdminView = function (view)
   {
-    var compiledeHTML = $compile("<div my-View-"+view+"></div>")($scope);
-    warpol("#viewContents").html(compiledeHTML);
-    $scope.insertForm = '';
+    callAdminView(view);
   };
   $scope.addNewForm = function (table)
   {
@@ -817,11 +815,11 @@ app.controller('admin', function($scope, $http, $compile, $sce, notify)
 
     for(var obj in objects )
     {
-      if(objects[obj]['value'] == 'err' || objects[obj]['value'] == '')
-      {
-        alert('Verify ' + objects[obj]['name'] + ' Field');
-        return;
-      }
+//       if(objects[obj]['value'] == 'err' || objects[obj]['value'] == '')
+//       {
+//         alert('Verify ' + objects[obj]['name'] + ' Field');
+//         return;
+//       }
 
       infoData[objects[obj]['name']] = objects[obj]['value'];
     }
@@ -832,6 +830,7 @@ app.controller('admin', function($scope, $http, $compile, $sce, notify)
         cancelForm();
       });
 
+    callAdminView(infoData['table']);
     notify({ message: 'Data inserted!', templateUrl:'/views/notify.html'} );
 
   }
@@ -839,42 +838,95 @@ app.controller('admin', function($scope, $http, $compile, $sce, notify)
   {
     $scope.insertForm = null;
   };
+  function callAdminView (view)
+  {
+    var compiledeHTML = $compile("<div my-View-"+view+"></div>")($scope);
+    warpol("#viewContents").html(compiledeHTML);
+    $scope.insertForm = '';
+  }
 })
-.directive('myViewUser', function() {
+
+.directive('myViewUsers', function() {
   return {
-    templateUrl: '/views/admin/user.html'
+    templateUrl: '/views/admin/user.html',
+    controller:'admin'
   };
 })
-.directive('myViewProfile', function() {
+.directive('myViewProfiles', function() {
   return {
     templateUrl: '/views/admin/profile.html',
-    controller: 'adminProfileController'
+    controller: 'adminViewProfiles'
   };
 })
-.directive('myViewApp', function() {
+.directive('myViewApps', function() {
   return {
-    templateUrl: '/views/admin/app.html'
+    templateUrl: '/views/admin/app.html',
+    controller: 'adminViewApps'
   };
 })
 .directive('myViewStatus', function() {
   return {
     templateUrl: '/views/admin/status.html',
-    controller:('adminViewStatus')
+    controller:'adminViewStatus'
   };
 })
-.directive('myViewElement', function() {
+.directive('myViewElements', function() {
   return {
     templateUrl: '/views/admin/element.html',
-    controller:('adminViewElements')
+    controller:'adminViewElements'
   };
 })
-.directive('myViewCustomer', function() {
+.directive('myViewCustomers', function() {
   return {
-    templateUrl: '/views/customer.html'
+    templateUrl: '/views/customer.html',
+    controller: 'adminViewCustomers'
+  };
+})
+.directive('myViewTypes', function() {
+  return {
+    templateUrl: '/views/type.html',
+    controller: 'adminViewTypes'
+  };
+})
+.directive('myViewAddress', function() {
+  return {
+    templateUrl: '/views/address.html',
+    controller: 'adminViewAddress'
+  };
+})
+.directive('myViewContacts', function() {
+  return {
+    templateUrl: '/views/contact.html',
+    controller: 'adminViewContacts'
+  };
+})
+.directive('myViewPayments', function() {
+  return {
+    templateUrl: '/views/payment.html',
+    controller: 'adminViewPayments'
+  };
+})
+.directive('myViewNotes', function() {
+  return {
+    templateUrl: '/views/notes.html',
+    controller: 'adminViewNotes'
+  };
+})
+.directive('myViewAccessApps', function() {
+  return {
+    templateUrl: '/views/admin/access_app.html',
+    controller: 'adminViewAccessApps'
+  };
+})
+.directive('myViewAccessAppElements', function() {
+  return {
+    templateUrl: '/views/admin/access_app_element.html',
+    controller: 'adminViewAccessAppElements'
   };
 });
 
 
+//adminControllers
 app.controller('adminViewStatus', function($scope, $http)
 {
   $http.get("adminStatus")
@@ -889,16 +941,85 @@ app.controller('adminViewElements', function($scope, $http)
       $scope.adminElements = response.data;
     });
 });
-
-
-
-app.controller('adminProfileController', function ($scope, $http){
-  $http.get("adminProfile")
+app.controller('adminViewApps', function($scope, $http)
+{
+  $http.get("adminApps")
     .then(function (response) {
-//       console.log(response.data);
-      $scope.profilesData = response.data;
+      $scope.adminApps = response.data;
     });
-})
+});
+app.controller('adminViewProfiles', function($scope, $http)
+{
+  $http.get("adminProfiles")
+    .then(function (response) {
+      $scope.adminProfiles = response.data;
+    });
+});
+app.controller('adminViewTypes', function($scope, $http)
+{
+  $http.get("adminTypes")
+    .then(function (response) {
+      $scope.adminTypes = response.data;
+    });
+});
+app.controller('adminViewCustomers', function($scope, $http)
+{
+  $http.get("adminCustomers")
+    .then(function (response) {
+      $scope.adminCustomers = response.data;
+    });
+});
+app.controller('adminViewAddress', function($scope, $http)
+{
+  $http.get("adminAddress")
+    .then(function (response) {
+      $scope.adminAddress = response.data;
+    });
+});
+app.controller('adminViewContacts', function($scope, $http)
+{
+  $http.get("adminContacts")
+    .then(function (response) {
+      $scope.adminContacts = response.data;
+    });
+});
+app.controller('adminViewPayments', function($scope, $http)
+{
+  $http.get("adminPayments")
+    .then(function (response) {
+      $scope.adminPayments = response.data;
+    });
+});
+app.controller('adminViewNotes', function($scope, $http)
+{
+  $http.get("adminNotes")
+    .then(function (response) {
+      $scope.adminNotes = response.data;
+    });
+});
+app.controller('adminViewAccessApps', function($scope, $http)
+{
+  $http.get("adminAccessApps")
+    .then(function (response) {
+      $scope.adminAccessApps = response.data;
+    });
+});
+app.controller('adminViewAccessAppElements', function($scope, $http)
+{
+  $http.get("adminAccessAppElements")
+    .then(function (response) {
+      $scope.adminAccessAppElements = response.data;
+    });
+});
+
+
+
+
+
+
+
+
+
 app.controller('buildingCtl', ['$scope','$route','$http', function($scope, $route, $http)
 {
 

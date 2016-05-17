@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AccessApps extends Migration
+class CreateProfilesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,11 +12,11 @@ class AccessApps extends Migration
      */
     public function up()
     {
-      Schema::create('access_apps', function(Blueprint $table)
+      Schema::create('profiles', function(Blueprint $table)
       {
         $table->increments('id');
-        $table->integer('id_apps')->comment("App");
-        $table->integer('id_profiles')->comment("Profile");
+        $table->string('name');
+        $table->integer('id_users')->comment("User");;
         $table->timestamps();
       });
     }
@@ -28,6 +28,6 @@ class AccessApps extends Migration
      */
     public function down()
     {
-      Schema::drop('access_apps');
+      Schema::drop('profiles');
     }
 }

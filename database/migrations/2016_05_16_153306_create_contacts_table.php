@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class Terms extends Migration
+class CreateContactsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,12 +12,12 @@ class Terms extends Migration
      */
     public function up()
     {
-      Schema::create('terms', function(Blueprint $table)
+      Schema::create('contacts', function(Blueprint $table)
       {
         $table->increments('id');
-        $table->integer('id_products')->comment('Product');
-        $table->string('length');
-        $table->date('expires_at')->comment('Expires at');
+        $table->integer('id_customers')->nullable()->comment("Customer");
+        $table->integer('id_types')->nullable()->comment("Type-Type");
+        $table->string('value');
         $table->timestamps();
       });
     }
@@ -29,6 +29,6 @@ class Terms extends Migration
      */
     public function down()
     {
-      Schema::drop('terms');
+      Schema::drop('contacts');
     }
 }

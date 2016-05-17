@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class Users extends Migration
+class CreateCustomersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,20 +12,20 @@ class Users extends Migration
      */
     public function up()
     {
-      Schema::create('users', function(Blueprint $table)
+      Schema::create('customers', function(Blueprint $table)
       {
         $table->increments('id');
         $table->string('first_name')->comment("First Name");
         $table->string('last_name')->comment("Last Name");
         $table->string('email')->unique();
         $table->string('password')->nullable();
-        $table->string('remember_token', 100)->nullable();
-        $table->string('social_token', 100)->nullable();
-        $table->text('avatar', 65535)->nullable();
-        $table->string('alias');
+        $table->string('company')->nullable();
+        $table->string('vip')->nullable();
+        $table->integer('id_types')->nullable()->comment("Type-Type");
+        $table->integer('id_status')->nullable()->comment("Status-Status");
+        $table->date('signedup_at')->nullable()->comment('Signed up at');
+        $table->date('canceled_at')->nullable()->comment('Canceled at');
         $table->timestamps();
-        $table->integer('id_status')->nullable()->comment("Status");
-        $table->integer('id_profiles')->nullable()->comment("Profile");
       });
     }
 
@@ -36,6 +36,6 @@ class Users extends Migration
      */
     public function down()
     {
-      Schema::drop('users');
+      Schema::drop('customers');
     }
 }

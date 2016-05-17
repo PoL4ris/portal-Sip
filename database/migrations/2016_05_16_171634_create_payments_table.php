@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class Products extends Migration
+class CreatePaymentsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,15 +12,15 @@ class Products extends Migration
      */
     public function up()
     {
-      Schema::create('products', function(Blueprint $table)
+      Schema::create('payments', function(Blueprint $table)
       {
         $table->increments('id');
-        $table->string('name');
-        $table->string('description');
+        $table->integer('account_number')->comment('Account Number');
+        $table->integer('exp_month')->comment('Exp Month');
+        $table->integer('exp_year')->comment('Exp Year');
         $table->integer('id_types')->comment('Type');
-        $table->integer('amount');
-        $table->string('frequency');
-        $table->integer('id_products')->nullable()->comment('Parent');
+        $table->integer('id_address')->comment('Address');
+        $table->integer('id_customers')->comment('Customer');
         $table->timestamps();
       });
     }
@@ -32,6 +32,6 @@ class Products extends Migration
      */
     public function down()
     {
-      Schema::drop('products');
+      Schema::drop('payments');
     }
 }

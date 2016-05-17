@@ -1,4 +1,5 @@
-<button class="btn btn-dark animate" ng-click="addNewForm('status')" ng-if="!insertForm">Add new Status</button>
+
+<button class="btn btn-warning animate" ng-click="addNewForm('types')" ng-if="!insertForm">Add new Type</button>
 <button class="btn btn-danger cancel-btn-action animate" ng-click="cancelForm()" ng-if="insertForm">Cancel</button>
 
 
@@ -19,15 +20,15 @@
 </div>
 
 
-<div ng-if="!insertForm" class="fade m-t" controller="adminViewStatus">
+<div ng-if="!insertForm" class="fade m-t">
   <table class="table table-bordered table-hover table-condensed bg-white-only">
     <tbody>
-      <tr>
-        <td>Name</td><td>Created At</td><td>Updated At</td>
-      </tr>
-      <tr ng-repeat="data in adminStatus">
-        <td>{{data.name}}</td><td>{{data.created_at}}</td><td>{{data.updated_at}}</td>
-      </tr>
+    <tr>
+      <td>Name</td><td>Created at</td><td>Updated at</td>
+    </tr>
+    <tr ng-repeat="data in adminTypes">
+      <td>{{data.name}}</td><td>{{data.created_at}}</td><td>{{data.updated_at}}</td>
+    </tr>
     </tbody>
   </table>
 </div>

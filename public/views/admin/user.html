@@ -39,18 +39,18 @@
   </tr>
 <tr ng-repeat="userdata in userData">
   <td>{{ userdata.id }}</td>
-  <td editable-text="userdata.name">{{ userdata.name || "empty" }}</td>
-  <td editable-text="userdata.last_name">{{ userdata.last_name }}</td>
-  <td editable-text="userdata.email">{{ userdata.email }}</td>
-  <td editable-text="userdata.password">{{ userdata.password }}</td>
+  <td >{{ userdata.first_name || "empty" }}</td>
+  <td >{{ userdata.last_name }}</td>
+  <td>{{ userdata.email }}</td>
+  <td >{{ userdata.password }}</td>
   <td>{{ userdata.remember_token }}</td>
   <td>{{ userdata.social_token }}</td>
   <td>{{ userdata.avatar }}</td>
-  <p editable-text="userdata.password">{{ userdata.alias }}</p>
+  <td >{{ userdata.alias }}</td>
   <td>{{ userdata.created_at }}</td>
   <td>{{ userdata.updated_at }}</td>
-  <td editable-text="userdata.password">{{ userdata.status }}</td>
-  <td editable-select="userdata.password">{{ userdata.id_profile }}</td>
+  <td >{{ userdata.status }}</td>
+  <td >{{ userdata.id_profile }}</td>
 </tr>
 
 </table>

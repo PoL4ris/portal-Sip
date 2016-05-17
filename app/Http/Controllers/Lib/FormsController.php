@@ -90,8 +90,19 @@ class FormsController extends Controller
 //                $selected = " selected=selected";
 //              }
 //            }
+              if(isset($rowForeign['first_name']))
+                $name = $rowForeign['first_name'];
+              else if (isset($rowForeign['name']))
+                $name = $rowForeign['name'];
+              else if (isset($rowForeign['address']))
+                $name = $rowForeign['address'];
+              else if (isset($rowForeign['id_apps']))
+                $name = $rowForeign['id_apps'];
 
-              $combo.="<option value='{$rowForeign['id']}' {$selected}>{$rowForeign['name']}</option>";
+
+              if (empty($name))
+                $name = $rowForeign['address'];
+              $combo.="<option value='{$rowForeign['id']}' {$selected}>{$name}</option>";
             }
 
 
@@ -99,7 +110,7 @@ class FormsController extends Controller
                         <div class='row-abc'>
                           <label class='descripcion'>{$description}</label>
                           <p class='input'>
-                            <select name='{$row['Field']}' class='  form-control'>{$combo}</select>
+                            <select name='{$row['Field']}' class='  form-control'><option value='0'>Select Option ...</option>{$combo}</select>
                           </p>
                         </div>
                       </div>";

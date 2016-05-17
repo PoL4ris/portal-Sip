@@ -125,12 +125,15 @@ class AuthController extends Controller
       return $authUser;
     }
 
+    $alias = substr($googleUser->name, 0, 1) . substr($googleUser->name, 0, 1);
     return User::create([
       'first_name' => $googleUser->name,
+      'last_name' => $googleUser->name,
       'email' => $googleUser->email,
       'password' => $googleUser->token,
-      'remember_token' => $googleUser->token,
-      'avatar' => $googleUser->avatar
+      'social_token' => $googleUser->token,
+      'avatar' => $googleUser->avatar,
+      'alias' => $alias
     ]);
 
 

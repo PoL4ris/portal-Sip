@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class Profiles extends Migration
+class CreateProductsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,11 +12,15 @@ class Profiles extends Migration
      */
     public function up()
     {
-      Schema::create('profiles', function(Blueprint $table)
+      Schema::create('products', function(Blueprint $table)
       {
         $table->increments('id');
         $table->string('name');
-        $table->integer('id_users')->comment("User");;
+        $table->string('description');
+        $table->integer('id_types')->comment('Type');
+        $table->integer('amount');
+        $table->string('frequency');
+        $table->integer('id_products')->nullable()->comment('Parent');
         $table->timestamps();
       });
     }
@@ -28,6 +32,6 @@ class Profiles extends Migration
      */
     public function down()
     {
-      Schema::drop('profiles');
+      Schema::drop('products');
     }
 }

@@ -25,7 +25,7 @@ class AdminController extends Controller
   {
     return DB::select('select * from users');
   }
-  public function adminProfile()
+  public function adminProfiles()
   {
     return Profiles::All();
   }
@@ -37,6 +37,44 @@ class AdminController extends Controller
   {
     return DB::select('select * from elements');
   }
+  public function adminApps()
+  {
+    return DB::select('select * from apps');
+  }
+  public function adminTypes()
+  {
+    return DB::select('select * from types');
+  }
+  public function adminCustomers()
+  {
+    return DB::select('select * from customers');
+  }
+  public function adminAddress()
+  {
+    return DB::select('select * from address');
+  }
+  public function adminContacts()
+  {
+    return DB::select('select * from contacts');
+  }
+  public function adminPayments()
+  {
+    return DB::select('select * from payments');
+  }
+  public function adminNotes()
+  {
+    return DB::select('select * from notes');
+  }
+  public function adminAccessApps()
+  {
+    return DB::select('select * from access_apps');
+  }
+  public function adminAccessAppElements()
+  {
+    return DB::select('select * from access_app_elements');
+  }
+
+
   public function getAdminForm(Request $request)
   {
     $dynamicForm = new FormsController();
