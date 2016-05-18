@@ -16,7 +16,7 @@ class CreateTicketNotesTable extends Migration
       {
         $table->increments('id');
         $table->integer('id_tickets')->nullable()->comment('Ticket');
-        $table->integer('id_history_tickets')->nullable()->comment('Ticket History');
+        $table->integer('id_ticket_history')->nullable()->comment('Ticket History');
         $table->text('comment');
         $table->integer('id_users')->comment('Created By');
         $table->timestamps();
