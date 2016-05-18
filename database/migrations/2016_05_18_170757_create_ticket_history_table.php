@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateHistoryTicketsTable extends Migration
+class CreateTicketHistoryTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,7 +12,7 @@ class CreateHistoryTicketsTable extends Migration
      */
     public function up()
     {
-      Schema::create('history_tickets', function(Blueprint $table)
+      Schema::create('ticket_history', function(Blueprint $table)
       {
         $table->increments('id');
         $table->integer('id_tickets')->comment('Ticket');
@@ -32,6 +32,6 @@ class CreateHistoryTicketsTable extends Migration
      */
     public function down()
     {
-      Schema::drop('history_tickets');
+      Schema::drop('ticket_history');
     }
 }
