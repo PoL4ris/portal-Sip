@@ -23,34 +23,10 @@
 <div class="table table-bordered table-hover table-condensed bg-white-only">
 <table class="table">
   <tr>
-    <td>id</td>
-    <td>Name</td>
-    <td>Last Name</td>
-    <td>Email</td>
-    <td>Password</td>
-    <td>Remember Token</td>
-    <td>Social Token</td>
-    <td>Avatar</td>
-    <td>Alias</td>
-    <td>Created At</td>
-    <td>Updated At</td>
-    <td>Status</td>
-    <td>Base Profile</td>
+    <td>id</td><td>First Name</td><td>Last Name</td><td>Email</td><td>Password</td><td>Remember Token</td><td>Social Token</td><td>Avatar</td><td>Alias</td><td>Created At</td><td>Updated At</td><td>Status</td><td>Base Profile</td>
   </tr>
 <tr ng-repeat="userdata in userData">
-  <td>{{ userdata.id }}</td>
-  <td >{{ userdata.first_name || "empty" }}</td>
-  <td >{{ userdata.last_name }}</td>
-  <td>{{ userdata.email }}</td>
-  <td >{{ userdata.password }}</td>
-  <td>{{ userdata.remember_token }}</td>
-  <td>{{ userdata.social_token }}</td>
-  <td>{{ userdata.avatar }}</td>
-  <td >{{ userdata.alias }}</td>
-  <td>{{ userdata.created_at }}</td>
-  <td>{{ userdata.updated_at }}</td>
-  <td >{{ userdata.status }}</td>
-  <td >{{ userdata.id_profile }}</td>
+  <td>{{ userdata.id }}</td><td >{{ userdata.first_name || "empty" }}</td><td >{{ userdata.last_name }}</td><td>{{ userdata.email }}</td><td >{{ userdata.password }}</td><td>{{ userdata.remember_token }}</td><td>{{ userdata.social_token }}</td><td>{{ userdata.avatar }}</td><td >{{ userdata.alias }}</td><td>{{ userdata.created_at }}</td><td>{{ userdata.updated_at }}</td><td >{{ userdata.id_status }}</td><td >{{ userdata.id_profiles }}</td>
 </tr>
 
 </table>

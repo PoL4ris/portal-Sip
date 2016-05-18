@@ -757,7 +757,7 @@ function updateActiveServiceInfo (CSID, ProdIDc)
 /* MENU */
 app.controller('menuController', ['$scope', '$http', function($scope, $http){
   $scope.SiteMenu = [];
-  $http.get('menumaker').then(function (data){
+  $http.get('/menumaker').then(function (data){
     $scope.SiteMenu = data.data;
   }), function (error){
     alert('Error');
@@ -783,7 +783,7 @@ app.controller('adminusers', function($scope, $http) {
 
 app.controller('admin', function($scope, $http, $compile, $sce, notify)
 {
-  $http.get("admin")
+  $http.get("/admin")
     .then(function (response) {
       $scope.userData = response.data;
     });
@@ -1362,6 +1362,17 @@ app.service('validator', function ($scope)
 });
 
 
+
+app.controller('supportController', function ($scope, $http, notify)
+{
+  notify({ message: 'Support Controller Active', templateUrl:'/views/notify.html'} );
+
+  $http.get("supportdash")
+    .then(function (response) {
+      $scope.supportData = response.data;
+    });
+
+});
 
 
 

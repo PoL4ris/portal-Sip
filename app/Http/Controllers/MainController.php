@@ -7,6 +7,7 @@ use App\User;
 use App\Http\Requests;
 use App\Models\Network\networkTab;
 use DB;
+use Auth;
 
 
 class MainController extends Controller
@@ -33,17 +34,28 @@ class MainController extends Controller
     }
     public function menuMaker()
     {
-
-      return DB::select('SELECT * FROM user U
-                                  JOIN rol R
-                                    ON U.id_rol = R.id
-                                  JOIN privilege_menu PM
-                                    ON PM.id_rol = R.id
-                                  JOIN menu M
-                                    ON M.id = PM.id_menu
-                                    where u.id = 1
-                                  ORDER BY M.id ASC
-                                  ');
+    //PROFILES MENU
+//      return DB::select('SELECT u.first_name, u.last_name, u.email, u.alias, p.name, a.name, a.url, a.icon
+//                          FROM users U
+//                            JOIN profiles P
+//                              ON U.id_profiles = P.id
+//                            JOIN access_apps AA
+//                              ON AA.id_profiles = P.id
+//                            JOIN Apps A
+//                              ON A.id = AA.id_apps
+//                            WHERE U.id = ' . Auth::user()->id . ' ORDER BY A.id ASC;
+//                          ');
+      return DB::select('SELECT u.first_name, u.last_name, u.email, u.alias, p.name, a.name, a.url, a.icon
+                          FROM users U
+                            JOIN profiles P
+                              ON U.id_profiles = P.id
+                            JOIN access_apps AA
+                              ON AA.id_profiles = P.id
+                            JOIN Apps A
+                              ON A.id = AA.id_apps
+                                GROUP BY a.url
+                                 ORDER BY A.id ASC;
+                          ');
     }
 
     public function adminusers()

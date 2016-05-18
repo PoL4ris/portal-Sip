@@ -14,6 +14,7 @@ app.config(['$routeProvider', function ($routeProvider) {
     .when('#/contact', {templateUrl: '/angularviews/partials/page-contact.html', controller: 'contactController'})
     .when("/buildingdash", {templateUrl: "/views/building/dashboard.html"})
     .when("/buildings", {templateUrl: "/views/building/buildings.html"})
+    .when("/support", {templateUrl: "/views/support.html"})
     .when("/adminusers", {templateUrl: "/angularviews/partials/home.html", controller: "adminusers"})
 
 

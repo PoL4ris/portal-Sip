@@ -6,6 +6,8 @@ use App\User;
 use Validator;
 use Socialite;
 use Auth;
+use DB;
+use Redirect;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
@@ -105,7 +107,10 @@ class AuthController extends Controller
 
     Auth::login($authUser, true);
 
-    return view('main.snippet.main');
+//    return Redirect::to('dummy');
+
+    return view('dummy');
+
   }
 
 
@@ -125,18 +130,31 @@ class AuthController extends Controller
       return $authUser;
     }
 
-    $alias = substr($googleUser->name, 0, 1) . substr($googleUser->name, 0, 1);
-    return User::create([
-      'first_name' => $googleUser->name,
-      'last_name' => $googleUser->name,
-      'email' => $googleUser->email,
-      'password' => $googleUser->token,
-      'social_token' => $googleUser->token,
-      'avatar' => $googleUser->avatar,
-      'alias' => $alias
-    ]);
+    $first_name = $googleUser->user['name']['givenName'];
+    $last_name = $googleUser->user['name']['familyName'];
+    $alias = substr($first_name, 0, 1) . substr($last_name, 0, 1);
 
+
+    $record = User::create();
+
+    $data = ['first_name' => $first_name,
+             'last_name' => $last_name,
+             'email' => $googleUser->email,
+             'password' => $googleUser->token,
+             'social_token' => $googleUser->token,
+             'avatar' => $googleUser->avatar,
+             'alias' => $alias,
+             'id_status' => 3,
+             'id_profiles' => 1
+             ];
+
+    User::where('id', $record->id)->update($data);
+
+    return $record;
 
   }
 
 }
+
+
+

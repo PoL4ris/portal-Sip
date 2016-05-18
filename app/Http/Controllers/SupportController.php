@@ -24,7 +24,8 @@ class SupportController extends Controller
     else
       $ticketsData = $this->getTicketsData('');
 
-    return view('support.dashboard', ['tickets' => $ticketsData]);
+    return $ticketsData;
+//    return view('support.dashboard', ['tickets' => $ticketsData]);
   }
 
   public function getTicketsData($filter)
@@ -41,6 +42,35 @@ class SupportController extends Controller
 
 
       $result =  DB::select('SELECT ticket.TicketNumber,
+                                    ticket.Status,
+                                    concat(customers.first_name, " " ,customers.last_name) AS name,
+                                    
+                                    
+                                  
+                                    reasone.ReasonShortDesc,
+                                    ticket.Comment,
+                                    admin.Nickname as Assigned,
+                                    ticket.LastUpdate,
+                                    customers.id,
+                                    ticket.TID,
+                                    ticket.DateCreated,
+                                    building.ShortName
+                                      FROM supportTickets ticket
+                                        INNER JOIN customers customers
+                                          ON ticket.CID = customers.id
+                                        INNER JOIN supportTicketReasons reasone
+                                          ON ticket.RID = reasone.RID
+                                        INNER JOIN serviceLocation building
+                                          ON building.LocID = customers.id
+                                        INNER JOIN AdminAccess admin
+                                          ON ticket.StaffID = admin.ID
+                                            WHERE ticket.Status != "closed"
+                                            ' . $filterQuery . '
+                                              GROUP BY ticket.TicketNumber
+                                              ORDER BY ticket.LastUpdate DESC');
+
+
+                                                    $result =  DB::select('SELECT ticket.TicketNumber,
                                     ticket.Status,
                                     concat(customers.Firstname, " " ,customers.Lastname) AS name,
                                     customers.Address,
