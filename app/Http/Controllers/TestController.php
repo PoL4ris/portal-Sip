@@ -5,13 +5,15 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Extensions\SIPBilling;
-use App\Models\Customer\Customers;
 use DB;
+use App\Models\Customer;
+use App\Models\Ticket;
+
 
 class TestController extends Controller
 {
     public function __construct(){
-        $this->middleware('auth');
+        //        $this->middleware('auth');
         DB::connection()->enableQueryLog();
     }
 
@@ -51,5 +53,33 @@ class TestController extends Controller
         //        $result = $sipBilling->refundCCByTransID('IP28041017IARXFUSA', 'testing refund by trans id');
 
         dd($result);
+    }
+
+    public function testDBRelations(){
+
+        $customer = Customer::with('reason3Tickets', 'type')->find(1782);
+
+        //        $customer = Customer::with(['tickets' => function ($query) {
+        //            $query->where('id_reasons', 2);
+        //        }, 'type'])->find(1782);
+
+        //        $queries = DB::getQueryLog();
+        //        $last_query = end($queries);
+        //        dd($last_query);
+
+        dd($customer);
+
+        $tickets = $customer->getRelationValue('tickets');
+
+        $collection = $tickets->each(function ($ticket, $key) {
+            $ticket->id_reasons = 2;
+            $ticket->save();
+        });
+        //        
+
+        //
+        //
+        //
+        //        dd($tickets);
     }
 }
