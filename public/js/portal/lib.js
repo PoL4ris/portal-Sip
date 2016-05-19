@@ -1367,7 +1367,7 @@ app.controller('supportController', function ($scope, $http, notify)
 {
   notify({ message: 'Support Controller Active', templateUrl:'/views/notify.html'} );
 
-  $http.get("supportdash")
+  $http.get("supportdashTest")
     .then(function (response) {
       $scope.supportData = response.data;
     });

@@ -53,6 +53,8 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('salesdash', 'MainController@salesdashboard');
     Route::get('networkdash', 'MainController@networkDashboard');
 
+    Route::get('supportdashTest', 'SupportController@dashboardTemp');
+
     //Search
     Route::get('buildingsSearch', 'BuildingController@getBuildingsSearchSimple');
     Route::get('customersSearch', 'CustomerController@getCustomersSearch');

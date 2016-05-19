@@ -5,17 +5,74 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
+use DB;
+use Schema;
 use App\Models\Support\Tickethistory;
 use App\Models\Support\Ticketreasons;
 use App\Models\Support\Adminaccess;
-use DB;
-use Schema;
+use App\Models\Customer;
+use App\Models\Ticket;
+use App\Models\Address;
+
 
 class SupportController extends Controller
 {
   public function __construct() {
-    $this->middleware('auth');
+//    $this->middleware('auth');
+    DB::connection()->enableQueryLog();
+
   }
+  public function dashboardTemp()
+  {
+
+
+//     return  Ticket::with('customer', 'reason', 'ticketNote', 'user', 'userAssigned')->take(20)->skip(0)->first();
+//     $war =  Ticket::with('customer', 'reason', 'ticketNote', 'user', 'userAssigned','addressRelation')
+
+
+
+
+
+     $war =  Ticket::with('customer')
+
+     ->take(20)->skip(0)->first()->toArray();
+
+
+
+
+
+
+    dd($war);
+
+
+
+    return Customer::with(['tickets' => function ($query) {
+      $query->where('id_reasons', 2);
+    }, 'type'])->find(1782);
+
+
+
+
+
+
+
+
+
+
+
+
+    $queries = DB::getQueryLog();
+    $last_query = end($queries);
+    dd($last_query);
+
+//    return Ticket::with('customer', 'reason', 'ticketNote', 'user', 'userAssigned');
+
+//    return Customer::with(['tickets' => function ($query) {
+//      $query->where('id_reasons', 2);
+//    }, 'type'])->find(1782);
+  }
+
+
   public function dashboard(Request $request)
   {
 

@@ -38,4 +38,5 @@ class Customer extends Model
 
         return $this->hasOne('App\Models\Status', 'id_status');
     }
+  
 }

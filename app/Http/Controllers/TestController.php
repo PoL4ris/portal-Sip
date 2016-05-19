@@ -58,6 +58,7 @@ class TestController extends Controller
     public function testDBRelations(){
 
         $customer = Customer::with('reason3Tickets', 'type')->find(1782);
+        $tickets = Customer::with('reason3Tickets', 'type')->find(1782);
 
         //        $customer = Customer::with(['tickets' => function ($query) {
         //            $query->where('id_reasons', 2);

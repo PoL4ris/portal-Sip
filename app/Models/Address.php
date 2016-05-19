@@ -6,13 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class Address extends Model
 {
+  protected $table = 'address';
     /**
      * 
      * @return type
      */
     public function customer() {
 
-        return $this->hasOne('App\Models\Customer', 'id_customers');
+        return $this->hasOne('App\Models\Customer', 'id');
     }
 
     /**
