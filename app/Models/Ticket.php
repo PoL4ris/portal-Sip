@@ -10,75 +10,71 @@ use App\Models\Address;
 class Ticket extends Model
 {
 
-  public function __construct()
-  {
-    DB::connection()->enableQueryLog();
+    public function __construct()
+    {
+        DB::connection()->enableQueryLog();
 
-  }
-//  public function getTicketData()
-//  {
-//    $this->hasOne('App\Models\Customer', 'id_customers')
-//  }
-  /**
+    }
+    //  public function getTicketData()
+    //  {
+    //    $this->hasOne('App\Models\Customer', 'id_customers')
+    //  }
+    /**
    *
    * @return type
    */
-  public function customer() {
+    public function customer() {
 
-      return $this->hasOne('App\Models\Customer', 'id', 'id_customers');
-  }
-
-  /**
-   *
-   * @return type
-   */
-  public function reason() {
-
-      return $this->hasOne('App\Models\Reason', 'id', 'id_reasons');
-  }
-
-  /**
-   *
-   * @return type
-   */
-  public function ticketNote() {
-
-      return $this->hasOne('App\Models\TicketNote', 'id', 'id_ticket_notes');
-  }
-
-  /**
-   *
-   * @return type
-   */
-  public function user() {
-
-      return $this->hasOne('App\Models\User', 'id', 'id_users');
-  }
-
-
-  /**
-   *
-   * @return type
-   */
-  public function userAssigned() {
-
-      return $this->hasOne('App\Models\User', 'id','id_users_assigned');
-
-  }
+        return $this->hasOne('App\Models\Customer', 'id', 'id_customers');
+    }
 
     /**
    *
    * @return type
    */
-  public function addressRelation() {
+    public function reason() {
 
-    $war = Address::with('customer');
+        return $this->hasOne('App\Models\Reason', 'id', 'id_reasons');
+    }
+
+    /**
+   *
+   * @return type
+   */
+    public function ticketNote() {
+
+        return $this->hasOne('App\Models\TicketNote', 'id', 'id_ticket_notes');
+    }
+
+    /**
+   *
+   * @return type
+   */
+    public function user() {
+
+        return $this->hasOne('App\Models\User', 'id', 'id_users');
+    }
 
 
+    /**
+   *
+   * @return type
+   */
+    public function userAssigned() {
+
+        return $this->hasOne('App\Models\User', 'id','id_users_assigned');
+
+    }
 
 
-    dd($war);
+    /**
+   *
+   * @return type
+   */
+    public function address() {
 
-  }
+        return $this->belongsTo('App\Models\Address', 'id_customers', 'id_customers', 'App\Models\Customer');
+
+    }
 
 }

@@ -57,30 +57,37 @@ class TestController extends Controller
 
     public function testDBRelations(){
 
-        $customer = Customer::with('reason3Tickets', 'type')->find(1782);
-        $tickets = Customer::with('reason3Tickets', 'type')->find(1782);
+        //        $customer = Customer::with('reason3Tickets', 'type')->find(1782);
+        //        $tickets = Customer::with('reason3Tickets', 'type')->find(1782);
 
         //        $customer = Customer::with(['tickets' => function ($query) {
         //            $query->where('id_reasons', 2);
         //        }, 'type'])->find(1782);
 
-        //        $queries = DB::getQueryLog();
-        //        $last_query = end($queries);
-        //        dd($last_query);
+        //        dd($customer);
 
-        dd($customer);
-
-        $tickets = $customer->getRelationValue('tickets');
-
-        $collection = $tickets->each(function ($ticket, $key) {
-            $ticket->id_reasons = 2;
-            $ticket->save();
-        });
-        //        
-
+        //        $tickets = $customer->getRelationValue('tickets');
         //
-        //
+        //        $collection = $tickets->each(function ($ticket, $key) {
+        //            $ticket->id_reasons = 2;
+        //            $ticket->save();
+        //        });
         //
         //        dd($tickets);
+
+
+//        $ticket1 = Ticket::find(18685);
+//        dd($ticket1);   
+        
+//        $customer = Customer::find($ticket1->id_customers);
+//        dd($customer);
+        
+        $ticket2 = Ticket::with('address', 'customer')->find(18685);
+    
+//        $queries = DB::getQueryLog();
+//        $last_query = end($queries);
+//        dd($last_query);
+        
+        dd($ticket2);
     }
 }
