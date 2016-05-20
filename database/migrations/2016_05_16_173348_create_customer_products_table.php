@@ -22,7 +22,7 @@ class CreateCustomerProductsTable extends Migration
         $table->date('signed_up')->comment('Signed up');
         $table->date('expires');
         $table->date('renewed_at')->comment('Renewed at');
-        $table->string('updated_by')->comment('Updated by');//FK to id_user?
+        $table->string('id_users')->comment('Updated by');
         $table->date('last_charged')->comment('Last charged');
         $table->integer('amount_owed')->comment('Amount owed');
         $table->integer('failed_charges_count')->comment('Failed charges');

@@ -92,87 +92,10 @@
   </div>
   <!--END COL-->
 
-  <!-- TITLE -->
-  <div class="bg-light lter b-b wrapper-md">
-    <h1 class="m-n font-thin h3" ng-if="!bld">Support</h1>
-    <!--<h1 class="m-n font-thin h3" ng-if="bld">Building : {{ bld.building.name }}</h1>-->
+
+  <div class="col-lg-12" id="viewMidContent">
+    <div ng-include="'/views/supportDash.html'"></div>
   </div>
 
-  <!-- ELEMENTS -->
-  <div class="building-elements">
-
-    <!-- Tickets BY TYPE -->
-
-    <div class="wrapper-md" style="padding-bottom:0px;">
-      <a href="/supportdash/no-billing"><button class="btn btn-default btn-ticket-sort" type="button">Non-Billing Tickets</button></a>
-      <a href="/supportdash/Billing"><button class="btn btn-default btn-ticket-sort" type="button">Billing Tickets</button></a>
-      <a href="/supportdash/full"><button class="btn btn-default btn-ticket-sort" type="button">All Tickets</button></a>
-    </div>
-
-    <div ng-controller="ModalDemoCtrl">
-      <script type="text/ng-template" id="myModalContent.html">
-        <div class="bg-light lter b-b wrapper-md">
-          <h2 class="m-n font-thin h3">Ticket Information</h2>
-        </div>
-        <div class="modal-body">
-        {{selectedTicket}}
-        </div>
-
-        <div class="modal-footer">
-          <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
-        </div>
-
-      </script>
-
-    </div>
-
-
-
-
-
-    <!--TICKET LIST-->
-    <div class="wrapper-md" ng-controller="ModalDemoCtrl">
-      <div class="panel panel-default">
-        <div class="table-responsive">
-          <table ui-jq="dataTable" class="table table-striped b-t b-b" ui-options="{aaSorting:[[9,'desc']]}">
-            <thead>
-            <tr>
-              <th style="width:10%">ID</th>
-              <th style="width:10%">Ticket</th>
-              <th style="width:10%">Status</th>
-              <th style="width:10%">Name</th>
-              <th style="width:10%">Address</th>
-              <th style="width:10%">Tel</th>
-              <th style="width:10%">Email</th>
-              <th style="width:10%">Issue</th>
-              <th style="width:10%">Comment</th>
-              <th style="width:10%">Assigned To</th>
-              <th style="width:10%">LastUpdate</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr ng-repeat="data in supportData">
-              <td>{{data.id}}</td>
-              <td  ng-click="open(data.id)">{{data.ticket_number}}</td>
-              <td>{{data.status}}</td>
-              <td>{{data.customer.first_name}}</td>
-              <td>{{data.address.address}}</td>
-              <td>{{data.contacts.value}}</td>
-              <td>{{data.contacts.value}}</td>
-              <td>{{data.reason.short_description}}</td>
-              <td>{{data.ticket_note.comment}}</td>
-              <td>{{data.user_assigned.first_name}}</td>
-              <td>{{data.contacts.updated_at}}</td>
-            </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-    <!--END TICKET LIST-->
-
-
-  </div>
-  <!--END ELEMENTS -->
 
 </div>

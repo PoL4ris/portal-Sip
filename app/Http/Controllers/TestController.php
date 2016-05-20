@@ -90,4 +90,21 @@ class TestController extends Controller
         
         dd($ticket2);
     }
+
+  public function supportTest(){
+
+//        $ticket2 = Customer::with('type', 'status', 'contacts')->find(1783)->toArray();
+    dd(Customer::with('address', 'type')->find(1783));
+
+
+//        $queries = DB::getQueryLog();
+//        $last_query = end($queries);
+//        dd($last_query);
+
+        dd($ticket2);
+    }
+
+  public function cleanView(){
+    return;
+    }
 }

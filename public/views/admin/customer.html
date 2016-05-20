@@ -1,0 +1,37 @@
+
+<button class="btn btn-warning animate" ng-click="addNewForm('customers')" ng-if="!insertForm">Add new Customer</button>
+<button class="btn btn-danger cancel-btn-action animate" ng-click="cancelForm()" ng-if="insertForm">Cancel</button>
+
+
+<div ng-if="insertForm" class="fade m-t">
+
+  <form class='validation-form' id="admin-insert-form">
+
+    <div ng-bind-html="insertForm"></div>
+
+    <div class='form-group col-md-12'>
+      <div class="row-abc">
+        <p class="input"><input type="submit" value="Insertar" class="btn m-b-xs w-xs btn-primary" ng-click="submitForm()" /></p>
+      </div>
+    </div>
+
+  </form>
+
+</div>
+
+
+<div ng-if="!insertForm" class="fade m-t">
+  <table class="table table-bordered table-hover table-condensed bg-white-only">
+    <tbody>
+    <tr>
+      <td>First Name</td><td>Last Name</td><td>Email</td><td>Password</td><td>Company</td>
+      <td>VIP</td><td>Type</td><td>Status</td><td>Signed up at</td><td>Canceled at</td>
+      <td>Created at</td><td>Updated at</td>
+    </tr>
+    <tr ng-repeat="data in adminCustomers">
+      <td>{{data.first_name}}</td><td>{{data.last_name}}</td><td>{{data.email}}</td><td>{{data.password}}</td><td>{{data.company}}</td><td>{{data.vip}}</td><td>{{data.id_types}}</td><td>{{data.id_status}}</td><td>{{data.signedup_at}}</td><td>{{data.canceled_at}}</td>
+      <td>{{data.created_at}}</td><td>{{data.updated_at}}</td>
+    </tr>
+    </tbody>
+  </table>
+</div>

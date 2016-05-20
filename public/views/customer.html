@@ -1,37 +1,82 @@
+<div ng-controller="customerController">
+{{customerData}}
 
-<button class="btn btn-warning animate" ng-click="addNewForm('customers')" ng-if="!insertForm">Add new Customer</button>
-<button class="btn btn-danger cancel-btn-action animate" ng-click="cancelForm()" ng-if="insertForm">Cancel</button>
-
-
-<div ng-if="insertForm" class="fade m-t">
-
-  <form class='validation-form' id="admin-insert-form">
-
-    <div ng-bind-html="insertForm"></div>
-
-    <div class='form-group col-md-12'>
-      <div class="row-abc">
-        <p class="input"><input type="submit" value="Insertar" class="btn m-b-xs w-xs btn-primary" ng-click="submitForm()" /></p>
-      </div>
+   <!--TITULO -->
+  <div class="bg-light lter col-lg-12">
+    <h2 class="m-n font-thin h3">Customer: {{customerData.first_name + ' ' + customerData.last_name}}</h2>
+    <div class="m-t-md col-lg-4">
+      <div class="col-lg-4">Address:</div>  <div class="text-muted col-lg-6">{{customerData.address.address}}</div>
+      <div class="col-lg-4">Unit:</div>     <div class="text-muted col-lg-6">{{customerData.address.unit}}</div>
+      <div class="col-lg-4">City:</div>     <div class="text-muted col-lg-6">{{customerData.address.city}}</div>
+      <div class="col-lg-4">State:</div>    <div class="text-muted col-lg-6">{{customerData.address.state}}</div>
+      <div class="col-lg-4">Zip:</div>      <div class="text-muted col-lg-6">{{customerData.address.zip}}</div>
     </div>
+    <div class="m-t-md col-lg-4">
+      <div class="col-lg-4">Username:</div>       <div class="text-muted col-lg-6">{{customerData.email}}</div>
+      <div class="col-lg-4">Tel:</div>            <div class="text-muted col-lg-6">{{customerData.contacts.value}}</div>
+      <div class="col-lg-4">DateSignedUp:</div>   <div class="text-muted col-lg-6">{{customerData.signedup_at}}</div>
+      <div class="col-lg-4">AccountStatus:</div>  <div class="text-muted col-lg-6">{{customerData.type.name}}</div>
+      <div class="col-lg-4">VIP:</div>            <div class="text-muted col-lg-6">{{customerData.vip}}</div>
+    </div>
+  </div>
 
-  </form>
+  <!--SERVICES-->
 
-</div>
+  <div class="col-lg-6 display-content-main-box anim" id="customer-box-c">
+    <div class="color-name-header btn-dark">
+      Services Info
+      <div class="customer-edit-btn"><button class="btn m-b-xs w-xs btn-info " id="add-service-btn">Add Service</button></div>
+    </div>
+  </div>
 
 
-<div ng-if="!insertForm" class="fade m-t">
-  <table class="table table-bordered table-hover table-condensed bg-white-only">
-    <tbody>
-    <tr>
-      <td>First Name</td><td>Last Name</td><td>Email</td><td>Password</td><td>Company</td>
-      <td>VIP</td><td>Type</td><td>Status</td><td>Signed up at</td><td>Canceled at</td>
-      <td>Created at</td><td>Updated at</td>
-    </tr>
-    <tr ng-repeat="data in adminCustomers">
-      <td>{{data.first_name}}</td><td>{{data.last_name}}</td><td>{{data.email}}</td><td>{{data.password}}</td><td>{{data.company}}</td><td>{{data.vip}}</td><td>{{data.id_types}}</td><td>{{data.id_status}}</td><td>{{data.signedup_at}}</td><td>{{data.canceled_at}}</td>
-      <td>{{data.created_at}}</td><td>{{data.updated_at}}</td>
-    </tr>
-    </tbody>
-  </table>
+
+
+
+
+
+
+
+
+
+  <!--<pre>-->
+<!--{{customerData | json}}-->
+<!--</pre>-->
+
+<!--
+    <div ng-controller="AppCtrl" class="sample" layout="column" ng-cloak>
+      <md-content class="md-padding">
+        <md-tabs md-selected="selectedIndex" md-border-bottom md-autoselect>
+          <md-tab ng-repeat="tab in tabs"
+                  ng-disabled="tab.disabled"
+                  label="{{tab.title}}">
+            <div class="demo-tab tab{{$index%4}}" style="padding: 25px; text-align: center;">
+              <div ng-bind="tab.content"></div>
+              <br/>
+              <md-button class="md-primary md-raised" ng-click="removeTab( tab )" ng-disabled="tabs.length <= 1">Remove Tab</md-button>
+            </div>
+          </md-tab>
+        </md-tabs>
+      </md-content>
+      <form ng-submit="addTab(tTitle,tContent)" layout="column" class="md-padding" style="padding-top: 0;">
+        <div layout="row" layout-sm="column">
+          <div flex style="position: relative;">
+            <h2 class="md-subhead" style="position: absolute; bottom: 0; left: 0; margin: 0; font-weight: 500; text-transform: uppercase; line-height: 35px; white-space: nowrap;">Add a new Tab:</h2>
+          </div>
+          <md-input-container>
+            <label for="label">Label</label>
+            <input type="text" id="label" ng-model="tTitle">
+          </md-input-container>
+          <md-input-container>
+            <label for="content">Content</label>
+            <input type="text" id="content" ng-model="tContent">
+          </md-input-container>
+          <md-button class="add-tab md-primary md-raised" ng-disabled="!tTitle || !tContent" type="submit" style="margin-right: 0;">Add Tab</md-button>
+        </div>
+      </form>
+    </div>
+-->
+
+
+
 </div>

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Models\Customer\Customers;
+use App\Models\Customer;
 use App\Models\Building\Servicelocation;
 use App\Models\Billing\billingTransactionLog;
 use App\Models\Network\networkNodes;
@@ -110,6 +111,10 @@ class CustomerController extends Controller
     //BUILDING TABLE
     return  DB::select('SELECT * FROM serviceLocation building INNER JOIN customers ON building.LocID = customers.LocID WHERE ' . ($tmpQueryData?$tmpQueryData:$defaultData) . ' LIMIT 100 ');
 
+  }
+  public function customersTmp(Request $request)
+  {
+    return Customer::with('address', 'contacts', 'type')->find($request->id);
   }
   public function customers(Request $request)
   {

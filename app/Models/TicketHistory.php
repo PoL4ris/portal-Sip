@@ -23,7 +23,7 @@ class TicketHistory extends Model
      */
     public function reason() {
 
-        return $this->hasOne('App\Models\Reason', 'id_reasons');
+        return $this->hasOne('App\Models\Reason', 'id', 'id_reasons');
     }
 
     /**
@@ -32,7 +32,7 @@ class TicketHistory extends Model
      */
     public function ticketNote() {
 
-        return $this->hasOne('App\Models\TicketNote', 'id_ticket_notes');
+        return $this->hasOne('App\Models\TicketNote', 'id', 'id_ticket_notes');
     }
 
     /**
@@ -41,7 +41,7 @@ class TicketHistory extends Model
      */
     public function user() {
 
-        return $this->hasOne('App\Models\User', 'id_user');
+        return $this->hasOne('App\Models\User', 'id', 'id_users');
     }
 
 

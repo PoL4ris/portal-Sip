@@ -7,12 +7,12 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use DB;
 use Schema;
-use App\Models\Support\Tickethistory;
+//use App\Models\Support\Tickethistory;
 use App\Models\Support\Ticketreasons;
 use App\Models\Support\Adminaccess;
 use App\Models\Customer;
 use App\Models\Ticket;
-use App\Models\Address;
+use App\Models\TicketHistory;
 
 
 class SupportController extends Controller
@@ -24,12 +24,11 @@ class SupportController extends Controller
   }
   public function getTicketInfo(Request $request)
   {
-
-   return Ticket::with('customer')->find($request['ticketId']);
-
-
-    print_r($war);
-    die();
+   return Ticket::with('customer', 'address', 'contacts', 'userAssigned', 'reason', 'ticketNote', 'ticketHistoryFull')->find($request['ticketId']);
+  }
+  public function supportTicketHistory(Request $request)
+  {
+    return TicketHistory::with('reason', 'user', 'ticketNote')->find($request->id);
   }
   public function dashboardTemp()
   {

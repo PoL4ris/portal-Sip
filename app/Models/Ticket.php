@@ -4,85 +4,55 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use DB;
-use App\Models\Address;
 
 
 class Ticket extends Model
 {
+  public function __construct()
+  {
+    DB::connection()->enableQueryLog();
+  }
 
-    public function __construct()
-    {
-        DB::connection()->enableQueryLog();
+  public function customer() {
+    return $this->hasOne('App\Models\Customer', 'id', 'id_customers');
+  }
 
-    }
-    //  public function getTicketData()
-    //  {
-    //    $this->hasOne('App\Models\Customer', 'id_customers')
-    //  }
-    /**
-   *
-   * @return type
-   */
-    public function customer() {
+  public function reason() {
+    return $this->hasOne('App\Models\Reason', 'id', 'id_reasons');
+  }
 
-        return $this->hasOne('App\Models\Customer', 'id', 'id_customers');
-    }
+  public function ticketNote() {
+    return $this->hasOne('App\Models\TicketNote', 'id', 'id_ticket_notes');
+  }
 
-    /**
-   *
-   * @return type
-   */
-    public function reason() {
+  public function ticketHistory() {
+    return $this->hasOne('App\Models\TicketHistory', 'id_tickets');
+  }
 
-        return $this->hasOne('App\Models\Reason', 'id', 'id_reasons');
-    }
+  public function user() {
+    return $this->hasOne('App\Models\User', 'id', 'id_users');
+  }
 
-    /**
-   *
-   * @return type
-   */
-    public function ticketNote() {
+  public function userAssigned() {
+    return $this->hasOne('App\Models\User', 'id','id_users_assigned');
+  }
 
-        return $this->hasOne('App\Models\TicketNote', 'id', 'id_ticket_notes');
-    }
+  public function address() {
+    return $this->belongsTo('App\Models\Address', 'id_customers', 'id_customers', 'App\Models\Customer');
+  }
 
-  /**
-   *
-   * @return type
-   */
-    public function ticketHistory() {
-        return $this->hasOne('App\Models\TicketHistory', 'id_tickets');
-    }
+  public function contacts(){
+    return $this->belongsTo('App\Models\Contact', 'id_customers', 'id_customers', 'App\Models\Customer');
+  }
 
-    /**
-   *
-   * @return type
-   */
-    public function user() {
-
-        return $this->hasOne('App\Models\User', 'id', 'id_users');
-    }
+  public function ticketHistoryFull() {
+    return $this->hasMany('App\Models\TicketHistory', 'id_tickets', 'id');
+  }
+  public function historyReason() {
+//    return $this->belongsToMany('App\Models\Reason','reasons' ,'qqq', 'rrr', 'App\Models\TicketHistory')
+//      ->withPivot('xxx','yyy', 'zzz');
 
 
-    /**
-   *
-   * @return type
-   */
-    public function userAssigned() {
-
-        return $this->hasOne('App\Models\User', 'id','id_users_assigned');
-
-    }
-
-    /**
-   *
-   * @return type
-   */
-    public function address() {
-        return $this->belongsTo('App\Models\Address', 'id_customers', 'id_customers', 'App\Models\Customer');
-    }
-
-    public function contacts(){
-      return $this->belongsTo('App\Models\Contact', 'id_customers', 'id_customers', 'App\Models\Customer');
-    }
+    return $this->belongsToMany('App\Models\Reason', 'reasons', 'id_reasons', 'id');
+  }
 }

@@ -1,5 +1,5 @@
 
-var app = angular.module('app', ['ngRoute', "xeditable", "ngAnimate", "ngSanitize", "cgNotify", "ui.bootstrap"]);
+var app = angular.module('app', ['ngRoute', "xeditable", "ngAnimate", "ngSanitize", "cgNotify", "ui.bootstrap", "ngMaterial"]);
 
 /**
  * Configure the Routes
@@ -16,6 +16,8 @@ app.config(['$routeProvider', function ($routeProvider) {
     .when("/buildings", {templateUrl: "/views/building/buildings.html"})
     .when("/support", {templateUrl: "/views/support.html"})
     .when("/adminusers", {templateUrl: "/angularviews/partials/home.html", controller: "adminusers"})
+    .when("/customer", {templateUrl: "/views/customer.html"})
+    .when("/testView", {templateUrl: "/views/test.html"})
 
 
     // else 404
@@ -28,9 +30,9 @@ app.run(function(editableOptions) {
   editableOptions.theme = 'bs3';
 });
 
-// app.run(function(helpers) {
-//   helpers.globalCosa = 'warpol';
-// });
+
+
+
 
 
 

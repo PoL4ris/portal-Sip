@@ -15,6 +15,8 @@
 
 //DB functions
 Route::get('db-test', 'TestController@testDBRelations');    
+Route::get('supportTest', 'TestController@supportTest');
+Route::get('testView', 'TestController@cleanView');
 
 Route::group(['middleware' => 'web'], function () {
     Route::auth();
@@ -54,6 +56,7 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('networkdash', 'MainController@networkDashboard');
 
     Route::get('supportdashTest', 'SupportController@dashboardTemp');
+    Route::get('supportTicketHistory', 'SupportController@supportTicketHistory');
 
     //Search
     Route::get('buildingsSearch', 'BuildingController@getBuildingsSearchSimple');
@@ -75,6 +78,10 @@ Route::group(['middleware' => 'web'], function () {
     Route::post('insertCustomerData', 'CustomerController@insertCustomerData');
     Route::get('updateCustomerServiceInfo', 'CustomerController@updateCustomerServiceInfo');
     Route::get('updateCustomerActiveServiceInfo', 'CustomerController@updateCustomerActiveServiceInfo');
+
+    Route::get('customersTmp', 'CustomerController@customersTmp');
+
+
 
     //SUPPORT
     Route::post('updateTicketDetails', 'SupportController@updateTicketData');
