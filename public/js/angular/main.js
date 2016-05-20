@@ -1,5 +1,5 @@
 
-var app = angular.module('app', ['ngRoute', "xeditable", "ngAnimate", "ngSanitize", "cgNotify"]);
+var app = angular.module('app', ['ngRoute', "xeditable", "ngAnimate", "ngSanitize", "cgNotify", "ui.bootstrap"]);
 
 /**
  * Configure the Routes

@@ -46,6 +46,14 @@ class Ticket extends Model
         return $this->hasOne('App\Models\TicketNote', 'id', 'id_ticket_notes');
     }
 
+  /**
+   *
+   * @return type
+   */
+    public function ticketHistory() {
+        return $this->hasOne('App\Models\TicketHistory', 'id_tickets');
+    }
+
     /**
    *
    * @return type
@@ -66,15 +74,15 @@ class Ticket extends Model
 
     }
 
-
     /**
    *
    * @return type
    */
     public function address() {
-
         return $this->belongsTo('App\Models\Address', 'id_customers', 'id_customers', 'App\Models\Customer');
-
     }
 
+    public function contacts(){
+      return $this->belongsTo('App\Models\Contact', 'id_customers', 'id_customers', 'App\Models\Customer');
+    }
 }

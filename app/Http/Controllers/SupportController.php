@@ -18,48 +18,27 @@ use App\Models\Address;
 class SupportController extends Controller
 {
   public function __construct() {
-//    $this->middleware('auth');
+    $this->middleware('auth');
     DB::connection()->enableQueryLog();
 
+  }
+  public function getTicketInfo(Request $request)
+  {
+
+   return Ticket::with('customer')->find($request['ticketId']);
+
+
+    print_r($war);
+    die();
   }
   public function dashboardTemp()
   {
 
-
-//     return  Ticket::with('customer', 'reason', 'ticketNote', 'user', 'userAssigned')->take(20)->skip(0)->first();
-//     $war =  Ticket::with('customer', 'reason', 'ticketNote', 'user', 'userAssigned','addressRelation')
-
-
-
-
-
-     $war =  Ticket::with('customer')
-
-     ->take(20)->skip(0)->first()->toArray();
-
-
-
-
-
-
-    dd($war);
-
-
+     return Ticket::with('customer', 'reason', 'ticketNote','ticketHistory', 'user', 'userAssigned', 'address', 'contacts')->take(2)->skip(0)->get();
 
     return Customer::with(['tickets' => function ($query) {
       $query->where('id_reasons', 2);
     }, 'type'])->find(1782);
-
-
-
-
-
-
-
-
-
-
-
 
     $queries = DB::getQueryLog();
     $last_query = end($queries);

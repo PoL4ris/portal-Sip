@@ -1252,11 +1252,6 @@ app.controller('newbuildingform', ['$scope', '$http', function($scope, $http)
 }]);
 
 
-function test ($scope)
-{
-  $scope.$emit.valueloco = 'a';
-}
-
 
 
 
@@ -1367,14 +1362,67 @@ app.controller('supportController', function ($scope, $http, notify)
 {
   notify({ message: 'Support Controller Active', templateUrl:'/views/notify.html'} );
 
+
   $http.get("supportdashTest")
     .then(function (response) {
       $scope.supportData = response.data;
     });
 
+
 });
 
 
+app.controller('ModalDemoCtrl', function ($scope, $uibModal, $log) {
+
+  $scope.animationsEnabled = false;
+
+  $scope.open = function (ticketId)
+  {
+
+    $scope.ticketId = ticketId;
+
+    var modalInstance = $uibModal.open(
+    {
+      animation: $scope.animationsEnabled,
+      templateUrl: 'myModalContent.html',
+      controller: 'ModalInstanceCtrl',
+      size: 'lg',
+      resolve: {
+        ticketId: function () {
+          return $scope.ticketId;
+        }
+      }
+    });
+
+    modalInstance.result.then(function () {}, function ()
+    {
+      $log.info('Modal dismissed at: ' + new Date());
+    });
+  };
+
+  $scope.toggleAnimation = function () {
+    $scope.animationsEnabled = !$scope.animationsEnabled;
+  };
+
+});
+
+app.controller('ModalInstanceCtrl', function ($scope, $http, $uibModalInstance, ticketId)
+{
+//   console.log(ticketId);
+
+  $http.get("getTicketInfo", {params:{'ticketId':ticketId}})
+    .then(function (response) {
+      $scope.selectedTicket = response.data;
+    });
+
+  $scope.ok = function () {
+    $uibModalInstance.close($scope.selected.item);
+  };
+
+  $scope.cancel = function () {
+    $uibModalInstance.dismiss('cancel');
+  };
+});
 
 
 

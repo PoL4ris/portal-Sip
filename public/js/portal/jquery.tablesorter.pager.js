@@ -1,9 +1,9 @@
-(function($) {
-  $.extend({
+(function(warpol) {
+  warpol.extend({
     tablesorterPager: new function() {
 
       function updatePageDisplay(c) {
-        var s = $(c.cssPageDisplay,c.container).val((c.page+1) + c.seperator + c.totalPages);
+        var s = warpol(c.cssPageDisplay,c.container).val((c.page+1) + c.seperator + c.totalPages);
       }
 
       function setPageSize(table,size) {
@@ -18,7 +18,7 @@
       function fixPosition(table) {
         var c = table.config;
         if(!c.pagerPositionSet && c.positionFixed) {
-          var c = table.config, o = $(table);
+          var c = table.config, o = warpol(table);
           if(o.offset) {
             c.container.css({
               top: o.offset().top + o.height() + 'px',
@@ -80,11 +80,11 @@
         }
 
 
-        var tableBody = $(table.tBodies[0]);
+        var tableBody = warpol(table.tBodies[0]);
 
         // clear the table body
 
-        $.tablesorter.clearTableBody(table);
+        warpol.tablesorter.clearTableBody(table);
 
         for(var i = s; i < e; i++) {
 
@@ -101,7 +101,7 @@
 
         fixPosition(table,tableBody);
 
-        $(table).trigger("applyWidgets");
+        warpol(table).trigger("applyWidgets");
 
         if( c.page >= c.totalPages ) {
           moveToLastPage(table);
@@ -143,32 +143,32 @@
 
         return this.each(function() {
 
-          config = $.extend(this.config, $.tablesorterPager.defaults, settings);
+          config = warpol.extend(this.config, warpol.tablesorterPager.defaults, settings);
 
           var table = this, pager = config.container;
 
-          $(this).trigger("appendCache");
+          warpol(this).trigger("appendCache");
 
-          config.size = parseInt($(".pagesize",pager).val());
+          config.size = parseInt(warpol(".pagesize",pager).val());
 
-          $(config.cssFirst,pager).click(function() {
+          warpol(config.cssFirst,pager).click(function() {
             moveToFirstPage(table);
             return false;
           });
-          $(config.cssNext,pager).click(function() {
+          warpol(config.cssNext,pager).click(function() {
             moveToNextPage(table);
             return false;
           });
-          $(config.cssPrev,pager).click(function() {
+          warpol(config.cssPrev,pager).click(function() {
             moveToPrevPage(table);
             return false;
           });
-          $(config.cssLast,pager).click(function() {
+          warpol(config.cssLast,pager).click(function() {
             moveToLastPage(table);
             return false;
           });
-          $(config.cssPageSize,pager).change(function() {
-            setPageSize(table,parseInt($(this).val()));
+          warpol(config.cssPageSize,pager).change(function() {
+            setPageSize(table,parseInt(warpol(this).val()));
             return false;
           });
         });
@@ -177,8 +177,8 @@
     }
   });
   // extend plugin scope
-  $.fn.extend({
-    tablesorterPager: $.tablesorterPager.construct
+  warpol.fn.extend({
+    tablesorterPager: warpol.tablesorterPager.construct
   });
 
 })(jQuery);

@@ -79,6 +79,7 @@ Route::group(['middleware' => 'web'], function () {
     //SUPPORT
     Route::post('updateTicketDetails', 'SupportController@updateTicketData');
     Route::post('updateTicketHistory', 'SupportController@updateTicketData');
+    Route::get('getTicketInfo', 'SupportController@getTicketInfo');
 
     //Network functions
     Route::get('networkCheckStatus', 'NetworkController@getSwitchPortStatus');

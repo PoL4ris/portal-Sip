@@ -109,26 +109,35 @@
       <a href="/supportdash/full"><button class="btn btn-default btn-ticket-sort" type="button">All Tickets</button></a>
     </div>
 
+    <div ng-controller="ModalDemoCtrl">
+      <script type="text/ng-template" id="myModalContent.html">
+        <div class="bg-light lter b-b wrapper-md">
+          <h2 class="m-n font-thin h3">Ticket Information</h2>
+        </div>
+        <div class="modal-body">
+        {{selectedTicket}}
+        </div>
 
-{{supportData}}
+        <div class="modal-footer">
+          <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+        </div>
 
-    <hr>
+      </script>
 
-{{supportData.ticket_number}}
-{{supportData.status}}
-{{supportData.customer.first_name}}
-{{supportData.ticket_number}}
-{{supportData.ticket_number}}
-{{supportData.ticket_number}}
+    </div>
+
+
+
 
 
     <!--TICKET LIST-->
-    <div class="wrapper-md">
+    <div class="wrapper-md" ng-controller="ModalDemoCtrl">
       <div class="panel panel-default">
         <div class="table-responsive">
           <table ui-jq="dataTable" class="table table-striped b-t b-b" ui-options="{aaSorting:[[9,'desc']]}">
             <thead>
             <tr>
+              <th style="width:10%">ID</th>
               <th style="width:10%">Ticket</th>
               <th style="width:10%">Status</th>
               <th style="width:10%">Name</th>
@@ -142,28 +151,19 @@
             </tr>
             </thead>
             <tbody>
-            <!--@foreach($tickets  as $ticket)-->
-            <tr>
-              <!--@foreach( $ticket as $index => $tInfo)-->
-              <!--@if($index == 'Comment')-->
-              <!--<td class="special-td">{!! $tInfo !!} </td>-->
-              <!--@elseif($index == 'CID' || $index == 'TID' || $index == 'DateCreated' || $index == 'History' || $index == 'Reasons' || $index == 'Admin')-->
-              <!--@break-->
-              <!--@elseif($index == 'name')-->
-              <!--<td class="a-tag"><a href="/customers/{{ $ticket['CID'] }}" >{{ $tInfo }}</a></td>-->
-              <!--@elseif($index == 'TicketNumber')-->
-              <!--{{&#45;&#45;<td class="a-tag fancybox-effects-d" style="display: none;">{{ $tInfo }}</td>&#45;&#45;}}-->
-              <!--<td class="a-tag display-ticket" ticket-id="{{ $ticket['TID'] }}" typeoff="open">{{ $tInfo }}</td>-->
-              <!--@elseif($index == 'LastUpdate')-->
-              <!--<td class="sorting_desc">{{ $tInfo }}</td>-->
-              <!--@elseif($index == 'assigned')-->
-              <!--<td class="">-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;</td>-->
-              <!--@else-->
-              <!--<td >{{ $tInfo }}</td>-->
-              <!--@endif-->
-              <!--@endforeach-->
+            <tr ng-repeat="data in supportData">
+              <td>{{data.id}}</td>
+              <td  ng-click="open(data.id)">{{data.ticket_number}}</td>
+              <td>{{data.status}}</td>
+              <td>{{data.customer.first_name}}</td>
+              <td>{{data.address.address}}</td>
+              <td>{{data.contacts.value}}</td>
+              <td>{{data.contacts.value}}</td>
+              <td>{{data.reason.short_description}}</td>
+              <td>{{data.ticket_note.comment}}</td>
+              <td>{{data.user_assigned.first_name}}</td>
+              <td>{{data.contacts.updated_at}}</td>
             </tr>
-            <!--@endforeach-->
             </tbody>
           </table>
         </div>

@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class TicketHistory extends Model
 {
+  protected $table = 'ticket_history';
+
     /**
      * 
      * @return type

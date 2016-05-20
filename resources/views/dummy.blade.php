@@ -19,12 +19,12 @@
 
   <link rel="stylesheet" href="/css/font.css" type="text/css" />
   <link rel="stylesheet" href="/css/app.css" type="text/css" />
-  <link rel="stylesheet" href="/css/jquery.fancybox.css" type="text/css" />
+  {{--<link rel="stylesheet" href="/css/jquery.fancybox.css" type="text/css" />--}}
 
   {{-- PLUGINS --}}
   <link rel="stylesheet" href="/css/plugins/smartadmin-production-plugins.min.css" type="text/css" />
   <link rel="stylesheet" href="/css/plugins/data_table.css" type="text/css" />
-
+  {{--ANGULAR PLUGINS--}}
   <link href="/css/angular/xeditable.css" rel="stylesheet">
   <link href="/css/angular/angular-notify.css" rel="stylesheet">
 
@@ -64,22 +64,25 @@
 <script src="/js/angular/xeditable.js"></script>
 <script src="/js/angular/angular-sanitize.js"></script>
 <script src="/js/angular/angular-notify.js"></script>
+<script src="/js/angular/ui-bootstrap.js"></script>
+
+
 
 
  {{--Our Website Javascripts --}}
 <script src="/js/angular/main.js"></script>
 
 
-<script src="/js/ui-load.js"></script>
-<script src="/js/ui-jp.config.js"></script>
-<script src="/js/ui-jp.js"></script>
-<script src="/js/ui-nav.js"></script>
-<script src="/js/ui-toggle.js"></script>
-<script src="/js/ui-client.js"></script>
+{{--<script src="/js/ui-load.js"></script>--}}
+{{--<script src="/js/ui-jp.config.js"></script>--}}
+{{--<script src="/js/ui-jp.js"></script>--}}
+{{--<script src="/js/ui-nav.js"></script>--}}
+{{--<script src="/js/ui-toggle.js"></script>--}}
+{{--<script src="/js/ui-client.js"></script>--}}
 
 {{-- PLUGINS --}}
 <script src="/js/js_jsDate.js"></script>
-<script src="/js/portal/jquery.fancybox.js"></script>
+{{--<script src="/js/portal/jquery.fancybox.js"></script>--}}
 <script src="/js/portal/notify.js"></script>
 
 
@@ -87,6 +90,7 @@
 <script src="/js/portal/lib.js"></script>
 <script src="/js/portal/js.js"></script>
 <script src="/js/portal/exec.js"></script>
+
 
 
 </body>
