@@ -1,34 +1,25 @@
-<button class="btn btn-warning animate" ng-click="addNewForm('payments')" ng-if="!insertForm">Add new Payment</button>
-<button class="btn btn-danger cancel-btn-action animate" ng-click="cancelForm()" ng-if="insertForm">Cancel</button>
+<div class="col-lg-12 display-content-main-box anim" ng-controller="customerPaymentController">
 
+  <h2>Credit Card Information</h2>
 
-<div ng-if="insertForm" class="fade m-t">
+  <div class="field-data bg-white col-lg-12">
+    <label class="bold-type col-lg-6">Card Number</label><label class="col-lg-6 block-b-label" id="b-CCnumber">{{ paymentData.payment.account_number }}</label>
+  </div>
 
-  <form class='validation-form' id="admin-insert-form">
+  <div class="field-data bg-white col-lg-12">
+    <label class="bold-type col-lg-6">Card Type</label><label class="col-lg-6 block-b-label" id="b-CCtype">{{ paymentData.type.name }}</label>
+  </div>
 
-    <div ng-bind-html="insertForm"></div>
+  <div class="field-data bg-white col-lg-12">
+    <label class="bold-type col-lg-6">Expiration Month</label><label class="col-lg-6 block-b-label" id="b-Expmo">{{ paymentData.payment.exp_month }}</label>
+  </div>
+  <div class="field-data bg-white col-lg-12">
+    <label class="bold-type col-lg-6">Expiration Year</label><label class="col-lg-6 block-b-label" id="b-Expyr">{{ paymentData.payment.exp_year }}</label>
+  </div>
 
-    <div class='form-group col-md-12'>
-      <div class="row-abc">
-        <p class="input"><input type="submit" value="Insertar" class="btn m-b-xs w-xs btn-primary" ng-click="submitForm()" /></p>
-      </div>
-    </div>
+  <div class="btn-group btn-group-justified">
+    <a class="btn btn-danger" href="">Manual Charge</a>
+    <a class="btn btn-warning" href="">Manual Refound</a>
+  </div>
 
-  </form>
-
-</div>
-
-
-<div ng-if="!insertForm" class="fade m-t">
-  <table class="table table-bordered table-hover table-condensed bg-white-only">
-    <tbody>
-    <tr>
-      <td>Account No.</td><td>Exp Month</td><td>Exp Year</td><td>Type</td><td>Address</td><td>Customer</td><td>Created at</td><td>Updated at</td>
-    </tr>
-    <tr ng-repeat="data in adminPayments">
-      <td>{{data.account_number}}</td><td>{{data.exp_month}}</td><td>{{data.exp_year}}</td><td>{{data.id_types}}</td><td>{{data.id_address}}</td><td>{{data.id_customers}}</td>
-      <td>{{data.created_at}}</td><td>{{data.updated_at}}</td>
-    </tr>
-    </tbody>
-  </table>
 </div>

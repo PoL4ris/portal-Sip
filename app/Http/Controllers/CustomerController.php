@@ -8,8 +8,10 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Models\Customer\Customers;
 use App\Models\Customer;
+use App\Models\TicketNote;
+use App\Models\Reason;
+use App\Models\BillingTransactionLog;
 use App\Models\Building\Servicelocation;
-use App\Models\Billing\billingTransactionLog;
 use App\Models\Network\networkNodes;
 use App\Models\Support\Ticketreasons;
 use DB;
@@ -115,6 +117,35 @@ class CustomerController extends Controller
   public function customersTmp(Request $request)
   {
     return Customer::with('address', 'contacts', 'type')->find($request->id);
+  }
+  public function getCustomerPayment(Request $request)
+  {
+    return Customer::with('payment', 'type')->find($request->id);
+  }
+  public function getNewTicketData(Request $request)
+  {
+    return Customer::with('tickets')->find($request->id);
+  }
+  public function getTicketHistory(Request $request)
+  {
+    return Customer::with('ticketHistory')->find($request->id);
+  }
+  public function getTicketHistoryNotes(Request $request)
+  {
+    return TicketNote::find($request->id);
+  }
+  public function getTicketHistoryReason(Request $request)
+  {
+    return Reason::find($request->id);
+  }
+  public function getBillingHistory(Request $request)
+  {
+    return DB::Select('select * from billingTransactionLog where CID = ' . $request->id);
+  }
+  public function getCustomerNetwork(Request $request)
+  {
+    $networkControllerInfo = new NetworkController();
+    return $networkControllerInfo->getCustomerConnectionInfo($customer['customer']->PortID);
   }
   public function customers(Request $request)
   {
@@ -242,7 +273,6 @@ class CustomerController extends Controller
     }
 
   }
-
   public function updateCustomerServiceInfo(Request $request)
   {
     if($request->ajax())

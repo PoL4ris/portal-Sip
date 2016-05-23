@@ -1,0 +1,35 @@
+<div class="col-lg-12" ng-controller="customerBillingHistoryController">
+  <!--{{billingHistory}}-->
+
+  <div id="customer-view-0">
+
+    <div class="color-name-header btn-dark">
+      Billing History:
+    </div>
+
+    <div class="panel panel-default">
+      <table id="myTable" class="tablesorter table" >
+        <thead>
+        <tr><th>Date</th><th>Type</th><th>Amount</th><th>PaymentMode</th><th>Oder Number</th><th>Charge Desc</th><th>ActCode</th><th>Trans ID</th><th>Trans Status</th></tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="billing in billingHistory" >
+
+          <td>{{ billing.DateTime }}</td>
+          <td>{{ billing.TransType }}</td>
+          <td>{{ billing.Amount }}</td>
+          <td>{{ billing.PaymentMode }}</td>
+          <td>{{ billing.OrderNumber }}</td>
+          <td>{{ billing.ChargeDescription }}</td>
+          <td>{{ billing.ActionCode }}</td>
+          <td>{{ billing.TransactionID }}</td>
+          <td>{{ billing.Responsetext }}</td>
+
+        </tr>
+        </tbody>
+      </table>
+
+    </div>
+
+  </div>
+</div>

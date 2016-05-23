@@ -109,7 +109,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr ng-repeat="history in selectedTicket.ticket_history_full" ng-controller="supportTicketHistory">
+            <tr ng-repeat="history in selectedTicket.ticket_history_full" ng-controller="customerTicketHistory">
               <td>{{history.created_at}}</td>
               <td>{{historyData.ticket_note.comment?historyData.ticket_note.comment:'Empty Comment'}}</td>
               <td>{{history.status}}</td>

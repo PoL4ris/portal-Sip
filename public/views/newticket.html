@@ -1,0 +1,33 @@
+<div class="col-lg-12 display-content-main-box subseccion subseccion-newticket" ng-controller="customerNewTicketCtrl">
+
+<div class="color-name-header btn-dark">
+  Create Ticket
+</div>
+<form action="" class="customer-customer-form" id="newticketform">
+  <div class="field-data bg-white col-lg-12">
+    <label class="bold-type col-lg-4">Issue</label>
+    <select class="form-control select-control" name="RID">
+      <option value="err">Select an issue</option>
+      @foreach($customer['ticketreasone'] as $reasoneIndex => $topic)
+      <option value="{{ $reasoneIndex }}">{{ $topic->ReasonShortDesc }}</option>
+      @endforeach
+    </select>
+  </div>
+  <div class="field-data bg-white col-lg-12">
+    <label class="bold-type col-lg-4">Status</label>
+    <select class="form-control select-control" name="Status">
+      <option value="err">Select an ticket status</option>
+      <option value="escalated">Escalate</option>
+      <option value="closed">Close</option>
+    </select>
+  </div>
+  <div class="field-data bg-white col-lg-12">
+    <label class="bold-type col-lg-4">Details</label>
+    <textarea name="Comment" class="col-lg-4 common-textarea" placeholder="Ticket Info..."></textarea>
+    <div class="field-data bg-white col-lg-12">
+      <button class="btn btn-dark col-lg-2" id="create-customer-ticket" onclick="return false;">Create Ticket</button>
+    </div>
+  </div>
+
+</form>
+</div>

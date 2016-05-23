@@ -895,7 +895,7 @@ app.controller('admin', function($scope, $http, $compile, $sce, notify)
 })
 .directive('myViewPayments', function() {
   return {
-    templateUrl: '/views/payment.html',
+    templateUrl: '/views/admin/payment.html',
     controller: 'adminViewPayments'
   };
 })
@@ -1204,12 +1204,6 @@ return;
     );
 
 
-
-
-
-
-
-
   }
 
 
@@ -1376,43 +1370,12 @@ app.controller('customerController', function ($scope, $http, $routeParams)
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 app.controller('supportTicketHistory', function ($scope, $http)
 {
-
-
   $http.get("supportTicketHistory", {params:{'id':$scope.history.id}})
     .then(function (response) {
       $scope.historyData = response.data;
     });
-
 });
 app.controller('ModalController', function ($scope, $uibModal, $log) {
 
@@ -1465,18 +1428,62 @@ app.controller('ModalInstanceCtrl', function ($scope, $http, $uibModalInstance, 
   };
 });
 
+app.controller ('customerPaymentController', function ($scope, $http)
+{
+  $http.get("getCustomerPayment", {params:{'id':$scope.customerData.id}})
+    .then(function (response) {
+      $scope.paymentData = response.data;
+    });
+});
+app.controller ('customerNewTicketCtrl', function ($scope, $http)
+{
+  $http.get("getNewTicketData", {params:{'id':$scope.customerData.id}})
+    .then(function (response) {
+      $scope.newTicketData = response.data;
+    });
+});
+app.controller ('customerTicketHistoryController', function ($scope, $http)
+{
+  $http.get("getTicketHistory", {params:{'id':$scope.customerData.id}})
+    .then(function (response) {
+      $scope.ticketHistory = response.data;
+    });
+});
+app.controller('customerTicketHistoryData', function ($scope, $http)
+{
+  $http.get("getTicketHistoryNotes", {params:{'id':$scope.ticket.id_ticket_notes}})
+    .then(function (response) {
+      $scope.ticketNotes = response.data;
+      $scope.letterLimit = 20;
+    });
+  $http.get("getTicketHistoryReason", {params:{'id':$scope.ticket.id_reasons}})
+    .then(function (response) {
+      $scope.ticketReason = response.data;
+    });
 
-
-
-
-
-
-
-
-
-
-
-
+  $scope.showFullComment = function(id)
+  {
+    warpol('#ticket-' + id).fadeIn('slow');
+  }
+  $scope.hideFullComment = function(id)
+    {
+      warpol('#ticket-' + id).fadeOut('fast');
+    }
+});
+app.controller('customerBillingHistoryController', function ($scope, $http)
+{
+  $http.get("getBillingHistory", {params:{'id':$scope.customerData.id}})
+    .then(function (response) {
+      $scope.billingHistory = response.data;
+    });
+});
+app.controller('customerNetworkController', function ($scope, $http)
+{
+  $http.get("getCustomerNetwork", {params:{'id':$scope.customerData.id}})
+    .then(function (response) {
+      $scope.customerNetwork = response.data;
+    });
+});
 
 
 
@@ -1484,35 +1491,41 @@ app.controller('ModalInstanceCtrl', function ($scope, $http, $uibModalInstance, 
 app.controller('AppCtrl', AppCtrl);
 function AppCtrl ($scope, $log) {
   var tabs = [
-      { title: 'Network', content: "Tabs will become paginated if there isn't enough room for them."},
-      { title: 'New Ticket', content: "You can swipe left and right on a mobile device to change tabs."},
-      { title: 'Tickets', content: "You can bind the selected tab via the selected attribute on the md-tabs element."},
-      { title: 'Billing', content: "If you set the selected tab binding to -1, it will leave no tab selected."},
-      { title: 'Notices', content: "If you remove a tab, it will try to select a new one."},
-      { title: 'Building', content: "There's an ink bar that follows the selected tab, you can turn it off if you want."},
+      { title: 'Payment', content:'/views/payment.html'},
+      { title: 'New Ticket'},
+      { title: 'Tickets', content: "/views/ticketshistory.html"},
+      { title: 'Billing', content: "/views/billinghistory.html"},
+      { title: 'Network', content: "/views/network.html"},
+//       { title: 'Building', content: "There's an ink bar that follows the selected tab, you can turn it off if you want."},
 
 
-      { title: 'Test #1', content: "If you set ng-disabled on a tab, it becomes unselectable. If the currently selected tab becomes disabled, it will try to select the next tab."},
-      { title: 'Test #2', content: "If you look at the source, you're using tabs to look at a demo for tabs. Recursion!"},
-      { title: 'Test #3', content: "If you set md-theme=\"green\" on the md-tabs element, you'll get green tabs."},
-      { title: 'Test #4', content: "If you're still reading this, you should just go check out the API docs for tabs!"}
     ],
     selected = null,
     previous = null;
   $scope.tabs = tabs;
-  $scope.selectedIndex = 2;
-  $scope.$watch('selectedIndex', function(current, old){
+  $scope.selectedIndex = 4;
+  $scope.$watch('selectedIndex', function(current, old)
+  {
+
+
     previous = selected;
     selected = tabs[current];
     if ( old + 1 && (old != current)) $log.debug('Goodbye ' + previous.title + '!');
     if ( current + 1 )                $log.debug('Hello ' + selected.title + '!');
   });
-  $scope.addTab = function (title, view) {
+  $scope.addTab = function (title, view)
+  {
     view = view || title + " Content View";
     tabs.push({ title: title, content: view, disabled: false});
   };
-  $scope.removeTab = function (tab) {
+  $scope.removeTab = function (tab)
+  {
     var index = tabs.indexOf(tab);
     tabs.splice(index, 1);
   };
+
 }
+
+app.controller ('testController', function ($scope){
+  console.log('YEA');
+});

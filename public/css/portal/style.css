@@ -590,8 +590,9 @@
   overflow-y: auto;
 }
 
-
-
+md-tabs:not(.md-no-tab-content):not(.md-dynamic-height){
+  min-height: 400px;
+}
 
 
 /* ------ */
@@ -659,3 +660,23 @@ li span {
   opacity: 1;
 }
 
+
+
+/* Customer tickets */
+.ticket-comment-pop{
+  background: rgba(255,255,255,.7);
+  border: 1px solid #ddd;
+  color: #333;
+  height: auto;
+  left: 0;
+  max-height: 250px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: 2% 4%;
+  position: absolute;
+  text-align: left;
+  top: 0;
+  width: 70%;
+  z-index: 10;
+  font-size: 10px;
+}

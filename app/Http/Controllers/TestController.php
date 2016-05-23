@@ -94,8 +94,9 @@ class TestController extends Controller
   public function supportTest(){
 
 //        $ticket2 = Customer::with('type', 'status', 'contacts')->find(1783)->toArray();
-    dd(Customer::with('address', 'type')->find(1783));
-
+//    dd(Customer::with('ticketHistory')->find(1783));
+    dd(Ticket::with('ticketHistoryFull')->find(18685));
+//1783
 
 //        $queries = DB::getQueryLog();
 //        $last_query = end($queries);
