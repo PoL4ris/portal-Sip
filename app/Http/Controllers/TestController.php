@@ -8,6 +8,8 @@ use App\Extensions\SIPBilling;
 use DB;
 use App\Models\Customer;
 use App\Models\Ticket;
+use App\Models\CustomerProduct;
+use App\Models\Address;
 
 
 class TestController extends Controller
@@ -95,14 +97,21 @@ class TestController extends Controller
 
 //        $ticket2 = Customer::with('type', 'status', 'contacts')->find(1783)->toArray();
 //    dd(Customer::with('ticketHistory')->find(1783));
-    dd(Ticket::with('ticketHistoryFull')->find(18685));
+//    dd(Ticket::with('address')->find(18685));
+$aaa = 2;
+    dd(Address::with('customer')
+      ->where('code', 'LIKE','%'.$aaa.'%')->get()->toArray());
+
+
+
 //1783
+//18685
 
 //        $queries = DB::getQueryLog();
 //        $last_query = end($queries);
 //        dd($last_query);
 
-        dd($ticket2);
+//        dd($ticket2);
     }
 
   public function cleanView(){

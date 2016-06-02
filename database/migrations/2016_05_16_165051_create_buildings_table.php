@@ -15,11 +15,12 @@ class CreateBuildingsTable extends Migration {
     Schema::create('buildings', function(Blueprint $table)
     {
       $table->increments('id');
-      $table->text('img_building', 65535);
+      $table->text('img_building', 65535)->nullable();
       $table->string('name');
       $table->string('alias');
       $table->string('nickname');
       $table->string('address');
+      $table->integer('id_address')->comment('Address');
       $table->integer('id_neighborhoods')->comment('Neighborhood');
       $table->string('code');
       $table->string('id_types')->comment('Type');

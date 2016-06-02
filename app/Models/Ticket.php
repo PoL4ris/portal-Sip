@@ -49,10 +49,11 @@ class Ticket extends Model
     return $this->hasMany('App\Models\TicketHistory', 'id_tickets', 'id');
   }
   public function historyReason() {
-//    return $this->belongsToMany('App\Models\Reason','reasons' ,'qqq', 'rrr', 'App\Models\TicketHistory')
-//      ->withPivot('xxx','yyy', 'zzz');
-
 
     return $this->belongsToMany('App\Models\Reason', 'reasons', 'id_reasons', 'id');
+  }
+  public function building()
+  {
+    return $this->belongsTo('App\Models\Building\Building', 'id_address', 'id_address', 'App\Models\Address');
   }
 }

@@ -4,66 +4,70 @@
   <div class="col w-lg lter b-r b-tabs anim">
 
     <div class="bg-light lter b-b wrapper-md">
-      <h2 class="m-n font-thin h3">Support LEFT TOOLS</h2>
+      <h2 class="m-n font-thin h3">Support Tools</h2>
     </div>
 
     <div class="vbox">
 
       <!-- Building Search/Simple -->
-      <div class="b-b">
-        <div class="search-content">
-          <input type="text" id="id-buildings-search" class="input-search id-search" placeholder="Search Buildings..." ng-keyup="buscador('Simple', 'left')" ng-model="searchLeft"><i class="is-lupa fa fa-search"></i>
-          <div id="id-buildings-search-result" class="search-result anim" >
-            <p ng-repeat="resultbldleft in bldSearchResultLeft" ng-click="displayBldData(resultbldleft.id)" >{{ resultbldleft.address }}</p>
-          </div>
-        </div>
-      </div>
+      <!--<div class="b-b">-->
+        <!--<div class="search-content">-->
+          <!--<input type="text" id="id-buildings-search" class="input-search id-search" placeholder="Search Ticket..." ng-keyup="buscador('Simple', 'left')" ng-model="searchLeft"><i class="is-lupa fa fa-search"></i>-->
+          <!--<div id="id-buildings-search-result" class="search-result anim" >-->
+            <!--<p ng-repeat="resultbldleft in bldSearchResultLeft" ng-click="displayBldData(resultbldleft.id)" >{{ resultbldleft.address }}</p>-->
+          <!--</div>-->
+        <!--</div>-->
+      <!--</div>-->
       <!-- END Building Search/Simple -->
 
-      <div>
-        <button class="btn btn-info btn-ticket-sort col-lg-5 m-t-md m-b-md" type="button">New Ticket</button>
-        <div class="col-lg-2"></div>
-        <button class="btn btn-dark btn-ticket-sort col-lg-5 m-b-md m-t-md" type="button">Dashboard</button>
 
-        <button class="btn btn-danger btn-ticket-sort col-lg-5 m-b-md" type="button">Pending Tickets</button>
-        <div class="col-lg-2"></div>
-        <button class="btn btn-success btn-ticket-sort col-lg-5 m-b-md" type="button">My Tickets</button>
-      </div>
+
+      <!-- TOOLS -->
+      <!--<div>-->
+        <!--<button class="btn btn-info btn-ticket-sort col-lg-5 m-t-md m-b-md" type="button">New Ticket</button>-->
+        <!--<div class="col-lg-2"></div>-->
+        <!--<button class="btn btn-dark btn-ticket-sort col-lg-5 m-b-md m-t-md" type="button" disabled>Dashboard</button>-->
+
+        <!--<button class="btn btn-danger btn-ticket-sort col-lg-5 m-b-md" type="button" disabled>Pending Tickets</button>-->
+        <!--<div class="col-lg-2"></div>-->
+        <!--<button class="btn btn-success btn-ticket-sort col-lg-5 m-b-md" type="button">My Tickets</button>-->
+      <!--</div>-->
+      <!-- END TOOLS -->
 
       <!-- TABS-->
-      <div class="nav-tabs-alt ntas-tmp" id="ntas-tmp">
-        <ul class="nav nav-tabs nav-justified">
-          <li class="active anim">
-            <a data-target="#tab-1" role="tab" data-toggle="tab">Closed Tickets </a>
-          </li>
-          <li class=" anim">
-            <a data-target="#tab-2" role="tab" data-toggle="tab">VIP Tickets</a>
-          </li>
-          <li class=" anim">
-            <a data-target="#tab-3" role="tab" data-toggle="tab">Old Tickets</a>
-          </li>
-        </ul>
-      </div>
+      <!--<div class="nav-tabs-alt ntas-tmp" id="ntas-tmp">-->
+        <!--<ul class="nav nav-tabs nav-justified">-->
+          <!--<li class="active anim">-->
+            <!--<a data-target="#tab-1" role="tab" data-toggle="tab">Closed Tickets </a>-->
+          <!--</li>-->
+          <!--<li class=" anim">-->
+            <!--<a data-target="#tab-2" role="tab" data-toggle="tab">VIP Tickets</a>-->
+          <!--</li>-->
+          <!--<li class=" anim">-->
+            <!--<a data-target="#tab-3" role="tab" data-toggle="tab">Old Tickets</a>-->
+          <!--</li>-->
+        <!--</ul>-->
+      <!--</div>-->
       <!-- END TABS-->
 
       <!-- BLD DATA LEFT -->
+      <!--{{supportData}}-->
       <div class="row-row ntas-tmp">
         <div class="tabs-content">
           <div class="cell-inner">
             <div class="tab-content" >
+              <h2 class="m-n font-thin h3 text-center-folded text-center">Ticket List</h2>
 
               <div class="tab-pane active" id="tab-1">
                 <!--OFFSET LIMIT btn's -->
-                <div id="bldlist-result-limits" class="lesmoreinfo">
-                  <div offset="" limit="" position="0" class="newdata left anim left-btn-trigg bldlist-result-limits-0" id="ol-left-btn" ng-click=" buildingsList(0)"></div>
-                  <div offset="" limit="" position="1" class="newdata right anim right-btn-trigg bldlist-result-limits-1" id="ol-right-btn" ng-click=" buildingsList(1)"></div>
-                </div>
+                <!--<div id="bldlist-result-limits" class="lesmoreinfo">-->
+                  <!--<div offset="" limit="" position="0" class="newdata left anim left-btn-trigg bldlist-result-limits-0" id="ol-left-btn" ng-click=" buildingsList(0)"></div>-->
+                  <!--<div offset="" limit="" position="1" class="newdata right anim right-btn-trigg bldlist-result-limits-1" id="ol-right-btn" ng-click=" buildingsList(1)"></div>-->
+                <!--</div>-->
                 <!--END OFFSET LIMIT btn's -->
                 <!--CONTENT TABS-->
                 <div id="bldlist-result" >
-                  <p ng-repeat="building in bldData['buildingList']" ng-click="displayBldData(building.id)">{{ building.Name?building.Name:building.name }}
-                    <!--<a href="" ng-click="displayBldData(building.id)" onclick="return false;">{{ building.Name?building.Name:building.name }}</a>-->
-                  </p>
+                  <p ng-repeat="ticketList in supportData" ng-click="displayBldData(building.id)">No. {{ ticketList.ticket_number }} :  Code {{ ticketList.address.code }}</p>
                 </div>
               </div>
 
@@ -93,7 +97,7 @@
   <!--END COL-->
 
 
-  <div class="col-lg-12" id="viewMidContent">
+  <div class="col-lg-12 " id="viewMidContent">
     <div ng-include="'/views/supportDash.html'"></div>
   </div>
 

@@ -9,9 +9,10 @@ use Html;
 use App\Http\Requests;
 use App\Models\Building\Building;
 use App\Models\Building\ServiceLocation;
-use App\Models\Building\Properties;
-use App\Models\Building\Contact;
+use App\Models\Building\BuildingProperty;
+use App\Models\Building\BuildingContact;
 use App\Models\Building\Neighborhood;
+use App\Models\Type;
 use App\Http\Controllers\Lib\FormsController;
 use Redirect;
 
@@ -29,68 +30,65 @@ class BuildingController extends Controller
 
   public function buildings(Request $request)
   {
-    // Params to display bld's list's
+
     $offset = 0;
     $limit = 20;
 
-    //Check if specific Building.
-    //Get info Building
     if ($request->id)
+    {
       $building = Building::where('id', $request->id)->get();
-//      $building = ServiceLocation::where('LocID', $request->id)->get();
-//BUILDING TABLE
+      $bldType = Type::where('id', $building[0]->id_types)->get();
+      $building[0]->typename = $bldType[0]->name;
+    }
     else
-//      $building = ServiceLocation::orderBy('LocID', 'desc')->get();
       $building = Building::orderBy('id', 'desc')->get();
-//BUILDING TABLE
 
-    //Get nbg->building->name
-    $bldNeigh = Neighborhood::where('id', $building[0]->id_neighborhood)->get();
-//BUILDING TABLE
+    $bldNeigh = Neighborhood::where('id', $building[0]->id_neighborhoods)->get();
 
-    //List of nbg's
+
     $neighborhoodList = $this->getNeighborhoodList();
-    //BUILDING TABLE
-    //BuildingsDataList
-//    $buildingsList = DB::table('serviceLocation')->skip($offset)->take($limit)->get();
-    $buildingsList = DB::table('building')->skip($offset)->take($limit)->get();
-//BUILDING TABLE
-    //BuildingsType
-    $buildingsTypes = $this->getBuildingsType();
-//BUILDING TABLE
-    $buildingsInfo = $this->getBuildingsInfo($building[0]->id);
-//BUILDING TABLE
-    $building[0]->neighborhoodname = $bldNeigh[0]->name;
-//BUILDING TABLE
+    $typesList = $this->getTypesList();
 
-    $data = ['building' => $building[0],
-      'neighborhood' => $neighborhoodList,
-      'exist' => $buildingsInfo['exist'],
-      'properties' => $buildingsInfo['properties'],
-      'contact' => $buildingsInfo['contact'],
-      'buildingList' => $buildingsList,
-      'retail' => $buildingsTypes['retail'],
-      'comer' => $buildingsTypes['comer'],
-      'offset' => $offset,
-      'limit' => $limit
+    $buildingsList = DB::table('buildings')->skip($offset)->take($limit)->get();
+
+    $buildingsTypes = $this->getBuildingsType();
+    $buildingsInfo = $this->getBuildingsInfo($building[0]->id);
+    $building[0]->neighborhoodname = $bldNeigh[0]->name;
+
+
+    $data = ['building'     => $building[0],
+             'neighborhood' => $neighborhoodList,
+             'types'        => $typesList,
+             'exist'        => $buildingsInfo['exist'],
+             'properties'   => $buildingsInfo['properties'],
+             'contact'      => $buildingsInfo['contact'],
+             'buildingList' => $buildingsList,
+             'retail'       => $buildingsTypes['retail'],
+             'comer'        => $buildingsTypes['comer'],
+             'offset'       => $offset,
+             'limit'        => $limit
     ];
+
     
     return $data;
   }
   public function newbuildingform()
   {
     $dynamicForm = new FormsController();
-    $data = $dynamicForm->getFormType('building');
+    $data = $dynamicForm->getFormType('buildings');
     return $data;
     return view('buildings.newbuildingform',['form' => $data]);
   }
 
 
-  //Building API
   //Building GET's
   public function getNeighborhoodList()
   {
     return Neighborhood::all();
+  }
+  public function getTypesList()
+  {
+    return Type::all();
   }
   public function getBuildingsSearchSimple(Request $request)
   {
@@ -113,8 +111,10 @@ class BuildingController extends Controller
   }
   public function getBuildingsType()
   {
-    $retail = Building::where('type','retail')->get();
-    $comer = Building::where('type','comercial')->get();
+    //RETAIL = 10
+    //COMERCIAL = 11
+    $retail = Building::where('id_types',10)->get();
+    $comer = Building::where('id_types',11)->get();
     $data = array('retail' => $retail, 'comer' => $comer);
 
     return $data;
@@ -122,8 +122,8 @@ class BuildingController extends Controller
   public function getBuildingsInfo($id)
   {
     $exist = true;
-    $properties = Properties::where('building_properties.id_building',$id )->get();
-    $contact = Contact::where('building_contact.id_building',$id)->get();
+    $properties = BuildingProperty::where('building_properties.id_buildings',$id )->get();
+    $contact = BuildingContact::where('building_contacts.id_buildings',$id)->get();
 
     if (!$properties->first() && !$contact->first())
       $exist = false;
@@ -138,7 +138,7 @@ class BuildingController extends Controller
       $offset = $request['offset'];
       $limit = 20;
 
-      $buildingList = DB::table('building')->skip($offset)->take($limit)->get();
+      $buildingList = DB::table('buildings')->skip($offset)->take($limit)->get();
 
       if(!empty($buildingList))
         return json_encode($buildingList);
@@ -151,21 +151,24 @@ class BuildingController extends Controller
     $input = $request->all();
     $input['img_building'] = '1.png';
 
-    DB::table('building')->insert($input);
+    DB::table('buildings')->insert($input);
 
     return redirect('/buildings');
   }
   //Building Update's
   public function updateBuilding(Request $request)
   {
-
-    $input = $request->all();
-    $input['img_building'] = '1.png';
-    print '<pre>';
-    print_r($input);
-    die();
+    $data = $request->all();
+    Building::where('id', $request->id)->update($data);
+    return $this->buildings($request);
   }
 
 
 
 }
+
+
+
+
+
+

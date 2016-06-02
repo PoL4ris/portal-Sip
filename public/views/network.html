@@ -1,29 +1,29 @@
-<div class="col-lg-12 display-content-main-box bg-white no-padding-sides subseccion subseccion-network" ng-controller="customerNetworkController">
-{{customerNetwork}}
+<div class="col-lg-12 display-content-main-box bg-white no-padding-sides subseccion-network" ng-controller="customerNetworkController">
+<!--{{customerNetwork}}-->
 
   <div class="color-name-header btn-info">
     Port and Network Info
   </div>
-  <!--<div class="col-lg-4 no-padding-sides">-->
-    <!--<div class="field-data bg-white col-lg-12"><div class="bold-type col-lg-4">Name</div><div class="col-lg-8">{{ $customer['network']['Name'] }}</div></div>-->
-    <!--<div class="field-data bg-white col-lg-12"><div class="bold-type col-lg-4">IP</div><div class="col-lg-8">{{ $customer['network']['IP'] }}</div></div>-->
-    <!--<div class="field-data bg-white col-lg-12"><div class="bold-type col-lg-4">Port</div><div class="col-lg-8">{{ $customer['network']['Port'] }}</div></div>-->
-    <!--<div class="field-data bg-white col-lg-12"><div class="bold-type col-lg-4">Access</div><div class="col-lg-8" id="acces-network-id">{{ $customer['network']['Access']}}</div></div>-->
-    <!--<div class="field-data bg-white col-lg-12"><div class="bold-type col-lg-4">Vendor</div><div class="col-lg-8">{{ $customer['network']['Vendor'] }}</div></div>-->
-    <!--<div class="field-data bg-white col-lg-12"><div class="bold-type col-lg-4">Model</div><div class="col-lg-8">{{ $customer['network']['Model'] }}</div></div>-->
-  <!--</div>-->
+  <div class="col-lg-4 no-padding-sides">
+    <div class="field-data bg-white col-lg-12"><div class="bold-type col-lg-4">Name</div>     <div class="col-lg-8">{{ customerNetwork.Name }}</div></div>
+    <div class="field-data bg-white col-lg-12"><div class="bold-type col-lg-4">IP</div>       <div class="col-lg-8">{{ customerNetwork.IP }}</div></div>
+    <div class="field-data bg-white col-lg-12"><div class="bold-type col-lg-4">Port</div>     <div class="col-lg-8">{{ customerNetwork.Port }}</div></div>
+    <div class="field-data bg-white col-lg-12"><div class="bold-type col-lg-4">Access</div>   <div class="col-lg-8" id="acces-network-id">{{ customerNetwork.Access }}</div></div>
+    <div class="field-data bg-white col-lg-12"><div class="bold-type col-lg-4">Vendor</div>   <div class="col-lg-8">{{ customerNetwork.Vendor }}</div></div>
+    <div class="field-data bg-white col-lg-12"><div class="bold-type col-lg-4">Model</div>    <div class="col-lg-8">{{ customerNetwork.Model }}</div></div>
+  </div>
 
   <div class="col-lg-4 no-padding-sides">
     <div class="color-name-header btn-default nav" id="basic-info-net">
       Basic Information
     </div>
-    <div class="field-data bg-white col-lg-12"><div class="bold-type col-lg-6">Switch Uptime</div>    <div class="col-lg-6 anim" id="switch-uptime"></div></div>
-    <div class="field-data bg-white col-lg-12"><div class="bold-type col-lg-6">Status</div>           <div class="col-lg-6 anim" id="oper-status"></div></div>
-    <div class="field-data bg-white col-lg-12"><div class="bold-type col-lg-6">Admin Status</div>     <div class="col-lg-6 anim" id="admin-status"></div></div>
-    <div class="field-data bg-white col-lg-12"><div class="bold-type col-lg-6">Speed</div>            <div class="col-lg-6 anim" id="port-speed"></div></div>
-    <div class="field-data bg-white col-lg-12"><div class="bold-type col-lg-6">Last Change</div>      <div class="col-lg-6 anim" id="last-change"></div></div>
-    <div class="field-data bg-white col-lg-12"><div class="bold-type col-lg-6">Vlan</div>             <div class="col-lg-6 anim" id="vlan"></div></div>
-    <div class="field-data bg-white col-lg-12"><div class="bold-type col-lg-6">IP</div>               <div class="col-lg-6" id="IPs"></div></div>
+    <div class="field-data bg-white col-lg-12"><div class="bold-type col-lg-6">Switch Uptime</div>      <div class="col-lg-6 anim" id="switch-uptime"></div></div>
+    <div class="field-data bg-white col-lg-12"><div class="bold-type col-lg-6">Status</div>             <div class="col-lg-6 anim" id="oper-status"></div></div>
+    <div class="field-data bg-white col-lg-12"><div class="bold-type col-lg-6">Admin Status</div>       <div class="col-lg-6 anim" id="admin-status"></div></div>
+    <div class="field-data bg-white col-lg-12"><div class="bold-type col-lg-6">Speed</div>              <div class="col-lg-6 anim" id="port-speed"></div></div>
+    <div class="field-data bg-white col-lg-12"><div class="bold-type col-lg-6">Last Change</div>        <div class="col-lg-6 anim" id="last-change"></div></div>
+    <div class="field-data bg-white col-lg-12"><div class="bold-type col-lg-6">Vlan</div>               <div class="col-lg-6 anim" id="vlan"></div></div>
+    <div class="field-data bg-white col-lg-12"><div class="bold-type col-lg-6">IP</div>                 <div class="col-lg-6" id="IPs"></div></div>
   </div>
   <div class="col-lg-4 no-padding-sides">
     <div class="color-name-header btn-default nav">
@@ -35,17 +35,15 @@
     <div class="field-data bg-white col-lg-12"><div class="bold-type col-lg-6">BPDU Filter</div>       <div class="col-lg-6" id="bpdu-filter"></div></div>
   </div>
 
-  <!--<div class="btn-group btn-group-justified">-->
-    <!--<p class="btn btn-success network-functions" onclick="networkServices(0,' {{ $customer['customer']->PortID }} ')" type="0" portid="{{ $customer['customer']->PortID }}">Check Status</p>{{&#45;&#45; getSwitchPortStatus(); &#45;&#45;}}-->
-    <!--<p class="btn btn-dark network-functions action-confirm"     type="3" portid="{{ $customer['customer']->PortID }}">Recycle Port</p>-->
-    <!--<p class="btn btn-success network-functions"  type="4" portid="{{ $customer['customer']->PortID }}">Check IP's</p>-->
-    <!--@if ($customer['network']['Access'] == 'signup')-->
-    <!--<p class="btn btn-info network-functions action-confirm access-type-net"   type="6" portid="{{ $customer['customer']->PortID }}">Activate</p>-->
-    <!--@else-->
-    <!--<p class="btn btn-danger network-functions action-confirm access-type-net"   type="5" portid="{{ $customer['customer']->PortID }}">Send to Signup</p>-->
-    <!--@endif-->
+  <div class="btn-group btn-group-justified" >
+    <!--getSwitchPortStatus();-->
 
-    <!--<p class="btn btn-success network-functions"  type="" portid="{{ $customer['customer']->PortID }}">Building IP Stats</p>-->
-  <!--</div>-->
+    <p class="btn btn-success network-functions" ng-click="networkServices(0)" type="0" portid="{{customerNetwork.portId}}">Check Status</p>
+    <p id="rport" class="btn btn-dark network-functions action-confirm" type="3" portid="{{customerNetwork.portId}}" ng-click="showConfirm($event)">Recycle Port</p>
+    <p class="btn btn-success network-functions"  type="4" portid="{{customerNetwork.portId}}">Check IP's</p>
+    <p class="btn btn-info network-functions action-confirm access-type-net" type="6" portid="{{customerNetwork.portId}}" ng-if="customerNetwork.Access == 'signup'" ng-click="showConfirm($event)">Activate</p>
+    <p class="btn btn-danger network-functions action-confirm access-type-net" type="5" portid="{{customerNetwork.portId}}" ng-if="customerNetwork.Access != 'signup'" ng-click="showConfirm($event)">Send to Signup</p>
+    <p class="btn btn-success network-functions"  type="" portid="{{customerNetwork.portId}}">Building IP Stats</p>
+  </div>
 
 </div>

@@ -1,0 +1,184 @@
+
+<!-- BUILDING INFO P1-->
+<div id="building" class="building header-img" ng-controller="customerBuildingController">
+
+  <!--<a href="#" editable-text="xedit.name">{{ xedit.name || "empty" }}</a>-->
+
+  <div class="bld block-a">
+    <div class="img "><img ng-src="/img/buildings/{{ bld.building.img_building?bld.building.img_building:'../logoLogin.png' }}" alt=""></div>
+    <div class=" form-group ">
+      <!--<input type='file' name='img_building' class='text  form-control inp-img-form block-a-edit' data-classinput='form-control inline v-middle input-s'data-classbutton='btn btn-default'data-icon='false'ui-jq='filestyle' tabindex='-1'/>-->
+      <img  src='#' alt='' class='prvw-img-form'/>
+    </div>
+  </div>
+  <div ng-if="!customerData">
+    <button class="btn m-b-xs w-xs btn-info btn-edit" id="block-a" ng-click="editFormByType('block-a')">Edit</button>
+  </div>
+  <form id="building-update-form" class="validation-form">
+  <div class="bld block-b">
+    <div class="bld-info-data">
+      <input type="hidden" value="{{ bld.building.id }}" name="id" class="block-a-edit form-control">
+      <label class="bold-type">Name</label>           <label class="block-a-label" id="name">{{ bld.building.name?bld.building.name:bld.building.Name }}</label>
+      <input type="text" value="{{ bld.building.name?bld.building.name:bld.building.Name }}" name="name" class="block-a-edit form-control">
+      <label class="bold-type">Address</label>        <label class="block-a-label" id="address">{{ bld.building.address?bld.building.address:bld.building.Address }}</label>
+      <input type="text" value="{{ bld.building.address?bld.building.address:bld.building.Address }}" name="address" class="block-a-edit form-control">
+      <label class="bold-type">Alias</label>          <label class="block-a-label" id="alias">{{ bld.building.alias?bld.building.alias:'' }}</label>
+      <input type="text" value="{{ bld.building.alias?bld.building.alias:'NO ALIAS' }}" name="alias" class="block-a-edit form-control">
+      <label class="bold-type">Nickname</label>       <label class="block-a-label" id="nickname">{{ bld.building.nickname?bld.building.nickname:'' }}</label>
+      <input type="text" value="{{ bld.building.nickname?bld.building.nickname:'NO NICKNAME' }}" name="nickname" class="block-a-edit form-control">
+      <label class="bold-type">Neighborhood</label>   <label class="block-a-label" id="id_neighborhood"> {{ bld.building.neighborhoodname?bld.building.neighborhoodname:'' }}</label>
+      <select name="id_neighborhoods" class="form-control block-a-edit">
+        <option value='{{bld.building.id_neighborhoods}}'>{{bld.building.neighborhoodname}}</option>
+        <option value="{{neighborhood.id}}" ng-repeat="neighborhood in bldData.neighborhood">{{neighborhood.name}}</option>
+      </select>
+      <label class="bold-type">Code</label>           <label class="block-a-label" id="code">{{ bld.building.code?bld.building.code:bld.building.ShortName }}</label>
+      <input type="text" value="{{ bld.building.code?bld.building.code:bld.building.ShortName }}" name="code" class="block-a-edit form-control">
+      <label class="bold-type">Year built</label>     <label class="block-a-label" id="year_built"> {{ bld.building.year_built?bld.building.year_built:'' }}</label>
+      <input type="text" value="{{ bld.building.year_built?bld.building.year_built:'NO YEAR BUILT' }}" name="year_built" class="block-a-edit form-control date">
+      <label class="bold-type">Units</label>          <label class="block-a-label" id="units">{{ bld.building.units?bld.building.units:bld.building.Units }}</label>
+      <input type="text" value="{{ bld.building.units?bld.building.units:bld.building.Units }}" name="units" class="block-a-edit form-control">
+      <label class="bold-type">Floors</label>         <label class="block-a-label" id="floors">{{ bld.building.floors?bld.building.floors:'NO FLOORS INFO' }}</label>
+      <input type="text" value="{{ bld.building.floors?bld.building.floors:'NO FLOORS INFO' }}" name="floors" class="block-a-edit form-control">
+      <label class="bold-type">Type</label>            <label class="block-a-label" id="type">{{ bld.building.typename?bld.building.typename:bld.building.ServiceType }}</label>
+      <select name="id_types" class="form-control block-a-edit">
+        <option value='{{ bld.building.id_types}}'>{{ bld.building.typename}}</option>
+        <option value="{{typeoption.id}}" ng-repeat="typeoption in bldData.types">{{typeoption.name}}</option>
+      </select>
+      <label class="bold-type">Legal name</label>      <label class="block-a-label" id="legal_name">{{ bld.building.legal_name?bld.building.legal_name:bld.building.Description }}</label>
+      <input type="text" value="{{ bld.building.legal_name?bld.building.legal_name:bld.building.Description }}" name="legal_name" class="block-a-edit form-control">
+      <label class="bold-type">Builder</label>         <label class="block-a-label" id="builder">{{ bld.building.builder?bld.building.builder:' ' }}</label>
+      <input type="text" value="{{ bld.building.builder?bld.building.builder:'NO BUILDER DATA' }}" name="builder" class="block-a-edit form-control">
+    </div>
+  </div>
+
+  <!--<div class="bld block-c">-->
+    <!--<div class="bld-info-data">-->
+      <!--<label style="color: #000;">DATA BLOQUE C</label>-->
+    <!--</div>-->
+  <!--</div>-->
+
+  <button class="btn m-b-xs w-xs btn-success save-btn" id="save-block-a"  ng-click="submitForm()">Save</button>
+  </form>
+</div>
+<!-- END BUILDING INFO P1-->
+<!-- BUILDING INFO P2-->
+
+<div class="bg-light lter b-b wrapper-md">
+  <div class="row">
+    <div class="col-sm-6 col-xs-12">
+      <h3 class="m-n font-thin h3 text-black">Building Information</h3>
+    </div>
+  </div>
+</div>
+
+<div class="col-lg-12" id="tmpcss" ng-if="bld.properties.length > 0">
+  <style>
+    @import url(http://fonts.googleapis.com/css?family=Dosis:600,200|Great+Vibes);
+    @import url(http://weloveiconfonts.com/api/?family=fontawesome);
+  </style>
+  <section>
+    <input type="radio" id="profile" value="1" name="tractor" checked='checked' />
+    <input type="radio" id="settings" value="2" name="tractor" />
+    <input type="radio" id="posts" value="3" name="tractor" />
+    <input type="radio" id="books" value="4" name="tractor" />
+    <nav>
+      <label for="profile" class='fontawesome-building'></label>
+      <label for="settings" class='fontawesome-phone-sign'></label>
+      <label for="posts" class='fontawesome-hospital'></label>
+      <label for="books" class='fontawesome-wrench'></label>
+    </nav>
+    <article class='uno'>
+      <div id="building-properties" class="building">
+        <div>
+          <button class="btn m-b-xs w-xs btn-info btn-edit" id="block-b">Edit</button>
+        </div>
+        <form action="{{ url('/bldblockb') }}" class="xeditforms">
+          <!--@foreach($properties as $index => $property)-->
+          <div class="bld block-full"  ng-repeat="(index, propertie) in bld.properties">
+            <h4 class="h4-bld">Building Properties # {{ index + 1 }}</h4>
+            <div class="bld-info-data">
+              <label class="bold-type">Dedicate Number</label>      <label class="block-b-label">{{ propertie.dedicate_number }}</label>
+              <input type="text" value="{{ propertie.dedicate_number }}" name="dedicate_number{{ index + 1 }}" class="block-b-edit form-control">
+              <label class="bold-type">Wifi Info</label>            <label class="block-b-label">{{ propertie.wifi_info }}</label>
+              <input type="text" value="{{ propertie.wifi_info }}" name="wifi_info{{ index + 1 }}" class="block-b-edit form-control">
+              <label class="bold-type">ip range</label>             <label class="block-b-label">{{ propertie.ip_range }}</label>
+              <input type="text" value="{{ propertie.ip_range }}" name="ip_range{{ index + 1 }}" class="block-b-edit form-control">
+              <label class="bold-type">DNS</label>                  <label class="block-b-label">{{ propertie.dns }}</label>
+              <input type="text" value="{{ propertie.dns }}" name="dns{{ index + 1 }}" class="block-b-edit form-control">
+              <label class="bold-type">Gateway</label>              <label class="block-b-label">{{ propertie.gateway }}</label>
+              <input type="text" value="{{ propertie.gateway }}" name="gateway{{ index + 1 }}" class="block-b-edit form-control">
+              <label class="bold-type">Comments</label>             <label class="block-b-label">{{ propertie.comments }}</label>
+              <input type="text" value="{{ propertie.comments }}" name="comments{{ index + 1 }}" class="block-b-edit form-control">
+            </div>
+          </div>
+          <!--@endforeach-->
+          <button class="btn m-b-xs w-xs btn-success save-btn save-btn-info" id="save-block-b" type="submit">Save</button>
+        </form>
+      </div>
+    </article>
+    <article class='dos' ng-if="bld.contact.length > 0">
+      <div id="building-contact" class="building">
+        <!--@foreach($contact as $index => $contacts)-->
+        <div class="bld block-full" ng-repeat="(index, contacts) in bld.contact">
+          <h4 class="h4-bld">Building Contact # {{ index + 1 }}</h4>
+          <div class="bld-info-data">
+            <label class="bold-type">First Name</label>           <label>{{ contacts.first_name }}</label>
+            <label class="bold-type">Last Name</label>            <label>{{ contacts.last_name }}</label>
+            <label class="bold-type">Contact info</label>         <label>{{ contacts.contact }}</label>
+            <label class="bold-type">Fax</label>                  <label>{{ contacts.fax }}</label>
+            <label class="bold-type">Company</label>              <label>{{ contacts.company }}</label>
+            <label class="bold-type">Comments</label>             <label>{{ contacts.comments }}</label>
+          </div>
+        </div>
+        <!--@endforeach-->
+      </div>
+    </article>
+    <article class='tres'>
+      <div id="building-properties" class="building">
+        <div>
+          <button class="btn m-b-xs w-xs btn-info btn-edit" id="block-b">Edit</button>
+        </div>
+        <form action="{{ url('/bldblockb') }}" class="xeditforms">
+          <!--@foreach($properties as $index => $property)-->
+          <div class="bld block-full"  ng-repeat="(index, propertie) in bld.properties">
+            <h4 class="h4-bld">Building Properties # {{ index + 1 }}</h4>
+            <div class="bld-info-data">
+              <label class="bold-type">Dedicate Number</label>      <label class="block-b-label">{{ propertie.dedicate_number }}</label>
+              <label class="bold-type">Wifi Info</label>            <label class="block-b-label">{{ propertie.wifi_info }}</label>
+              <label class="bold-type">ip range</label>             <label class="block-b-label">{{ propertie.ip_range }}</label>
+              <label class="bold-type">DNS</label>                  <label class="block-b-label">{{ propertie.dns }}</label>
+              <label class="bold-type">Gateway</label>              <label class="block-b-label">{{ propertie.gateway }}</label>
+              <label class="bold-type">Comments</label>             <label class="block-b-label">{{ propertie.comments }}</label>
+              <input type="text" value="{{ propertie.dedicate_number }}" name="dedicate_number{{ index + 1 }}" class="block-b-edit form-control">
+              <input type="text" value="{{ propertie.wifi_info }}" name="wifi_info{{ index + 1 }}" class="block-b-edit form-control">
+              <input type="text" value="{{ propertie.ip_range }}" name="ip_range{{ index + 1 }}" class="block-b-edit form-control">
+              <input type="text" value="{{ propertie.dns }}" name="dns{{ index + 1 }}" class="block-b-edit form-control">
+              <input type="text" value="{{ propertie.gateway }}" name="gateway{{ index + 1 }}" class="block-b-edit form-control">
+              <input type="text" value="{{ propertie.comments }}" name="comments{{ index + 1 }}" class="block-b-edit form-control">
+            </div>
+          </div>
+          <!--@endforeach-->
+          <button class="btn m-b-xs w-xs btn-success save-btn save-btn-info" id="save-block-b" type="submit">Save</button>
+        </form>
+      </div>
+    </article>
+    <article class='cuatro' ng-if="bld.contact.length > 0">
+      <div id="building-contact" class="building">
+        <!--@foreach($contact as $index => $contacts)-->
+        <div class="bld block-full" ng-repeat="(index, contacts) in bld.contact">
+          <h4 class="h4-bld">Building Contact # {{ index + 1 }}</h4>
+          <div class="bld-info-data">
+            <label class="bold-type">First Name</label>           <label>{{ contacts.first_name }}</label>
+            <label class="bold-type">Last Name</label>            <label>{{ contacts.last_name }}</label>
+            <label class="bold-type">Contact info</label>         <label>{{ contacts.contact }}</label>
+            <label class="bold-type">Fax</label>                  <label>{{ contacts.fax }}</label>
+            <label class="bold-type">Company</label>              <label>{{ contacts.company }}</label>
+            <label class="bold-type">Comments</label>             <label>{{ contacts.comments }}</label>
+          </div>
+        </div>
+        <!--@endforeach-->
+      </div>
+    </article>
+  </section>
+</div>
+<!-- END BUILDING INFO P2-->

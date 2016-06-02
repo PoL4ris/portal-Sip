@@ -9,6 +9,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 
   <link href="/css/angular/angular-material.css" rel="stylesheet">
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" >
 
    {{--DEFAULT STYLES --}}
   <link rel="stylesheet" href="/css/animate.min.css" type="text/css" />
@@ -29,6 +30,7 @@
   {{--ANGULAR PLUGINS--}}
   <link href="/css/angular/xeditable.css" rel="stylesheet">
   <link href="/css/angular/angular-notify.css" rel="stylesheet">
+  <link href="/css/angular/ng-table.min.css" rel="stylesheet">
 
 
 
@@ -70,6 +72,7 @@
 <script src="/js/angular/ui-bootstrap.js"></script>
 <script src="/js/angular/angular-aria.js"></script>
 <script src="/js/angular/angular-material.js"></script>
+<script src="/js/angular/ng-table.min.js"></script>
 
 
 

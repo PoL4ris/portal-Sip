@@ -1,5 +1,5 @@
 <!-- TITLE -->
-<div class="bg-light lter b-b wrapper-md">
+<div class="bg-light lter b-b wrapper">
   <h1 class="m-n font-thin h3" ng-if="!bld">Support</h1>
   <!--<h1 class="m-n font-thin h3" ng-if="bld">Building : {{ bld.building.name }}</h1>-->
 </div>
@@ -19,10 +19,28 @@
     <script type="text/ng-template" id="myModalContent.html">
       <div class="bg-light lter b-b wrapper-md">
         <h2 class="m-n font-thin h3">Ticket Information</h2>
+        <button class="btn m-b-xs w-xs btn-info btn-edit ticket-right edit-name-ticket" ng-click="editFormByType('block-b')" ng-controller="toolsController" id="block-b">Edit</button>
+
+        <form id="form-0-ticket" class="m-t-sm" ng-controller="supportControllerTools">
+          <button type="submit" class="btn m-b-xs w-xs btn-success save-btn ticket-right edit-ticket-right-save" id="save-block-b" ng-click="updateCustomerTicketName(); editFormByType('block-b')" idCustomerUpdate="">Update</button>
+          <input type="text" disabled class="block-b-edit editclass dis-input preview-name" >
+          <input type="hidden" name="id_customers">
+          <input type="text" placeholder="Address Code..." name="code" class="block-b-edit editclass" ng-keyup="buscador('center')" ng-model="searchCenterCode">
+          <input type="text" placeholder="Unit..." name="unit" class="block-b-edit editclass" ng-model="searchCenterUnit" ng-keyup="buscador('center')">
+
+          <div  class="search-result search-result-tickets-customer anim" ng-if="customerCodeUnitList">
+            <p ng-repeat="results in customerCodeUnitList"
+               ng-click="selectCustomerUpdate(ticketCustomerData.first_name + ticketCustomerData.last_name, ticketCustomerData.id)"
+               ng-controller="getCustomerDataTicket">
+               <b> Name:</b> {{ ticketCustomerData.first_name }} {{ ticketCustomerData.last_name }}, <b> Code:</b> {{ results.code }}, <b> Unit:</b> {{ results.unit }}
+            </p>
+          </div>
+
+        </form>
+
       </div>
 
-      <div class="BODYMODAL">
-
+      <div class="BODYMODAL" ng-controller="submitController">
 
         <div class="col-lg-12">
           <div class="h3 m-t-xs m-b-xs">
@@ -48,58 +66,120 @@
           <small class="text-muted">{{selectedTicket.status}}</small>
         </div>
 
+        <div ng-controller="toolsController">
+          <form id="form-1-ticket">
 
-        <div class="col-lg-12 bg-light lter">
-          <div>Details:</div>
-        </div>
-
-        <div class="col-lg-3">
-          <div>Ticket ID</div>
-          <small class="text-muted">{{selectedTicket.ticket_number}}</small>
-        </div>
-        <div class="col-lg-3">
-          <div>Issue</div>
-          <small class="text-muted">{{selectedTicket.reason.short_description}}</small>
-        </div>
-        <div class="col-lg-3">
-          <div>Status</div>
-          <small class="text-muted">{{selectedTicket.status}}</small>
-        </div>
-        <div class="col-lg-3">
-          <div>Assigned to</div>
-          <small class="text-muted">{{selectedTicket.user_assigned.first_name}}</small>
-        </div>
-
-        <div class="col-lg-12 bg-light lter">
-          <div>Info:</div>
-        </div>
-
-        <div class="col-lg-12">
-          <div>{{selectedTicket.ticket_note.comment}}</div>
-        </div>
+            <div class="col-lg-12 bg-light lter m-t-sm m-b-sm lter-block" >
+              <div>Details:</div>
+              <button type="submit" class="btn m-b-xs w-xs btn-success save-btn ticket-right ticket-right-save" id="save-block-a" ng-click="submitForm('form-1-ticket'); editFormByType('block-a')">Save</button>
+              <button class="btn m-b-xs w-xs btn-info btn-edit ticket-right" id="block-a" ng-click="editFormByType('block-a')">Edit</button>
+            </div>
 
 
-        <div class="col-lg-12 bg-black"></div>
+            <div class="col-lg-3">
+              <div>Ticket ID </div>
+              <small class="text-muted">{{selectedTicket.ticket_number}}</small>
+            </div>
 
-        <div class="col-lg-4">
+            <div class="col-lg-3">
+              <div>Issue</div>
+              <small class="text-muted" class="block-a-label">{{selectedTicket.reason.short_description}}</small>
+
+              <select name="id_reasons" class="block-a-edit form-control editclass">
+                <option value="{{selectedTicket.reason.id}}" >{{selectedTicket.reason.short_description}}</option>
+                <option ng-repeat="desc in dataReasons" value="{{desc.id}}" >{{desc.short_description}}</option>
+              </select>
+            </div>
+
+            <div class="col-lg-3">
+              <div>Status</div>
+              <small class="text-muted">{{selectedTicket.status}}</small>
+              <select name="status" class="block-a-edit form-control editclass">
+                <option value="Escalated" >Escalated</option>
+                <option value="Closed" >Closed</option>
+              </select>
+            </div>
+
+            <div class="col-lg-3">
+              <div>Assigned to</div>
+              <small class="text-muted">{{selectedTicket.user_assigned.first_name}}</small>
+                <select name="id_users_assigned" class="block-a-edit form-control editclass">
+                  <option value="{{selectedTicket.user_assigned.id}}" >{{selectedTicket.user_assigned.first_name}}</option>
+                  <option ng-repeat="usersAssigned in dataUsersAssigned" value="{{usersAssigned.id}}" >{{usersAssigned.first_name}}</option>
+              </select>
+            </div>
+
+          </form>
+
+        </div>
+
+          <div class="col-lg-12 bg-light lter  m-t-sm m-b-sm">
+            <div>Info:</div>
+          </div>
+
+          <div class="col-lg-12">
+            <div class="comment-content m-b-md">{{selectedTicket.ticket_note.comment}}
+              <p ng-repeat="comment in selectedTicket.ticket_note.ticket_history_full">
+                {{comment.comment}}
+              </p>
+            </div>
+          </div>
+
+
+        <div class="col-lg-12 bg-info"></div>
+
+        <div class="col-lg-4 m-t-sm">
           <div>Created by</div>
           <small class="text-muted">Auto</small>
         </div>
-        <div class="col-lg-4">
+        <div class="col-lg-4 m-t-sm">
           <div>Created on</div>
           <small class="text-muted">{{selectedTicket.created_at}}</small>
         </div>
-        <div class="col-lg-4">
+        <div class="col-lg-4 m-t-sm">
           <div>LastUpdate</div>
           <small class="text-muted">{{selectedTicket.updated_at}}</small>
         </div>
 
-        <div class="col-lg-12 bg-light lter">
+
+
+
+
+
+        <div class="col-lg-12 bg-light lter m-t-sm ">
           <div>History:</div>
         </div>
 
         <div class="col-lg-12">
-          <table  ui-jq="dataTable" class="table table-striped b-t b-b">
+
+          <form id="form-2-ticket">
+            <input type="hidden" name="id_reasons" value="{{selectedTicket.reason.id}}">
+            <input type="hidden" name="id_users_assigned" value="{{selectedTicket.user_assigned.id}}">
+            <textarea name="comment"  placeholder="Go ahead..." class="textarea-main-size thistory-form-2 m-t-sm" value="err"></textarea>
+
+            <div class="form-group col-lg-12 suhs">
+              <label class="col-sm-2 control-label">Status</label>
+              <div class="col-sm-10">
+                <label class="suhs-label">Escalate</label><label class="i-switch bg-dark m-t-xs m-r suhs-radio"><input type="radio" name="status" checked="" value="escalated"><i></i></label>
+                <label class="suhs-label">Close</label><label class="i-switch bg-dark m-t-xs m-r suhs-radio"><input type="radio"  name="status" value="closed"><i></i></label>
+              </div>
+            </div>
+
+            <div class="col-lg-12 display-content-main-box update-btn-ticket">
+              <button class="btn m-b-xs w-xs btn-primary save-btn display-inline"  ng-click="submitFormUpdate('form-2-ticket')">UPDATE</button>
+            </div>
+
+          </form>
+
+        </div>
+
+
+        <div class="col-lg-12 bg-light lter m-t-sm ">
+          <div>History:</div>
+        </div>
+
+        <div class="col-lg-12">
+          <table  class="table table-striped b-b">
             <thead>
             <tr>
               <th>Timestamp</th>
@@ -109,9 +189,9 @@
             </tr>
             </thead>
             <tbody>
-            <tr ng-repeat="history in selectedTicket.ticket_history_full" ng-controller="customerTicketHistory">
+            <tr ng-repeat="history in selectedTicket.ticket_history_full" ng-controller="supportTicketHistory">
               <td>{{history.created_at}}</td>
-              <td>{{historyData.ticket_note.comment?historyData.ticket_note.comment:'Empty Comment'}}</td>
+              <td>{{historyData.ticket_note.comment}}</td>
               <td>{{history.status}}</td>
               <td>{{historyData.user.first_name}}</td>
             </tr>
@@ -129,41 +209,48 @@
 
   </div>
 
-
-
-
+<!--{{supportData}}-->
 
   <!--TICKET LIST-->
   <div class="wrapper-md" ng-controller="ModalController">
     <div class="panel panel-default">
       <div class="table-responsive">
-        <table ui-jq="dataTable" class="table table-striped b-t b-b" ui-options="{aaSorting:[[9,'desc']]}">
+        <table ng-table="usersTable" class="table table-striped b-t b-b"  ng-controller="tableSorterTickets">
           <thead>
           <tr>
-            <th style="width:10%">ID</th>
+            <!--<th style="width:10%">ID</th>-->
             <th style="width:10%">Ticket</th>
             <th style="width:10%">Status</th>
             <th style="width:10%">Name</th>
             <th style="width:10%">Address</th>
+            <th style="width:10%">Code</th>
             <th style="width:10%">Tel</th>
             <th style="width:10%">Email</th>
             <th style="width:10%">Issue</th>
             <th style="width:10%">Comment</th>
-            <th style="width:10%">Assigned To</th>
+            <th style="width:10%">Assigned</th>
             <th style="width:10%">LastUpdate</th>
           </tr>
           </thead>
           <tbody>
-          <tr ng-repeat="data in supportData">
-            <td>{{data.id}}</td>
+          <tr ng-repeat="data in dataResult" ng-controller="toolsController">
+            <!--<td>{{data.id}}</td>-->
             <td  ng-click="open(data.id)">{{data.ticket_number}}</td>
-            <td><a href="#/customer?id={{data.customer.id}}"> {{data.status}}</a></td>
-            <td ng-click="callMidView('Customer', data.customer.id)">{{data.customer.first_name}}</td>
+            <td>{{data.status}}</a></td>
+            <td><a href="#/customer?id={{data.customer.id}}">{{data.customer.first_name}}</a></td>
             <td>{{data.address.address}}</td>
+            <td>{{data.address.code}}</td>
             <td>{{data.contacts.value}}</td>
             <td>{{data.contacts.value}}</td>
             <td>{{data.reason.short_description}}</td>
-            <td>{{data.ticket_note.comment}}</td>
+            <!--<td>{{data.ticket_note.comment}}</td>-->
+
+            <td ng-mouseover="showFullComment(data.id)" ng-mouseleave="hideFullComment(data.id)" class="comment-long" ng-if="data.ticket_note.comment">{{ data.ticket_note.comment | limitTo:letterLimit }}...
+              <div id='ticket-{{ data.id }}' style="display: none;" class="ticket-comment-pop">{{data.ticket_note.comment}}</div>
+            </td>
+            <td ng-if="!data.ticket_note.comment"> No Comment </td>
+
+
             <td>{{data.user_assigned.first_name}}</td>
             <td>{{data.contacts.updated_at}}</td>
           </tr>

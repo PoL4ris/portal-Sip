@@ -32,4 +32,16 @@ class Customer extends Model
   {
     return $this->hasMany('App\Models\Ticket', 'id_customers', 'id');
   }
+  public function services()
+  {
+    return $this->hasMany('App\Models\CustomerProduct', 'id_customers', 'id');
+  }
+  public function product()
+  {
+    return $this->belongsTo('App\Models\Product', 'id_customers', 'id', 'App\Models\CustomerProduct');
+  }
+  public function building()
+  {
+    return $this->belongsTo('App\Models\Address', 'id', 'id_buildings', 'App\Models\Building\Building');
+  }
 }

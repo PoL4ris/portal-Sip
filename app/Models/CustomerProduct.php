@@ -21,15 +21,12 @@ class CustomerProduct extends Model
      */
     public function product() {
 
-        return $this->hasOne('App\Models\Product', 'id_products');
+        return $this->hasOne('App\Models\Product', 'id', 'id_products');
     }
-
-    /**
-     * 
-     * @return type
-     */
     public function status() {
-
-        return $this->hasOne('App\Models\Status', 'id_status');
+        return $this->hasOne('App\Models\Status', 'id', 'id_status');
+    }
+    public function port() {
+        return $this->hasOne('App\Models\Port', 'id', 'id_customer_products');
     }
 }

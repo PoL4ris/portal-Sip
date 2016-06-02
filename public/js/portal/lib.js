@@ -11,7 +11,7 @@ var customerSeccion = null;
 
 
 //getTicketData
-var createFancyBox = function ()
+var createFancyBox = function ()//INVALID
 {
   return function(data, textStatus, jqXHR)
   {
@@ -30,7 +30,7 @@ var createFancyBox = function ()
 };
 //get building list OFFSET LIMIT
 //--->angular
-var buildingsList = function (position)
+var buildingsList = function (position)//INVALID
 {
   return function(data, textStatus, jqXHR)
   {
@@ -88,7 +88,7 @@ var buildingsList = function (position)
   };
 };
 //Search by type
-var buscador = function(searchType)
+var buscador = function(searchType)//INVALID
 {
   return function(data, textStatus, jqXHR)
   {
@@ -401,7 +401,7 @@ var modifServiceBtn = function ()
 
   };
 };
-var confirmDialog = function ()
+var confirmDialog = function ()//INVALID
 {
   return function(data, textStatus, jqXHR)
   {
@@ -579,8 +579,10 @@ var insertCustomerTicket = function ()
       );
   };
 };
-var networkServices = function (service, portID)
+var networkServices = function (service, portID)//INVALID
 {
+console.log(portID);
+return;
     var routes = ['networkCheckStatus',
                   'netwokAdvancedInfo',
                   'networkAdvanceIPs',
@@ -679,7 +681,7 @@ var changeSeccionView = function ()
     warpol(customerSeccion).fadeIn("slow");
   };
 };
-var servicesInfoUpdate = function (serviceID, serviceStatus, routeID)
+var servicesInfoUpdate = function (serviceID, serviceStatus, routeID)//INVALID
 {
 
   var routes = ['updateCustomerServiceInfo'];
@@ -753,7 +755,6 @@ function updateActiveServiceInfo (CSID, ProdIDc)
 }
 
 
-
 /* MENU */
 app.controller('menuController', ['$scope', '$http', function($scope, $http){
   $scope.SiteMenu = [];
@@ -775,8 +776,8 @@ app.controller('adminusers', function($scope, $http) {
       $scope.users = response.data;
     });
 });
-app.controller('admin', function($scope, $http, $compile, $sce, notify)
-{
+//AdminControllers
+app.controller('admin', function($scope, $http, $compile, $sce, notify){
   $http.get("/admin")
     .then(function (response) {
       $scope.userData = response.data;
@@ -917,111 +918,92 @@ app.controller('admin', function($scope, $http, $compile, $sce, notify)
     controller: 'adminViewAccessAppElements'
   };
 });
-
-
-//adminControllers
-app.controller('adminViewStatus', function($scope, $http)
-{
+app.controller('adminViewStatus', function($scope, $http){
   $http.get("adminStatus")
     .then(function (response) {
       $scope.adminStatus = response.data;
     });
 });
-app.controller('adminViewElements', function($scope, $http)
-{
+app.controller('adminViewElements', function($scope, $http){
   $http.get("adminElements")
     .then(function (response) {
       $scope.adminElements = response.data;
     });
 });
-app.controller('adminViewApps', function($scope, $http)
-{
+app.controller('adminViewApps', function($scope, $http){
   $http.get("adminApps")
     .then(function (response) {
       $scope.adminApps = response.data;
     });
 });
-app.controller('adminViewProfiles', function($scope, $http)
-{
+app.controller('adminViewProfiles', function($scope, $http){
   $http.get("adminProfiles")
     .then(function (response) {
       $scope.adminProfiles = response.data;
     });
 });
-app.controller('adminViewTypes', function($scope, $http)
-{
+app.controller('adminViewTypes', function($scope, $http){
   $http.get("adminTypes")
     .then(function (response) {
       $scope.adminTypes = response.data;
     });
 });
-app.controller('adminViewCustomers', function($scope, $http)
-{
+app.controller('adminViewCustomers', function($scope, $http){
   $http.get("adminCustomers")
     .then(function (response) {
       $scope.adminCustomers = response.data;
     });
 });
-app.controller('adminViewAddress', function($scope, $http)
-{
+app.controller('adminViewAddress', function($scope, $http){
   $http.get("adminAddress")
     .then(function (response) {
       $scope.adminAddress = response.data;
     });
 });
-app.controller('adminViewContacts', function($scope, $http)
-{
+app.controller('adminViewContacts', function($scope, $http){
   $http.get("adminContacts")
     .then(function (response) {
       $scope.adminContacts = response.data;
     });
 });
-app.controller('adminViewPayments', function($scope, $http)
-{
+app.controller('adminViewPayments', function($scope, $http){
   $http.get("adminPayments")
     .then(function (response) {
       $scope.adminPayments = response.data;
     });
 });
-app.controller('adminViewNotes', function($scope, $http)
-{
+app.controller('adminViewNotes', function($scope, $http){
   $http.get("adminNotes")
     .then(function (response) {
       $scope.adminNotes = response.data;
     });
 });
-app.controller('adminViewAccessApps', function($scope, $http)
-{
+app.controller('adminViewAccessApps', function($scope, $http){
   $http.get("adminAccessApps")
     .then(function (response) {
       $scope.adminAccessApps = response.data;
     });
 });
-app.controller('adminViewAccessAppElements', function($scope, $http)
-{
+app.controller('adminViewAccessAppElements', function($scope, $http){
   $http.get("adminAccessAppElements")
     .then(function (response) {
       $scope.adminAccessAppElements = response.data;
     });
 });
+//END ADMINCONTROLLERS
 app.controller('buildingCtl', ['$scope','$route','$http', function($scope, $route, $http)
 {
-
   $scope.displayBldData = function (idBld)
   {
 //     console.log(idBld);
 
     $http.get("buildings/" + idBld)
       .then(function (response) {
-//         console.log(response.data);
+        console.log(response.data);
         $scope.bld = response.data;
       });
 
   }
-
-
-
-
   $scope.displayBldForm = function ()
   {
     if ($scope.show == false)
@@ -1039,13 +1021,6 @@ app.controller('buildingCtl', ['$scope','$route','$http', function($scope, $rout
       warpol('#cancel-bld-btn').fadeOut('fast');
     }
   }
-
-
-
-
-
-
-
   $scope.offsetLimitFunction = function (offset, limit)
   {
     warpol('#ol-left-btn').attr('offset', offset);
@@ -1053,10 +1028,6 @@ app.controller('buildingCtl', ['$scope','$route','$http', function($scope, $rout
     warpol('#ol-right-btn').attr('offset', offset);
     warpol('#ol-right-btn').attr('limit', limit);
   }
-
-
-
-
   $scope.buildingsList = function (position)
   {
     //Math var operations.
@@ -1065,7 +1036,7 @@ app.controller('buildingCtl', ['$scope','$route','$http', function($scope, $rout
     var a              = parseInt(offset);
     var b              = parseInt(limit);
     //Back Arrow empty
-    if (position == 0 && offset <= 0)
+    if (position == 0 && offset <= 0 || ($scope.limitoffset  == 'dif' && position == 1))
       return;
     //Solve correct LIMIT OFFSET info to request
     if(position == 1)
@@ -1084,28 +1055,32 @@ app.controller('buildingCtl', ['$scope','$route','$http', function($scope, $rout
     //Main info to do request
     var query = {"offset": offset, "limit": limit, "position": position};
 
-    console.log(query);
 
     $http.get("buildingsList", {params:query})
       .then(function (response) {
-//         console.log(response.data);
-        $scope.bldData['buildingList'] = response.data;
+        if (response.data.length == 0)
+          $scope.limitoffset  = 'dif';
+        else
+        {
+          $scope.bldData['buildingList'] = response.data;
+          $scope.limitoffset  = '';
+        }
       });
+
+    if($scope.limitoffset  == 'dif')
+    {
+      limit = offset;
+      offset = (limit - 20);
+    }
 
     $scope.bldData.offset = offset;
     $scope.bldData.limit = limit;
+
     $scope.offsetLimitFunction(offset, limit);
   }
-
-
-
-
-
-
-
   $scope.buscador = function(searchType, side)
   {
-
+    console.log('entramos');
     var query = {};
 
     if (side == 'left')
@@ -1205,6 +1180,54 @@ return;
 
 
   }
+  $scope.editFormByType = function (id)
+  {
+
+    tempTicketID = id;
+
+    if (warpol('#' + id).attr('stand') == '1')
+    {
+      warpol('.' + id + '-label').css('display','table-cell');
+      warpol('.' + id + '-edit').css('display','none');
+      warpol('#save-' + id).fadeOut( "slow" );
+      warpol('#' + id).html('Edit');
+      warpol('#' + id).switchClass('btn-danger', 'btn-info');
+      warpol('#' + id).attr('stand', '2');
+      if(path == '/supportdash')
+      {
+        warpol('.resultadosComplex').html('');
+        warpol('.dis-input').val('');
+      }
+
+    }
+    else
+    {
+      warpol('.' + id + '-label').css('display','none');
+      warpol('.' + id + '-edit').fadeIn( "slow" );
+      warpol('#save-' + id).fadeIn( "slow" );
+      warpol('#' + id).html('Cancel');
+      warpol('#' + id).switchClass('btn-success', 'btn-danger');
+      warpol('#' + id).attr('stand', '1');
+    }
+
+  }
+  $scope.submitForm = function ()
+  {
+    console.log('entramos');
+    var objects = warpol('#building-update-form').serializeArray();
+    var infoData = {};
+    for(var obj in objects )
+      infoData[objects[obj]['name']] = objects[obj]['value'];
+
+    $http.get("updateBuilding", {params:infoData})
+      .then(function (response) {
+        $scope.bld = response.data;
+      });
+
+    $scope.editFormByType('block-a');
+
+  }
+
 
 
 
@@ -1212,14 +1235,17 @@ return;
   $http.get('buildings').then(function (data){
     $scope.bldData = data.data;
     $scope.offsetLimitFunction($scope.bldData.offset, $scope.bldData.limit);
-//     $scope.parentmethod('gral');
+    console.log($scope.bldData);
   }), function (error){
     alert('Error');
   }
-
-
-
-}]);
+}])
+.directive('myBldView', function() {
+  return {
+    templateUrl: '/views/building/building.html',
+//     controller:'admin'
+  };
+});
 app.controller('newbuildingform', ['$scope', '$http', function($scope, $http)
 {
   $http.get("newbuildingform")
@@ -1228,8 +1254,7 @@ app.controller('newbuildingform', ['$scope', '$http', function($scope, $http)
       warpol('#bld-form-html').html($scope.newbldform);
     });
 }]);
-app.service('validator', function ($scope)
-{
+app.service('validator', function ($scope){
   $scope.startValidations = function()
   {
     console.log('Tada');
@@ -1329,8 +1354,100 @@ app.service('validator', function ($scope)
 
 });
 
-app.controller('supportController', function ($scope, $http, notify, $compile, $sce)
-{
+
+
+
+app.controller('supportControllerTools', function ($scope, $http) {
+
+
+
+  $scope.buscador = function(side) {
+    var query = {};
+    if (side == 'center')
+      query = {'code': this.searchCenterCode?this.searchCenterCode:false,
+               'unit': this.searchCenterUnit?this.searchCenterUnit:false};
+               
+    if (query['code'] == false && query['unit'] == false)
+    {
+      $scope.customerCodeUnitList = '';
+      return;
+    }
+
+    $http.get("getTicketCustomerList", {params: query})
+      .then(function (response) {
+        $scope.customerCodeUnitList = response.data;
+      });
+  }
+
+  $scope.selectCustomerUpdate = function (name, id)
+  {
+    warpol('.preview-name').val(name);
+    warpol('#save-block-b').attr('idCustomerUpdate', id);
+  };
+  $scope.updateCustomerTicketName = function ()
+  {
+    var customerID =  warpol('#save-block-b').attr('idCustomerUpdate')
+    var ticketID = $scope.selectedTicket.id;
+
+    $http.get("updateTicketCustomerName", {params:{'id':ticketID, 'id_customers':customerID}})
+      .then(function (response) {
+        $scope.selectedTicket = response.data;
+      });
+
+    $scope.customerCodeUnitList = '';
+    $scope.cancel();
+  }
+  $scope.editFormByType = function (id)
+  {
+
+    tempTicketID = id;
+
+    if (warpol('#' + id).attr('stand') == '1')
+    {
+      warpol('.' + id + '-label').css('display','table-cell');
+      warpol('.' + id + '-edit').css('display','none');
+      warpol('#save-' + id).fadeOut( "slow" );
+      warpol('#' + id).html('Edit');
+      warpol('#' + id).switchClass('btn-danger', 'btn-info');
+      warpol('#' + id).attr('stand', '2');
+      if(path == '/supportdash')
+      {
+        warpol('.resultadosComplex').html('');
+        warpol('.dis-input').val('');
+      }
+
+    }
+    else
+    {
+      warpol('.' + id + '-label').css('display','none');
+      warpol('.' + id + '-edit').fadeIn( "slow" );
+      warpol('#save-' + id).fadeIn( "slow" );
+      warpol('#' + id).html('Cancel');
+      warpol('#' + id).switchClass('btn-success', 'btn-danger');
+      warpol('#' + id).attr('stand', '1');
+    }
+
+    if (id == 'block-a')
+    {
+      $scope.getReasons();
+      $scope.getUsers();
+    }
+
+  }
+
+});
+
+
+
+app.controller('getCustomerDataTicket', function ($scope, $http){
+  $http.get("getCustomerDataTicket", {params:{'id':$scope.results.id_customers}})
+    .then(function (response) {
+      $scope.ticketCustomerData = response.data;
+    });
+});
+
+
+app.controller('supportController', function ($scope, $http, notify, $compile, $sce){
 //   notify({ message: 'Support Controller Active', templateUrl:'/views/notify.html'} );
   $http.get("supportdashTest")
     .then(function (response) {
@@ -1347,7 +1464,29 @@ app.controller('supportController', function ($scope, $http, notify, $compile, $
     {
       var compiledeHTML = $compile("<div view-Support-"+view+"></div>")($scope);
       warpol("#viewMidContent").html(compiledeHTML);
-    }
+    };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 })
 .directive('viewSupportCustomer', function() {
   return {
@@ -1355,23 +1494,65 @@ app.controller('supportController', function ($scope, $http, notify, $compile, $
     controller: 'customerController'
   };
 });
-
-
-app.controller('customerController', function ($scope, $http, $routeParams)
-{
-  $http.get("customersTmp", {params:{'id':$routeParams.id}})
+app.controller('customerController', function ($scope, $http, $routeParams, notify){
+  $http.get("customersData", {params:{'id':$routeParams.id}})
     .then(function (response) {
       $scope.customerData = response.data;
-  console.log($scope.customerData);
     });
 
 
+  $scope.submitForm = function (table)
+  {
+
+    var objects = warpol('#'+table+'-insert-form').serializeArray();
+    var infoData = {};
+
+
+    for(var obj in objects )
+    {
+      if(objects[obj]['value'] == 'err' /*|| objects[obj]['value'] == ''*/)
+      {
+        alert('Verify ' + objects[obj]['name'] + ' Field');
+        return;
+      }
+
+      infoData[objects[obj]['name']] = objects[obj]['value'];
+    }
+    infoData['id_customers'] = $scope.customerData.id;
+
+//     validator.startValidations;
+
+    $http.get("insertCustomerTicket", {params:infoData})
+      .then(function (response) {
+      console.log(response);
+//         cancelForm();
+        if(response.data == 'OK')
+        {
+          document.getElementById(table+"-insert-form").reset();
+          notify({ message: 'New Ticket Created!', templateUrl:'/views/notify.html'} );
+
+        }
+      });
+
+//     callAdminView(infoData['table']);
+//     notify({ message: 'Data inserted!', templateUrl:'/views/notify.html'} );
+
+  }
+
+  $scope.validate = function(value, table, field)
+  {
+    var data = {};
+    data[field] = value;
+    data['id_customers'] = $scope.customerData.id;
+
+    $http.get("update"+table+"Table", {params:data})
+      .then(function (response) {
+        console.log('OK');
+      });
+  }
+
 });
-
-
-
-app.controller('supportTicketHistory', function ($scope, $http)
-{
+app.controller('supportTicketHistory', function ($scope, $http){
   $http.get("supportTicketHistory", {params:{'id':$scope.history.id}})
     .then(function (response) {
       $scope.historyData = response.data;
@@ -1410,8 +1591,10 @@ app.controller('ModalController', function ($scope, $uibModal, $log) {
   };
 
 });
-app.controller('ModalInstanceCtrl', function ($scope, $http, $uibModalInstance, ticketId)
-{
+
+
+
+app.controller('ModalInstanceCtrl', function ($scope, $http, $uibModalInstance, ticketId){
 //   console.log(ticketId);
 
   $http.get("getTicketInfo", {params:{'ticketId':ticketId}})
@@ -1428,29 +1611,22 @@ app.controller('ModalInstanceCtrl', function ($scope, $http, $uibModalInstance, 
   };
 });
 
-app.controller ('customerPaymentController', function ($scope, $http)
-{
+
+
+
+app.controller('customerPaymentController', function ($scope, $http){
   $http.get("getCustomerPayment", {params:{'id':$scope.customerData.id}})
     .then(function (response) {
       $scope.paymentData = response.data;
     });
 });
-app.controller ('customerNewTicketCtrl', function ($scope, $http)
-{
-  $http.get("getNewTicketData", {params:{'id':$scope.customerData.id}})
-    .then(function (response) {
-      $scope.newTicketData = response.data;
-    });
-});
-app.controller ('customerTicketHistoryController', function ($scope, $http)
-{
+app.controller('customerTicketHistoryController', function ($scope, $http){
   $http.get("getTicketHistory", {params:{'id':$scope.customerData.id}})
     .then(function (response) {
       $scope.ticketHistory = response.data;
     });
 });
-app.controller('customerTicketHistoryData', function ($scope, $http)
-{
+app.controller('customerTicketHistoryData', function ($scope, $http){
   $http.get("getTicketHistoryNotes", {params:{'id':$scope.ticket.id_ticket_notes}})
     .then(function (response) {
       $scope.ticketNotes = response.data;
@@ -1470,44 +1646,367 @@ app.controller('customerTicketHistoryData', function ($scope, $http)
       warpol('#ticket-' + id).fadeOut('fast');
     }
 });
-app.controller('customerBillingHistoryController', function ($scope, $http)
-{
+app.controller('customerBillingHistoryController', function ($scope, $http){
   $http.get("getBillingHistory", {params:{'id':$scope.customerData.id}})
     .then(function (response) {
       $scope.billingHistory = response.data;
     });
 });
-app.controller('customerNetworkController', function ($scope, $http)
-{
+app.controller('customerServicesController', function ($scope, $http){
+  $http.get("getCustomerServices", {params:{'id':$scope.customerData.id}})
+    .then(function (response) {
+      $scope.customerServices = response.data;
+    });
+});
+app.controller('serviceProductController', function ($scope, $http){
+  $http.get("getCustomerProduct", {params:{'id':$scope.service.id}})
+    .then(function (response) {
+      $scope.customerProduct = response.data;
+    });
+  $http.get("getCustomerProductType", {params:{'id':$scope.service.id}})
+    .then(function (response) {
+      $scope.customerProductStatus = response.data;
+    });
+});
+app.controller('customerNetworkController', function ($scope, $http, $mdDialog, $mdMedia){
+  $scope.status = '  ';
+  $scope.customFullscreen = $mdMedia('xs') || $mdMedia('sm');
+
   $http.get("getCustomerNetwork", {params:{'id':$scope.customerData.id}})
     .then(function (response) {
       $scope.customerNetwork = response.data;
     });
+
+  $scope.networkServices = function (service)
+  {
+    networkServices(service);
+  }
+  function networkServices (service)
+  {
+    var routes = ['networkCheckStatus',
+                  'netwokAdvancedInfo',
+                  'networkAdvanceIPs',
+                  'networkRecyclePort',
+                  '4',
+                  'networkSignUp',
+                  'networkActivate'];
+
+    warpol('.network-functions').addClass('disabled');
+
+    var service = service;
+    var portID = $scope.customerNetwork.portId;
+
+    //AJAX request
+    warpol.ajax(
+      {type:"GET",
+        url:"/" + routes[service],
+        data:{'portid':portID},
+        success: function(data)
+        {
+          if (data == 'ERROR')
+            alert(data);
+
+          warpol.each(data,function(i, item)
+          {
+            warpol('#' + i).html(item);
+          });
+          warpol('#basic-info-net').notify('OK');
+
+          service = 1;
+          warpol.ajax(
+            {type:"GET",
+              url:"/" + routes[service],
+              data:{'portid':portID},
+              success: function(data)
+              {
+                warpol.each(data,function(i, item)
+                {
+                  warpol('#' + i).html(item);
+                });
+              }
+            }
+          );
+
+          service = 2;
+          warpol.ajax(
+            {type:"GET",
+              url:"/" + routes[service],
+              data:{'portid':portID},
+              success: function(data)
+              {
+
+                warpol('#IPs').notify('IPs Array.');
+                warpol('.network-functions').removeClass('disabled');
+
+//                   warpol.each(data,function(i, item)
+//                   {
+//                     warpol('#' + i).html(item);
+//                   });
+
+              }
+            }
+          );
+
+        }
+      }
+    );
+
+    if (service == 5)
+    {
+      warpol('.access-type-net').removeClass('btn-danger ');
+      warpol('.access-type-net').addClass('btn-info');
+      warpol('.access-type-net').html('Activate');
+      warpol('.access-type-net').attr('type','6');
+      warpol('#acces-network-id').html('signup');
+    }
+    else if ( service == 6 )
+    {
+      warpol('.access-type-net').removeClass('btn-info')
+      warpol('.access-type-net').addClass('btn-danger')
+      warpol('.access-type-net').html('Send to Signup');
+      warpol('.access-type-net').attr('type','5');
+      warpol('#acces-network-id').html('yes');
+    }
+
+  };
+
+  //PENDING
+  function servicesInfoUpdate (serviceID, serviceStatus, routeID)
+  {
+    var routes = ['updateCustomerServiceInfo'];
+
+//   warpol('.network-functions').addClass('disabled');
+
+    //AJAX request
+    warpol.ajax(
+      {type:"GET",
+        url:"/" + routes[routeID],
+        data:{'serviceid':serviceID, 'status':serviceStatus},
+        success: function(data)
+        {
+          if (data == 'ERROR')
+            alert(data);
+
+          if (serviceStatus == 'active')
+          {
+            warpol('#serviceno-' + serviceID).addClass('disabled ital');
+            warpol('#serviceinfo-status-' + serviceID).html('disabled');
+            warpol('#xservice-btn-id-' + serviceID).attr('displaystatus','disabled');
+            warpol('#xservice-btn-id-' + serviceID).addClass('btn-success fa-check');
+            warpol('#xservice-btn-id-' + serviceID).removeClass('btn-dark');
+            warpol('#xservice-btn-id-' + serviceID).removeClass('fa-times');
+          }
+          else
+          {
+            warpol('#serviceno-' + serviceID).removeClass('disabled ital');
+            warpol('#serviceinfo-status-' + serviceID).html('active');
+            warpol('#xservice-btn-id-' + serviceID).attr('displaystatus','active');
+            warpol('#xservice-btn-id-' + serviceID).addClass('btn-dark fa-times');
+            warpol('#xservice-btn-id-' + serviceID).removeClass('btn-success');
+            warpol('#xservice-btn-id-' + serviceID).removeClass('fa-check');
+          }
+
+        }
+      }
+    );
+  };
+
+
+  $scope.showConfirm = function(ev)
+  {
+    var service = warpol('#rport').attr('type');
+    var portID = warpol('#rport').attr('portid');
+    var serviceID = warpol('#rport').attr('serviceid');
+    var serviceStatus = warpol('#rport').attr('displaystatus');
+    var routeID = warpol('#rport').attr('route');
+
+    var confirm = $mdDialog.confirm()
+      .title('Please Confirm Your Action!')
+      .textContent('Once you click Yes, you need to wait the process to finish.')
+      .ariaLabel('Lucky day')
+      .targetEvent(ev)
+      .clickOutsideToClose(true)
+      .ok('YES')
+      .cancel('NO');
+
+      // YES/NO
+    $mdDialog.show(confirm).then(function()
+    {
+      $scope.status = 'You decided to get rid of your debt.';
+
+      if (portID)
+        networkServices(service);
+      else if(serviceID)
+        servicesInfoUpdate(serviceID, serviceStatus, routeID);
+
+    }, function() {
+      $scope.status = 'You decided to keep your debt.';
+    });
+  };
+
+});
+app.controller('customerNewTicketCtrl', function ($scope, $http){
+  $http.get("getTableData", {params:{'table':'reasons'}})
+    .then(function (response) {
+      $scope.newTicketData = response.data;
+    });
+});
+app.controller('customerBuildingController', function($scope, $http){
+  if($scope.customerData)
+  {
+    $http.get("buildings/" + $scope.customerData.address.id_buildings)
+      .then(function (response) {
+        console.log(response.data);
+        $scope.bld = response.data;
+      });
+  }
 });
 
 
 
 
+
+
+app.controller('submitController', function ($scope, $http)
+{
+  $scope.submitForm = function (idForm)
+  {
+
+    var objects = warpol('#' + idForm).serializeArray();
+    var infoData = {};
+    for(var obj in objects )
+      infoData[objects[obj]['name']] = objects[obj]['value'];
+
+    infoData['id'] = $scope.selectedTicket.id;
+
+
+    $http.get("updateTicketDetails", {params:infoData})
+      .then(function (response) {
+        $scope.selectedTicket = response.data;
+      });
+  }
+  $scope.submitFormUpdate = function (idForm)
+  {
+    var objects = warpol('#' + idForm).serializeArray();
+    var infoData = {};
+    for(var obj in objects )
+      infoData[objects[obj]['name']] = objects[obj]['value'];
+
+    infoData['id'] = $scope.selectedTicket.id;
+    console.log(infoData);
+
+    $http.get("updateTicketHistory", {params:infoData})
+      .then(function (response) {
+        $scope.selectedTicket = response.data;
+      });
+    warpol('.thistory-form-2').val('');
+  }
+});
+
+
+
+
+//TOOLS
+app.controller('toolsController', function ($scope, $http) {
+  $scope.letterLimit = 400;
+
+  $scope.showFullComment = function(id)
+  {
+    warpol('#ticket-' + id).fadeIn('slow');
+  }
+  $scope.hideFullComment = function(id)
+  {
+    warpol('#ticket-' + id).fadeOut('fast');
+  }
+
+
+
+
+  $scope.getReasons = function ()
+  {
+    $http.get("getReasonsData")
+      .then(function (response) {
+        $scope.dataReasons = response.data;
+      });
+  }
+  $scope.getUsers = function ()
+  {
+    $http.get("admin")
+      .then(function (response) {
+        $scope.dataUsersAssigned = response.data;
+      });
+  }
+
+
+
+
+
+
+
+
+
+  $scope.editFormByType = function (id)
+  {
+
+    tempTicketID = id;
+
+    if (warpol('#' + id).attr('stand') == '1')
+    {
+      warpol('.' + id + '-label').css('display','table-cell');
+      warpol('.' + id + '-edit').css('display','none');
+      warpol('#save-' + id).fadeOut( "slow" );
+      warpol('#' + id).html('Edit');
+      warpol('#' + id).switchClass('btn-danger', 'btn-info');
+      warpol('#' + id).attr('stand', '2');
+      if(path == '/supportdash')
+      {
+        warpol('.resultadosComplex').html('');
+        warpol('.dis-input').val('');
+      }
+
+    }
+    else
+    {
+      warpol('.' + id + '-label').css('display','none');
+      warpol('.' + id + '-edit').fadeIn( "slow" );
+      warpol('#save-' + id).fadeIn( "slow" );
+      warpol('#' + id).html('Cancel');
+      warpol('#' + id).switchClass('btn-success', 'btn-danger');
+      warpol('#' + id).attr('stand', '1');
+    }
+
+    if (id == 'block-a')
+    {
+      $scope.getReasons();
+      $scope.getUsers();
+    }
+
+  }
+});
+
+
+
+
+
+//TABS, TableSorter
 app.controller('AppCtrl', AppCtrl);
 function AppCtrl ($scope, $log) {
   var tabs = [
-      { title: 'Payment', content:'/views/payment.html'},
-      { title: 'New Ticket'},
-      { title: 'Tickets', content: "/views/ticketshistory.html"},
-      { title: 'Billing', content: "/views/billinghistory.html"},
-      { title: 'Network', content: "/views/network.html"},
-//       { title: 'Building', content: "There's an ink bar that follows the selected tab, you can turn it off if you want."},
-
+      { title: 'Payment',       content:'/views/payment.html'},
+      { title: 'New Ticket',    content:'/views/newticket.html'},
+      { title: 'Tickets',       content:"/views/ticketshistory.html"},
+      { title: 'Billing',       content:"/views/billinghistory.html"},
+      { title: 'Network',       content:"/views/network.html"},
+      { title: 'Services Info', content:"/views/product.html"},
+      { title: 'Building',      content:'/views/building/building.html'},
 
     ],
     selected = null,
     previous = null;
   $scope.tabs = tabs;
-  $scope.selectedIndex = 4;
+  $scope.selectedIndex = 0;
   $scope.$watch('selectedIndex', function(current, old)
   {
-
-
     previous = selected;
     selected = tabs[current];
     if ( old + 1 && (old != current)) $log.debug('Goodbye ' + previous.title + '!');
@@ -1525,7 +2024,18 @@ function AppCtrl ($scope, $log) {
   };
 
 }
+app.controller('tableSorterTickets', function ($scope, $filter, ngTableParams) {
+  $scope.dataSort = $scope.supportData;
 
-app.controller ('testController', function ($scope){
-  console.log('YEA');
+  $scope.usersTable = new ngTableParams({
+    page: 1,
+    count: 10
+  }, {
+    total: $scope.dataSort.length,
+    getData: function ($defer, params) {
+      $scope.dataResult = $scope.dataSort.slice((params.page() - 1) * params.count(), params.page() * params.count());
+      $defer.resolve($scope.dataResult);
+    }
+  });
+
 });

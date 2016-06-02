@@ -10,8 +10,13 @@ use App\Models\Customer\Customers;
 use App\Models\Customer;
 use App\Models\TicketNote;
 use App\Models\Reason;
+use App\Models\CustomerProduct;
+use App\Models\Ticket;
+use App\Models\Address;
+use App\Models\Contact;
 use App\Models\BillingTransactionLog;
 use App\Models\Building\Servicelocation;
+use App\Models\Building\Building;
 use App\Models\Network\networkNodes;
 use App\Models\Support\Ticketreasons;
 use DB;
@@ -114,7 +119,7 @@ class CustomerController extends Controller
     return  DB::select('SELECT * FROM serviceLocation building INNER JOIN customers ON building.LocID = customers.LocID WHERE ' . ($tmpQueryData?$tmpQueryData:$defaultData) . ' LIMIT 100 ');
 
   }
-  public function customersTmp(Request $request)
+  public function customersData(Request $request)
   {
     return Customer::with('address', 'contacts', 'type')->find($request->id);
   }
@@ -142,11 +147,81 @@ class CustomerController extends Controller
   {
     return DB::Select('select * from billingTransactionLog where CID = ' . $request->id);
   }
+  public function getCustomerServices(Request $request)
+  {
+    return Customer::with('services')->find($request->id);
+  }
+  public function getCustomerProduct(Request $request)
+  {
+    return CustomerProduct::with('product')->find($request->id);
+  }
+  public function getCustomerProductType(Request $request)
+  {
+    return CustomerProduct::with('status')->find($request->id);
+  }
+  public function getCustomerBuilding(Request $request)
+  {
+
+    print '<pre>';
+    print_r(Building::find($request->id)->toArray());
+    die();
+
+
+
+
+    return CustomerProduct::with('status')->find($request->id);
+  }
   public function getCustomerNetwork(Request $request)
   {
+    $port = $this->getPortID($request->id);
     $networkControllerInfo = new NetworkController();
-    return $networkControllerInfo->getCustomerConnectionInfo($customer['customer']->PortID);
+    $networkData = $networkControllerInfo->getCustomerConnectionInfo($port);
+    $networkData['portId'] = $port;
+    return $networkData;
   }
+  public function getPortID($id)
+  {
+    return CustomerProduct::with('port')->where('id_customers', $id)->get()[0]->id;
+  }
+
+
+
+  public function updateAddressTable(Request $request)
+  {
+    $data = $request->all();
+    unset($data['id_customers']);
+    Address::where('id_customers', $request->id_customers)->update($data);
+    return 'OK';
+  }
+  public function updateCustomersTable(Request $request)
+  {
+    $data = $request->all();
+    unset($data['id_customers']);
+    Customer::where('id', $request->id_customers)->update($data);
+    return 'OK';
+  }
+  public function updateContactsTable(Request $request)
+  {
+    $data = $request->all();
+    unset($data['id_customers']);
+    Contact::where('id_customers', $request->id_customers)->update($data);
+    return 'OK';
+  }
+  public function getCustomerDataTicket(Request $request)
+  {
+    return Customer::find($request->id);
+  }
+
+
+
+
+
+
+
+
+
+
+
   public function customers(Request $request)
   {
     if ($request->id)
@@ -272,6 +347,30 @@ class CustomerController extends Controller
       return 'OK';
     }
 
+  }
+  public function insertCustomerTicket(Request $request)
+  {
+    $data = $request->all();
+    $comment = $data['comment'];
+    unset($data['comment']);
+
+    $lastTicketNumber = Ticket::all()->last()->ticket_number;
+    $ticketNumber = explode('ST-',$lastTicketNumber);
+    $ticketNumberCast = (int)$ticketNumber[1] + 1;
+
+    $data['ticket_number'] = 'ST-' . $ticketNumberCast;
+    $data['id_users'] = Auth::user()->id;
+
+    DB::table('ticket_notes')->insert(['comment'=>$comment, 'id_users'=>$data['id_users']]);
+    $ticketNoteId = TicketNote::all()->last()->id;
+
+    $data['id_ticket_notes'] = $ticketNoteId;
+    //Default User
+    $data['id_users_assigned'] = 10;
+
+    DB::table('tickets')->insert($data);
+
+    return 'OK';
   }
   public function updateCustomerServiceInfo(Request $request)
   {

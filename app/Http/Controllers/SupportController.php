@@ -2,17 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\TicketNote;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use DB;
 use Schema;
+use Auth;
 //use App\Models\Support\Tickethistory;
 use App\Models\Support\Ticketreasons;
 use App\Models\Support\Adminaccess;
 use App\Models\Customer;
 use App\Models\Ticket;
 use App\Models\TicketHistory;
+use App\Models\Address;
 
 
 class SupportController extends Controller
@@ -21,6 +24,21 @@ class SupportController extends Controller
     $this->middleware('auth');
     DB::connection()->enableQueryLog();
 
+  }
+  public function updateTicketCustomerName(Request $request)
+  {
+    Ticket::where('id', $request->id)->update(['id_customers'=>$request->id_customers]);
+    $request['ticketId'] = $request->id;
+    return $this->getTicketInfo($request);
+  }
+  public function getTicketCustomerList(Request $request)
+  {
+    if ($request->unit == 'false')
+      return Address::where('code', 'LIKE','%'.$request->code.'%')->get();
+    else if ($request->code == 'false')
+      return Address::where('unit', 'LIKE','%'.$request->unit.'%')->get();
+    else
+      return Address::where('unit', 'LIKE','%'.$request->unit.'%')->where('code', 'LIKE','%'.$request->code.'%')->get();
   }
   public function getTicketInfo(Request $request)
   {
@@ -33,7 +51,7 @@ class SupportController extends Controller
   public function dashboardTemp()
   {
 
-     return Ticket::with('customer', 'reason', 'ticketNote','ticketHistory', 'user', 'userAssigned', 'address', 'contacts')->take(2)->skip(0)->get();
+     return Ticket::with('customer', 'reason', 'ticketNote','ticketHistory', 'user', 'userAssigned', 'address', 'contacts')->take(100)->skip(0)->get();
 
     return Customer::with(['tickets' => function ($query) {
       $query->where('id_reasons', 2);
@@ -152,9 +170,50 @@ class SupportController extends Controller
 
       return $resultData;
     }
+  public function updateTicketHistory(Request $request)
+  {
 
+    $data = $request->all();
+
+    $ticketNoteRecord = new TicketNote();
+    $ticketNoteRecord->id_tickets = $request->id;
+    $ticketNoteRecord->comment = $request->comment;
+    $ticketNoteRecord->id_users = Auth::user()->id;
+    $ticketNoteRecord->save();
+
+    $ticketHistoryRecord = new TicketHistory();
+    $ticketHistoryRecord->id_tickets = $request->id;
+    $ticketHistoryRecord->id_reasons = $request->id_reasons;
+    $ticketHistoryRecord->id_ticket_notes = $ticketNoteRecord->id;
+    $ticketHistoryRecord->status = $request->status;
+    $ticketHistoryRecord->id_users = Auth::user()->id;
+    $ticketHistoryRecord->id_users_assigned = $request->id_users_assigned;
+    $ticketHistoryRecord->save();
+
+    $request['ticketId'] = $request->id;
+    return $this->getTicketInfo($request);
+
+  }
   public function updateTicketData(Request $request)
   {
+
+
+
+
+    $data = $request->all();
+    $request['ticketId'] = $request->id;
+
+
+
+    unset($data['id']);
+
+    Ticket::where('id', $request->id)->update($data);
+    $data['ticketId'] = $request->id;
+    return $this->getTicketInfo($request);
+
+
+
+
     $idsChart = ['supportTickets' => 'TID', 'supportTicketHistory' => 'TID', 'supportTicketsID' => 'CID'];
 
     if($request->ajax())
