@@ -29,10 +29,10 @@ class CustomerController extends Controller
   public function __construct() {
     $this->middleware('auth');
   }
-  public function dashboard()
-  {
-    return view('customer.dashboard');
-  }
+//  public function dashboard()
+//  {
+//    return view('customer.dashboard');
+//  }
   public function getCustomersSearch(Request $request)
   {
     if($request->ajax())
@@ -183,7 +183,10 @@ class CustomerController extends Controller
   {
     return CustomerProduct::with('port')->where('id_customers', $id)->get()[0]->id;
   }
-
+  public function getCustomerList ()
+  {
+    return Customer::all()->take(100);
+  }
 
 
   public function updateAddressTable(Request $request)

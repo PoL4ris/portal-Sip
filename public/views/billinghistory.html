@@ -1,4 +1,4 @@
-<div class="col-lg-12" ng-controller="customerBillingHistoryController">
+<div class="col-lg-12" ng-controller="customerBillingHistoryController" ng-if="!stcFlag">
   <!--{{billingHistory}}-->
 
   <div id="customer-view-0">
@@ -32,4 +32,8 @@
     </div>
 
   </div>
+</div>
+
+<div class="color-name-header" ng-if="stcFlag">
+  Go to Customer Info.
 </div>

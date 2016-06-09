@@ -1227,7 +1227,8 @@ h2,
 .h2,
 h3,
 .h3 {
-  margin-top: 20px;
+  /*margin-top: 20px;*/
+  margin-top:0;
   margin-bottom: 10px;
 }
 h1 small,
@@ -2503,7 +2504,7 @@ legend {
 label {
   display: inline-block;
   max-width: 100%;
-  margin-bottom: 5px;
+  /*margin-bottom: 5px;*/
   font-weight: bold;
 }
 input[type="search"] {
@@ -3131,9 +3132,12 @@ fieldset[disabled] .btn-primary.active {
   background-color: #fff;
 }
 .btn-success {
+  /*color: #fff;*/
+  /*background-color: #5cb85c;*/
+  /*border-color: #4cae4c;*/
+  background-color: #739e73;
+  border-color: #659265;
   color: #fff;
-  background-color: #5cb85c;
-  border-color: #4cae4c;
 }
 .btn-success:hover,
 .btn-success:focus,
@@ -3886,7 +3890,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 .nav > li > a {
   position: relative;
   display: block;
-  padding: 10px 15px;
+  padding: 5px 15px;
 }
 .nav > li > a:hover,
 .nav > li > a:focus {
@@ -4068,7 +4072,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 }
 .navbar {
   position: relative;
-  min-height: 50px;
+  min-height: 40px;
   margin-bottom: 20px;
   border: 1px solid transparent;
 }
@@ -4175,7 +4179,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
   border-width: 1px 0 0;
 }
 .navbar-brand {
-  float: left;
+  /*float: left;*/
   height: 50px;
   padding: 15px 15px;
   font-size: 18px;
@@ -4263,8 +4267,8 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
     float: left;
   }
   .navbar-nav > li > a {
-    padding-top: 15px;
-    padding-bottom: 15px;
+    padding-top: 10px;
+    padding-bottom: 10px;
   }
 }
 .navbar-form {

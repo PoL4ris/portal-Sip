@@ -1,0 +1,37 @@
+<div class="bg-light lter b-b wrapper-md">
+  <h2 class="m-n font-thin h3">Sales Pipeline</h2>
+</div>
+
+
+<div class="col-lg-12" ng-controller="networkController">
+  <div class="wrapper-md">
+    <div class="panel panel-default" ng-if="networkData" ng-controller="tableSorterNetwork">
+      <table ng-table="usersTable" class="table table-striped b-b">
+        <thead>
+          <tr>
+            <th>More</th><th>NID</th><th>Location</th><th>Address</th><th>Core</th><th>Dist</th><th>Queue-set</th><th>Primary</th><th>Backup</th><th>Mgmt Subnet</th><th>segment #</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="data in dataResult" id="det-net-{{ data.NID }}">
+            <td ng-click="addTR(data.NID)" class="details-control" id="net-btn-{{ data.NID }}" stance="1"><i class="fa fa-plus-circle txt-green sign-network"></i></td>
+            <td>{{ data.NID }}</td>
+            <td>{{ data.location }}</td>
+            <td>{{ data.address }}</td>
+            <td><a href="" class="SwitchStatusLink btn-link" loc="{{ data.location }}" ip="{{ data.core }}">{{ data.core }}</a></td>
+            <td><a href="" class="SwitchStatusLink btn-link" loc="{{ data.location }}" ip="{{ data.dist }}">{{ data.dist }}</a></td>
+            <td>{{ data.access_up_to_data }} </td>
+            <td>{{ data.primary }}</td>
+            <td>{{ data.backup }}</td>
+            <td>{{ data.mgmtnet }}</td>
+            <td>{{ data.segment }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+
+
+

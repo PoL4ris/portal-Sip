@@ -48,24 +48,31 @@ class SupportController extends Controller
   {
     return TicketHistory::with('reason', 'user', 'ticketNote')->find($request->id);
   }
-  public function dashboardTemp()
+  public function supportTickets()
   {
-
-     return Ticket::with('customer', 'reason', 'ticketNote','ticketHistory', 'user', 'userAssigned', 'address', 'contacts')->take(100)->skip(0)->get();
-
-    return Customer::with(['tickets' => function ($query) {
-      $query->where('id_reasons', 2);
-    }, 'type'])->find(1782);
-
-    $queries = DB::getQueryLog();
-    $last_query = end($queries);
-    dd($last_query);
-
-//    return Ticket::with('customer', 'reason', 'ticketNote', 'user', 'userAssigned');
-
-//    return Customer::with(['tickets' => function ($query) {
-//      $query->where('id_reasons', 2);
-//    }, 'type'])->find(1782);
+     return Ticket::with('customer', 'reason', 'ticketNote','ticketHistory', 'user', 'userAssigned', 'address', 'contacts')
+                    ->take(100)
+                    ->skip(0)
+                    ->where('status','!=', 'closed')
+                    ->orderBy('id', 'desc')
+                    ->get();
+  }
+  public function supportTicketsBilling()
+  {
+     return Ticket::with('customer', 'reason', 'ticketNote','ticketHistory', 'user', 'userAssigned', 'address', 'contacts')
+                    ->take(100)
+                    ->skip(0)
+                    ->where('id_reasons', 11)
+                    ->orderBy('id', 'desc')
+                    ->get();
+  }
+  public function supportTicketsAll()
+  {
+     return Ticket::with('customer', 'reason', 'ticketNote','ticketHistory', 'user', 'userAssigned', 'address', 'contacts')
+                    ->take(100)
+                    ->skip(0)
+                    ->orderBy('id', 'desc')
+                    ->get();
   }
 
 

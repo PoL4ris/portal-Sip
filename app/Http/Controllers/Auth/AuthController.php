@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\User;
+//use App\User;
 use Validator;
 use Socialite;
 use Auth;
 use DB;
 use Redirect;
+use App\Models\User;
+
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;

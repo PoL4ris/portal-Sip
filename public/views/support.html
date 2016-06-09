@@ -1,11 +1,12 @@
+<div class="bg-light lter b-b wrapper-xs col-lg-12">
+  <h2 class="m-n font-thin h3">Support</h2>
+</div>
+
 <div class="app-content-body hbox" ng-controller="supportController">
 
   <!-- LEFT COL-->
   <div class="col w-lg lter b-r b-tabs anim">
 
-    <div class="bg-light lter b-b wrapper-md">
-      <h2 class="m-n font-thin h3">Support Tools</h2>
-    </div>
 
     <div class="vbox">
 
@@ -35,39 +36,32 @@
       <!-- END TOOLS -->
 
       <!-- TABS-->
-      <!--<div class="nav-tabs-alt ntas-tmp" id="ntas-tmp">-->
-        <!--<ul class="nav nav-tabs nav-justified">-->
-          <!--<li class="active anim">-->
-            <!--<a data-target="#tab-1" role="tab" data-toggle="tab">Closed Tickets </a>-->
-          <!--</li>-->
-          <!--<li class=" anim">-->
-            <!--<a data-target="#tab-2" role="tab" data-toggle="tab">VIP Tickets</a>-->
-          <!--</li>-->
-          <!--<li class=" anim">-->
-            <!--<a data-target="#tab-3" role="tab" data-toggle="tab">Old Tickets</a>-->
-          <!--</li>-->
-        <!--</ul>-->
-      <!--</div>-->
+      <div class="nav-tabs-alt ntas-tmp" id="ntas-tmp">
+        <ul class="nav nav-tabs nav-justified">
+          <li class="active anim">
+            <a data-target="#tab-1" role="tab" data-toggle="tab">Customers</a>
+          </li>
+          <li class=" anim">
+            <a data-target="#tab-2" role="tab" data-toggle="tab">Clients</a>
+          </li>
+          <li class=" anim">
+            <a data-target="#tab-3" role="tab" data-toggle="tab">Tickets</a>
+          </li>
+        </ul>
+      </div>
       <!-- END TABS-->
 
+
       <!-- BLD DATA LEFT -->
-      <!--{{supportData}}-->
       <div class="row-row ntas-tmp">
         <div class="tabs-content">
           <div class="cell-inner">
             <div class="tab-content" >
-              <h2 class="m-n font-thin h3 text-center-folded text-center">Ticket List</h2>
 
               <div class="tab-pane active" id="tab-1">
-                <!--OFFSET LIMIT btn's -->
-                <!--<div id="bldlist-result-limits" class="lesmoreinfo">-->
-                  <!--<div offset="" limit="" position="0" class="newdata left anim left-btn-trigg bldlist-result-limits-0" id="ol-left-btn" ng-click=" buildingsList(0)"></div>-->
-                  <!--<div offset="" limit="" position="1" class="newdata right anim right-btn-trigg bldlist-result-limits-1" id="ol-right-btn" ng-click=" buildingsList(1)"></div>-->
-                <!--</div>-->
-                <!--END OFFSET LIMIT btn's -->
                 <!--CONTENT TABS-->
-                <div id="bldlist-result" >
-                  <p ng-repeat="ticketList in supportData" ng-click="displayBldData(building.id)">No. {{ ticketList.ticket_number }} :  Code {{ ticketList.address.code }}</p>
+                <div id="bldlist-result" ng-controller="customerControllerList">
+                  <p ng-repeat="data in supportDataCustomer" ng-click="displayTicketResume(ticketList.id)">{{ data.first_name}} {{ data.last_name}}</p>
                 </div>
               </div>
 
@@ -79,7 +73,7 @@
 
               <div class="tab-pane fix-size-scroll" id="tab-3" >
                 <div class="wrapper-md">
-                  <p ng-repeat="bldcomer in bldData['comer']"ng-click="displayBldData(bldcomer.id)">{{ bldcomer.Name?bldcomer.Name:bldcomer.name }}</p>
+                  <p ng-repeat="ticketList in supportData" ng-click="displayTicketResume(ticketList.id, ticketList.id_customers)"><b> No.</b> {{ ticketList.ticket_number }} :  <b>Code</b> {{ ticketList.address.code }} : <b>Name</b> {{ticketList.customer.first_name}}</p>
                 </div>
               </div>
               <!--BUILDING TABLE -->
@@ -97,7 +91,7 @@
   <!--END COL-->
 
 
-  <div class="col-lg-12 " id="viewMidContent">
+  <div class="col-lg-12 no-padding-sides" id="viewMidContent">
     <div ng-include="'/views/supportDash.html'"></div>
   </div>
 

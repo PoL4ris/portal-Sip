@@ -1,40 +1,65 @@
 <div ng-controller="customerController">
 <!--{{customerData}}-->
 
+
    <!--TITULO -->
-  <div class="bg-light lter col-lg-12 wrapper-lg">
-    <h2 class="m-n font-thin h3">Customer: {{customerData.first_name + ' ' + customerData.last_name}}</h2>
-    <div class="m-t-md col-lg-4">
-      <div class="col-lg-4">Address:</div>
-      <div class="text-muted col-lg-6" editable-text="customerData.address.address" onaftersave="validate(customerData.address.address, 'Address', 'address')">{{customerData.address.address}}</div>
-      <div class="col-lg-4">Unit:</div>
-      <div class="text-muted col-lg-6" editable-text="customerData.address.unit" onaftersave="validate(customerData.address.address, 'Address', 'unit')">{{customerData.address.unit}}</div>
-      <div class="col-lg-4">City:</div>
-      <div class="text-muted col-lg-6" editable-text="customerData.address.city" onaftersave="validate(customerData.address.address, 'Address', 'city')">{{customerData.address.city}}</div>
-      <div class="col-lg-4">State:</div>
-      <div class="text-muted col-lg-6" editable-text="customerData.address.state" onaftersave="validate(customerData.address.address, 'Address', 'state')">{{customerData.address.state}}</div>
-      <div class="col-lg-4">Zip:</div>
-      <div class="text-muted col-lg-6" editable-text="customerData.address.zip" onaftersave="validate(customerData.address.address, 'Address', 'zip')">{{customerData.address.zip}}</div>
+  <div class="bg-light lter col-lg-12 wrapper-sm">
+    <div class="col-lg-3">
+      <h2 class="m-n font-thin h3">Customer: {{customerData.first_name + ' ' + customerData.last_name}}</h2>
     </div>
-    <div class="m-t-md col-lg-4">
-      <div class="col-lg-4">Username:</div>
-      <div class="text-muted col-lg-6" editable-text="customerData.email" onaftersave="validate(customerData.email, 'Customers', 'email')">{{customerData.email}}</div>
-      <div class="col-lg-4">Tel:</div>
-      <div class="text-muted col-lg-6" editable-text="customerData.contacts.value" onaftersave="validate(customerData.contacts.value, 'Contacts', 'value')">{{ customerData.contacts.value }}</div>
-      <div class="col-lg-4">DateSignedUp:</div>
-      <div class="text-muted col-lg-6">{{customerData.signedup_at}}</div>
-      <div class="col-lg-4">AccountStatus:</div>
-      <div class="text-muted col-lg-6">{{ customerData.type.name }}</div>
-      <div class="col-lg-4">VIP:</div>
-      <div class="text-muted col-lg-6" editable-text="customerData.vip" onaftersave="validate(customerData.vip, 'Customers', 'vip')">{{ customerData.vip }}</div>
+    <div class="col-lg-3 edit-mode">
+      <label class="editmode">EDIT MODE: </label>
+      <span class="onoffswitch">
+        <input id="st6" class="onoffswitch-checkbox" type="checkbox" ng-empty name="start_interval" ng-model="checkboxModel" ng-click="customerEditMode()">
+        <label class="onoffswitch-label" for="st6">
+          <span class="onoffswitch-inner" data-swchoff-text="OFF" data-swchon-text="ON"></span>
+          <span class="onoffswitch-switch"></span>
+        </label>
+      </span>
+
+    </div>
+    <div class="col-lg-12">
+      <div class="m-t-md col-lg-3 no-padding-sides">
+        <div class="col-lg-4 no-padding-sides">Address:</div>
+        <div class="text-muted col-lg-6 editable-text" editable-text="customerData.address.address" onaftersave="validate(customerData.address.address, 'Address', 'address')">{{customerData.address.address}}</div>
+        <div class="text-muted col-lg-6 no-editable-text">{{customerData.address.address}}</div>
+        <div class="col-lg-4 no-padding-sides">Unit:</div>
+        <div class="text-muted col-lg-6 editable-text" editable-text="customerData.address.unit" onaftersave="validate(customerData.address.address, 'Address', 'unit')">{{customerData.address.unit}}</div>
+        <div class="text-muted col-lg-6 no-editable-text">{{customerData.address.unit}}</div>
+        <div class="col-lg-4 no-padding-sides">City:</div>
+        <div class="text-muted col-lg-6 editable-text" editable-text="customerData.address.city" onaftersave="validate(customerData.address.address, 'Address', 'city')">{{customerData.address.city}}</div>
+        <div class="text-muted col-lg-6 no-editable-text">{{customerData.address.city}}</div>
+        <div class="col-lg-4 no-padding-sides">State:</div>
+        <div class="text-muted col-lg-6 editable-text" editable-text="customerData.address.state" onaftersave="validate(customerData.address.address, 'Address', 'state')">{{customerData.address.state}}</div>
+        <div class="text-muted col-lg-6 no-editable-text">{{customerData.address.state}}</div>
+        <div class="col-lg-4 no-padding-sides">Zip:</div>
+        <div class="text-muted col-lg-6 editable-text" editable-text="customerData.address.zip" onaftersave="validate(customerData.address.address, 'Address', 'zip')">{{customerData.address.zip}}</div>
+        <div class="text-muted col-lg-6 no-editable-text">{{customerData.address.zip}}</div>
+
+      </div>
+      <div class="m-t-md col-lg-3 no-padding-sides">
+        <div class="col-lg-4 no-padding-sides">Username:</div>
+        <div class="text-muted col-lg-6 editable-text" editable-text="customerData.email" onaftersave="validate(customerData.email, 'Customers', 'email')">{{customerData.email}}</div>
+        <div class="text-muted col-lg-6 no-editable-text">{{customerData.email}}</div>
+        <div class="col-lg-4 no-padding-sides">Tel:</div>
+        <div class="text-muted col-lg-6 editable-text" editable-text="customerData.contacts.value" onaftersave="validate(customerData.contacts.value, 'Contacts', 'value')">{{ customerData.contacts.value }}</div>
+        <div class="text-muted col-lg-6 no-editable-text">{{customerData.contacts.value}}</div>
+        <div class="col-lg-4 no-padding-sides">DateSignedUp:</div>
+        <div class="text-muted col-lg-6">{{customerData.signedup_at}}</div>
+        <div class="col-lg-4 no-padding-sides">AccountStatus:</div>
+        <div class="text-muted col-lg-6">{{ customerData.type.name }}</div>
+        <div class="col-lg-4 no-padding-sides">VIP:</div>
+        <div class="text-muted col-lg-6 editable-text" editable-text="customerData.vip" onaftersave="validate(customerData.vip, 'Customers', 'vip')">{{ customerData.vip }}</div>
+        <div class="text-muted col-lg-6 no-editable-text">{{customerData.vip}}</div>
+      </div>
+      <div class="col-lg-6 no-padding-sides ccv" ng-include="'/views/payment.html'"></div>
+
     </div>
   </div>
 
-
-    <div class="col-lg-12">
+  <div class="col-lg-12 sm-tabs">
       <div ng-controller="AppCtrl" class="sample" layout="column" ng-cloak>
         <md-content class="">
-        <!--<md-content class="md-padding">-->
           <md-tabs md-selected="selectedIndex" md-border-bottom md-autoselect>
             <md-tab ng-repeat="tab in tabs"
                     ng-disabled="tab.disabled"
@@ -42,32 +67,12 @@
               <div class="demo-tab tab{{$index%4}}" style="padding: 25px; text-align: center;">
                 <div ng-include="tab.content"></div>
                 <br/>
-                <!--<md-button class="md-primary md-raised" ng-click="removeTab( tab )" ng-disabled="tabs.length <= 1">Remove Tab</md-button>-->
               </div>
             </md-tab>
           </md-tabs>
         </md-content>
-        <!--<form ng-submit="addTab(tTitle,tContent)" layout="column" class="md-padding" style="padding-top: 0;">-->
-          <!--<div layout="row" layout-sm="column">-->
-            <!--<div flex style="position: relative;">-->
-              <!--<h2 class="md-subhead" style="position: absolute; bottom: 0; left: 0; margin: 0; font-weight: 500; text-transform: uppercase; line-height: 35px; white-space: nowrap;">Add a new Tab:</h2>-->
-            <!--</div>-->
-            <!--<md-input-container>-->
-              <!--<label for="label">Label</label>-->
-              <!--<input type="text" id="label" ng-model="tTitle">-->
-            <!--</md-input-container>-->
-            <!--<md-input-container>-->
-              <!--<label for="content">Content</label>-->
-              <!--<input type="text" id="content" ng-model="tContent">-->
-            <!--</md-input-container>-->
-            <!--<md-button class="add-tab md-primary md-raised" ng-disabled="!tTitle || !tContent" type="submit" style="margin-right: 0;">Add Tab</md-button>-->
-          <!--</div>-->
-        <!--</form>-->
       </div>
+
     </div>
-
-
-
-
 
 </div>

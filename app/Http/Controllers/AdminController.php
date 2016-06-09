@@ -7,11 +7,8 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use DB;
 use App\Http\Controllers\Lib\FormsController;
-use App\Models\Profiles;
+use App\Models\Profile;
 use App\Models\Status;
-
-
-
 
 
 class AdminController extends Controller
@@ -27,7 +24,7 @@ class AdminController extends Controller
   }
   public function adminProfiles()
   {
-    return Profiles::All();
+    return Profile::All();
   }
   public function adminStatus()
   {
@@ -47,7 +44,7 @@ class AdminController extends Controller
   }
   public function adminCustomers()
   {
-    return DB::select('select * from customers');
+    return DB::select('select * from customers limit 10');
   }
   public function adminAddress()
   {

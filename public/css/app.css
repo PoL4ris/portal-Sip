@@ -683,7 +683,7 @@ body {
 }
 
 .app-header-fixed {
-  padding-top: 50px;
+  padding-top: 40px;
 }
 
 .app-header-fixed .app-header {
@@ -889,7 +889,7 @@ body {
   padding: 0 20px;
   font-size: 20px;
   font-weight: 700;
-  line-height: 50px;
+  line-height: 40px;
   text-align: center;
 }
 
@@ -1859,9 +1859,12 @@ fieldset[disabled] .btn-primary.active {
 }
 
 .btn-success {
-  color: #ffffff !important;
-  background-color: #27c24c;
-  border-color: #27c24c;
+  /*color: #ffffff !important;*/
+  /*background-color: #27c24c;*/
+  /*border-color: #27c24c;*/
+  background-color: #00D30E;
+  border-color: #00C90A;
+  color: #fff;
 }
 
 .btn-success:hover,
@@ -1869,9 +1872,12 @@ fieldset[disabled] .btn-primary.active {
 .btn-success:active,
 .btn-success.active,
 .open .dropdown-toggle.btn-success {
-  color: #ffffff !important;
-  background-color: #23ad44;
-  border-color: #20a03f;
+  /*color: #ffffff !important;*/
+  /*background-color: #23ad44;*/
+  /*border-color: #20a03f;*/
+  background-color: #00B709;
+  border-color: #00AA08;
+  color: #fff;
 }
 
 .btn-success:active,

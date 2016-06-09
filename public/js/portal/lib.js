@@ -764,27 +764,31 @@ app.controller('menuController', ['$scope', '$http', function($scope, $http){
     alert('Error');
   }
 }]);
-app.controller('Ctrl', function($scope) {
-  $scope.xedit = {
-    name: 'awesome user',
-    test: 'test coso'
-  };
+app.controller('userController',      function($scope, $http){
+  $http.get("/getUserData")
+    .then(function (response) {
+      $scope.usr = response.data;
+    });
 });
-app.controller('adminusers', function($scope, $http) {
+// app.controller('Ctrl', function($scope) {
+//   $scope.xedit = {
+//     name: 'awesome user',
+//     test: 'test coso'
+//   };
+// });
+app.controller('adminusers',          function($scope, $http) {
   $http.get("adminusers")
     .then(function (response) {
       $scope.users = response.data;
     });
 });
-//AdminControllers
-app.controller('admin', function($scope, $http, $compile, $sce, notify){
+app.controller('admin',               function($scope, $http, $compile, $sce, notify){
   $http.get("/admin")
     .then(function (response) {
       $scope.userData = response.data;
     });
 
-  $scope.callAdminView = function (view)
-  {
+  $scope.callAdminView = function (view) {
     callAdminView(view);
   };
   $scope.addNewForm = function (table)
@@ -840,73 +844,73 @@ app.controller('admin', function($scope, $http, $compile, $sce, notify){
     $scope.insertForm = '';
   }
 })
-.directive('myViewUsers', function() {
+.directive('myViewUsers',             function() {
   return {
     templateUrl: '/views/admin/user.html',
     controller:'admin'
   };
 })
-.directive('myViewProfiles', function() {
+.directive('myViewProfiles',          function() {
   return {
     templateUrl: '/views/admin/profile.html',
     controller: 'adminViewProfiles'
   };
 })
-.directive('myViewApps', function() {
+.directive('myViewApps',              function() {
   return {
     templateUrl: '/views/admin/app.html',
     controller: 'adminViewApps'
   };
 })
-.directive('myViewStatus', function() {
+.directive('myViewStatus',            function() {
   return {
     templateUrl: '/views/admin/status.html',
     controller:'adminViewStatus'
   };
 })
-.directive('myViewElements', function() {
+.directive('myViewElements',          function() {
   return {
     templateUrl: '/views/admin/element.html',
     controller:'adminViewElements'
   };
 })
-.directive('myViewCustomers', function() {
+.directive('myViewCustomers',         function() {
   return {
     templateUrl: '/views/admin/customer.html',
     controller: 'adminViewCustomers'
   };
 })
-.directive('myViewTypes', function() {
+.directive('myViewTypes',             function() {
   return {
     templateUrl: '/views/type.html',
     controller: 'adminViewTypes'
   };
 })
-.directive('myViewAddress', function() {
+.directive('myViewAddress',           function() {
   return {
     templateUrl: '/views/address.html',
     controller: 'adminViewAddress'
   };
 })
-.directive('myViewContacts', function() {
+.directive('myViewContacts',          function() {
   return {
     templateUrl: '/views/contact.html',
     controller: 'adminViewContacts'
   };
 })
-.directive('myViewPayments', function() {
+.directive('myViewPayments',          function() {
   return {
     templateUrl: '/views/admin/payment.html',
     controller: 'adminViewPayments'
   };
 })
-.directive('myViewNotes', function() {
+.directive('myViewNotes',             function() {
   return {
     templateUrl: '/views/notes.html',
     controller: 'adminViewNotes'
   };
 })
-.directive('myViewAccessApps', function() {
+.directive('myViewAccessApps',        function() {
   return {
     templateUrl: '/views/admin/access_app.html',
     controller: 'adminViewAccessApps'
@@ -918,79 +922,80 @@ app.controller('admin', function($scope, $http, $compile, $sce, notify){
     controller: 'adminViewAccessAppElements'
   };
 });
-app.controller('adminViewStatus', function($scope, $http){
+
+app.controller('adminViewStatus',             function($scope, $http){
   $http.get("adminStatus")
     .then(function (response) {
       $scope.adminStatus = response.data;
     });
 });
-app.controller('adminViewElements', function($scope, $http){
+app.controller('adminViewElements',           function($scope, $http){
   $http.get("adminElements")
     .then(function (response) {
       $scope.adminElements = response.data;
     });
 });
-app.controller('adminViewApps', function($scope, $http){
+app.controller('adminViewApps',               function($scope, $http){
   $http.get("adminApps")
     .then(function (response) {
       $scope.adminApps = response.data;
     });
 });
-app.controller('adminViewProfiles', function($scope, $http){
+app.controller('adminViewProfiles',           function($scope, $http){
   $http.get("adminProfiles")
     .then(function (response) {
       $scope.adminProfiles = response.data;
     });
 });
-app.controller('adminViewTypes', function($scope, $http){
+app.controller('adminViewTypes',              function($scope, $http){
   $http.get("adminTypes")
     .then(function (response) {
       $scope.adminTypes = response.data;
     });
 });
-app.controller('adminViewCustomers', function($scope, $http){
+app.controller('adminViewCustomers',          function($scope, $http){
   $http.get("adminCustomers")
     .then(function (response) {
       $scope.adminCustomers = response.data;
     });
 });
-app.controller('adminViewAddress', function($scope, $http){
+app.controller('adminViewAddress',            function($scope, $http){
   $http.get("adminAddress")
     .then(function (response) {
       $scope.adminAddress = response.data;
     });
 });
-app.controller('adminViewContacts', function($scope, $http){
+app.controller('adminViewContacts',           function($scope, $http){
   $http.get("adminContacts")
     .then(function (response) {
       $scope.adminContacts = response.data;
     });
 });
-app.controller('adminViewPayments', function($scope, $http){
+app.controller('adminViewPayments',           function($scope, $http){
   $http.get("adminPayments")
     .then(function (response) {
       $scope.adminPayments = response.data;
     });
 });
-app.controller('adminViewNotes', function($scope, $http){
+app.controller('adminViewNotes',              function($scope, $http){
   $http.get("adminNotes")
     .then(function (response) {
       $scope.adminNotes = response.data;
     });
 });
-app.controller('adminViewAccessApps', function($scope, $http){
+app.controller('adminViewAccessApps',         function($scope, $http){
   $http.get("adminAccessApps")
     .then(function (response) {
       $scope.adminAccessApps = response.data;
     });
 });
-app.controller('adminViewAccessAppElements', function($scope, $http){
+app.controller('adminViewAccessAppElements',  function($scope, $http){
   $http.get("adminAccessAppElements")
     .then(function (response) {
       $scope.adminAccessAppElements = response.data;
     });
 });
-//END ADMINCONTROLLERS
+
 app.controller('buildingCtl', ['$scope','$route','$http', function($scope, $route, $http)
 {
   $scope.displayBldData = function (idBld)
@@ -1254,11 +1259,12 @@ app.controller('newbuildingform', ['$scope', '$http', function($scope, $http)
       warpol('#bld-form-html').html($scope.newbldform);
     });
 }]);
-app.service('validator', function ($scope){
-  $scope.startValidations = function()
-  {
-    console.log('Tada');
-  }
+
+// app.service('validator', function ($scope){
+//   $scope.startValidations = function()
+//   {
+//     console.log('Tada');
+//   }
 //
 //   $scope.startValidations = function()
 //   {
@@ -1350,23 +1356,23 @@ app.service('validator', function ($scope){
 //         break;
 //     }
 //   }
+//
+//
+// });
 
-
+app.controller('getCustomerDataTicket',    function ($scope, $http){
+  $http.get("getCustomerDataTicket", {params:{'id':$scope.results.id_customers}})
+    .then(function (response) {
+      $scope.ticketCustomerData = response.data;
+    });
 });
-
-
-
-
-app.controller('supportControllerTools', function ($scope, $http) {
-
-
-
+app.controller('supportControllerTools',   function ($scope, $http) {
   $scope.buscador = function(side) {
     var query = {};
     if (side == 'center')
       query = {'code': this.searchCenterCode?this.searchCenterCode:false,
-               'unit': this.searchCenterUnit?this.searchCenterUnit:false};
-               
+        'unit': this.searchCenterUnit?this.searchCenterUnit:false};
+
     if (query['code'] == false && query['unit'] == false)
     {
       $scope.customerCodeUnitList = '';
@@ -1378,14 +1384,11 @@ app.controller('supportControllerTools', function ($scope, $http) {
         $scope.customerCodeUnitList = response.data;
       });
   }
-
-  $scope.selectCustomerUpdate = function (name, id)
-  {
+  $scope.selectCustomerUpdate = function (name, id) {
     warpol('.preview-name').val(name);
     warpol('#save-block-b').attr('idCustomerUpdate', id);
   };
-  $scope.updateCustomerTicketName = function ()
-  {
+  $scope.updateCustomerTicketName = function () {
     var customerID =  warpol('#save-block-b').attr('idCustomerUpdate')
     var ticketID = $scope.selectedTicket.id;
 
@@ -1395,10 +1398,13 @@ app.controller('supportControllerTools', function ($scope, $http) {
       });
 
     $scope.customerCodeUnitList = '';
-    $scope.cancel();
+    if ($scope.globalViewON != 'Resume')
+      $scope.cancel();
+    else
+      $scope.displayTicketResume(ticketID);
+
   }
-  $scope.editFormByType = function (id)
-  {
+  $scope.editFormByType = function (id) {
 
     tempTicketID = id;
 
@@ -1434,75 +1440,114 @@ app.controller('supportControllerTools', function ($scope, $http) {
     }
 
   }
-
 });
 
-
-
-app.controller('getCustomerDataTicket', function ($scope, $http){
-  $http.get("getCustomerDataTicket", {params:{'id':$scope.results.id_customers}})
-    .then(function (response) {
-      $scope.ticketCustomerData = response.data;
-    });
-});
 
 
 app.controller('supportController', function ($scope, $http, notify, $compile, $sce){
 //   notify({ message: 'Support Controller Active', templateUrl:'/views/notify.html'} );
-  $http.get("supportdashTest")
+  $http.get("supportTickets")
     .then(function (response) {
       $scope.supportData = response.data;
     });
 
-    $scope.callMidView = function (view, id)
-    {
-      $scope.customerId = id?id:$scope.customerId;
-      callMidView(view);
+  function callMidView (view) {
+    $scope.globalViewON = view;
+      var compiledeHTML = $compile("<div my-View-"+view+"></div>")($scope);
+      warpol("#mid-content-tickets").html(compiledeHTML);
     };
-
-    function callMidView (view)
-    {
-      var compiledeHTML = $compile("<div view-Support-"+view+"></div>")($scope);
-      warpol("#viewMidContent").html(compiledeHTML);
-    };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  $scope.fullTickets = function (){
+    $http.get("supportTickets")
+      .then(function (response) {
+        $scope.supportData = response.data;
+      });
+      $scope.viewTicketsDirective = 'Full';
+    callMidView('Full');
+  };
+  $scope.billingTickets = function (){
+    $http.get("supportTicketsBilling")
+      .then(function (response) {
+        $scope.supportData = response.data;
+      });
+    $scope.viewTicketsDirective = 'Billing';
+    callMidView('Billing');
+  };
+  $scope.allTickets = function (){
+    $http.get("supportTicketsAll")
+      .then(function (response) {
+        $scope.supportData = response.data;
+      });
+    $scope.viewTicketsDirective = 'All';
+    callMidView('All');
+  };
+  $scope.displayTicketResume = function (id, idCustomer){
+    $scope.midTicketId = id;
+    $scope.stcid = idCustomer;
+    $scope.stcFlag = true;
+    callMidView('Resume');
+  };
 })
-.directive('viewSupportCustomer', function() {
+.directive('myViewFull',            function() {
   return {
-    templateUrl: '/views/customer.html',
-    controller: 'customerController'
+    templateUrl: '/views/supportFullList.html'
+  };
+})
+.directive('myViewAll',             function() {
+  return {
+    templateUrl: '/views/supportAllList.html'
+  };
+})
+.directive('myViewResume',             function() {
+  return {
+    templateUrl: '/views/supportTicketResume.html',
+    controller: 'singleTicketInfo'
+  };
+})
+.directive('myViewCustomer',             function() {
+  return {
+    templateUrl: '/views/customer.html'
+  };
+})
+.directive('myViewBilling',         function() {
+  return {
+    templateUrl: '/views/supportBillingList.html'
   };
 });
-app.controller('customerController', function ($scope, $http, $routeParams, notify){
-  $http.get("customersData", {params:{'id':$routeParams.id}})
+
+
+app.controller('singleTicketInfo', function ($scope, $http){
+
+  $http.get("getTicketInfo", {params:{'ticketId':$scope.midTicketId}})
     .then(function (response) {
+      $scope.selectedTicket = response.data;
+    });
+})
+
+
+
+app.controller('customerControllerList', function ($scope, $http){
+  $http.get("getCustomerList")
+    .then(function (response) {
+      $scope.supportDataCustomer = response.data;
+    });
+});
+app.controller('customerController',    function ($scope, $http, $routeParams, notify){
+
+  var idCustomer = $routeParams.id;
+
+  if ($scope.stcid)
+    idCustomer = $scope.stcid;
+
+  $http.get("customersData", {params:{'id':idCustomer}})
+    .then(function (response) {
+      console.log(response.data);
       $scope.customerData = response.data;
     });
 
+  $scope.checkboxModel = true;
 
-  $scope.submitForm = function (table)
-  {
+
+  $scope.submitForm = function (table) {
 
     var objects = warpol('#'+table+'-insert-form').serializeArray();
     var infoData = {};
@@ -1539,8 +1584,7 @@ app.controller('customerController', function ($scope, $http, $routeParams, noti
 
   }
 
-  $scope.validate = function(value, table, field)
-  {
+  $scope.validate = function(value, table, field) {
     var data = {};
     data[field] = value;
     data['id_customers'] = $scope.customerData.id;
@@ -1551,14 +1595,29 @@ app.controller('customerController', function ($scope, $http, $routeParams, noti
       });
   }
 
+
+  $scope.customerEditMode = function (){
+    if ( $scope.checkboxModel == false)
+    {
+       warpol('.editable-text').fadeIn('slow');
+       warpol('.no-editable-text').css('display', 'none');
+    }
+    else
+    {
+      warpol('.no-editable-text').fadeIn('slow');
+      warpol('.editable-text').css('display', 'none');
+    }
+  };
+  $scope.customerEditMode();
+
 });
-app.controller('supportTicketHistory', function ($scope, $http){
+app.controller('supportTicketHistory',  function ($scope, $http){
   $http.get("supportTicketHistory", {params:{'id':$scope.history.id}})
     .then(function (response) {
       $scope.historyData = response.data;
     });
 });
-app.controller('ModalController', function ($scope, $uibModal, $log) {
+app.controller('ModalController',       function ($scope, $uibModal, $log) {
 
   $scope.animationsEnabled = false;
 
@@ -1591,11 +1650,8 @@ app.controller('ModalController', function ($scope, $uibModal, $log) {
   };
 
 });
-
-
-
-app.controller('ModalInstanceCtrl', function ($scope, $http, $uibModalInstance, ticketId){
-//   console.log(ticketId);
+app.controller('ModalInstanceCtrl',     function ($scope, $http, $uibModalInstance, ticketId){
+  console.log(ticketId);
 
   $http.get("getTicketInfo", {params:{'ticketId':ticketId}})
     .then(function (response) {
@@ -1614,19 +1670,19 @@ app.controller('ModalInstanceCtrl', function ($scope, $http, $uibModalInstance, 
 
 
 
-app.controller('customerPaymentController', function ($scope, $http){
+app.controller('customerPaymentController',         function ($scope, $http){
   $http.get("getCustomerPayment", {params:{'id':$scope.customerData.id}})
     .then(function (response) {
       $scope.paymentData = response.data;
     });
 });
-app.controller('customerTicketHistoryController', function ($scope, $http){
+app.controller('customerTicketHistoryController',   function ($scope, $http){
   $http.get("getTicketHistory", {params:{'id':$scope.customerData.id}})
     .then(function (response) {
       $scope.ticketHistory = response.data;
     });
 });
-app.controller('customerTicketHistoryData', function ($scope, $http){
+app.controller('customerTicketHistoryData',         function ($scope, $http){
   $http.get("getTicketHistoryNotes", {params:{'id':$scope.ticket.id_ticket_notes}})
     .then(function (response) {
       $scope.ticketNotes = response.data;
@@ -1646,19 +1702,19 @@ app.controller('customerTicketHistoryData', function ($scope, $http){
       warpol('#ticket-' + id).fadeOut('fast');
     }
 });
-app.controller('customerBillingHistoryController', function ($scope, $http){
+app.controller('customerBillingHistoryController',  function ($scope, $http){
   $http.get("getBillingHistory", {params:{'id':$scope.customerData.id}})
     .then(function (response) {
       $scope.billingHistory = response.data;
     });
 });
-app.controller('customerServicesController', function ($scope, $http){
+app.controller('customerServicesController',        function ($scope, $http){
   $http.get("getCustomerServices", {params:{'id':$scope.customerData.id}})
     .then(function (response) {
       $scope.customerServices = response.data;
     });
 });
-app.controller('serviceProductController', function ($scope, $http){
+app.controller('serviceProductController',          function ($scope, $http){
   $http.get("getCustomerProduct", {params:{'id':$scope.service.id}})
     .then(function (response) {
       $scope.customerProduct = response.data;
@@ -1668,7 +1724,7 @@ app.controller('serviceProductController', function ($scope, $http){
       $scope.customerProductStatus = response.data;
     });
 });
-app.controller('customerNetworkController', function ($scope, $http, $mdDialog, $mdMedia){
+app.controller('customerNetworkController',         function ($scope, $http, $mdDialog, $mdMedia){
   $scope.status = '  ';
   $scope.customFullscreen = $mdMedia('xs') || $mdMedia('sm');
 
@@ -1845,13 +1901,13 @@ app.controller('customerNetworkController', function ($scope, $http, $mdDialog, 
   };
 
 });
-app.controller('customerNewTicketCtrl', function ($scope, $http){
+app.controller('customerNewTicketCtrl',             function ($scope, $http){
   $http.get("getTableData", {params:{'table':'reasons'}})
     .then(function (response) {
       $scope.newTicketData = response.data;
     });
 });
-app.controller('customerBuildingController', function($scope, $http){
+app.controller('customerBuildingController',        function ($scope, $http){
   if($scope.customerData)
   {
     $http.get("buildings/" + $scope.customerData.address.id_buildings)
@@ -1861,14 +1917,7 @@ app.controller('customerBuildingController', function($scope, $http){
       });
   }
 });
-
-
-
-
-
-
-app.controller('submitController', function ($scope, $http)
-{
+app.controller('submitController',                  function ($scope, $http) {
   $scope.submitForm = function (idForm)
   {
 
@@ -1904,49 +1953,234 @@ app.controller('submitController', function ($scope, $http)
 });
 
 
+app.controller('networkController',                 function ($scope, $http){
+  $http.get("networkdash")
+    .then(function (response) {
+      $scope.networkData = response.data;
+    });
+
+  $scope.switchStatusLink = function (){
+
+//
+//     warpol('.SwitchStatusLink').click(function (event) {
+//       event.preventDefault();
+      var ipAddress = warpol(this).attr('IP');
+      var location = warpol(this).attr('LOC');
+//       var formDataLoadUrl = "assets/includes/network_switch_handler.php";
+
+      //        console.error('IP = '+ipAddress);
+
+      warpol('#switchInfoDialog').html('');
+//      displayAjaxLoader('#switchInfoDialog','<center><span>Loading</span><br><img src="assets/images/ajax-loader-bar.gif" alt=""></center>');
+      warpol('#switchInfoDialog').load(formDataLoadUrl, {
+        'action': 'get-core-switch-info-page',
+        'ipAddress': '"'+ipAddress+'"',
+        'location' : location
+      }, function(){
+//        hideAjaxLoader('#switchInfoDialog');
+      }); //, function(responseText){
+      warpol('#switchInfoDialog').dialog('open');
+      //        warpol('#ticketInfoDialog').css('display','block');
+      return false;
+//     });
+
+
+  };
+
+  $scope.addTR = function addTR(id)
+  {
+    var stance = warpol('#net-btn-' + id).attr('stance');
+    var iconoA = '<i class="fa fa-plus-circle txt-green sign-network"></i>';
+    var iconoB = '<i class="fa fa-minus-circle txt-red sign-network"></i>';
+
+    console.log(stance);
+    if (stance == '1')
+    {
+      warpol('#net-btn-' + id).attr('stance', '2');
+      warpol('#net-btn-' + id).html(iconoB);
+      warpol(getNetworkResult(id)).insertAfter('#det-net-' + id).hide().slideDown('slow');
+    }
+    else
+    {
+      warpol('#net-btn-' + id).attr('stance', '1');
+      warpol('#net-btn-' + id).html(iconoA);
+      warpol('#nt-tmp-data-' + id).remove();
+    }
+//     getNetworkResult();
+
+  };
+  function getNetworkResult(id)
+  {
+    var idString = 'nt-tmp-data-'+id;
+    return ' <tr id="' + idString + '"><td colspan="11">info</td></tr>';
+  };
+});
+
+
+
+
+
+
+
+
+
 
 
 //TOOLS
+app.controller('mainSearchController', function ($scope, $http){
+  console.log('mainSearchController');
+  $scope.valLength = function ()
+  {
+    if(!this.globalSearch)
+    {
+      console.log('cerrar buscador');
+      warpol('#globalSearch').fadeOut('slow');
+    }
+  }
+
+  $scope.search = function ()
+  {
+    if(!this.globalSearch)
+    {
+      warpol('#globalSearch').fadeOut('slow');
+      return;
+    }
+
+    warpol('#globalSearch').fadeIn('slow');
+
+    var string = this.globalSearch;
+
+    $scope.loadingCl = true;
+    $scope.loadingCu = true;
+    $scope.loadingS = true;
+    $scope.loadingB = true;
+    getClientsSearch(string);
+    getCustomersSearch(string);
+    getTicketsSearch(string);
+    getBuildingsSearch(string);
+  };
+
+  function getClientsSearch(string)
+  {
+    $http.get("getClientsSearch", {params:{'string':string}})
+      .then(function (response)  {
+//         if(response.data.length === 0 )
+//           $scope.globalClientSearch = false;
+//         else
+          $scope.globalClientSearch = response.data;
+        $scope.loadingCl = false;
+        console.log(response.data);
+      });
+  }
+  function getCustomersSearch(string)
+  {
+    $http.get("getCustomersSearch", {params:{'string':string}})
+      .then(function (response)  {
+//         if(response.data.length === 0 )
+//         $scope.globalCustomersSearch = false;
+//         else
+        $scope.globalCustomersSearch = response.data;
+        $scope.loadingCu = false;
+        console.log(response.data);
+      });
+  }
+  function getTicketsSearch(string)
+  {
+    $http.get("getTicketsSearch", {params:{'string':string}})
+      .then(function (response)  {
+//         if(response.data.length === 0 )
+//         $scope.globalTicketsSearch = false;
+//         else
+        $scope.globalTicketsSearch = response.data;
+        $scope.loadingS = false;
+        console.log(response.data);
+      });
+  }
+  function getBuildingsSearch(string)
+  {
+    $http.get("getBuildingsSearch", {params:{'string':string}})
+      .then(function (response)  {
+//         if(response.data.length === 0 )
+//         $scope.globalBuildingsSearch = false;
+//         else
+        $scope.globalBuildingsSearch = response.data;
+        $scope.loadingB = false;
+        console.log(response.data);
+      });
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 app.controller('toolsController', function ($scope, $http) {
   $scope.letterLimit = 400;
-
-  $scope.showFullComment = function(id)
-  {
+  $scope.showFullComment = function(id) {
     warpol('#ticket-' + id).fadeIn('slow');
   }
-  $scope.hideFullComment = function(id)
-  {
+  $scope.hideFullComment = function(id) {
     warpol('#ticket-' + id).fadeOut('fast');
   }
-
-
-
-
-  $scope.getReasons = function ()
-  {
+  $scope.getReasons = function () {
     $http.get("getReasonsData")
       .then(function (response) {
         $scope.dataReasons = response.data;
       });
   }
-  $scope.getUsers = function ()
-  {
+  $scope.getUsers = function () {
     $http.get("admin")
       .then(function (response) {
         $scope.dataUsersAssigned = response.data;
       });
   }
-
-
-
-
-
-
-
-
-
-  $scope.editFormByType = function (id)
-  {
+  $scope.editFormByType = function (id) {
 
     tempTicketID = id;
 
@@ -1982,17 +2216,14 @@ app.controller('toolsController', function ($scope, $http) {
     }
 
   }
+
 });
-
-
-
-
-
 //TABS, TableSorter
 app.controller('AppCtrl', AppCtrl);
 function AppCtrl ($scope, $log) {
   var tabs = [
-      { title: 'Payment',       content:'/views/payment.html'},
+//       { title: 'Payment',       content:'/views/payment.html'},
+
       { title: 'New Ticket',    content:'/views/newticket.html'},
       { title: 'Tickets',       content:"/views/ticketshistory.html"},
       { title: 'Billing',       content:"/views/billinghistory.html"},
@@ -2024,12 +2255,45 @@ function AppCtrl ($scope, $log) {
   };
 
 }
+
+
+
+
+
 app.controller('tableSorterTickets', function ($scope, $filter, ngTableParams) {
   $scope.dataSort = $scope.supportData;
-
   $scope.usersTable = new ngTableParams({
     page: 1,
-    count: 10
+    count: 100
+  }, {
+    total: $scope.dataSort.length,
+    getData: function ($defer, params) {
+      $scope.dataResult = $scope.dataSort.slice((params.page() - 1) * params.count(), params.page() * params.count());
+      $defer.resolve($scope.dataResult);
+    }
+  });
+
+});
+app.controller('tableSorterAdminUsers', function ($scope, $filter, ngTableParams) {
+  $scope.letterLimit = 30;
+  $scope.dataSort = $scope.userData;
+  $scope.usersTable = new ngTableParams({
+    page: 1,
+    count: 15
+  }, {
+    total: $scope.dataSort.length,
+    getData: function ($defer, params) {
+      $scope.dataResult = $scope.dataSort.slice((params.page() - 1) * params.count(), params.page() * params.count());
+      $defer.resolve($scope.dataResult);
+    }
+  });
+
+});
+app.controller('tableSorterNetwork', function ($scope, $filter, ngTableParams) {
+  $scope.dataSort = $scope.networkData;
+  $scope.usersTable = new ngTableParams({
+    page: 1,
+    count: 20
   }, {
     total: $scope.dataSort.length,
     getData: function ($defer, params) {

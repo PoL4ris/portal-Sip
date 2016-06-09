@@ -1,6 +1,11 @@
+
+<div class="color-name-header" ng-if="stcFlag">
+  Go to Customer Info.
+</div>
+
 <!--Services-->
 
-<div class="col-lg-12 display-content-main-box anim padder-md" id="customer-box-c" ng-controller="customerServicesController">
+<div class="col-lg-12 display-content-main-box anim padder-md" id="customer-box-c" ng-controller="customerServicesController" ng-if="!stcFlag">
 <!--{{customerServices}}-->
 
   <div class="color-name-header btn-dark">

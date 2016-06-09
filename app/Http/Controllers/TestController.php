@@ -95,12 +95,18 @@ class TestController extends Controller
 
   public function supportTest(){
 
-//        $ticket2 = Customer::with('type', 'status', 'contacts')->find(1783)->toArray();
-//    dd(Customer::with('ticketHistory')->find(1783));
-//    dd(Ticket::with('address')->find(18685));
-$aaa = 2;
-    dd(Address::with('customer')
-      ->where('code', 'LIKE','%'.$aaa.'%')->get()->toArray());
+//$ticket2 = Customer::with('type', 'status', 'contacts')->find(1783)->toArray();
+//dd(Customer::with('ticketHistory')->find(1783));
+//dd(Ticket::with('address')->find(18685));
+
+
+  dd(
+    Ticket::with('customer', 'reason', 'ticketNote','ticketHistory',
+      'user', 'userAssigned', 'address', 'contacts')
+      ->take(10)
+      ->skip(0)
+      ->where('status','!=', 'closed')->get()->toArray()
+  );
 
 
 
