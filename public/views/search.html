@@ -1,33 +1,38 @@
 <form ng-submit="search()">
   <input type="text" placeholder="Search..." ng-model="globalSearch"  ng-keyup="valLength()">
-  <i class="is-lupa fa fa-search"></i>
+  <i class="is-lupa fa fa-search" id="lupa-global"></i>
+  <i class="is-tache fa fa-times" id="tache-global" ng-click="closeSearch()" style="display: none;"></i>
   <input type="submit" class="display-none">
 </form>
 
 <div class="search-gb-result anim" id="globalSearch">
 
-  <div ng-if="globalClientSearch" class="anim gsrdiv animate-if">
+  <div ng-if="globalClientSearch" class="anim gsrdiv animate-if b-r">
     <h5>Client Result</h5>
+    <p ng-if="globalClientSearch.length === 0">No results.</p>
     <div ng-if="loadingCl" class="loading-default animate-if"><img src="/img/default.gif" alt=""></div>
-    <p ng-repeat="gcs in globalClientSearch" class="animate-if">{{gcs.first_name}} {{gcs.last_name}}</p>
+    <p ng-repeat="gcs in globalClientSearch" class="animate-if">-{{gcs.first_name}} {{gcs.last_name}}</p>
   </div>
 
-  <div ng-if="globalCustomersSearch" class="anim gsrdiv animate-if">
+  <div ng-if="globalCustomersSearch" class="anim gsrdiv animate-if b-r">
     <h5>Customers Result</h5>
+    <p ng-if="globalCustomersSearch.length === 0">No results.</p>
     <div ng-if="loadingCu" class="loading-default animate-if"><img src="/img/default.gif" alt=""></div>
-    <p ng-repeat="gcus in globalCustomersSearch" class="animate-if">{{gcus.first_name}} {{gcus.last_name}}</p>
+    <p ng-repeat="gcus in globalCustomersSearch" class="animate-if">-{{gcus.first_name}} {{gcus.last_name}}</p>
   </div>
 
-  <div ng-if="globalTicketsSearch" class="anim gsrdiv animate-if">
+  <div ng-if="globalTicketsSearch" class="anim gsrdiv animate-if b-r">
     <h5>Tickets Result</h5>
+    <p ng-if="globalTicketsSearch.length === 0">No results.</p>
     <div ng-if="loadingS" class="loading-default animate-if"><img src="/img/default.gif" alt=""></div>
-    <p ng-repeat="gts in globalTicketsSearch" class="animate-if">{{gts.ticket_number}} {{gts.status}}</p>
+    <p ng-repeat="gts in globalTicketsSearch" class="animate-if">-{{gts.ticket_number}} {{gts.status}}</p>
   </div>
 
   <div ng-if="globalBuildingsSearch" class="anim gsrdiv animate-if">
     <h5>Buildings Result</h5>
+    <p ng-if="globalBuildingsSearch.length === 0">No results.</p>
     <div ng-if="loadingB" class="loading-default animate-if"><img src="/img/default.gif" alt=""></div>
-    <p ng-repeat="gbs in globalBuildingsSearch" class="animate-if">{{gbs.name}} {{gbs.code}}</p>
+    <p ng-repeat="gbs in globalBuildingsSearch" class="animate-if">-{{gbs.name}} {{gbs.code}}</p>
   </div>
 
 </div>

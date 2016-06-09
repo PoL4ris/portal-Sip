@@ -4709,8 +4709,9 @@ a.text-#000000:hover {
 }
 
 .avatar img {
-  width: 100%;
   border-radius: 500px;
+  margin-top: 4px;
+  width: 80%;
 }
 
 .avatar i {

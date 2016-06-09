@@ -51,7 +51,7 @@
                 <!--CONTENT TABS-->
                 <div id="bldlist-result" >
                   <p ng-repeat="building in bldData['buildingList']" ng-click="displayBldData(building.id)">{{ building.Name?building.Name:building.name }}
-                    <!--<a href="" ng-click="displayBldData(building.id)" onclick="return false;">{{ building.Name?building.Name:building.name }}</a>-->
+                    {{building.id_types}}
                   </p>
                 </div>
               </div>

@@ -16,12 +16,12 @@ class CreateBuildingPropertiesTable extends Migration {
     {
       $table->increments('id');
       $table->integer('id_buildings')->comment('-Building');
-      $table->string('dedicate_number')->comment('-Dedicate Number');
-      $table->string('wifi_info')->comment('-WiFi Info');
+      $table->string('dedicated_number')->comment('-Dedicated Number');
+      $table->text('wifi_info')->comment('-WiFi Info');
       $table->string('ip_range')->comment('-IP Range');
       $table->string('dns');
       $table->string('gateway');
-      $table->string('comments');
+      $table->text('comments');
       $table->timestamps();
     });
   }

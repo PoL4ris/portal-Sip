@@ -2029,24 +2029,29 @@ app.controller('networkController',                 function ($scope, $http){
 //TOOLS
 app.controller('mainSearchController', function ($scope, $http){
   console.log('mainSearchController');
+  $scope.closeSearch = function ()
+  {
+    warpol('#globalSearch').fadeOut('fast');
+    warpol('#lupa-global').fadeIn('slow');
+    warpol('#tache-global').fadeOut('fast');
+  };
   $scope.valLength = function ()
   {
     if(!this.globalSearch)
-    {
-      console.log('cerrar buscador');
-      warpol('#globalSearch').fadeOut('slow');
-    }
+      $scope.closeSearch;
   }
 
   $scope.search = function ()
   {
     if(!this.globalSearch)
     {
-      warpol('#globalSearch').fadeOut('slow');
+      $scope.closeSearch;
       return;
     }
 
     warpol('#globalSearch').fadeIn('slow');
+    warpol('#lupa-global').fadeOut('fast');
+    warpol('#tache-global').fadeIn('slow');
 
     var string = this.globalSearch;
 

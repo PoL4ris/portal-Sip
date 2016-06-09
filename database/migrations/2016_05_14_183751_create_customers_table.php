@@ -23,8 +23,8 @@ class CreateCustomersTable extends Migration
         $table->string('vip')->nullable();
         $table->integer('id_types')->nullable()->comment("Type-Type");
         $table->integer('id_status')->nullable()->comment("Status-Status");
-        $table->date('signedup_at')->nullable()->comment('Signed up at');
-        $table->date('canceled_at')->nullable()->comment('Canceled at');
+        $table->timestamp('signedup_at')->nullable()->comment('Signed up at');
+        $table->timestamp('cancelled_at')->nullable()->comment('Cancelled at');
         $table->timestamps();
       });
     }

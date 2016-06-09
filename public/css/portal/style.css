@@ -873,8 +873,6 @@ li span {
   display: none;
 }
 .search-gb {
-  background: coral none repeat scroll 0 0;
-  border: 1px solid black;
   float: left;
   margin: 7px auto;
   position: relative;
@@ -894,7 +892,6 @@ li span {
 }
 .search-gb-result {
   background: white none repeat scroll 0 0;
-  border: 5px solid black;
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.05), 0 1px 0 rgba(0, 0, 0, 0.05);
   font-size: 12px;
   height: auto;
@@ -907,20 +904,21 @@ li span {
 
 }
 .gsrdiv {
-  border: 1px solid red;
   float: left;
   max-height: 200px;
   overflow: auto;
   padding: 5px;
   text-align: left;
   width: 25%;
+  height: 200px;
 }
 .gsrdiv h5 {
+  color: #333;
+  font-weight: bold;
   margin: 0 0 10px;
   text-align: center;
 }
 .gsrdiv p {
-  border: 1px solid blue;
   float: left;
   min-width: 50%;
   padding-left: 5px;
@@ -929,12 +927,6 @@ li span {
 .gsrdiv .loading-default{
   text-align: center;
 }
-/*.animate-if {*/
-  /*background:white;*/
-  /*border:1px solid black;*/
-  /*padding:10px;*/
-/*}*/
-
 .animate-if.ng-enter, .animate-if.ng-leave {
   transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
 }
@@ -947,4 +939,7 @@ li span {
 .animate-if.ng-leave,
 .animate-if.ng-enter.ng-enter-active {
   opacity:1;
+}
+.is-tache{
+  display: none;
 }

@@ -17,9 +17,9 @@ class CreateAddressTable extends Migration
         $table->increments('id');
         $table->string('address')->nullable();
         $table->string('code')->nullable();
-        $table->integer('unit')->nullable();
+        $table->string('unit')->nullable();
         $table->string('city')->nullable();
-        $table->integer('zip')->nullable();
+        $table->string('zip')->nullable();
         $table->string('state')->nullable();
         $table->string('country')->nullable();
         $table->integer('id_customers')->nullable()->comment("Customer");
