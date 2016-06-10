@@ -998,8 +998,17 @@ app.controller('adminViewAccessAppElements',  function($scope, $http){
 
 app.controller('buildingCtl', ['$scope','$route','$http', function($scope, $route, $http)
 {
-  $scope.displayBldData = function (idBld)
-  {
+
+  $scope.SiteMenu = [];
+  $http.get('buildings').then(function (data){
+    $scope.bldData = data.data;
+    $scope.offsetLimitFunction($scope.bldData.offset, $scope.bldData.limit);
+  }), function (error){
+    alert('Error');
+  }
+
+
+  $scope.displayBldData = function (idBld) {
 //     console.log(idBld);
 
     $http.get("buildings/" + idBld)
@@ -1009,8 +1018,7 @@ app.controller('buildingCtl', ['$scope','$route','$http', function($scope, $rout
       });
 
   }
-  $scope.displayBldForm = function ()
-  {
+  $scope.displayBldForm = function () {
     if ($scope.show == false)
     {
       $scope.show = true;
@@ -1026,15 +1034,13 @@ app.controller('buildingCtl', ['$scope','$route','$http', function($scope, $rout
       warpol('#cancel-bld-btn').fadeOut('fast');
     }
   }
-  $scope.offsetLimitFunction = function (offset, limit)
-  {
+  $scope.offsetLimitFunction = function (offset, limit) {
     warpol('#ol-left-btn').attr('offset', offset);
     warpol('#ol-left-btn').attr('limit', limit);
     warpol('#ol-right-btn').attr('offset', offset);
     warpol('#ol-right-btn').attr('limit', limit);
   }
-  $scope.buildingsList = function (position)
-  {
+  $scope.buildingsList = function (position) {
     //Math var operations.
     var offset              = parseInt($scope.bldData.offset);
     var limit              = parseInt($scope.bldData.limit);
@@ -1083,8 +1089,7 @@ app.controller('buildingCtl', ['$scope','$route','$http', function($scope, $rout
 
     $scope.offsetLimitFunction(offset, limit);
   }
-  $scope.buscador = function(searchType, side)
-  {
+  $scope.buscador = function(searchType, side) {
     console.log('entramos');
     var query = {};
 
@@ -1185,8 +1190,7 @@ return;
 
 
   }
-  $scope.editFormByType = function (id)
-  {
+  $scope.editFormByType = function (id) {
 
     tempTicketID = id;
 
@@ -1216,8 +1220,7 @@ return;
     }
 
   }
-  $scope.submitForm = function ()
-  {
+  $scope.submitForm = function () {
     console.log('entramos');
     var objects = warpol('#building-update-form').serializeArray();
     var infoData = {};
@@ -1234,16 +1237,6 @@ return;
   }
 
 
-
-
-  $scope.SiteMenu = [];
-  $http.get('buildings').then(function (data){
-    $scope.bldData = data.data;
-    $scope.offsetLimitFunction($scope.bldData.offset, $scope.bldData.limit);
-    console.log($scope.bldData);
-  }), function (error){
-    alert('Error');
-  }
 }])
 .directive('myBldView', function() {
   return {
@@ -1481,6 +1474,10 @@ app.controller('supportController', function ($scope, $http, notify, $compile, $
     callMidView('All');
   };
   $scope.displayTicketResume = function (id, idCustomer){
+
+    console.log(id);
+    console.log(idCustomer);
+
     $scope.midTicketId = id;
     $scope.stcid = idCustomer;
     $scope.stcFlag = true;
@@ -2132,39 +2129,6 @@ app.controller('mainSearchController', function ($scope, $http){
 
   
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 app.controller('toolsController', function ($scope, $http) {
   $scope.letterLimit = 400;
   $scope.showFullComment = function(id) {
@@ -2223,19 +2187,48 @@ app.controller('toolsController', function ($scope, $http) {
   }
 
 });
-//TABS, TableSorter
-app.controller('AppCtrl', AppCtrl);
-function AppCtrl ($scope, $log) {
+
+
+//TABS
+app.controller('AppCtrl', AppCtrl)
+.directive('viewNewTicket',            function() {
+  return {
+    templateUrl: '/views/newticket.html'
+  };
+})
+.directive('viewTicketHistory',            function() {
+  return {
+    templateUrl: '/views/ticketshistory.html'
+  };
+})
+.directive('viewBillingHistory',            function() {
+  return {
+    templateUrl: '/views/billinghistory.html'
+  };
+})
+.directive('viewNetwork',            function() {
+  return {
+    templateUrl: '/views/network.html'
+  };
+})
+.directive('viewProduct',            function() {
+  return {
+    templateUrl: '/views/product.html'
+  };
+})
+.directive('viewBuilding',            function() {
+  return {
+    templateUrl: '/views/building/building.html'
+  };
+});
+function AppCtrl ($scope, $log, $compile) {
   var tabs = [
-//       { title: 'Payment',       content:'/views/payment.html'},
-
-      { title: 'New Ticket',    content:'/views/newticket.html'},
-      { title: 'Tickets',       content:"/views/ticketshistory.html"},
-      { title: 'Billing',       content:"/views/billinghistory.html"},
-      { title: 'Network',       content:"/views/network.html"},
-      { title: 'Services Info', content:"/views/product.html"},
-      { title: 'Building',      content:'/views/building/building.html'},
-
+        { title: 'New Ticket',    content:'New-Ticket'},
+        { title: 'Tickets',       content:"Ticket-History"},
+        { title: 'Billing',       content:"Billing-History"},
+        { title: 'Network',       content:"Network"},
+        { title: 'Services Info', content:"Product"},
+        { title: 'Building',      content:'Building'},
     ],
     selected = null,
     previous = null;
@@ -2258,13 +2251,16 @@ function AppCtrl ($scope, $log) {
     var index = tabs.indexOf(tab);
     tabs.splice(index, 1);
   };
-
+  $scope.changeView = function (view)
+  {
+    var compiledeHTML = $compile("<div view-"+view+"></div>")($scope);
+    warpol("#tabsChange-"+view).html(compiledeHTML);
+  }
 }
+//END TABS
 
 
-
-
-
+//TableSorter's
 app.controller('tableSorterTickets', function ($scope, $filter, ngTableParams) {
   $scope.dataSort = $scope.supportData;
   $scope.usersTable = new ngTableParams({

@@ -1,24 +1,20 @@
+<div class="bg-light lter b-b wrapper-xs col-lg-12">
+  <h1 class="m-n font-thin h3">Buildings</h1>
+</div>
+
 <div class="app-content-body hbox" ng-controller="buildingCtl">
+
   <!-- LEFT COL-->
   <div class="col w-lg lter b-r b-tabs anim">
-
-    <div class="bg-light lter b-b wrapper-md">
-      <h2 class="m-n font-thin h3">Building... Tools</h2>
-    </div>
-
     <div class="vbox">
-
       <!-- Building Search/Simple -->
       <div class="b-b">
         <div class="search-content">
           <input type="text" id="id-buildings-search" class="input-search id-search" placeholder="Search Buildings..." ng-keyup="buscador('Simple', 'left')" ng-model="searchLeft"><i class="is-lupa fa fa-search"></i>
-          <div id="id-buildings-search-result" class="search-result anim" >
-            <p ng-repeat="resultbldleft in bldSearchResultLeft" ng-click="displayBldData(resultbldleft.id)" >{{ resultbldleft.name }}</p>
-          </div>
+
         </div>
       </div>
       <!-- END Building Search/Simple -->
-
       <!-- TABS-->
       <div class="nav-tabs-alt ntas-tmp" id="ntas-tmp">
         <ul class="nav nav-tabs nav-justified">
@@ -34,7 +30,6 @@
         </ul>
       </div>
       <!-- END TABS-->
-
       <!-- BLD DATA LEFT -->
       <div class="row-row ntas-tmp">
         <div class="tabs-content">
@@ -43,49 +38,57 @@
 
               <div class="tab-pane active" id="tab-1">
                 <!--OFFSET LIMIT btn's -->
-                <div id="bldlist-result-limits" class="lesmoreinfo">
-                  <div offset="" limit="" position="0" class="newdata left anim left-btn-trigg bldlist-result-limits-0" id="ol-left-btn" ng-click=" buildingsList(0)"></div>
-                  <div offset="" limit="" position="1" class="newdata right anim right-btn-trigg bldlist-result-limits-1" id="ol-right-btn" ng-click=" buildingsList(1)"></div>
-                </div>
+                <!--<div id="bldlist-result-limits" class="lesmoreinfo">-->
+                  <!--<div offset="" limit="" position="0" class="newdata left anim left-btn-trigg bldlist-result-limits-0" id="ol-left-btn" ng-click=" buildingsList(0)"></div>-->
+                  <!--<div offset="" limit="" position="1" class="newdata right anim right-btn-trigg bldlist-result-limits-1" id="ol-right-btn" ng-click=" buildingsList(1)"></div>-->
+                <!--</div>-->
                 <!--END OFFSET LIMIT btn's -->
                 <!--CONTENT TABS-->
                 <div id="bldlist-result" >
-                  <p ng-repeat="building in bldData['buildingList']" ng-click="displayBldData(building.id)">{{ building.Name?building.Name:building.name }}
-                    {{building.id_types}}
+                  <p ng-repeat="building in bldData['buildingList']" ng-click="displayBldData(building.id)">
+                    {{ building.Name?building.Name:building.name }}
+                    <i ng-if="building.type == 'Comercial'" class="type-ico type-c">C</i>
+                    <i ng-if="building.type == 'Retail'"    class="type-ico type-r">R</i>
+                    <i ng-if="building.type == 'Prospect'"  class="type-ico type-p">P</i>
+                    <i ng-if="building.type == 'Bulk'"      class="type-ico type-b">B</i>
                   </p>
                 </div>
               </div>
 
               <div class="tab-pane fix-size-scroll" id="tab-2" >
                 <div class="wrapper-md">
-                  <p ng-repeat="bldretail in bldData['retail']" ng-click="displayBldData(bldretail.id)">{{ bldretail.Name?bldretail.Name:bldretail.name }}</p>
+                  <p ng-repeat="bldretail in bldData['retail']" ng-click="displayBldData(bldretail.id)">
+                    {{ bldretail.Name?bldretail.Name:bldretail.name }}
+                    <i class="type-ico type-r">R</i>
+                  </p>
                 </div>
               </div>
 
               <div class="tab-pane fix-size-scroll" id="tab-3" >
                 <div class="wrapper-md">
-                  <p ng-repeat="bldcomer in bldData['comer']"ng-click="displayBldData(bldcomer.id)">{{ bldcomer.Name?bldcomer.Name:bldcomer.name }}</p>
+                  <p ng-repeat="bldcomer in bldData['comer']"ng-click="displayBldData(bldcomer.id)">
+                    {{ bldcomer.Name?bldcomer.Name:bldcomer.name }}
+                    <i class="type-ico type-c">C</i>
+                  </p>
                 </div>
               </div>
-              <!--BUILDING TABLE -->
-              <!--END CONTENT TABS-->
-
+              <!-- BUILDING TABLE -->
+              <!-- END CONTENT TABS -->
             </div>
           </div>
         </div>
       </div>
       <!-- END BLD DATA LEFT -->
-
     </div>
-
   </div>
   <!--END COL-->
 
-<!-- TITLE -->
-  <div class="bg-light lter b-b wrapper-md">
-    <h1 class="m-n font-thin h3" ng-if="!bld">Buildings Dashboard</h1>
-    <h1 class="m-n font-thin h3" ng-if="bld">Building : {{ bld.building.name }}</h1>
-  </div>
+
+
+
+
+
+
 
   <!-- ELEMENTS -->
   <div class="building-elements">
@@ -94,7 +97,7 @@
     <div class="col-lg-12 " ng-if="!bld" >
       <br />
       <a href="" ng-click="displayBldForm()" onclick="return false;" id="add-bld-btn">
-        <button class="btn btn-primary btn-addon btn-lg"><i class="fa fa-plus"></i>Add new Building</button>
+        <button class="btn btn-primary btn-addon btn-lg "><i class="fa fa-plus"></i>Add new Building</button>
       </a>
 
       <a href="" ng-click="displayBldForm()" onclick="return false;" id="cancel-bld-btn" style="display: none;">

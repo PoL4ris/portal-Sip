@@ -32,7 +32,7 @@ class BuildingController extends Controller
   {
 
     $offset = 0;
-    $limit = 20;
+    $limit = 200;
 
     if ($request->id)
     {
@@ -44,10 +44,8 @@ class BuildingController extends Controller
       $building = Building::orderBy('id', 'desc')->get();
 
     $bldNeigh = Neighborhood::where('id', $building[0]->id_neighborhoods)->get();
-
-
     $neighborhoodList = $this->getNeighborhoodList();
-    $typesList = $this->getTypesList();
+//    $typesList = $this->getTypesList();
 
     $buildingsList = DB::table('buildings')->skip($offset)->take($limit)->get();
 
@@ -58,7 +56,7 @@ class BuildingController extends Controller
 
     $data = ['building'     => $building[0],
              'neighborhood' => $neighborhoodList,
-             'types'        => $typesList,
+//             'types'        => $typesList,
              'exist'        => $buildingsInfo['exist'],
              'properties'   => $buildingsInfo['properties'],
              'contact'      => $buildingsInfo['contact'],
@@ -86,6 +84,7 @@ class BuildingController extends Controller
   {
     return Neighborhood::all();
   }
+  //NOT IN USE ANYMORE id_types changed to TYPE
   public function getTypesList()
   {
     return Type::all();
@@ -113,8 +112,8 @@ class BuildingController extends Controller
   {
     //RETAIL = 10
     //COMERCIAL = 11
-    $retail = Building::where('id_types',10)->get();
-    $comer = Building::where('id_types',11)->get();
+    $retail = Building::where('type','Retail')->get();
+    $comer = Building::where('type','Bulk')->get();
     $data = array('retail' => $retail, 'comer' => $comer);
 
     return $data;
