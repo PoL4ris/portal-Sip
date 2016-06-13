@@ -60,7 +60,7 @@
               <div class="tab-pane active" id="tab-1">
                 <!--CONTENT TABS-->
                 <div id="bldlist-result" ng-controller="customerControllerList">
-                  <p ng-repeat="data in supportDataCustomer" ng-click="displayTicketResume(ticketList.id)">{{ data.first_name}} {{ data.last_name}}</p>
+                  <p ng-repeat="data in supportDataCustomer" ng-click="displayCustomerResume(data.id)">{{ data.first_name}} {{ data.last_name}}</p>
                 </div>
               </div>
 
@@ -72,7 +72,7 @@
 
               <div class="tab-pane fix-size-scroll" id="tab-3" >
                 <div class="wrapper-md">
-                  <p ng-repeat="ticketList in supportData" ng-click="displayTicketResume(ticketList.id, ticketList.id_customers)"><b> No.</b> {{ ticketList.ticket_number }} :  <b>Code</b> {{ ticketList.address.code }} : <b>Name</b> {{ticketList.customer.first_name}}</p>
+                  <p ng-repeat="ticketList in supportData" ng-click="displayTicketResume(ticketList.id, ticketList.id_customers)">{{ ticketList.ticket_number }}, {{ticketList.customer.first_name}}, {{ ticketList.address.code }}</p>
                 </div>
               </div>
               <!--BUILDING TABLE -->

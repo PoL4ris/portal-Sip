@@ -1437,6 +1437,23 @@ app.controller('supportControllerTools',   function ($scope, $http) {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 app.controller('supportController', function ($scope, $http, notify, $compile, $sce){
 //   notify({ message: 'Support Controller Active', templateUrl:'/views/notify.html'} );
   $http.get("supportTickets")
@@ -1474,14 +1491,15 @@ app.controller('supportController', function ($scope, $http, notify, $compile, $
     callMidView('All');
   };
   $scope.displayTicketResume = function (id, idCustomer){
-
-    console.log(id);
-    console.log(idCustomer);
-
     $scope.midTicketId = id;
     $scope.stcid = idCustomer;
     $scope.stcFlag = true;
     callMidView('Resume');
+  };
+  $scope.displayCustomerResume = function (id){
+    $scope.stcid = id;
+    $scope.stcCFlag = true;
+    callMidView('Customer');
   };
 })
 .directive('myViewFull',            function() {
@@ -1494,13 +1512,13 @@ app.controller('supportController', function ($scope, $http, notify, $compile, $
     templateUrl: '/views/supportAllList.html'
   };
 })
-.directive('myViewResume',             function() {
+.directive('myViewResume',          function() {
   return {
     templateUrl: '/views/supportTicketResume.html',
     controller: 'singleTicketInfo'
   };
 })
-.directive('myViewCustomer',             function() {
+.directive('myViewCustomer',        function() {
   return {
     templateUrl: '/views/customer.html'
   };
@@ -1512,6 +1530,17 @@ app.controller('supportController', function ($scope, $http, notify, $compile, $
 });
 
 
+
+
+
+
+
+
+
+
+
+
+
 app.controller('singleTicketInfo', function ($scope, $http){
 
   $http.get("getTicketInfo", {params:{'ticketId':$scope.midTicketId}})
@@ -1519,9 +1548,6 @@ app.controller('singleTicketInfo', function ($scope, $http){
       $scope.selectedTicket = response.data;
     });
 })
-
-
-
 app.controller('customerControllerList', function ($scope, $http){
   $http.get("getCustomerList")
     .then(function (response) {
@@ -1537,7 +1563,6 @@ app.controller('customerController',    function ($scope, $http, $routeParams, n
 
   $http.get("customersData", {params:{'id':idCustomer}})
     .then(function (response) {
-      console.log(response.data);
       $scope.customerData = response.data;
     });
 
@@ -1668,7 +1693,7 @@ app.controller('ModalInstanceCtrl',     function ($scope, $http, $uibModalInstan
 
 
 app.controller('customerPaymentController',         function ($scope, $http){
-  $http.get("getCustomerPayment", {params:{'id':$scope.customerData.id}})
+  $http.get("getCustomerPayment", {params:{'id':$scope.stcid?$scope.stcid:$scope.customerData.id}})
     .then(function (response) {
       $scope.paymentData = response.data;
     });

@@ -17,10 +17,10 @@ class CreateTicketHistoryTable extends Migration
         $table->increments('id');
         $table->integer('id_tickets')->comment('Ticket');
         $table->integer('id_reasons')->comment('Reason');
-        $table->integer('id_ticket_notes')->nullable()->comment('Notes');
+        $table->string('comment')->nullable()->comment('Comment');
         $table->string('status');
         $table->integer('id_users')->comment('Created By');
-        $table->integer('id_users_assigned')->comment('Assigned to');
+        $table->integer('id_users_assigned')->nullable()->comment('Assigned to');
         $table->timestamps();
       });
     }

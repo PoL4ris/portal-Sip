@@ -43,7 +43,7 @@ Route::group(['middleware' => 'web'], function () {
   Route::get('menumaker',               'MainController@menuMaker');
   Route::get('dummy',                   'MainController@dummy');
   Route::get('adminusers',              'MainController@adminusers');
-  Route::get('getUserData',         'MainController@getUserData');
+  Route::get('getUserData',             'MainController@getUserData');
   //Dashboards
   Route::get('buildingsdash',           'BuildingController@dashboard');
   Route::get('supportdash/{filter?}',   'SupportController@dashboard');
@@ -51,7 +51,7 @@ Route::group(['middleware' => 'web'], function () {
   Route::get('networkdash',             'MainController@networkDashboard');
   Route::get('supportTickets',          'SupportController@supportTickets');
   Route::get('supportTicketsBilling',   'SupportController@supportTicketsBilling');
-  Route::get('supportTicketsBilling',   'SupportController@supportTicketsAll');
+  Route::get('supportTicketsAll',       'SupportController@supportTicketsAll');
   Route::get('supportTicketHistory',    'SupportController@supportTicketHistory');
   //Search
   Route::get('buildingsSearch',         'BuildingController@getBuildingsSearchSimple');
@@ -62,14 +62,6 @@ Route::group(['middleware' => 'web'], function () {
   Route::get('getCustomersSearch',       'MainController@getCustomersSearch');
   Route::get('getTicketsSearch',         'MainController@getTicketsSearch');
   Route::get('getBuildingsSearch',       'MainController@getBuildingsSearch');
-
-
-
-
-
-
-
-
 
   //Buildings & List
   Route::get('buildings/{id?}',         'BuildingController@buildings');

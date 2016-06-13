@@ -19,7 +19,8 @@
       </thead>
       <tbody>
       <tr ng-repeat="data in dataResult" ng-controller="toolsController">
-        <td  ng-click="open(data.id)">{{data.ticket_number}}</td>
+        <td  ng-click="displayTicketResume(data.id, data.id_customers)">{{data.ticket_number}}</td>
+        <!--<td  ng-click="open(data.id)">{{data.ticket_number}}</td>-->
         <td>{{data.status}}</a></td>
         <td><a href="#/customer?id={{data.customer.id}}">{{data.customer.first_name}}</a></td>
         <td>{{data.address.address}}</td>

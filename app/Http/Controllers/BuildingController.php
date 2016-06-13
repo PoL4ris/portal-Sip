@@ -30,18 +30,20 @@ class BuildingController extends Controller
 
   public function buildings(Request $request)
   {
-
+    
     $offset = 0;
     $limit = 200;
 
     if ($request->id)
     {
       $building = Building::where('id', $request->id)->get();
-      $bldType = Type::where('id', $building[0]->id_types)->get();
-      $building[0]->typename = $bldType[0]->name;
+//      $bldType = Type::where('id', $building[0]->id_types)->get();
+//      $building[0]->typename = $bldType[0]->name;
     }
     else
       $building = Building::orderBy('id', 'desc')->get();
+
+
 
     $bldNeigh = Neighborhood::where('id', $building[0]->id_neighborhoods)->get();
     $neighborhoodList = $this->getNeighborhoodList();

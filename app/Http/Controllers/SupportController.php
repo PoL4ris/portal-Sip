@@ -182,20 +182,28 @@ class SupportController extends Controller
 
     $data = $request->all();
 
-    $ticketNoteRecord = new TicketNote();
-    $ticketNoteRecord->id_tickets = $request->id;
-    $ticketNoteRecord->comment = $request->comment;
-    $ticketNoteRecord->id_users = Auth::user()->id;
-    $ticketNoteRecord->save();
+//    $ticketNoteRecord = new TicketNote();
+//    $ticketNoteRecord->id_tickets = $request->id;
+//    $ticketNoteRecord->comment = $request->comment;
+//    $ticketNoteRecord->id_users = Auth::user()->id;
+//    $ticketNoteRecord->save();
 
     $ticketHistoryRecord = new TicketHistory();
     $ticketHistoryRecord->id_tickets = $request->id;
     $ticketHistoryRecord->id_reasons = $request->id_reasons;
-    $ticketHistoryRecord->id_ticket_notes = $ticketNoteRecord->id;
+    $ticketHistoryRecord->comment = $request->comment;
     $ticketHistoryRecord->status = $request->status;
     $ticketHistoryRecord->id_users = Auth::user()->id;
     $ticketHistoryRecord->id_users_assigned = $request->id_users_assigned;
     $ticketHistoryRecord->save();
+
+
+    $updateTicket = Ticket::find($request->id);
+    $updateTicket->updated_at = $ticketHistoryRecord->created_at;
+    $updateTicket->save();
+
+
+
 
     $request['ticketId'] = $request->id;
     return $this->getTicketInfo($request);
