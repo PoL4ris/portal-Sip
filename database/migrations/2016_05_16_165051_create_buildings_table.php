@@ -19,11 +19,9 @@ class CreateBuildingsTable extends Migration {
       $table->string('name');
       $table->string('alias');
       $table->string('nickname');
-      $table->string('address');
-      $table->integer('id_address')->comment('Address');
       $table->integer('id_neighborhoods')->comment('Neighborhood');
       $table->string('code');
-      $table->string('id_types')->comment('Type');
+      $table->string('type')->comment('Type');
       $table->string('legal_name')->comment('Legal name');
       $table->string('builder');
       $table->date('year_built')->comment('Year Built');
