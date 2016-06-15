@@ -1471,16 +1471,9 @@ app.controller('supportController', function ($scope, $http, notify, $compile, $
 
   function callMidView (view) {
     $scope.globalViewON = view;
-      var compiledeHTML = $compile("<div my-View-" + view + "></div>")($scope);
-
-      if(warpol("#mid-content-tickets"))
-        warpol("#mid-content-tickets").html(compiledeHTML);
-      else
-        warpol("#viewMidContent").html(compiledeHTML);
-
-
-//         console.log('viewMidContent');
-//         console.log('mid-content');
+      var compiledeHTML = $compile("<div my-View-"+view+"></div>")($scope);
+//       warpol("#mid-content-tickets").html(compiledeHTML);
+      warpol("#viewMidContent").html(compiledeHTML);
     };
   $scope.fullTickets = function (){
     $http.get("supportTickets")
