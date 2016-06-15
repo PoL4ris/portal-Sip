@@ -18,7 +18,7 @@
       </tr>
       </thead>
       <tbody>
-      <tr ng-repeat="data in dataResult" ng-controller="toolsController">
+      <tr ng-repeat="data in dataResult" ng-controller="toolsController" class="{{data.old}}">
         <td  ng-click="displayTicketResume(data.id, data.id_customers)">{{data.ticket_number}}</td>
         <!--<td  ng-click="open(data.id)">{{data.ticket_number}}</td>-->
         <td>{{data.status}}</a></td>

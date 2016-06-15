@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\TicketNote;
+use Faker\Provider\DateTime;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -16,7 +17,6 @@ use App\Models\Customer;
 use App\Models\Ticket;
 use App\Models\TicketHistory;
 use App\Models\Address;
-
 
 class SupportController extends Controller
 {
@@ -50,29 +50,75 @@ class SupportController extends Controller
   }
   public function supportTickets()
   {
-     return Ticket::with('customer', 'reason', 'ticketNote','ticketHistory', 'user', 'userAssigned', 'address', 'contacts')
-                    ->take(100)
-                    ->skip(0)
-                    ->where('status','!=', 'closed')
-                    ->orderBy('id', 'desc')
-                    ->get();
+
+    $record = Ticket::with('customer', 'reason', 'ticketNote','ticketHistory', 'user', 'userAssigned', 'address', 'contacts')
+                      ->where('id_reasons','!=', 11)
+                      ->where('status','!=', 'closed')
+                      ->orderBy('updated_at', 'desc')
+                      ->get()->toArray();
+
+    $result = $this->getOldTimeTicket($record);
+    return $result;
+
+  }
+  public function getOldTimeTicket($record)
+  {
+    //$new_time   = date("Y-m-d H:i:s");
+    $time12     = date("Y-m-d H:i:s", strtotime('-12 hours'));
+    $time24     = date("Y-m-d H:i:s", strtotime('-24 hours'));
+    $time48     = date("Y-m-d H:i:s", strtotime('-48 hours'));
+
+    foreach($record as $k => $rec)
+    {
+      if ($rec['updated_at'] <= $time48)
+        $record[$k]['old'] = 'old-red';
+      else if($rec['updated_at'] <= $time24)
+        $record[$k]['old'] = 'old-yellow';
+      else if($rec['updated_at'] <= $time12)
+        $record[$k]['old'] = 'old-green';
+      else
+        $record[$k]['old'] = 'old';
+    }
+
+    return $record;
+  }
+  public function getTicketOpenTime()
+  {
+    $time12     = date("Y-m-d H:i:s", strtotime('-12 hours'));
+    $time24     = date("Y-m-d H:i:s", strtotime('-24 hours'));
+    $time48     = date("Y-m-d H:i:s", strtotime('-48 hours'));
+
+    $old48 = Ticket::where('updated_at', '<=', $time48)->where('status', '!=', 'closed')->count();
+    $old24 = Ticket::where('updated_at', '<=', $time24)->where('updated_at', '>=', $time48)->where('status', '!=', 'closed')->count();
+    $old12 = Ticket::where('updated_at', '<=', $time12)->where('updated_at', '>=', $time24)->where('status', '!=', 'closed')->count();
+    $old   = Ticket::where('status', '!=', 'closed')->count();
+
+    $result['old48'] = $old48;
+    $result['old24'] = $old24;
+    $result['old12'] = $old12;
+    $result['old'] = $old;
+    return $result;
+
   }
   public function supportTicketsBilling()
   {
-     return Ticket::with('customer', 'reason', 'ticketNote','ticketHistory', 'user', 'userAssigned', 'address', 'contacts')
-                    ->take(100)
-                    ->skip(0)
+    $record =  Ticket::with('customer', 'reason', 'ticketNote','ticketHistory', 'user', 'userAssigned', 'address', 'contacts')
                     ->where('id_reasons', 11)
-                    ->orderBy('id', 'desc')
+                    ->orderBy('updated_at', 'desc')
                     ->get();
+
+    $result = $this->getOldTimeTicket($record);
+    return $result;
   }
   public function supportTicketsAll()
   {
-     return Ticket::with('customer', 'reason', 'ticketNote','ticketHistory', 'user', 'userAssigned', 'address', 'contacts')
-                    ->take(100)
-                    ->skip(0)
-                    ->orderBy('id', 'desc')
+    $record =  Ticket::with('customer', 'reason', 'ticketNote','ticketHistory', 'user', 'userAssigned', 'address', 'contacts')
+                    ->where('status','!=', 'closed')
+                    ->orderBy('updated_at', 'desc')
                     ->get();
+
+    $result = $this->getOldTimeTicket($record);
+    return $result;
   }
 
 
@@ -303,7 +349,3 @@ class SupportController extends Controller
 
   }
 }
-
-
-
-

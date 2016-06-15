@@ -13,6 +13,7 @@ use App\Models\Building\BuildingProperty;
 use App\Models\Building\BuildingContact;
 use App\Models\Building\Neighborhood;
 use App\Models\Type;
+use App\Models\Address;
 use App\Http\Controllers\Lib\FormsController;
 use Redirect;
 
@@ -30,20 +31,24 @@ class BuildingController extends Controller
 
   public function buildings(Request $request)
   {
-    
+
     $offset = 0;
     $limit = 200;
+    $address = null;
+
+
 
     if ($request->id)
     {
       $building = Building::where('id', $request->id)->get();
+      $address = Address::where('id_buildings', $building[0]->id)->first();
 //      $bldType = Type::where('id', $building[0]->id_types)->get();
 //      $building[0]->typename = $bldType[0]->name;
     }
     else
       $building = Building::orderBy('id', 'desc')->get();
 
-
+ 
 
     $bldNeigh = Neighborhood::where('id', $building[0]->id_neighborhoods)->get();
     $neighborhoodList = $this->getNeighborhoodList();
@@ -58,7 +63,7 @@ class BuildingController extends Controller
 
     $data = ['building'     => $building[0],
              'neighborhood' => $neighborhoodList,
-//             'types'        => $typesList,
+             'address'      => $address,
              'exist'        => $buildingsInfo['exist'],
              'properties'   => $buildingsInfo['properties'],
              'contact'      => $buildingsInfo['contact'],

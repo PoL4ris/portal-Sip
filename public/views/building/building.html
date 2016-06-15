@@ -18,9 +18,9 @@
   <div class="bld block-b">
     <div class="bld-info-data">
       <input type="hidden" value="{{ bld.building.id }}" name="id" class="block-a-edit form-control">
-      <label class="bold-type">Name</label>           <label class="block-a-label" id="name">{{ bld.building.name?bld.building.name:bld.building.Name }}</label>
+      <label class="bold-type">Name</label>           <label class="block-a-label" id="name">{{ bld.building.name }}</label>
       <input type="text" value="{{ bld.building.name?bld.building.name:bld.building.Name }}" name="name" class="block-a-edit form-control">
-      <label class="bold-type">Address</label>        <label class="block-a-label" id="address">{{ bld.building.address?bld.building.address:bld.building.Address }}</label>
+      <label class="bold-type">Address</label>        <label class="block-a-label" id="address">{{ bld.address.address?bld.address.address:bld }}</label>
       <input type="text" value="{{ bld.building.address?bld.building.address:bld.building.Address }}" name="address" class="block-a-edit form-control">
       <label class="bold-type">Alias</label>          <label class="block-a-label" id="alias">{{ bld.building.alias?bld.building.alias:'' }}</label>
       <input type="text" value="{{ bld.building.alias?bld.building.alias:'NO ALIAS' }}" name="alias" class="block-a-edit form-control">
@@ -39,7 +39,7 @@
       <input type="text" value="{{ bld.building.units?bld.building.units:bld.building.Units }}" name="units" class="block-a-edit form-control">
       <label class="bold-type">Floors</label>         <label class="block-a-label" id="floors">{{ bld.building.floors?bld.building.floors:'NO FLOORS INFO' }}</label>
       <input type="text" value="{{ bld.building.floors?bld.building.floors:'NO FLOORS INFO' }}" name="floors" class="block-a-edit form-control">
-      <label class="bold-type">Type</label>           <label class="block-a-label" id="type">{{ bld.building.type?bld.building.type:bld.building.ServiceType }}</label>
+      <label class="bold-type">Type</label>           <label class="block-a-label" id="type">{{ bld.building.type }}</label>
       <select name="id_types" class="form-control block-a-edit">
         <option value='{{ bld.building.id_types}}'>{{ bld.building.typename}}</option>
         <option value="{{typeoption.id}}" ng-repeat="typeoption in bldData.types">{{typeoption.name}}</option>

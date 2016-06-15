@@ -953,9 +953,39 @@ li span {
 .type-ico.type-r {
   background: #9fc1ff none repeat scroll 0 0;
 }
+.type-ico.type-m {
+  background: #e0db0a none repeat scroll 0 0;
+}
 .type-ico.type-p {
   background: #90e06b none repeat scroll 0 0;
 }
 .type-ico.type-b {
   background: #ff7a7a none repeat scroll 0 0;
+}
+.old-gray {
+  background: rgba(250, 251, 252, 0.3) none repeat scroll 0 0 !important;
+  border: 2px solid #fafbfc;
+}
+.old-yellow {
+  background: rgba(224, 219, 10, 0.3) none repeat scroll 0 0 !important;
+  border: 2px solid #e0db0a;
+}
+.old-green {
+  background: rgba(144, 224, 107, 0.3) none repeat scroll 0 0 !important;
+  border: 2px solid #90e06b;
+}
+.old-red {
+  background: rgba(255, 122, 122, 0.3) none repeat scroll 0 0 !important;
+  border: 3px solid #ff7a7a;
+}
+.table-striped > tbody > tr:nth-child(2n+1) > td, .table-striped > tbody > tr:nth-child(2n+1) > th {
+  background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
+}
+.time-data {
+  border-width: 2px;
+  padding: 5px;
+}
+.time-data label {
+}
+.time-data b {
 }

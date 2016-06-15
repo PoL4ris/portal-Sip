@@ -100,7 +100,7 @@ class MainController extends Controller
   public function getBuildingsSearch(Request $request){
     return Building::where('name', 'LIKE','%'.$request->string.'%')
                       ->orWhere('nickname', 'LIKE','%'.$request->string.'%')
-                      ->orWhere('address', 'LIKE','%'.$request->string.'%')
+//                      ->orWhere('address', 'LIKE','%'.$request->string.'%')
                       ->orWhere('code', 'LIKE','%'.$request->string.'%')
                       ->orWhere('legal_name', 'LIKE','%'.$request->string.'%')
                       ->take(200)

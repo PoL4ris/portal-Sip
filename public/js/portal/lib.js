@@ -1459,12 +1459,28 @@ app.controller('supportController', function ($scope, $http, notify, $compile, $
   $http.get("supportTickets")
     .then(function (response) {
       $scope.supportData = response.data;
+//       console.log($scope.supportData);
     });
+
+  $http.get("getTicketOpenTime")
+    .then(function (response) {
+      $scope.ticketOpenTime = response.data;
+//       console.log($scope.ticketOpenTime);
+    });
+
 
   function callMidView (view) {
     $scope.globalViewON = view;
-      var compiledeHTML = $compile("<div my-View-"+view+"></div>")($scope);
-      warpol("#mid-content-tickets").html(compiledeHTML);
+      var compiledeHTML = $compile("<div my-View-" + view + "></div>")($scope);
+
+      if(warpol("#mid-content-tickets"))
+        warpol("#mid-content-tickets").html(compiledeHTML);
+      else
+        warpol("#viewMidContent").html(compiledeHTML);
+
+
+//         console.log('viewMidContent');
+//         console.log('mid-content');
     };
   $scope.fullTickets = function (){
     $http.get("supportTickets")
@@ -1498,7 +1514,7 @@ app.controller('supportController', function ($scope, $http, notify, $compile, $
   };
   $scope.displayCustomerResume = function (id){
     $scope.stcid = id;
-    $scope.stcCFlag = true;
+    $scope.stcFlag = false;
     callMidView('Customer');
   };
 })
@@ -1521,6 +1537,11 @@ app.controller('supportController', function ($scope, $http, notify, $compile, $
 .directive('myViewCustomer',        function() {
   return {
     templateUrl: '/views/customer.html'
+  };
+})
+.directive('myViewSupport',        function() {
+  return {
+    templateUrl: '/views/supportDash.html'
   };
 })
 .directive('myViewBilling',         function() {
@@ -1934,7 +1955,7 @@ app.controller('customerBuildingController',        function ($scope, $http){
   {
     $http.get("buildings/" + $scope.customerData.address.id_buildings)
       .then(function (response) {
-        console.log(response.data);
+//         console.log(response.data);
         $scope.bld = response.data;
       });
   }
@@ -2049,8 +2070,7 @@ app.controller('networkController',                 function ($scope, $http){
 
 
 //TOOLS
-app.controller('mainSearchController', function ($scope, $http){
-  console.log('mainSearchController');
+app.controller('mainSearchController', function ($scope, $http, $compile){
   $scope.closeSearch = function ()
   {
     warpol('#globalSearch').fadeOut('fast');
@@ -2062,7 +2082,6 @@ app.controller('mainSearchController', function ($scope, $http){
     if(!this.globalSearch)
       $scope.closeSearch;
   }
-
   $scope.search = function ()
   {
     if(!this.globalSearch)
@@ -2087,6 +2106,12 @@ app.controller('mainSearchController', function ($scope, $http){
     getBuildingsSearch(string);
   };
 
+  $scope.displayCustomerResume = function (id){
+    $scope.stcid = id;
+    $scope.stcFlag = false;
+    callMidView('Customer');
+  };
+
   function getClientsSearch(string)
   {
     $http.get("getClientsSearch", {params:{'string':string}})
@@ -2096,7 +2121,7 @@ app.controller('mainSearchController', function ($scope, $http){
 //         else
           $scope.globalClientSearch = response.data;
         $scope.loadingCl = false;
-        console.log(response.data);
+//         console.log(response.data);
       });
   }
   function getCustomersSearch(string)
@@ -2108,7 +2133,7 @@ app.controller('mainSearchController', function ($scope, $http){
 //         else
         $scope.globalCustomersSearch = response.data;
         $scope.loadingCu = false;
-        console.log(response.data);
+//         console.log(response.data);
       });
   }
   function getTicketsSearch(string)
@@ -2120,7 +2145,7 @@ app.controller('mainSearchController', function ($scope, $http){
 //         else
         $scope.globalTicketsSearch = response.data;
         $scope.loadingS = false;
-        console.log(response.data);
+//         console.log(response.data);
       });
   }
   function getBuildingsSearch(string)
@@ -2132,10 +2157,14 @@ app.controller('mainSearchController', function ($scope, $http){
 //         else
         $scope.globalBuildingsSearch = response.data;
         $scope.loadingB = false;
-        console.log(response.data);
+//         console.log(response.data);
       });
   }
-
+  function callMidView (view) {
+    $scope.globalViewON = view;
+    var compiledeHTML = $compile("<div my-View-"+view+"></div>")($scope);
+    warpol("#viewMidContent").html(compiledeHTML);
+  };
 
 
 
