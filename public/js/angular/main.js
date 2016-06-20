@@ -1,5 +1,5 @@
 
-var app = angular.module('app', ["ngRoute", "xeditable", "ngAnimate", "ngSanitize", "cgNotify", "ui.bootstrap", "ngMaterial", "ngTable"]);
+var app = angular.module('app', ["ngRoute", "xeditable", "ngAnimate", "ngSanitize", "cgNotify", "ui.bootstrap", "ngMaterial", "ngTable", "chart.js"]);
 
 /**
  * Configure the Routes
@@ -18,7 +18,7 @@ app.config(['$routeProvider', function ($routeProvider) {
     .when("/adminusers", {templateUrl: "/angularviews/partials/home.html", controller: "adminusers"})
     .when("/customer", {templateUrl: "/views/customer.html"})
     .when("/network", {templateUrl: "/views/allNetwork.html"})
-    .when("/customers", {templateUrl: "/views/test.html"})
+    .when("/customers", {templateUrl: "/views/v2Test.html"})
 
 
     // else 404
@@ -33,10 +33,10 @@ app.run(function(editableOptions) {
 
 
 
-
-
-
-
+app.controller("PieCtrl", function ($scope) {
+  $scope.labels = ["Download Sales", "In-Store Sales", "Mail-Order Sales"];
+  $scope.data = [300, 500, 100];
+});
 
 
 /**

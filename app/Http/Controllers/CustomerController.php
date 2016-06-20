@@ -145,7 +145,7 @@ class CustomerController extends Controller
   }
   public function getBillingHistory(Request $request)
   {
-    return DB::Select('select * from billingTransactionLog where CID = ' . $request->id);
+    return BillingTransactionLog::where('id_customers', $request->id)->get();
   }
   public function getCustomerServices(Request $request)
   {

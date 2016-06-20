@@ -51,38 +51,26 @@
       <!-- END TABS-->
 
 
-      <!-- BLD DATA LEFT -->
-      <div class="row-row ntas-tmp">
-        <div class="tabs-content">
-          <div class="cell-inner">
+      <!--<div class="row-row ntas-tmp">-->
+        <!--<div class="tabs-content">-->
+          <!--<div class="cell-inner">-->
             <div class="tab-content" >
-
               <div class="tab-pane active" id="tab-1">
                 <!--CONTENT TABS-->
                 <div id="bldlist-result" ng-controller="customerControllerList">
                   <p ng-repeat="data in supportDataCustomer" ng-click="displayCustomerResume(data.id)">{{ data.first_name}} {{ data.last_name}}</p>
                 </div>
               </div>
-
               <div class="tab-pane fix-size-scroll" id="tab-2" >
-                <div class="wrapper-md">
                   <p ng-repeat="bldretail in bldData['retail']" ng-click="displayBldData(bldretail.id)">{{ bldretail.Name?bldretail.Name:bldretail.name }}</p>
-                </div>
               </div>
-
               <div class="tab-pane fix-size-scroll" id="tab-3" >
-                <div class="wrapper-md">
                   <p ng-repeat="ticketList in supportData" ng-click="displayTicketResume(ticketList.id, ticketList.id_customers)">{{ ticketList.ticket_number }}, {{ticketList.customer.first_name}}, {{ ticketList.address.code }}</p>
-                </div>
               </div>
-              <!--BUILDING TABLE -->
-              <!--END CONTENT TABS-->
-
             </div>
-          </div>
-        </div>
-      </div>
-      <!-- END BLD DATA LEFT -->
+          <!--</div>-->
+        <!--</div>-->
+      <!--</div>-->
 
     </div>
 
@@ -105,7 +93,7 @@
     </div>
   </div>
 
-  <div class="col-lg-12 no-padding-sides" id="viewMidContent">
+  <div class="col-lg-12 " id="viewMidContent">
     <div my-View-Support></div>
   </div>
 

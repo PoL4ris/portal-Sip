@@ -10,6 +10,7 @@ use App\Models\Customer;
 use App\Models\Ticket;
 use App\Models\CustomerProduct;
 use App\Models\Address;
+use App\Models\BillingTransactionLog;
 use App\Models\Building\Building;
 
 
@@ -102,10 +103,7 @@ class TestController extends Controller
 
 
   dd(
-    Ticket::with('customer', 'reason', 'ticketNote','ticketHistory', 'user', 'userAssigned', 'address', 'contacts')
-      ->where('id_reasons', 11)
-      ->orderBy('updated_at', 'desc')
-      ->get()->toArray()
+    BillingTransactionLog::find(7938)
   );
 
 

@@ -45,8 +45,9 @@
                 <!--END OFFSET LIMIT btn's -->
                 <!--CONTENT TABS-->
                 <div id="bldlist-result" >
-                  <p ng-repeat="building in bldData['buildingList']" ng-click="displayBldData(building.id)">
-                    {{ building.Name?building.Name:building.name }}
+                  <p ng-repeat="building in bldSearchResultLeft" ng-click="displayBldData(building.id)" ng-if="bldSearchResultLeft" class="animate-if">{{ building.name }}</p>
+                  <p ng-repeat="building in bldData['buildingList']" ng-click="displayBldData(building.id)" ng-if="!bldSearchResultLeft" class="animate-if">
+                    {{ building.name }}
                     <i ng-if="building.type == 'Comercial'" class="type-ico type-c">C</i>
                     <i ng-if="building.type == 'Retail'"    class="type-ico type-r">R</i>
                     <i ng-if="building.type == 'Prospect'"  class="type-ico type-p">P</i>

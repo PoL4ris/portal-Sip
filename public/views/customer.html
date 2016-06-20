@@ -42,15 +42,15 @@
         <div class="text-muted col-lg-6 editable-text" editable-text="customerData.email" onaftersave="validate(customerData.email, 'Customers', 'email')">{{customerData.email}}</div>
         <div class="text-muted col-lg-6 no-editable-text">{{customerData.email}}</div>
         <div class="col-lg-4 no-padding-sides">Tel:</div>
-        <div class="text-muted col-lg-6 editable-text" editable-text="customerData.contacts.value" onaftersave="validate(customerData.contacts.value, 'Contacts', 'value')">{{ customerData.contacts.value }}</div>
-        <div class="text-muted col-lg-6 no-editable-text">{{customerData.contacts.value}}</div>
+        <div class="text-muted col-lg-6 editable-text" editable-text="customerData.contacts.value" onaftersave="validate(customerData.contacts.value, 'Contacts', 'value')">{{ customerData.contacts.value?customerData.contacts.value:'NoTel' }}</div>
+        <div class="text-muted col-lg-6 no-editable-text">{{customerData.contacts.value?customerData.contacts.value:'NoTel'}}</div>
         <div class="col-lg-4 no-padding-sides">DateSignedUp:</div>
         <div class="text-muted col-lg-6">{{customerData.signedup_at}}</div>
         <div class="col-lg-4 no-padding-sides">AccountStatus:</div>
-        <div class="text-muted col-lg-6">{{ customerData.type.name }}</div>
+        <div class="text-muted col-lg-6">{{ customerData.type.name?customerData.type.name:'Pending' }}</div>
         <div class="col-lg-4 no-padding-sides">VIP:</div>
-        <div class="text-muted col-lg-6 editable-text" editable-text="customerData.vip" onaftersave="validate(customerData.vip, 'Customers', 'vip')">{{ customerData.vip }}</div>
-        <div class="text-muted col-lg-6 no-editable-text">{{customerData.vip}}</div>
+        <div class="text-muted col-lg-6 editable-text" editable-text="customerData.vip" onaftersave="validate(customerData.vip, 'Customers', 'vip')">{{ customerData.vip?customerData.vip:'NO' }}</div>
+        <div class="text-muted col-lg-6 no-editable-text">{{customerData.vip?customerData.vip:'NO'}}</div>
       </div>
       <div class="col-lg-6 no-padding-sides ccv" ng-include="'/views/payment.html'"></div>
 

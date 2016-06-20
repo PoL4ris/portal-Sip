@@ -3,7 +3,6 @@
 <div id="building" class="building header-img" ng-controller="customerBuildingController">
 
   <!--<a href="#" editable-text="xedit.name">{{ xedit.name || "empty" }}</a>-->
-
   <div class="bld block-a">
     <div class="img "><img ng-src="/img/buildings/{{ bld.building.img_building?bld.building.img_building:'../logoLogin.png' }}" alt=""></div>
     <div class=" form-group ">
@@ -20,8 +19,8 @@
       <input type="hidden" value="{{ bld.building.id }}" name="id" class="block-a-edit form-control">
       <label class="bold-type">Name</label>           <label class="block-a-label" id="name">{{ bld.building.name }}</label>
       <input type="text" value="{{ bld.building.name?bld.building.name:bld.building.Name }}" name="name" class="block-a-edit form-control">
-      <label class="bold-type">Address</label>        <label class="block-a-label" id="address">{{ bld.address.address?bld.address.address:bld }}</label>
-      <input type="text" value="{{ bld.building.address?bld.building.address:bld.building.Address }}" name="address" class="block-a-edit form-control">
+      <label class="bold-type">Address</label>        <label class="block-a-label" id="address">{{ bld.address.address }}</label>
+      <input type="text" value="{{ bld.address.address }}" name="address" class="block-a-edit form-control">
       <label class="bold-type">Alias</label>          <label class="block-a-label" id="alias">{{ bld.building.alias?bld.building.alias:'' }}</label>
       <input type="text" value="{{ bld.building.alias?bld.building.alias:'NO ALIAS' }}" name="alias" class="block-a-edit form-control">
       <label class="bold-type">Nickname</label>       <label class="block-a-label" id="nickname">{{ bld.building.nickname?bld.building.nickname:'' }}</label>

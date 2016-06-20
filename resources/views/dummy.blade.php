@@ -31,8 +31,8 @@
   <link href="/css/angular/xeditable.css" rel="stylesheet">
   <link href="/css/angular/angular-notify.css" rel="stylesheet">
   <link href="/css/angular/ng-table.min.css" rel="stylesheet">
-
-
+  {{--Charts--}}
+  <link href="/css/angular/angular-chart.css" rel="stylesheet">
 
 
   {{-- Our Website CSS Styles --}}
@@ -52,7 +52,7 @@
    {{--Our Website Content Goes Here --}}
   <div ng-include='"/angularviews/templates/nav.html"' class="app-aside hidden-xs bg-dark"></div>
   <div ng-include='"/angularviews/templates/header.html"' class="app-header app-header navbar navbar-fixed-top"></div>
-  <div ng-view class="app-content"></div>
+  <div ng-view class="app-content" ng-controller="directiveController"></div>
   <div ng-include='"/angularviews/templates/footer.html"' class="app-footer"></div>
 
 </div>
@@ -73,6 +73,11 @@
 <script src="/js/angular/angular-aria.js"></script>
 <script src="/js/angular/angular-material.js"></script>
 <script src="/js/angular/ng-table.min.js"></script>
+{{--Charts--}}
+<script src="/js/angular/Chart.js"></script>
+<script src="/js/angular/angular-chart.js"></script>
+
+
 
 
 
@@ -84,6 +89,7 @@
 {{--<script src="/js/ui-load.js"></script>--}}
 {{--<script src="/js/ui-jp.config.js"></script>--}}
 {{--<script src="/js/ui-jp.js"></script>--}}
+{{--<script src="/js/ui-jq.js"></script>--}}
 {{--<script src="/js/ui-nav.js"></script>--}}
 {{--<script src="/js/ui-toggle.js"></script>--}}
 {{--<script src="/js/ui-client.js"></script>--}}

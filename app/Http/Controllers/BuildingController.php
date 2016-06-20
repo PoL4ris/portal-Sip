@@ -37,7 +37,6 @@ class BuildingController extends Controller
     $address = null;
 
 
-
     if ($request->id)
     {
       $building = Building::where('id', $request->id)->get();
@@ -48,18 +47,19 @@ class BuildingController extends Controller
     else
       $building = Building::orderBy('id', 'desc')->get();
 
- 
-
-    $bldNeigh = Neighborhood::where('id', $building[0]->id_neighborhoods)->get();
-    $neighborhoodList = $this->getNeighborhoodList();
-//    $typesList = $this->getTypesList();
 
     $buildingsList = DB::table('buildings')->skip($offset)->take($limit)->get();
-
+    $neighborhoodList = $this->getNeighborhoodList();
     $buildingsTypes = $this->getBuildingsType();
     $buildingsInfo = $this->getBuildingsInfo($building[0]->id);
-    $building[0]->neighborhoodname = $bldNeigh[0]->name;
 
+    if ($building[0]->id_neighborhoods != 0)
+    {
+      $bldNeigh = Neighborhood::where('id', $building[0]->id_neighborhoods)->get();
+      $building[0]->neighborhoodname = $bldNeigh[0]->name;
+    }
+
+//    $typesList = $this->getTypesList();
 
     $data = ['building'     => $building[0],
              'neighborhood' => $neighborhoodList,

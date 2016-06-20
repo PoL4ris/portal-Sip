@@ -11,7 +11,7 @@
     <h5>Client Result</h5>
     <p ng-if="globalClientSearch.length === 0">No results.</p>
     <div ng-if="loadingCl" class="loading-default animate-if"><img src="/img/default.gif" alt=""></div>
-    <p ng-repeat="gcs in globalClientSearch" class="animate-if" >-{{gcs.first_name}} {{gcs.last_name}}</p>
+    <p ng-repeat="gcs in globalClientSearch" class="animate-if" ng-click="displayCustomerResume(gcs.id); closeSearch()">-{{gcs.first_name}} {{gcs.last_name}}</p>
   </div>
 
   <div ng-if="globalCustomersSearch" class="anim gsrdiv animate-if b-r">
@@ -25,14 +25,14 @@
     <h5>Tickets Result</h5>
     <p ng-if="globalTicketsSearch.length === 0">No results.</p>
     <div ng-if="loadingS" class="loading-default animate-if"><img src="/img/default.gif" alt=""></div>
-    <p ng-repeat="gts in globalTicketsSearch" class="animate-if">-{{gts.ticket_number}} {{gts.status}}</p>
+    <p ng-repeat="gts in globalTicketsSearch" class="animate-if" ng-click="displayTicketResume(gts.id, gts.id_customers); closeSearch()">-{{gts.ticket_number}} {{gts.status}}</p>
   </div>
 
   <div ng-if="globalBuildingsSearch" class="anim gsrdiv animate-if">
     <h5>Buildings Result</h5>
     <p ng-if="globalBuildingsSearch.length === 0">No results.</p>
     <div ng-if="loadingB" class="loading-default animate-if"><img src="/img/default.gif" alt=""></div>
-    <p ng-repeat="gbs in globalBuildingsSearch" class="animate-if" ng-click="displayBldData(gbs.id)">-{{gbs.name}} {{gbs.code}}</p>
+    <p ng-repeat="gbs in globalBuildingsSearch" class="animate-if" ng-click="displayBuildingResume(gbs.id); closeSearch()">-{{gbs.name}} {{gbs.code}}</p>
   </div>
 
 </div>

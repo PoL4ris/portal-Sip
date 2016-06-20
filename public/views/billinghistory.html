@@ -6,7 +6,6 @@
     <div class="color-name-header btn-dark">
       Billing History:
     </div>
-
     <div class="panel panel-default">
       <table id="myTable" class="tablesorter table" >
         <thead>
@@ -15,15 +14,15 @@
         <tbody>
         <tr ng-repeat="billing in billingHistory" >
 
-          <td>{{ billing.DateTime }}</td>
-          <td>{{ billing.TransType }}</td>
-          <td>{{ billing.Amount }}</td>
-          <td>{{ billing.PaymentMode }}</td>
-          <td>{{ billing.OrderNumber }}</td>
-          <td>{{ billing.ChargeDescription }}</td>
-          <td>{{ billing.ActionCode }}</td>
-          <td>{{ billing.TransactionID }}</td>
-          <td>{{ billing.Responsetext }}</td>
+          <td>{{ billing.date_time }}</td>
+          <td>{{ billing.transaction_type }}</td>
+          <td>{{ billing.amount }}</td>
+          <td>{{ billing.payment_amount }}</td>
+          <td>{{ billing.order_number }}</td>
+          <td>{{ billing.charge_description }}</td>
+          <td>{{ billing.action_code }}</td>
+          <td>{{ billing.transaction_id }}</td>
+          <td>{{ billing.response_text }}</td>
 
         </tr>
         </tbody>
