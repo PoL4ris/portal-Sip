@@ -2,6 +2,9 @@
 .btn-silver-size {
   min-width: 100px;
 }
+.bg-blue {
+  background-color: #61a4ca;
+}
 .bg-skyblue {
   background-color: #23b7e5;
 }
@@ -198,18 +201,16 @@
 .bold-type {
   font-weight: bold;
 }
-.display-content-main-box {
-  padding: 0;
-}
-.display-content-main-box .color-name-header {
-  border-color: #bce8f1;
-  color: white;
+.color-name-header {
+  border-bottom: 1px solid #bce8f1;
+  color: #333;
   font-size: 16px;
+  margin-bottom: 15px;
   overflow: hidden;
   padding: 2px 10px;
   position: relative;
 }
-.display-content-main-box .field-data {
+.field-data {
   border-bottom: 1px solid #eee;
   padding: 2px;
 }
@@ -594,11 +595,6 @@
 .ital {
   font-style: italic;
 }
-/*.fix-size-scroll {*/
-  /*max-height: 650px;*/
-  /*overflow-x: hidden;*/
-  /*overflow-y: auto;*/
-/*}*/
 md-tabs:not(.md-no-tab-content):not(.md-dynamic-height) {
   min-height: 550px;
 }
@@ -723,6 +719,9 @@ li span {
 }
 .float-left {
   float: left;
+}
+.float-right {
+  float: right;
 }
 .onoffswitch {
   -moz-user-select: none;
@@ -923,11 +922,11 @@ li span {
   padding-left: 5px;
   width: auto;
 }
-.gsrdiv p:hover{
-  background: rgba(200,200,200,.2);
+.gsrdiv p:hover {
+  background: rgba(200, 200, 200, 0.2) none repeat scroll 0 0;
   border-radius: 2px;
-  transition: all ease .7s;
   color: #333;
+  transition: all 0.7s ease 0s;
 }
 .gsrdiv .loading-default {
   text-align: center;
@@ -994,4 +993,15 @@ li span {
 .time-data label {
 }
 .time-data b {
+}
+.add-Service-btn {
+}
+.action-confirm {
+  margin: inherit;
+  min-height: inherit;
+  min-width: inherit;
+}
+.action-confirm i{
+  color: transparent;
+  position: absolute !important;
 }

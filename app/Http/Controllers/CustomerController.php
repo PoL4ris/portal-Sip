@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
 use App\Models\Support\Adminaccess;
 use Illuminate\Http\Request;
 
@@ -149,7 +150,7 @@ class CustomerController extends Controller
   }
   public function getCustomerServices(Request $request)
   {
-    return Customer::with('services')->find($request->id);
+    return Customer::with('services')->find($request->id?$request->id:$request->idCustomer);
   }
   public function getCustomerProduct(Request $request)
   {
@@ -213,6 +214,70 @@ class CustomerController extends Controller
   public function getCustomerDataTicket(Request $request)
   {
     return Customer::find($request->id);
+  }
+  public function insertCustomerService(Request $request){
+
+    /*
+     * Status
+     * 3=active
+     * 4=disable
+     * 5=new
+    */
+
+    $when = $this->getTimeToAdd(Product::find($request->idProduct)->frequency);
+    $expires = date("Y-m-d H:i:s", strtotime('first day of next ' . $when));
+    $data = array ('id_customers' =>  $request->idCustomer,
+                   'id_products'  =>  $request->idProduct,
+                   'id_status'    =>  3,
+                   'signed_up'    => date("Y-m-d H:i:s"),
+                   'expires'      => $expires,
+                   'id_users'     => Auth::user()->id,
+                   'created_at'   => date("Y-m-d H:i:s"),
+                   'updated_at'   => date("Y-m-d H:i:s")
+                   );
+
+    CustomerProduct::insert($data);
+
+//    return Customer::find($request->idCustomer);
+    return $this->getCustomerServices($request);
+
+  }
+  public function getTimeToAdd($type){
+
+    $timeToAdd = array('annual'   =>'first day of next year',
+                       'monthly'  =>'first day of next month',
+                       'onetime'  =>'first day of next month',
+                       'included' =>'first day of next month'
+                       );
+    return $timeToAdd[$type];
+  }
+  public function disableCustomerServices(Request $request){
+  /*
+   * Status
+   * 3=active
+   * 4=disable
+   * 5=new
+  */
+
+    $activeService = CustomerProduct::find($request->idService);
+    $activeService->id_status = 4;
+    $activeService->save();
+
+    return $this->getCustomerServices($request);
+
+
+  }
+  public function updateCustomerServices(Request $request){
+
+    $when = $this->getTimeToAdd(Product::find($request->newId)->frequency);
+    $expires = date("Y-m-d H:i:s", strtotime('first day of next ' . $when));
+
+    $updateService = CustomerProduct::find($request->id);
+    $updateService->id_products = $request->newId;
+    $updateService->signed_up = date("Y-m-d H:i:s");
+    $updateService->expires = $expires;
+    $updateService->id_users = Auth::user()->id;
+    $updateService->save();
   }
 
 

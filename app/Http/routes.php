@@ -76,6 +76,9 @@ Route::group(['middleware' => 'web'], function () {
   //Customers
   Route::get('customers/{id?}',         'CustomerController@customers');
   Route::post('updateCustomerData',     'CustomerController@updateCustomerData');
+  Route::get('insertCustomerService',   'CustomerController@insertCustomerService');
+  Route::get('disableCustomerServices', 'CustomerController@disableCustomerServices');
+  Route::get('updateCustomerServices',  'CustomerController@updateCustomerServices');
   //UpdateCustomer
   Route::get('updateAddressTable',      'CustomerController@updateAddressTable');
   Route::get('updateCustomersTable',    'CustomerController@updateCustomersTable');
@@ -104,6 +107,7 @@ Route::group(['middleware' => 'web'], function () {
   Route::get('getReasonsData',          'MainController@getReasonsData');
   Route::get('getCustomerList',         'CustomerController@getCustomerList');
   Route::get('getTicketOpenTime',       'SupportController@getTicketOpenTime');
+  Route::get('getAvailableServices',    'SupportController@getAvailableServices');
 
   //SUPPORT
   Route::get('updateTicketDetails',     'SupportController@updateTicketData');

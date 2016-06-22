@@ -6,114 +6,73 @@
 <!--Services-->
 
 <div class="col-lg-12 display-content-main-box anim padder-md" id="customer-box-c" ng-controller="customerServicesController" ng-if="!stcFlag">
-<!--{{customerServices}}-->
 
   <div class="color-name-header btn-dark">
     Services Info
   </div>
 
-  <div class="panel panel-default">
-    <table id="myTable" class="tablesorter table" >
+  <div class="panel panel-default" ng-controller="ModalController">
+
+
+    <div class="SCRIPTCONTENTMODAL"  >
+
+      <script type="text/ng-template" id="myModalContent.html">
+
+        <div class="field-data bg-white col-lg-12" >
+
+          <div class="color-name-header">Service Information</div>
+
+          <label class="bold-type col-lg-2">Service/Plan</label>
+
+          <select class="col-lg-3 block-a-label" ng-model="selectedItem" ng-options="serv.name for serv in availableServices track by serv.id" ng-change="serviceDataDisplay()"></select>
+
+          <div class="col-lg-7">
+            <label class="bold-type col-lg-6">Amount</label>
+              <label class="col-lg-6 block-a-label">{{ currentServiceDisplay?('$' + currentServiceDisplay.amount + '.00'):'Select Service' }}</label>
+            <label class="bold-type col-lg-6">Cycle</label>
+              <label class="col-lg-6 block-a-label">{{ currentServiceDisplay?currentServiceDisplay.frequency:'Select Service' }}</label>
+            <label class="bold-type col-lg-6">Status</label>
+              <label class="col-lg-6 block-a-label">{{ currentServiceDisplay?currentServiceDisplay.id_types:'Select Service' }}</label>
+          </div>
+
+          <div class="col-lg-1 addServiceBoton"><button class="btn m-b-xs w-xs btn-primary" ng-click="addNewService()">Add</button></div>
+
+        </div>
+
+      </script>
+
+    </div>
+
+
+    <table id="myTable" class="tablesorter table">
       <thead>
-      <tr><th>Service</th><th>Amount</th><th>Cycle</th><th>Status</th><th>Actions</th></tr>
+      <tr><th>ID</th><th>Service</th><th>Amount</th><th>Cycle</th><th>Status</th><th>Actions</th></tr>
       </thead>
       <tbody>
-      <!--@foreach($customer['services'] as $serviceData)-->
       <tr ng-repeat="service in customerServices.services" ng-controller="serviceProductController">
-      <!--<tr id="serviceno-{{ $serviceData->CSID }}" class="{{ $serviceData->Status=='active'?'':$serviceData->Status . ' ital' }}" ng-repeat="service in customerServices.products" ng-controller="productControllerService">-->
+
+        <td>{{ service.id }}</td>
         <td>{{ customerProduct.product.name }}</td>
         <td>$ {{ customerProduct.product.amount }}.00</td>
         <td>{{ customerProduct.product.frequency }}</td>
         <td>{{ customerProductStatus.status.name }}</td>
-        <!--<td id="serviceinfo-status-{{ $serviceData->CSID }}">{{ customerProductStatus->name }}</td>-->
         <td>
-          <!--<button class="btn fa btn-danger fa-pencil modif-service-btn" tipo="{{ $serviceData->ProdType }}" type="button" tipoid="{{ $serviceData->ProdID }}" kind="update" serviceid="{{ $serviceData->CSID }}" displaystatus="{{ $serviceData->Status }}"></button>-->
-          <!--<button class="btn btn-dark fa fa-times transparent-btn" type="button" ></button>-->
-          <!--<button id="xservice-btn-id-{{ $serviceData->CSID }}" class="btn fa {{ $serviceData->Status=='active'?'btn-dark fa-times':'btn-success fa-check' }} action-confirm" tipo="{{ $serviceData->ProdType }}" type="button" tipoid="{{ $serviceData->ProdID }}" kind="cancel" serviceid="{{ $serviceData->CSID }}" displaystatus="{{ $serviceData->Status }}" route="0"></button>-->
-
-
-          <button class="btn fa btn-danger fa-pencil modif-service-btn"  type="button"  kind="update"  ></button>
-          <button class="btn btn-dark fa fa-times transparent-btn" type="button" ></button>
-          <button class="btn fa action-confirm btn-dark"  type="button"  kind="cancel"   route="0"></button>
+          <button class="btn fa btn-danger fa-pencil modif-service-btn"  title="Edit Service" ng-click="open(customerProduct.id, 'updateService')"></button>
+          <md-button class="btn fa fa-times action-confirm btn-default" ng-click="showConfirm($event, customerProduct.id)" title="Cancel Service"><i>a</i></md-button>
         </td>
       </tr>
-      <!--@endforeach-->
       </tbody>
     </table>
+
+
+    <div class="col-lg-12 add-Service-btn m-t-lg no-padding-sides">
+      <button class="btn m-b-xs btn-sm btn-info btn-addon bg-blue float-right" ng-click="open(customerData.id, 'services')">
+        <i class="fa fa-plus"></i>
+        Add Service
+      </button>
+    </div>
+
+
   </div>
-
-  <!--<div id="addservicecontentbox" class="addservicecontentbox" style="display:none;">-->
-    <!--<div class="color-name-header">Service Information</div>-->
-    <!--<div class="field-data bg-white col-lg-12">-->
-      <!--<label class="bold-type col-lg-2">Service/Plan</label>-->
-      <!--<select class="col-lg-3 block-a-label">-->
-        <!--<option value="#" class="prod-id-select-option">Please select a product</option>-->
-        <!--@foreach($customer['addservices'] as $addingService)-->
-        <!--<option value="{{ $addingService->ProdID }}" class="prod-id-select-option">{{ $addingService->ProdName }}</option>-->
-        <!--@endforeach-->
-      <!--</select>-->
-      <!--<div class="col-lg-7 ">-->
-        <!--@foreach($customer['addservices'] as $addingService)-->
-        <!--<div id="addServiceId-{{ $addingService->ProdID }}" class="options-content">-->
-          <!--<label class="bold-type col-lg-6">Amount</label><label class="col-lg-6 block-a-label">{{ $addingService->Amount }}</label>-->
-          <!--<label class="bold-type col-lg-6">Cycle</label><label class="col-lg-6 block-a-label">{{ $addingService->ChargeFrequency }}</label>-->
-          <!--<label class="bold-type col-lg-6">Status</label><label class="col-lg-6 block-a-label">{{ $addingService->Status }}</label>-->
-          <!--<label class="bold-type col-lg-6">Comments</label><textarea name='name' class="col-lg-6 block-a-label common-textarea"></textarea>-->
-        <!--</div>-->
-        <!--@endforeach-->
-      <!--</div>-->
-      <!--<div class="col-lg-1 addServiceBoton" >-->
-        <!--<button class="btn m-b-xs w-xs btn-primary">Add</button>-->
-      <!--</div>-->
-    <!--</div>-->
-  <!--</div>-->
-
-
-
-  <!--@if($customer['servicesactiveinfo'])-->
-
-  <!--<div id="updateservicecontentbox" class="addservicecontentbox" style="display: none;">-->
-    <!--<div class="color-name-header">Service Information</div>-->
-    <!--<div class="field-data bg-white col-lg-12">-->
-      <!--<label class="bold-type col-lg-2">Service/Plan</label>-->
-      <!--<select class="col-lg-3 block-a-label" name="serviceID" id="select-csiu">-->
-        <!--@foreach($customer['servicesactiveinfo'] as $servtmp)-->
-        <!--@foreach($servtmp as $avServices)-->
-        <!--<option value="{{ $avServices->ProdID }}" class="modif-servicios type-{{ $avServices->ProdType }}" >{{ $avServices->ProdName }}</option>-->
-        <!--@endforeach-->
-        <!--@endforeach-->
-      <!--</select>-->
-
-
-
-      <!--<div class="col-lg-7 ">-->
-        <!--@foreach($customer['servicesactiveinfo'] as $servtmpdos)-->
-        <!--@foreach($servtmpdos as $servtmptres)-->
-        <!--<div id="updateServiceId-{{ $servtmptres->ProdID }}" class="options-content modif-servicios">-->
-          <!--<label class="bold-type col-lg-6">Amount</label>        <label class="col-lg-6 block-a-label" id="amount-{{ $servtmptres->ProdID }}">{{ $servtmptres->Amount }}</label>-->
-          <!--<label class="bold-type col-lg-6">Signed Up</label>     <label class="col-lg-6 block-a-label" id="signup-{{ $servtmptres->ProdID }}">{{ $servtmptres->DateSignup }}</label>-->
-          <!--<label class="bold-type col-lg-6">Cycle</label>         <label class="col-lg-6 block-a-label" id="cycle-{{ $servtmptres->ProdID }}">{{ $servtmptres->ChargeFrequency }}</label>-->
-          <!--<label class="bold-type col-lg-6">Renewed:</label>      <label class="col-lg-6 block-a-label" id="renewed-{{ $servtmptres->ProdID }}">{{ $servtmptres->DateRenewed }}</label>-->
-          <!--<label class="bold-type col-lg-6">Status</label>        <label class="col-lg-6 block-a-label" id="status-{{ $servtmptres->ProdID }}">{{ $servtmptres->Status }}</label>-->
-          <!--<label class="bold-type col-lg-6">Expires</label>       <label class="col-lg-6 block-a-label" id="expires-{{ $servtmptres->ProdID }}">{{ $servtmptres->CProdDateExpires }}</label>-->
-          <!--<label class="bold-type col-lg-6">Last Updated</label>  <label class="col-lg-6 block-a-label" id="lastupdate-{{ $servtmptres->ProdID }}">{{ $servtmptres->CProdDateUpdated }}</label>-->
-          <!--<label class="bold-type col-lg-6">Comments</label>      <textarea class="col-lg-6 block-a-label common-textarea" id="comment-{{ $servtmptres->ProdID }}"></textarea>-->
-        <!--</div>-->
-        <!--@endforeach-->
-        <!--@endforeach-->
-      <!--</div>-->
-
-
-      <!--<div class="col-lg-1 addServiceBoton">-->
-        <!--@foreach($customer['services'] as $serviceData)-->
-        <!--<button class="btn m-b-xs w-xs btn-primary btn-display-service-{{ $serviceData->CSID }} btn-display-service" onclick="updateActiveServiceInfo({{ $serviceData->CSID }},{{ $serviceData->ProdID }});return false;" style="display: none;">Add</button>-->
-        <!--@endforeach-->
-
-      <!--</div>-->
-
-    <!--</div>-->
-  <!--</div>-->
-  <!--@endif-->
-
 
 </div>

@@ -256,7 +256,8 @@
   width: 320px;
 }
 .building .bld.block-a .img img {
-  width: 100%;
+  width: 30%;
+  height: 100%;
 }
 .building .bld.block-b {
 }

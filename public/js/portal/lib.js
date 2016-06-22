@@ -1390,7 +1390,6 @@ app.controller('customerControllerList',            function ($scope, $http){
     });
 });
 app.controller('customerController',                function ($scope, $http, $routeParams, notify){
-
   var idCustomer = $routeParams.id;
 
   if ($scope.stcid)
@@ -1473,41 +1472,21 @@ app.controller('supportTicketHistory',              function ($scope, $http){
       $scope.historyData = response.data;
     });
 });
-app.controller('ModalController',                   function ($scope, $uibModal, $log) {
 
-  $scope.animationsEnabled = false;
 
-  $scope.open = function (ticketId)
-  {
 
-    $scope.ticketId = ticketId;
 
-    var modalInstance = $uibModal.open(
-    {
-      animation: $scope.animationsEnabled,
-      templateUrl: 'myModalContent.html',
-      controller: 'ModalInstanceCtrl',
-      size: 'lg',
-      resolve: {
-        ticketId: function () {
-          return $scope.ticketId;
-        }
-      }
-    });
 
-    modalInstance.result.then(function () {}, function ()
-    {
-      $log.info('Modal dismissed at: ' + new Date());
-    });
-  };
 
-  $scope.toggleAnimation = function () {
-    $scope.animationsEnabled = !$scope.animationsEnabled;
-  };
 
-});
+
+
+
+
+
+
+
 app.controller('ModalInstanceCtrl',                 function ($scope, $http, $uibModalInstance, ticketId){
-
   $http.get("getTicketInfo", {params:{'ticketId':ticketId}})
     .then(function (response) {
       $scope.selectedTicket = response.data;
@@ -1519,8 +1498,103 @@ app.controller('ModalInstanceCtrl',                 function ($scope, $http, $ui
 
   $scope.cancel = function () {
     $uibModalInstance.dismiss('cancel');
+    console.log('modalInstanceCrl');
   };
+
+
 });
+
+
+
+
+
+app.controller('ModalController',                   function ($scope, $uibModal, $log) {
+
+  $scope.animationsEnabled = false;
+
+  $scope.open = function (id, type) {
+    $scope.customerId = id;
+    $scope.type = type;
+    
+
+    var modalInstance = $uibModal.open(
+    {
+      animation: $scope.animationsEnabled,
+      templateUrl: 'myModalContent.html',
+      controller: 'usrServiceController',
+      size: 'lg',
+      resolve: {
+        customerId: function () {
+          return $scope.customerId;
+        },
+        mode: function (){
+          return $scope.type
+        }
+      }
+    });
+
+    modalInstance.result.then(function () {}, function () {
+      if (type == 'services' || type == 'updateService')
+        $scope.cSrvCrlFun();
+
+      $log.info('Modal dismissed at: ' + new Date());
+    });
+  };
+
+  $scope.toggleAnimation = function () {
+    $scope.animationsEnabled = !$scope.animationsEnabled;
+  };
+
+});
+
+
+
+
+app.controller('usrServiceController',              function ($scope, $http, $uibModalInstance, customerId, mode){
+
+  $http.get("getAvailableServices")
+    .then(function (response) {
+      $scope.availableServices = response.data;
+    });
+
+  $scope.serviceDataDisplay = function() {
+    $scope.currentServiceDisplay = $scope.selectedItem;
+  }
+
+  $scope.addNewService = function () {
+  //Mode updateService customerId = oldIdProduct
+  if (mode == 'updateService')
+  {
+    console.log(customerId);
+    console.log($scope.currentServiceDisplay.id);
+    $http.get("updateCustomerServices", {params:{'id':customerId,'newId' :$scope.currentServiceDisplay.id}})
+  }
+  else
+    $http.get("insertCustomerService", {params:{'idCustomer':customerId,'idProduct' :$scope.currentServiceDisplay.id}})
+
+      .then(function (response) {
+         console.log("Service Added/Updated::OK");
+      });
+    $scope.cancel();
+  }
+
+  $scope.cancel = function () {
+    $uibModalInstance.dismiss('cancel');
+  };
+
+});
+
+
+
+
+
+
+
+
+
+
+
+
 app.controller('customerPaymentController',         function ($scope, $http){
   $http.get("getCustomerPayment", {params:{'id':$scope.stcid?$scope.stcid:$scope.customerData.id}})
     .then(function (response) {
@@ -1560,22 +1634,89 @@ app.controller('customerBillingHistoryController',  function ($scope, $http){
       $scope.billingHistory = response.data;
     });
 });
-app.controller('customerServicesController',        function ($scope, $http){
+
+
+
+
+
+
+app.controller('customerServicesController',        function ($scope, $http, $mdDialog){
+
   $http.get("getCustomerServices", {params:{'id':$scope.customerData.id}})
     .then(function (response) {
+
       $scope.customerServices = response.data;
+
     });
+
+  $scope.cSrvCrlFun = function (){
+
+    $http.get("getCustomerServices", {params:{'id':$scope.customerData.id}})
+      .then(function (response) {
+
+        $scope.customerServices = response.data;
+
+      });
+  }
+
+
+  $scope.showConfirm = function(ev, id) {
+    // Appending dialog to document.body to cover sidenav in docs app
+    var confirm = $mdDialog.confirm()
+      .title('Would you like to cancel this service?')
+      .textContent('Confirm this action.')
+      .ariaLabel('Lucky day')
+      .targetEvent(ev)
+      .ok('Please do it!')
+      .cancel('Cancel');
+
+    $mdDialog.show(confirm).then(function() {
+      //OK
+      $scope.status = 'You decided to get rid of your debt.';
+      $scope.disableService(id);
+    }, function() {
+      //Cancel
+      $scope.status = 'You decided to keep your debt.';
+    });
+  };
+
+
+  $scope.disableService = function (id){
+    $http.get("disableCustomerServices", {params:{'id':$scope.customerData.id, 'idService':id}})
+      .then(function (response) {
+
+        $scope.customerServices = response.data;
+
+      });
+  }
+
+
 });
+
 app.controller('serviceProductController',          function ($scope, $http){
+
   $http.get("getCustomerProduct", {params:{'id':$scope.service.id}})
     .then(function (response) {
+
       $scope.customerProduct = response.data;
+
     });
+
   $http.get("getCustomerProductType", {params:{'id':$scope.service.id}})
     .then(function (response) {
+
       $scope.customerProductStatus = response.data;
+
     });
+
 });
+
+
+
+
+
+
+
 app.controller('customerNetworkController',         function ($scope, $http, $mdDialog, $mdMedia){
   $scope.status = '  ';
   $scope.customFullscreen = $mdMedia('xs') || $mdMedia('sm');
@@ -1862,6 +2003,9 @@ app.controller('networkController',                 function ($scope, $http){
     return ' <tr id="' + idString + '"><td colspan="11">info</td></tr>';
   };
 });
+
+
+
 app.controller('mainSearchController',              function ($scope, $http, $compile){
   $scope.closeSearch = function () {
     warpol('#globalSearch').fadeOut('fast');
@@ -2019,6 +2163,7 @@ app.controller('toolsController',                   function ($scope, $http) {
 });
 app.controller('directiveController',               function ($scope, $http, $compile){
   console.log('directiveController');
+
 })
 .directive('myViewFull',                            function() {
   return {
@@ -2176,12 +2321,12 @@ app.controller('directiveController',               function ($scope, $http, $co
 app.controller('AppCtrl', AppCtrl);
 function AppCtrl ($scope, $log, $compile) {
   var tabs = [
-        { title: 'New Ticket',    content:'New-Ticket'},
-        { title: 'Tickets',       content:"Ticket-History"},
-        { title: 'Billing',       content:"Billing-History"},
-        { title: 'Network',       content:"Network"},
+//         { title: 'New Ticket',    content:'New-Ticket'},
+//         { title: 'Tickets',       content:"Ticket-History"},
+//         { title: 'Billing',       content:"Billing-History"},
+//         { title: 'Network',       content:"Network"},
         { title: 'Services Info', content:"Product"},
-        { title: 'Building',      content:'Building'},
+//         { title: 'Building',      content:'Building'},
     ],
     selected = null,
     previous = null;
@@ -2254,4 +2399,91 @@ app.controller('tableSorterNetwork',        function ($scope, $filter, ngTablePa
     }
   });
 
+});
+//CHARTS
+app.controller("PieCtrl", function ($scope) {
+  $scope.labels = ["Download Sales", "In-Store Sales", "Mail-Order Sales"];
+  $scope.data = [300, 500, 100];
+  $scope.colours = ['#4FC5EA', '#6B79C4', '#FAD733'];
+});
+app.controller("DoughnutCtrl", function ($scope) {
+  $scope.labels = ["Download Sales", "In-Store Sales", "Mail-Order Sales"];
+  $scope.data = [300, 500, 100];
+  $scope.colours = ['#27c24c', '#ff7a7a', '#D9EDF7'];
+});
+app.controller("PolarAreaCtrl", function ($scope) {
+  $scope.labels = ["Download Sales", "In-Store Sales", "Mail-Order Sales", "Tele Sales", "Corporate Sales"];
+  $scope.data = [300, 500, 100, 40, 120];
+});
+
+
+
+
+app.controller('locoCot', function($scope) {
+  $scope.options = {
+    chart: {
+      type: 'discreteBarChart',
+      height: 450,
+      margin : {
+        top: 20,
+        right: 20,
+        bottom: 50,
+        left: 55
+      },
+      x: function(d){return d.label;},
+      y: function(d){return d.value + (1e-10);},
+      showValues: true,
+      valueFormat: function(d){
+        return d3.format(',.4f')(d);
+      },
+      duration: 500,
+      xAxis: {
+        axisLabel: 'X Axis'
+      },
+      yAxis: {
+        axisLabel: 'Y Axis',
+        axisLabelDistance: -10
+      }
+    }
+  };
+
+  $scope.data = [
+    {
+      key: "Cumulative Return",
+      values: [
+        {
+          "label" : "A" ,
+          "value" : -29.765957771107
+        } ,
+        {
+          "label" : "B" ,
+          "value" : 0
+        } ,
+        {
+          "label" : "C" ,
+          "value" : 32.807804682612
+        } ,
+        {
+          "label" : "D" ,
+          "value" : 196.45946739256
+        } ,
+        {
+          "label" : "E" ,
+          "value" : 0.19434030906893
+        } ,
+        {
+          "label" : "F" ,
+          "value" : -98.079782601442
+        } ,
+        {
+          "label" : "G" ,
+          "value" : -13.925743130903
+        } ,
+        {
+          "label" : "H" ,
+          "value" : -5.1387322875705
+        }
+      ]
+    }
+  ]
 });

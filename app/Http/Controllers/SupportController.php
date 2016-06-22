@@ -17,6 +17,7 @@ use App\Models\Customer;
 use App\Models\Ticket;
 use App\Models\TicketHistory;
 use App\Models\Address;
+use App\Models\Product;
 
 class SupportController extends Controller
 {
@@ -119,6 +120,9 @@ class SupportController extends Controller
 
     $result = $this->getOldTimeTicket($record);
     return $result;
+  }
+  public function getAvailableServices(){
+    return Product::get();
   }
 
 

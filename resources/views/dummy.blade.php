@@ -33,6 +33,7 @@
   <link href="/css/angular/ng-table.min.css" rel="stylesheet">
   {{--Charts--}}
   <link href="/css/angular/angular-chart.css" rel="stylesheet">
+  <link href="/css/angular/nv.d3.css" rel="stylesheet">
 
 
   {{-- Our Website CSS Styles --}}
@@ -76,6 +77,11 @@
 {{--Charts--}}
 <script src="/js/angular/Chart.js"></script>
 <script src="/js/angular/angular-chart.js"></script>
+<script src="/js/angular/d3.js"></script>
+<script src="/js/angular/nv.d3.js"></script>
+<script src="/js/angular/angular-nvd3.js"></script>
+
+
 
 
 
@@ -86,17 +92,10 @@
 <script src="/js/angular/main.js"></script>
 
 
-{{--<script src="/js/ui-load.js"></script>--}}
-{{--<script src="/js/ui-jp.config.js"></script>--}}
-{{--<script src="/js/ui-jp.js"></script>--}}
-{{--<script src="/js/ui-jq.js"></script>--}}
-{{--<script src="/js/ui-nav.js"></script>--}}
-{{--<script src="/js/ui-toggle.js"></script>--}}
-{{--<script src="/js/ui-client.js"></script>--}}
+
 
 {{-- PLUGINS --}}
 <script src="/js/js_jsDate.js"></script>
-{{--<script src="/js/portal/jquery.fancybox.js"></script>--}}
 <script src="/js/portal/notify.js"></script>
 
 
