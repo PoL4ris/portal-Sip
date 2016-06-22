@@ -17,7 +17,7 @@ class CreateTicketsTable extends Migration
         $table->increments('id');
         $table->integer('id_customers')->comment('Customer');
         $table->string('ticket_number')->comment('Ticket Number');
-        $table->string('id_vendors')->nullable()->comment('Vendors');
+        $table->text('vendor_ticket')->nullable()->comment('Vendor ID');
         $table->integer('id_reasons')->comment('Reason');
         $table->text('comment')->nullable()->comment('Comment');
         $table->string('status');
