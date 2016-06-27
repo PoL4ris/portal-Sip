@@ -1116,19 +1116,28 @@ return;
 
   }
   $scope.submitForm = function () {
+    console.log('buildingCtl');
     var objects = warpol('#building-update-form').serializeArray();
-    var infoData = {};
-    for(var obj in objects )
-      infoData[objects[obj]['name']] = objects[obj]['value'];
+      var infoData = {};
+      for(var obj in objects )
+      {
+        if(objects[obj]['value'] == 'err' || objects[obj]['value'] == '')
+        {
+          var tmp = objects[obj]['name'].split('id_');
+          alert('Verify ' + (tmp[1]?tmp[1]:objects[obj]['name']) + ' Field');
+          return;
+        }
+        infoData[objects[obj]['name']] = objects[obj]['value'];
+      }
 
-    $http.get("updateBuilding", {params:infoData})
-      .then(function (response) {
-        $scope.bld = response.data;
-      });
+      $http.get("updateBuilding", {params:infoData})
+        .then(function (response) {
+          $scope.bld = response.data;
+        });
 
-    $scope.editFormByType('block-a');
+      $scope.editFormByType('block-a');
+    }
 
-  }
 
 
 }]);
@@ -1404,16 +1413,18 @@ app.controller('customerController',                function ($scope, $http, $ro
 
 
   $scope.submitForm = function (table) {
-
+  console.log('este' + table);
     var objects = warpol('#'+table+'-insert-form').serializeArray();
     var infoData = {};
 
 
     for(var obj in objects )
     {
-      if(objects[obj]['value'] == 'err' /*|| objects[obj]['value'] == ''*/)
+      if(objects[obj]['value'] == 'err' || objects[obj]['value'] == '')
       {
-        alert('Verify ' + objects[obj]['name'] + ' Field');
+        var tmp = objects[obj]['name'].split('id_');
+        console.log(tmp);
+        alert('Verify ' + (tmp[1]?tmp[1]:objects[obj]['name']) + ' Field');
         return;
       }
 
@@ -1502,7 +1513,7 @@ app.controller('ModalInstanceCtrl',                 function ($scope, $http, $ui
   };
 
 
-});
+});//sin usar
 
 
 
@@ -1515,7 +1526,11 @@ app.controller('ModalController',                   function ($scope, $uibModal,
   $scope.open = function (id, type) {
     $scope.customerId = id;
     $scope.type = type;
-    
+    if (type == 'updateService')
+      $scope.labelAddUpdate = true;
+    else
+      $scope.labelAddUpdate = false;
+
 
     var modalInstance = $uibModal.open(
     {
@@ -1551,8 +1566,8 @@ app.controller('ModalController',                   function ($scope, $uibModal,
 
 
 app.controller('usrServiceController',              function ($scope, $http, $uibModalInstance, customerId, mode){
-
-  $http.get("getAvailableServices")
+  console.log($scope);
+  $http.get("getAvailableServices", {params:{'id':customerId}})
     .then(function (response) {
       $scope.availableServices = response.data;
     });
@@ -1562,23 +1577,27 @@ app.controller('usrServiceController',              function ($scope, $http, $ui
   }
 
   $scope.addNewService = function () {
-  //Mode updateService customerId = oldIdProduct
-  if (mode == 'updateService')
-  {
-    console.log(customerId);
-    console.log($scope.currentServiceDisplay.id);
-    $http.get("updateCustomerServices", {params:{'id':customerId,'newId' :$scope.currentServiceDisplay.id}})
-  }
-  else
-    $http.get("insertCustomerService", {params:{'idCustomer':customerId,'idProduct' :$scope.currentServiceDisplay.id}})
-
-      .then(function (response) {
-         console.log("Service Added/Updated::OK");
-      });
-    $scope.cancel();
+    //Mode updateService customerId = oldIdProduct
+    if (mode == 'updateService')
+    {
+      $http.get("updateCustomerServices", {params:{'id':customerId,'newId' :$scope.currentServiceDisplay.id}})
+        .then(function (response) {
+          console.log("Service Added / Updated::OK");
+        });
+      $scope.cancel();
+    }
+    else
+    {
+      $http.get("insertCustomerService", {params:{'idCustomer':customerId,'idProduct' :$scope.currentServiceDisplay.id}})
+        .then(function (response) {
+           console.log("Service Added / Updated::OK");
+            $scope.cancel();
+        });
+    }
   }
 
   $scope.cancel = function () {
+    console.log('cancel coso');
     $uibModalInstance.dismiss('cancel');
   };
 
@@ -1660,10 +1679,10 @@ app.controller('customerServicesController',        function ($scope, $http, $md
   }
 
 
-  $scope.showConfirm = function(ev, id) {
+  $scope.showConfirm = function(ev, id, tipo) {
     // Appending dialog to document.body to cover sidenav in docs app
     var confirm = $mdDialog.confirm()
-      .title('Would you like to cancel this service?')
+      .title('Would you like to '+(tipo=='disable'?'cancel':'activate')+' this service?')
       .textContent('Confirm this action.')
       .ariaLabel('Lucky day')
       .targetEvent(ev)
@@ -1672,17 +1691,28 @@ app.controller('customerServicesController',        function ($scope, $http, $md
 
     $mdDialog.show(confirm).then(function() {
       //OK
-      $scope.status = 'You decided to get rid of your debt.';
-      $scope.disableService(id);
+      $scope.status = 'You decided to confirm';
+      if (tipo == 'disable')
+        $scope.disableService(id);
+      else
+        $scope.activeService(id);
     }, function() {
       //Cancel
-      $scope.status = 'You decided to keep your debt.';
+      $scope.status = 'You decided to cancel';
     });
   };
 
 
   $scope.disableService = function (id){
     $http.get("disableCustomerServices", {params:{'id':$scope.customerData.id, 'idService':id}})
+      .then(function (response) {
+
+        $scope.customerServices = response.data;
+
+      });
+  }
+  $scope.activeService = function (id){
+    $http.get("activeCustomerServices", {params:{'id':$scope.customerData.id, 'idService':id}})
       .then(function (response) {
 
         $scope.customerServices = response.data;
@@ -2163,6 +2193,14 @@ app.controller('toolsController',                   function ($scope, $http) {
 });
 app.controller('directiveController',               function ($scope, $http, $compile){
   console.log('directiveController');
+  //Global TOOLS
+  $scope.labelMonth = {1:'Jan', 2:'Feb', 3:'Mar', 4:'Apr', 5:'May', 6:'Jun',
+                       7:'Jul', 8:'Aug', 9:'Sep', 10:'Oct', 11:'Nov', 12:'Dec'};
+
+  $scope.validator = function (items){
+    console.log(items);
+  };
+
 
 })
 .directive('myViewFull',                            function() {
@@ -2320,13 +2358,14 @@ app.controller('directiveController',               function ($scope, $http, $co
 //TABS
 app.controller('AppCtrl', AppCtrl);
 function AppCtrl ($scope, $log, $compile) {
+console.log($scope);
   var tabs = [
 //         { title: 'New Ticket',    content:'New-Ticket'},
 //         { title: 'Tickets',       content:"Ticket-History"},
 //         { title: 'Billing',       content:"Billing-History"},
 //         { title: 'Network',       content:"Network"},
-        { title: 'Services Info', content:"Product"},
 //         { title: 'Building',      content:'Building'},
+        { title: 'Services Info', content:"Product"},
     ],
     selected = null,
     previous = null;
@@ -2415,11 +2454,7 @@ app.controller("PolarAreaCtrl", function ($scope) {
   $scope.labels = ["Download Sales", "In-Store Sales", "Mail-Order Sales", "Tele Sales", "Corporate Sales"];
   $scope.data = [300, 500, 100, 40, 120];
 });
-
-
-
-
-app.controller('locoCot', function($scope) {
+app.controller('getTicketsByMonthChart', function ($scope){
   $scope.options = {
     chart: {
       type: 'discreteBarChart',
@@ -2430,11 +2465,11 @@ app.controller('locoCot', function($scope) {
         bottom: 50,
         left: 55
       },
-      x: function(d){return d.label;},
+      x: function(d){return $scope.labelMonth[d.label];},
       y: function(d){return d.value + (1e-10);},
       showValues: true,
       valueFormat: function(d){
-        return d3.format(',.4f')(d);
+        return d3.format(',.0f')(d);
       },
       duration: 500,
       xAxis: {
@@ -2447,43 +2482,77 @@ app.controller('locoCot', function($scope) {
     }
   };
 
-  $scope.data = [
-    {
-      key: "Cumulative Return",
-      values: [
-        {
-          "label" : "A" ,
-          "value" : -29.765957771107
-        } ,
-        {
-          "label" : "B" ,
-          "value" : 0
-        } ,
-        {
-          "label" : "C" ,
-          "value" : 32.807804682612
-        } ,
-        {
-          "label" : "D" ,
-          "value" : 196.45946739256
-        } ,
-        {
-          "label" : "E" ,
-          "value" : 0.19434030906893
-        } ,
-        {
-          "label" : "F" ,
-          "value" : -98.079782601442
-        } ,
-        {
-          "label" : "G" ,
-          "value" : -13.925743130903
-        } ,
-        {
-          "label" : "H" ,
-          "value" : -5.1387322875705
-        }
-      ]
-    }
-  ]
+
 });
+app.controller('getTicketsByMonth', function($scope, $http) {
+  $http.get("getTicketsByMonth")
+    .then(function (response) {
+      $scope.data = [response.data];
+    });
+});
+app.controller("BarCtrl", function ($scope) {
+  $scope.labels = ['2006', '2007', '2008', '2009', '2010', '2011', '2012'];
+  $scope.series = ['Series A', 'Series B'];
+
+  $scope.data = [
+    [65, 59, 80, 81, 56, 55, 40],
+    [28, 48, 40, 19, 86, 27, 90]
+  ];
+});
+app.controller('warp', function ExampleCtrl(){
+  this.xAxisTickFormatFunction = function(){
+    return function(d){
+      return d3.time.format('%b')(new Date(d));
+    };
+  };
+
+  var colorCategory = d3.scale.category20b();
+  this.colorFunction = function() {
+    var colorsByDepartment = ['red', 'blue'];
+
+    return function(d, i) {
+      return colorsByDepartment[i];
+    };
+  }
+
+  this.exampleData = [
+    {
+      "key": 1,
+      "values": [ [ 1025409600000 , 5] , [ 1028088000000 , 6.3382185140371] , [ 1030766400000 , 5.9507873460847] , [ 1033358400000 , 11.569146943813] , [ 1036040400000 , 5.4767332317425] , [ 1038632400000 , 0.50794682203014] , [ 1041310800000 , 5.5310285460542] ]
+    },
+    {
+      "key": 2,
+      "values": [ [ 1025409600000 , 10] , [ 1028088000000 , 3] , [ 1030766400000 , 3] , [ 1033358400000 , 4] , [ 1036040400000 , 3] , [ 1038632400000 , 2] , [ 1041310800000 , 1] ]
+    }
+  ];
+});
+//[WORKING NOT IN USE
+app.controller('getSignedUpCustomersByYear', function($scope, $http) {
+  $http.get("getSignedUpCustomersByYear")
+    .then(function (response) {
+      console.log( response.data);
+      $scope.data = response.data;
+    });
+});
+app.controller('getSignedUpCustomersByYearChart', function($scope) {
+//data to fill $scope.data;
+});
+//END WORKING NOT IN USE]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

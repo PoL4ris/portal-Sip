@@ -1859,12 +1859,12 @@ fieldset[disabled] .btn-primary.active {
 }
 
 .btn-success {
-  /*color: #ffffff !important;*/
-  /*background-color: #27c24c;*/
-  /*border-color: #27c24c;*/
-  background-color: #00D30E;
-  border-color: #00C90A;
-  color: #fff;
+  color: #ffffff !important;
+  background-color: #27c24c;
+  border-color: #27c24c;
+  /*background-color: #00D30E;*/
+  /*border-color: #00C90A;*/
+  /*color: #fff;*/
 }
 
 .btn-success:hover,

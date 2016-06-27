@@ -214,6 +214,9 @@
   border-bottom: 1px solid #eee;
   padding: 2px;
 }
+#tabsChange-Network .field-data{
+  text-align: left;
+}
 .table td {
   border-right: 1px solid #f6f6f6;
   font-size: 12px;
@@ -996,10 +999,11 @@ li span {
 }
 .add-Service-btn {
 }
-.action-confirm {
+.prod-btns .action-confirm {
   margin: inherit;
   min-height: inherit;
-  min-width: inherit;
+  min-width: 38px;
+  max-width: 38px;
 }
 .action-confirm i{
   color: transparent;

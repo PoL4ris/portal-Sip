@@ -94,6 +94,7 @@
   float: left;
   overflow: hidden;
   position: relative;
+  width: 100%;
 }
 #tmpcss article {
   background: white none repeat scroll 0 0;
@@ -256,7 +257,7 @@
   width: 320px;
 }
 .building .bld.block-a .img img {
-  width: 30%;
+  width: 100%;
   height: 100%;
 }
 .building .bld.block-b {
@@ -296,6 +297,9 @@
   padding: 0 5%;
   position: relative;
   top: -5px;
+}
+.building .bld .bld-info-data select option{
+  cursor: pointer;
 }
 .building .bld .bld-info-data .bold-type {
   cursor: inherit;

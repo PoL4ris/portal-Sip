@@ -12,6 +12,7 @@ use App\Models\CustomerProduct;
 use App\Models\Address;
 use App\Models\BillingTransactionLog;
 use App\Models\Building\Building;
+use App\Models\Product;
 
 
 class TestController extends Controller
@@ -101,10 +102,23 @@ class TestController extends Controller
 //dd(Customer::with('ticketHistory')->find(1783));
 //dd(Ticket::with('address')->find(18685));
 
+  $idList = array();
+  $products = Building::with('products')->find(4)->products->toArray();
+    foreach($products as $x => $idS)
+    {
+      $idList[$x] = $idS['id_products'];
+    }
 
-  dd(
-    BillingTransactionLog::find(7938)
-  );
+
+
+    dd( Product::whereIn('id', $idList)->get()->toArray());
+
+
+
+
+
+
+
 
 
 

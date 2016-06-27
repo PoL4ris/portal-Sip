@@ -53,15 +53,17 @@ Route::group(['middleware' => 'web'], function () {
   Route::get('supportTicketsBilling',   'SupportController@supportTicketsBilling');
   Route::get('supportTicketsAll',       'SupportController@supportTicketsAll');
   Route::get('supportTicketHistory',    'SupportController@supportTicketHistory');
+  //DASHBOARDCHARTS
+  Route::get('getTicketsByMonth',           'ChartController@getTicketsByMonth');
+  Route::get('getSignedUpCustomersByYear',  'ChartController@getSignedUpCustomersByYear');
   //Search
   Route::get('buildingsSearch',         'BuildingController@getBuildingsSearchSimple');
   Route::get('customersSearch',         'CustomerController@getCustomersSearch');
-
   //GLOBAL SEARCH
-  Route::get('getClientsSearch',         'MainController@getClientsSearch');
-  Route::get('getCustomersSearch',       'MainController@getCustomersSearch');
-  Route::get('getTicketsSearch',         'MainController@getTicketsSearch');
-  Route::get('getBuildingsSearch',       'MainController@getBuildingsSearch');
+  Route::get('getClientsSearch',        'MainController@getClientsSearch');
+  Route::get('getCustomersSearch',      'MainController@getCustomersSearch');
+  Route::get('getTicketsSearch',        'MainController@getTicketsSearch');
+  Route::get('getBuildingsSearch',      'MainController@getBuildingsSearch');
 
   //Buildings & List
   Route::get('buildings/{id?}',         'BuildingController@buildings');
@@ -78,6 +80,7 @@ Route::group(['middleware' => 'web'], function () {
   Route::post('updateCustomerData',     'CustomerController@updateCustomerData');
   Route::get('insertCustomerService',   'CustomerController@insertCustomerService');
   Route::get('disableCustomerServices', 'CustomerController@disableCustomerServices');
+  Route::get('activeCustomerServices',  'CustomerController@activeCustomerServices');
   Route::get('updateCustomerServices',  'CustomerController@updateCustomerServices');
   //UpdateCustomer
   Route::get('updateAddressTable',      'CustomerController@updateAddressTable');

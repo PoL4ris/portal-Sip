@@ -10,17 +10,21 @@
     <div class="panel panel-default">
       <table id="myTable" class="tablesorter table" >
         <thead>
-        <tr><th>ID</th><th>Created</th><th>Reasone</th><th>Details</th><th>Status</th><th>Update</th></tr>
+        <tr><th>ID</th><th>Created</th><th>Reason</th><th>Details</th><th>Status</th><th>Update</th></tr>
         </thead>
         <tbody>
         <tr ng-repeat="ticket in ticketHistory.ticket_history" ng-controller="customerTicketHistoryData">
           <td>{{ ticket.ticket_number }}</td>
           <td>{{ ticket.created_at }}</td>
           <td>{{ ticketReason.short_description }}</td>
-          <td ng-mouseover="showFullComment(ticket.id)" ng-mouseleave="hideFullComment(ticket.id)" style="position: relative;" ng-if="ticketNotes.comment">{{ ticketNotes.comment | limitTo:letterLimit}}...
-            <div id='ticket-{{ ticket.id }}' style="display: none;" class="ticket-comment-pop">{{ticketNotes.comment}}</div>
+
+          <td ng-mouseover="showFullComment(ticket.id)" ng-mouseleave="hideFullComment(ticket.id)" style="position: relative;" ng-if="ticket.comment">{{ ticket.comment | limitTo:letterLimit }}...
+            <div id='ticket-{{ ticket.id }}' style="display: none;" class="ticket-comment-pop">{{ticket.comment}}</div>
           </td>
-          <td ng-if="!ticketNotes.comment"> No Comment </td>
+
+          <!--<td ng-mouseover="showFullComment(ticket.id)" ng-mouseleave="hideFullComment(ticket.id)" style="position: relative;" ng-if="ticketNotes.comment">{{ ticketNotes.comment | limitTo:letterLimit}}...-->
+          <!--</td>-->
+          <td ng-if="!ticket.comment"> No Comment </td>
           <td>{{ ticket.status }}</td>
           <td>{{ ticket.updated_at }}</td>
         </tr>

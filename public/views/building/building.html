@@ -16,37 +16,57 @@
   <form id="building-update-form" class="validation-form">
   <div class="bld block-b">
     <div class="bld-info-data">
+
       <input type="hidden" value="{{ bld.building.id }}" name="id" class="block-a-edit form-control">
       <label class="bold-type">Name</label>           <label class="block-a-label" id="name">{{ bld.building.name }}</label>
       <input type="text" value="{{ bld.building.name?bld.building.name:bld.building.Name }}" name="name" class="block-a-edit form-control">
-      <label class="bold-type">Address</label>        <label class="block-a-label" id="address">{{ bld.address.address }}</label>
-      <input type="text" value="{{ bld.address.address }}" name="address" class="block-a-edit form-control">
+
+      <label class="bold-type">Address</label>        <label class="" id="address">{{ bld.address.address }}</label>
+      <!--<input type="text" value="{{ bld.address.address }}" name="address" class="block-a-edit form-control">-->
+
       <label class="bold-type">Alias</label>          <label class="block-a-label" id="alias">{{ bld.building.alias?bld.building.alias:'' }}</label>
       <input type="text" value="{{ bld.building.alias?bld.building.alias:'NO ALIAS' }}" name="alias" class="block-a-edit form-control">
+
       <label class="bold-type">Nickname</label>       <label class="block-a-label" id="nickname">{{ bld.building.nickname?bld.building.nickname:'' }}</label>
       <input type="text" value="{{ bld.building.nickname?bld.building.nickname:'NO NICKNAME' }}" name="nickname" class="block-a-edit form-control">
+
       <label class="bold-type">Neighborhood</label>   <label class="block-a-label" id="id_neighborhood"> {{ bld.building.neighborhoodname?bld.building.neighborhoodname:'' }}</label>
       <select name="id_neighborhoods" class="form-control block-a-edit">
         <option value='{{bld.building.id_neighborhoods}}'>{{bld.building.neighborhoodname}}</option>
         <option value="{{neighborhood.id}}" ng-repeat="neighborhood in bldData.neighborhood">{{neighborhood.name}}</option>
       </select>
+
       <label class="bold-type">Code</label>           <label class="block-a-label" id="code">{{ bld.building.code?bld.building.code:bld.building.ShortName }}</label>
       <input type="text" value="{{ bld.building.code?bld.building.code:bld.building.ShortName }}" name="code" class="block-a-edit form-control">
-      <label class="bold-type">Year built</label>     <label class="block-a-label" id="year_built"> {{ bld.building.year_built?bld.building.year_built:'' }}</label>
-      <input type="text" value="{{ bld.building.year_built?bld.building.year_built:'NO YEAR BUILT' }}" name="year_built" class="block-a-edit form-control date">
+
+      <label class="bold-type">Year built</label>     <label class="" id="year_built"> {{ bld.building.year_built?bld.building.year_built:'' }}</label>
+      <!--<input type="text" value="{{ bld.building.year_built?bld.building.year_built:'NO YEAR BUILT' }}" name="year_built" class="block-a-edit form-control date">-->
+
       <label class="bold-type">Units</label>          <label class="block-a-label" id="units">{{ bld.building.units?bld.building.units:bld.building.Units }}</label>
       <input type="text" value="{{ bld.building.units?bld.building.units:bld.building.Units }}" name="units" class="block-a-edit form-control">
+
       <label class="bold-type">Floors</label>         <label class="block-a-label" id="floors">{{ bld.building.floors?bld.building.floors:'NO FLOORS INFO' }}</label>
       <input type="text" value="{{ bld.building.floors?bld.building.floors:'NO FLOORS INFO' }}" name="floors" class="block-a-edit form-control">
+
       <label class="bold-type">Type</label>           <label class="block-a-label" id="type">{{ bld.building.type }}</label>
-      <select name="id_types" class="form-control block-a-edit">
-        <option value='{{ bld.building.id_types}}'>{{ bld.building.typename}}</option>
-        <option value="{{typeoption.id}}" ng-repeat="typeoption in bldData.types">{{typeoption.name}}</option>
+      <select name="type" class="form-control block-a-edit">
+
+
+        <option value='{{ bld.building.type }}'>{{ bld.building.type }}</option>
+        <option value="Townhomes">Townhomes</option>
+        <option value="Office">Office</option>
+        <option value="High-Rise">Hig-Rise</option>
+        <option value="Commercial">Commercial</option>
+
+        <!--<option value="{{typeoption.name}}" ng-repeat="typeoption in bldData.types">{{typeoption.name}}</option>-->
       </select>
+
       <label class="bold-type">Legal name</label>      <label class="block-a-label" id="legal_name">{{ bld.building.legal_name?bld.building.legal_name:bld.building.Description }}</label>
       <input type="text" value="{{ bld.building.legal_name?bld.building.legal_name:bld.building.Description }}" name="legal_name" class="block-a-edit form-control">
+
       <label class="bold-type">Builder</label>         <label class="block-a-label" id="builder">{{ bld.building.builder?bld.building.builder:' ' }}</label>
       <input type="text" value="{{ bld.building.builder?bld.building.builder:'NO BUILDER DATA' }}" name="builder" class="block-a-edit form-control">
+
     </div>
   </div>
 
@@ -70,7 +90,7 @@
   </div>
 </div>
 
-<div class="col-lg-12" id="tmpcss" ng-if="bld.properties.length > 0">
+<div class="col-lg-12 no-padding-sides" id="tmpcss" ng-if="bld.properties.length > 0">
   <style>
     @import url(http://fonts.googleapis.com/css?family=Dosis:600,200|Great+Vibes);
     @import url(http://weloveiconfonts.com/api/?family=fontawesome);
@@ -88,9 +108,9 @@
     </nav>
     <article class='uno'>
       <div id="building-properties" class="building">
-        <div>
-          <button class="btn m-b-xs w-xs btn-info btn-edit" id="block-b">Edit</button>
-        </div>
+        <!--<div>-->
+          <!--<button class="btn m-b-xs w-xs btn-info btn-edit" id="block-b">Edit</button>-->
+        <!--</div>-->
         <form action="{{ url('/bldblockb') }}" class="xeditforms">
           <!--@foreach($properties as $index => $property)-->
           <div class="bld block-full"  ng-repeat="(index, propertie) in bld.properties">

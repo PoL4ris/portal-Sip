@@ -15,5 +15,8 @@ class Building extends Model
     return $this->hasMany('App\Models\Address', 'id_buildings', 'id')
                   ->whereNull('id_customers');
   }
+  public function products() {
+    return $this->hasMany('App\Models\BuildingProduct', 'id_buildings');
+  }
 
 }

@@ -35,7 +35,8 @@
               <label class="col-lg-6 block-a-label">{{ currentServiceDisplay?currentServiceDisplay.id_types:'Select Service' }}</label>
           </div>
 
-          <div class="col-lg-1 addServiceBoton"><button class="btn m-b-xs w-xs btn-primary" ng-click="addNewService()">Add</button></div>
+          <div class="col-lg-1 addServiceBoton"><button class="btn m-b-xs w-xs btn-primary" ng-click="addNewService()"ng-if="!labelAddUpdate">Add</button></div>
+          <div class="col-lg-1 addServiceBoton"><button class="btn m-b-xs w-xs btn-primary" ng-click="addNewService()" ng-if="labelAddUpdate">Update</button></div>
 
         </div>
 
@@ -56,9 +57,10 @@
         <td>$ {{ customerProduct.product.amount }}.00</td>
         <td>{{ customerProduct.product.frequency }}</td>
         <td>{{ customerProductStatus.status.name }}</td>
-        <td>
+        <td class="prod-btns">
           <button class="btn fa btn-danger fa-pencil modif-service-btn"  title="Edit Service" ng-click="open(customerProduct.id, 'updateService')"></button>
-          <md-button class="btn fa fa-times action-confirm btn-default" ng-click="showConfirm($event, customerProduct.id)" title="Cancel Service"><i>a</i></md-button>
+          <button ng-if="customerProductStatus.status.name != 'Disable'" class="btn fa fa-times action-confirm btn-dark" ng-click="showConfirm($event, customerProduct.id, 'disable')" title="Cancel Service"><i>a</i></button>
+          <button ng-if="customerProductStatus.status.name == 'Disable'" class="btn fa fa-check action-confirm btn-success" ng-click="showConfirm($event, customerProduct.id, 'active')" title="Cancel Service"><i>l</i></button>
         </td>
       </tr>
       </tbody>

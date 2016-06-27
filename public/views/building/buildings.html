@@ -1,3 +1,6 @@
+<div id="viewMidContent">
+
+
 <div class="bg-light lter b-b wrapper-xs col-lg-12">
   <h1 class="m-n font-thin h3">Buildings</h1>
 </div>
@@ -48,10 +51,15 @@
                   <p ng-repeat="building in bldSearchResultLeft" ng-click="displayBldData(building.id)" ng-if="bldSearchResultLeft" class="animate-if">{{ building.name }}</p>
                   <p ng-repeat="building in bldData['buildingList']" ng-click="displayBldData(building.id)" ng-if="!bldSearchResultLeft" class="animate-if">
                     {{ building.name }}
-                    <i ng-if="building.type == 'Comercial'" class="type-ico type-c">C</i>
-                    <i ng-if="building.type == 'Retail'"    class="type-ico type-r">R</i>
-                    <i ng-if="building.type == 'Prospect'"  class="type-ico type-p">P</i>
-                    <i ng-if="building.type == 'Bulk'"      class="type-ico type-b">B</i>
+                    <i ng-if="building.type == 'Commercial'" class="type-ico type-c">C</i>
+                    <i ng-if="building.type == 'High-Rise'"  class="type-ico type-r">H-R</i>
+                    <i ng-if="building.type == 'Office'"     class="type-ico type-p">O</i>
+                    <i ng-if="building.type == 'Townhomes'"  class="type-ico type-b">T</i>
+
+                    <!--<i ng-if="building.type == 'Comercial'" class="type-ico type-c">C</i>-->
+                    <!--<i ng-if="building.type == 'Retail'"    class="type-ico type-r">R</i>-->
+                    <!--<i ng-if="building.type == 'Prospect'"  class="type-ico type-p">P</i>-->
+                    <!--<i ng-if="building.type == 'Bulk'"      class="type-ico type-b">B</i>-->
                   </p>
                 </div>
               </div>
@@ -95,26 +103,26 @@
   <div class="building-elements">
 
     <!-- ADD BLD -->
-    <div class="col-lg-12 " ng-if="!bld" >
-      <br />
-      <a href="" ng-click="displayBldForm()" onclick="return false;" id="add-bld-btn">
-        <button class="btn btn-primary btn-addon btn-lg "><i class="fa fa-plus"></i>Add new Building</button>
-      </a>
+    <!--<div class="col-lg-12 " ng-if="!bld" >-->
+      <!--<br />-->
+      <!--<a href="" ng-click="displayBldForm()" onclick="return false;" id="add-bld-btn">-->
+        <!--<button class="btn btn-primary btn-addon btn-lg "><i class="fa fa-plus"></i>Add new Building</button>-->
+      <!--</a>-->
 
-      <a href="" ng-click="displayBldForm()" onclick="return false;" id="cancel-bld-btn" style="display: none;">
-        <button class="btn btn-danger btn-addon btn-lg">Cancel</button>
-      </a>
-    </div>
+      <!--<a href="" ng-click="displayBldForm()" onclick="return false;" id="cancel-bld-btn" style="display: none;">-->
+        <!--<button class="btn btn-danger btn-addon btn-lg">Cancel</button>-->
+      <!--</a>-->
+    <!--</div>-->
 
-    <div class="col-lg-12" ng-controller="newbuildingform" style="display: none;" id="bld-content-form" ng-if="!bld">
-      <br />
-      <div class="panel panel-default">
-        <div class="panel-heading font-bold">Basic Building form</div>
-        <div class="panel-body">
-          <div id="bld-form-html"></div>
-        </div>
-      </div>
-    </div>
+    <!--<div class="col-lg-12" ng-controller="newbuildingform" style="display: none;" id="bld-content-form" ng-if="!bld">-->
+      <!--<br />-->
+      <!--<div class="panel panel-default">-->
+        <!--<div class="panel-heading font-bold">Basic Building form</div>-->
+        <!--<div class="panel-body">-->
+          <!--<div id="bld-form-html"></div>-->
+        <!--</div>-->
+      <!--</div>-->
+    <!--</div>-->
     <!-- END ADD BLD -->
 
 
@@ -138,6 +146,9 @@
 
   </div>
   <!--END ELEMENTS -->
+
+</div>
+
 
 </div>
 

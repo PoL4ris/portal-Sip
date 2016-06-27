@@ -18,6 +18,7 @@ use App\Models\Ticket;
 use App\Models\TicketHistory;
 use App\Models\Address;
 use App\Models\Product;
+use App\Models\Building\Building;
 
 class SupportController extends Controller
 {
@@ -121,8 +122,18 @@ class SupportController extends Controller
     $result = $this->getOldTimeTicket($record);
     return $result;
   }
-  public function getAvailableServices(){
-    return Product::get();
+  public function getAvailableServices(Request $request){
+
+    $idList = array();
+    $bldID = Customer::with('address')->find($request->id)->address->id_buildings;
+    $products = Building::with('products')->find($bldID)->products->toArray();
+
+    foreach($products as $x => $idS)
+      $idList[$x] = $idS['id_products'];
+
+
+
+    return Product::whereIn('id', $idList)->get();
   }
 
 

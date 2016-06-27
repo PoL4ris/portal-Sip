@@ -206,10 +206,27 @@ class CustomerController extends Controller
   }
   public function updateContactsTable(Request $request)
   {
+    //type 2 = tel.
     $data = $request->all();
-    unset($data['id_customers']);
-    Contact::where('id_customers', $request->id_customers)->update($data);
+    $contactExist = Contact::where('id_customers',$request->id_customers);
+
+    if($contactExist)
+    {
+      $contactId = Contact::where('id_customers',$request->id_customers)->get()->toArray()[0]['id'];
+      $contact = Contact::find($contactId);
+      $contact->value = $request->value;
+      $contact->save();
+    }
+    else
+    {
+      $data['id_types'] = 2;
+      $data['created_at'] = date("Y-m-d H:i:s");
+      $data['updated_at'] = date("Y-m-d H:i:s");
+      Contact::insert($data);
+    }
+
     return 'OK';
+
   }
   public function getCustomerDataTicket(Request $request)
   {
@@ -251,7 +268,8 @@ class CustomerController extends Controller
                        );
     return $timeToAdd[$type];
   }
-  public function disableCustomerServices(Request $request){
+  public function disableCustomerServices(Request $request)
+  {
   /*
    * Status
    * 3=active
@@ -266,6 +284,22 @@ class CustomerController extends Controller
     return $this->getCustomerServices($request);
 
 
+  }
+  public function activeCustomerServices(Request $request)
+  {
+  /*
+   * Status
+   * 3=active
+   * 4=disable
+   * 5=new
+  */
+
+    $activeService = CustomerProduct::find($request->idService);
+    $activeService->id_status = 3;
+    $activeService->save();
+
+    return $this->getCustomerServices($request);
+    
   }
   public function updateCustomerServices(Request $request){
 
@@ -419,8 +453,8 @@ class CustomerController extends Controller
   public function insertCustomerTicket(Request $request)
   {
     $data = $request->all();
-    $comment = $data['comment'];
-    unset($data['comment']);
+//    $comment = $data['comment'];
+//    unset($data['comment']);
 
     $lastTicketNumber = Ticket::all()->last()->ticket_number;
     $ticketNumber = explode('ST-',$lastTicketNumber);
@@ -429,12 +463,15 @@ class CustomerController extends Controller
     $data['ticket_number'] = 'ST-' . $ticketNumberCast;
     $data['id_users'] = Auth::user()->id;
 
-    DB::table('ticket_notes')->insert(['comment'=>$comment, 'id_users'=>$data['id_users']]);
-    $ticketNoteId = TicketNote::all()->last()->id;
+//    DB::table('ticket_notes')->insert(['comment'=>$comment, 'id_users'=>$data['id_users']]);
+//    $ticketNoteId = TicketNote::all()->last()->id;
+//    $data['id_ticket_notes'] = $ticketNoteId;
 
-    $data['id_ticket_notes'] = $ticketNoteId;
     //Default User
     $data['id_users_assigned'] = 10;
+    $data['created_at'] = date("Y-m-d H:i:s");
+    $data['updated_at'] = date("Y-m-d H:i:s");
+
 
     DB::table('tickets')->insert($data);
 

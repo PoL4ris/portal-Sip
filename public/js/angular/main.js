@@ -1,5 +1,5 @@
 
-var app = angular.module('app', ["ngRoute", "xeditable", "ngAnimate", "ngSanitize", "cgNotify", "ui.bootstrap", "ngMaterial", "ngTable", "chart.js", "nvd3"]);
+var app = angular.module('app', ["ngRoute", "xeditable", "ngAnimate", "ngSanitize", "cgNotify", "ui.bootstrap", "ngMaterial", "ngTable", "chart.js", "nvd3", "nvd3ChartDirectives"]);
 
 /**
  * Configure the Routes
@@ -7,7 +7,7 @@ var app = angular.module('app', ["ngRoute", "xeditable", "ngAnimate", "ngSanitiz
 app.config(['$routeProvider', function ($routeProvider) {
   $routeProvider
     // Home
-    .when("/", {templateUrl: "/views/v2Test.html"})
+    .when("/", {templateUrl: "/views/test.html"})
     .when("/admin", {templateUrl: "/views/admin.html", controller:"admin"})
     .when('#/', {templateUrl: '/angularviews/partials/page-home.html', controller: 'mainController'})
     .when('#/about', {templateUrl: '/angularviews/partials/page-about.html', controller: 'aboutController'})

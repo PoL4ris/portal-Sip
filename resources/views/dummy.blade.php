@@ -80,6 +80,9 @@
 <script src="/js/angular/d3.js"></script>
 <script src="/js/angular/nv.d3.js"></script>
 <script src="/js/angular/angular-nvd3.js"></script>
+{{--...--}}
+<script src="//cdnjs.cloudflare.com/ajax/libs/nvd3/1.1.15-beta/nv.d3.js"></script>
+<script src="//cdn.jsdelivr.net/angularjs.nvd3-directives/v0.0.7/angularjs-nvd3-directives.js"></script>
 
 
 
