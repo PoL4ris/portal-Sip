@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreateNetworkTabTable extends Migration {
+class CreateNetworkTabsTable extends Migration {
 
   /**
    * Run the migrations.
@@ -12,7 +12,7 @@ class CreateNetworkTabTable extends Migration {
    */
   public function up()
   {
-    Schema::create('networkTab', function(Blueprint $table)
+    Schema::create('network_tabs', function(Blueprint $table)
     {
       $table->integer('NID', true);
       $table->text('location');
@@ -35,7 +35,7 @@ class CreateNetworkTabTable extends Migration {
    */
   public function down()
   {
-    Schema::drop('networkTab');
+    Schema::drop('network_tabs');
   }
 
 }

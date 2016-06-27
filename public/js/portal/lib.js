@@ -887,8 +887,7 @@ app.controller('adminViewAccessAppElements',        function($scope, $http){
       $scope.adminAccessAppElements = response.data;
     });
 });
-app.controller('buildingCtl', ['$scope','$route','$http', function($scope, $route, $http)
-{
+app.controller('buildingCtl', ['$scope','$route','$http', function($scope, $route, $http) {
   if (!$scope.sbid)
   {
     $scope.SiteMenu = [];
@@ -1566,7 +1565,6 @@ app.controller('ModalController',                   function ($scope, $uibModal,
 
 
 app.controller('usrServiceController',              function ($scope, $http, $uibModalInstance, customerId, mode){
-  console.log($scope);
   $http.get("getAvailableServices", {params:{'id':customerId}})
     .then(function (response) {
       $scope.availableServices = response.data;
@@ -2358,13 +2356,12 @@ app.controller('directiveController',               function ($scope, $http, $co
 //TABS
 app.controller('AppCtrl', AppCtrl);
 function AppCtrl ($scope, $log, $compile) {
-console.log($scope);
   var tabs = [
-//         { title: 'New Ticket',    content:'New-Ticket'},
-//         { title: 'Tickets',       content:"Ticket-History"},
-//         { title: 'Billing',       content:"Billing-History"},
-//         { title: 'Network',       content:"Network"},
-//         { title: 'Building',      content:'Building'},
+        { title: 'New Ticket',    content:'New-Ticket'},
+        { title: 'Tickets',       content:"Ticket-History"},
+        { title: 'Billing',       content:"Billing-History"},
+        { title: 'Network',       content:"Network"},
+        { title: 'Building',      content:'Building'},
         { title: 'Services Info', content:"Product"},
     ],
     selected = null,
