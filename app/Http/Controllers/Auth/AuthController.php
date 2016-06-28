@@ -110,10 +110,16 @@ class AuthController extends Controller
 
     if(!$authUser)
       return view('auth.login', ['params' => 'Verify your Social provider']);
+//      return Redirect::to('auth.login', ['params' => 'ERRORLOCO']);
+
+
+
+
 
     Auth::login($authUser, true);
-
     return redirect()->action('MainController@homeView');
+
+
   }
 
 
@@ -128,27 +134,22 @@ class AuthController extends Controller
     //ERROR:1 = Not a Mail
     //ERROR:2 = Not a silverip.com account
 
-    $mail = User::where('email', $googleUser->email)->where('social_access', 1)->first();
-    print '<pre>';
-    dd($mail);
-    die();
-//    $inspectMail = explode('@',$mail);
-//
-//
-//    if($inspectMail[1])
-//    {
-//      if($inspectMail[1] == 'silverip.com')
-//        $token = true;
-//      else
-//        $token = false;
-//    }
-//    else
-//      $token = false;
-    if(!isset($mail))
-      return false;
+    $mail = $googleUser->email;
+    $inspectMail = explode('@',$mail);
+
+    if($inspectMail[1])
+    {
+      if($inspectMail[1] == 'silverip.com')
+        $token = true;
+      else
+        $token = false;
+    }
+    else
+      $token = false;
 
 
-//    if ($token == false)
+    if ($token == false)
+      return $token;
 
     if ($authUser = User::where('email', $googleUser->email)->first())
     {
