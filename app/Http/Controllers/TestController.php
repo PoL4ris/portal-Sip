@@ -96,22 +96,12 @@ class TestController extends Controller
         dd($ticket2);
     }
 
-  public function supportTest(){
+  public function supportTest()
+  {
 
-//$ticket2 = Customer::with('type', 'status', 'contacts')->find(1783)->toArray();
-//dd(Customer::with('ticketHistory')->find(1783));
-//dd(Ticket::with('address')->find(18685));
-
-  $idList = array();
-  $products = Building::with('products')->find(4)->products->toArray();
-    foreach($products as $x => $idS)
-    {
-      $idList[$x] = $idS['id_products'];
-    }
-
-
-
-    dd( Product::whereIn('id', $idList)->get()->toArray());
+    //$ticket2 = Customer::with('type', 'status', 'contacts')->find(1783)->toArray();
+    //dd(Customer::with('ticketHistory')->find(1783));
+    //dd(Ticket::with('address')->find(18685));
 
 
 
@@ -130,7 +120,7 @@ class TestController extends Controller
 //        dd($last_query);
 
 //        dd($ticket2);
-    }
+  }
 
   public function cleanView(){
     return;

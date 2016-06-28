@@ -27,7 +27,7 @@ class MainController extends Controller
   return view('main.snippet.main');
 }
 
-  public function dummy()
+  public function homeView()
   {
     return view('dummy');
 

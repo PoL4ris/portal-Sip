@@ -20,7 +20,7 @@ class AdminController extends Controller
   //FUNCTIONS
   public function admin()
   {
-    return DB::select('select * from users');
+    return DB::select('select * from users limit 10');
   }
   public function adminProfiles()
   {
@@ -48,19 +48,19 @@ class AdminController extends Controller
   }
   public function adminAddress()
   {
-    return DB::select('select * from address');
+    return DB::select('select * from address limit 10');
   }
   public function adminContacts()
   {
-    return DB::select('select * from contacts');
+    return DB::select('select * from contacts limit 10');
   }
   public function adminPayments()
   {
-    return DB::select('select * from payments');
+    return DB::select('select * from payments limit 10');
   }
   public function adminNotes()
   {
-    return DB::select('select * from notes');
+    return DB::select('select * from notes limit 10');
   }
   public function adminAccessApps()
   {

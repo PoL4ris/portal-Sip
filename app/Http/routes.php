@@ -21,8 +21,28 @@ Route::get('testView',      'TestController@cleanView');
 Route::group(['middleware' => 'web'], function () {
 
   Route::auth();
-  Route::get('/',                       'MainController@dummy');
+  Route::get('/',                       'MainController@homeView');
+  Route::get('',                        'MainController@homeView');
+  Route::get('home',                    'HomeController@index');
   Route::get('test',                    'MainController@test');
+  //TEST PASSWORD
+
+
+
+
+  // Password reset link request routes...
+  Route::get('password/email', 'Auth\PasswordController@getEmail');
+  Route::post('password/email', 'Auth\PasswordController@postEmail');
+
+  // Password reset routes...
+  Route::get('password/reset/{token}', 'Auth\PasswordController@getReset');
+  Route::post('password/reset', 'Auth\PasswordController@postReset');
+
+
+
+
+
+
   //ADMIN
   Route::get('admin',                   'AdminController@admin');
   Route::get('adminStatus',             'AdminController@adminStatus');
@@ -41,7 +61,6 @@ Route::group(['middleware' => 'web'], function () {
   Route::get('insertAdminForm',         'AdminController@insertAdminForm');
   //MENU
   Route::get('menumaker',               'MainController@menuMaker');
-  Route::get('dummy',                   'MainController@dummy');
   Route::get('adminusers',              'MainController@adminusers');
   Route::get('getUserData',             'MainController@getUserData');
   //Dashboards
@@ -53,9 +72,6 @@ Route::group(['middleware' => 'web'], function () {
   Route::get('supportTicketsBilling',   'SupportController@supportTicketsBilling');
   Route::get('supportTicketsAll',       'SupportController@supportTicketsAll');
   Route::get('supportTicketHistory',    'SupportController@supportTicketHistory');
-  //DASHBOARDCHARTS
-  Route::get('getTicketsByMonth',           'ChartController@getTicketsByMonth');
-  Route::get('getSignedUpCustomersByYear',  'ChartController@getSignedUpCustomersByYear');
   //Search
   Route::get('buildingsSearch',         'BuildingController@getBuildingsSearchSimple');
   Route::get('customersSearch',         'CustomerController@getCustomersSearch');
@@ -89,8 +105,6 @@ Route::group(['middleware' => 'web'], function () {
   Route::post('insertCustomerData',     'CustomerController@insertCustomerData');
   //New Ticket
   Route::get('insertCustomerTicket',    'CustomerController@insertCustomerTicket');
-  Route::get('updateCustomerServiceInfo',         'CustomerController@updateCustomerServiceInfo');
-  Route::get('updateCustomerActiveServiceInfo',   'CustomerController@updateCustomerActiveServiceInfo');
   Route::get('customersData',           'CustomerController@customersData');
   Route::get('getCustomerPayment',      'CustomerController@getCustomerPayment');
   Route::get('getNewTicketData',        'CustomerController@getNewTicketData');
@@ -129,9 +143,16 @@ Route::group(['middleware' => 'web'], function () {
   Route::get('networkAdvanceIPs',       'NetworkController@getPortActiveIPs');
   Route::get('test6',                   'NetworkController@authenticatePort');
   Route::get('test7',                   'NetworkController@activatePort');
+
+  //DASHBOARDCHARTS
+  Route::get('getTicketsByMonth',                 'ChartController@getTicketsByMonth');
+  Route::get('getSignedUpCustomersByYear',        'ChartController@getSignedUpCustomersByYear');
+  //UPDATE SERVICES
+  Route::get('updateCustomerServiceInfo',         'CustomerController@updateCustomerServiceInfo');
+  Route::get('updateCustomerActiveServiceInfo',   'CustomerController@updateCustomerActiveServiceInfo');
   //NO ROUTE NEEDED
-  Route::get('test8',                   'NetworkController@getCustomerConnectionInfo');
-  Route::get('cc-test',                 'TestController@testCC');
+  Route::get('test8',                             'NetworkController@getCustomerConnectionInfo');
+  Route::get('cc-test',                           'TestController@testCC');
 
   $s = 'social.';
   Route::get('/social/redirect/{provider}',   ['as' => $s . 'redirect',

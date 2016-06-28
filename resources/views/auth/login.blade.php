@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
+
 <div class="container">
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
@@ -58,7 +59,12 @@
                                 <br />
                                 <p style="text-align: center;color: #5e5e5e;">Google Sign-In</p>
 
-                              <a href="{{ route('social.redirect', ['provider' => 'google']) }}" class="login-btn btn btn-lg  btn-block google" type="submit">Google</a>
+                                @if(isset($params))
+                                  <a href="{{ route('social.redirect', ['provider' => 'google']) }}" class="login-btn btn btn-lg  btn-block google" type="submit" style="background: #ff4f70;">Google</a>
+                                <p style="text-align: center;color: #ff4f70;">{{ $params }}</p>
+                              @else
+                                  <a href="{{ route('social.redirect', ['provider' => 'google']) }}" class="login-btn btn btn-lg  btn-block google" type="submit">Google</a>
+                                @endif
                             </div>
                         </div>
                     </form>

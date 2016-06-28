@@ -107,12 +107,13 @@ class AuthController extends Controller
 
     $authUser = $this->findOrCreateUser($user);
 
+
+    if(!$authUser)
+      return view('auth.login', ['params' => 'Verify your Social provider']);
+
     Auth::login($authUser, true);
 
-//    return Redirect::to('dummy');
-
-    return view('dummy');
-
+    return redirect()->action('MainController@homeView');
   }
 
 
@@ -124,8 +125,25 @@ class AuthController extends Controller
    */
   private function findOrCreateUser($googleUser)
   {
+    //ERROR:1 = Not a Mail
+    //ERROR:2 = Not a silverip.com account
+
+    $mail = $googleUser->email;
+    $inspectMail = explode('@',$mail);
+
+    if($inspectMail[1])
+    {
+      if($inspectMail[1] == 'silverip.com')
+        $token = true;
+      else
+        $token = false;
+    }
+    else
+      $token = false;
 
 
+    if ($token == false)
+      return $token;
 
     if ($authUser = User::where('email', $googleUser->email)->first())
     {
@@ -142,7 +160,7 @@ class AuthController extends Controller
     $data = ['first_name' => $first_name,
              'last_name' => $last_name,
              'email' => $googleUser->email,
-             'password' => $googleUser->token,
+//             'password' => $googleUser->token,
              'social_token' => $googleUser->token,
              'avatar' => $googleUser->avatar,
              'alias' => $alias,
