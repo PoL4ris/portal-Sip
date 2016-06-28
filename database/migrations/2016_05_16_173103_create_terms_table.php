@@ -17,7 +17,7 @@ class CreateTermsTable extends Migration
         $table->increments('id');
         $table->integer('id_products')->comment('Product');
         $table->string('length');
-        $table->timestamps('expires_at')->comment('Expires at');
+        $table->timestamp('expires_at')->comment('Expires at');
         $table->timestamps();
       });
     }

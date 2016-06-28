@@ -24,7 +24,7 @@ class CreateBuildingsTable extends Migration {
       $table->string('type')->comment('Type');
       $table->string('legal_name')->comment('Legal name');
       $table->string('builder');
-      $table->timestamps('year_built')->comment('Year Built');
+      $table->timestamp('year_built')->comment('Year Built');
       $table->integer('units');
       $table->integer('floors');
       $table->timestamps();
