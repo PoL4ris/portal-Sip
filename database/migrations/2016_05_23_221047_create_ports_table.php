@@ -18,6 +18,7 @@ class CreatePortsTable extends Migration
         $table->string('port_number')->nullable()->comment('Port Number');
         $table->string('access_level')->nullable()->comment('Access Level');
         $table->integer('id_customer_products')->nullable()->comment('Product');
+        $table->integer('id_customers')->nullable()->comment('Customer');
         $table->integer('id_network_nodes')->nullable()->comment('Network Node');
         $table->timestamps();
       });

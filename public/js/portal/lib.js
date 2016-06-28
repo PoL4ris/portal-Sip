@@ -2527,7 +2527,6 @@ app.controller('warp', function ExampleCtrl(){
 app.controller('getSignedUpCustomersByYear', function($scope, $http) {
   $http.get("getSignedUpCustomersByYear")
     .then(function (response) {
-      console.log( response.data);
       $scope.data = response.data;
     });
 });
