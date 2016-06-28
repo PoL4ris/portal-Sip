@@ -21,6 +21,7 @@ class CreateUsersTable extends Migration
         $table->string('password')->nullable();
         $table->string('remember_token', 100)->nullable();
         $table->string('social_token', 100)->nullable();
+        $table->integer('social_access')->comment('Access');
         $table->text('avatar', 65535)->nullable();
         $table->string('alias');
         $table->integer('id_status')->nullable()->comment("Status");

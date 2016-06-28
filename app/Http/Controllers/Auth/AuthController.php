@@ -128,22 +128,27 @@ class AuthController extends Controller
     //ERROR:1 = Not a Mail
     //ERROR:2 = Not a silverip.com account
 
-    $mail = $googleUser->email;
-    $inspectMail = explode('@',$mail);
+    $mail = User::where('email', $googleUser->email)->where('social_access', 1)->first();
+    print '<pre>';
+    dd($mail);
+    die();
+//    $inspectMail = explode('@',$mail);
+//
+//
+//    if($inspectMail[1])
+//    {
+//      if($inspectMail[1] == 'silverip.com')
+//        $token = true;
+//      else
+//        $token = false;
+//    }
+//    else
+//      $token = false;
+    if(!isset($mail))
+      return false;
 
-    if($inspectMail[1])
-    {
-      if($inspectMail[1] == 'silverip.com')
-        $token = true;
-      else
-        $token = false;
-    }
-    else
-      $token = false;
 
-
-    if ($token == false)
-      return $token;
+//    if ($token == false)
 
     if ($authUser = User::where('email', $googleUser->email)->first())
     {

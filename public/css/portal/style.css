@@ -1009,3 +1009,6 @@ li span {
   color: transparent;
   position: absolute !important;
 }
+.cursornotallowed{
+  cursor: not-allowed;
+}

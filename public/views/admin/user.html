@@ -29,12 +29,14 @@
       <td>Password</td>
       <td>Remember Token</td>
       <td>Social Token</td>
+      <td>Access</td>
       <td>Avatar</td>
       <td>Alias</td>
       <td>Created At</td>
       <td>Updated At</td>
       <td>Status</td>
       <td>Base Profile</td>
+      <!--<td>Tools</td>-->
     </tr>
     <tr ng-repeat="userdata in dataResult">
       <td>{{ userdata.id }}</td>
@@ -45,12 +47,15 @@
       <td>{{ userdata.remember_token | limitTo:letterLimit }}...</td>
       <td>{{ userdata.social_token | limitTo:letterLimit }}...</td>
       <!--<td>{{ userdata.avatar | limitTo:letterLimit }}...</td>-->
+      <td>{{ userdata.social_access }}</td>
       <td><img src="{{ userdata.avatar }}" alt=""></td>
       <td>{{ userdata.alias }}</td>
       <td>{{ userdata.created_at }}</td>
       <td>{{ userdata.updated_at }}</td>
       <td>{{ userdata.id_status }}</td>
       <td>{{ userdata.id_profiles }}</td>
+      <!--<td><button>edit BTN</button></td>-->
     </tr>
   </table>
 </div>
+

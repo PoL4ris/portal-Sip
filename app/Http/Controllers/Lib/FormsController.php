@@ -145,30 +145,46 @@ class FormsController extends Controller
         if($flag)
         {
           $val = !empty($info) ? $info[$row['Field']] : "";
+//          print $row['Comment'] . '>>>>>>>>';
 
           if($row['Type'] == "text")
           {
             $form .= "<div class='form-group col-md-3'>
                         <div class='row-abc'>
-                          <p class='descripcion'>{$description}</p>
+                          <label class='descripcion'>{$description}</label>
                           <p class='input'>
                             <textarea name='{$row['Field']}' class='{$row['Type']} $validation  form-control'>{$val}</textarea>
                           </p>
                         </div>
                       </div>";
           }
-          else if($row['Type'] == "timestamp")
+          else if($row['Type'] == "timestamp" || $row['Comment'] == "disable")
           {
             $form .= "<div class='form-group col-md-3'>
                         <div class='row-abc'>
-                          <label class='descripcion'>{$description}</label>
+                          <label class='descripcion'>{$row['Field']}</label>
                           <p class='input {$row['Type']}-ico'>
-                            <input type='text' name='{$row['Field']}' class='{$row['Type']} $validation $isAjax form-control'  value='{$date}' readonly />
+                            <input type='text' name='{$row['Field']}' class='{$row['Type']} $validation $isAjax form-control cursornotallowed'  value='{$date}' readonly />
                           </p>
                         </div>
                       </div>";
           }
-        else
+          else if($row['Comment'] == "sino")
+          {
+            $form .= "<div class='form-group col-md-3'>
+                        <div class='row-abc'>
+                          <label class='descripcion'>{$row['Field']}</label>
+                          <p class='input {$row['Type']}-ico'>
+                            <select name='{$row['Field']}' class='  form-control'>
+                              <option value='err'>Select Option ...</option>
+                              <option value='1'>YES</option>
+                              <option value='0'>NO</option>
+                            </select>
+                          </p>
+                        </div>
+                      </div>";
+          }
+          else
           {
             $form .= "<div class='form-group col-md-3'>
                         <div class='row-abc'>

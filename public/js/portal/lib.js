@@ -779,17 +779,17 @@ app.controller('admin',                             function($scope, $http, $com
   };
   $scope.submitForm = function ($scope)
   {
-
+    console.log('userinsert');
     var objects = warpol('#admin-insert-form').serializeArray();
     var infoData = {};
 
     for(var obj in objects )
     {
-//       if(objects[obj]['value'] == 'err' || objects[obj]['value'] == '')
-//       {
-//         alert('Verify ' + objects[obj]['name'] + ' Field');
-//         return;
-//       }
+      if(objects[obj]['value'] == 'err' || objects[obj]['value'] == '')
+      {
+        alert('Verify ' + objects[obj]['name'] + ' Field');
+        return;
+      }
 
       infoData[objects[obj]['name']] = objects[obj]['value'];
     }
@@ -1940,6 +1940,7 @@ app.controller('customerBuildingController',        function ($scope, $http){
 app.controller('submitController',                  function ($scope, $http) {
   $scope.submitForm = function (idForm)
   {
+    console.log('warpol');
 
     var objects = warpol('#' + idForm).serializeArray();
     var infoData = {};
