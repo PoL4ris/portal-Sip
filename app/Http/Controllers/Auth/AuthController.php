@@ -117,7 +117,9 @@ class AuthController extends Controller
 
 
     Auth::login($authUser, true);
-    return redirect()->action('MainController@homeView');
+    return view('/');
+    return view('dummy');
+
 
 
   }

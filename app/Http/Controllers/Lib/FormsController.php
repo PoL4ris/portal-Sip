@@ -176,7 +176,7 @@ class FormsController extends Controller
                           <label class='descripcion'>{$row['Field']}</label>
                           <p class='input {$row['Type']}-ico'>
                             <select name='{$row['Field']}' class='  form-control'>
-                              <option value='err'>Select Option ...</option>
+                              <option value='err'>Select Option ...</option> 
                               <option value='1'>YES</option>
                               <option value='0'>NO</option>
                             </select>
