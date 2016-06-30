@@ -2105,6 +2105,9 @@ app.controller('networkController',                 function ($scope, $http){
 
 
 
+
+
+
 app.controller('mainSearchController',              function ($scope, $http, $compile){
   $scope.closeSearch = function () {
     warpol('#globalSearch').fadeOut('fast');
@@ -2132,10 +2135,12 @@ app.controller('mainSearchController',              function ($scope, $http, $co
     $scope.loadingCu = true;
     $scope.loadingS = true;
     $scope.loadingB = true;
-    getClientsSearch(string);
+    $scope.loadingCP = true;
+    getCustomerCodeSearch(string);
     getCustomersSearch(string);
     getTicketsSearch(string);
     getBuildingsSearch(string);
+    getCustomerPoundSearch(string);
   };
   $scope.displayCustomerResume = function (id){
     $scope.stcid = id;
@@ -2152,13 +2157,10 @@ app.controller('mainSearchController',              function ($scope, $http, $co
     $scope.sbid = id;
     callMidView('Building');
   };
-  function getClientsSearch(string) {
-    $http.get("getClientsSearch", {params:{'string':string}})
+  function getCustomerCodeSearch(string) {
+    $http.get("getCustomerCodeSearch", {params:{'string':string}})
       .then(function (response)  {
-//         if(response.data.length === 0 )
-//           $scope.globalClientSearch = false;
-//         else
-          $scope.globalClientSearch = response.data;
+        $scope.globalCustomerCodeSearch = response.data;
         $scope.loadingCl = false;
 //         console.log(response.data);
       });
@@ -2196,12 +2198,26 @@ app.controller('mainSearchController',              function ($scope, $http, $co
 //         console.log(response.data);
       });
   }
+  function getCustomerPoundSearch(string) {
+    $http.get("getCustomerPoundSearch", {params:{'string':string}})
+      .then(function (response)  {
+//         if(response.data.length === 0 )
+//         $scope.globalBuildingsSearch = false;
+//         else
+        $scope.globalCustomerPoundSearch = (response.data == 'ERROR')?false:response.data;
+        $scope.loadingCP = false;
+//         console.log(response.data);
+      });
+  }
   function callMidView (view) {
     $scope.globalViewON = view;
     var compiledeHTML = $compile("<div my-View-" + view + "></div>")($scope);
     warpol("#viewMidContent").html(compiledeHTML);
   };
 });
+
+
+
 app.controller('toolsController',                   function ($scope, $http) {
   $scope.letterLimit = 400;
   $scope.showFullComment = function(id) {

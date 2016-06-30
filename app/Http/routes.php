@@ -60,10 +60,11 @@ Route::group(['middleware' => 'web'], function () {
   Route::get('buildingsSearch',         'BuildingController@getBuildingsSearchSimple');
   Route::get('customersSearch',         'CustomerController@getCustomersSearch');
   //GLOBAL SEARCH
-  Route::get('getClientsSearch',        'MainController@getClientsSearch');
+  Route::get('getCustomerCodeSearch',   'MainController@getCustomerCodeSearch');
   Route::get('getCustomersSearch',      'MainController@getCustomersSearch');
   Route::get('getTicketsSearch',        'MainController@getTicketsSearch');
   Route::get('getBuildingsSearch',      'MainController@getBuildingsSearch');
+  Route::get('getCustomerPoundSearch',  'MainController@getCustomerPoundSearch');
 
   //Buildings & List
   Route::get('buildings/{id?}',         'BuildingController@buildings');

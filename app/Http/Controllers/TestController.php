@@ -104,7 +104,11 @@ class TestController extends Controller
     //dd(Ticket::with('address')->find(18685));
 
 
+dd(
 
+  Ticket::with('address')->take(1)->get()->toArray()
+
+);
 
 
 

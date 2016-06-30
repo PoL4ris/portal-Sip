@@ -12,6 +12,7 @@ use App\Models\Reason;
 use App\Models\App;
 use App\Models\Customer;
 use App\Models\Ticket;
+use App\Models\Address;
 use App\Models\Building\Building;
 
 
@@ -20,6 +21,8 @@ class MainController extends Controller
 
   public function __construct() {
     $this->middleware('auth');
+    DB::connection()->enableQueryLog();
+
   }
 
   public function main(Request $request)
@@ -75,36 +78,64 @@ class MainController extends Controller
 
     return view('admin.users', ['users' => $usersData]);
   }
-  public function getClientsSearch(Request $request){
-    //3 = Client
-    return Customer::where('id_types', 3)->where(function ($query) use ($request) {
-                      $query->where('first_name', 'LIKE','%'.$request->string.'%')
-                            ->orWhere('last_name', 'LIKE','%'.$request->string.'%')
-                            ->orWhere('email', 'LIKE','%'.$request->string.'%');
-                            })->take(200)
-                              ->get();
+  public function getCustomerCodeSearch(Request $request){
+    $stringA = explode("#", $request->string)[0];
+    $string = explode(" ", $stringA)[0];
+
+    return Address::with('customer')
+                    ->where('code', 'LIKE','%'.$string.'%' )
+                    ->orWhere('unit', 'LIKE','%'.$string.'%' )
+                    ->take(20)
+                    ->get();
+
+
+//    return Customer::where('id_types', 3)->where(function ($query) use ($request) {
+//                      $query->where('first_name', 'LIKE','%'.$request->string.'%')
+//                            ->orWhere('last_name', 'LIKE','%'.$request->string.'%')
+//                            ->orWhere('email', 'LIKE','%'.$request->string.'%');
+//                            })->take(200)
+//                              ->get();
   }
   public function getCustomersSearch(Request $request){
-    return Customer::where('first_name', 'LIKE','%'.$request->string.'%')
-                      ->orWhere('last_name', 'LIKE','%'.$request->string.'%')
-                      ->orWhere('email', 'LIKE','%'.$request->string.'%')
-                      ->take(200)
+    $stringA = explode("#", $request->string)[0];
+    $string = explode(" ", $stringA)[0];
+    return Customer::where('first_name', 'LIKE','%'.$string.'%')
+                      ->orWhere('last_name', 'LIKE','%'.$string.'%')
+                      ->orWhere('email', 'LIKE','%'.$string.'%')
+                      ->take(20)
                       ->get();
   }
   public function getTicketsSearch(Request $request){
-    return Ticket::where('ticket_number', 'LIKE','%'.$request->string.'%')
+    $stringA = explode("#", $request->string)[0];
+    $string = explode(" ", $stringA)[0];
+    return Ticket::where('ticket_number', 'LIKE','%'.$string.'%')
                     ->where('status','!=', 'closed')
-                    ->take(200)
+                    ->take(20)
                     ->get();
   }
   public function getBuildingsSearch(Request $request){
-    return Building::where('name', 'LIKE','%'.$request->string.'%')
-                      ->orWhere('nickname', 'LIKE','%'.$request->string.'%')
-//                      ->orWhere('address', 'LIKE','%'.$request->string.'%')
-                      ->orWhere('code', 'LIKE','%'.$request->string.'%')
-                      ->orWhere('legal_name', 'LIKE','%'.$request->string.'%')
-                      ->take(200)
+    $stringA = explode("#", $request->string)[0];
+    $string = explode(" ", $stringA)[0];
+    return Building::where('name', 'LIKE','%'.$string.'%')
+                      ->orWhere('nickname', 'LIKE','%'.$string.'%')
+                      ->orWhere('code', 'LIKE','%'.$string.'%')
+                      ->orWhere('legal_name', 'LIKE','%'.$string.'%')
+                      ->take(20)
                       ->get();
+  }
+
+  public function getCustomerPoundSearch(Request $request)
+  {
+    $string = explode("#", $request->string);
+    if (isset($string[1]))
+    {
+      return Address::with('customer')
+        ->where('code', 'LIKE','%'.explode(" ",$string[0])[0].'%' )
+        ->where('unit', 'LIKE','%'.$string[1].'%' )
+        ->take(20)
+        ->get();
+    }
+    return 'ERROR';
   }
 
   public function updateUser(Request $request)
