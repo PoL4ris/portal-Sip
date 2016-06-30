@@ -18,12 +18,12 @@ class CreateUsersTable extends Migration
         $table->string('first_name')->comment("First Name");
         $table->string('last_name')->comment("Last Name");
         $table->string('email')->unique();
-        $table->string('password')->nullable();
-        $table->string('remember_token', 100)->nullable();
-        $table->string('social_token', 100)->nullable();
-        $table->integer('social_access')->comment('Access');
+        $table->string('password')->nullable()->comment('disable');
+        $table->string('remember_token', 100)->nullable()->comment('disable');
+        $table->string('social_token', 100)->nullable()->comment('disable');
+        $table->integer('social_access')->comment('sino');
         $table->text('avatar', 65535)->nullable();
-        $table->string('alias');
+        $table->string('alias')->comment('disable');
         $table->integer('id_status')->nullable()->comment("Status");
         $table->integer('id_profiles')->nullable()->comment("Profile");
         $table->timestamps();

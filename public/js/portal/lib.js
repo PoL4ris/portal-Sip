@@ -782,9 +782,14 @@ app.controller('admin',                             function($scope, $http, $com
     console.log('userinsert');
     var objects = warpol('#admin-insert-form').serializeArray();
     var infoData = {};
+    console.log(objects);
 
     for(var obj in objects )
     {
+    //FRONT VALIDA
+      if(objects[obj]['value'] == '' && objects[obj]['name'] == 'avatar')
+        continue;
+
       if(objects[obj]['value'] == 'err' || objects[obj]['value'] == '')
       {
         alert('Verify ' + objects[obj]['name'] + ' Field');
@@ -1487,7 +1492,72 @@ app.controller('supportTicketHistory',              function ($scope, $http){
 
 
 
+app.controller('userProfileController',             function ($scope, $http, notify){
+  console.log('COSA LOCA');
+  $scope.checkboxModel = true;
 
+  $http.get("getProfileInfo")
+    .then(function (response){
+      $scope.profileData = response.data;
+    });
+
+
+
+  $scope.customerEditMode = function (){
+    if ( $scope.checkboxModel == false)
+    {
+      warpol('.editable-text').fadeIn('slow');
+      warpol('.no-editable-text').css('display', 'none');
+    }
+    else
+    {
+      warpol('.no-editable-text').fadeIn('slow');
+      warpol('.editable-text').css('display', 'none');
+    }
+  };
+
+
+  $scope.updatePassword = function() {
+    var psw1 = this.psw1;
+    var psw2 = this.psw2;
+
+    if(psw1 == psw2)
+    {
+      console.log('passwords match update data');
+      $http.get("updateProfileInfo", {params:{'password':psw1}})
+        .then(function (response){
+          if (response.data == 'OK')
+          {
+            notify({message: 'Password updated', templateUrl:'/views/notify.html', classes:'alert-success'} );
+            warpol('#uno').val('');
+            warpol('#dos').val('');
+            $scope.checkboxModel = true;
+            $scope.customerEditMode();
+          }
+
+//           console.log( response.data);
+        });
+    }
+    else
+      alert('Passwords do not match.');
+
+  };
+
+  $scope.lengthpsw = function ()
+  {
+    var psw1Length = this.psw1?this.psw1.length:0;
+    var psw2Length = this.psw2?this.psw2.length:0;
+
+    if (psw1Length >= 5 && psw2Length >= 5 )
+      warpol('#pswbton').attr('disabled', false);
+    else
+      warpol('#pswbton').attr('disabled', true);
+  }
+
+
+
+
+});
 
 
 
@@ -2394,7 +2464,7 @@ function AppCtrl ($scope, $log, $compile) {
 }
 //END TABS
 //TableSorter's
-app.controller('tableSorterTickets',        function ($scope, $filter, ngTableParams) {
+app.controller('tableSorterTickets',                 function ($scope, $filter, ngTableParams) {
   $scope.dataSort = $scope.supportData;
   $scope.usersTable = new ngTableParams({
     page: 1,
@@ -2408,7 +2478,7 @@ app.controller('tableSorterTickets',        function ($scope, $filter, ngTablePa
   });
 
 });
-app.controller('tableSorterAdminUsers',     function ($scope, $filter, ngTableParams) {
+app.controller('tableSorterAdminUsers',              function ($scope, $filter, ngTableParams) {
   $scope.letterLimit = 30;
   $scope.dataSort = $scope.userData;
   $scope.usersTable = new ngTableParams({
@@ -2423,7 +2493,7 @@ app.controller('tableSorterAdminUsers',     function ($scope, $filter, ngTablePa
   });
 
 });
-app.controller('tableSorterNetwork',        function ($scope, $filter, ngTableParams) {
+app.controller('tableSorterNetwork',                 function ($scope, $filter, ngTableParams) {
   $scope.dataSort = $scope.networkData;
   $scope.usersTable = new ngTableParams({
     page: 1,
@@ -2438,21 +2508,21 @@ app.controller('tableSorterNetwork',        function ($scope, $filter, ngTablePa
 
 });
 //CHARTS
-app.controller("PieCtrl", function ($scope) {
+app.controller("PieCtrl",                            function ($scope) {
   $scope.labels = ["Download Sales", "In-Store Sales", "Mail-Order Sales"];
   $scope.data = [300, 500, 100];
   $scope.colours = ['#4FC5EA', '#6B79C4', '#FAD733'];
 });
-app.controller("DoughnutCtrl", function ($scope) {
+app.controller("DoughnutCtrl",                       function ($scope) {
   $scope.labels = ["Download Sales", "In-Store Sales", "Mail-Order Sales"];
   $scope.data = [300, 500, 100];
   $scope.colours = ['#27c24c', '#ff7a7a', '#D9EDF7'];
 });
-app.controller("PolarAreaCtrl", function ($scope) {
+app.controller("PolarAreaCtrl",                      function ($scope) {
   $scope.labels = ["Download Sales", "In-Store Sales", "Mail-Order Sales", "Tele Sales", "Corporate Sales"];
   $scope.data = [300, 500, 100, 40, 120];
 });
-app.controller('getTicketsByMonthChart', function ($scope){
+app.controller('getTicketsByMonthChart',             function ($scope){
   $scope.options = {
     chart: {
       type: 'discreteBarChart',
@@ -2482,13 +2552,13 @@ app.controller('getTicketsByMonthChart', function ($scope){
 
 
 });
-app.controller('getTicketsByMonth', function($scope, $http) {
+app.controller('getTicketsByMonth',                  function ($scope, $http) {
   $http.get("getTicketsByMonth")
     .then(function (response) {
       $scope.data = [response.data];
     });
 });
-app.controller("BarCtrl", function ($scope) {
+app.controller("BarCtrl",                            function ($scope) {
   $scope.labels = ['2006', '2007', '2008', '2009', '2010', '2011', '2012'];
   $scope.series = ['Series A', 'Series B'];
 
@@ -2497,7 +2567,7 @@ app.controller("BarCtrl", function ($scope) {
     [28, 48, 40, 19, 86, 27, 90]
   ];
 });
-app.controller('warp', function ExampleCtrl(){
+app.controller('warp',                               function ExampleCtrl(){
   this.xAxisTickFormatFunction = function(){
     return function(d){
       return d3.time.format('%b')(new Date(d));
@@ -2525,13 +2595,13 @@ app.controller('warp', function ExampleCtrl(){
   ];
 });
 //[WORKING NOT IN USE
-app.controller('getSignedUpCustomersByYear', function($scope, $http) {
+app.controller('getSignedUpCustomersByYear',         function($scope, $http) {
   $http.get("getSignedUpCustomersByYear")
     .then(function (response) {
       $scope.data = response.data;
     });
 });
-app.controller('getSignedUpCustomersByYearChart', function($scope) {
+app.controller('getSignedUpCustomersByYearChart',    function($scope) {
 //data to fill $scope.data;
 });
 //END WORKING NOT IN USE]

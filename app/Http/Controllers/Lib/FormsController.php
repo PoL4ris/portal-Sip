@@ -145,7 +145,6 @@ class FormsController extends Controller
         if($flag)
         {
           $val = !empty($info) ? $info[$row['Field']] : "";
-//          print $row['Comment'] . '>>>>>>>>';
 
           if($row['Type'] == "text")
           {
@@ -153,18 +152,19 @@ class FormsController extends Controller
                         <div class='row-abc'>
                           <label class='descripcion'>{$description}</label>
                           <p class='input'>
-                            <textarea name='{$row['Field']}' class='{$row['Type']} $validation  form-control'>{$val}</textarea>
+                            <textarea name='{$row['Field']}' class='{$row['Field']}-{$row['Type']} {$row['Type']} $validation  form-control' >{$val}</textarea>
                           </p>
                         </div>
                       </div>";
           }
           else if($row['Type'] == "timestamp" || $row['Comment'] == "disable")
           {
+            $localData = ($row['Comment'] == 'disable')?' ':$date;
             $form .= "<div class='form-group col-md-3'>
                         <div class='row-abc'>
                           <label class='descripcion'>{$row['Field']}</label>
                           <p class='input {$row['Type']}-ico'>
-                            <input type='text' name='{$row['Field']}' class='{$row['Type']} $validation $isAjax form-control cursornotallowed'  value='{$date}' readonly />
+                            <input type='text' name='{$row['Field']}' class='{$row['Type']} $validation $isAjax form-control cursornotallowed'  value='{$localData}' readonly />
                           </p>
                         </div>
                       </div>";

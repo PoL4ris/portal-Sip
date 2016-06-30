@@ -18,7 +18,7 @@ app.config(['$routeProvider', function ($routeProvider) {
     .when("/adminusers", {templateUrl: "/angularviews/partials/home.html", controller: "adminusers"})
     .when("/customer", {templateUrl: "/views/customer.html"})
     .when("/network", {templateUrl: "/views/allNetwork.html"})
-    .when("/userprofile", {templateUrl: "/views/userprofile.html"})
+    .when("/userprofile", {templateUrl: "/views/userprofile.html", controller: 'userProfileController'})
     .when("/customers", {templateUrl: "/views/v2Test.html"})
 
 

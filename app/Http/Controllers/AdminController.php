@@ -6,9 +6,11 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use DB;
+use Auth;
 use App\Http\Controllers\Lib\FormsController;
 use App\Models\Profile;
 use App\Models\Status;
+use App\Models\User;
 
 
 class AdminController extends Controller
@@ -70,6 +72,21 @@ class AdminController extends Controller
   {
     return DB::select('select * from access_app_elements');
   }
+  public function getProfileInfo()
+  {
+    return User::find(Auth::user()->id);
+  }
+
+  public function updateProfileInfo(Request $request)
+  {
+    return 'OK';
+    $user = User::find(Auth::user()->id);
+    $user->password = bcrypt($request->password);
+    $user->save();
+
+
+  }
+
 
 
   public function getAdminForm(Request $request)

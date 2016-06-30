@@ -25,24 +25,6 @@ Route::group(['middleware' => 'web'], function () {
   Route::get('',                        'MainController@homeView');
   Route::get('home',                    'HomeController@index');
   Route::get('test',                    'MainController@test');
-  //TEST PASSWORD
-
-
-
-
-  // Password reset link request routes...
-  Route::get('password/email', 'Auth\PasswordController@getEmail');
-  Route::post('password/email', 'Auth\PasswordController@postEmail');
-
-  // Password reset routes...
-  Route::get('password/reset/{token}', 'Auth\PasswordController@getReset');
-  Route::post('password/reset', 'Auth\PasswordController@postReset');
-
-
-
-
-
-
   //ADMIN
   Route::get('admin',                   'AdminController@admin');
   Route::get('adminStatus',             'AdminController@adminStatus');
@@ -59,6 +41,8 @@ Route::group(['middleware' => 'web'], function () {
   Route::get('adminAccessAppElements',  'AdminController@adminAccessAppElements');
   Route::get('getAdminForm',            'AdminController@getAdminForm');
   Route::get('insertAdminForm',         'AdminController@insertAdminForm');
+  Route::get('getProfileInfo',          'AdminController@getProfileInfo');
+  Route::get('updateProfileInfo',      'AdminController@updateProfileInfo');
   //MENU
   Route::get('menumaker',               'MainController@menuMaker');
   Route::get('adminusers',              'MainController@adminusers');

@@ -110,18 +110,10 @@ class AuthController extends Controller
 
     if(!$authUser)
       return view('auth.login', ['params' => 'Verify your Social provider']);
-//      return Redirect::to('auth.login', ['params' => 'ERRORLOCO']);
-
-
-
-
 
     Auth::login($authUser, true);
-    return view('/');
-    return view('dummy');
 
-
-
+    return redirect()->action('MainController@homeView');
   }
 
 
@@ -133,52 +125,56 @@ class AuthController extends Controller
    */
   private function findOrCreateUser($googleUser)
   {
-    //ERROR:1 = Not a Mail
-    //ERROR:2 = Not a silverip.com account
+    $authUser = User::where('email', $googleUser->email)->first();
 
-    $mail = $googleUser->email;
-    $inspectMail = explode('@',$mail);
-
-    if($inspectMail[1])
+    if (isset($authUser))
     {
-      if($inspectMail[1] == 'silverip.com')
-        $token = true;
+      if ($authUser['social_access'] == 1)
+      {
+        $first_name = $googleUser->user['name']['givenName']?$googleUser->user['name']['givenName']:'XXX';
+        $last_name  = $googleUser->user['name']['familyName']?$googleUser->user['name']['familyName']:'XXX';
+        $alias      = substr($first_name, 0, 1) . substr($last_name, 0, 1);
+
+        $data = [ 'social_token' => $googleUser->token,
+                  'avatar' => $googleUser->avatar,
+                  'alias' => $alias,
+                  'id_status' => 3,
+                  'id_profiles' => 1
+                ];
+
+        User::where('id', $authUser['id'])->update($data);
+
+        return $authUser;
+      }
       else
-        $token = false;
+        return false;
     }
     else
-      $token = false;
+      return false;
 
 
-    if ($token == false)
-      return $token;
-
-    if ($authUser = User::where('email', $googleUser->email)->first())
-    {
-      return $authUser;
-    }
-
-    $first_name = $googleUser->user['name']['givenName'];
-    $last_name = $googleUser->user['name']['familyName'];
-    $alias = substr($first_name, 0, 1) . substr($last_name, 0, 1);
 
 
-    $record = User::create();
 
-    $data = ['first_name' => $first_name,
-             'last_name' => $last_name,
-             'email' => $googleUser->email,
-//             'password' => $googleUser->token,
-             'social_token' => $googleUser->token,
-             'avatar' => $googleUser->avatar,
-             'alias' => $alias,
-             'id_status' => 3,
-             'id_profiles' => 1
-             ];
-
-    User::where('id', $record->id)->update($data);
-
-    return $record;
+    //Create new user OLD
+//    $first_name = $googleUser->user['name']['givenName']?$googleUser->user['name']['givenName']:'XXX';
+//    $last_name  = $googleUser->user['name']['familyName']?$googleUser->user['name']['familyName']:'XXX';
+//    $alias      = substr($first_name, 0, 1) . substr($last_name, 0, 1);
+//    $record = User::create();
+//
+//    $data = ['first_name' => $first_name,
+//             'last_name' => $last_name,
+//             'email' => $googleUser->email,
+//             'social_token' => $googleUser->token,
+//             'avatar' => $googleUser->avatar,
+//             'alias' => $alias,
+//             'id_status' => 3,
+//             'id_profiles' => 1
+//             ];
+//
+//    User::where('id', $record->id)->update($data);
+//
+//    return $record;
 
   }
 

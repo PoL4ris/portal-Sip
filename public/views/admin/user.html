@@ -20,7 +20,8 @@
 
 
 <div ng-if="!insertForm" style="margin-bottom: 150px;">
-  <table ng-table="usersTable" class="table table-striped b-t b-b"  ng-controller="tableSorterAdminUsers">
+  <!--<table ng-table="usersTable" class="table table-striped b-t b-b"  ng-controller="tableSorterAdminUsers">-->
+  <table ng-table="usersTable" class="table table-striped b-t b-b">
     <tr>
       <td>id</td>
       <td>First Name</td>
@@ -38,7 +39,7 @@
       <td>Base Profile</td>
       <!--<td>Tools</td>-->
     </tr>
-    <tr ng-repeat="userdata in dataResult">
+    <tr ng-repeat="userdata in userData">
       <td>{{ userdata.id }}</td>
       <td>{{ userdata.first_name || "empty" }}</td>
       <td>{{ userdata.last_name }}</td>
@@ -46,13 +47,12 @@
       <td>{{ userdata.password | limitTo:letterLimit }}...</td>
       <td>{{ userdata.remember_token | limitTo:letterLimit }}...</td>
       <td>{{ userdata.social_token | limitTo:letterLimit }}...</td>
-      <!--<td>{{ userdata.avatar | limitTo:letterLimit }}...</td>-->
-      <td>{{ userdata.social_access }}</td>
-      <td><img src="{{ userdata.avatar }}" alt=""></td>
+      <td>{{ (userdata.social_access == 0) ? 'NO' : 'YES' }}</td>
+      <td class="admin-avatar"><img src="{{ userdata.avatar }}"></td>
       <td>{{ userdata.alias }}</td>
       <td>{{ userdata.created_at }}</td>
       <td>{{ userdata.updated_at }}</td>
-      <td>{{ userdata.id_status }}</td>
+      <td>{{ (userdata.id_status == 3) ? 'active' : 'disable' }}</td>
       <td>{{ userdata.id_profiles }}</td>
       <!--<td><button>edit BTN</button></td>-->
     </tr>
