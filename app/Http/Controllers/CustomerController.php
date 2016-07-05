@@ -186,6 +186,7 @@ class CustomerController extends Controller
   }
   public function getCustomerList ()
   {
+    return Ticket::with('customer')->take(100)->orderBy('created_at', 'desc')->get();
     return Customer::all()->take(100);
   }
 

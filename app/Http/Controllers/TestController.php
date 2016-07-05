@@ -106,7 +106,7 @@ class TestController extends Controller
 
 dd(
 
-  Ticket::with('address')->take(1)->get()->toArray()
+  Ticket::with('customer')->take(100)->orderBy('created_at', 'desc')->get()
 
 );
 

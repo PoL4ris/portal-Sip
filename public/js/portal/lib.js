@@ -194,7 +194,7 @@ var utils = {
 
   createTable: function(selector, objects, data, column){
 
-    console.log(data.length);
+//     console.log(data.length);
 
     try{
       var table = "<table id='rand'>";
@@ -1400,6 +1400,7 @@ app.controller('customerControllerList',            function ($scope, $http){
   $http.get("getCustomerList")
     .then(function (response) {
       $scope.supportDataCustomer = response.data;
+      
     });
 });
 app.controller('customerController',                function ($scope, $http, $routeParams, notify){

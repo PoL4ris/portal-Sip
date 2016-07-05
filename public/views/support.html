@@ -58,7 +58,7 @@
               <div class="tab-pane active" id="tab-1">
                 <!--CONTENT TABS-->
                 <div id="bldlist-result" ng-controller="customerControllerList">
-                  <p ng-repeat="data in supportDataCustomer" ng-click="displayCustomerResume(data.id)">{{ data.first_name}} {{ data.last_name}}</p>
+                  <p ng-repeat="data in supportDataCustomer" ng-click="displayCustomerResume(data.customer.id)">{{ data.customer.first_name?(data.customer.first_name + ' ' + data.customer.last_name):'Default User' }}</p>
                 </div>
               </div>
               <div class="tab-pane fix-size-scroll" id="tab-2" >
