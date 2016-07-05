@@ -174,9 +174,16 @@ class CustomerController extends Controller
   }
   public function getCustomerNetwork(Request $request)
   {
+    $data = $request->all();
+
+
+
     $port = $this->getPortID($request->id);
+
+
     $networkControllerInfo = new NetworkController();
     $networkData = $networkControllerInfo->getCustomerConnectionInfo($port);
+    print_r($networkData);die();
     $networkData['portId'] = $port;
     return $networkData;
   }
@@ -265,6 +272,7 @@ class CustomerController extends Controller
     $timeToAdd = array('annual'   =>'first day of next year',
                        'monthly'  =>'first day of next month',
                        'onetime'  =>'first day of next month',
+                       'Included'  =>'first day of next month',
                        'included' =>'first day of next month'
                        );
     return $timeToAdd[$type];

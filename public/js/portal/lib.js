@@ -1400,7 +1400,7 @@ app.controller('customerControllerList',            function ($scope, $http){
   $http.get("getCustomerList")
     .then(function (response) {
       $scope.supportDataCustomer = response.data;
-      
+
     });
 });
 app.controller('customerController',                function ($scope, $http, $routeParams, notify){
@@ -1805,6 +1805,7 @@ app.controller('serviceProductController',          function ($scope, $http){
     .then(function (response) {
 
       $scope.customerProductStatus = response.data;
+      console.log($scope.customerProductStatus);
 
     });
 

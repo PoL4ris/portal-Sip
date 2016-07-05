@@ -28,8 +28,8 @@
       <td>Last Name</td>
       <td>Email</td>
       <td>Password</td>
-      <td>Remember Token</td>
-      <td>Social Token</td>
+      <!--<td>Remember Token</td>-->
+      <!--<td>Social Token</td>-->
       <td>Access</td>
       <td>Avatar</td>
       <td>Alias</td>
@@ -44,9 +44,9 @@
       <td>{{ userdata.first_name || "empty" }}</td>
       <td>{{ userdata.last_name }}</td>
       <td>{{ userdata.email }}</td>
-      <td>{{ userdata.password | limitTo:letterLimit }}...</td>
-      <td>{{ userdata.remember_token | limitTo:letterLimit }}...</td>
-      <td>{{ userdata.social_token | limitTo:letterLimit }}...</td>
+      <td>********</td>
+      <!--<td>{{ userdata.remember_token | limitTo:letterLimit }}...</td>-->
+      <!--<td>{{ userdata.social_token | limitTo:letterLimit }}...</td>-->
       <td>{{ (userdata.social_access == 0) ? 'NO' : 'YES' }}</td>
       <td class="admin-avatar"><img src="{{ userdata.avatar }}"></td>
       <td>{{ userdata.alias }}</td>
