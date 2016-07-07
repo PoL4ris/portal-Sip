@@ -5,10 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
-use App\Http\Controllers\Controller;
 use App\Models\Network\DataServicePort;
 use App\Models\Network\networkNodes;
-use App\Models\Customer\Customers;
+use App\Models\Customer;
 use App\Extensions\CiscoSwitch;
 use App\Extensions\MtikRouter;
 use \Carbon\Carbon;
@@ -48,10 +47,11 @@ class NetworkController extends Controller
     }
 
     public function getCustomerConnectionInfo($portID) {
-        $servicePort = dataServicePort::with('networkNode')
-            ->where('PortID',$portID)
+        $servicePort = DataServicePort::with('networkNode')
+            ->where('id',$portID)
             ->first();
 
+    print_r($servicePort);die();
         $netNode = $servicePort->getRelationValue('networkNode');
        
         return ['Name' => $netNode->HostName,
@@ -63,20 +63,32 @@ class NetworkController extends Controller
                     ];
     }
     
-    public function getSwitchPortStatus(Request $request) {
+    public function getSwitchPortStatus(Request $request)
+    {
+      $input = $request->all();
+      $portID = $input['portid'];
 
-        $input = $request->all();
-        $portID = $input['portid'];
-        $servicePort = dataServicePort::with('networkNode')
-            ->where('PortID',$portID)
-            ->first();
 
-        $netNode = $servicePort->getRelationValue('networkNode');
-        $switchIP = ($this->devMode) ? $this->devModeSwitchIP : $netNode->IPAddress;
-        $switchPort = $servicePort->PortNumber;
+
+      $customer = new Customer;
+      $customerNetData = $customer->getNetworkNodes($request->id)[0];
+
+//      $customerControllerInfo = new CustomerController();
+//      $customerNetData = $customerControllerInfo->getCustomerNetwork($request)[0];
+
+//        print '<pre>';print_r($customerData);die();
+//        $servicePort = dataServicePort::with('networkNode')->where('id',$portID)->first();
+//        $netNode = $servicePort->getRelationValue('networkNode');
+
+
+
+        $switchIP = ($this->devMode) ? $this->devModeSwitchIP : $customerNetData->ip_address;
+        $switchPort = $customerNetData->port_number;
         $switch = $this->getSwitchInstance();
 
+
         $portOperStatus = $switch->getSnmpPortOperStatus($switchIP, $switchPort);
+//        print '<pre>';print_r($portOperStatus);die();
         if ($portOperStatus) {
             $portOperStatus = $this->formatSnmpResponse($portOperStatus);
             switch ($portOperStatus) {
@@ -163,16 +175,24 @@ class NetworkController extends Controller
     public function getAdvSwitchPortStatus(Request $request) {
         $input = $request->all();
         $portID = $input['portid'];
-        $servicePort = dataServicePort::with('networkNode')
-            ->where('PortID',$portID)
-            ->first();
 
-        $netNode = $servicePort->getRelationValue('networkNode');
-        $switchIP = ($this->devMode) ? $this->devModeSwitchIP : $netNode->IPAddress;
-        $switchPort = $servicePort->PortNumber;
-        $switchMAC = $netNode->MacAddress;
-        $switchVendor = $netNode->Vendor;
-        $switchModel = $netNode->Model;
+//        print '<pre>';
+//        print_r($input);
+//        die();
+
+//        $servicePort = DataServicePort::with('networkNode')
+//            ->where('id',$portID)
+//            ->first();
+//        $netNode = $servicePort->getRelationValue('networkNode');
+
+      $customer = new Customer;
+      $customerNetData = $customer->getNetworkNodes($request->id)[0];
+
+        $switchIP = ($this->devMode) ? $this->devModeSwitchIP : $customerNetData->ip_address;
+        $switchPort = $customerNetData->port_number;
+        $switchMAC = $customerNetData->mac_address;
+        $switchVendor = $customerNetData->vendor;
+//        $switchModel = $netNode->Model;
 
         $errorResponse = false;
 
@@ -231,14 +251,19 @@ class NetworkController extends Controller
     public function recycleSwitchPort(Request $request) {
         $input = $request->all();
         $portID = $input['portid'];
-        $servicePort = dataServicePort::with('networkNode')
-            ->where('PortID',$portID)
-            ->first();
 
-        $netNode = $servicePort->getRelationValue('networkNode');
-        $switchIP = ($this->devMode) ? $this->devModeSwitchIP : $netNode->IPAddress;
-        $switchPort = $servicePort->PortNumber;
-        $switchVendor = $netNode->Vendor;
+      $customer = new Customer;
+      $customerNetData = $customer->getNetworkNodes($request->id)[0];
+
+
+//        $servicePort = dataServicePort::with('networkNode')
+//            ->where('PortID',$portID)
+//            ->first();
+//        $netNode = $servicePort->getRelationValue('networkNode');
+
+        $switchIP = ($this->devMode) ? $this->devModeSwitchIP : $customerNetData->ip_address;
+        $switchPort = $customerNetData->port_number;
+        $switchVendor = $customerNetData->vendor;
 
         $portOperStatus = false;
 
@@ -257,20 +282,25 @@ class NetworkController extends Controller
     public function getPortActiveIPs(Request $request) {
         $input = $request->all();
         $portID = $input['portid'];
-        return $this->getActiveLeasesOnPort($portID);
+        return $this->getActiveLeasesOnPort($portID, null, $input['id']);
     }
 
     public function getPortAllIPs(Request $request) {
         $input = $request->all();
         $portID = $input['portid'];
 
-        $servicePort = dataServicePort::with('networkNode')
-            ->where('PortID',$portID)
-            ->first();
+//        $servicePort = dataServicePort::with('networkNode')
+//            ->where('PortID',$portID)
+//            ->first();
+//        $netNode = $servicePort->getRelationValue('networkNode');
 
-        $netNode = $servicePort->getRelationValue('networkNode');        
-        $switchIP = ($this->devMode) ? $this->devModeSwitchIP : $netNode->IPAddress;
-        $switchPort = $servicePort->PortNumber;
+      $customer = new Customer;
+      $customerNetData = $customer->getNetworkNodes($request->id)[0];
+
+
+
+        $switchIP = ($this->devMode) ? $this->devModeSwitchIP : $customerNetData->ip_address;
+        $switchPort = $customerNetData->port_number;
         $routerNode = $this->getRouterByPortID($portID);
         $routerIP = ($this->devMode) ? $this->devModeRouterIP : $routerNode->IPAddress;
         return $this->getAllLeasesOnPort($routerIP, $switchIP, $switchPort);
@@ -279,6 +309,14 @@ class NetworkController extends Controller
     public function authenticatePort(Request $request) {
         $input = $request->all();
         $portID = $input['portid'];
+
+
+      $customer = new Customer;
+      $customerNetData = $customer->getNetworkNodes($request->id)[0];
+        print '<pre>';
+        print_r($customerNetData);
+        die();
+
         $servicePort = dataServicePort::with('networkNode')
             ->where('PortID',$portID)
             ->first();
@@ -286,7 +324,7 @@ class NetworkController extends Controller
         $servicePort->LastUpdated = Carbon::now()->toDateTimeString();
         $servicePort->save();
 
-        $netNode = $servicePort->getRelationValue('networkNode');        
+        $netNode = $servicePort->getRelationValue('networkNode');
         $switchIP = ($this->devMode) ? $this->devModeSwitchIP : $netNode->IPAddress;
         $switchPort = $servicePort->PortNumber;
         $switchVendor = $netNode->Vendor;
@@ -423,11 +461,19 @@ class NetworkController extends Controller
         return $this->getPortPrivateVlanBySwitchIP($switchIP, $switchPort);
     }
 
-    protected function getRouterByPortID($portID) {
+    protected function getRouterByPortID($portID, $idCustomer) {
+
+    print '<pre>';
+    print_r($portID. ' ' . $idCustomer);
+    die();
+
         $servicePort = DataServicePort::with('networkNode')
             ->where('PortID',$portID)
             ->first();
         $netNode = $servicePort->getRelationValue('networkNode');
+
+      $customer = new Customer;
+      $customerNetData = $customer->getNetworkNodes($idCustomer)[0];
 
         return networkNodes::where('LocID', $netNode->LocID)
             ->where('Type','Router')
@@ -435,17 +481,26 @@ class NetworkController extends Controller
             ->first();
     }
 
-    protected function getActiveLeasesOnPort($portID, $comment = '') {
+    protected function getActiveLeasesOnPort($portID, $comment = '', $idCustomer) {
         $userIPInfoArr = array();
-        $servicePort = dataServicePort::with('networkNode')
-            ->where('PortID',$portID)
-            ->first();
 
-        $netNode = $servicePort->getRelationValue('networkNode');
-        $switchIP = ($this->devMode) ? $this->devModeSwitchIP : $netNode->IPAddress;
-        $switchPort = $servicePort->PortNumber;
+//        print '<pre>';
+//        print_r($idCustomer);
+//        die();
+
+//        $servicePort = DataServicePort::with('networkNode')
+//            ->where('PortID',$portID)
+//            ->first();
+//        $netNode = $servicePort->getRelationValue('networkNode');
+
+      $customer = new Customer;
+      $customerNetData = $customer->getNetworkNodes($idCustomer)[0];
+
+
+        $switchIP = ($this->devMode) ? $this->devModeSwitchIP : $customerNetData->ip_address;
+        $switchPort = $customerNetData->port_number;
         $switch = $this->getSwitchInstance();
-        $routerNode = $this->getRouterByPortID($portID);
+        $routerNode = $this->getRouterByPortID($portID, $idCustomer);
         $router = $this->getRouterInstance();
         $routerIP = ($this->devMode) ? $this->devModeRouterIP : $routerNode->IPAddress;
         $userIPInfoArr = $router->getDHCPLeasesBySwitchPort($routerIP, $switchIP, $switchPort);

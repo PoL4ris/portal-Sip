@@ -13,6 +13,8 @@ use App\Models\Address;
 use App\Models\BillingTransactionLog;
 use App\Models\Building\Building;
 use App\Models\Product;
+use App\Models\NetworkNode;
+
 
 
 class TestController extends Controller
@@ -104,11 +106,22 @@ class TestController extends Controller
     //dd(Ticket::with('address')->find(18685));
 
 
-dd(
 
-  Ticket::with('customer')->take(100)->orderBy('created_at', 'desc')->get()
 
-);
+
+
+
+
+    dd(
+      Ticket::with('customer')->orderBy('created_at', 'asc')->where('id_customers', '!=', 1)->groupBy('id_customers')->take(10)->get()->toArray()
+
+
+    );
+
+
+//dd(
+//
+//);
 
 
 

@@ -3,6 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\NetworkNodes;
+
+
 
 class Customer extends Model
 {
@@ -20,7 +23,7 @@ class Customer extends Model
     return $this->hasOne('App\Models\Status', 'id','id_status');
   }
   public function contacts() {
-    return $this->hasOne('App\Models\Contact', 'id_customers');
+    return $this->hasOne('App\Models\Contact', 'id_customers')->where('id_types', 1);
   }
   public function address() {
     return $this->hasOne('App\Models\Address', 'id_customers');
@@ -44,4 +47,17 @@ class Customer extends Model
   {
     return $this->belongsTo('App\Models\Address', 'id', 'id_buildings', 'App\Models\Building\Building');
   }
+
+  public function getNetworkNodes($id = null)
+  {
+    if($id == null){
+      $id = $this->attributes['id'];
+    }
+    return NetworkNode::join('ports', 'ports.id_network_nodes', '=', 'network_nodes.id')
+      ->join('customers', 'ports.id_customers', '=', 'customers.id')
+      ->where('ports.id_customers', '=', $id)
+      ->select('*')
+      ->get();
+  }
+
 }

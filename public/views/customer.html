@@ -19,19 +19,19 @@
     <div class="col-lg-12">
       <div class="m-t-md col-lg-3 no-padding-sides">
         <div class="col-lg-4 no-padding-sides">Address:</div>
-        <div class="text-muted col-lg-6 editable-text" editable-text="customerData.address.address" onaftersave="validate(customerData.address.address, 'Address', 'address')">-{{customerData.address.address}}</div>
+        <div class="text-muted col-lg-6 editable-text" editable-text="customerData.address.address" onaftersave="validate(customerData.address.address, 'Address', 'address')">{{customerData.address.address}}</div>
         <div class="text-muted col-lg-6 no-editable-text">{{customerData.address.address}}</div>
         <div class="col-lg-4 no-padding-sides">Unit:</div>
-        <div class="text-muted col-lg-6 editable-text" editable-text="customerData.address.unit" onaftersave="validate(customerData.address.address, 'Address', 'unit')">-{{customerData.address.unit}}</div>
+        <div class="text-muted col-lg-6 editable-text" editable-text="customerData.address.unit" onaftersave="validate(customerData.address.address, 'Address', 'unit')">{{customerData.address.unit}}</div>
         <div class="text-muted col-lg-6 no-editable-text">{{customerData.address.unit}}</div>
         <div class="col-lg-4 no-padding-sides">City:</div>
-        <div class="text-muted col-lg-6 editable-text" editable-text="customerData.address.city" onaftersave="validate(customerData.address.address, 'Address', 'city')">-{{customerData.address.city}}</div>
+        <div class="text-muted col-lg-6 editable-text" editable-text="customerData.address.city" onaftersave="validate(customerData.address.address, 'Address', 'city')">{{customerData.address.city}}</div>
         <div class="text-muted col-lg-6 no-editable-text">{{customerData.address.city}}</div>
         <div class="col-lg-4 no-padding-sides">State:</div>
-        <div class="text-muted col-lg-6 editable-text" editable-text="customerData.address.state" onaftersave="validate(customerData.address.address, 'Address', 'state')">-{{customerData.address.state}}</div>
+        <div class="text-muted col-lg-6 editable-text" editable-text="customerData.address.state" onaftersave="validate(customerData.address.address, 'Address', 'state')">{{customerData.address.state}}</div>
         <div class="text-muted col-lg-6 no-editable-text">{{customerData.address.state}}</div>
         <div class="col-lg-4 no-padding-sides">Zip:</div>
-        <div class="text-muted col-lg-6 editable-text" editable-text="customerData.address.zip" onaftersave="validate(customerData.address.address, 'Address', 'zip')">-{{customerData.address.zip}}</div>
+        <div class="text-muted col-lg-6 editable-text" editable-text="customerData.address.zip" onaftersave="validate(customerData.address.address, 'Address', 'zip')">{{customerData.address.zip}}</div>
         <div class="text-muted col-lg-6 no-editable-text">{{customerData.address.zip}}</div>
 
       </div>
@@ -64,8 +64,8 @@
                     label="{{tab.title}}"
                     ng-click="changeView(tab.content)">
               <div class="demo-tab tab{{$index%4}}" style="padding: 25px; text-align: center;" id="tabsChange-{{tab.content}}">
-                <div view-New-Ticket ></div>
-                <!--<div view-Product ></div>-->
+                <!--<div view-New-Ticket ></div>-->
+                <div view-Network ></div>
               </div>
             </md-tab>
           </md-tabs>

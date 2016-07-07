@@ -18,7 +18,7 @@ use App\Models\Contact;
 use App\Models\BillingTransactionLog;
 use App\Models\Building\Servicelocation;
 use App\Models\Building\Building;
-use App\Models\Network\networkNodes;
+use App\Models\NetworkNode;
 use App\Models\Support\Ticketreasons;
 use DB;
 use Schema;
@@ -174,18 +174,39 @@ class CustomerController extends Controller
   }
   public function getCustomerNetwork(Request $request)
   {
-    $data = $request->all();
+
+
+    $customer = new Customer;
+    return $customer->getNetworkNodes($request->id);
 
 
 
-    $port = $this->getPortID($request->id);
+    return NetworkNode::join('ports', 'ports.id_network_nodes', '=', 'network_nodes.id')
+                        ->join('customers', 'ports.id_customers', '=', 'customers.id')
+                        ->where('ports.id_customers', '=', $request->id)
+                        ->select('*')
+                        ->get();
+
+//
+//
+//    print_r($warp);die();
+//
+//
+//    $data = $request->all();
+//
+//
+//
+//    $port = $this->getPortID($request->id);
+//
+//
+//    $networkControllerInfo = new NetworkController();
+//    $networkData = $networkControllerInfo->getCustomerConnectionInfo($port);
+//    $networkData['portId'] = $port;
+//    return $networkData;
 
 
-    $networkControllerInfo = new NetworkController();
-    $networkData = $networkControllerInfo->getCustomerConnectionInfo($port);
-    print_r($networkData);die();
-    $networkData['portId'] = $port;
-    return $networkData;
+
+
   }
   public function getPortID($id)
   {
@@ -193,7 +214,7 @@ class CustomerController extends Controller
   }
   public function getCustomerList ()
   {
-    return Ticket::with('customer')->take(100)->orderBy('created_at', 'desc')->get();
+    return Ticket::with('customer', 'address')->orderBy('created_at', 'asc')->where('id_customers', '!=', 1)->groupBy('id_customers')->take(100)->get();
     return Customer::all()->take(100);
   }
 

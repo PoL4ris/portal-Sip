@@ -11,18 +11,18 @@ class DataServicePort extends Model
      *
      * @var string
      */
-    protected $table = 'dataServicePorts';
+    protected $table = 'Ports';
 
     /* The primary key for the model.
      *
      * @var string
      */
-    protected $primaryKey = 'PortID';
-    
+    protected $primaryKey = 'id';
+
     public $timestamps = false;
     
     public function networkNode() {
-        return $this->belongsTo('App\Models\Network\networkNodes', 'NodeID');
+        return $this->belongsTo('App\Models\NetworkNode', 'id');
     }
 
 //    public function statDates() {

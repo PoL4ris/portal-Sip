@@ -1805,7 +1805,6 @@ app.controller('serviceProductController',          function ($scope, $http){
     .then(function (response) {
 
       $scope.customerProductStatus = response.data;
-      console.log($scope.customerProductStatus);
 
     });
 
@@ -1823,7 +1822,8 @@ app.controller('customerNetworkController',         function ($scope, $http, $md
 
   $http.get("getCustomerNetwork", {params:{'id':$scope.customerData.id}})
     .then(function (response) {
-      $scope.customerNetwork = response.data;
+      $scope.customerNetwork = response.data[0];
+      console.log($scope.customerNetwork);
     });
 
   $scope.networkServices = function (service)
@@ -1843,13 +1843,15 @@ app.controller('customerNetworkController',         function ($scope, $http, $md
     warpol('.network-functions').addClass('disabled');
 
     var service = service;
-    var portID = $scope.customerNetwork.portId;
+    var portID = $scope.customerNetwork.port_number;
+    var customerID = $scope.customerData.id;
+    var dataSend = {'portid':portID, 'id':customerID};
 
     //AJAX request
     warpol.ajax(
       {type:"GET",
         url:"/" + routes[service],
-        data:{'portid':portID},
+        data:dataSend,
         success: function(data)
         {
           if (data == 'ERROR')
@@ -1865,7 +1867,7 @@ app.controller('customerNetworkController',         function ($scope, $http, $md
           warpol.ajax(
             {type:"GET",
               url:"/" + routes[service],
-              data:{'portid':portID},
+              data:dataSend,
               success: function(data)
               {
                 warpol.each(data,function(i, item)
@@ -1880,7 +1882,7 @@ app.controller('customerNetworkController',         function ($scope, $http, $md
           warpol.ajax(
             {type:"GET",
               url:"/" + routes[service],
-              data:{'portid':portID},
+              data:dataSend,
               success: function(data)
               {
 
@@ -1963,11 +1965,11 @@ app.controller('customerNetworkController',         function ($scope, $http, $md
 
   $scope.showConfirm = function(ev)
   {
-    var service = warpol('#rport').attr('type');
-    var portID = warpol('#rport').attr('portid');
-    var serviceID = warpol('#rport').attr('serviceid');
+    var service       = warpol('#rport').attr('type');
+    var portID        = warpol('#rport').attr('portid');
+    var serviceID     = warpol('#rport').attr('serviceid');
     var serviceStatus = warpol('#rport').attr('displaystatus');
-    var routeID = warpol('#rport').attr('route');
+    var routeID       = warpol('#rport').attr('route');
 
     var confirm = $mdDialog.confirm()
       .title('Please Confirm Your Action!')
@@ -1981,6 +1983,7 @@ app.controller('customerNetworkController',         function ($scope, $http, $md
       // YES/NO
     $mdDialog.show(confirm).then(function()
     {
+      console.log('a' + confirm + ' ...b ' + service + 'PARAMS:  ' + serviceID + '...' + serviceStatus + '...' + routeID);
       $scope.status = 'You decided to get rid of your debt.';
 
       if (portID)
@@ -2446,12 +2449,12 @@ app.controller('directiveController',               function ($scope, $http, $co
 app.controller('AppCtrl', AppCtrl);
 function AppCtrl ($scope, $log, $compile) {
   var tabs = [
-        { title: 'New Ticket',    content:'New-Ticket'},
-        { title: 'Tickets',       content:"Ticket-History"},
-        { title: 'Billing',       content:"Billing-History"},
+//         { title: 'New Ticket',    content:'New-Ticket'},
+//         { title: 'Tickets',       content:"Ticket-History"},
+//         { title: 'Billing',       content:"Billing-History"},
         { title: 'Network',       content:"Network"},
-        { title: 'Building',      content:'Building'},
-        { title: 'Services Info', content:"Product"},
+//         { title: 'Building',      content:'Building'},
+//         { title: 'Services Info', content:"Product"},
     ],
     selected = null,
     previous = null;

@@ -2,7 +2,7 @@
 
 namespace App\Extensions;
 
-use App\Models\Network\networkNodes;
+use App\Models\NetworkNodes;
 
 class CiscoSwitch {
 
