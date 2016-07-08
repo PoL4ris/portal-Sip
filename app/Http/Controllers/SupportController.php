@@ -52,7 +52,6 @@ class SupportController extends Controller
   }
   public function supportTickets()
   {
-
     $record = Ticket::with('customer', 'reason', 'ticketNote','ticketHistory', 'user', 'userAssigned', 'address', 'contacts')
                       ->where('id_reasons','!=', 11)
                       ->where('status','!=', 'closed')

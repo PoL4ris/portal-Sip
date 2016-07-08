@@ -21,6 +21,7 @@ class CreateNetworkNodesTable extends Migration
         $table->integer('id_address')->nullable()->comment('Address');
         $table->integer('id_types')->nullable()->comment('Type');
         $table->string('vendor')->nullable();
+        $table->string('model')->nullable();
         $table->string('role')->nullable();
         $table->string('properties')->nullable();
         $table->string('comments')->nullable();

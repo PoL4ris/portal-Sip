@@ -23,7 +23,7 @@
   <!--<table ng-table="usersTable" class="table table-striped b-t b-b"  ng-controller="tableSorterAdminUsers">-->
   <table ng-table="usersTable" class="table table-striped b-t b-b">
     <tr>
-      <td>id</td>
+      <!--<td>id</td>-->
       <td>First Name</td>
       <td>Last Name</td>
       <td>Email</td>
@@ -36,11 +36,11 @@
       <td>Created At</td>
       <td>Updated At</td>
       <td>Status</td>
-      <td>Base Profile</td>
-      <!--<td>Tools</td>-->
+      <!--<td>Base Profile</td>-->
+      <td>Tools</td>
     </tr>
     <tr ng-repeat="userdata in userData">
-      <td>{{ userdata.id }}</td>
+      <!--<td>{{ userdata.id }}</td>-->
       <td>{{ userdata.first_name || "empty" }}</td>
       <td>{{ userdata.last_name }}</td>
       <td>{{ userdata.email }}</td>
@@ -53,8 +53,13 @@
       <td>{{ userdata.created_at }}</td>
       <td>{{ userdata.updated_at }}</td>
       <td>{{ (userdata.id_status == 3) ? 'active' : 'disable' }}</td>
-      <td>{{ userdata.id_profiles }}</td>
-      <!--<td><button>edit BTN</button></td>-->
+      <!--<td>{{ userdata.id_profiles }}</td>-->
+      <td>
+        <md-button class="btn2 anim-btn"><i class="icon-pencil"></i></md-button>
+        <md-button class="btn3 anim-btn"><i class="fa fa-times"></i></md-button>
+        <md-button class="btn4 anim-btn"><i class="icon-like"></i></md-button>
+        <md-button class="btn5 anim-btn"><i class="icon-dislike"></i></md-button>
+      </td>
     </tr>
   </table>
 </div>

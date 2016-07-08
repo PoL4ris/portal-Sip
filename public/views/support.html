@@ -61,7 +61,7 @@
                   <p ng-repeat="data in supportDataCustomer"
                      ng-click="displayCustomerResume(data.customer.id)">
                       {{ data.customer.first_name?(data.customer.first_name + ' ' + data.customer.last_name):'Default User' }}
-                      : <strong> {{ data.address.code }},  #{{data.address.unit}}-->{{data.customer.id_status}}</strong>
+                      : <strong> {{ data.address.code }},  #{{data.address.unit}}</strong>
                       </p>
                 </div>
               </div>
@@ -69,7 +69,10 @@
                   <p ng-repeat="bldretail in bldData['retail']" ng-click="displayBldData(bldretail.id)">{{ bldretail.Name?bldretail.Name:bldretail.name }}</p>
               </div>
               <div class="tab-pane fix-size-scroll" id="tab-3" >
-                  <p ng-repeat="ticketList in supportData" ng-click="displayTicketResume(ticketList.id, ticketList.id_customers)">{{ ticketList.ticket_number }}, {{ticketList.customer.first_name}}, {{ ticketList.address.code }}</p>
+                  <p ng-repeat="ticketList in supportData"
+                     ng-click="displayTicketResume(ticketList.id, ticketList.id_customers)">
+                     {{ ticketList.ticket_number }}, {{ticketList.customer.first_name}}, {{ ticketList.address.code }}
+                  </p>
               </div>
             </div>
           <!--</div>-->

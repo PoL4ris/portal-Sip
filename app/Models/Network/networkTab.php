@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class networkTab extends Model
 {
-  protected $table = 'networkTab';
+  protected $table = 'network_tabs';
   public $timestamps = false;
 
 

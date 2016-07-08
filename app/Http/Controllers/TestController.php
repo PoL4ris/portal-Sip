@@ -113,9 +113,13 @@ class TestController extends Controller
 
 
     dd(
-      Ticket::with('customer')->orderBy('created_at', 'asc')->where('id_customers', '!=', 1)->groupBy('id_customers')->take(10)->get()->toArray()
 
-
+      NetworkNode::join('ports', 'ports.id_network_nodes', '=', 'network_nodes.id')
+                  ->join('customers', 'ports.id_customers', '=', 'customers.id')
+                  ->where('ports.id_customers', '=', 158)
+                  ->select('*')
+                  ->get()
+                  ->toArray()
     );
 
 

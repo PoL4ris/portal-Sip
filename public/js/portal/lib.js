@@ -1718,7 +1718,6 @@ app.controller('customerTicketHistoryData',         function ($scope, $http){
 app.controller('customerBillingHistoryController',  function ($scope, $http){
   $http.get("getBillingHistory", {params:{'id':$scope.customerData.id}})
     .then(function (response) {
-      console.log(response.data);
       $scope.billingHistory = response.data;
     });
 });
@@ -2098,7 +2097,7 @@ app.controller('networkController',                 function ($scope, $http){
       warpol('#net-btn-' + id).html(iconoA);
       warpol('#nt-tmp-data-' + id).remove();
     }
-//     getNetworkResult();
+    //getNetworkResult();
 
   };
   function getNetworkResult(id)
@@ -2449,12 +2448,12 @@ app.controller('directiveController',               function ($scope, $http, $co
 app.controller('AppCtrl', AppCtrl);
 function AppCtrl ($scope, $log, $compile) {
   var tabs = [
-//         { title: 'New Ticket',    content:'New-Ticket'},
-//         { title: 'Tickets',       content:"Ticket-History"},
-//         { title: 'Billing',       content:"Billing-History"},
+        { title: 'New Ticket',    content:'New-Ticket'},
+        { title: 'Tickets',       content:"Ticket-History"},
+        { title: 'Billing',       content:"Billing-History"},
         { title: 'Network',       content:"Network"},
-//         { title: 'Building',      content:'Building'},
-//         { title: 'Services Info', content:"Product"},
+        { title: 'Building',      content:'Building'},
+        { title: 'Services Info', content:"Product"},
     ],
     selected = null,
     previous = null;

@@ -11,7 +11,7 @@
     <div class="field-data bg-white col-lg-12"><div class="bold-type col-lg-4">Port</div>     <div class="col-lg-8">{{ customerNetwork.port_number }}</div></div>
     <div class="field-data bg-white col-lg-12"><div class="bold-type col-lg-4">Access</div>   <div class="col-lg-8" id="acces-network-id">{{ customerNetwork.access_level }}</div></div>
     <div class="field-data bg-white col-lg-12"><div class="bold-type col-lg-4">Vendor</div>   <div class="col-lg-8">{{ customerNetwork.vendor }}</div></div>
-    <div class="field-data bg-white col-lg-12"><div class="bold-type col-lg-4">Model</div>    <div class="col-lg-8">{{ customerNetwork.vendor }}</div></div>
+    <div class="field-data bg-white col-lg-12"><div class="bold-type col-lg-4">Model</div>    <div class="col-lg-8">{{ customerNetwork.model }}</div></div>
   </div>
 
   <div class="col-lg-4 no-padding-sides b-r">
@@ -44,7 +44,7 @@
 
 
 
-    <p class="float-left btn-silver-size wrapper-xs r btn-dark network-functions action-confirm m-r-sm" id="rport"  type="3" portid="{{customerNetwork.port_number}}" ng-click="showConfirm($event)">Recycle Port</p>
+    <p class="float-left btn-silver-size wrapper-xs r btn-dark network-functions action-confirm m-r-sm"   type="3" portid="{{customerNetwork.port_number}}" ng-click="showConfirm($event)">Recycle Port</p>
     <p class="float-left btn-silver-size wrapper-xs r btn-success network-functions m-r-sm"  type="4" portid="{{customerNetwork.port_number}}">Check IP's</p>
 
 
