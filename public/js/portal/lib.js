@@ -161,6 +161,174 @@ var buscador              = function(searchType) {
     );
   };
 };//INVALID
+var servicesInfoUpdate    = function (serviceID, serviceStatus, routeID){
+
+  var routes = ['updateCustomerServiceInfo'];
+
+//   warpol('.network-functions').addClass('disabled');
+
+  //AJAX request
+  warpol.ajax(
+    {type:"GET",
+      url:"/" + routes[routeID],
+      data:{'serviceid':serviceID, 'status':serviceStatus},
+      success: function(data)
+      {
+        if (data == 'ERROR')
+          alert(data);
+
+        if (serviceStatus == 'active')
+        {
+          warpol('#serviceno-' + serviceID).addClass('disabled ital');
+          warpol('#serviceinfo-status-' + serviceID).html('disabled');
+          warpol('#xservice-btn-id-' + serviceID).attr('displaystatus','disabled');
+          warpol('#xservice-btn-id-' + serviceID).addClass('btn-success fa-check');
+          warpol('#xservice-btn-id-' + serviceID).removeClass('btn-dark');
+          warpol('#xservice-btn-id-' + serviceID).removeClass('fa-times');
+        }
+        else
+        {
+          warpol('#serviceno-' + serviceID).removeClass('disabled ital');
+          warpol('#serviceinfo-status-' + serviceID).html('active');
+          warpol('#xservice-btn-id-' + serviceID).attr('displaystatus','active');
+          warpol('#xservice-btn-id-' + serviceID).addClass('btn-dark fa-times');
+          warpol('#xservice-btn-id-' + serviceID).removeClass('btn-success');
+          warpol('#xservice-btn-id-' + serviceID).removeClass('fa-check');
+        }
+
+      }
+    }
+  );
+};//INVALID
+var confirmDialog         = function (){
+  return function(data, textStatus, jqXHR)
+  {
+    var service = warpol(this).attr('type');
+    var portID = warpol(this).attr('portid');
+    var serviceID = warpol(this).attr('serviceid');
+    var serviceStatus = warpol(this).attr('displaystatus');
+    var routeID = warpol(this).attr('route');
+
+    warpol('<div class="confirmBtn"></div>').appendTo('body')
+      .html('<div ><h6>Confirm this Action!</h6></div>')
+      .dialog({
+        modal: true, title: 'Please confirm', zIndex: 10000, autoOpen: true,
+        width: 'auto', resizable: false,
+        buttons: {
+          Yes: function () {
+            // warpol(obj).removeAttr('onclick');
+            // warpol(obj).parents('.Parent').remove();
+
+            warpol(this).dialog("close");
+            if (portID)
+              networkServices(service, portID);
+            else if(serviceID)
+              servicesInfoUpdate(serviceID, serviceStatus, routeID);
+
+          },
+          No: function () {
+            warpol(this).dialog("close");
+          }
+        },
+        close: function (event, ui) {
+          warpol(this).remove();
+        }
+      });
+  };
+};//INVALID
+var networkServices       = function (service, portID) {
+  console.log(portID);
+  return;
+  var routes = ['networkCheckStatus',
+    'netwokAdvancedInfo',
+    'networkAdvanceIPs',
+    'networkRecyclePort',
+    '4',
+    'networkSignUp',
+    'networkActivate'];
+
+  warpol('.network-functions').addClass('disabled');
+
+  var service = service;
+  var portID = portID;
+
+  //AJAX request
+  warpol.ajax(
+    {type:"GET",
+      url:"/" + routes[service],
+      data:{'portid':portID},
+      success: function(data)
+      {
+        if (data == 'ERROR')
+          alert(data);
+
+        warpol.each(data,function(i, item)
+        {
+          warpol('#' + i).html(item);
+        });
+        warpol('#basic-info-net').notify('OK');
+
+        service = 1;
+        warpol.ajax(
+          {type:"GET",
+            url:"/" + routes[service],
+            data:{'portid':portID},
+            success: function(data)
+            {
+              warpol.each(data,function(i, item)
+              {
+                warpol('#' + i).html(item);
+              });
+            }
+          }
+        );
+
+        service = 2;
+        warpol.ajax(
+          {type:"GET",
+            url:"/" + routes[service],
+            data:{'portid':portID},
+            success: function(data)
+            {
+
+              warpol('#IPs').notify('IPs Array.');
+              warpol('.network-functions').removeClass('disabled');
+
+//                   warpol.each(data,function(i, item)
+//                   {
+//                     warpol('#' + i).html(item);
+//                   });
+
+            }
+          }
+        );
+
+      }
+    }
+  );
+
+  if (service == 5)
+  {
+    warpol('.access-type-net').removeClass('btn-danger ');
+    warpol('.access-type-net').addClass('btn-info');
+    warpol('.access-type-net').html('Activate');
+    warpol('.access-type-net').attr('type','6');
+    warpol('#acces-network-id').html('signup');
+  }
+  else if ( service == 6 )
+  {
+    warpol('.access-type-net').removeClass('btn-info')
+    warpol('.access-type-net').addClass('btn-danger')
+    warpol('.access-type-net').html('Send to Signup');
+    warpol('.access-type-net').attr('type','5');
+    warpol('#acces-network-id').html('yes');
+  }
+
+};//INVALID
+
+
+
+
 //Preview Images Uploaded
 var imgPreview            = function() {
   function readURL(input) {
@@ -386,42 +554,7 @@ var modifServiceBtn       = function () {
     }
   };
 };
-var confirmDialog         = function (){
-  return function(data, textStatus, jqXHR)
-  {
-    var service = warpol(this).attr('type');
-    var portID = warpol(this).attr('portid');
-    var serviceID = warpol(this).attr('serviceid');
-    var serviceStatus = warpol(this).attr('displaystatus');
-    var routeID = warpol(this).attr('route');
 
-    warpol('<div class="confirmBtn"></div>').appendTo('body')
-      .html('<div ><h6>Confirm this Action!</h6></div>')
-      .dialog({
-        modal: true, title: 'Please confirm', zIndex: 10000, autoOpen: true,
-        width: 'auto', resizable: false,
-        buttons: {
-          Yes: function () {
-            // warpol(obj).removeAttr('onclick');
-            // warpol(obj).parents('.Parent').remove();
-
-            warpol(this).dialog("close");
-            if (portID)
-              networkServices(service, portID);
-            else if(serviceID)
-              servicesInfoUpdate(serviceID, serviceStatus, routeID);
-
-          },
-          No: function () {
-            warpol(this).dialog("close");
-          }
-        },
-        close: function (event, ui) {
-          warpol(this).remove();
-        }
-      });
-  };
-};//INVALID
 //idType = type of id on table[CID,TID,ID...]
 //table = attr that has table Target.
 //route, attr that knows the target action.
@@ -561,95 +694,7 @@ var insertCustomerTicket  = function () {
       );
   };
 };
-var networkServices       = function (service, portID) {
-console.log(portID);
-return;
-    var routes = ['networkCheckStatus',
-                  'netwokAdvancedInfo',
-                  'networkAdvanceIPs',
-                  'networkRecyclePort',
-                  '4',
-                  'networkSignUp',
-                  'networkActivate'];
 
-    warpol('.network-functions').addClass('disabled');
-
-    var service = service;
-    var portID = portID;
-
-    //AJAX request
-    warpol.ajax(
-      {type:"GET",
-        url:"/" + routes[service],
-        data:{'portid':portID},
-        success: function(data)
-        {
-          if (data == 'ERROR')
-            alert(data);
-
-          warpol.each(data,function(i, item)
-          {
-            warpol('#' + i).html(item);
-          });
-          warpol('#basic-info-net').notify('OK');
-
-          service = 1;
-          warpol.ajax(
-            {type:"GET",
-              url:"/" + routes[service],
-              data:{'portid':portID},
-              success: function(data)
-              {
-                warpol.each(data,function(i, item)
-                {
-                  warpol('#' + i).html(item);
-                });
-              }
-            }
-          );
-
-          service = 2;
-          warpol.ajax(
-            {type:"GET",
-              url:"/" + routes[service],
-              data:{'portid':portID},
-              success: function(data)
-              {
-
-                warpol('#IPs').notify('IPs Array.');
-                warpol('.network-functions').removeClass('disabled');
-
-//                   warpol.each(data,function(i, item)
-//                   {
-//                     warpol('#' + i).html(item);
-//                   });
-
-              }
-            }
-          );
-
-        }
-      }
-      );
-
-      if (service == 5)
-      {
-        warpol('.access-type-net').removeClass('btn-danger ');
-        warpol('.access-type-net').addClass('btn-info');
-        warpol('.access-type-net').html('Activate');
-        warpol('.access-type-net').attr('type','6');
-        warpol('#acces-network-id').html('signup');
-      }
-      else if ( service == 6 )
-      {
-        warpol('.access-type-net').removeClass('btn-info')
-        warpol('.access-type-net').addClass('btn-danger')
-        warpol('.access-type-net').html('Send to Signup');
-        warpol('.access-type-net').attr('type','5');
-        warpol('#acces-network-id').html('yes');
-      }
-
-};//INVALID
 var changeSeccionView     = function () {
   return function(data, textStatus, jqXHR)
   {
@@ -661,45 +706,7 @@ var changeSeccionView     = function () {
     warpol(customerSeccion).fadeIn("slow");
   };
 };
-var servicesInfoUpdate    = function (serviceID, serviceStatus, routeID){
 
-  var routes = ['updateCustomerServiceInfo'];
-
-//   warpol('.network-functions').addClass('disabled');
-
-  //AJAX request
-  warpol.ajax(
-    {type:"GET",
-      url:"/" + routes[routeID],
-      data:{'serviceid':serviceID, 'status':serviceStatus},
-      success: function(data)
-      {
-        if (data == 'ERROR')
-          alert(data);
-
-        if (serviceStatus == 'active')
-        {
-          warpol('#serviceno-' + serviceID).addClass('disabled ital');
-          warpol('#serviceinfo-status-' + serviceID).html('disabled');
-          warpol('#xservice-btn-id-' + serviceID).attr('displaystatus','disabled');
-          warpol('#xservice-btn-id-' + serviceID).addClass('btn-success fa-check');
-          warpol('#xservice-btn-id-' + serviceID).removeClass('btn-dark');
-          warpol('#xservice-btn-id-' + serviceID).removeClass('fa-times');
-        }
-        else
-        {
-          warpol('#serviceno-' + serviceID).removeClass('disabled ital');
-          warpol('#serviceinfo-status-' + serviceID).html('active');
-          warpol('#xservice-btn-id-' + serviceID).attr('displaystatus','active');
-          warpol('#xservice-btn-id-' + serviceID).addClass('btn-dark fa-times');
-          warpol('#xservice-btn-id-' + serviceID).removeClass('btn-success');
-          warpol('#xservice-btn-id-' + serviceID).removeClass('fa-check');
-        }
-
-      }
-    }
-  );
-};//INVALID
 function updateActiveServiceInfo (CSID, ProdIDc) {
 
   var ProdID = warpol('#select-csiu').val();
@@ -2138,6 +2145,10 @@ app.controller('actionsController', function ($scope)
   $scope.validate = function (dato)
   {
     console.log(dato);
+    console.log('clean data to send and update.');
+    if (dato <= 0)
+      console.log('error');
+
   };
 
 });

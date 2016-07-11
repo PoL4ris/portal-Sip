@@ -58,7 +58,7 @@ class AdminController extends Controller
   }
   public function adminPayments()
   {
-    return DB::select('select * from payments limit 10');
+    return DB::select('select * from payment_methods limit 10');
   }
   public function adminNotes()
   {

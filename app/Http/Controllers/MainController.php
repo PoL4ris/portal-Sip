@@ -89,14 +89,6 @@ class MainController extends Controller
                     ->orWhere('unit', 'LIKE','%'.$string.'%' )
                     ->take(20)
                     ->get();
-
-
-//    return Customer::where('id_types', 3)->where(function ($query) use ($request) {
-//                      $query->where('first_name', 'LIKE','%'.$request->string.'%')
-//                            ->orWhere('last_name', 'LIKE','%'.$request->string.'%')
-//                            ->orWhere('email', 'LIKE','%'.$request->string.'%');
-//                            })->take(200)
-//                              ->get();
   }
   public function getCustomersSearch(Request $request){
     $stringA = explode("#", $request->string)[0];
@@ -152,9 +144,13 @@ class MainController extends Controller
   }
   public function salesdashboard()
   {
-    $salesData = DB::select('SELECT Priority, Status, City, Neighborhood, Code, INT_Wiring, ShortName, ContactName, ContactPhone, ContactEmail, MgmtCo, BuiltDate, Units, Floors 
-                              FROM salesPropertyInfo 
-                                ORDER BY Priority ASC');
+    $salesData = DB::select('SELECT Priority, Status, City, 
+                                    Neighborhood, Code, INT_Wiring, 
+                                    ShortName, ContactName, ContactPhone, 
+                                    ContactEmail, MgmtCo, BuiltDate, Units, 
+                                    Floors 
+                                      FROM salesPropertyInfo 
+                                        ORDER BY Priority ASC');
 
     return view('sales.dashboard', ['salesdata' => $salesData]);
   }
