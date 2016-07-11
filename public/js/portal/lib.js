@@ -2112,6 +2112,40 @@ app.controller('networkController',                 function ($scope, $http){
 
 
 
+
+
+
+app.controller('actionsController', function ($scope)
+{
+  $scope.actionA = function ()
+  {
+    console.log('actionA');
+  };
+  $scope.actionB = function ()
+  {
+    console.log('actionB');
+  };
+  $scope.actionC = function ()
+  {
+    console.log('actionC');
+    //status D
+  };
+  $scope.actionD = function ()
+  {
+    console.log('actionD');
+  };
+
+  $scope.validate = function (dato)
+  {
+    console.log(dato);
+  };
+
+});
+
+
+
+
+
 app.controller('mainSearchController',              function ($scope, $http, $compile){
   $scope.closeSearch = function () {
     warpol('#globalSearch').fadeOut('fast');

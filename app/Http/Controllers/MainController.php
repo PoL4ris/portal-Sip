@@ -65,6 +65,8 @@ class MainController extends Controller
 //                              GROUP BY a.url
 //                               ORDER BY A.id ASC;
 //                        ');
+
+//if (Auth::user()->id != x)
     return App::all();
   }
   public function getUserData()

@@ -19,7 +19,7 @@
 
 
 
-<div ng-if="!insertForm" style="margin-bottom: 150px;">
+<div ng-if="!insertForm" style="margin-bottom: 150px;" ng-controller="actionsController">
   <!--<table ng-table="usersTable" class="table table-striped b-t b-b"  ng-controller="tableSorterAdminUsers">-->
   <table ng-table="usersTable" class="table table-striped b-t b-b">
     <tr>
@@ -41,10 +41,16 @@
     </tr>
     <tr ng-repeat="userdata in userData">
       <!--<td>{{ userdata.id }}</td>-->
-      <td>{{ userdata.first_name || "empty" }}</td>
+      <td>{{ userdata.first_name || "empty" }}
+        <div class="text-muted col-lg-6 editable-text" editable-text="customerData.address.address" onaftersave="validate(customerData.address.address, 'Address', 'address')">{{userdata.first_name || "empty"}}</div>
+      </td>
       <td>{{ userdata.last_name }}</td>
       <td>{{ userdata.email }}</td>
-      <td>********</td>
+      <td>********
+        <div class="text-muted col-lg-6 editable-text"
+             editable-text="customerData.address.address"
+             onaftersave="validate(customerData.address.address, 'Address', 'address')">****</div>
+      </td>
       <!--<td>{{ userdata.remember_token | limitTo:letterLimit }}...</td>-->
       <!--<td>{{ userdata.social_token | limitTo:letterLimit }}...</td>-->
       <td>{{ (userdata.social_access == 0) ? 'NO' : 'YES' }}</td>
@@ -55,10 +61,10 @@
       <td>{{ (userdata.id_status == 3) ? 'active' : 'disable' }}</td>
       <!--<td>{{ userdata.id_profiles }}</td>-->
       <td>
-        <md-button class="btn2 anim-btn"><i class="icon-pencil"></i></md-button>
-        <md-button class="btn3 anim-btn"><i class="fa fa-times"></i></md-button>
-        <md-button class="btn4 anim-btn"><i class="icon-like"></i></md-button>
-        <md-button class="btn5 anim-btn"><i class="icon-dislike"></i></md-button>
+        <md-button class="btn2 anim-btn" ng-click="actionA()"><i class="icon-pencil"></i>.</md-button>
+        <md-button class="btn3 anim-btn" ng-click="actionB()"><i class="fa fa-times"></i>.</md-button>
+        <md-button class="btn4 anim-btn" ng-click="actionC()" ng-if="userdata.id_status != 3"><i class="icon-like"></i>.</md-button>
+        <md-button class="btn5 anim-btn" ng-click="actionD()" ng-if="userdata.id_status == 3"><i class="icon-dislike"></i>.</md-button>
       </td>
     </tr>
   </table>
