@@ -21,7 +21,8 @@ class CreatePaymentMethodsTable extends Migration
         $table->integer('exp_year')->comment('Exp Year');
         $table->string('types')->comment('Types');
         $table->integer('priority')->nullable();
-        $table->integer('id_address')->comment('Address');
+        $table->string('card_type')->nullable();
+        $table->integer('id_address')->nullable()->comment('Address');
         $table->integer('id_customers')->comment('Customer');
         $table->timestamps();
       });

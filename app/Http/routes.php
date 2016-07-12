@@ -42,7 +42,7 @@ Route::group(['middleware' => 'web'], function () {
   Route::get('getAdminForm',            'AdminController@getAdminForm');
   Route::get('insertAdminForm',         'AdminController@insertAdminForm');
   Route::get('getProfileInfo',          'AdminController@getProfileInfo');
-  Route::get('updateProfileInfo',      'AdminController@updateProfileInfo');
+  Route::get('updateProfileInfo',       'AdminController@updateProfileInfo');
   //MENU
   Route::get('menumaker',               'MainController@menuMaker');
   Route::get('adminusers',              'MainController@adminusers');
@@ -87,6 +87,7 @@ Route::group(['middleware' => 'web'], function () {
   Route::get('updateAddressTable',      'CustomerController@updateAddressTable');
   Route::get('updateCustomersTable',    'CustomerController@updateCustomersTable');
   Route::get('updateContactsTable',     'CustomerController@updateContactsTable');
+  Route::get('updatePaymentMethods',    'CustomerController@updatePaymentMethods');
   Route::post('insertCustomerData',     'CustomerController@insertCustomerData');
   //New Ticket
   Route::get('insertCustomerTicket',    'CustomerController@insertCustomerTicket');

@@ -3,7 +3,7 @@
    <!--TITULO -->
   <div class="bg-light lter col-lg-12 wrapper-sm">
     <div class="col-lg-3">
-      <h2 class="m-n font-thin h3">Customer: {{customerData.first_name + ' ' + customerData.last_name}}</h2>
+      <h2 class="m-n font-thin h3">{{customerData.first_name + ' ' + customerData.last_name}}</h2>
     </div>
     <div class="col-lg-3 edit-mode">
       <label class="editmode">EDIT MODE: </label>
@@ -36,7 +36,7 @@
 
       </div>
       <div class="m-t-md col-lg-3 no-padding-sides">
-        <div class="col-lg-4 no-padding-sides">Username:</div>
+        <div class="col-lg-4 no-padding-sides">Username/Email:</div>
         <div class="text-muted col-lg-6 editable-text" editable-text="customerData.email" onaftersave="validate(customerData.email, 'Customers', 'email')">{{customerData.email}}</div>
         <div class="text-muted col-lg-6 no-editable-text">{{customerData.email}}</div>
         <div class="col-lg-4 no-padding-sides">Tel:</div>
@@ -64,8 +64,8 @@
                     label="{{tab.title}}"
                     ng-click="changeView(tab.content)">
               <div class="demo-tab tab{{$index%4}}" style="padding: 25px; text-align: center;" id="tabsChange-{{tab.content}}">
-                <div view-New-Ticket ></div>
-                <!--<div view-Payment-Methods ></div>-->
+                <!--<div view-New-Ticket ></div>-->
+                <div view-Payment-Methods ></div>
               </div>
             </md-tab>
           </md-tabs>
@@ -74,3 +74,9 @@
     </div>
 
 </div>
+
+
+
+<tr>
+
+</tr>

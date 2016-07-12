@@ -6,6 +6,7 @@ use App\Models\Product;
 use App\Models\Support\Adminaccess;
 use Illuminate\Http\Request;
 
+use App\Models\PaymentMethod;
 use App\Http\Requests;
 use App\Models\Customer\Customers;
 use App\Models\Customer;
@@ -132,6 +133,19 @@ class CustomerController extends Controller
   {
     return Customer::with('payment')->getRelation('payment')->where('id_customers', $request->id)->orderBy('priority', 'DESC')->get();
   }
+  public function updatePaymentMethods(Request $request)
+  {
+    $oldMethod = PaymentMethod::where('priority', 1)->first();
+    $oldMethod->priority = null;
+    $oldMethod->save();
+
+    $newMethod = PaymentMethod::find($request->id);
+    $newMethod->priority = 1;
+    $newMethod->save();
+
+    return Customer::with('payment')->getRelation('payment')->where('id_customers', $request->customerID)->orderBy('priority', 'DESC')->get();
+
+  }
   public function getNewTicketData(Request $request)
   {
     return Customer::with('tickets')->find($request->id);
@@ -179,11 +193,8 @@ class CustomerController extends Controller
   public function getCustomerNetwork(Request $request)
   {
 
-
     $customer = new Customer;
     return $customer->getNetworkNodes($request->id);
-
-
 
     return NetworkNode::join('ports', 'ports.id_network_nodes', '=', 'network_nodes.id')
                         ->join('customers', 'ports.id_customers', '=', 'customers.id')
@@ -207,9 +218,6 @@ class CustomerController extends Controller
 //    $networkData = $networkControllerInfo->getCustomerConnectionInfo($port);
 //    $networkData['portId'] = $port;
 //    return $networkData;
-
-
-
 
   }
   public function getPortID($id)

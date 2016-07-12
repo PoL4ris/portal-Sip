@@ -60,7 +60,7 @@
         <td class="prod-btns">
           <button class="btn fa btn-danger fa-pencil modif-service-btn"  title="Edit Service" ng-click="open(customerProduct.id, 'updateService')"></button>
           <button ng-if="customerProductStatus.status.name != 'disabled'" class="btn fa fa-times action-confirm btn-dark" ng-click="showConfirm($event, customerProduct.id, 'disable')" title="Cancel Service"><i>a</i></button>
-          <button ng-if="customerProductStatus.status.name == 'disabled'" class="btn fa fa-check action-confirm btn-success" ng-click="showConfirm($event, customerProduct.id, 'active')" title="Cancel Service"><i>l</i></button>
+          <button ng-if="customerProductStatus.status.name == 'disabled'" class="btn fa fa-check action-confirm btn-success" ng-click="showConfirm($event, customerProduct.id, 'active')" title="Active Service"><i>l</i></button>
         </td>
       </tr>
       </tbody>

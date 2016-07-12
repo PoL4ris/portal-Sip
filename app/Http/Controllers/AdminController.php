@@ -79,12 +79,10 @@ class AdminController extends Controller
 
   public function updateProfileInfo(Request $request)
   {
-    return 'OK';
     $user = User::find(Auth::user()->id);
     $user->password = bcrypt($request->password);
     $user->save();
-
-
+    return 'OK';
   }
 
 

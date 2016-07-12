@@ -1407,6 +1407,7 @@ app.controller('customerControllerList',            function ($scope, $http){
   $http.get("getCustomerList")
     .then(function (response) {
       $scope.supportDataCustomer = response.data;
+      console.log($scope.supportDataCustomer);
 
     });
 });
@@ -1495,11 +1496,6 @@ app.controller('supportTicketHistory',              function ($scope, $http){
       $scope.historyData = response.data;
     });
 });
-
-
-
-
-
 app.controller('userProfileController',             function ($scope, $http, notify){
   console.log('COSA LOCA');
   $scope.checkboxModel = true;
@@ -1566,14 +1562,6 @@ app.controller('userProfileController',             function ($scope, $http, not
 
 
 });
-
-
-
-
-
-
-
-
 app.controller('ModalInstanceCtrl',                 function ($scope, $http, $uibModalInstance, ticketId){
   $http.get("getTicketInfo", {params:{'ticketId':ticketId}})
     .then(function (response) {
@@ -1591,11 +1579,6 @@ app.controller('ModalInstanceCtrl',                 function ($scope, $http, $ui
 
 
 });//sin usar
-
-
-
-
-
 app.controller('ModalController',                   function ($scope, $uibModal, $log) {
 
   $scope.animationsEnabled = false;
@@ -1638,10 +1621,6 @@ app.controller('ModalController',                   function ($scope, $uibModal,
   };
 
 });
-
-
-
-
 app.controller('usrServiceController',              function ($scope, $http, $uibModalInstance, customerId, mode){
   $http.get("getAvailableServices", {params:{'id':customerId}})
     .then(function (response) {
@@ -1678,24 +1657,6 @@ app.controller('usrServiceController',              function ($scope, $http, $ui
   };
 
 });
-
-
-
-
-
-
-
-
-
-
-
-
-app.controller('customerPaymentController',         function ($scope, $http){
-  $http.get("getCustomerPayment", {params:{'id':$scope.stcid?$scope.stcid:$scope.customerData.id}})
-    .then(function (response) {
-      $scope.paymentData = response.data[0];
-    });
-});
 app.controller('customerTicketHistoryController',   function ($scope, $http){
   $http.get("getTicketHistory", {params:{'id':$scope.customerData.id}})
     .then(function (response) {
@@ -1729,17 +1690,28 @@ app.controller('customerBillingHistoryController',  function ($scope, $http){
     });
 });
 app.controller('customerPaymentMethodsController',  function ($scope, $http){
+  $http.get("getCustomerPayment", {params:{'id':$scope.stcid?$scope.stcid:$scope.customerData.id}})
+    .then(function (response) {
+      $scope.paymentData = response.data[0];
+    });
+
   $http.get("getPaymentMethods", {params:{'id':$scope.customerData.id}})
     .then(function (response) {
       $scope.paymentMethods = response.data;
     });
+    
+    $scope.setDefault = function (id)
+    {
+      $http.get("updatePaymentMethods", {params:{'id':id, 'customerID':$scope.customerData.id}})
+        .then(function (response) {
+          $scope.paymentMethods = response.data;
+        });
+      $http.get("getCustomerPayment", {params:{'id':$scope.stcid?$scope.stcid:$scope.customerData.id}})
+        .then(function (response) {
+          $scope.paymentData = response.data[0];
+        });
+    }
 });
-
-
-
-
-
-
 app.controller('customerServicesController',        function ($scope, $http, $mdDialog){
 
   $http.get("getCustomerServices", {params:{'id':$scope.customerData.id}})
@@ -1767,7 +1739,7 @@ app.controller('customerServicesController',        function ($scope, $http, $md
       .textContent('Confirm this action.')
       .ariaLabel('Lucky day')
       .targetEvent(ev)
-      .ok('Please do it!')
+      .ok('Yes!')
       .cancel('Cancel');
 
     $mdDialog.show(confirm).then(function() {
@@ -1803,7 +1775,6 @@ app.controller('customerServicesController',        function ($scope, $http, $md
 
 
 });
-
 app.controller('serviceProductController',          function ($scope, $http){
 
   $http.get("getCustomerProduct", {params:{'id':$scope.service.id}})
@@ -1821,13 +1792,6 @@ app.controller('serviceProductController',          function ($scope, $http){
     });
 
 });
-
-
-
-
-
-
-
 app.controller('customerNetworkController',         function ($scope, $http, $mdDialog, $mdMedia){
   $scope.status = '  ';
   $scope.customFullscreen = $mdMedia('xs') || $mdMedia('sm');
@@ -2119,17 +2083,7 @@ app.controller('networkController',                 function ($scope, $http){
     return ' <tr id="' + idString + '"><td colspan="11">info</td></tr>';
   };
 });
-
-
-
-
-
-
-
-
-
-app.controller('actionsController', function ($scope)
-{
+app.controller('actionsController',                 function ($scope) {
   $scope.actionA = function ()
   {
     console.log('actionA');
@@ -2158,11 +2112,6 @@ app.controller('actionsController', function ($scope)
   };
 
 });
-
-
-
-
-
 app.controller('mainSearchController',              function ($scope, $http, $compile){
   $scope.closeSearch = function () {
     warpol('#globalSearch').fadeOut('fast');
@@ -2270,9 +2219,6 @@ app.controller('mainSearchController',              function ($scope, $http, $co
     warpol("#viewMidContent").html(compiledeHTML);
   };
 });
-
-
-
 app.controller('toolsController',                   function ($scope, $http) {
   $scope.letterLimit = 400;
   $scope.showFullComment = function(id) {
@@ -2404,7 +2350,7 @@ app.controller('directiveController',               function ($scope, $http, $co
     templateUrl: '/views/building/building.html'
   };
 })
-.directive('viewPaymentMethods',                          function() {
+.directive('viewPaymentMethods',                    function() {
   return {
     templateUrl: '/views/paymentMethods.html'
   };
@@ -2509,7 +2455,7 @@ function AppCtrl ($scope, $log, $compile) {
         { title: 'Billing',         content:"Billing-History"},
         { title: 'Network',         content:"Network"},
         { title: 'Building',        content:'Building'},
-        { title: 'Services Info',   content:"Product"},
+        { title: 'Services',        content:"Product"},
         { title: 'Payment Methods', content:"Payment-Methods"},
     ],
     selected = null,

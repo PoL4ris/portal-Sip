@@ -1096,6 +1096,7 @@ li span {
 .anim-btn:not([disabled]):hover {
   color: white;
 }
+.pay-anim{}
 .btn2{
   background-color: rgba(0, 144, 242, 0.96);
 }
