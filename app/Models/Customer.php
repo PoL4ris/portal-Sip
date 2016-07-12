@@ -29,7 +29,7 @@ class Customer extends Model
     return $this->hasOne('App\Models\Address', 'id_customers');
   }
   public function payment() {
-    return $this->hasOne('App\Models\Payment', 'id_customers');
+    return $this->hasOne('App\Models\PaymentMethod', 'id_customers');
   }
   public function ticketHistory()
   {

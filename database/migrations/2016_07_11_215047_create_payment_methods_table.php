@@ -20,6 +20,7 @@ class CreatePaymentMethodsTable extends Migration
         $table->integer('exp_month')->comment('Exp Month');
         $table->integer('exp_year')->comment('Exp Year');
         $table->string('types')->comment('Types');
+        $table->integer('priority')->nullable();
         $table->integer('id_address')->comment('Address');
         $table->integer('id_customers')->comment('Customer');
         $table->timestamps();

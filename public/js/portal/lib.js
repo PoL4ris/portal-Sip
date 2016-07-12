@@ -1693,7 +1693,7 @@ app.controller('usrServiceController',              function ($scope, $http, $ui
 app.controller('customerPaymentController',         function ($scope, $http){
   $http.get("getCustomerPayment", {params:{'id':$scope.stcid?$scope.stcid:$scope.customerData.id}})
     .then(function (response) {
-      $scope.paymentData = response.data;
+      $scope.paymentData = response.data[0];
     });
 });
 app.controller('customerTicketHistoryController',   function ($scope, $http){
@@ -1726,6 +1726,12 @@ app.controller('customerBillingHistoryController',  function ($scope, $http){
   $http.get("getBillingHistory", {params:{'id':$scope.customerData.id}})
     .then(function (response) {
       $scope.billingHistory = response.data;
+    });
+});
+app.controller('customerPaymentMethodsController',  function ($scope, $http){
+  $http.get("getPaymentMethods", {params:{'id':$scope.customerData.id}})
+    .then(function (response) {
+      $scope.paymentMethods = response.data;
     });
 });
 
@@ -2398,6 +2404,11 @@ app.controller('directiveController',               function ($scope, $http, $co
     templateUrl: '/views/building/building.html'
   };
 })
+.directive('viewPaymentMethods',                          function() {
+  return {
+    templateUrl: '/views/paymentMethods.html'
+  };
+})
 .directive('myViewUsers',                           function() {
   return {
     templateUrl: '/views/admin/user.html',
@@ -2493,12 +2504,13 @@ app.controller('directiveController',               function ($scope, $http, $co
 app.controller('AppCtrl', AppCtrl);
 function AppCtrl ($scope, $log, $compile) {
   var tabs = [
-        { title: 'New Ticket',    content:'New-Ticket'},
-        { title: 'Tickets',       content:"Ticket-History"},
-        { title: 'Billing',       content:"Billing-History"},
-        { title: 'Network',       content:"Network"},
-        { title: 'Building',      content:'Building'},
-        { title: 'Services Info', content:"Product"},
+        { title: 'New Ticket',      content:'New-Ticket'},
+        { title: 'Tickets',         content:"Ticket-History"},
+        { title: 'Billing',         content:"Billing-History"},
+        { title: 'Network',         content:"Network"},
+        { title: 'Building',        content:'Building'},
+        { title: 'Services Info',   content:"Product"},
+        { title: 'Payment Methods', content:"Payment-Methods"},
     ],
     selected = null,
     previous = null;

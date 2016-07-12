@@ -97,6 +97,7 @@ Route::group(['middleware' => 'web'], function () {
   Route::get('getTicketHistoryNotes',   'CustomerController@getTicketHistoryNotes');
   Route::get('getTicketHistoryReason',  'CustomerController@getTicketHistoryReason');
   Route::get('getBillingHistory',       'CustomerController@getBillingHistory');
+  Route::get('getPaymentMethods',       'CustomerController@getPaymentMethods');
   Route::get('getCustomerNetwork',      'CustomerController@getCustomerNetwork');
   Route::get('getCustomerServices',     'CustomerController@getCustomerServices');
   Route::get('getCustomerProduct',      'CustomerController@getCustomerProduct');

@@ -114,12 +114,7 @@ class TestController extends Controller
 
     dd(
 
-      NetworkNode::join('ports', 'ports.id_network_nodes', '=', 'network_nodes.id')
-                  ->join('customers', 'ports.id_customers', '=', 'customers.id')
-                  ->where('ports.id_customers', '=', 158)
-                  ->select('*')
-                  ->get()
-                  ->toArray()
+      Customer::with('payment')->getRelation('payment')->where('priority', 1)->where('id_customers', 1783)->get()->toArray()
     );
 
 

@@ -1,0 +1,36 @@
+<div class="col-lg-12" ng-controller="customerPaymentMethodsController" ng-if="!stcFlag">
+
+  <div id="customer-view-0">
+
+    <div class="color-name-header btn-dark">
+      Payment Methods:
+    </div>
+
+    <div class="panel panel-default">
+      <table id="myTable" class="tablesorter table" >
+        <thead>
+        <tr><th>Token</th><th>Exp Month</th><th>Exp Year</th><th>Type</th><th>Priority</th><th>Properties</th><th>Created At</th><th>Updated At</th></tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="payment in paymentMethods" >
+          <td>{{ payment.account_number }}</td>
+          <td>{{ payment.exp_month }}</td>
+          <td>{{ payment.exp_year }}</td>
+          <td>{{ payment.types}}</td>
+          <td>{{ payment.priority == 1 ? 'Default' : '' }}</td>
+          <td>{{ payment.properties }}</td>
+          <td>{{ payment.created_at }}</td>
+          <td>{{ payment.updated_at }}</td>
+
+        </tr>
+        </tbody>
+      </table>
+
+    </div>
+
+  </div>
+</div>
+
+<div class="color-name-header" ng-if="stcFlag">
+  Go to Customer Info.
+</div>

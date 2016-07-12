@@ -126,7 +126,11 @@ class CustomerController extends Controller
   }
   public function getCustomerPayment(Request $request)
   {
-    return Customer::with('payment', 'type')->find($request->id);
+    return Customer::with('payment')->getRelation('payment')->where('priority', 1)->where('id_customers', $request->id)->get();
+  }
+  public function getPaymentMethods(Request $request)
+  {
+    return Customer::with('payment')->getRelation('payment')->where('id_customers', $request->id)->orderBy('priority', 'DESC')->get();
   }
   public function getNewTicketData(Request $request)
   {

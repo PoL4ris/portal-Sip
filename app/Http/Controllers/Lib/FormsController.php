@@ -30,14 +30,13 @@ class FormsController extends Controller
   }
   public function createGenericForm($tabla, $id = null, $type = "insert")
   {
-
     $extra = !empty($id) ? "&id={$id}" : "";
 
     $form = "";
-//    $form = "<form class='validation-form'  action='/insert{$tabla}Data' method='post' enctype='multipart/form-data' >";
+//  $form = "<form class='validation-form'  action='/insert{$tabla}Data' method='post' enctype='multipart/form-data' >";
 
     $object = DB::select(DB::raw("SHOW FULL COLUMNS FROM {$tabla}"));
-    $query = json_decode(json_encode($object), True);
+    $query  = json_decode(json_encode($object), True);
 
     $data = $query;
     $date = date("Y-m-d H:i:s");
@@ -54,19 +53,19 @@ class FormsController extends Controller
       if($row['Field'] != "id")
       {
         $foreign = explode("id_",$row['Field']);
-        $img = explode("img_",$row['Field']);
-        $ajax = explode("_ajax",$row['Field']);
-        $isAjax = "";
+        $img     = explode("img_",$row['Field']);
+        $ajax    = explode("_ajax",$row['Field']);
+        $isAjax  = "";
 
         if(count($ajax) > 1)
           $isAjax = 'ajax-search';
 
         $description = empty($row['Comment']) ? $row['Field'] : $row['Comment'];
-        $validation = empty($row['Comment']) ? $row['Field'] : $row['Comment'];
+        $validation  = empty($row['Comment']) ? $row['Field'] : $row['Comment'];
         $serviceType = empty($row['Comment']) ? $row['Field'] : $row['Comment'];
 
         $description = $this->util->transformName($description);
-        $validation = $this->util->getValidationType($validation);
+        $validation  = $this->util->getValidationType($validation);
         $serviceType = $this->util->getServiceType($serviceType);
 
         $flag = true;
@@ -83,7 +82,7 @@ class FormsController extends Controller
             foreach($queryForeign as $rowForeign )
             {
               $selected = "";
-//              if($type == "update")
+//            if($type == "update")
 //            {
 //              if($rowForeign['id'] == $info[$row['Field']])
 //              {
