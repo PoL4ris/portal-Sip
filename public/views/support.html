@@ -1,10 +1,14 @@
-<div class="bg-light lter b-b wrapper-xs col-lg-12">
+<div class="bg-light lter b-b wrapper-xs col-lg-12 inoutbtn-include">
   <h2 class="m-n font-thin h3">Support</h2>
+  <md-button class="inout-click" ng-click="showHideSide()">
+    <i class="fa fa-fw fa-dedent"></i>
+    <md-tooltip md-direction="left">Side Tools</md-tooltip>
+  </md-button>
 </div>
 <div class="app-content-body hbox" ng-controller="supportController">
 
   <!-- LEFT COL-->
-  <div class="col w-lg lter b-r b-tabs anim">
+  <div class="col w-lg lter b-r b-tabs anim left-colinout">
 
 
     <div class="vbox">
@@ -61,7 +65,7 @@
                   <p ng-repeat="data in supportDataCustomer"
                      ng-click="displayCustomerResume(data.customer.id)">
                       {{ data.customer.first_name?(data.customer.first_name + ' ' + data.customer.last_name):'Default User' }}
-                      : <strong> {{ data.address.code }},  #{{data.address.unit}}</strong>
+                      : <strong> {{ data.address.code }}  #{{data.address.unit}}</strong>
                       </p>
                 </div>
               </div>

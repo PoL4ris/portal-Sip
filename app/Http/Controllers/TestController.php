@@ -14,6 +14,7 @@ use App\Models\BillingTransactionLog;
 use App\Models\Building\Building;
 use App\Models\Product;
 use App\Models\NetworkNode;
+use App\Models\ContactType;
 
 
 
@@ -113,12 +114,7 @@ class TestController extends Controller
 
 
     dd(
-
-      NetworkNode::join('ports', 'ports.id_network_nodes', '=', 'network_nodes.id')
-        ->join('customers', 'ports.id_customers', '=', 'customers.id')
-        ->where('ports.id_customers', '=', 754)
-        ->select('*')
-        ->get()
+      ContactType::get()
     );
 
 

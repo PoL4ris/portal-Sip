@@ -20,6 +20,7 @@ use App\Models\BillingTransactionLog;
 use App\Models\Building\Servicelocation;
 use App\Models\Building\Building;
 use App\Models\NetworkNode;
+use App\Models\ContactType;
 use App\Models\Support\Ticketreasons;
 use DB;
 use Schema;
@@ -123,7 +124,15 @@ class CustomerController extends Controller
   }
   public function customersData(Request $request)
   {
-    return Customer::with('address', 'contacts', 'type')->find($request->id);
+    return Customer::with('address', 'contact', 'type')->find($request->id);
+  }
+  public function getCustomerContactData(Request $request)
+  {
+    return Customer::with('contacts')->find($request->id);
+  }
+  public function getContactTypes()
+  {
+    return ContactType::get();
   }
   public function getCustomerPayment(Request $request)
   {

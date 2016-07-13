@@ -4,6 +4,7 @@
     <div class="navi-wrap">
       <!-- nav -->
       <nav ui-nav class="navi clearfix">
+
         <ul class="nav navbar-nav hidden-sm" >
           <li ng-repeat="menu in SiteMenu">
             <a href="{{ menu.url }}" class="dropdown-toggle">
@@ -11,20 +12,27 @@
             </a>
           </li>
         </ul>
+
         <ul class="nav" ng-controller="menuController">
           <li ng-repeat="menu in SiteMenu">
             <a href="{{ menu.url }}" class="dropdown-toggle">
               <i class="{{ menu.icon }}"></i>
             </a>
-            <ul class="nav nav-sub dk">
-              <li class="nav-sub-header">
-                <a href="{{menu.url}}">
-                  <span>{{menu.name}}</span>
-                </a>
-              </li>
-            </ul>
+            <md-tooltip md-direction="right">{{menu.name}}</md-tooltip>
+
+            <!--HoverInfoText-->
+            <!--<ul class="nav nav-sub dk">-->
+              <!--<li class="nav-sub-header">-->
+                <!--<a href="{{menu.url}}">-->
+                  <!--<span>{{menu.name}}</span>-->
+                <!--</a>-->
+              <!--</li>-->
+            <!--</ul>-->
+            <!--END HoverInfoText-->
+
           </li>
         </ul>
+
       </nav>
       <!-- nav -->
     </div>

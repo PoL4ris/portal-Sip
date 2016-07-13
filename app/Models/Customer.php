@@ -22,8 +22,11 @@ class Customer extends Model
   public function status() {
     return $this->hasOne('App\Models\Status', 'id','id_status');
   }
-  public function contacts() {
+  public function contact() {
     return $this->hasOne('App\Models\Contact', 'id_customers')->where('id_types', 1);
+  }
+  public function contacts() {
+    return $this->hasMany('App\Models\Contact', 'id_customers');
   }
   public function address() {
     return $this->hasOne('App\Models\Address', 'id_customers');

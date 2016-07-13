@@ -1,0 +1,17 @@
+<div class="col-lg-12">
+  <div class="" style="margin-bottom: 0;">
+    Contact Info:
+  </div>
+  <div class="panel panel-default contact-data-table">
+    <table id="myTable" class="tablesorter table" >
+      <thead>
+        <tr><th>Id</th><th>Type</th><th>Value</th></tr>
+      </thead>
+      <tbody>
+      <tr ng-repeat="contactinfo in customerContactsData" >
+        <td>{{ contactinfo.id }}</td><td>{{ contactTypes[(contactinfo.id_types - 1)].name }}</td><td>{{ contactinfo.value }}</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

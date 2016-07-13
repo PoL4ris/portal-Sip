@@ -1055,36 +1055,33 @@ li span {
   border-style: none none solid;
   border-width: medium medium 1px;
   font-size: 14px;
+  letter-spacing: 1px;
   margin-bottom: 20px;
   padding: 5px;
   width: 100%;
-  letter-spacing: 1px;
 }
 .set-psw {
   border-bottom: 1px solid #ddd;
   padding-bottom: 25px;
 }
-.bton{
+.bton {
   display: none;
 }
-
-
 .btn1 {
-  color : rgb(49, 46, 46);
   background-color: rgba(255, 255, 255, 0.96);
+  color: rgb(49, 46, 46);
   font-size: 14px;
   margin-right: 0;
 }
-.btn1:not([disabled]):hover {
+.btn1:hover:not([disabled]) {
   background-color: rgb(160, 160, 160);
   color: white;
 }
 .btn1[disabled] {
-  color : rgb(187, 187, 187);
   background-color: rgba(230, 230, 229, 0.96);
+  color: rgb(187, 187, 187);
 }
-
-.anim-btn{
+.anim-btn {
   color: rgb(49, 46, 46);
   font-size: 14px;
   height: 30px;
@@ -1093,34 +1090,76 @@ li span {
   min-width: 0;
   width: 30px;
 }
-.anim-btn:not([disabled]):hover {
+.anim-btn:hover:not([disabled]) {
   color: white;
 }
-.pay-anim{}
-.btn2{
+.pay-anim {
+}
+.btn2 {
   background-color: rgba(0, 144, 242, 0.96);
 }
-.btn2:not([disabled]):hover {
+.btn2:hover:not([disabled]) {
   background-color: rgb(0, 133, 224);
 }
-
-.btn3{
+.btn3 {
   background-color: rgba(242, 37, 37, 0.96);
 }
-.btn3:not([disabled]):hover {
+.btn3:hover:not([disabled]) {
   background-color: rgb(199, 30, 30);
 }
-
-.btn4{
+.btn4 {
   background-color: rgba(0, 146, 10, 0.96);
 }
-.btn4:not([disabled]):hover {
+.btn4:hover:not([disabled]) {
   background-color: rgb(0, 96, 9);
 }
-
-.btn5{
+.btn5 {
   background-color: rgba(242, 170, 26, 0.96);
 }
-.btn5:not([disabled]):hover {
+.btn5:hover:not([disabled]) {
   background-color: rgb(209, 146, 25);
+}
+.inout-click {
+  background: white none repeat scroll 0 0;
+  border-radius: 0;
+  color: #333;
+  left: 250px;
+  margin: 0;
+  min-width: 0;
+  padding: 2px;
+  position: absolute;
+  top: -1px;
+  width: 30px;
+}
+.inout-click:hover:not([disabled]) {
+  background-color: white;
+}
+.inoutbtn-include {
+  overflow: hidden;
+}
+md-tooltip .md-content {
+  background: white none repeat scroll 0 0;
+  color: #333;
+}
+.vip-class {
+  background: #5889ba none repeat scroll 0 0;
+  border-radius: 3px;
+  color: white;
+  padding: 0 5px;
+}
+.contact-data-table {
+  margin: 0;
+  max-height: 150px;
+  overflow: auto;
+}
+.contact-data-table table {
+}
+.contact-data-table table tr {
+}
+.contact-data-table table tr th {
+  border-right: 1px solid #f6f6f6;
+  padding: 2px 10px;
+}
+.contact-data-table table tr td {
+  padding: 2px 10px;
 }

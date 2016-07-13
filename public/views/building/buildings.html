@@ -1,14 +1,20 @@
 <div id="viewMidContent">
 
 
-<div class="bg-light lter b-b wrapper-xs col-lg-12">
+<div class="bg-light lter b-b wrapper-xs col-lg-12 inoutbtn-include">
   <h1 class="m-n font-thin h3">Buildings</h1>
+  <md-button class="inout-click" ng-click="showHideSide()">
+    <i class="fa fa-fw fa-dedent"></i>
+    <md-tooltip md-direction="left">Side Tools</md-tooltip>
+  </md-button>
 </div>
+
+
 
 <div class="app-content-body hbox" ng-controller="buildingCtl">
 
   <!-- LEFT COL-->
-  <div class="col w-lg lter b-r b-tabs anim">
+  <div class="col w-lg lter b-r b-tabs anim left-colinout">
     <div class="vbox">
       <!-- Building Search/Simple -->
       <div class="b-b">

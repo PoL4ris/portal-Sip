@@ -92,6 +92,7 @@ Route::group(['middleware' => 'web'], function () {
   //New Ticket
   Route::get('insertCustomerTicket',    'CustomerController@insertCustomerTicket');
   Route::get('customersData',           'CustomerController@customersData');
+  Route::get('getCustomerContactData',  'CustomerController@getCustomerContactData');
   Route::get('getCustomerPayment',      'CustomerController@getCustomerPayment');
   Route::get('getNewTicketData',        'CustomerController@getNewTicketData');
   Route::get('getTicketHistory',        'CustomerController@getTicketHistory');
@@ -112,6 +113,7 @@ Route::group(['middleware' => 'web'], function () {
   Route::get('getCustomerList',         'CustomerController@getCustomerList');
   Route::get('getTicketOpenTime',       'SupportController@getTicketOpenTime');
   Route::get('getAvailableServices',    'SupportController@getAvailableServices');
+  Route::get('getContactTypes',         'CustomerController@getContactTypes');
 
   //SUPPORT
   Route::get('updateTicketDetails',     'SupportController@updateTicketData');

@@ -1407,8 +1407,6 @@ app.controller('customerControllerList',            function ($scope, $http){
   $http.get("getCustomerList")
     .then(function (response) {
       $scope.supportDataCustomer = response.data;
-      console.log($scope.supportDataCustomer);
-
     });
 });
 app.controller('customerController',                function ($scope, $http, $routeParams, notify){
@@ -1420,6 +1418,16 @@ app.controller('customerController',                function ($scope, $http, $ro
   $http.get("customersData", {params:{'id':idCustomer}})
     .then(function (response) {
       $scope.customerData = response.data;
+    });
+
+  $http.get("getCustomerContactData", {params:{'id':idCustomer}})
+    .then(function (response) {
+    $scope.customerContactsData = response.data.contacts;
+    });
+
+  $http.get("getContactTypes", {params:{'id':idCustomer}})
+    .then(function (response) {
+    $scope.contactTypes = response.data;
     });
 
   $scope.checkboxModel = true;
@@ -2275,14 +2283,26 @@ app.controller('toolsController',                   function ($scope, $http) {
     }
 
   }
-
 });
 app.controller('directiveController',               function ($scope, $http, $compile){
   console.log('directiveController');
   //Global TOOLS
   $scope.labelMonth = {1:'Jan', 2:'Feb', 3:'Mar', 4:'Apr', 5:'May', 6:'Jun',
                        7:'Jul', 8:'Aug', 9:'Sep', 10:'Oct', 11:'Nov', 12:'Dec'};
+  $scope.showHideSide = function ()
+  {
+    if($scope.closeLeftSide)
+    {
+      $scope.closeLeftSide = false;
+      warpol('.left-colinout').css('width','280px');
+    }
+    else
+    {
+      $scope.closeLeftSide = true;
+      warpol('.left-colinout').css('width', 0);
+    }
 
+  };
   $scope.validator = function (items){
     console.log(items);
   };
@@ -2411,7 +2431,7 @@ app.controller('directiveController',               function ($scope, $http, $co
 })
 .directive('myViewPayments',                        function() {
   return {
-    templateUrl: '/views/admin/payment.html',
+    templateUrl: '/views/admin/contactInfo.html',
     controller: 'adminViewPayments'
   };
 })
