@@ -821,15 +821,11 @@ li span {
   color: #f05050;
   content: "";
 }
-.editable-text {
-}
 .float-right {
   float: right;
 }
 .demo-tab {
   padding-top: 10px !important;
-}
-.support-view {
 }
 .support-view .edit-mode {
   text-align: right;
@@ -995,10 +991,6 @@ li span {
 }
 .time-data label {
 }
-.time-data b {
-}
-.add-Service-btn {
-}
 .prod-btns .action-confirm {
   margin: inherit;
   max-width: 38px;
@@ -1152,14 +1144,24 @@ md-tooltip .md-content {
   max-height: 150px;
   overflow: auto;
 }
-.contact-data-table table {
-}
-.contact-data-table table tr {
-}
 .contact-data-table table tr th {
   border-right: 1px solid #f6f6f6;
   padding: 2px 10px;
 }
 .contact-data-table table tr td {
   padding: 2px 10px;
+}
+.tickets-label-buttons{
+  margin-left: 15px;
+}
+.time-ticket{
+  position: relative;
+  top:7px;
+  left:-10px;
+}
+.info-customer{
+  color: #333;
+}
+.info-customer .text-dark-lter-more{
+  color: #697394;
 }

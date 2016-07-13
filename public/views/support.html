@@ -89,18 +89,20 @@
   <!--END COL-->
 
 
-  <div class="col-lg-12 no-padding-sides">
+  <div class="col-lg-12">
     <div class="wrapper-md float-left" style="padding-bottom:10px;">
-      <button class="btn btn-default btn-ticket-sort" ng-click="fullTickets()">Non-Billing Tickets</button>
-      <button class="btn btn-default btn-ticket-sort" ng-click="billingTickets()">Billing Tickets</button>
-      <button class="btn btn-default btn-ticket-sort" ng-click="allTickets()">All Tickets</button>
+      <label class="tickets-label-buttons">Open Tickets</label>
+      <button class="btn btn-default btn-ticket-sort" ng-click="fullTickets()">Non-Billing</button>
+      <button class="btn btn-default btn-ticket-sort" ng-click="billingTickets()">Billing</button>
+      <button class="btn btn-default btn-ticket-sort" ng-click="allTickets()">All</button>
     </div>
 
     <div class="wrapper-md float-left" style="padding-bottom:10px;">
-      <div class="old-gray   float-left time-data"><label>Total Tickets:</label>   {{ticketOpenTime.old}}</div>
-      <div class="old-green  float-left time-data"><label>Tickets <b>></b> 12Hrs.</label> {{ticketOpenTime.old12}}</div>
-      <div class="old-yellow float-left time-data"><label>Tickets <b>></b> 24Hrs.</label> {{ticketOpenTime.old24}}</div>
-      <div class="old-red    float-left time-data"><label>Tickets <b>></b> 48Hrs.</label> {{ticketOpenTime.old48}}</div>
+      <label class="tickets-label-buttons float-left time-ticket">Ticket Stats</label>
+      <div class="old-gray   float-left time-data"><label>Total:</label>   {{ticketOpenTime.old}}</div>
+      <div class="old-green  float-left time-data"><label><b>></b> 12Hrs.</label> {{ticketOpenTime.old12}}</div>
+      <div class="old-yellow float-left time-data"><label><b>></b> 24Hrs.</label> {{ticketOpenTime.old24}}</div>
+      <div class="old-red    float-left time-data"><label><b>></b> 48Hrs.</label> {{ticketOpenTime.old48}}</div>
     </div>
   </div>
 
