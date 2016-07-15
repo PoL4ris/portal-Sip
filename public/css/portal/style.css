@@ -732,6 +732,7 @@ li span {
   margin: 0;
   padding: 0;
   position: relative;
+  top: -2px;
   vertical-align: middle;
   width: 50px;
 }
@@ -1059,6 +1060,19 @@ li span {
 .bton {
   display: none;
 }
+.btn-size {
+  background: white none repeat scroll 0 0;
+  height: 25px;
+  margin: 0 0 0 4px;
+  min-height: 1px;
+  min-width: 1px;
+  padding: 0;
+  width: 25px;
+}
+.btn-size i {
+  position: relative;
+  top: -4px;
+}
 .btn1 {
   background-color: rgba(255, 255, 255, 0.96);
   color: rgb(49, 46, 46);
@@ -1151,17 +1165,27 @@ md-tooltip .md-content {
 .contact-data-table table tr td {
   padding: 2px 10px;
 }
-.tickets-label-buttons{
+.tickets-label-buttons {
   margin-left: 15px;
 }
-.time-ticket{
+.time-ticket {
+  left: -10px;
   position: relative;
-  top:7px;
-  left:-10px;
+  top: 7px;
 }
-.info-customer{
+.info-customer {
   color: #333;
 }
-.info-customer .text-dark-lter-more{
-  color: #697394;
+.info-customer .text-dark-lter-more {
+  color: #7f7f7f;
+}
+.c-info-label {
+  margin-bottom: 0;
+  position: relative;
+  top: -5px;
+}
+.c-info-label span {
+  font-size: 16px;
+  position: relative;
+  top: -3px;
 }

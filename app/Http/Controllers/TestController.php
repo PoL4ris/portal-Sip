@@ -114,8 +114,14 @@ class TestController extends Controller
 
 
     dd(
-      ContactType::get()
-    );
+        Building::where('name',       'LIKE', '%tower%')
+                ->orWhere('alias',    'LIKE', '%tower%')
+                ->orWhere('nickname', 'LIKE', '%tower%')
+                ->orWhere('code',     'LIKE', '%tower%')
+                ->orWhere('units',    'LIKE', '%tower%')
+                ->get()
+                ->toArray()
+      );
 
 
 //dd(

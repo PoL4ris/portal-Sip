@@ -104,7 +104,13 @@ class BuildingController extends Controller
       if(empty($txt))
         return;
 
-      $buildingData = Building::where('name', 'LIKE', '%'. $txt .'%')->get();
+//      $buildingData = Building::where('name',       'LIKE', '%'. $txt .'%')
+      return Building::where('name',        'LIKE', '%'. $txt .'%')
+                      ->orWhere('alias',    'LIKE', '%'. $txt .'%')
+                      ->orWhere('nickname', 'LIKE', '%'. $txt .'%')
+                      ->orWhere('code',     'LIKE', '%'. $txt .'%')
+                      ->orWhere('units',    'LIKE', '%'. $txt .'%')
+                      ->get();
       //BUILDING TABLE
 
 //      $buildingData = ServiceLocation::where('Name', 'LIKE', '%'. $txt .'%')->get();

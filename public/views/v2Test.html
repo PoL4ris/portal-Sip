@@ -3,8 +3,6 @@
 </md-button>
 
 
-<div ng-if="status" id="status">
-<b layout="row" layout-align="center center" class="md-padding">
-  {{status}}
-</b>
+<div class="btn-group" ng-init="checkModel = {option1: true, option2: false}">
+  <label class="btn btn-sm btn-default ng-pristine ng-untouched ng-valid active" btn-checkbox="" ng-model="checkModel.option1">Option1</label>
 </div>

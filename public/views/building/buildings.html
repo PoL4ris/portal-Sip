@@ -28,7 +28,7 @@
       <div class="nav-tabs-alt ntas-tmp" id="ntas-tmp">
         <ul class="nav nav-tabs nav-justified">
           <li class="active anim">
-            <a data-target="#tab-1" role="tab" data-toggle="tab">Buildings</a>
+            <a data-target="#tab-1" role="tab" data-toggle="tab">All</a>
           </li>
           <li class=" anim">
             <a data-target="#tab-2" role="tab" data-toggle="tab">Retail</a>
@@ -137,7 +137,7 @@
       <div class="search-content">
         <input type="text" class="input-search id-search" placeholder="Search Buildings..." ng-keyup="buscador('Simple', 'right')" ng-model="searchRight"><i class="is-lupa fa fa-search"></i>
         <div class="search-result anim" >
-          <p ng-repeat="resultbldright in bldSearchResultRight" ng-click="displayBldData(resultbldright.id)" >{{ resultbldright.name }}</p>
+          <p ng-repeat="resultbldright in bldSearchResultRight" ng-click="displayBldData(resultbldright.id)" >{{ resultbldright.name }} <strong>{{ resultbldright.code }}</strong></p>
         </div>
       </div>
     </div>
@@ -157,5 +157,3 @@
 
 
 </div>
-
-

@@ -254,6 +254,17 @@ class CustomerController extends Controller
     Customer::where('id', $request->id_customers)->update($data);
     return 'OK';
   }
+  public function updateContactInfo(Request $request)
+  {
+    if (empty($request->value))
+      return 'ERROR';
+
+    $record = Contact::find($request->id);
+    $record->value = $request->value;
+    $record->save();
+    return 'OK';
+
+  }
   public function updateContactsTable(Request $request)
   {
     //type 2 = tel.

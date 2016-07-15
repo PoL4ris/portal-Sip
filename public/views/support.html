@@ -9,10 +9,7 @@
 
   <!-- LEFT COL-->
   <div class="col w-lg lter b-r b-tabs anim left-colinout">
-
-
     <div class="vbox">
-
       <!-- Building Search/Simple -->
       <!--<div class="b-b">-->
         <!--<div class="search-content">-->
@@ -23,9 +20,6 @@
         <!--</div>-->
       <!--</div>-->
       <!-- END Building Search/Simple -->
-
-
-
       <!-- TOOLS -->
       <!--<div>-->
         <!--<button class="btn btn-info btn-ticket-sort col-lg-5 m-t-md m-b-md" type="button">New Ticket</button>-->
@@ -37,7 +31,6 @@
         <!--<button class="btn btn-success btn-ticket-sort col-lg-5 m-b-md" type="button">My Tickets</button>-->
       <!--</div>-->
       <!-- END TOOLS -->
-
       <!-- TABS-->
       <div class="nav-tabs-alt ntas-tmp" id="ntas-tmp">
         <ul class="nav nav-tabs nav-justified">
@@ -53,8 +46,6 @@
         </ul>
       </div>
       <!-- END TABS-->
-
-
       <!--<div class="row-row ntas-tmp">-->
         <!--<div class="tabs-content">-->
           <!--<div class="cell-inner">-->
@@ -82,23 +73,25 @@
           <!--</div>-->
         <!--</div>-->
       <!--</div>-->
-
     </div>
-
   </div>
   <!--END COL-->
 
-
   <div class="col-lg-12">
     <div class="wrapper-md float-left" style="padding-bottom:10px;">
-      <label class="tickets-label-buttons">Open Tickets</label>
+      <label class="tickets-label-buttons">Open Tickets:</label>
+
+      <div class="btn-group" ng-init="checkModel = {option1: true, option2: false}">
+        <label class="btn btn-sm btn-default ng-pristine ng-untouched ng-valid active" btn-checkbox="" ng-model="checkModel.option1">Option1 working on...</label>
+      </div>
+
       <button class="btn btn-default btn-ticket-sort" ng-click="fullTickets()">Non-Billing</button>
       <button class="btn btn-default btn-ticket-sort" ng-click="billingTickets()">Billing</button>
       <button class="btn btn-default btn-ticket-sort" ng-click="allTickets()">All</button>
     </div>
 
     <div class="wrapper-md float-left" style="padding-bottom:10px;">
-      <label class="tickets-label-buttons float-left time-ticket">Ticket Stats</label>
+      <label class="tickets-label-buttons float-left time-ticket">Ticket Stats:</label>
       <div class="old-gray   float-left time-data"><label>Total:</label>   {{ticketOpenTime.old}}</div>
       <div class="old-green  float-left time-data"><label><b>></b> 12Hrs.</label> {{ticketOpenTime.old12}}</div>
       <div class="old-yellow float-left time-data"><label><b>></b> 24Hrs.</label> {{ticketOpenTime.old24}}</div>

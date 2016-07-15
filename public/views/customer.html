@@ -3,7 +3,7 @@
    <!--TITULO -->
   <div class="bg-light lter col-lg-12 wrapper-sm">
     <div class="col-lg-3">
-      <h2 class="m-n font-thin h3">{{customerData.first_name + ' ' + customerData.last_name}} <strong style="font-size: 13px;">id:{{customerData.id}}</strong></h2>
+      <h2 class="m-n font-thin h3">{{customerData.first_name + ' ' + customerData.last_name}} <strong style="font-size: 13px;">(id {{customerData.id}})</strong></h2>
     </div>
     <div class="col-lg-3 edit-mode">
       <label class="editmode">EDIT MODE: </label>
@@ -19,35 +19,35 @@
     <div class="col-lg-12 info-customer">
       <div class="m-t-md col-lg-3 no-padding-sides">
         <div class="col-lg-4 no-padding-sides">VIP:</div>
-        <div class="text-dark-lter-more col-lg-6 editable-text" editable-text="customerData.vip" onaftersave="validate(customerData.vip, 'Customers', 'vip')">{{ customerData.vip?customerData.vip:'NO' }}</div>
+        <div class="text-muted col-lg-6 editable-text" editable-text="customerData.vip" onaftersave="validate(customerData.vip, 'Customers', 'vip')">{{ customerData.vip?customerData.vip:'NO' }}</div>
         <div class="text-dark-lter-more col-lg-6 no-editable-text"><span class="vip-class">{{customerData.vip?customerData.vip:'NO'}}</span></div>
         <div class="col-lg-4 no-padding-sides">Address:</div>
-        <div class="text-dark-lter-more col-lg-6 editable-text" editable-text="customerData.address.address" onaftersave="validate(customerData.address.address, 'Address', 'address')">{{customerData.address.address}}</div>
+        <div class="text-muted col-lg-6 editable-text" editable-text="customerData.address.address" onaftersave="validate(customerData.address.address, 'Address', 'address')">{{customerData.address.address}}</div>
         <div class="text-dark-lter-more col-lg-6 no-editable-text">{{customerData.address.address}}</div>
         <div class="col-lg-4 no-padding-sides">Unit:</div>
-        <div class="text-dark-lter-more col-lg-6 editable-text" editable-text="customerData.address.unit" onaftersave="validate(customerData.address.address, 'Address', 'unit')">{{customerData.address.unit}}</div>
+        <div class="text-muted col-lg-6 editable-text" editable-text="customerData.address.unit" onaftersave="validate(customerData.address.address, 'Address', 'unit')">{{customerData.address.unit}}</div>
         <div class="text-dark-lter-more col-lg-6 no-editable-text">{{customerData.address.unit}}</div>
         <div class="col-lg-4 no-padding-sides">City:</div>
-        <div class="text-dark-lter-more col-lg-6 editable-text" editable-text="customerData.address.city" onaftersave="validate(customerData.address.address, 'Address', 'city')">{{customerData.address.city}}</div>
+        <div class="text-muted col-lg-6 editable-text" editable-text="customerData.address.city" onaftersave="validate(customerData.address.address, 'Address', 'city')">{{customerData.address.city}}</div>
         <div class="text-dark-lter-more col-lg-6 no-editable-text">{{customerData.address.city}}</div>
         <div class="col-lg-4 no-padding-sides">State:</div>
-        <div class="text-dark-lter-more col-lg-6 editable-text" editable-text="customerData.address.state" onaftersave="validate(customerData.address.address, 'Address', 'state')">{{customerData.address.state}}</div>
+        <div class="text-muted col-lg-6 editable-text" editable-text="customerData.address.state" onaftersave="validate(customerData.address.address, 'Address', 'state')">{{customerData.address.state}}</div>
         <div class="text-dark-lter-more col-lg-6 no-editable-text">{{customerData.address.state}}</div>
 
       </div>
       <div class="m-t-md col-lg-3 no-padding-sides">
         <div class="col-lg-4 no-padding-sides">Zip:</div>
-        <div class="text-dark-lter-more col-lg-6 editable-text" editable-text="customerData.address.zip" onaftersave="validate(customerData.address.address, 'Address', 'zip')">{{customerData.address.zip}}</div>
+        <div class="text-muted col-lg-6 editable-text" editable-text="customerData.address.zip" onaftersave="validate(customerData.address.address, 'Address', 'zip')">{{customerData.address.zip}}</div>
         <div class="text-dark-lter-more col-lg-6 no-editable-text">{{customerData.address.zip}}</div>
-        <div class="col-lg-4 no-padding-sides">Username/Email:</div>
-        <div class="text-dark-lter-more col-lg-6 editable-text" editable-text="customerData.email" onaftersave="validate(customerData.email, 'Customers', 'email')">{{customerData.email}}</div>
+        <div class="col-lg-4 no-padding-sides">Username:</div>
+        <div class="text-muted col-lg-6 editable-text" editable-text="customerData.email" onaftersave="validate(customerData.email, 'Customers', 'email')">{{customerData.email}}</div>
         <div class="text-dark-lter-more col-lg-6 no-editable-text">{{customerData.email}}</div>
         <!--<div class="col-lg-4 no-padding-sides">Tel:</div>-->
         <!--<div class="text-dark-lter-more col-lg-6 editable-text" editable-text="customerData.contacts.value" onaftersave="validate(customerData.contacts.value, 'Contacts', 'value')">{{ customerData.contacts.value?customerData.contacts.value:'NoTel' }}</div>-->
         <!--<div class="text-dark-lter-more col-lg-6 no-editable-text">{{customerData.contacts.value?customerData.contacts.value:'NoTel'}}</div>-->
-        <div class="col-lg-4 no-padding-sides">DateSignedUp:</div>
+        <div class="col-lg-4 no-padding-sides">Signed Up:</div>
         <div class="text-dark-lter-more col-lg-6">{{customerData.signedup_at}}</div>
-        <div class="col-lg-4 no-padding-sides">AccountStatus:</div>
+        <div class="col-lg-4 no-padding-sides">Status:</div>
         <div class="text-dark-lter-more col-lg-6">{{ customerData.type.name?customerData.type.name:'Pending' }}</div>
       </div>
       <div class="col-lg-6 no-padding-sides ccv" ng-include="'/views/contactInfo.html'"></div>

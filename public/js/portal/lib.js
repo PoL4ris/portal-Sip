@@ -1359,6 +1359,12 @@ app.controller('supportController',                 function ($scope, $http, not
 //       warpol("#mid-content-tickets").html(compiledeHTML);
       warpol("#viewMidContent").html(compiledeHTML);
     };
+  function setActiveBtn (activeView)
+  {
+    $scope.activeViewFull     = 'no-style';
+    $scope.activeViewBilling  = 'no-style';
+    $scope.activeViewAll      = 'no-style';
+  };
 
   $scope.fullTickets = function (){
     $http.get("supportTickets")
@@ -1367,6 +1373,8 @@ app.controller('supportController',                 function ($scope, $http, not
       });
       $scope.viewTicketsDirective = 'Full';
     callMidView('Full');
+    setActiveBtn('Full');
+    $scope.activeViewFull     = 'Active';
   };
   $scope.billingTickets = function (){
     $http.get("supportTicketsBilling")
@@ -1375,6 +1383,7 @@ app.controller('supportController',                 function ($scope, $http, not
       });
     $scope.viewTicketsDirective = 'Billing';
     callMidView('Billing');
+    setActiveBtn('Billing');
   };
   $scope.allTickets = function (){
     $http.get("supportTicketsAll")
@@ -1383,7 +1392,9 @@ app.controller('supportController',                 function ($scope, $http, not
       });
     $scope.viewTicketsDirective = 'All';
     callMidView('All');
+    setActiveBtn('All');
   };
+
   $scope.displayTicketResume = function (id, idCustomer){
     $scope.midTicketId = id;
     $scope.stcid = idCustomer;
@@ -1395,6 +1406,7 @@ app.controller('supportController',                 function ($scope, $http, not
     $scope.stcFlag = false;
     callMidView('Customer');
   };
+
 });
 app.controller('singleTicketInfo',                  function ($scope, $http){
 
@@ -1431,6 +1443,7 @@ app.controller('customerController',                function ($scope, $http, $ro
     });
 
   $scope.checkboxModel = true;
+  $scope.checkboxModelA = true;
 
 
   $scope.submitForm = function (table) {
@@ -1476,7 +1489,7 @@ app.controller('customerController',                function ($scope, $http, $ro
     data[field] = value;
     data['id_customers'] = $scope.customerData.id;
 
-    $http.get("update"+table+"Table", {params:data})
+    $http.get("update" + table + "Table", {params:data})
       .then(function (response) {
         console.log('OK');
       });
@@ -1495,7 +1508,36 @@ app.controller('customerController',                function ($scope, $http, $ro
       warpol('.editable-text').css('display', 'none');
     }
   };
+
   $scope.customerEditMode();
+
+  $scope.contactEditMode = function (){
+    if ( $scope.checkboxModelA == false)
+    {
+      console.log($scope.checkboxModelA);
+      warpol('.c-no-editable-text').fadeIn('slow');
+      warpol('.c-editable-text').css('display', 'none');
+      $scope.checkboxModelA = true;
+    }
+    else
+    {
+      console.log($scope.checkboxModelA);
+      warpol('.c-editable-text').fadeIn('slow');
+      warpol('.c-no-editable-text').css('display', 'none');
+      $scope.checkboxModelA = false;
+    }
+  };
+
+  $scope.updateContactInfo = function (value, id){
+    var data = {};
+    data['id']    = id;
+    data['value'] = value;
+    $http.get("updateContactInfo", {params:data})
+      .then(function (response) {
+        console.log(response.data);
+      });
+  };
+
 
 });
 app.controller('supportTicketHistory',              function ($scope, $http){
