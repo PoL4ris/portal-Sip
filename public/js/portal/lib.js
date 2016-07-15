@@ -1160,105 +1160,6 @@ app.controller('newbuildingform', ['$scope', '$http', function($scope, $http)
       warpol('#bld-form-html').html($scope.newbldform);
     });
 }]);
-// app.service('validator', function ($scope){
-//   $scope.startValidations = function()
-//   {
-//     console.log('Tada');
-//   }
-//
-//   $scope.startValidations = function()
-//   {
-//     warpol('.validation-form').submit(function(e)
-//     {
-//       e.preventDefault();
-//       var validated = true;
-//       warpol(this).find('input').each(function()
-//       {
-//         try{
-//           if(!validator.validateInput(warpol(this).attr('class'),warpol(this).val(),warpol(this)))
-//           {
-//             validated = false;
-//           }
-//         }
-//         catch(err)
-//         {
-//           console.log(err);
-//         }
-//       });
-//
-//       if(validated)
-//         warpol(this).unbind().submit();
-//       else
-//         warpol("<div class='message-validation'>Valida todos los datos requeridos</div>").dialog({"modal" : true});
-//     });
-//   };
-//
-//   $scope.validateInput = function(type, val, selector, validator)
-//   {
-//     type = type.split(" ");
-//     var valid = true;
-//     for(var i = 0; i < type.length; i++)
-//     {
-//       var tmp = type[i];
-//       tmp = tmp.split('validation-');
-//       if(tmp.length > 1)
-//       {
-//         if(!validator.validator(tmp[1],val, selector)){
-//           valid = false;
-//         }
-//       }
-//     }
-//     return valid;
-//   };
-//
-//   $scope.validator = function(type, val, selector, validator)
-//   {
-//     var validated = true;
-//     switch(type)
-//     {
-//       case "tel":
-//         var patt = new RegExp("^[1-9]{10}$");
-//         var telefono = val;
-//         if (!patt.test(telefono))
-//         {
-//           validated = false;
-//         }
-//         break;
-//       default:
-//         if(typeof val === "undefined" || val == "" )
-//         {
-//           validated = false;
-//         }
-//         break;
-//     }
-//     if(!validated)
-//     {
-//       validator.changeColor(selector,"error");
-//     }
-//     else
-//     {
-//       validator.changeColor(selector,"regular");
-//     }
-//     return validated;
-//   };
-//
-//   $scope.changeColor = function(selector, type)
-//   {
-//     switch(type)
-//     {
-//       case "error":
-//         warpol(selector).css({"color":"#cc0000"});
-//         warpol(selector).parent().parent().find('.descripcion').css({"color":"#cc0000"});
-//         break;
-//       case "regular":
-//         warpol(selector).css({"color":"inherit"});
-//         warpol(selector).parent().parent().find('.descripcion').css({"color":"inherit"});
-//         break;
-//     }
-//   }
-//
-//
-// });
 app.controller('getCustomerDataTicket',             function ($scope, $http){
   $http.get("getCustomerDataTicket", {params:{'id':$scope.results.id_customers}})
     .then(function (response) {
@@ -1340,12 +1241,13 @@ app.controller('supportControllerTools',            function ($scope, $http) {
 
   }
 });
-app.controller('supportController',                 function ($scope, $http, notify, $compile, $sce){
+app.controller('supportController',                 function ($scope, $http, notify, $compile, $sce, $filter, ngTableParams){
 //   notify({ message: 'Support Controller Active', templateUrl:'/views/notify.html'} );
   $http.get("supportTickets")
     .then(function (response) {
       $scope.supportData = response.data;
 //       console.log($scope.supportData);
+      SorterTickets();
     });
   $http.get("getTicketOpenTime")
     .then(function (response) {
@@ -1359,12 +1261,27 @@ app.controller('supportController',                 function ($scope, $http, not
 //       warpol("#mid-content-tickets").html(compiledeHTML);
       warpol("#viewMidContent").html(compiledeHTML);
     };
-  function setActiveBtn (activeView)
-  {
+  function setActiveBtn (activeView) {
     $scope.activeViewFull     = 'no-style';
     $scope.activeViewBilling  = 'no-style';
     $scope.activeViewAll      = 'no-style';
   };
+
+  function SorterTickets()
+  {
+    $scope.dataSort = $scope.supportData;
+    $scope.usersTable = new ngTableParams({
+      page: 1,
+      count: 100
+    }, {
+      total: $scope.dataSort.length,
+      getData: function ($defer, params) {
+        $scope.dataResult = $scope.dataSort.slice((params.page() - 1) * params.count(), params.page() * params.count());
+        $defer.resolve($scope.dataResult);
+      }
+    });
+
+  }
 
   $scope.fullTickets = function (){
     $http.get("supportTickets")
@@ -2507,7 +2424,6 @@ app.controller('directiveController',               function ($scope, $http, $co
 //     controller:'admin'
     };
   });
-
 //TABS
 app.controller('AppCtrl', AppCtrl);
 function AppCtrl ($scope, $log, $compile) {
@@ -2547,9 +2463,8 @@ function AppCtrl ($scope, $log, $compile) {
     warpol("#tabsChange-"+view).html(compiledeHTML);
   }
 }
-//END TABS
 //TableSorter's
-app.controller('tableSorterTickets',                 function ($scope, $filter, ngTableParams) {
+app.controller('tableSorterTickets',                function ($scope, $filter, ngTableParams) {
   $scope.dataSort = $scope.supportData;
   $scope.usersTable = new ngTableParams({
     page: 1,
@@ -2563,7 +2478,7 @@ app.controller('tableSorterTickets',                 function ($scope, $filter, 
   });
 
 });
-app.controller('tableSorterAdminUsers',              function ($scope, $filter, ngTableParams) {
+app.controller('tableSorterAdminUsers',             function ($scope, $filter, ngTableParams) {
   $scope.letterLimit = 30;
   $scope.dataSort = $scope.userData;
   $scope.usersTable = new ngTableParams({
@@ -2578,7 +2493,7 @@ app.controller('tableSorterAdminUsers',              function ($scope, $filter, 
   });
 
 });
-app.controller('tableSorterNetwork',                 function ($scope, $filter, ngTableParams) {
+app.controller('tableSorterNetwork',                function ($scope, $filter, ngTableParams) {
   $scope.dataSort = $scope.networkData;
   $scope.usersTable = new ngTableParams({
     page: 1,
@@ -2593,21 +2508,21 @@ app.controller('tableSorterNetwork',                 function ($scope, $filter, 
 
 });
 //CHARTS
-app.controller("PieCtrl",                            function ($scope) {
+app.controller("PieCtrl",                           function ($scope) {
   $scope.labels = ["Download Sales", "In-Store Sales", "Mail-Order Sales"];
   $scope.data = [300, 500, 100];
   $scope.colours = ['#4FC5EA', '#6B79C4', '#FAD733'];
 });
-app.controller("DoughnutCtrl",                       function ($scope) {
+app.controller("DoughnutCtrl",                      function ($scope) {
   $scope.labels = ["Download Sales", "In-Store Sales", "Mail-Order Sales"];
   $scope.data = [300, 500, 100];
   $scope.colours = ['#27c24c', '#ff7a7a', '#D9EDF7'];
 });
-app.controller("PolarAreaCtrl",                      function ($scope) {
+app.controller("PolarAreaCtrl",                     function ($scope) {
   $scope.labels = ["Download Sales", "In-Store Sales", "Mail-Order Sales", "Tele Sales", "Corporate Sales"];
   $scope.data = [300, 500, 100, 40, 120];
 });
-app.controller('getTicketsByMonthChart',             function ($scope){
+app.controller('getTicketsByMonthChart',            function ($scope){
   $scope.options = {
     chart: {
       type: 'discreteBarChart',
@@ -2637,13 +2552,13 @@ app.controller('getTicketsByMonthChart',             function ($scope){
 
 
 });
-app.controller('getTicketsByMonth',                  function ($scope, $http) {
+app.controller('getTicketsByMonth',                 function ($scope, $http) {
   $http.get("getTicketsByMonth")
     .then(function (response) {
       $scope.data = [response.data];
     });
 });
-app.controller("BarCtrl",                            function ($scope) {
+app.controller("BarCtrl",                           function ($scope) {
   $scope.labels = ['2006', '2007', '2008', '2009', '2010', '2011', '2012'];
   $scope.series = ['Series A', 'Series B'];
 
@@ -2652,7 +2567,7 @@ app.controller("BarCtrl",                            function ($scope) {
     [28, 48, 40, 19, 86, 27, 90]
   ];
 });
-app.controller('warp',                               function ExampleCtrl(){
+app.controller('warp',                              function ExampleCtrl(){
   this.xAxisTickFormatFunction = function(){
     return function(d){
       return d3.time.format('%b')(new Date(d));
@@ -2680,13 +2595,13 @@ app.controller('warp',                               function ExampleCtrl(){
   ];
 });
 //[WORKING NOT IN USE
-app.controller('getSignedUpCustomersByYear',         function($scope, $http) {
+app.controller('getSignedUpCustomersByYear',        function($scope, $http) {
   $http.get("getSignedUpCustomersByYear")
     .then(function (response) {
       $scope.data = response.data;
     });
 });
-app.controller('getSignedUpCustomersByYearChart',    function($scope) {
+app.controller('getSignedUpCustomersByYearChart',   function($scope) {
 //data to fill $scope.data;
 });
 //END WORKING NOT IN USE]
