@@ -25,6 +25,17 @@ class TestController extends Controller
         DB::connection()->enableQueryLog();
     }
 
+    public function testCustomerTickets(){
+//        $customer = Customer::with('tickets')
+//                            ->find('501');    
+//        dd($customer);
+        
+        $customer = new Customer;
+        $tickets = $customer->getTickets('501');
+        dd($tickets);
+        
+    }
+    
     public function testCC(){
 
         //        $customer = Customers::find('10248');
