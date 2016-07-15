@@ -161,16 +161,17 @@ class CustomerController extends Controller
   }
   public function getTicketHistory(Request $request)
   {
-    return Customer::with('ticketHistory')->find($request->id);
+    $customer = new Customer;
+    return $customer->getTickets($request->id);
   }
   public function getTicketHistoryNotes(Request $request)
   {
     return TicketNote::find($request->id);
-  }
+  }//
   public function getTicketHistoryReason(Request $request)
   {
     return Reason::find($request->id);
-  }
+  }//
   public function getBillingHistory(Request $request)
   {
     return BillingTransactionLog::where('id_customers', $request->id)->get();

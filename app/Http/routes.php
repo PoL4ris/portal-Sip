@@ -98,8 +98,8 @@ Route::group(['middleware' => 'web'], function () {
   Route::get('getCustomerPayment',      'CustomerController@getCustomerPayment');
   Route::get('getNewTicketData',        'CustomerController@getNewTicketData');
   Route::get('getTicketHistory',        'CustomerController@getTicketHistory');
-  Route::get('getTicketHistoryNotes',   'CustomerController@getTicketHistoryNotes');
-  Route::get('getTicketHistoryReason',  'CustomerController@getTicketHistoryReason');
+  Route::get('getTicketHistoryNotes',   'CustomerController@getTicketHistoryNotes');//
+  Route::get('getTicketHistoryReason',  'CustomerController@getTicketHistoryReason');//
   Route::get('getBillingHistory',       'CustomerController@getBillingHistory');
   Route::get('getPaymentMethods',       'CustomerController@getPaymentMethods');
   Route::get('getCustomerNetwork',      'CustomerController@getCustomerNetwork');

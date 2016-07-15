@@ -32,7 +32,7 @@ class TestController extends Controller
         
         $customer = new Customer;
         $tickets = $customer->getTickets('501');
-        dd($tickets);
+        dd($tickets->toArray());
         
     }
     

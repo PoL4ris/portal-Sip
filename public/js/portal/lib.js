@@ -1628,28 +1628,28 @@ app.controller('customerTicketHistoryController',   function ($scope, $http){
   $http.get("getTicketHistory", {params:{'id':$scope.customerData.id}})
     .then(function (response) {
       $scope.ticketHistory = response.data;
-    });
-});
-app.controller('customerTicketHistoryData',         function ($scope, $http){
-  $http.get("getTicketHistoryNotes", {params:{'id':$scope.ticket.id_ticket_notes}})
-    .then(function (response) {
-      $scope.ticketNotes = response.data;
       $scope.letterLimit = 20;
     });
-  $http.get("getTicketHistoryReason", {params:{'id':$scope.ticket.id_reasons}})
-    .then(function (response) {
-      $scope.ticketReason = response.data;
-    });
-
   $scope.showFullComment = function(id)
   {
     warpol('#ticket-' + id).fadeIn('slow');
   }
   $scope.hideFullComment = function(id)
-    {
-      warpol('#ticket-' + id).fadeOut('fast');
-    }
+  {
+    warpol('#ticket-' + id).fadeOut('fast');
+  }
 });
+// app.controller('customerTicketHistoryData',         function ($scope, $http){
+//   $http.get("getTicketHistoryNotes", {params:{'id':$scope.ticket.id_ticket_notes}})
+//     .then(function (response) {
+//       $scope.ticketNotes = response.data;
+//       $scope.letterLimit = 20;
+//     });
+//   $http.get("getTicketHistoryReason", {params:{'id':$scope.ticket.id_reasons}})
+//     .then(function (response) {
+//       $scope.ticketReason = response.data;
+//     });
+// });
 app.controller('customerBillingHistoryController',  function ($scope, $http){
   $http.get("getBillingHistory", {params:{'id':$scope.customerData.id}})
     .then(function (response) {
