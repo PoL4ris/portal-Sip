@@ -2,7 +2,7 @@
 
 namespace App\Extensions;
 
-use App\Models\Network\networkNodes;
+use App\Models\NetworkNode;
 use App\Extensions\CiscoSwitch;
 use App\Extensions\RouterOsAPI;
 
@@ -33,28 +33,29 @@ class MtikRouter {
     public function loadFromDB($ip = NULL, $mac = NULL, $hostName = NULL) { 
         $array = array();
         $dbRecord = null;
+        
         if ($ip) {
-            $array ['IPAddress'] = $ip;
+            $array ['ip_address'] = $ip;
         }
         if ($mac) {
-            $array ['MacAddress'] = $mac;
+            $array ['mac_address'] = $mac;
         }
         if ($hostName) {
-            $array ['HostName'] = $hostName;
+            $array ['host_name'] = $hostName;
         }
 
         if (count($array) > 0) {
-            $netNodeQuery = networkNodes::where('Type','Router')
-                ->where('Role','Master');
+            $netNodeQuery = NetworkNode::where('id_types',7)
+                ->where('role','Master');
 
             foreach($array as $col => $value){
                 $netNodeQuery->where($col,$value);
             }
 
-            $netNode = $netNodeQuery->first()->toArray();
+            $netNode = $netNodeQuery->first();
 
-            if ($netNode) {
-                foreach ($netNode as $key => $value) {
+            if ($netNode != null) {
+                foreach ($netNode->toArray() as $key => $value) {
                     $this->router[$key] = $value;
                 }
                 $this->router['selected'] = true;
@@ -75,21 +76,21 @@ class MtikRouter {
                                 'writeCommunity' => config('netmgmt.cisco.write')]);
     }
 
-    public function registerRouter($ipAddressList, $locationID = NULL) {
+    public function register($ipAddressList, $location = NULL) {
         if (isset($ipAddressList) == false && count($ipAddressList) <= 0) {
             return false;
         }
         foreach ($ipAddressList as $ip) {
             $hostName = $this->getHostName($ip);
             if ($this->isRegistered($ip, null, $hostName) == false) {
-                $netNode = new networkNodes;
-                $netNode->HostName = $hostName;
-                $netNode->IPAddress = $ip;
-                $netNode->Type = 'Router';
-                $netNode->Vendor = 'Mikrotik';                    
-                if ($locationID != NULL) {
-                    $netNode->LocID =  $locationID;
+                $netNode = new NetworkNode;
+                $netNode->ip_address = $ip;
+                $netNode->host_name = $hostName;
+                if ($location != NULL) {
+                    $netNode->id_address =  $location;
                 }
+                $netNode->id_types = 7;
+                $netNode->vendor = 'Mikrotik';
                 $netNode->save();
             }
         }
@@ -707,7 +708,7 @@ class MtikRouter {
 
     protected function isRegistered($ip = NULL, $mac = NULL, $hostName = NULL) {
         $routerInDB = $this->loadFromDB($ip, $mac, $hostName);
-        if ($routerInDB) {
+        if ($routerInDB->isSelected()) {
             return true;
         }
         return false;

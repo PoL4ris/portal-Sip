@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use App\Models\PaymentMethod;
+use App\Extensions\SIPBilling;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -13,7 +15,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+         PaymentMethod::saving(function ($paymentMethod) {
+            $sipBilling = new SIPBilling;
+            return $sipBilling->updatePaymentMethod($paymentMethod, false);
+        });
     }
 
     /**

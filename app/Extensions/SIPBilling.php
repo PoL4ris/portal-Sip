@@ -3,7 +3,8 @@
 namespace App\Extensions;
 
 use App\Extensions\IpPay;
-use App\Models\Customer\Customers;
+use App\Models\Customer;
+use App\Models\PaymentMethod;
 use App\Models\Billing\billingTransactionLog;
 use Hash;
 use DB;
@@ -23,9 +24,80 @@ class SIPBilling {
         return ($this->testMode) ? 'development' : 'production';
     }
 
-    public function updateCustomerCC(Customers $customer){
+    public function updatePaymentMethod(PaymentMethod $pm){
+        if (is_numeric($pm->account_number) && strlen($pm->account_number) >= 14) {
+            error_log('SIPBilling::updatePaymentMethod(): calling tokenizeCustomerCC');
+            return $this->tokenizeCustomerCC($pm);
+        }
+        error_log('SIPBilling::updatePaymentMethod(): no cc number detected');
+        return $pm;
+    }
 
-        if (is_numeric($customer->CCnumber) && strlen($customer->CCnumber) >= 14) {
+    public function tokenizeCC(PaymentMethod $pm) {
+
+        $ipPayHandle = new IpPay();
+        $customer = Customer::find($pm->id_customers);
+        $address = Address::find($pm->id_address);
+        
+        // Create an array to pass to IP Pay for processing
+        $ccInfo = array();
+        $ippayresult = array();
+        $resultArr = array();
+
+        $ccInfo['TransactionType'] = 'TOKENIZE';
+        $ccInfo['TerminalID'] = $this->testMode ? 'TESTTERMINAL' : 'SILVERIPC001';   // silverip unique account id
+        $ccInfo['CardNum'] = str_replace(' ', '', trim($pm->account_number));
+        $ccInfo['CVV2'] = $pm->CCscode;
+        $ccInfo['CardExpMonth'] = $pm->exp_month;
+        $ccInfo['CardExpYear'] = (strlen($pm->exp_year) == 4) ? substr($customer->exp_year, 2) : $customer->exp_year;    // customer CC expire year - YY
+        $ccInfo['CardName'] = $customer->first_name.' '.$customer->last_name;
+        $ccInfo['BillingCity'] = $customer->City;
+        $ccInfo['BillingStateProv'] = $customer->State;
+        $ccInfo['BillingPostalCode'] = $customer->Zip;
+        $ccInfo['BillingPhone'] = $customer->Tel;
+        $ccInfo['BillingAddress'] = $customer->Address;
+        $ccInfo['BillingCountry'] = 'USA';        
+
+        if ($this->testMode == true) {
+            $ippayresult = $ipPayHandle->process($ccInfo, 0);  //process card - 0 is for test server, 1 for live server	   		
+        } else {
+            $ippayresult = $ipPayHandle->process($ccInfo, 1);  //process card - 0 is for test server, 1 for live server
+        }
+
+        //            error_log(print_r($ippayresult,true));
+
+        if(isset($ippayresult['TOKEN'])){
+            $customer->CCtoken = $ippayresult['TOKEN'];
+            $customer->CCnumber =  'XXXX-XXXX-XXXX-' . substr($customer->CCnumber, -4);        
+        } else {
+            $customer->CCnumber = 'ERROR';
+        }
+        $customer->CCscode = '';
+
+        $ippayresult['TransactionType'] = $ccInfo['TransactionType'];
+
+
+        $ippayresult['Comment'] = $customer->Comment;
+
+        $this->storeXaction($customer, $ippayresult);
+
+        return $customer;
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    public function updateCustomerCC(PaymentMethod $pm, $customer_id){
+
+        if (is_numeric($pm->CCnumber) && strlen($customer->CCnumber) >= 14) {
             error_log('SIPBilling::updateCustomerCC(): calling tokenizeCustomerCC');
             return $this->tokenizeCustomerCC($customer);
         }
@@ -34,7 +106,7 @@ class SIPBilling {
         return $customer;
     }
 
-    public function tokenizeCustomerCC(Customers $customer) {
+    public function tokenizeCustomerCC(Customer $customer) {
 
         $ipPayHandle = new IpPay();
 
@@ -83,7 +155,7 @@ class SIPBilling {
         return $customer;
     }
 
-    protected function storeXaction(Customers $customer, $xactionResult, $details = false) {
+    protected function storeXaction(Customer $customer, $xactionResult, $details = false) {
 
         $xactionLog = new billingTransactionLog;
         $xactionLog->TransactionID = $xactionResult['TRANSACTIONID'];
@@ -124,7 +196,7 @@ class SIPBilling {
     }
 
     public function chargeCCByCID($CID, $amount, $reason, $orderNumber = false, $details = false) {
-        $customer = Customers::find($CID);
+        $customer = Customer::find($CID);
         $xactionRequest = array();
         if ($orderNumber != false) {
             $xactionRequest['OrderNumber'] = $orderNumber;
@@ -133,7 +205,7 @@ class SIPBilling {
     }
 
     public function authCCByCID($CID, $amount, $reason, $details = false) {
-        $customer = Customers::find($CID);
+        $customer = Customer::find($CID);
         return $this->processCC($customer, array(), true, $amount, $reason, $details);
     }
 
@@ -142,25 +214,25 @@ class SIPBilling {
     }
 
     public function refundCCByCID($CID, $amount, $desc, $details = false) {
-        $customer = Customers::find($CID);
+        $customer = Customer::find($CID);
         $xactionRequest = array('TransactionType' => 'CREDIT');
         return $this->processCC($customer, $xactionRequest, false, $amount, $desc, $details);
     }
 
-    public function refundCC($amount, $desc, Customers $customer, $details = false) {
+    public function refundCC($amount, $desc, Customer $customer, $details = false) {
         $xactionRequest = array('TransactionType' => 'CREDIT');
         return $this->processCC($customer, $xactionRequest, false, $amount, $desc, $details);
     }
 
     public function refundCCByTransID($transID, $desc, $details = false) {
         $transaction = billingTransactionLog::where('TransactionID', $transID)->first();
-        $customer = ($transaction == null) ? null : Customers::find($transaction->CID);
+        $customer = ($transaction == null) ? null : Customer::find($transaction->CID);
         $xactionRequest = array('TransactionType' => 'CREDIT');
         return $this->processCC($customer, $xactionRequest, false, $transaction->Amount, $desc, $details);
     }
 
     public function tokenizeCCByCID($CID, $cardNum, $expMo, $expYr, $ccv = 0) {
-        $customer = Customers::find($CID);
+        $customer = Customer::find($CID);
         if($customer == null){
             return $customer;
         }
@@ -478,7 +550,7 @@ class SIPBilling {
         return $resultArr;
     }
 
-    public function hasCCExpired(Customers $customer) {
+    public function hasCCExpired(Customer $customer) {
         $expDate = $customer->Expyr. '-' . $customer->Expmo;
         return ($expDate < time()) ? true : false;
     }
