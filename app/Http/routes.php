@@ -17,7 +17,7 @@
 Route::get('db-test',       'TestController@testDBRelations');
 Route::get('supportTest',   'TestController@supportTest');
 Route::get('testView',      'TestController@cleanView');
-Route::get('ticket-test',       'TestController@testCustomerTickets');
+Route::get('testTickets',      'TestController@testCustomerTickets');
 
 Route::group(['middleware' => 'web'], function () {
 
