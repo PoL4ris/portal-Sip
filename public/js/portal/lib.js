@@ -1301,6 +1301,7 @@ app.controller('supportController',                 function ($scope, $http, not
     $scope.viewTicketsDirective = 'Billing';
     callMidView('Billing');
     setActiveBtn('Billing');
+    $scope.activeViewBilling     = 'Active';
   };
   $scope.allTickets = function (){
     $http.get("supportTicketsAll")
@@ -1310,6 +1311,7 @@ app.controller('supportController',                 function ($scope, $http, not
     $scope.viewTicketsDirective = 'All';
     callMidView('All');
     setActiveBtn('All');
+    $scope.activeViewAll     = 'Active';
   };
 
   $scope.displayTicketResume = function (id, idCustomer){
