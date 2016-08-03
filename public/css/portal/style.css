@@ -1189,3 +1189,9 @@ md-tooltip .md-content {
   position: relative;
   top: -3px;
 }
+.input-text{
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  position: relative;
+  top: -1px;
+}

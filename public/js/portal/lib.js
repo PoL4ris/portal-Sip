@@ -1340,7 +1340,11 @@ app.controller('customerControllerList',            function ($scope, $http){
       $scope.supportDataCustomer = response.data;
     });
 });
-app.controller('customerController',                function ($scope, $http, $routeParams, notify){
+
+
+
+
+app.controller('customerController',                function ($scope, $http, $routeParams, notify, $uibModal, $log){
   var idCustomer = $routeParams.id;
 
   if ($scope.stcid)
@@ -1351,18 +1355,23 @@ app.controller('customerController',                function ($scope, $http, $ro
       $scope.customerData = response.data;
     });
 
-  $http.get("getCustomerContactData", {params:{'id':idCustomer}})
-    .then(function (response) {
-    $scope.customerContactsData = response.data.contacts;
-    });
-
   $http.get("getContactTypes", {params:{'id':idCustomer}})
     .then(function (response) {
     $scope.contactTypes = response.data;
     });
 
+  $scope.getCustomerContactData = function (){
+    $http.get("getCustomerContactData", {params:{'id':idCustomer}})
+      .then(function (response) {
+        $scope.customerContactsData = response.data.contacts;
+      });
+  }
+  $scope.getCustomerContactData();
+
+
   $scope.checkboxModel = true;
   $scope.checkboxModelA = true;
+  $scope.animationsEnabled = false;
 
 
   $scope.submitForm = function (table) {
@@ -1414,7 +1423,6 @@ app.controller('customerController',                function ($scope, $http, $ro
       });
   }
 
-
   $scope.customerEditMode = function (){
     if ( $scope.checkboxModel == false)
     {
@@ -1457,8 +1465,92 @@ app.controller('customerController',                function ($scope, $http, $ro
       });
   };
 
+  $scope.open = function (id, type){
+
+    $scope.customerId = id;
+    $scope.type = type;
+
+    var modalInstance = $uibModal.open(
+    {
+      animation: $scope.animationsEnabled,
+      templateUrl: 'myContactInfoAdd.html',
+      controller: 'addContInfoController',
+      size: 'md',
+      resolve: {
+        customerId: function () {
+          return $scope.customerId;
+        },
+        mode: function (){
+          return $scope
+        }
+      }
+    });
+
+    modalInstance.result.then(function () {}, function () {
+//       if (type == 'services' || type == 'updateService')
+//         $scope.cSrvCrlFun();
+
+      $log.info('Modal dismissed at: ' + new Date());
+    });
+
+
+
+  }
+
+
 
 });
+
+app.controller('addContInfoController', function ($scope, $http, customerId, $uibModalInstance, mode){
+
+  $http.get("getContactTypes")
+    .then(function (response) {
+      $scope.contactTypeOptions = response.data;
+    });
+
+  $scope.serviceDataDisplay = function() {
+    $scope.currentServiceDisplay = $scope.selectedItem;
+  }
+
+  $scope.addNewContactInfo = function (){
+    if(!$scope.contactInfoVal || !$scope.currentServiceDisplay)
+      return;
+
+    $http.get("insertContactInfo", {params:{'customerId':customerId,
+                                            'typeId':$scope.currentServiceDisplay.id,
+                                            'contactInfoVal':$scope.contactInfoVal}
+                                    })
+      .then(function (response) {
+         $scope.customerContactsData = response.data;
+      });
+    mode.testCpmtData();
+    $scope.cancel();
+  }
+
+  $scope.cancel = function () {
+    $uibModalInstance.dismiss('cancel');
+  };
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 app.controller('supportTicketHistory',              function ($scope, $http){
   $http.get("supportTicketHistory", {params:{'id':$scope.history.id}})
     .then(function (response) {
@@ -2246,7 +2338,7 @@ app.controller('toolsController',                   function ($scope, $http) {
   }
 });
 app.controller('directiveController',               function ($scope, $http, $compile){
-  console.log('directiveController');
+//   console.log('directiveController');
   //Global TOOLS
   $scope.labelMonth = {1:'Jan', 2:'Feb', 3:'Mar', 4:'Apr', 5:'May', 6:'Jun',
                        7:'Jul', 8:'Aug', 9:'Sep', 10:'Oct', 11:'Nov', 12:'Dec'};

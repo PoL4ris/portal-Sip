@@ -376,6 +376,17 @@ class CustomerController extends Controller
     $updateService->id_users = Auth::user()->id;
     $updateService->save();
   }
+  public function insertContactInfo(Request $request){
+
+
+    $data = array('id_customers' => $request->customerId,
+                  'id_types'     => $request->typeId,
+                  'value'        => $request->contactInfoVal);
+
+    Contact::insert($data);
+    return Customer::with('contacts')->find($request->customerId);
+
+  }
 
 
 
