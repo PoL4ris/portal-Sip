@@ -15,13 +15,8 @@ class CreateBuildingPropertiesTable extends Migration {
     Schema::create('building_properties', function(Blueprint $table)
     {
       $table->increments('id');
-      $table->integer('id_buildings')->comment('-Building');
-      $table->string('dedicated_number')->comment('-Dedicated Number');
-      $table->text('wifi_info')->comment('-WiFi Info');
-      $table->string('ip_range')->comment('-IP Range');
-      $table->string('dns');
-      $table->string('gateway');
-      $table->text('comments');
+      $table->string('name');
+      $table->string('description');
       $table->timestamps();
     });
   }

@@ -1,14 +1,4 @@
-var app = angular.module('app', ["ngRoute",
-                                 "xeditable",
-                                 "ngAnimate",
-                                 "ngSanitize",
-                                 "cgNotify",
-                                 "ui.bootstrap",
-                                 "ngMaterial",
-                                 "ngTable",
-                                 "chart.js",
-                                 "nvd3",
-                                 "nvd3ChartDirectives"]);
+var app = angular.module('app', ["ngRoute","xeditable","ngAnimate","ngSanitize","cgNotify","ui.bootstrap","ngMaterial","ngTable","chart.js","nvd3","nvd3ChartDirectives"]);
 
 /**
  * Configure the Routes
@@ -28,7 +18,8 @@ app.config(['$routeProvider', function ($routeProvider) {
     .when("/customer",      {templateUrl: "/views/customer.html"})
     .when("/network",       {templateUrl: "/views/allNetwork.html"})
     .when("/userprofile",   {templateUrl: "/views/userprofile.html", controller: 'userProfileController'})
-    .when("/customers",     {templateUrl: "/views/contactInfo.html"})
+    .when("/customers",     {templateUrl: "/views/v2Test.html"})
+//     .when("/customers",     {templateUrl: "/views/contactInfo.html"})
     //.when("/customers", {templateUrl: "/views/admin/user.html", controller:'admin'})
     // else 404
     .otherwise("/404", {templateUrl: "/angularviews/partials/404.html", controller: "PageCtrl"});

@@ -84,9 +84,9 @@
         <label class="btn btn-sm btn-default ng-pristine ng-untouched ng-valid active" btn-checkbox="" ng-model="checkModel.option1">Option1 working on...</label>
       </div>
 
-      <button class="btn btn-default btn-ticket-sort" ng-click="fullTickets()">Non-Billing</button>
-      <button class="btn btn-default btn-ticket-sort" ng-click="billingTickets()">Billing</button>
-      <button class="btn btn-default btn-ticket-sort" ng-click="allTickets()">All</button>
+      <button class="btn btn-default btn-ticket-sort {{activeViewFull}}" ng-click="fullTickets()">Non-Billing</button>
+      <button class="btn btn-default btn-ticket-sort {{activeViewBilling}}"  ng-click="billingTickets()">Billing</button>
+      <button class="btn btn-default btn-ticket-sort {{activeViewAll}}" ng-click="allTickets()">All</button>
     </div>
 
     <div class="wrapper-md float-left" style="padding-bottom:10px;">
