@@ -17,7 +17,7 @@ class CreateProductPropertyValuesTable extends Migration
         $table->increments('id');
         $table->integer('id_products')->comment('Building');
         $table->integer('id_product_properties')->comment('Properties');
-        $table->string('value');
+        $table->text('value');
         $table->timestamps();
       });
     }

@@ -899,6 +899,13 @@ app.controller('adminViewAccessAppElements',        function($scope, $http){
       $scope.adminAccessAppElements = response.data;
     });
 });
+app.controller('adminViewSignup',                   function($scope, $http){
+console.log('entro');
+//   $http.get("adminViewSignup")
+//     .then(function (response) {
+//       $scope.adminAccessAppElements = response.data;
+//     });
+});
 app.controller('buildingCtl', ['$scope','$route','$http', function($scope, $route, $http) {
   if (!$scope.sbid)
   {
@@ -2510,6 +2517,12 @@ app.controller('directiveController',               function ($scope, $http, $co
   return {
     templateUrl: '/views/building/building.html',
     controller:'buildingCtl'
+  };
+})
+.directive('myViewSignup',                          function() {
+  return {
+    templateUrl: '/views/admin/signup.html',
+    controller:'adminViewSignup'
   };
 })
 .directive('myBldView',                             function() {
