@@ -27,6 +27,7 @@ Route::get('getSignupProducts', 'SignupController@getSignupProducts');
 Route::group(['middleware' => 'web'], function () {
 
   Route::auth();
+  Route::get('calendar',                'CalendarController@index');
   Route::get('/',                       'MainController@homeView');
   Route::get('',                        'MainController@homeView');
   Route::get('home',                    'HomeController@index');
