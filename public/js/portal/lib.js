@@ -2719,6 +2719,27 @@ app.controller('getSignedUpCustomersByYearChart',   function($scope) {
 
 
 
+app.controller('calController', function ($scope, $http){
+  console.log('inside--calController');
+
+  console.log(testVarFuera);
+
+//   $scope.testFunction = function (events){
+//     console.log('wapol');
+//     $scope.warpols =  'www';
+//   }
+});
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -1,4 +1,5 @@
 var app = angular.module('app', ["ngRoute","xeditable","ngAnimate","ngSanitize","cgNotify","ui.bootstrap","ngMaterial","ngTable","chart.js","nvd3","nvd3ChartDirectives"]);
+var testVarFuera = '';
 
 /**
  * Configure the Routes
@@ -19,6 +20,7 @@ app.config(['$routeProvider', function ($routeProvider) {
     .when("/network",       {templateUrl: "/views/allNetwork.html"})
     .when("/userprofile",   {templateUrl: "/views/userprofile.html", controller: 'userProfileController'})
     .when("/customers",     {templateUrl: "/views/v2Test.html"})
+    .when("/calendar",      {templateUrl: "/views/v2Test.html"})
 //     .when("/customers",     {templateUrl: "/views/contactInfo.html"})
     //.when("/customers", {templateUrl: "/views/admin/user.html", controller:'admin'})
     // else 404
