@@ -1,21 +1,5 @@
 
-<md-button class="md-primary md-raised" ng-click="showConfirm($event)">
-  Confirm Dialog
-</md-button>
-
-
-<div class="btn-group" ng-init="checkModel = {option1: true, option2: false}">
-  <label class="btn btn-sm btn-default ng-pristine ng-untouched ng-valid active" btn-checkbox="" ng-model="checkModel.option1">Option1</label>
-</div>
-
-
-
-
-
-
-
-
-<div ng-controller="getTicketsByMonth" class="col-lg-3">
+<div ng-controller="getTicketsByMonth" class="col-lg-12">
   <h5>Tickets 2015</h5>
   <div ng-if="data" ng-controller="getTicketsByMonthChart">
     <nvd3 options="options" data="data" ></nvd3>
@@ -23,8 +7,21 @@
 </div>
 
 
+<style>
+
+.nv-bar.positive{}
+.nv-bar.positive rect{}
+.nv-bar.positive text{}
+
+</style>
 
 
+
+
+
+
+
+<div class="col-lg-12"></div>
 
 <div class="col-lg-3" ng-controller="BarCtrl">
   <h5>Customers</h5>
