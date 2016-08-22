@@ -1,5 +1,4 @@
 var app = angular.module('app', ["ngRoute","xeditable","ngAnimate","ngSanitize","cgNotify","ui.bootstrap","ngMaterial","ngTable","chart.js","nvd3","nvd3ChartDirectives"]);
-var testVarFuera = '';
 
 /**
  * Configure the Routes

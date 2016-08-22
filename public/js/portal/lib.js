@@ -2344,13 +2344,15 @@ app.controller('toolsController',                   function ($scope, $http) {
 
   }
 });
-app.controller('directiveController',               function ($scope, $http, $compile){
+app.controller('directiveController',               function ($scope, $http, $compile, notify){
 //   console.log('directiveController');
   //Global TOOLS
-  $scope.labelMonth = {1:'Jan', 2:'Feb', 3:'Mar', 4:'Apr', 5:'May', 6:'Jun',
-                       7:'Jul', 8:'Aug', 9:'Sep', 10:'Oct', 11:'Nov', 12:'Dec'};
-  $scope.showHideSide = function ()
-  {
+
+
+  $scope.eventUpdateNotify = function (eventLabel) {
+    notify({ message: eventLabel, templateUrl:'/views/notify.html'} );
+  }
+  $scope.showHideSide = function () {
     if($scope.closeLeftSide)
     {
       $scope.closeLeftSide = false;
@@ -2714,21 +2716,325 @@ app.controller('getSignedUpCustomersByYearChart',   function($scope) {
 //END WORKING NOT IN USE]
 
 
+var popEventTool = '';
+var objArray = '';
+var objEdit = null;
+function eventTool(event, id, toDo){
+  event.stopPropagation();
+  if (id == 9)
+    return;
 
+  if (id)
+  {
+    warpol(popEventTool).fadeOut();
+    warpol('#' + id + '-tooltip').fadeIn();
+    popEventTool = '#' + id + '-tooltip';
+  }
+
+  if (toDo == 1)
+  {
+    console.log('this Delete');
+    objEdit = getIdEventClean (popEventTool);
+
+
+
+
+    //THIS EDITS EVENT
+    var request = gapi.client.calendar.events.delete({
+      'calendarId': 'help@silverip.com',
+      'eventId': objEdit.id
+    });
+    request.execute(function(event) {
+
+      warpol("[idEvent=" + objEdit.id + "]").html('<div class="event-create anim" ></div>');
+      warpol("[idEvent=" + objEdit.id + "]").attr('idEvent', '');
+      warpol("[idEvent=" + objEdit.id + "]").attr('objindex', '');
+      console.log(event);
+      angular.element('#output').scope().ttt();
+//       $scope.ttt();
+    });
+    angular.element('#output').scope().eventUpdateNotify('Event Delete');
+//     $scope.eventUpdateNotify('Event Delete');
+
+
+
+
+
+
+  }
+  if (toDo == 2)
+  {
+    console.log('this edits');
+
+    objEdit = getIdEventClean (popEventTool);
+    editWindow();
+    var e = jQuery.Event("keydown");
+    e.keyCode = 39;
+    warpol('#input_2').val(objEdit.summary).focus();
+    warpol('#input_7').val(objEdit.location).focus();
+    warpol('#input_8').html(objEdit.description).focus().trigger(e);
+    warpol('#select_3').focus();
+  }
+  if (toDo == 3)
+    warpol(popEventTool).fadeOut();
+
+}
+
+
+function getIdEventClean(str) {
+  var fStr = str.split('-box-tooltip')[0];
+  var eventIndexEdit = warpol(fStr).attr('objindex');
+  return objArray[eventIndexEdit];
+}
+function editWindow() {
+  warpol('#transparent-bg').fadeIn();
+  warpol('#new-event').fadeIn();
+  warpol('#new-event').css('left', '60px');
+}
 
 
 
 
 app.controller('calController', function ($scope, $http){
   console.log('inside--calController');
+  $scope.eventsData = '';
+  var idEventToSet = '';
+  $scope.timeSelect = ['12:00am', '12:30am', '1:00am', '1:30am', '2:00am', '2:30am', '3:00am', '3:30am', '4:00am', '4:30am', '5:00am', '5:30am', '6:00am', '6:30am', '7:00am', '7:30am', '8:00am', '8:30am', '9:00am', '9:30am', '10:00am', '10:30am', '11:00am', '11:30am', '12:00pm', '12:30pm', '1:00pm', '1:30pm', '2:00pm', '2:30pm', '3:00pm', '3:30pm', '4:00pm', '4:30pm', '5:00pm', '5:30pm', '6:00pm', '6:30pm', '7:00pm', '7:30pm', '8:00pm', '8:30pm', '9:00pm', '9:30pm', '10:00pm', '10:30pm', '11:00pm', '11:30pm'];
 
-  console.log(testVarFuera);
+  $scope.ttt = function () {
+    warpol('.event-create').html('');
+    var request = gapi.client.calendar.events.list({
+//       'calendarId': 'primary',
+      'calendarId': 'help@silverip.com',
+      'timeMin': (new Date()).toISOString(),
+      'showDeleted': false,
+      'singleEvents': true,
+//       'maxResults': 10,
+      'orderBy': 'startTime'
+    });
+    request.execute(function(resp) {
 
-//   $scope.testFunction = function (events){
-//     console.log('wapol');
-//     $scope.warpols =  'www';
-//   }
+      var objects = resp.items;
+      objArray = resp.items;
+      var regExp = /\(([^)]+)\)/;
+      var who = {'0':''
+                ,'Izzy':'1'
+                ,'Melvin':'2'
+                ,'Abe':'3'
+                ,'Eli':'4'
+                ,'Brian':'5'
+                ,'Charlie':'6'
+                ,'Pablo':'3'
+                };
+      var size = 50;
+
+      for(var obj in objects ) {
+        var geNameTmp = regExp.exec(objects[obj]['summary']);
+
+        var inicio    = new Date(objects[obj]['start']['dateTime']);
+        var fin       = new Date(objects[obj]['end']['dateTime']);
+
+        var whoIs = geNameTmp?geNameTmp[1]:'';
+        var ini   = inicio.toLocaleTimeString();
+        var fn    = fin.toLocaleTimeString();
+
+        if (ini == 'Invalid Date')
+          continue;
+
+        //inicio
+        var xA = ini.split(':')[0];
+        var xB = ini.split(':')[1];
+        var xC = ini.split(':')[2];
+        var xD = xC.split(' ')[1];
+
+        //fin
+        var xE = fn.split(':')[0];
+        var xF = fn.split(':')[1];
+        var xG = fn.split(':')[2];
+        var xH = xG.split(' ')[1];
+        var top = xB;
+        var diffHours = Math.abs(fin - inicio) / 36e5;
+
+
+
+        var content =  '<div class="event-container color-' + who[whoIs] + '" id="' + xA + '-' + xD + '-' + who[whoIs] + '-box" onclick="eventTool(event, this.id, 0);">';
+              content +=  '<p class="ec-time">' + (xA + (xB > 0 ? (':' + xB) : '')) + xD + ' - ' + (xE + (xF > 0 ? (':' + xF) : '')) + xH + '</p>';
+              content +=  '<p class="ec-titulo">' + objects[obj]['summary'] + '</p>';
+              content +=  '<div class="tooltip-event" id="' + xA + '-' + xD + '-' + who[whoIs] + '-box-tooltip" onclick="eventTool(event, 9,9)">';
+                content +=  '<div>' + (xA + (xB > 0 ? (':' + xB) : '')) + xD + ' - ' + (xE + (xF > 0 ? (':' + xF) : '')) + xH + '</div>';
+                content +=  '<div class="ect-desc">' + objects[obj]['description'] + '</div>';
+                content +=  '<button class="dlt-btn-tool tool-btn" onclick="eventTool(event, null, 1)">Delete</button>';
+                content +=  '<button class="edit-btn-tool tool-btn" onclick="eventTool(event, null, 2)">Edit event</button>';
+                content +=  '<button class="close-btn-tool" onclick="eventTool(event, null, 3)">X</button>';
+              content += '</div>';
+            content += '</div>';
+
+
+
+
+        warpol("[idEvent=" + objects[obj]['id'] + "]").html('<div class="event-create anim" ></div>');
+        warpol("[idEvent=" + objects[obj]['id'] + "]").attr('idEvent', '');
+        warpol("[idEvent=" + objects[obj]['id'] + "]").attr('objindex', '');
+        warpol('#' + xA + '-' + xD + '-' + who[whoIs]).attr('idEvent', objects[obj]['id']);
+        warpol('#' + xA + '-' + xD + '-' + who[whoIs]).attr('objindex', obj);
+        warpol('#' + xA + '-' + xD + '-' + who[whoIs]).html(content);
+        warpol('#' + xA + '-' + xD + '-' + who[whoIs] + '-box').css('top', (xB/60 * size) + 'px' );
+        warpol('#' + xA + '-' + xD + '-' + who[whoIs] + '-box').css('height', (size * diffHours))
+
+      }
+
+
+    });
+
+  }
+  warpol( ".event-create" ).dblclick(function() {
+    console.log('Handler for .dblclick() called.');
+    idEventToSet = warpol(this.parentElement)[0].id;
+    warpol('#transparent-bg').fadeIn();
+    warpol('#new-event').fadeIn();
+    warpol('#new-event').css('left', '60px');
+
+//     var d = new Date("2014-04-07T13:58:10.104Z");
+//     console.log(d.toISOString());
+
+  });
+  $scope.cancelNewEvent = function () {
+    console.log('evento nuevo cancelado');
+    warpol('#transparent-bg').fadeOut();
+    warpol('#new-event').fadeOut();
+    warpol('#new-event').css('left', '-50%');
+
+    this.eventtitle = '';
+    this.timeIni = '';
+    this.timeFin = '';
+    this.where = '';
+    this.description = '';
+
+    warpol('#input_2').val('');
+    warpol('#input_7').val('');
+    warpol('#input_8').html('');
+
+    objEdit = null;
+
+    $scope.ttt();
+
+  }
+  $scope.setNewEvent = function (){
+    console.log('this will create the new event and the id =' + idEventToSet);
+
+//     console.log(objEdit.id);
+
+    var t  = this.eventtitle ? this.eventtitle : objEdit.summary;
+    var w  = this.where ? this.where : objEdit.location;
+    var d  = this.description ? this.description : objEdit.description;
+
+    var ti = this.timeIni;
+    var tf = this.timeFin;
+
+    warpol('#select_3').focus();
+    warpol('#select_5').focus();
+
+    if(!ti || !tf)
+      return;
+
+
+    var t1 = getFormatTime("00:00", ti);
+    var t2 = getFormatTime("00:00", tf);
+
+    var tIso1 = createIsoDate(t1);
+    var tIso2 = createIsoDate(t2);
+
+    if (!t || !ti || !tf || !w)
+      return;
+
+    var event = {
+      'summary': t,
+      'location': w,
+      'description': d,
+      'start': {
+        'dateTime': tIso1,
+        'timeZone': 'America/Chicago'
+      },
+      'end': {
+        'dateTime': tIso2,
+        'timeZone': 'America/Chicago'
+      }
+    };
+
+
+
+    if(objEdit)
+    {
+      //THIS EDITS EVENT
+      var request = gapi.client.calendar.events.update({
+        'calendarId': 'help@silverip.com',
+        'eventId': objEdit.id,
+        'resource': event
+      });
+      request.execute(function(event) {
+        console.log(event);
+        $scope.ttt();
+      });
+      $scope.eventUpdateNotify('Event Updated');
+    }
+    else
+    {
+      //THIS INSERTS NEW EVENT
+      //Multiple calendars able on repeat
+      var request = gapi.client.calendar.events.insert({
+        'calendarId': 'help@silverip.com',
+        'resource': event
+      });
+      request.execute(function(event) {
+        console.log('Event created: ' + event.htmlLink);
+        $scope.ttt();
+      });
+    }
+
+
+
+
+
+
+
+
+
+    $scope.cancelNewEvent();
+
+
+  }
+  function getFormatTime(format, str) {
+    var hours = Number(str.match(/^(\d+)/)[1]);
+    var minutes = Number(str.match(/:(\d+)/)[1]);
+    var AMPM = str.match(/\s?([AaPp][Mm]?)$/)[1];
+    var pm = ['P', 'p', 'PM', 'pM', 'pm', 'Pm'];
+    var am = ['A', 'a', 'AM', 'aM', 'am', 'Am'];
+    if (pm.indexOf(AMPM) >= 0 && hours < 12) hours = hours + 12;
+    if (am.indexOf(AMPM) >= 0 && hours == 12) hours = hours - 12;
+    var sHours = hours.toString();
+    var sMinutes = minutes.toString();
+    if (hours < 10) sHours = "0" + sHours;
+    if (minutes < 10) sMinutes = "0" + sMinutes;
+    if (format == '0000') {
+      return (sHours + sMinutes);
+    } else if (format == '00:00') {
+      return (sHours + ":" + sMinutes);
+    } else {
+      return false;
+    }
+  }
+  function createIsoDate(time) {
+    var fecha = new Date();
+    var anio = fecha.getFullYear();
+    var mes = fecha.getMonth()+1;
+    var dia = fecha.getDate();
+
+    return (anio + '-' + mes + '-' + dia + 'T' + time + ':00-05:00');
+  }
 });
+
+
+
 
 
 
