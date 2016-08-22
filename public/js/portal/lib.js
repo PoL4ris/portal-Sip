@@ -2346,8 +2346,9 @@ app.controller('toolsController',                   function ($scope, $http) {
 });
 app.controller('directiveController',               function ($scope, $http, $compile, notify){
 //   console.log('directiveController');
-  //Global TOOLS
-
+// Global TOOLS
+  $scope.labelMonth = {1:'Jan', 2:'Feb', 3:'Mar', 4:'Apr', 5:'May', 6:'Jun',
+    7:'Jul', 8:'Aug', 9:'Sep', 10:'Oct', 11:'Nov', 12:'Dec'};
 
   $scope.eventUpdateNotify = function (eventLabel) {
     notify({ message: eventLabel, templateUrl:'/views/notify.html'} );
