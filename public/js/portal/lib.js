@@ -2720,6 +2720,7 @@ app.controller('getSignedUpCustomersByYearChart',   function($scope) {
 var popEventTool = '';
 var objArray = '';
 var objEdit = null;
+
 function eventTool(event, id, toDo){
   event.stopPropagation();
   if (id == 9)
@@ -2736,9 +2737,6 @@ function eventTool(event, id, toDo){
   {
     console.log('this Delete');
     objEdit = getIdEventClean (popEventTool);
-
-
-
 
     //THIS EDITS EVENT
     var request = gapi.client.calendar.events.delete({
@@ -2757,31 +2755,44 @@ function eventTool(event, id, toDo){
     angular.element('#output').scope().eventUpdateNotify('Event Delete');
 //     $scope.eventUpdateNotify('Event Delete');
 
-
-
-
-
-
   }
   if (toDo == 2)
   {
     console.log('this edits');
 
     objEdit = getIdEventClean (popEventTool);
+
+    var t1 = getTimeSelct(objEdit, 'start');
+    var t2 = getTimeSelct(objEdit, 'end');
+    angular.element('#output').scope().setSelectValue(t1,t2);
+    angular.element('#output').scope().$apply()
+
     editWindow();
     var e = jQuery.Event("keydown");
     e.keyCode = 39;
-    warpol('#input_2').val(objEdit.summary).focus();
-    warpol('#input_7').val(objEdit.location).focus();
-    warpol('#input_8').html(objEdit.description).focus().trigger(e);
-    warpol('#select_3').focus();
+    warpol('.input-titulo').val(objEdit.summary).focus();
+    warpol('.input-where').val(objEdit.location).focus();
+    warpol('.input-description').val(objEdit.description).focus().trigger(e);
+    warpol('.select-calendar').focus();
+
   }
   if (toDo == 3)
     warpol(popEventTool).fadeOut();
 
 }
+function getTimeSelct(objEdit, when){
 
+  var inicio    = new Date(objEdit[when]['dateTime']);
 
+  var ini   = inicio.toLocaleTimeString();
+  var xA = ini.split(':')[0];
+  var xB = ini.split(':')[1];
+  var xC = ini.split(':')[2];
+  var xD = xC.split(' ')[1].toLowerCase();
+
+  return xA + ':' + xB + xD;
+
+}
 function getIdEventClean(str) {
   var fStr = str.split('-box-tooltip')[0];
   var eventIndexEdit = warpol(fStr).attr('objindex');
@@ -2790,24 +2801,67 @@ function getIdEventClean(str) {
 function editWindow() {
   warpol('#transparent-bg').fadeIn();
   warpol('#new-event').fadeIn();
+  warpol('.calendar-select').fadeIn();
   warpol('#new-event').css('left', '60px');
 }
 
 
-
-
 app.controller('calController', function ($scope, $http){
   console.log('inside--calController');
+
   $scope.eventsData = '';
   var idEventToSet = '';
-  $scope.timeSelect = ['12:00am', '12:30am', '1:00am', '1:30am', '2:00am', '2:30am', '3:00am', '3:30am', '4:00am', '4:30am', '5:00am', '5:30am', '6:00am', '6:30am', '7:00am', '7:30am', '8:00am', '8:30am', '9:00am', '9:30am', '10:00am', '10:30am', '11:00am', '11:30am', '12:00pm', '12:30pm', '1:00pm', '1:30pm', '2:00pm', '2:30pm', '3:00pm', '3:30pm', '4:00pm', '4:30pm', '5:00pm', '5:30pm', '6:00pm', '6:30pm', '7:00pm', '7:30pm', '8:00pm', '8:30pm', '9:00pm', '9:30pm', '10:00pm', '10:30pm', '11:00pm', '11:30pm'];
+
+  $scope.timeSelect = ['8:00am','8:30am',
+                       '9:00am', '9:30am',
+                       '10:00am', '10:30am',
+                       '11:00am', '11:30am',
+                       '12:00pm', '12:30pm',
+                       '1:00pm', '1:30pm',
+                       '2:00pm', '2:30pm',
+                       '3:00pm', '3:30pm',
+                       '4:00pm', '4:30pm',
+                       '5:00pm', '5:30pm',
+                       '6:00pm', '6:30pm',
+                       '7:00pm', '7:30pm',
+                       '8:00pm', '8:30pm',
+                       '9:00pm', '9:30pm',
+                       '10:00pm', '10:30pm',
+                       '11:00pm', '11:30pm'];
+
+  $scope.idCalendars = {'Auth':'silverip.com_00bq2i57k1e83g8nuue29fenl8@group.calendar.google.com'
+                       ,'Customer Canceled':'silverip.com_jgg5r8u7ohr8n8456nrt71m9lk@group.calendar.google.com'
+                       ,'Onsite':'silverip.com_elc3ctcfdgle90b5jntqlpfnh8@group.calendar.google.com'
+                       ,'Problem Ticket':'silverip.com_e5glc3dbassqckgva13d3qg7ic@group.calendar.google.com'
+                       ,'Completed Ticket':'silverip.com_tpbi296lb5hldljngg6fcmjsac@group.calendar.google.com'
+                       ,'Ticket':'help@silverip.com'};
+  $scope.calendarsName = {'Auth':'Auth'
+                         ,'Ticket':'Ticket'
+                         ,'Customer Canceled':'Customer Canceled'
+                         ,'Onsite':'Onsite'
+                         ,'Problem Ticket':'Problem Ticket'
+                         ,'Completed Ticket':'Completed Ticket'
+                         };
+  $scope.calendarColors = {'Auth':'9'//blue
+                          ,'Customer Canceled':'3'//purple
+                          ,'Onsite':'9'//blue
+                          ,'Problem Ticket':'3'//purple
+                          ,'Completed Ticket':'10'//green
+                          ,'Ticket':'11'//red
+                          };
+
+  $scope.timeIni;
+  $scope.timeFin;
+
 
   $scope.ttt = function () {
     warpol('.event-create').html('');
+    var maxDateTime = getMaxDateTime();
     var request = gapi.client.calendar.events.list({
 //       'calendarId': 'primary',
       'calendarId': 'help@silverip.com',
       'timeMin': (new Date()).toISOString(),
+      'timeMax': maxDateTime,
       'showDeleted': false,
       'singleEvents': true,
 //       'maxResults': 10,
@@ -2825,7 +2879,7 @@ app.controller('calController', function ($scope, $http){
                 ,'Eli':'4'
                 ,'Brian':'5'
                 ,'Charlie':'6'
-                ,'Pablo':'3'
+                ,'Pablo':'7'
                 };
       var size = 50;
 
@@ -2856,9 +2910,13 @@ app.controller('calController', function ($scope, $http){
         var top = xB;
         var diffHours = Math.abs(fin - inicio) / 36e5;
 
+        var tmpColor = 'default';
+
+        if(objects[obj]['colorId'])
+          tmpColor = objects[obj]['colorId'];
 
 
-        var content =  '<div class="event-container color-' + who[whoIs] + '" id="' + xA + '-' + xD + '-' + who[whoIs] + '-box" onclick="eventTool(event, this.id, 0);">';
+        var content =  '<div class="event-container color-' + tmpColor + '" id="' + xA + '-' + xD + '-' + who[whoIs] + '-box" onclick="eventTool(event, this.id, 0);">';
               content +=  '<p class="ec-time">' + (xA + (xB > 0 ? (':' + xB) : '')) + xD + ' - ' + (xE + (xF > 0 ? (':' + xF) : '')) + xH + '</p>';
               content +=  '<p class="ec-titulo">' + objects[obj]['summary'] + '</p>';
               content +=  '<div class="tooltip-event" id="' + xA + '-' + xD + '-' + who[whoIs] + '-box-tooltip" onclick="eventTool(event, 9,9)">';
@@ -2893,16 +2951,23 @@ app.controller('calController', function ($scope, $http){
     idEventToSet = warpol(this.parentElement)[0].id;
     warpol('#transparent-bg').fadeIn();
     warpol('#new-event').fadeIn();
+    warpol('.calendar-select').fadeOut();
     warpol('#new-event').css('left', '60px');
 
 //     var d = new Date("2014-04-07T13:58:10.104Z");
 //     console.log(d.toISOString());
 
   });
+  function getMaxDateTime (){
+    console.log('getMaxDateTime');
+    var d = new Date();
+    return d.getFullYear() + '-0' + (d.getMonth() + 1) + '-' + d.getDate() + 'T23:59:59-05:00';
+  };
   $scope.cancelNewEvent = function () {
     console.log('evento nuevo cancelado');
     warpol('#transparent-bg').fadeOut();
     warpol('#new-event').fadeOut();
+    warpol('calendar-select').fadeOut();
     warpol('#new-event').css('left', '-50%');
 
     this.eventtitle = '';
@@ -2910,6 +2975,7 @@ app.controller('calController', function ($scope, $http){
     this.timeFin = '';
     this.where = '';
     this.description = '';
+    this.calendar = '';
 
     warpol('#input_2').val('');
     warpol('#input_7').val('');
@@ -2931,6 +2997,8 @@ app.controller('calController', function ($scope, $http){
 
     var ti = this.timeIni;
     var tf = this.timeFin;
+
+    var calSelect = this.calendar;
 
     warpol('#select_3').focus();
     warpol('#select_5').focus();
@@ -2966,17 +3034,50 @@ app.controller('calController', function ($scope, $http){
 
     if(objEdit)
     {
+      console.log($scope.idCalendars[calSelect]);
+      console.log($scope.calendarsName[calSelect]);
+      console.log($scope.calendarColors[calSelect]);
+
+
       //THIS EDITS EVENT
-      var request = gapi.client.calendar.events.update({
-        'calendarId': 'help@silverip.com',
-        'eventId': objEdit.id,
-        'resource': event
-      });
-      request.execute(function(event) {
-        console.log(event);
-        $scope.ttt();
-      });
-      $scope.eventUpdateNotify('Event Updated');
+      if (calSelect)
+      {
+        event.colorId = $scope.calendarColors[calSelect];
+
+        var request = gapi.client.calendar.events.insert({
+          'calendarId': $scope.idCalendars[calSelect],
+          'resource': event
+        });
+        request.execute(function(event) {
+          console.log('Event created: ' + event.htmlLink);
+          $scope.eventUpdateNotify('Event Created');
+          $scope.ttt();
+        });
+
+        var request = gapi.client.calendar.events.update({
+          'calendarId': 'help@silverip.com',
+          'eventId': objEdit.id,
+          'resource': event
+        });
+        request.execute(function(event) {
+          console.log(event);
+          $scope.ttt();
+        });
+        $scope.eventUpdateNotify('Event Updated');
+      }
+      else
+      {
+        var request = gapi.client.calendar.events.update({
+          'calendarId': 'help@silverip.com',
+          'eventId': objEdit.id,
+          'resource': event
+        });
+        request.execute(function(event) {
+          console.log(event);
+          $scope.ttt();
+        });
+        $scope.eventUpdateNotify('Event Updated');
+      }
     }
     else
     {
@@ -3032,6 +3133,12 @@ app.controller('calController', function ($scope, $http){
 
     return (anio + '-' + mes + '-' + dia + 'T' + time + ':00-05:00');
   }
+  $scope.setSelectValue = function (t1,t2){
+
+    $scope.timeIni = t1;
+    $scope.timeFin = t2;
+
+  };
 });
 
 

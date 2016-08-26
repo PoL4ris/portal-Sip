@@ -1213,6 +1213,14 @@ md-tooltip .md-content {
   position: relative;
   width: 98%;
 }
+.dataEventsCalendar .color-9 {
+  background: #4986E7 none repeat scroll 0 0;
+  border: 1px solid #3765ae;
+}
+.dataEventsCalendar .color-7 {
+  background: #ff4d00 none repeat scroll 0 0;
+  border: 1px solid #b53700;
+}
 .dataEventsCalendar .color-6 {
   background: #3c85b7 none repeat scroll 0 0;
   border: 1px solid #1e435c;
@@ -1221,21 +1229,33 @@ md-tooltip .md-content {
   background: #b73588 none repeat scroll 0 0;
   border: 1px solid #4b1638;
 }
-.dataEventsCalendar .color-4 {
-  background: #51b749 none repeat scroll 0 0;
-  border: 1px solid #214b1e;
+.dataEventsCalendar .color-11 {
+  background: #F83A22 none repeat scroll 0 0;
+  border: 1px solid #b42a19;
 }
 .dataEventsCalendar .color-3 {
-  background: #ffffff none repeat scroll 0 0;
-  border: 1px solid #424242;
+  background: #A47AE2 none repeat scroll 0 0;
+  border: 1px solid #7658a3;
+}
+.dataEventsCalendar .color-4 {
+  background: #51B749 none repeat scroll 0 0;
+  border: 1px solid #3b8535;
 }
 .dataEventsCalendar .color-2 {
   background: #46d6db none repeat scroll 0 0;
   border: 1px solid #174647;
 }
+.dataEventsCalendar .color-10 {
+  background: #16A765 none repeat scroll 0 0;
+  border: 1px solid #107849;
+}
 .dataEventsCalendar .color-1 {
-  background: #fbd75b none repeat scroll 0 0;
-  border: 1px solid #4b401b;
+  background: #FBD75B none repeat scroll 0 0;
+  border: 1px solid #a48c3b;
+}
+.dataEventsCalendar .color-default {
+  background: #F83A22 none repeat scroll 0 0;
+  border: 1px solid #b42a19;
 }
 .row-hrs {
   -moz-border-bottom-colors: none;
@@ -1267,14 +1287,14 @@ md-tooltip .md-content {
   float: left;
   height: 100%;
   position: relative;
-  width: 16.66%;
+  width: 14.28%;
 }
 .row-hrs .event-space .person {
   border-right: 1px solid #ddd;
   float: left;
   height: 100%;
   position: relative;
-  width: 16.66%;
+  width: 14.28%;
 }
 .event-container {
   font-size: 11px;
@@ -1405,4 +1425,6 @@ md-tooltip .md-content {
   overflow: hidden;
   text-align: justify;
 }
-
+.calendar-select{
+  display: none;
+}
