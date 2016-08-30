@@ -1,8 +1,18 @@
 
+<div ng-controller="getTicketsByMonth" class="col-lg-12">
+  <h5>Tickets 2015</h5>
+  <div ng-if="data" ng-controller="getTicketsByMonthChart">
+    <nvd3 options="options" data="data" ></nvd3>
+  </div>
+</div>
+
+
 <style>
 
-.menu{}
-.menu .coso{}
+.nv-bar.positive{}
+.nv-bar.positive rect{}
+.nv-bar.positive text{}
+
 </style>
 
 
@@ -11,79 +21,57 @@
 
 
 
-<!--<div ng-controller="getTicketsByMonth" class="col-lg-12">-->
-  <!--<h5>Tickets 2015</h5>-->
-  <!--<div ng-if="data" ng-controller="getTicketsByMonthChart">-->
-    <!--<nvd3 options="options" data="data" ></nvd3>-->
-  <!--</div>-->
-<!--</div>-->
+<div class="col-lg-12"></div>
 
-
-<!--<style>-->
-
-<!--.nv-bar.positive{}-->
-<!--.nv-bar.positive rect{}-->
-<!--.nv-bar.positive text{}-->
-
-<!--</style>-->
+<div class="col-lg-3" ng-controller="BarCtrl">
+  <h5>Customers</h5>
+  <canvas id="bar" class="chart chart-bar"
+          chart-data="data" chart-labels="labels"> chart-series="series"
+  </canvas>
+</div>
 
 
 
+<div class="col-lg-3" ng-controller="DoughnutCtrl">
+  <h5>Tickets</h5>
+  <canvas id="doughnut" class="chart chart-doughnut"
+          chart-data="data" chart-labels="labels"
+          chart-colours="colours">
+  </canvas>
+</div>
 
 
-
-
-<!--<div class="col-lg-12"></div>-->
-
-<!--<div class="col-lg-3" ng-controller="BarCtrl">-->
-  <!--<h5>Customers</h5>-->
-  <!--<canvas id="bar" class="chart chart-bar"-->
-          <!--chart-data="data" chart-labels="labels"> chart-series="series"-->
-  <!--</canvas>-->
-<!--</div>-->
-
-
-
-<!--<div class="col-lg-3" ng-controller="DoughnutCtrl">-->
-  <!--<h5>Tickets</h5>-->
-  <!--<canvas id="doughnut" class="chart chart-doughnut"-->
-          <!--chart-data="data" chart-labels="labels"-->
-          <!--chart-colours="colours">-->
-  <!--</canvas>-->
-<!--</div>-->
-
-
-<!--<div class="col-lg-3" ng-controller="PieCtrl">-->
-  <!--<h5>Support/ppl</h5>-->
-  <!--<canvas id="pie" class="chart chart-pie"-->
-          <!--chart-data="data" chart-labels="labels" chart-options="options"-->
-          <!--chart-colours="colours">-->
-  <!--</canvas>-->
-<!--</div>-->
+<div class="col-lg-3" ng-controller="PieCtrl">
+  <h5>Support/ppl</h5>
+  <canvas id="pie" class="chart chart-pie"
+          chart-data="data" chart-labels="labels" chart-options="options"
+          chart-colours="colours">
+  </canvas>
+</div>
 
 
 
 
-<!--<div class="col-lg-3" ng-controller="PolarAreaCtrl">-->
-  <!--<h5>Support/ Issue</h5>-->
-  <!--<canvas id="polar-area" class="chart chart-polar-area"-->
-          <!--chart-data="data" chart-labels="labels" chart-options="options"-->
-          <!--chart-colours="colours">-->
-  <!--</canvas>-->
-<!--</div>-->
+<div class="col-lg-3" ng-controller="PolarAreaCtrl">
+  <h5>Support/ Issue</h5>
+  <canvas id="polar-area" class="chart chart-polar-area"
+          chart-data="data" chart-labels="labels" chart-options="options"
+          chart-colours="colours">
+  </canvas>
+</div>
 
 
 
-<!--<div ng-app="App" ng-controller="warp as account"  class="col-lg-3">-->
-  <!--<h5>More INFO</h5>-->
-  <!--<nvd3-multi-bar-chart-->
-    <!--data="account.exampleData"-->
-    <!--id="exampleId"-->
-    <!--showXAxis="true"-->
-    <!--showYAxis="true"-->
-    <!--xAxisTickFormat="account.xAxisTickFormatFunction()"-->
-    <!--height="400" color="account.colorFunction()"-->
-    <!--stacked="true">-->
-    <!--<svg></svg>-->
-  <!--</nvd3-multi-bar-chart>-->
-<!--</div>-->
+<div ng-app="App" ng-controller="warp as account"  class="col-lg-3">
+  <h5>More INFO</h5>
+  <nvd3-multi-bar-chart
+    data="account.exampleData"
+    id="exampleId"
+    showXAxis="true"
+    showYAxis="true"
+    xAxisTickFormat="account.xAxisTickFormatFunction()"
+    height="400" color="account.colorFunction()"
+    stacked="true">
+    <svg></svg>
+  </nvd3-multi-bar-chart>
+</div>

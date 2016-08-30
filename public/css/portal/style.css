@@ -1212,6 +1212,7 @@ md-tooltip .md-content {
   padding: 1%;
   position: relative;
   width: 98%;
+  overflow: hidden;
 }
 .dataEventsCalendar .color-9 {
   background: #4986E7 none repeat scroll 0 0;
@@ -1268,10 +1269,11 @@ md-tooltip .md-content {
   border-width: 1px medium medium 1px;
   float: left;
   width: 100%;
+  position: relative;
 }
 .row-hrs .time-label {
   border-right: 1px solid #ddd;
-  height: 40px;
+  height: 50px;
   text-align: right;
   width: 5%;
 }
@@ -1279,7 +1281,7 @@ md-tooltip .md-content {
 }
 .row-hrs .event-space {
   background: #f1f1f1 none repeat scroll 0 0;
-  height: 40px;
+  height: 50px;
   width: 95%;
 }
 .row-hrs .event-space .inner-person {
@@ -1308,7 +1310,7 @@ md-tooltip .md-content {
 }
 .event-container .ec-time {
   font-size: 12px;
-  margin: 0 0 5px;
+  margin: 0 8px 5px 0;
 }
 .event-container .ec-titulo {
   margin-bottom: 5px;
@@ -1327,7 +1329,7 @@ md-tooltip .md-content {
 }
 .whois {
   font-size: 16px;
-  padding-top: 7px;
+  padding-top: 12px;
 }
 #new-event {
   background: rgba(255, 255, 255, 1) none repeat scroll 0 0;
@@ -1428,3 +1430,15 @@ md-tooltip .md-content {
 .calendar-select{
   display: none;
 }
+.time-line{
+  border: 1px solid #ff7f6e;
+  height: 0;
+  position: absolute;
+  width: 100%;
+  z-index: 10;
+}
+.row-hrs label{
+  position: relative;
+  z-index:11;
+}
+#output{display: none;}

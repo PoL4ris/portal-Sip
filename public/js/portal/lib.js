@@ -9,8 +9,6 @@ var tempTicketID = null;
 var globalName = null;
 var customerSeccion = null;
 
-
-
 var createFancyBox        = function () {
   return function(data, textStatus, jqXHR)
   {
@@ -325,9 +323,6 @@ var networkServices       = function (service, portID) {
   }
 
 };//INVALID
-
-
-
 
 //Preview Images Uploaded
 var imgPreview            = function() {
@@ -1347,10 +1342,6 @@ app.controller('customerControllerList',            function ($scope, $http){
       $scope.supportDataCustomer = response.data;
     });
 });
-
-
-
-
 app.controller('customerController',                function ($scope, $http, $routeParams, notify, $uibModal, $log){
   var idCustomer = $routeParams.id;
 
@@ -1507,8 +1498,7 @@ app.controller('customerController',                function ($scope, $http, $ro
 
 
 });
-
-app.controller('addContInfoController', function ($scope, $http, customerId, $uibModalInstance, mode){
+app.controller('addContInfoController',             function ($scope, $http, customerId, $uibModalInstance, mode){
 
   $http.get("getContactTypes")
     .then(function (response) {
@@ -1538,26 +1528,6 @@ app.controller('addContInfoController', function ($scope, $http, customerId, $ui
     $uibModalInstance.dismiss('cancel');
   };
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 app.controller('supportTicketHistory',              function ($scope, $http){
   $http.get("supportTicketHistory", {params:{'id':$scope.history.id}})
     .then(function (response) {
@@ -2748,7 +2718,6 @@ function eventTool(event, id, toDo){
       warpol("[idEvent=" + objEdit.id + "]").html('<div class="event-create anim" ></div>');
       warpol("[idEvent=" + objEdit.id + "]").attr('idEvent', '');
       warpol("[idEvent=" + objEdit.id + "]").attr('objindex', '');
-      console.log(event);
       angular.element('#output').scope().ttt();
 //       $scope.ttt();
     });
@@ -2806,8 +2775,13 @@ function editWindow() {
 }
 
 
-app.controller('calController', function ($scope, $http){
+app.controller('calController', function ($scope){
   console.log('inside--calController');
+  /*
+  For new Tech:
+  var who in ttt, setEventName
+  Add html #div
+*/
 
   $scope.eventsData = '';
   var idEventToSet = '';
@@ -2828,7 +2802,6 @@ app.controller('calController', function ($scope, $http){
                        '9:00pm', '9:30pm',
                        '10:00pm', '10:30pm',
                        '11:00pm', '11:30pm'];
-
   $scope.idCalendars = {'Auth':'silverip.com_00bq2i57k1e83g8nuue29fenl8@group.calendar.google.com'
                        ,'Customer Canceled':'silverip.com_jgg5r8u7ohr8n8456nrt71m9lk@group.calendar.google.com'
                        ,'Onsite':'silverip.com_elc3ctcfdgle90b5jntqlpfnh8@group.calendar.google.com'
@@ -2852,15 +2825,24 @@ app.controller('calController', function ($scope, $http){
 
   $scope.timeIni;
   $scope.timeFin;
+  $scope.eventtitle;
+  $scope.globalDate = new Date();
+  $scope.gDateHr = $scope.globalDate.getHours();
+  $scope.gDateMin = $scope.globalDate.getMinutes();
+  var timeLine = '<div class="time-line"></div>';
+  warpol('#t-' + $scope.gDateHr).append(timeLine);
+  warpol('.time-line').css('top', ($scope.gDateMin/60 * 50) + 'px' );
 
 
   $scope.ttt = function () {
     warpol('.event-create').html('');
     var maxDateTime = getMaxDateTime();
+    var minDateTime = getMinDateTime();
     var request = gapi.client.calendar.events.list({
 //       'calendarId': 'primary',
       'calendarId': 'help@silverip.com',
-      'timeMin': (new Date()).toISOString(),
+      'timeMin': minDateTime,
+//       'timeMin': (new Date()).toISOString(),
       'timeMax': maxDateTime,
       'showDeleted': false,
       'singleEvents': true,
@@ -2870,6 +2852,7 @@ app.controller('calController', function ($scope, $http){
     request.execute(function(resp) {
 
       var objects = resp.items;
+//       var objectsX = resp.items;
       objArray = resp.items;
       var regExp = /\(([^)]+)\)/;
       var who = {'0':''
@@ -2882,9 +2865,16 @@ app.controller('calController', function ($scope, $http){
                 ,'Pablo':'7'
                 };
       var size = 50;
+//       var objects = getFullObjects(objectsX, regExp);
+
+
+
+
+
 
       for(var obj in objects ) {
         var geNameTmp = regExp.exec(objects[obj]['summary']);
+        console.log(geNameTmp);
 
         var inicio    = new Date(objects[obj]['start']['dateTime']);
         var fin       = new Date(objects[obj]['end']['dateTime']);
@@ -2916,8 +2906,8 @@ app.controller('calController', function ($scope, $http){
           tmpColor = objects[obj]['colorId'];
 
 
-        var content =  '<div class="event-container color-' + tmpColor + '" id="' + xA + '-' + xD + '-' + who[whoIs] + '-box" onclick="eventTool(event, this.id, 0);">';
-              content +=  '<p class="ec-time">' + (xA + (xB > 0 ? (':' + xB) : '')) + xD + ' - ' + (xE + (xF > 0 ? (':' + xF) : '')) + xH + '</p>';
+        var content =  '<div class="event-container color-' + tmpColor + ' eid' + objects[obj]['id'] + '" id="' + xA + '-' + xD + '-' + who[whoIs] + '-box" onclick="eventTool(event, this.id, 0);">';
+              content +=  '<p class="ec-time cl'+ objects[obj]['id'] + '">' + (xA + (xB > 0 ? (':' + xB) : '')) + xD + ' - ' + (xE + (xF > 0 ? (':' + xF) : '')) + xH + '</p>';
               content +=  '<p class="ec-titulo">' + objects[obj]['summary'] + '</p>';
               content +=  '<div class="tooltip-event" id="' + xA + '-' + xD + '-' + who[whoIs] + '-box-tooltip" onclick="eventTool(event, 9,9)">';
                 content +=  '<div>' + (xA + (xB > 0 ? (':' + xB) : '')) + xD + ' - ' + (xE + (xF > 0 ? (':' + xF) : '')) + xH + '</div>';
@@ -2936,9 +2926,17 @@ app.controller('calController', function ($scope, $http){
         warpol("[idEvent=" + objects[obj]['id'] + "]").attr('objindex', '');
         warpol('#' + xA + '-' + xD + '-' + who[whoIs]).attr('idEvent', objects[obj]['id']);
         warpol('#' + xA + '-' + xD + '-' + who[whoIs]).attr('objindex', obj);
-        warpol('#' + xA + '-' + xD + '-' + who[whoIs]).html(content);
-        warpol('#' + xA + '-' + xD + '-' + who[whoIs] + '-box').css('top', (xB/60 * size) + 'px' );
-        warpol('#' + xA + '-' + xD + '-' + who[whoIs] + '-box').css('height', (size * diffHours))
+
+        if (warpol('#' + xA + '-' + xD + '-' + who[whoIs]))
+          warpol('#' + xA + '-' + xD + '-' + who[whoIs]).append(content);
+        else
+          warpol('#' + xA + '-' + xD + '-' + who[whoIs]).html(content);
+
+        warpol('.' + 'eid' + objects[obj]['id']).css('top', (xB/60 * size) + 'px' );
+        warpol('.' + 'eid' + objects[obj]['id']).css('height', (size * diffHours))
+        if((size * diffHours) == 25)
+          warpol('.' + 'cl' + objects[obj]['id']).css('float', 'left');
+
 
       }
 
@@ -2949,19 +2947,37 @@ app.controller('calController', function ($scope, $http){
   warpol( ".event-create" ).dblclick(function() {
     console.log('Handler for .dblclick() called.');
     idEventToSet = warpol(this.parentElement)[0].id;
+    setEventName(idEventToSet);
     warpol('#transparent-bg').fadeIn();
     warpol('#new-event').fadeIn();
     warpol('.calendar-select').fadeOut();
     warpol('#new-event').css('left', '60px');
 
-//     var d = new Date("2014-04-07T13:58:10.104Z");
-//     console.log(d.toISOString());
-
   });
   function getMaxDateTime (){
-    console.log('getMaxDateTime');
     var d = new Date();
     return d.getFullYear() + '-0' + (d.getMonth() + 1) + '-' + d.getDate() + 'T23:59:59-05:00';
+  };
+  function getMinDateTime (){
+    var d = new Date();
+    return d.getFullYear() + '-0' + (d.getMonth() + 1) + '-' + d.getDate() + 'T00:00:00-05:00';
+  };
+  function getFullObjects (objects, regex){
+
+
+    for(var obj in objects ) {
+      var geNameTmp = regex.exec(objects[obj]['summary'])[1];
+      var tmpNameSplit = geNameTmp.split('/');
+
+      if (tmpNameSplit[1])
+      {
+        console.log('tiene mas de 1');
+        console.log(objects[obj]);
+      }
+      else
+        console.log('tiene unicamente 1');
+
+    }
   };
   $scope.cancelNewEvent = function () {
     console.log('evento nuevo cancelado');
@@ -2977,9 +2993,11 @@ app.controller('calController', function ($scope, $http){
     this.description = '';
     this.calendar = '';
 
-    warpol('#input_2').val('');
-    warpol('#input_7').val('');
-    warpol('#input_8').html('');
+    warpol('.input-titulo').val('');
+    warpol('.input-where').val('');
+    warpol('.input-description').html('');
+    warpol('.input-description').val('');
+
 
     objEdit = null;
 
@@ -2988,8 +3006,6 @@ app.controller('calController', function ($scope, $http){
   }
   $scope.setNewEvent = function (){
     console.log('this will create the new event and the id =' + idEventToSet);
-
-//     console.log(objEdit.id);
 
     var t  = this.eventtitle ? this.eventtitle : objEdit.summary;
     var w  = this.where ? this.where : objEdit.location;
@@ -3029,8 +3045,6 @@ app.controller('calController', function ($scope, $http){
         'timeZone': 'America/Chicago'
       }
     };
-
-
 
     if(objEdit)
     {
@@ -3093,16 +3107,7 @@ app.controller('calController', function ($scope, $http){
       });
     }
 
-
-
-
-
-
-
-
-
     $scope.cancelNewEvent();
-
 
   }
   function getFormatTime(format, str) {
@@ -3133,12 +3138,28 @@ app.controller('calController', function ($scope, $http){
 
     return (anio + '-' + mes + '-' + dia + 'T' + time + ':00-05:00');
   }
-  $scope.setSelectValue = function (t1,t2){
+  function setEventName(id){
 
+    var who = {'0':''
+              ,'1':'Izzy'
+              ,'2':'Melvin'
+              ,'3':'Abe'
+              ,'4':'Eli'
+              ,'5':'Brian'
+              ,'6':'Charlie'
+              ,'7':'Pablo'
+    };
+    var splitVal = id.split('-');
+    var texto = '(' + who[splitVal[2]] + ')';
+    $scope.eventtitle = texto;
+    warpol('.input-titulo').val(texto).focus();
+    console.log($scope.eventtitle);
+  }
+  $scope.setSelectValue = function (t1,t2){
     $scope.timeIni = t1;
     $scope.timeFin = t2;
-
   };
+
 });
 
 
