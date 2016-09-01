@@ -2696,15 +2696,13 @@ function eventTool(event, id, toDo){
   if (id == 9)
     return;
 
-  if (id)
-  {
+  if (id) {
     warpol(popEventTool).fadeOut();
     warpol('#' + id + '-tooltip').fadeIn();
     popEventTool = '#' + id + '-tooltip';
   }
 
-  if (toDo == 1)
-  {
+  if (toDo == 1) {
     console.log('this Delete');
     objEdit = getIdEventClean (popEventTool);
 
@@ -2725,8 +2723,7 @@ function eventTool(event, id, toDo){
 //     $scope.eventUpdateNotify('Event Delete');
 
   }
-  if (toDo == 2)
-  {
+  if (toDo == 2) {
     console.log('this edits');
 
     objEdit = getIdEventClean (popEventTool);
@@ -2784,7 +2781,23 @@ app.controller('calController', function ($scope){
 */
 
   $scope.eventsData = '';
+  var objects = null;
+  var tttFunction = null;
   var idEventToSet = '';
+  var regExp = /\(([^)]+)\)/;
+  var who = {'0':''
+    ,'Izzy':'1'
+    ,'Melvin':'2'
+    ,'Abe':'3'
+    ,'Eli':'4'
+    ,'Brian':'5'
+    ,'Charlie':'6'
+    ,'Pablo':'7'
+  };
+  var size = 50;
+  var maxDateTime = getMaxDateTime();
+  var minDateTime = getMinDateTime();
+  var timeLine = '<div class="time-line"></div>';
 
   $scope.timeSelect = ['8:00am','8:30am',
                        '9:00am', '9:30am',
@@ -2822,22 +2835,24 @@ app.controller('calController', function ($scope){
                           ,'Completed Ticket':'10'//green
                           ,'Ticket':'11'//red
                           };
-
   $scope.timeIni;
   $scope.timeFin;
   $scope.eventtitle;
-  $scope.globalDate = new Date();
-  $scope.gDateHr = $scope.globalDate.getHours();
-  $scope.gDateMin = $scope.globalDate.getMinutes();
-  var timeLine = '<div class="time-line"></div>';
-  warpol('#t-' + $scope.gDateHr).append(timeLine);
-  warpol('.time-line').css('top', ($scope.gDateMin/60 * 50) + 'px' );
 
+  $scope.timeLine = function (){
+    warpol('.time-line').remove();
+    $scope.globalDate = new Date();
+    $scope.gDateHr = $scope.globalDate.getHours();
+    $scope.gDateMin = $scope.globalDate.getMinutes();
 
+    warpol('#t-' + $scope.gDateHr).append(timeLine);
+    warpol('.time-line').css('top', ($scope.gDateMin/60 * 50) + 'px' );
+  };
   $scope.ttt = function () {
+
+    clearInterval(tttFunction);
+
     warpol('.event-create').html('');
-    var maxDateTime = getMaxDateTime();
-    var minDateTime = getMinDateTime();
     var request = gapi.client.calendar.events.list({
 //       'calendarId': 'primary',
       'calendarId': 'help@silverip.com',
@@ -2850,99 +2865,14 @@ app.controller('calController', function ($scope){
       'orderBy': 'startTime'
     });
     request.execute(function(resp) {
+        objects  = resp.items;
+        objArray = resp.items;
 
-      var objects = resp.items;
-//       var objectsX = resp.items;
-      objArray = resp.items;
-      var regExp = /\(([^)]+)\)/;
-      var who = {'0':''
-                ,'Izzy':'1'
-                ,'Melvin':'2'
-                ,'Abe':'3'
-                ,'Eli':'4'
-                ,'Brian':'5'
-                ,'Charlie':'6'
-                ,'Pablo':'7'
-                };
-      var size = 50;
-//       var objects = getFullObjects(objectsX, regExp);
+        createEventsHtml(objects);
+      });
+    $scope.timeLine();
 
-
-
-
-
-
-      for(var obj in objects ) {
-        var geNameTmp = regExp.exec(objects[obj]['summary']);
-        console.log(geNameTmp);
-
-        var inicio    = new Date(objects[obj]['start']['dateTime']);
-        var fin       = new Date(objects[obj]['end']['dateTime']);
-
-        var whoIs = geNameTmp?geNameTmp[1]:'';
-        var ini   = inicio.toLocaleTimeString();
-        var fn    = fin.toLocaleTimeString();
-
-        if (ini == 'Invalid Date')
-          continue;
-
-        //inicio
-        var xA = ini.split(':')[0];
-        var xB = ini.split(':')[1];
-        var xC = ini.split(':')[2];
-        var xD = xC.split(' ')[1];
-
-        //fin
-        var xE = fn.split(':')[0];
-        var xF = fn.split(':')[1];
-        var xG = fn.split(':')[2];
-        var xH = xG.split(' ')[1];
-        var top = xB;
-        var diffHours = Math.abs(fin - inicio) / 36e5;
-
-        var tmpColor = 'default';
-
-        if(objects[obj]['colorId'])
-          tmpColor = objects[obj]['colorId'];
-
-
-        var content =  '<div class="event-container color-' + tmpColor + ' eid' + objects[obj]['id'] + '" id="' + xA + '-' + xD + '-' + who[whoIs] + '-box" onclick="eventTool(event, this.id, 0);">';
-              content +=  '<p class="ec-time cl'+ objects[obj]['id'] + '">' + (xA + (xB > 0 ? (':' + xB) : '')) + xD + ' - ' + (xE + (xF > 0 ? (':' + xF) : '')) + xH + '</p>';
-              content +=  '<p class="ec-titulo">' + objects[obj]['summary'] + '</p>';
-              content +=  '<div class="tooltip-event" id="' + xA + '-' + xD + '-' + who[whoIs] + '-box-tooltip" onclick="eventTool(event, 9,9)">';
-                content +=  '<div>' + (xA + (xB > 0 ? (':' + xB) : '')) + xD + ' - ' + (xE + (xF > 0 ? (':' + xF) : '')) + xH + '</div>';
-                content +=  '<div class="ect-desc">' + objects[obj]['description'] + '</div>';
-                content +=  '<button class="dlt-btn-tool tool-btn" onclick="eventTool(event, null, 1)">Delete</button>';
-                content +=  '<button class="edit-btn-tool tool-btn" onclick="eventTool(event, null, 2)">Edit event</button>';
-                content +=  '<button class="close-btn-tool" onclick="eventTool(event, null, 3)">X</button>';
-              content += '</div>';
-            content += '</div>';
-
-
-
-
-        warpol("[idEvent=" + objects[obj]['id'] + "]").html('<div class="event-create anim" ></div>');
-        warpol("[idEvent=" + objects[obj]['id'] + "]").attr('idEvent', '');
-        warpol("[idEvent=" + objects[obj]['id'] + "]").attr('objindex', '');
-        warpol('#' + xA + '-' + xD + '-' + who[whoIs]).attr('idEvent', objects[obj]['id']);
-        warpol('#' + xA + '-' + xD + '-' + who[whoIs]).attr('objindex', obj);
-
-        if (warpol('#' + xA + '-' + xD + '-' + who[whoIs]))
-          warpol('#' + xA + '-' + xD + '-' + who[whoIs]).append(content);
-        else
-          warpol('#' + xA + '-' + xD + '-' + who[whoIs]).html(content);
-
-        warpol('.' + 'eid' + objects[obj]['id']).css('top', (xB/60 * size) + 'px' );
-        warpol('.' + 'eid' + objects[obj]['id']).css('height', (size * diffHours))
-        if((size * diffHours) == 25)
-          warpol('.' + 'cl' + objects[obj]['id']).css('float', 'left');
-
-
-      }
-
-
-    });
-
+    tttFunction = setInterval(function(){$scope.ttt();$scope.timeLine ();}, 25000);
   }
   warpol( ".event-create" ).dblclick(function() {
     console.log('Handler for .dblclick() called.');
@@ -2962,24 +2892,76 @@ app.controller('calController', function ($scope){
     var d = new Date();
     return d.getFullYear() + '-0' + (d.getMonth() + 1) + '-' + d.getDate() + 'T00:00:00-05:00';
   };
-  function getFullObjects (objects, regex){
-
-
+  function createEventsHtml(objects){
     for(var obj in objects ) {
-      var geNameTmp = regex.exec(objects[obj]['summary'])[1];
-      var tmpNameSplit = geNameTmp.split('/');
+      var geNameTmp = regExp.exec(objects[obj]['summary']);
 
-      if (tmpNameSplit[1])
-      {
-        console.log('tiene mas de 1');
-        console.log(objects[obj]);
-      }
+      var inicio    = new Date(objects[obj]['start']['dateTime']);
+      var fin       = new Date(objects[obj]['end']['dateTime']);
+
+      var whoIs = geNameTmp?geNameTmp[1]:'';
+      var ini   = inicio.toLocaleTimeString();
+      var fn    = fin.toLocaleTimeString();
+
+      if (ini == 'Invalid Date')
+        continue;
+
+      //inicio
+      var xA = ini.split(':')[0];
+      var xB = ini.split(':')[1];
+      var xC = ini.split(':')[2];
+      var xD = xC.split(' ')[1];
+
+      //fin
+      var xE = fn.split(':')[0];
+      var xF = fn.split(':')[1];
+      var xG = fn.split(':')[2];
+      var xH = xG.split(' ')[1];
+      var top = xB;
+      var diffHours = Math.abs(fin - inicio) / 36e5;
+
+      var tmpColor = 'default';
+
+      if(objects[obj]['colorId'])
+        tmpColor = objects[obj]['colorId'];
+
+
+      var content =  '<div class="event-container color-' + tmpColor + ' eid' + objects[obj]['id'] + '" id="' + xA + '-' + xD + '-' + who[whoIs] + '-box" onclick="eventTool(event, this.id, 0);">';
+            content +=  '<p class="ec-time cl'+ objects[obj]['id'] + '">' + (xA + (xB > 0 ? (':' + xB) : '')) + xD + ' - ' + (xE + (xF > 0 ? (':' + xF) : '')) + xH + '</p>';
+            content +=  '<p class="ec-titulo">' + objects[obj]['summary'] + '</p>';
+            content +=  '<div class="tooltip-event" id="' + xA + '-' + xD + '-' + who[whoIs] + '-box-tooltip" onclick="eventTool(event, 9,9)">';
+              content +=  '<div>' + (xA + (xB > 0 ? (':' + xB) : '')) + xD + ' - ' + (xE + (xF > 0 ? (':' + xF) : '')) + xH + '</div>';
+              content +=  '<div class="ect-desc">' + objects[obj]['description'] + '</div>';
+              content +=  '<button class="dlt-btn-tool tool-btn" onclick="eventTool(event, null, 1)">Delete</button>';
+              content +=  '<button class="edit-btn-tool tool-btn" onclick="eventTool(event, null, 2)">Edit event</button>';
+              content +=  '<button class="close-btn-tool" onclick="eventTool(event, null, 3)">X</button>';
+            content += '</div>';
+          content += '</div>';
+
+
+
+
+      warpol("[idEvent=" + objects[obj]['id'] + "]").html('<div class="event-create anim" ></div>');
+      warpol("[idEvent=" + objects[obj]['id'] + "]").attr('idEvent', '');
+      warpol("[idEvent=" + objects[obj]['id'] + "]").attr('objindex', '');
+      warpol('#' + xA + '-' + xD + '-' + who[whoIs]).attr('idEvent', objects[obj]['id']);
+      warpol('#' + xA + '-' + xD + '-' + who[whoIs]).attr('objindex', obj);
+
+      if (warpol('#' + xA + '-' + xD + '-' + who[whoIs]))
+        warpol('#' + xA + '-' + xD + '-' + who[whoIs]).append(content);
       else
-        console.log('tiene unicamente 1');
+        warpol('#' + xA + '-' + xD + '-' + who[whoIs]).html(content);
+
+      warpol('.' + 'eid' + objects[obj]['id']).css('top', (xB/60 * size) + 'px' );
+      warpol('.' + 'eid' + objects[obj]['id']).css('height', (size * diffHours))
+      if((size * diffHours) == 25)
+        warpol('.' + 'cl' + objects[obj]['id']).css('float', 'left');
+
 
     }
-  };
+  }
   $scope.cancelNewEvent = function () {
+
     console.log('evento nuevo cancelado');
     warpol('#transparent-bg').fadeOut();
     warpol('#new-event').fadeOut();
@@ -2997,7 +2979,6 @@ app.controller('calController', function ($scope){
     warpol('.input-where').val('');
     warpol('.input-description').html('');
     warpol('.input-description').val('');
-
 
     objEdit = null;
 
@@ -3036,6 +3017,7 @@ app.controller('calController', function ($scope){
       'summary': t,
       'location': w,
       'description': d,
+      'colorId': 11,
       'start': {
         'dateTime': tIso1,
         'timeZone': 'America/Chicago'
@@ -3046,14 +3028,8 @@ app.controller('calController', function ($scope){
       }
     };
 
-    if(objEdit)
-    {
-      console.log($scope.idCalendars[calSelect]);
-      console.log($scope.calendarsName[calSelect]);
-      console.log($scope.calendarColors[calSelect]);
-
-
-      //THIS EDITS EVENT
+    //THIS EDITS EVENT IF
+    if(objEdit) {
       if (calSelect)
       {
         event.colorId = $scope.calendarColors[calSelect];
@@ -3093,18 +3069,51 @@ app.controller('calController', function ($scope){
         $scope.eventUpdateNotify('Event Updated');
       }
     }
-    else
-    {
-      //THIS INSERTS NEW EVENT
-      //Multiple calendars able on repeat
-      var request = gapi.client.calendar.events.insert({
-        'calendarId': 'help@silverip.com',
-        'resource': event
-      });
-      request.execute(function(event) {
-        console.log('Event created: ' + event.htmlLink);
-        $scope.ttt();
-      });
+      //THIS IS COMMON INSERT
+    else {
+      var geNameTmp = regExp.exec(event.summary)[1];
+      var tmpNameSplit = geNameTmp.split('/');
+      var summary = event.summary.split('(')[1].split(')')[1];
+
+      if (tmpNameSplit[1])
+      {
+        var event2 = event;
+
+        event.summary = '(' + tmpNameSplit[0] + ')' + summary;
+
+        var request1 = gapi.client.calendar.events.insert({
+          'calendarId': 'help@silverip.com',
+          'resource': event
+        });
+        request1.execute(function(event) {
+          console.log('Event created: ' + event.summary);
+          $scope.ttt();
+        });
+
+        event2.summary = '(' + tmpNameSplit[1] + ')' + summary;
+
+        var request2 = gapi.client.calendar.events.insert({
+          'calendarId': 'help@silverip.com',
+          'resource': event2
+        });
+        request2.execute(function(event) {
+          console.log('Event created: ' + event.summary);
+          $scope.ttt();
+        });
+
+      }
+      else
+      {
+
+        var request = gapi.client.calendar.events.insert({
+          'calendarId': 'help@silverip.com',
+          'resource': event
+        });
+        request.execute(function(event) {
+          console.log('Event created: ' + event.summary);
+          $scope.ttt();
+        });
+      }
     }
 
     $scope.cancelNewEvent();
@@ -3139,7 +3148,6 @@ app.controller('calController', function ($scope){
     return (anio + '-' + mes + '-' + dia + 'T' + time + ':00-05:00');
   }
   function setEventName(id){
-
     var who = {'0':''
               ,'1':'Izzy'
               ,'2':'Melvin'
@@ -3153,7 +3161,6 @@ app.controller('calController', function ($scope){
     var texto = '(' + who[splitVal[2]] + ')';
     $scope.eventtitle = texto;
     warpol('.input-titulo').val(texto).focus();
-    console.log($scope.eventtitle);
   }
   $scope.setSelectValue = function (t1,t2){
     $scope.timeIni = t1;
