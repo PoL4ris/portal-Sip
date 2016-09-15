@@ -1442,3 +1442,11 @@ md-tooltip .md-content {
   z-index:11;
 }
 #output{display: none;}
+
+
+@media only screen and (max-width: 420px) {
+  /* For mobile phones: */
+  .row-hrs .time-label{width: 10%;}
+  .row-hrs .event-space{width: 90%;}
+  /*.row-hrs .event-space .inner-person, .row-hrs .event-space .person{width: 100%;}*/
+}

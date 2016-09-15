@@ -2690,6 +2690,7 @@ app.controller('getSignedUpCustomersByYearChart',   function($scope) {
 var popEventTool = '';
 var objArray = '';
 var objEdit = null;
+var winSize  = warpol( document ).width();
 
 function eventTool(event, id, toDo){
   event.stopPropagation();
@@ -2881,7 +2882,13 @@ app.controller('calController', function ($scope){
     warpol('#transparent-bg').fadeIn();
     warpol('#new-event').fadeIn();
     warpol('.calendar-select').fadeOut();
-    warpol('#new-event').css('left', '60px');
+    if(winSize <= 420){
+      warpol('#new-event').css('left', '0px');
+      warpol('#new-event').css('width', '80%');
+    }
+    else
+      warpol('#new-event').css('left', '60px');
+    warpol('.input-titulo').focus();
 
   });
   function getMaxDateTime (){
@@ -2966,7 +2973,10 @@ app.controller('calController', function ($scope){
     warpol('#transparent-bg').fadeOut();
     warpol('#new-event').fadeOut();
     warpol('calendar-select').fadeOut();
-    warpol('#new-event').css('left', '-50%');
+    if(winSize <= 420)
+      warpol('#new-event').css('width', '40%');
+    else
+      warpol('#new-event').css('left', '-50%');
 
     this.eventtitle = '';
     this.timeIni = '';
