@@ -124,7 +124,7 @@ class MainController extends Controller
     if (isset($string[1]))
     {
       return Address::with('customer')
-        ->where('code', 'LIKE','%'.explode(" ",$string[0])[0].'%' )
+        ->where('code', 'LIKE','%'.explode(" ", $string[0])[0].'%' )
         ->where('unit', 'LIKE','%'.$string[1].'%' )
         ->take(20)
         ->get();

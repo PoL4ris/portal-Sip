@@ -901,6 +901,15 @@ console.log('entro');
 //       $scope.adminAccessAppElements = response.data;
 //     });
 });
+
+
+
+
+
+
+
+
+
 app.controller('buildingCtl', ['$scope','$route','$http', function($scope, $route, $http) {
   if (!$scope.sbid)
   {
@@ -1154,6 +1163,13 @@ return;
 
 
 }]);
+
+
+
+
+
+
+
 app.controller('newbuildingform', ['$scope', '$http', function($scope, $http)
 {
   $http.get("newbuildingform")
@@ -2150,6 +2166,10 @@ app.controller('actionsController',                 function ($scope) {
   };
 
 });
+
+
+
+
 app.controller('mainSearchController',              function ($scope, $http, $compile){
   $scope.closeSearch = function () {
     warpol('#globalSearch').fadeOut('fast');
@@ -2257,6 +2277,13 @@ app.controller('mainSearchController',              function ($scope, $http, $co
     warpol("#viewMidContent").html(compiledeHTML);
   };
 });
+
+
+
+
+
+
+
 app.controller('toolsController',                   function ($scope, $http) {
   $scope.letterLimit = 400;
   $scope.showFullComment = function(id) {
