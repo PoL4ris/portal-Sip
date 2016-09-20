@@ -7,3 +7,4 @@ Homestead.json
 .idea/
 /bower_components
 bower_components
+.DS_Store
