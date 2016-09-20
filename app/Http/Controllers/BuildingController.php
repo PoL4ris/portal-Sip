@@ -45,13 +45,15 @@ class BuildingController extends Controller
 //      $building[0]->typename = $bldType[0]->name;
     }
     else
-      $building = Building::orderBy('id', 'desc')->get();
+      $building = Building::orderBy('id', 'desc')->skip($offset)->take($limit)->get();
 
 
-    $buildingsList = DB::table('buildings')->skip($offset)->take($limit)->get();
+//    $buildingsList = DB::table('buildings')->skip($offset)->take($limit)->get();
     $neighborhoodList = $this->getNeighborhoodList();
     $buildingsTypes = $this->getBuildingsType();
     $buildingsInfo = $this->getBuildingsInfo($building[0]->id);
+
+
 
     if ($building[0]->id_neighborhoods != 0)
     {
@@ -67,7 +69,7 @@ class BuildingController extends Controller
              'exist'        => $buildingsInfo['exist'],
              'properties'   => $buildingsInfo['properties'],
              'contact'      => $buildingsInfo['contact'],
-             'buildingList' => $buildingsList,
+             'buildingList' => $building,
              'retail'       => $buildingsTypes['retail'],
              'comer'        => $buildingsTypes['comer'],
              'offset'       => $offset,
@@ -134,8 +136,8 @@ class BuildingController extends Controller
   public function getBuildingsInfo($id)
   {
     $exist = true;
-    $properties = BuildingProperty::where('building_properties.id_buildings',$id )->get();
-    $contact = BuildingContact::where('building_contacts.id_buildings',$id)->get();
+    $properties = BuildingProperty::where('id',$id )->get();
+    $contact = BuildingContact::where('id',$id)->get();
 
     if (!$properties->first() && !$contact->first())
       $exist = false;

@@ -5,10 +5,10 @@
     max-width:400px;
     text-align: center;
 
-    background-color: #d9edf7;
-    color: #31708f;
+    background: rgba(0,0,0,.8);
+    color: #ffffff;
     padding: 15px;
-    border: 1px solid #bce8f1;
+    border: 1px solid black;
     border-radius: 4px;
 
     -webkit-transition: top 0.5s ease-out,opacity 0.2s ease-out;
@@ -52,8 +52,8 @@
     font-size: 21px;
     font-weight: 700;
     line-height: 1;
-    color: #000;
-    text-shadow: 0 1px 0 #fff;
+    color: #ffffff;
+    text-shadow: 0 1px 0 #000000;
     filter: alpha(opacity=20);
     opacity: .2;
 
@@ -64,7 +64,7 @@
 }
 
 .cg-notify-close:hover, .cg-notify-close:focus {
-    color: #000;
+    color: #ffffff;
     text-decoration: none;
     cursor: pointer;
     filter: alpha(opacity=50);

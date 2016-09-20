@@ -113,46 +113,22 @@ class TestController extends Controller
   public function supportTest()
   {
 
-    //$ticket2 = Customer::with('type', 'status', 'contacts')->find(1783)->toArray();
-    //dd(Customer::with('ticketHistory')->find(1783));
-    //dd(Ticket::with('address')->find(18685));
-
-
-
-
-
-
-
 
     dd(
-        Building::where('name',       'LIKE', '%tower%')
-                ->orWhere('alias',    'LIKE', '%tower%')
-                ->orWhere('nickname', 'LIKE', '%tower%')
-                ->orWhere('code',     'LIKE', '%tower%')
-                ->orWhere('units',    'LIKE', '%tower%')
-                ->get()
-                ->toArray()
+        Building::with(
+          'products'
+          ,'product'
+          )
+          ->find(60)
+          ->toArray()
       );
 
 
-//dd(
-//
-//);
-
-
-
-
-
-
-
-//1783
-//18685
 
 //        $queries = DB::getQueryLog();
 //        $last_query = end($queries);
 //        dd($last_query);
 
-//        dd($ticket2);
   }
 
   public function cleanView(){

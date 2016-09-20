@@ -36,7 +36,7 @@
   </div>
 
   <div ng-if="globalCustomerPoundSearch" class="anim gsrdiv animate-if">
-    <h5>NEW NEW NEW</h5>
+    <h5>Code + Pound Sign</h5>
     <p ng-if="globalCustomerPoundSearch.length === 0">No results.</p>
     <div ng-if="loadingCP" class="loading-default animate-if"><img src="/img/default.gif" alt=""></div>
     <p ng-repeat="gcps in globalCustomerPoundSearch" class="animate-if" ng-click="displayBuildingResume(gcps.customer.id); closeSearch()">-{{gcps.customer.first_name}} {{gcps.customer.last_name}}</p>

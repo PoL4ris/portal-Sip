@@ -1,34 +1,487 @@
-<div class="col-lg-12 fondo">
-<div class="col-lg-12 center">
-  <img src="/signupimg/silverip-logo.png" alt="">
-</div>
-  <h1>Welcome, to activate your account please proceed.</h1>
+<script src="https://apis.google.com/js/client.js?onload=checkAuth"></script>
+<script type="text/javascript">
+  // Your Client ID can be retrieved from your project in the Google
+  // Developer Console, https://console.developers.google.com
+  var CLIENT_ID = '261318834446-52qbv58ckouhj0hagl8gv96sk0bdpvl2.apps.googleusercontent.com';
 
+  var SCOPES = ["https://www.googleapis.com/auth/calendar"];
 
-
-  <md-button>Proceed</md-button>
-
-
-
-</div>
-
-
-<style>
-
-
-
-
-
-  .fondo {
-    background-image: url("/signupimg/indexbg.jpg");
-    border: 1px solid red;
+  /**
+   * Check if current user has authorized this application.
+   */
+  function checkAuth() {
+    gapi.auth.authorize(
+      {
+        'client_id': CLIENT_ID,
+        'scope': SCOPES.join(' '),
+        'immediate': true
+      }, handleAuthResult);
   }
-  .fondo .center{}
-  .fondo .center img{}
+
+  /**
+   * Handle response from authorization server.
+   *
+   * @param {Object} authResult Authorization result.
+   */
+  function handleAuthResult(authResult) {
+    var authorizeDiv = document.getElementById('authorize-div');
+    if (authResult && !authResult.error) {
+      // Hide auth UI, then load client library.
+      authorizeDiv.style.display = 'none';
+      loadCalendarApi();
+    } else {
+      // Show auth UI, allowing the user to initiate authorization by
+      // clicking authorize button.
+      authorizeDiv.style.display = 'inline';
+    }
+  }
+
+  /**
+   * Initiate auth flow in response to user clicking authorize button.
+   *
+   * @param {Event} event Button click event.
+   */
+  function handleAuthClick(event) {
+    gapi.auth.authorize(
+      {client_id: CLIENT_ID, scope: SCOPES, immediate: false},
+      handleAuthResult);
+    return false;
+  }
+
+  /**
+   * Load Google Calendar client library. List upcoming events
+   * once client library is loaded.
+   */
+  function loadCalendarApi() {
+    gapi.client.load('calendar', 'v3', listUpcomingEvents);
+  }
+
+  /**
+   * Print the summary and start datetime/date of the next ten events in
+   * the authorized user's calendar. If no events are found an
+   * appropriate message is printed.
+   */
+  function listUpcomingEvents() {
+
+    warpol('#output').html('');
+
+    var request = gapi.client.calendar.events.list({
+//      'calendarId': 'primary',
+      'calendarId': 'help@silverip.com',
+      'timeMin': (new Date()).toISOString(),
+      'showDeleted': false,
+      'singleEvents': true,
+      'maxResults': 10,
+      'orderBy': 'startTime'
+    });
+
+    request.execute(function(resp)
+    {
+      var events = resp.items;
+
+      if (events)
+      {
+        console.log('OK');
+        angular.element(document).ready(function () {
+          angular.element(warpol('#output')).scope().ttt();
+        });
+
+      }
+      else
+        console.log('NO');
+
+      return;
+
+
+      appendPre('Upcoming events:');
+
+      if (events.length > 0) {
+        for (i = 0; i < events.length; i++) {
+          var event = events[i];
+          var when = event.start.dateTime;
+          if (!when) {
+            when = event.start.date;
+          }
+          appendPre(event.summary + ' (' + when + ')')
+        }
+      } else {
+        appendPre('No upcoming events found.');
+      }
+
+    });
+  }
+
+  /**
+   * Append a pre element to the body containing the given message
+   * as its text node.
+   *
+   * @param {string} message Text to be placed in pre element.
+   */
+  function appendPre(message) {
+    var pre = document.getElementById('output');
+    var textContent = document.createTextNode(message + '\n');
+    pre.appendChild(textContent);
+  }
+
+
+/*
+*
+* NEW EVENT INSERT
+*
+* */
+
+  function insertEvent (){
+    console.log('correct');
+
+
+    var event = {
+      'summary': 't5 event',
+      'location': '800 Howard St., San Francisco, CA 94103',
+      'description': 'A chance to hear more about Google\'s developer products.',
+      'start': {
+        'dateTime': '2016-08-12T15:00:00-05:00',
+        'timeZone': 'America/Chicago'
+      },
+      'end': {
+        'dateTime': '2016-08-12T16:00:00-05:00',
+        'timeZone': 'America/Chicago'
+      },
+      'attendees': [
+        {'email': 'pol.laris@gmail.com'},
+      ]
+    };
+
+    var request = gapi.client.calendar.events.insert({
+      'calendarId': 'primary',
+      'resource': event
+    });
+
+    request.execute(function(event) {
+      appendPre('Event created: ' + event.htmlLink);
+    });
+
+
+
+  }
+
+</script>
+
+
+<div ng-controller="calController">
+
+  <div id="authorize-div" style="display: none">
+    <span>Authorize access to Google Calendar API</span>
+    <button id="authorize-button" onclick="handleAuthClick(event)">Authorize</button>
+  </div>
+  <pre id="output"></pre>
+
+  <button ng-click="ttt()" >RELOAD</button>
+  <button ng-click="eventUpdateNotify('NotifyEvent')" >Notif event</button>
+
+  <div id="transparent-bg" ng-click="cancelNewEvent()"></div>
+
+  <div id="new-event" class="anim">
+    <div class="col-lg-12">
+      <form name="projectForm" id="new-event-form">
+        <div class="ev-btns">
+          <md-button class="ev-btn-back btn6" ng-click="cancelNewEvent()">Back</md-button>
+          <md-button class="btn3 savebtncal" type="submit" ng-click="setNewEvent()">SAVE</md-button>
+        </div>
+        <div layout="column" ng-cloak class="contact-form">
+          <md-content layout-padding>
+
+            <md-input-container class="md-block">
+              <label>Event Title</label>
+              <input required name="eventtitle" ng-model="eventtitle" class="input-titulo">
+              <div ng-messages="projectForm.eventtitle.$error">
+                <div ng-message="required">This is required.</div>
+              </div>
+            </md-input-container>
+
+            <md-input-container style="margin-right: 10px;">
+              <label>From</label>
+              <md-select class="select-inicio" id="select-inicio-id" ng-model="timeIni" name="timeIni"  required>
+                <md-option ng-repeat="time in timeSelect" value="{{time}}">{{time}}</md-option>
+              </md-select>
+              <div class="errors" ng-messages="projectForm.timeIni.$error">
+                <div ng-message="required">Required</div>
+              </div>
+            </md-input-container>
+
+            <md-input-container style="margin-right: 10px;">
+              <label>To</label>
+              <md-select class="select-fin" ng-model="timeFin" name="timeFin" required>
+                <md-option ng-repeat="time in timeSelect" value="{{time}}">{{time}}</md-option>
+              </md-select>
+              <div class="errors" ng-messages="projectForm.timeFin.$error">
+                <div ng-message="required">Required</div>
+              </div>
+            </md-input-container>
+
+
+            <md-input-container class="md-block calendar-select">
+              <label>Calendar</label>
+              <md-select ng-model="calendar" name="calendar" class="select-calendar">
+                <md-option ng-repeat="calendar in calendarsName" value="{{calendar}}">{{calendar}}</md-option>
+              </md-select>
+            </md-input-container>
+
+
+
+            <md-input-container class="md-block">
+              <label>Where</label>
+              <input required name="where" ng-model="where" class="input-where">
+              <div ng-messages="projectForm.where.$error">
+                <div ng-message="required">This is required.</div>
+              </div>
+            </md-input-container>
+            <md-input-container class="md-block">
+              <label>Description</label>
+              <textarea class="input-description" ng-model="description" md-maxlength="550" rows="5" md-select-on-focus></textarea>
+            </md-input-container>
+          </md-content>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="dataEventsCalendar">
+    <div class="row-hrs"><div class="float-left time-label"></div>   <div class="float-right event-space">
+      <div class="person color-1 text-center whois">Izzy</div>
+      <div class="person color-2 text-center whois">Melvin</div>
+      <div class="person color-3 text-center whois">Abe</div>
+      <div class="person color-4 text-center whois">Eli</div>
+      <div class="person color-5 text-center whois">Brian</div>
+      <div class="person color-6 text-center whois">Charlie</div>
+      <div class="person color-7 text-center whois">Pablo</div>
+    </div>   </div>
+    <!--<div class="row-hrs"><div class="float-left time-label"><label>12am</label></div>   <div class="float-right event-space">-->
+      <!--<div id="12-AM-1" class="inner-person"><div class="event-create anim" ></div></div>-->
+      <!--<div id="12-AM-2" class="inner-person"><div class="event-create anim" ></div></div>-->
+      <!--<div id="12-AM-3" class="inner-person"><div class="event-create anim" ></div></div>-->
+      <!--<div id="12-AM-4" class="inner-person"><div class="event-create anim" ></div></div>-->
+      <!--<div id="12-AM-5" class="inner-person"><div class="event-create anim" ></div></div>-->
+      <!--<div id="12-AM-6" class="inner-person"><div class="event-create anim" ></div></div>-->
+    <!--</div>   </div>-->
+    <!--<div class="row-hrs"><div class="float-left time-label"><label>1am</label></div>    <div class="float-right event-space">-->
+      <!--<div id="1-AM-1" class="inner-person"><div class="event-create anim" ></div></div>-->
+      <!--<div id="1-AM-2" class="inner-person"><div class="event-create anim" ></div></div>-->
+      <!--<div id="1-AM-3" class="inner-person"><div class="event-create anim" ></div></div>-->
+      <!--<div id="1-AM-4" class="inner-person"><div class="event-create anim" ></div></div>-->
+      <!--<div id="1-AM-5" class="inner-person"><div class="event-create anim" ></div></div>-->
+      <!--<div id="1-AM-6" class="inner-person"><div class="event-create anim" ></div></div>-->
+    <!--</div>   </div>-->
+    <!--<div class="row-hrs"><div class="float-left time-label"><label>2am</label></div>    <div class="float-right event-space">-->
+      <!--<div id="2-AM-1" class="inner-person"><div class="event-create anim" ></div></div>-->
+      <!--<div id="2-AM-2" class="inner-person"><div class="event-create anim" ></div></div>-->
+      <!--<div id="2-AM-3" class="inner-person"><div class="event-create anim" ></div></div>-->
+      <!--<div id="2-AM-4" class="inner-person"><div class="event-create anim" ></div></div>-->
+      <!--<div id="2-AM-5" class="inner-person"><div class="event-create anim" ></div></div>-->
+      <!--<div id="2-AM-6" class="inner-person"><div class="event-create anim" ></div></div>-->
+    <!--</div>   </div>-->
+    <!--<div class="row-hrs"><div class="float-left time-label"><label>3am</label></div>    <div class="float-right event-space">-->
+      <!--<div id="3-AM-1" class="inner-person"><div class="event-create anim" ></div></div>-->
+      <!--<div id="3-AM-2" class="inner-person"><div class="event-create anim" ></div></div>-->
+      <!--<div id="3-AM-3" class="inner-person"><div class="event-create anim" ></div></div>-->
+      <!--<div id="3-AM-4" class="inner-person"><div class="event-create anim" ></div></div>-->
+      <!--<div id="3-AM-5" class="inner-person"><div class="event-create anim" ></div></div>-->
+      <!--<div id="3-AM-6" class="inner-person"><div class="event-create anim" ></div></div>-->
+    <!--</div>   </div>-->
+    <!--<div class="row-hrs"><div class="float-left time-label"><label>4am</label></div>    <div class="float-right event-space">-->
+      <!--<div id="4-AM-1" class="inner-person"><div class="event-create anim" ></div></div>-->
+      <!--<div id="4-AM-2" class="inner-person"><div class="event-create anim" ></div></div>-->
+      <!--<div id="4-AM-3" class="inner-person"><div class="event-create anim" ></div></div>-->
+      <!--<div id="4-AM-4" class="inner-person"><div class="event-create anim" ></div></div>-->
+      <!--<div id="4-AM-5" class="inner-person"><div class="event-create anim" ></div></div>-->
+      <!--<div id="4-AM-6" class="inner-person"><div class="event-create anim" ></div></div>-->
+    <!--</div>   </div>-->
+    <!--<div class="row-hrs"><div class="float-left time-label"><label>5am</label></div>    <div class="float-right event-space">-->
+      <!--<div id="5-AM-1" class="inner-person"><div class="event-create anim" ></div></div>-->
+      <!--<div id="5-AM-2" class="inner-person"><div class="event-create anim" ></div></div>-->
+      <!--<div id="5-AM-3" class="inner-person"><div class="event-create anim" ></div></div>-->
+      <!--<div id="5-AM-4" class="inner-person"><div class="event-create anim" ></div></div>-->
+      <!--<div id="5-AM-5" class="inner-person"><div class="event-create anim" ></div></div>-->
+      <!--<div id="5-AM-6" class="inner-person"><div class="event-create anim" ></div></div>-->
+    <!--</div>   </div>-->
+    <!--<div class="row-hrs"><div class="float-left time-label"><label>6am</label></div>    <div class="float-right event-space">-->
+      <!--<div id="6-AM-1" class="inner-person"><div class="event-create anim" ></div></div>-->
+      <!--<div id="6-AM-2" class="inner-person"><div class="event-create anim" ></div></div>-->
+      <!--<div id="6-AM-3" class="inner-person"><div class="event-create anim" ></div></div>-->
+      <!--<div id="6-AM-4" class="inner-person"><div class="event-create anim" ></div></div>-->
+      <!--<div id="6-AM-5" class="inner-person"><div class="event-create anim" ></div></div>-->
+      <!--<div id="6-AM-6" class="inner-person"><div class="event-create anim" ></div></div>-->
+    <!--</div>   </div>-->
+    <div id="t-7"   class="row-hrs"><div class="float-left time-label"><label>7am</label></div>    <div class="float-right event-space">
+      <div id="7-AM-1" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="7-AM-2" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="7-AM-3" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="7-AM-4" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="7-AM-5" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="7-AM-6" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="7-AM-7" class="inner-person"><div class="event-create anim" ></div></div>
+    </div>   </div>
+    <div id="t-8"   class="row-hrs"><div class="float-left time-label"><label>8am</label></div>    <div class="float-right event-space">
+      <div id="8-AM-1" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="8-AM-2" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="8-AM-3" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="8-AM-4" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="8-AM-5" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="8-AM-6" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="8-AM-7" class="inner-person"><div class="event-create anim" ></div></div>
+    </div>   </div>
+    <div id="t-9"   class="row-hrs"><div class="float-left time-label"><label>9am</label></div>    <div class="float-right event-space">
+      <div id="9-AM-1" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="9-AM-2" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="9-AM-3" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="9-AM-4" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="9-AM-5" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="9-AM-6" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="9-AM-7" class="inner-person"><div class="event-create anim" ></div></div>
+    </div>   </div>
+    <div id="t-10"  class="row-hrs"><div class="float-left time-label"><label>10am</label></div>    <div class="float-right event-space">
+      <div id="10-AM-1" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="10-AM-2" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="10-AM-3" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="10-AM-4" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="10-AM-5" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="10-AM-6" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="10-AM-7" class="inner-person"><div class="event-create anim" ></div></div>
+    </div>   </div>
+    <div id="t-11"  class="row-hrs"><div class="float-left time-label"><label>11am</label></div>    <div class="float-right event-space">
+      <div id="11-AM-1" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="11-AM-2" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="11-AM-3" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="11-AM-4" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="11-AM-5" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="11-AM-6" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="11-AM-7" class="inner-person"><div class="event-create anim" ></div></div>
+    </div>   </div>
+    <div id="t-12"  class="row-hrs"><div class="float-left time-label"><label>12pm</label></div>    <div class="float-right event-space">
+      <div id="12-PM-1" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="12-PM-2" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="12-PM-3" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="12-PM-4" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="12-PM-5" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="12-PM-6" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="12-PM-7" class="inner-person"><div class="event-create anim" ></div></div>
+    </div>   </div>
+    <div id="t-13" class="row-hrs"><div class="float-left time-label"><label>1pm</label></div>    <div class="float-right event-space">
+      <div id="1-PM-1" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="1-PM-2" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="1-PM-3" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="1-PM-4" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="1-PM-5" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="1-PM-6" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="1-PM-7" class="inner-person"><div class="event-create anim" ></div></div>
+    </div>   </div>
+    <div id="t-14" class="row-hrs"><div class="float-left time-label"><label>2pm</label></div>    <div class="float-right event-space">
+      <div id="2-PM-1" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="2-PM-2" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="2-PM-3" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="2-PM-4" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="2-PM-5" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="2-PM-6" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="2-PM-7" class="inner-person"><div class="event-create anim" ></div></div>
+    </div>   </div>
+    <div id="t-15" class="row-hrs"><div class="float-left time-label"><label>3pm</label></div>    <div class="float-right event-space">
+      <div id="3-PM-1" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="3-PM-2" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="3-PM-3" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="3-PM-4" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="3-PM-5" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="3-PM-6" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="3-PM-7" class="inner-person"><div class="event-create anim" ></div></div>
+    </div>   </div>
+    <div id="t-16" class="row-hrs"><div class="float-left time-label"><label>4pm</label></div>    <div class="float-right event-space">
+      <div id="4-PM-1" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="4-PM-2" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="4-PM-3" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="4-PM-4" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="4-PM-5" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="4-PM-6" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="4-PM-7" class="inner-person"><div class="event-create anim" ></div></div>
+    </div>   </div>
+    <div id="t-17" class="row-hrs"><div class="float-left time-label"><label>5pm</label></div>    <div class="float-right event-space">
+      <div id="5-PM-1" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="5-PM-2" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="5-PM-3" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="5-PM-4" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="5-PM-5" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="5-PM-6" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="5-PM-7" class="inner-person"><div class="event-create anim" ></div></div>
+    </div>   </div>
+    <div id="t-18" class="row-hrs"><div class="float-left time-label"><label>6pm</label></div>    <div class="float-right event-space">
+      <div id="6-PM-1" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="6-PM-2" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="6-PM-3" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="6-PM-4" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="6-PM-5" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="6-PM-6" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="6-PM-7" class="inner-person"><div class="event-create anim" ></div></div>
+    </div>   </div>
+    <div id="t-19" class="row-hrs"><div class="float-left time-label"><label>7pm</label></div>    <div class="float-right event-space">
+      <div id="7-PM-1" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="7-PM-2" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="7-PM-3" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="7-PM-4" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="7-PM-5" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="7-PM-6" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="7-PM-7" class="inner-person"><div class="event-create anim" ></div></div>
+    </div>   </div>
+    <div id="t-20" class="row-hrs"><div class="float-left time-label"><label>8pm</label></div>    <div class="float-right event-space">
+      <div id="8-PM-1" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="8-PM-2" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="8-PM-3" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="8-PM-4" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="8-PM-5" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="8-PM-6" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="8-PM-7" class="inner-person"><div class="event-create anim" ></div></div>
+    </div>   </div>
+    <div id="t-21" class="row-hrs"><div class="float-left time-label"><label>9pm</label></div>    <div class="float-right event-space">
+      <div id="9-PM-1" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="9-PM-2" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="9-PM-3" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="9-PM-4" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="9-PM-5" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="9-PM-6" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="9-PM-7" class="inner-person"><div class="event-create anim" ></div></div>
+    </div>   </div>
+    <div id="t-22" class="row-hrs"><div class="float-left time-label"><label>10pm</label></div>    <div class="float-right event-space">
+      <div id="10-PM-1" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="10-PM-2" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="10-PM-3" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="10-PM-4" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="10-PM-5" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="10-PM-6" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="10-PM-7" class="inner-person"><div class="event-create anim" ></div></div>
+    </div>   </div>
+    <div id="t-23" class="row-hrs"><div class="float-left time-label"><label>11pm</label></div>    <div class="float-right event-space">
+      <div id="11-PM-1" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="11-PM-2" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="11-PM-3" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="11-PM-4" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="11-PM-5" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="11-PM-6" class="inner-person"><div class="event-create anim" ></div></div>
+      <div id="11-PM-7" class="inner-person"><div class="event-create anim" ></div></div>
+    </div>   </div>
+
+
+
+
+
+  </div>
+
+</div>
 
 
 
 
 
 
-</style>
+
+
+
+
+
+
+
+
