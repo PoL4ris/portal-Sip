@@ -1,8 +1,4 @@
-
-
-
 <div class="col-lg-12" ng-controller="customerPaymentMethodsController" ng-if="!stcFlag">
-
 
   <div class="col-lg-12 display-content-main-box anim">
     <h2 class="float-left">Default Credit Card</h2>
@@ -23,12 +19,15 @@
       <label class="b-r col-lg-6">Priority</label><label class="col-lg-6 block-b-label" id="b-Priority">{{ paymentData.priority == 1 ? 'YES' : 'NO' }}</label>
     </div>
 
-
-
     <div class="btn-group btn-group-justified float-right w-auto m-t-sm m-b-sm">
-      <a class="btn-warning wrapper-xs float-right r" href="">Manual Refund</a>
-      <a class="btn-danger wrapper-xs float-right m-r-sm r" href="">Manual Charge</a>
+      <div class="btn-warning wrapper-xs float-right r box-char" href="">Manual Refund
+        <div class="manual-ref charge-box"></div>
+      </div>
+      <div class="btn-danger wrapper-xs float-right m-r-sm r box-char" href="">Manual Charge
+        <div class="manual-char charge-box"></div>
+      </div>
     </div>
+    <div class="transparent-charge"></div>
 
   </div>
 

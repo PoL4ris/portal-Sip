@@ -144,7 +144,8 @@ class CustomerController extends Controller
   }
   public function updatePaymentMethods(Request $request)
   {
-    $oldMethod = PaymentMethod::where('priority', 1)->first();
+
+    $oldMethod = PaymentMethod::where('priority', 1)->where('id_customers', $request->customerID)->first();
     $oldMethod->priority = null;
     $oldMethod->save();
 
@@ -239,7 +240,9 @@ class CustomerController extends Controller
     return Ticket::with('customer', 'address')->orderBy('created_at', 'asc')->where('id_customers', '!=', 1)->groupBy('id_customers')->take(100)->get();
     return Customer::all()->take(100);
   }
-
+  public function getAddress(){
+     return Address::groupBy('id_buildings')->get();
+  }
 
   public function updateAddressTable(Request $request)
   {

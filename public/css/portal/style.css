@@ -1209,13 +1209,13 @@ md-tooltip .md-content {
   color: black;
   float: left;
   margin: 1% 1% 6%;
+  overflow: hidden;
   padding: 1%;
   position: relative;
   width: 98%;
-  overflow: hidden;
 }
 .dataEventsCalendar .color-9 {
-  background: #4986E7 none repeat scroll 0 0;
+  background: #4986e7 none repeat scroll 0 0;
   border: 1px solid #3765ae;
 }
 .dataEventsCalendar .color-7 {
@@ -1231,15 +1231,15 @@ md-tooltip .md-content {
   border: 1px solid #4b1638;
 }
 .dataEventsCalendar .color-11 {
-  background: #F83A22 none repeat scroll 0 0;
+  background: #f83a22 none repeat scroll 0 0;
   border: 1px solid #b42a19;
 }
 .dataEventsCalendar .color-3 {
-  background: #A47AE2 none repeat scroll 0 0;
+  background: #a47ae2 none repeat scroll 0 0;
   border: 1px solid #7658a3;
 }
 .dataEventsCalendar .color-4 {
-  background: #51B749 none repeat scroll 0 0;
+  background: #51b749 none repeat scroll 0 0;
   border: 1px solid #3b8535;
 }
 .dataEventsCalendar .color-2 {
@@ -1247,15 +1247,15 @@ md-tooltip .md-content {
   border: 1px solid #174647;
 }
 .dataEventsCalendar .color-10 {
-  background: #16A765 none repeat scroll 0 0;
+  background: #16a765 none repeat scroll 0 0;
   border: 1px solid #107849;
 }
 .dataEventsCalendar .color-1 {
-  background: #FBD75B none repeat scroll 0 0;
+  background: #fbd75b none repeat scroll 0 0;
   border: 1px solid #a48c3b;
 }
 .dataEventsCalendar .color-default {
-  background: #F83A22 none repeat scroll 0 0;
+  background: #f83a22 none repeat scroll 0 0;
   border: 1px solid #b42a19;
 }
 .row-hrs {
@@ -1268,8 +1268,8 @@ md-tooltip .md-content {
   border-style: solid none none solid;
   border-width: 1px medium medium 1px;
   float: left;
-  width: 100%;
   position: relative;
+  width: 100%;
 }
 .row-hrs .time-label {
   border-right: 1px solid #ddd;
@@ -1427,26 +1427,65 @@ md-tooltip .md-content {
   overflow: hidden;
   text-align: justify;
 }
-.calendar-select{
+.calendar-select {
   display: none;
 }
-.time-line{
+.time-line {
   border: 1px solid #ff7f6e;
   height: 0;
   position: absolute;
   width: 100%;
   z-index: 10;
 }
-.row-hrs label{
+.row-hrs label {
   position: relative;
-  z-index:11;
+  z-index: 11;
 }
-#output{display: none;}
-
-
+#output {
+  display: none;
+}
+.form-inline.editable-wrap.editable-select {
+  width: 50%;
+}
+.editable-select select.editable-input {
+  cursor: pointer;
+  font-size: 12px;
+  padding: 2px;
+}
+.box-char {
+  position: relative;
+}
+.charge-box {
+  background: white none repeat scroll 0 0;
+  border: 1px solid black;
+  border-radius: 2px;
+  bottom: 40px;
+  height: 160px;
+  position: absolute;
+  right: 0;
+  transition: all 0.8s ease 0s;
+  width: 500px;
+  z-index: 6;
+}
+.manual-ref {
+}
+.manual-char {
+}
+.transparent-charge {
+  background: coral none repeat scroll 0 0;
+  height: 100%;
+  left: 0;
+  opacity: 0.5;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 5;
+}
 @media only screen and (max-width: 420px) {
-  /* For mobile phones: */
-  .row-hrs .time-label{width: 10%;}
-  .row-hrs .event-space{width: 90%;}
-  /*.row-hrs .event-space .inner-person, .row-hrs .event-space .person{width: 100%;}*/
+  .row-hrs .time-label {
+    width: 10%;
+  }
+  .row-hrs .event-space {
+    width: 90%;
+  }
 }

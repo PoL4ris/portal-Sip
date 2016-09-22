@@ -1358,11 +1358,20 @@ app.controller('customerControllerList',            function ($scope, $http){
       $scope.supportDataCustomer = response.data;
     });
 });
+
+
+
+
+
 app.controller('customerController',                function ($scope, $http, $routeParams, notify, $uibModal, $log){
   var idCustomer = $routeParams.id;
 
   if ($scope.stcid)
     idCustomer = $scope.stcid;
+
+
+    if ((warpol(location).attr('href').split('http://localhost:8000/#/')[1]) == 'customer')
+      idCustomer = 13579;
 
   $http.get("customersData", {params:{'id':idCustomer}})
     .then(function (response) {
@@ -1373,6 +1382,13 @@ app.controller('customerController',                function ($scope, $http, $ro
     .then(function (response) {
     $scope.contactTypes = response.data;
     });
+
+  $scope.getAddressItems = function (){
+    $http.get("getAddress")
+      .then(function (response) {
+        $scope.addressData = response.data;
+      });
+  };
 
   $scope.getCustomerContactData = function (){
     $http.get("getCustomerContactData", {params:{'id':idCustomer}})
@@ -1514,8 +1530,13 @@ app.controller('customerController',                function ($scope, $http, $ro
 
 
 });
-app.controller('addContInfoController',             function ($scope, $http, customerId, $uibModalInstance, mode){
 
+
+
+
+
+
+app.controller('addContInfoController',             function ($scope, $http, customerId, $uibModalInstance, mode){
   $http.get("getContactTypes")
     .then(function (response) {
       $scope.contactTypeOptions = response.data;
@@ -1536,7 +1557,7 @@ app.controller('addContInfoController',             function ($scope, $http, cus
       .then(function (response) {
          $scope.customerContactsData = response.data;
       });
-    mode.testCpmtData();
+      angular.element('#c-cont-call').scope().getCustomerContactData();
     $scope.cancel();
   }
 
@@ -1544,6 +1565,12 @@ app.controller('addContInfoController',             function ($scope, $http, cus
     $uibModalInstance.dismiss('cancel');
   };
 });
+
+
+
+
+
+
 app.controller('supportTicketHistory',              function ($scope, $http){
   $http.get("supportTicketHistory", {params:{'id':$scope.history.id}})
     .then(function (response) {

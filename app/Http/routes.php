@@ -122,6 +122,7 @@ Route::group(['middleware' => 'web'], function () {
   Route::get('getTicketOpenTime',       'SupportController@getTicketOpenTime');
   Route::get('getAvailableServices',    'SupportController@getAvailableServices');
   Route::get('getContactTypes',         'CustomerController@getContactTypes');
+  Route::get('getAddress',              'CustomerController@getAddress');
 
   //SUPPORT
   Route::get('updateTicketDetails',     'SupportController@updateTicketData');
