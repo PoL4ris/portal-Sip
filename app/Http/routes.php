@@ -16,11 +16,10 @@ header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Ac
 
 
 //DB functions
-Route::get('db-test',       'TestController@testDBRelations');
-Route::get('supportTest',   'TestController@supportTest');
-Route::get('testView',      'TestController@cleanView');
-Route::get('testTickets',      'TestController@testCustomerTickets');
-
+Route::get('db-test',           'TestController@testDBRelations');
+Route::get('supportTest',       'TestController@supportTest');
+Route::get('testView',          'TestController@cleanView');
+Route::get('testTickets',       'TestController@testCustomerTickets');
 
 Route::get('getSignupProducts', 'SignupController@getSignupProducts');
 
@@ -123,6 +122,7 @@ Route::group(['middleware' => 'web'], function () {
   Route::get('getTicketOpenTime',       'SupportController@getTicketOpenTime');
   Route::get('getAvailableServices',    'SupportController@getAvailableServices');
   Route::get('getContactTypes',         'CustomerController@getContactTypes');
+  Route::get('getAddress',              'CustomerController@getAddress');
 
   //SUPPORT
   Route::get('updateTicketDetails',     'SupportController@updateTicketData');

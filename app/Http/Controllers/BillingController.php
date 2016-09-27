@@ -20,7 +20,7 @@ class BillingController extends Controller
         $chargeDesc = $input['desc'];
         
         $sipBilling = new SIPBilling;
-        $result = $sipBilling->chargeCCByCID($cid, $amountToCharge, $chargeDesc);
+        $result = $sipBilling->chargeCC($cid, $amountToCharge, $chargeDesc);
         if (isset($result['RESPONSETEXT']) == false || $result['RESPONSETEXT'] != 'APPROVED') {
             error_log('billing_hanlder.php: action[charge] Failed: ' . print_r($result, true));
         }
@@ -34,7 +34,7 @@ class BillingController extends Controller
         $chargeDesc = $input['desc'];
         
         $sipBilling = new SIPBilling;
-        $result = $sipBilling->refundCCByCID($cid, $amountToCharge, $chargeDesc);
+        $result = $sipBilling->refundCC($cid, $amountToCharge, $chargeDesc);
         if (isset($result['RESPONSETEXT']) == false || $result['RESPONSETEXT'] != 'RETURN ACCEPTED') {
             error_log('billing_hanlder.php: action[refund] Failed: ' . print_r($result, true));
         }

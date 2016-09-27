@@ -38,7 +38,7 @@
         <td><strong>{{ contactTypes[(contactinfo.id_types - 1)].name }}</strong></td>
         <td>
           <div class="col-lg-6 c-no-editable-text text-dark-lter-more">{{ contactinfo.value }}</div>
-          <div class="col-lg-6 c-editable-text    text-muted display-none"
+          <div class="col-lg-6 c-editable-text text-muted display-none"
                editable-text="contactinfo.value"
                onaftersave="updateContactInfo(contactinfo.value, contactinfo.id)">{{ contactinfo.value }}</div>
         </td>
