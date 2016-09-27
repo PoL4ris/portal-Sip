@@ -3,7 +3,7 @@
 namespace App\Extensions;
 
 use App\Extensions\IpPay;
-use App\Models\Customer\Customers;
+use App\Models\Customer;
 use App\Models\Billing\billingTransactionLog;
 use Hash;
 use DB;
@@ -124,7 +124,7 @@ class SIPBilling {
     }
 
     public function chargeCCByCID($CID, $amount, $reason, $orderNumber = false, $details = false) {
-        $customer = Customers::find($CID);
+        $customer = Customer::find($CID);
         $xactionRequest = array();
         if ($orderNumber != false) {
             $xactionRequest['OrderNumber'] = $orderNumber;
@@ -133,7 +133,7 @@ class SIPBilling {
     }
 
     public function authCCByCID($CID, $amount, $reason, $details = false) {
-        $customer = Customers::find($CID);
+        $customer = Customer::find($CID);
         return $this->processCC($customer, array(), true, $amount, $reason, $details);
     }
 
@@ -142,25 +142,25 @@ class SIPBilling {
     }
 
     public function refundCCByCID($CID, $amount, $desc, $details = false) {
-        $customer = Customers::find($CID);
+        $customer = Customer::find($CID);
         $xactionRequest = array('TransactionType' => 'CREDIT');
         return $this->processCC($customer, $xactionRequest, false, $amount, $desc, $details);
     }
 
-    public function refundCC($amount, $desc, Customers $customer, $details = false) {
+    public function refundCC($amount, $desc, Customer $customer, $details = false) {
         $xactionRequest = array('TransactionType' => 'CREDIT');
         return $this->processCC($customer, $xactionRequest, false, $amount, $desc, $details);
     }
 
     public function refundCCByTransID($transID, $desc, $details = false) {
         $transaction = billingTransactionLog::where('TransactionID', $transID)->first();
-        $customer = ($transaction == null) ? null : Customers::find($transaction->CID);
+        $customer = ($transaction == null) ? null : Customer::find($transaction->CID);
         $xactionRequest = array('TransactionType' => 'CREDIT');
         return $this->processCC($customer, $xactionRequest, false, $transaction->Amount, $desc, $details);
     }
 
     public function tokenizeCCByCID($CID, $cardNum, $expMo, $expYr, $ccv = 0) {
-        $customer = Customers::find($CID);
+        $customer = Customer::find($CID);
         if($customer == null){
             return $customer;
         }
