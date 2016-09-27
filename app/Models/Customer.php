@@ -75,9 +75,5 @@ class Customer extends Model
             ->where('tickets.id_customers', '=', $id)
             ->select(['tickets.*', 'reasons.name as reason', 'reasons.short_description as short_reason', 'categories.name as category'])
             ->get();
-<<<<<<< HEAD
-//        return $this->hasMany('App\Models\Ticket', 'id_customers');
-=======
->>>>>>> 930d8b2bbc28b0497e45a2ec9bab32f00c2defa5
     }
 }
