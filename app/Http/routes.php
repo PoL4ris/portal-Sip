@@ -89,6 +89,9 @@ Route::group(['middleware' => 'web'], function () {
   Route::get('disableCustomerServices', 'CustomerController@disableCustomerServices');
   Route::get('activeCustomerServices',  'CustomerController@activeCustomerServices');
   Route::get('updateCustomerServices',  'CustomerController@updateCustomerServices');
+  //Customer Billing
+  Route::get('refundAmount',            'BillingController@refund');
+  Route::get('chargeAmount',            'BillingController@charge');
   //UpdateCustomer
   Route::get('updateAddressTable',      'CustomerController@updateAddressTable');
   Route::get('updateCustomersTable',    'CustomerController@updateCustomersTable');

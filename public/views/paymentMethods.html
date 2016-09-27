@@ -20,14 +20,40 @@
     </div>
 
     <div class="btn-group btn-group-justified float-right w-auto m-t-sm m-b-sm">
-      <div class="btn-warning wrapper-xs float-right r box-char" href="">Manual Refund
-        <div class="manual-ref charge-box"></div>
+      <div class="btn-warning wrapper-xs float-right r box-char" ng-click="openManualRef()">Manual Refund
+        <div class="manual-ref charge-box">
+          <div class="cbox-containter">
+            <div class="x-manaual" ng-click="closeTransparentBGManual()">X</div>
+            <p>Manual Refund</p>
+            <div class="cboxc-top">
+              <label>Amount to Refund</label><input type="text" placeholder="Set amount with no comas or signs" id="mf-input-am">
+            </div>
+            <div class="cboxc-bottom">
+              <label>Description</label><input type="text" placeholder="Describe the reason" id="mf-input-de">
+            </div>
+            <md-button class="btn2" ng-click="refundFunct()">Refund</md-button>
+          </div>
+        </div>
       </div>
-      <div class="btn-danger wrapper-xs float-right m-r-sm r box-char" href="">Manual Charge
-        <div class="manual-char charge-box"></div>
+      <div class="btn-danger wrapper-xs float-right m-r-sm r box-char" ng-click="openManualChar()">Manual Charge
+        <div class="manual-char charge-box">
+          <div class="cbox-containter">
+            <div class="x-manaual" ng-click="closeTransparentBGManual()">X</div>
+            <p>Manual Charge</p>
+            <div class="cboxc-top">
+              <label>Amount to Charge</label><input type="text" placeholder="Set amount with no comas or signs" id="mc-input-am">
+            </div>
+            <div class="cboxc-bottom">
+              <label>Description</label><input type="text" placeholder="Describe the reason" id="mc-input-de">
+            </div>
+            <md-button class="btn2" ng-click="chargeFunct()">Charge</md-button>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="transparent-charge"></div>
+
+
+    <div class="transparent-charge" ng-click="closeTransparentBGManual()"></div>
 
   </div>
 

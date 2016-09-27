@@ -1457,22 +1457,24 @@ md-tooltip .md-content {
 }
 .charge-box {
   background: white none repeat scroll 0 0;
-  border: 1px solid black;
   border-radius: 2px;
   bottom: 40px;
+  color: #333;
   height: 160px;
   position: absolute;
   right: 0;
   transition: all 0.8s ease 0s;
   width: 500px;
   z-index: 6;
+  display: none;
 }
+
 .manual-ref {
 }
 .manual-char {
 }
 .transparent-charge {
-  background: coral none repeat scroll 0 0;
+  background: black none repeat scroll 0 0;
   height: 100%;
   left: 0;
   opacity: 0.5;
@@ -1480,6 +1482,52 @@ md-tooltip .md-content {
   top: 0;
   width: 100%;
   z-index: 5;
+  display: none;
+}
+.cbox-containter {
+  margin: 10px auto;
+  width: 80%;
+}
+.cbox-containter .cboxc-top {
+  margin-bottom: 5px;
+  width: 100%;
+}
+.cbox-containter .cboxc-bottom {
+  width: 100%;
+}
+.cbox-containter label {
+  text-align: left;
+  width: 35%;
+}
+.cbox-containter input {
+  border: 1px solid #ddd;
+  border-radius: 2px;
+  padding: 4px;
+  width: 65%;
+}
+.cbox-containter p {
+}
+.charge-box::after {
+  background: white none repeat scroll 0 0;
+  bottom: -5px;
+  content: " ";
+  height: 10px;
+  position: absolute;
+  right: 5%;
+  transform: rotate(45deg);
+  width: 10px;
+}
+.x-manaual{
+  color: black;
+  cursor: pointer;
+  font-size: 16px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 20px;
+}
+.x-manaual:hover{
+  opacity:.6;
 }
 @media only screen and (max-width: 420px) {
   .row-hrs .time-label {

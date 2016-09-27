@@ -1781,8 +1781,7 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http){
       $scope.paymentMethods = response.data;
     });
     
-    $scope.setDefault = function (id)
-    {
+    $scope.setDefault = function (id) {
       $http.get("updatePaymentMethods", {params:{'id':id, 'customerID':$scope.customerData.id}})
         .then(function (response) {
           $scope.paymentMethods = response.data;
@@ -1792,6 +1791,52 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http){
           $scope.paymentData = response.data[0];
         });
     }
+
+  $scope.openManualRef = function (){
+    $scope.openTransparentBGManual();
+    warpol('.manual-ref').fadeIn('slow');
+  };
+  $scope.openManualChar = function (){
+    $scope.openTransparentBGManual();
+    warpol('.manual-char').fadeIn('slow');
+  };
+  $scope.openTransparentBGManual = function (){
+    warpol('.transparent-charge').fadeIn();
+  };
+
+  $scope.refundFunct = function (){
+    var cid = $scope.customerData.id;
+    var amount = warpol('#mf-input-am').val();
+    var desc = warpol('#mf-input-de').val();
+
+    $http.get("refundAmount", {params:{'cid':cid, 'amount':amount, 'desc':desc}})
+      .then(function (response) {
+//         $scope.paymentMethods = response.data;
+        console.log(response.data);
+      });
+  };
+
+  $scope.chargeFunct = function (){
+    var cid = $scope.customerData.id;
+    var amount = warpol('#mc-input-am').val();
+    var desc = warpol('#mc-input-de').val();
+
+    $http.get("chargeAmount", {params:{'cid':cid, 'amount':amount, 'desc':desc}})
+      .then(function (response) {
+//         $scope.paymentMethods = response.data;
+        console.log(response.data);
+      });
+  };
+
+  $scope.closeTransparentBGManual = function (){
+    warpol('.transparent-charge').fadeOut();
+    warpol('.manual-ref').fadeOut();
+    warpol('.manual-char').fadeOut();
+    warpol('#mc-input-am').val('');
+    warpol('#mc-input-de').val('');
+    warpol('#mf-input-am').val('');
+    warpol('#mf-input-de').val('');
+  };
 });
 app.controller('customerServicesController',        function ($scope, $http, $mdDialog){
 
