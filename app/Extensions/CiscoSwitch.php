@@ -2,7 +2,7 @@
 
 namespace App\Extensions;
 
-use App\Models\NetworkNodes;
+use App\Models\NetworkNode;
 
 class CiscoSwitch {
 
@@ -115,25 +115,29 @@ class CiscoSwitch {
         return false;
     }
 
-    public function registerSwitch($ipAddressList, $locationID = NULL) {
-        if (isset($ipAddressList) && count($ipAddressList) > 0) {
-            foreach ($ipAddressList as $ip) {
-                $hostName = str_replace('.silverip.net', '', $this->formatSnmpResponse($this->getSnmpSysName($ip)));
-                $mac = $this->getSnmpMacAddress($ip);
-                $model = str_replace('"', '', $this->getSnmpModelNumber($ip));
-                $netNode = new networkNodes;
-                $netNode->HostName = $hostName;
-                $netNode->IPAddress = $ip;
-                $netNode->MacAddress = $mac;
-                $netNode->Type = 'Switch';
-                $netNode->Vendor = 'Cisco';
-                $netNode->HostName = $model;
-                if ($locationID != NULL) {
-                    $netNode->LocID =  $locationID;
-                }
-                $netNode->save();
-            }
+    public function register($ipAddressList, $location = NULL) {
+        if (isset($ipAddressList) == false && count($ipAddressList) <= 0) {
+            return false;
         }
+        foreach ($ipAddressList as $ip) {
+//            $hostName = str_replace('.silverip.net', '', $this->formatSnmpResponse($this->getSnmpSysName($ip)));
+            $hostName = $this->formatSnmpResponse($this->getSnmpSysName($ip));
+            $mac = $this->getSnmpMacAddress($ip);
+            $model = str_replace('"', '', $this->getSnmpModelNumber($ip));
+            $netNode = new NetworkNode;
+            $netNode->ip_address = $ip;
+            $netNode->mac_address = $mac;
+            $netNode->host_name = $hostName;            
+            if ($location != NULL) {
+                $netNode->id_address =  $location;
+            }
+            $netNode->id_types = 8;
+            $netNode->vendor = 'Cisco';
+            $netNode->model = $model;
+            
+            $netNode->save();
+        }
+        return true;
     }
 
     public function loadFromDB($ip = NULL, $mac = NULL, $hostName = NULL) {
@@ -150,7 +154,7 @@ class CiscoSwitch {
         }
 
         if (count($array) > 0) {
-            $netNodeQuery = networkNodes::where('Type','Switch');
+            $netNodeQuery = NetworkNode::where('Type','Switch');
 
             foreach($array as $col => $value){
                 $netNodeQuery->where($col,$value);

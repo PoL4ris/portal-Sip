@@ -39,7 +39,7 @@ class TestController extends Controller
     public function testCC(){
 
         //        $customer = Customers::find('10248');
-        $customer = Customers::find('10249');
+        $customer = Customer::find('10249');
         //        $customer = new Customers;
         //        $customer->Firstname = 'Peyman';
         //        $customer->Lastname = 'Pourkermani';
