@@ -15,6 +15,8 @@ use App\Models\Building\Building;
 use App\Models\Product;
 use App\Models\NetworkNode;
 use App\Models\ContactType;
+use App\Models\PaymentMethod;
+
 
 
 
@@ -114,14 +116,26 @@ class TestController extends Controller
   {
 
 
-    dd(
-        Building::with(
-          'products'
-          ,'product'
-          )
-          ->find(60)
-          ->toArray()
-      );
+
+
+    /**
+     * Add new card
+     */
+    $pm = new PaymentMethod;
+    $pm->id_customers = '13579';
+    $pm->id_address = '33';
+    $pm->types = 'Credit Card';
+    $pm->card_type = 'VS';
+    $pm->account_number = '4000000000000002';
+    $pm->CCscode = '123';
+    $pm->exp_month = '12';
+    $pm->exp_year = '2019';
+    $pm->billing_phone = '3126003903';
+    $result = $pm->save();
+
+    print '<pre>';
+    print_r($pm);
+    die();
 
 
 

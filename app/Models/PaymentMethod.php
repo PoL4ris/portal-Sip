@@ -11,7 +11,7 @@ class PaymentMethod extends Model
     return $this->hasOne('App\Models\Type', 'id_types');
   }
   public function address() {
-    return $this->hasOne('App\Models\Address', 'id_address');
+    return $this->hasOne('App\Models\Address', 'id', 'id_address');
   }
   public function customer() {
     return $this->hasOne('App\Models\Customer', 'id_customers');

@@ -1770,7 +1770,8 @@ app.controller('customerBillingHistoryController',  function ($scope, $http){
       $scope.billingHistory = response.data;
     });
 });
-app.controller('customerPaymentMethodsController',  function ($scope, $http){
+
+app.controller('customerPaymentMethodsController',  function ($scope, $http,$uibModal, $log){
   $http.get("getCustomerPayment", {params:{'id':$scope.stcid?$scope.stcid:$scope.customerData.id}})
     .then(function (response) {
       $scope.paymentData = response.data[0];
@@ -1803,7 +1804,6 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http){
   $scope.openTransparentBGManual = function (){
     warpol('.transparent-charge').fadeIn();
   };
-
   $scope.refundFunct = function (){
     var cid = $scope.customerData.id;
     var amount = warpol('#mf-input-am').val();
@@ -1815,7 +1815,6 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http){
         console.log(response.data);
       });
   };
-
   $scope.chargeFunct = function (){
     var cid = $scope.customerData.id;
     var amount = warpol('#mc-input-am').val();
@@ -1827,7 +1826,6 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http){
         console.log(response.data);
       });
   };
-
   $scope.closeTransparentBGManual = function (){
     warpol('.transparent-charge').fadeOut();
     warpol('.manual-ref').fadeOut();
@@ -1837,7 +1835,66 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http){
     warpol('#mf-input-am').val('');
     warpol('#mf-input-de').val('');
   };
+  $scope.open = function (){
+    $scope.customerId = $scope.customerData.id;
+
+    var modalInstance = $uibModal.open(
+      {
+        animation: $scope.animationsEnabled,
+        templateUrl: 'addPaymentMethod.html',
+        controller: 'addPaymentMethodController',
+        size: 'md',
+        resolve: {
+          customerId: function () {
+            return $scope.customerId;
+          }
+        }
+      });
+
+    modalInstance.result.then(function () {}, function () {
+      $log.info('Modal dismissed at: ' + new Date());
+    });
+
+  }
+
 });
+app.controller('addPaymentMethodController',        function ($scope, $http, customerId, notify){
+
+  $scope.addNewPaymentMethod = function (){
+    var objects = warpol('#paymentmethodform').serializeArray();
+
+//     if(!objects[0].value || !objects[1].value || !objects[2].value || !objects[3].value || !objects[4].value || !objects[5].value || !objects[6].value)
+//       return;
+
+    var regexCC = /\b(?:3[47]\d{2}([\ \-]?)\d{6}\1\d|(?:(?:4\d|5[1-5]|65)\d{2}|6011)([\ \-]?)\d{4}\2\d{4}\2)\d{4}\b/g;
+    if (!regexCC.test(objects[1].value))
+    {
+      notify({ message: 'Verify your Account Number', templateUrl:'/views/notify.html'} );
+      return;
+    }
+    if(objects[6].value.length < 3 || objects[6].value.length > 4)
+    {
+      notify({ message: 'Verify your CCV Number', templateUrl:'/views/notify.html'} );
+      return;
+    }
+
+    var infoData = {};
+    for(var obj in objects )
+      infoData[objects[obj]['name']] = objects[obj]['value'];
+
+    infoData['id_customers'] = customerId;
+
+    $http.get("insertPaymentMethod", {params:infoData})
+      .then(function (response) {
+//         $scope.selectedTicket = response.data;
+        console.log(response.data);
+      });
+
+
+
+  }
+});
+
 app.controller('customerServicesController',        function ($scope, $http, $mdDialog){
 
   $http.get("getCustomerServices", {params:{'id':$scope.customerData.id}})
