@@ -485,11 +485,14 @@ TPL;
 
     public function process($ccInfo, $testbol, $fields = NULL) {
 
+
         foreach ($ccInfo as $key => $value) {
             $this->xactionInfo[$key] = $value;
         }
 
-        //Toggle between Test and Production Server
+
+
+      //Toggle between Test and Production Server
         if ($testbol == 0) {
             //        $url = 'https://test1.jetpay.com/jetpay'; 
             $this->xactionInfo['TransactionID'] = $this->GenerateTransactionID();  //added by farzad          
@@ -502,6 +505,8 @@ TPL;
             $this->xactionInfo['TransactionID'] = $this->GenerateTransactionID();  //added by farzad          
         }
 
+
+
         //     $this->ippay['TransactionType'] = strtoupper($ccInfo['TransactionType']);
         //Error Checking on the Array for All transaction types
         if (is_null($this->xactionInfo['TransactionID'])) {
@@ -512,7 +517,6 @@ TPL;
             $this->xactionResult['ERRMSG'] = "TerminalID required for ALL transactions.";
             return $this->xactionResult;
         }
-
 
         //Error Checking on the Array for transaction type specific information
         switch ($this->xactionInfo['TransactionType']) {
@@ -591,6 +595,7 @@ TPL;
                 break;
         }
 
+
         if ($this->xactionInfo['TransactionType'] != 'TOKENIZE') {
             if (is_null($this->xactionInfo['TotalAmount'])) {
                 $this->xactionResult['ERRMSG'] = "TotalAmount required for all non-TOKENIZE transactions.";
@@ -648,7 +653,8 @@ TPL;
         //        }
         $result = $this->sendHTTP($url, $this->ipPayXML);
 
-        $this->parsing($result);
+
+      $this->parsing($result);
 
         //        if ($testbol == 0) {
         error_log('IPPay:process(): $this->xactionResult: ' . print_r($this->xactionResult, true));

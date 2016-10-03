@@ -92,6 +92,7 @@ Route::group(['middleware' => 'web'], function () {
   //Customer Billing
   Route::get('refundAmount',            'BillingController@refund');
   Route::get('chargeAmount',            'BillingController@charge');
+  Route::get('insertPaymentMethod',     'BillingController@insertPaymentMethod');
   //UpdateCustomer
   Route::get('updateAddressTable',      'CustomerController@updateAddressTable');
   Route::get('updateCustomersTable',    'CustomerController@updateCustomersTable');

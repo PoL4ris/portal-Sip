@@ -41,6 +41,7 @@ class SIPBilling {
             $ippayresult = $ipPayHandle->process($request, 1);  //process card - 0 is for test server, 1 for live server
         }
 
+
         if(isset($ippayresult['ResponseText']) && $ippayresult['ResponseText'] == 'APPROVED'){
             return true;
         }
@@ -107,6 +108,7 @@ class SIPBilling {
         $ipPayHandle = new IpPay();
         $ippayresult = array();
 
+
         if ($this->testMode == true) {
             $ippayresult = $ipPayHandle->process($request, 0);  //process card - 0 is for test server, 1 for live server	   		
         } else {
@@ -122,6 +124,7 @@ class SIPBilling {
             $pmPropertiesArr = json_decode($pm->properties);
             $pmPropertiesArr['last four'] = 'XXXX-XXXX-XXXX-'.substr($pm->account_number, -4);
             $pmPropertiesArr['card type'] = $pm->card_type;
+            $pm->properties = json_encode($pmPropertiesArr);
 
         } else {
             $pm->account_number = 'ERROR';
@@ -137,9 +140,11 @@ class SIPBilling {
 
     protected function storeXaction(Customer $customer, $xactionResult, Address $address = null, PaymentMethod $pm = null, $details = false) {
 
+
+
         $xactionLog = new BillingTransactionLog;
         $xactionLog->transaction_id = $xactionResult['TRANSACTIONID'];
-        $xactionLog->PaymentMode = 'CC';
+        $xactionLog->payment_mode = 'CC';
         $xactionLog->username = isset($customer->email) ? $customer->email : '';
         $xactionLog->name = $customer->first_name.' '.$customer->last_name;        
         $xactionLog->id_customers = $customer->id;
@@ -377,14 +382,15 @@ class SIPBilling {
 
         $pm = null;
         if($payment_id == null){
+
             // Get customer's default payment method
-            $pm = PaymentMenthod::with('address')
+            $pm = PaymentMethod::with('address')
                 ->where('id_customers',$customer->id)
                 ->where('priority',1)
-                ->get();    
+                ->first();
         } else {
             // Use the requested payment method
-            $pm = PaymentMenthod::with('address')
+            $pm = PaymentMethod::with('address')
                 ->where('id_customers',$customer->id)
                 ->get();
         }
@@ -413,6 +419,7 @@ class SIPBilling {
         $request['UDField2'] = isset($xactionRequest['UDField2']) ? $xactionRequest['UDField2'] : ''; // User defied feild - descripton of the charge, i.e. Signup
         $request['UDField3'] = isset($xactionRequest['UDField3']) ? $xactionRequest['UDField3'] :'';
 
+
         $ippayresult = array();
         $ipPayHandle = new IpPay();
 
@@ -436,7 +443,7 @@ class SIPBilling {
         $result['Comment'] = $customer->comment;
         $result['TotalAmount'] = $totAmount;
 
-        $this->storeXaction($pm, $customer, $result, $details);
+        $this->storeXaction($customer, $result, $pm->address, $pm,  $details);
         return $result;
     }
 
