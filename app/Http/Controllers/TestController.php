@@ -115,14 +115,11 @@ class TestController extends Controller
   public function supportTest()
   {
 
-
-
-
     /**
      * Add new card
      */
     $pm = new PaymentMethod;
-    $pm->id_customers = '13579';
+    $pm->id_customers = '4667';
     $pm->id_address = '33';
     $pm->types = 'Credit Card';
     $pm->card_type = 'VS';

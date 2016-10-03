@@ -115,10 +115,6 @@ class SIPBilling {
             $ippayresult = $ipPayHandle->process($request, 1);  //process card - 0 is for test server, 1 for live server
         }
 
-//        dd($request);
-        dd($ippayresult);
-        print_r($pm['attributes']);
-
         // Clear the unencrypted cc number from the payment method object
         unset($pm->CCscode);
 
@@ -138,10 +134,6 @@ class SIPBilling {
         $ippayresult['TransactionType'] = $request['TransactionType'];
         $ippayresult['Comment'] = $customer->Comment;
         $this->storeXaction($customer, $ippayresult, $address, $pm);
-
-        print '<pre>';
-        print_r($ippayresult);
-        die();
 
         return $pm;
     }
