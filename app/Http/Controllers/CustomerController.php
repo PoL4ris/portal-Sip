@@ -140,7 +140,7 @@ class CustomerController extends Controller
   }
   public function getPaymentMethods(Request $request)
   {
-    return Customer::with('payment')->getRelation('payment')->where('id_customers', $request->id)->orderBy('priority', 'DESC')->get();
+    return Customer::with('payment')->getRelation('payment')->where('id_customers', $request->id)->where('account_number','!=','ERROR')->orderBy('priority', 'DESC')->get();
   }
   public function updatePaymentMethods(Request $request)
   {
@@ -153,7 +153,7 @@ class CustomerController extends Controller
     $newMethod->priority = 1;
     $newMethod->save();
 
-    return Customer::with('payment')->getRelation('payment')->where('id_customers', $request->customerID)->orderBy('priority', 'DESC')->get();
+    return Customer::with('payment')->getRelation('payment')->where('id_customers', $request->customerID)->where('account_number','!=','ERROR')->orderBy('priority', 'DESC')->get();
 
   }
   public function getNewTicketData(Request $request)

@@ -99,12 +99,12 @@ class AuthController extends Controller
     try
     {
       $user = Socialite::driver('google')->user();
+//      $user = Socialite::driver('google')->user();
     }
     catch (Exception $e)
     {
       return Redirect::to('auth/google');
     }
-
     $authUser = $this->findOrCreateUser($user);
 
 

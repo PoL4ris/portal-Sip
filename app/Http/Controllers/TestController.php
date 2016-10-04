@@ -118,8 +118,15 @@ class TestController extends Controller
     /**
      * Add new card
      */
+
+
+
+//     print '<pre>';
+//     print_r('this is polaris rock');
+//     die();
+
     $pm = new PaymentMethod;
-    $pm->id_customers = '4667';
+    $pm->id_customers = '13579';
     $pm->id_address = '33';
     $pm->types = 'Credit Card';
     $pm->card_type = 'VS';
@@ -127,7 +134,7 @@ class TestController extends Controller
     $pm->CCscode = '123';
     $pm->exp_month = '12';
     $pm->exp_year = '2019';
-    $pm->billing_phone = '3126003903';
+    $pm->billing_phone = '312-600-3903';
     $result = $pm->save();
 
     print '<pre>';

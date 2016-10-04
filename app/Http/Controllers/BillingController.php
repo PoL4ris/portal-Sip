@@ -47,8 +47,8 @@ class BillingController extends Controller
     }
     public function insertPaymentMethod(Request $request)
     {
+
       $input = $request->all();
-      print_r($input);
 
       $pm = new PaymentMethod;
       $pm->id_customers = $input['id_customers'];
@@ -62,6 +62,10 @@ class BillingController extends Controller
       $pm->billing_phone = $input['billing_phone'];
       $pm->save();
 
+      if($pm->account_number == 'ERROR')
+        return 'ERROR';
+      else
+        return 'OK';
 
     }
 }

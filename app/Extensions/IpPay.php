@@ -485,12 +485,9 @@ TPL;
 
     public function process($ccInfo, $testbol, $fields = NULL) {
 
-
         foreach ($ccInfo as $key => $value) {
             $this->xactionInfo[$key] = $value;
         }
-
-
 
       //Toggle between Test and Production Server
         if ($testbol == 0) {
@@ -504,8 +501,6 @@ TPL;
             $url = 'https://gtwy.ippay.com/ippay';
             $this->xactionInfo['TransactionID'] = $this->GenerateTransactionID();  //added by farzad          
         }
-
-
 
         //     $this->ippay['TransactionType'] = strtoupper($ccInfo['TransactionType']);
         //Error Checking on the Array for All transaction types

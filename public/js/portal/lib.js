@@ -1370,7 +1370,7 @@ app.controller('customerController',                function ($scope, $http, $ro
     idCustomer = $scope.stcid;
 
 
-    if ((warpol(location).attr('href').split('http://localhost:8000/#/')[1]) == 'customer')
+    if ((warpol(location).attr('href').split('http://silverip-portal.com/#/')[1]) == 'customer')
       idCustomer = 13579;
 
   $http.get("customersData", {params:{'id':idCustomer}})
@@ -1772,6 +1772,7 @@ app.controller('customerBillingHistoryController',  function ($scope, $http){
 });
 
 app.controller('customerPaymentMethodsController',  function ($scope, $http,$uibModal, $log){
+
   $http.get("getCustomerPayment", {params:{'id':$scope.stcid?$scope.stcid:$scope.customerData.id}})
     .then(function (response) {
       $scope.paymentData = response.data[0];
@@ -1781,18 +1782,24 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http,$uib
     .then(function (response) {
       $scope.paymentMethods = response.data;
     });
-    
-    $scope.setDefault = function (id) {
+
+  $scope.setDefault = function (id) {
       $http.get("updatePaymentMethods", {params:{'id':id, 'customerID':$scope.customerData.id}})
         .then(function (response) {
           $scope.paymentMethods = response.data;
-        });
-      $http.get("getCustomerPayment", {params:{'id':$scope.stcid?$scope.stcid:$scope.customerData.id}})
-        .then(function (response) {
-          $scope.paymentData = response.data[0];
-        });
-    }
 
+          $http.get("getCustomerPayment", {params:{'id':$scope.stcid?$scope.stcid:$scope.customerData.id}})
+            .then(function (response) {
+              $scope.paymentData = response.data[0];
+            });
+        });
+    };
+  $scope.getPaymentMethods = function (customerId){
+    $http.get("getPaymentMethods", {params:{'id':customerId}})
+      .then(function (response) {
+        $scope.paymentMethods = response.data;
+      });
+  };
   $scope.openManualRef = function (){
     $scope.openTransparentBGManual();
     warpol('.manual-ref').fadeIn('slow');
@@ -1813,6 +1820,8 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http,$uib
       .then(function (response) {
 //         $scope.paymentMethods = response.data;
         console.log(response.data);
+        if(response.data.RESPONSETEXT == 'RETURN ACCEPTED')
+          console.log('yes');
       });
   };
   $scope.chargeFunct = function (){
@@ -1824,6 +1833,8 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http,$uib
       .then(function (response) {
 //         $scope.paymentMethods = response.data;
         console.log(response.data);
+        if(response.data.RESPONSETEXT == 'APPROVED')
+          console.log('yes');
       });
   };
   $scope.closeTransparentBGManual = function (){
@@ -1855,25 +1866,26 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http,$uib
       $log.info('Modal dismissed at: ' + new Date());
     });
 
-  }
+  };
 
 });
-app.controller('addPaymentMethodController',        function ($scope, $http, customerId, notify){
+
+
+app.controller('addPaymentMethodController',        function ($scope, $http, customerId, notify, $uibModalInstance){
 
   $scope.addNewPaymentMethod = function (){
     var objects = warpol('#paymentmethodform').serializeArray();
 
-//     if(!objects[0].value || !objects[1].value || !objects[2].value || !objects[3].value || !objects[4].value || !objects[5].value || !objects[6].value)
-//       return;
+    if(!objects[0].value || !objects[1].value || !objects[2].value || !objects[3].value || !objects[4].value || !objects[5].value || !objects[6].value)
+      return;
 
     var regexCC = /\b(?:3[47]\d{2}([\ \-]?)\d{6}\1\d|(?:(?:4\d|5[1-5]|65)\d{2}|6011)([\ \-]?)\d{4}\2\d{4}\2)\d{4}\b/g;
-    if (!regexCC.test(objects[1].value))
-    {
+
+    if (!regexCC.test(objects[1].value)) {
       notify({ message: 'Verify your Account Number', templateUrl:'/views/notify.html'} );
       return;
     }
-    if(objects[6].value.length < 3 || objects[6].value.length > 4)
-    {
+    if(objects[6].value.length < 3 || objects[6].value.length > 4) {
       notify({ message: 'Verify your CCV Number', templateUrl:'/views/notify.html'} );
       return;
     }
@@ -1886,14 +1898,18 @@ app.controller('addPaymentMethodController',        function ($scope, $http, cus
 
     $http.get("insertPaymentMethod", {params:infoData})
       .then(function (response) {
-//         $scope.selectedTicket = response.data;
-        console.log(response.data);
+        if(response.data == 'OK')
+        {
+          $uibModalInstance.dismiss('cancel');
+          notify({ message: 'Account ' + infoData['account_number'] + ' ready to use.', templateUrl:'/views/notify.html'} );
+          angular.element('#tom').scope().getPaymentMethods(customerId);
+        }
+        else
+          notify({ message: 'ERROR: Verify your information.', templateUrl:'/views/notify.html'} );
       });
-
-
-
   }
 });
+
 
 app.controller('customerServicesController',        function ($scope, $http, $mdDialog){
 
