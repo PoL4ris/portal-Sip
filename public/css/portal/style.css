@@ -30,6 +30,7 @@
 .anim {
   transition: all 0.7s ease 0s;
 }
+.silver-logo-completo{}
 .b-tabs {
   cursor: pointer;
   overflow: hidden;
@@ -1528,6 +1529,9 @@ md-tooltip .md-content {
 }
 .x-manaual:hover{
   opacity:.6;
+}
+.text-right-invo {
+  text-align: right !important;
 }
 @media only screen and (max-width: 420px) {
   .row-hrs .time-label {

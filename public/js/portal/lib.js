@@ -1764,12 +1764,72 @@ app.controller('customerTicketHistoryController',   function ($scope, $http){
 //       $scope.ticketReason = response.data;
 //     });
 // });
-app.controller('customerBillingHistoryController',  function ($scope, $http){
+
+
+
+
+
+
+
+
+
+app.controller('customerBillingHistoryController',  function ($scope, $http, $uibModal, $log){
+
   $http.get("getBillingHistory", {params:{'id':$scope.customerData.id}})
     .then(function (response) {
       $scope.billingHistory = response.data;
     });
+
+  $scope.open = function (){
+    $scope.customerId = $scope.customerData.id;
+
+    var modalInstance = $uibModal.open(
+      {
+        animation: $scope.animationsEnabled,
+        templateUrl: 'seeInvoiceById.html',
+        controller: 'invoiceController',
+        size: 'md',
+        resolve: {
+          customerId: function () {
+            return $scope.customerId;
+          }
+        }
+      });
+
+    modalInstance.result.then(function () {}, function () {
+      $log.info('Modal dismissed at: ' + new Date());
+    });
+
+  };
 });
+
+
+
+
+
+
+
+app.controller('invoiceController', function ($scope, $http, customerId, notify, $uibModalInstance){
+  console.log('invoiceController');
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 app.controller('customerPaymentMethodsController',  function ($scope, $http,$uibModal, $log){
 
@@ -1821,7 +1881,7 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http,$uib
 //         $scope.paymentMethods = response.data;
         console.log(response.data);
         if(response.data.RESPONSETEXT == 'RETURN ACCEPTED')
-          console.log('yes');
+          $scope.closeTransparentBGManual();
       });
   };
   $scope.chargeFunct = function (){
@@ -1834,7 +1894,7 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http,$uib
 //         $scope.paymentMethods = response.data;
         console.log(response.data);
         if(response.data.RESPONSETEXT == 'APPROVED')
-          console.log('yes');
+          $scope.closeTransparentBGManual();
       });
   };
   $scope.closeTransparentBGManual = function (){
