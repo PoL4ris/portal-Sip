@@ -19,9 +19,12 @@ class CreateDataShapesTable extends Migration
         $table->string('type')->nullable();
         $table->string('host_name')->nullable();
         $table->string('ip')->nullable();
+        $table->string('mac')->nullable();
         $table->string('interface')->nullable();
         $table->string('vlan')->nullable();
         $table->string('switch')->nullable();
+        $table->string('status')->nullable();
+        $table->timestamp('date')->nullable();
         $table->timestamps();
       });
     }

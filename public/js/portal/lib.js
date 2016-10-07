@@ -1370,8 +1370,8 @@ app.controller('customerController',                function ($scope, $http, $ro
     idCustomer = $scope.stcid;
 
 
-    if ((warpol(location).attr('href').split('http://silverip-portal.com/#/')[1]) == 'customer')
-      idCustomer = 13579;
+    if ((warpol(location).attr('href').split('http://portal-dev.silverip.net/#/')[1]) == 'customer')
+      idCustomer = 4667;
 
   $http.get("customersData", {params:{'id':idCustomer}})
     .then(function (response) {
