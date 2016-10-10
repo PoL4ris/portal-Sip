@@ -20,7 +20,7 @@ app.config(['$routeProvider', function ($routeProvider) {
     .when("/userprofile",   {templateUrl: "/views/userprofile.html", controller: 'userProfileController'})
     .when("/calendar",      {templateUrl: "/views/v2Test.html"})
 
-//     .when("/clients",       {templateUrl: "/views/dummy.html"})
+    .when("/clients",       {templateUrl: "/views/404.html"})
 
 //     .when("/customers",     {templateUrl: "/views/contactInfo.html"})
     //.when("/customers", {templateUrl: "/views/admin/user.html", controller:'admin'})
