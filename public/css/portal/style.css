@@ -1,4 +1,3 @@
-
 .btn-silver-size {
   min-width: 100px;
 }
@@ -90,6 +89,26 @@
   left: 0;
   position: absolute;
   width: 100%;
+}
+.bld-h-uno {
+  float: left;
+  width: 250px;
+}
+.bld-h-dos {
+}
+.bld-h-tres {
+  float: left;
+  height: 20px;
+  min-width: 10%;
+  padding-left: 50px;
+  width: auto;
+}
+.ref-colors{
+  color: #333;
+  margin-left: 5px;
+  margin-right: 10px;
+  position: relative;
+  top: 2px;
 }
 .b-tabs #bld-tabs-cover {
   background: #f0f3f4 none repeat scroll 0 0;

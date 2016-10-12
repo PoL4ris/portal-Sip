@@ -1,0 +1,10 @@
+<!-- SearchPreview -->
+<div class="col-lg-10 bld-search-main" ng-controller="customerSearch">
+  <div class="search-content">
+    <input type="text" class="input-search id-search" placeholder="Search Customer..." ng-keyup="buscador('Simple', 'right')" ng-model="search"><i class="is-lupa fa fa-search"></i>
+    <div class="search-result anim" >
+      <p ng-repeat="resultbldright in bldSearchResultRight" ng-click="displayBldData(resultbldright.id)" >{{ resultbldright.name }} <strong>{{ resultbldright.code }}</strong></p>
+    </div>
+  </div>
+</div>
+<!-- End SearchPreview -->

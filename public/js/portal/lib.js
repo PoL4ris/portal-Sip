@@ -1,748 +1,15 @@
-//Global var.
-var idDivResult = '';
-var path = '';
-var complexType = [];
-var query = null;
-var index = null;
-var urlTmp = null;
-var tempTicketID = null;
-var globalName = null;
-var customerSeccion = null;
-
-var createFancyBox        = function () {
-  return function(data, textStatus, jqXHR)
-  {
-    var typeoff = warpol(this).attr('typeoff');
-    if(typeoff == 'open')
-    {
-      warpol("#bgblack-" + warpol(this).attr('ticket-id')).fadeIn("slow");
-      warpol("#fancy-" + warpol(this).attr('ticket-id')).fadeIn("slow");
-    }
-    else
-    {
-      warpol("#bgblack-" + warpol(this).attr('ticket-id')).fadeOut("slow");
-      warpol("#fancy-" + warpol(this).attr('ticket-id')).fadeOut("slow");
-    }
-  }
-};//INVALID
-var buildingsList         = function (position) {
-  return function(data, textStatus, jqXHR)
-  {
-    //Get Data from current Info
-    var idDivResult    = warpol('#bldlist-result').attr('id');
-    var offset         = parseInt(warpol('.' + idDivResult + '-limits-' + position).attr('offset'));
-    var limit          = parseInt(warpol('.' + idDivResult + '-limits-' + position).attr('limit'));
-    //Math var operations.
-    var a              = parseInt(offset);
-    var b              = parseInt(limit);
-    //Back Arrow empty
-    if (position == 0 && offset <= 0)
-      return;
-    //Solve correct LIMIT OFFSET info to request
-    if(position == 1)
-    {
-      offset = b;
-      limit = b + (b - a);
-    }
-    else
-    {
-      limit = a;
-      offset = a - (b - a);
-    }
-    //Case result is wrong
-    if (offset < 0 || limit <= 0)
-      return;
-    //Main info to do request
-    var query = {"offset": offset, "limit": limit, "position": position};
-    //AJAX request
-    warpol.ajax(
-      {
-        type: "GET",
-        url: "buildingsList",
-        data: query,
-        success: function (data) {
-          if (data.length === 0 || !data.trim())
-            return;
-          //Result JsonParser to use data
-          var resultData = jQuery.parseJSON(data);
-
-          warpol('#' + idDivResult).html('');
-          warpol.each(resultData, function (i, item) {
-            warpol('#' + idDivResult).append('<p>' + item.id + item.name + '</p>');
-          });
-          //Rewrite LIMIT OFFSET fields for new calcRequest
-          warpol('.' + idDivResult + '-limits-' + 0).attr('offset',offset);
-          warpol('.' + idDivResult + '-limits-' + 0).attr('limit',limit);
-          warpol('.' + idDivResult + '-limits-' + 1).attr('offset',offset);
-          warpol('.' + idDivResult + '-limits-' + 1).attr('limit',limit);
-          warpol('#' + idDivResult).scrollTop(0);
-        }
-      }
-    );
-  };
-};//INVALID
-var buscador              = function(searchType) {
-  return function(data, textStatus, jqXHR)
-  {
-
-    //id de quien solicita
-    idDivResult = idDivResult?idDivResult:warpol(this).attr('id');
-
-    if (!idDivResult)
-      return;
-
-    //Clean search fields
-    warpol('#' + idDivResult + '-result').html('');
-    warpol('.resultadosComplex').html('');
-
-    //checamos si es simple o complex
-    if(document.getElementById('complexSearch'))
-      searchType = 'Complex';
-
-    if (searchType == 'Simple')
-    {
-      warpol('.ntas-tmp').css('display', 'none');
-      query = {"querySearch" : warpol(this).val()};
-    }
-    else // if searchType == 'COMPLEX'
-    {
-      index = warpol(this).attr('index');
-      complexType[0] = 'complex';
-      complexType[index] = warpol(this).val();
-      query = {"querySearch" : complexType };
-    }
-
-    path = window.location.pathname;
-
-    //Split ID for Dynamic UrlRequest
-    urlTmp = idDivResult.split('id-');
-    urlTmp = urlTmp[1].split('-search');
-
-    //AJAX request
-    warpol.ajax(
-      {type:"GET",
-        url:"/"+ urlTmp[0] + "Search",
-        data:query,
-        success: function(data)
-        {
-          //Validate info existing or die
-          if (data == 'null')
-          {
-            warpol('.ntas-tmp').fadeIn("slow");
-            return;
-          }
-
-          //Result JsonParser tu use data
-          var resultData = jQuery.parseJSON(data);
-          warpol('#' + idDivResult + '-result').append('<p>Results...( '+ resultData.length +' )</p>');
-          warpol('.resultadosComplex').append('<p>Results...( '+ resultData.length +' )</p>');
-          warpol.each(resultData,function(i, item)
-          {
-            //Rewrite results
-            if (urlTmp[0] == 'customers')
-              var nombre = '<label>' + item.Firstname + ' ' + item.Lastname + ' </label><label> <b> CODE: </b> ' + item.ShortName + ' </label><label> <b> UNIT: </b> ' + item.Unit + ' </label><label> <b> Address: </b> </label><label>' + item.Address  + '</label>';
-            else
-              var nombre = item.Name;
-
-              if (path == '/supportdash')
-              {
-                warpol('.resultadosComplex').append('<p id="name-CID-' + item.CID + '" onclick="refeshDisabledInput(' + item.CID + ');">' + item.Firstname+ ' ' + item.Lastname + '</p>');
-              }
-              else
-              {
-                warpol('#' + idDivResult + '-result').append('<p><a href="/'+ urlTmp[0] +'/'+ item.LocID +'"> ' + nombre + '</a></p>');
-                warpol('.resultadosComplex').append('<p><a href="/'+ urlTmp[0] +'/'+ item.CID +'"> ' + nombre + '</a></p>');
-              }
-          });
-        }
-      }
-    );
-  };
-};//INVALID
-var servicesInfoUpdate    = function (serviceID, serviceStatus, routeID){
-
-  var routes = ['updateCustomerServiceInfo'];
-
-//   warpol('.network-functions').addClass('disabled');
-
-  //AJAX request
-  warpol.ajax(
-    {type:"GET",
-      url:"/" + routes[routeID],
-      data:{'serviceid':serviceID, 'status':serviceStatus},
-      success: function(data)
-      {
-        if (data == 'ERROR')
-          alert(data);
-
-        if (serviceStatus == 'active')
-        {
-          warpol('#serviceno-' + serviceID).addClass('disabled ital');
-          warpol('#serviceinfo-status-' + serviceID).html('disabled');
-          warpol('#xservice-btn-id-' + serviceID).attr('displaystatus','disabled');
-          warpol('#xservice-btn-id-' + serviceID).addClass('btn-success fa-check');
-          warpol('#xservice-btn-id-' + serviceID).removeClass('btn-dark');
-          warpol('#xservice-btn-id-' + serviceID).removeClass('fa-times');
-        }
-        else
-        {
-          warpol('#serviceno-' + serviceID).removeClass('disabled ital');
-          warpol('#serviceinfo-status-' + serviceID).html('active');
-          warpol('#xservice-btn-id-' + serviceID).attr('displaystatus','active');
-          warpol('#xservice-btn-id-' + serviceID).addClass('btn-dark fa-times');
-          warpol('#xservice-btn-id-' + serviceID).removeClass('btn-success');
-          warpol('#xservice-btn-id-' + serviceID).removeClass('fa-check');
-        }
-
-      }
-    }
-  );
-};//INVALID
-var confirmDialog         = function (){
-  return function(data, textStatus, jqXHR)
-  {
-    var service = warpol(this).attr('type');
-    var portID = warpol(this).attr('portid');
-    var serviceID = warpol(this).attr('serviceid');
-    var serviceStatus = warpol(this).attr('displaystatus');
-    var routeID = warpol(this).attr('route');
-
-    warpol('<div class="confirmBtn"></div>').appendTo('body')
-      .html('<div ><h6>Confirm this Action!</h6></div>')
-      .dialog({
-        modal: true, title: 'Please confirm', zIndex: 10000, autoOpen: true,
-        width: 'auto', resizable: false,
-        buttons: {
-          Yes: function () {
-            // warpol(obj).removeAttr('onclick');
-            // warpol(obj).parents('.Parent').remove();
-
-            warpol(this).dialog("close");
-            if (portID)
-              networkServices(service, portID);
-            else if(serviceID)
-              servicesInfoUpdate(serviceID, serviceStatus, routeID);
-
-          },
-          No: function () {
-            warpol(this).dialog("close");
-          }
-        },
-        close: function (event, ui) {
-          warpol(this).remove();
-        }
-      });
-  };
-};//INVALID
-var networkServices       = function (service, portID) {
-  console.log(portID);
-  return;
-  var routes = ['networkCheckStatus',
-    'netwokAdvancedInfo',
-    'networkAdvanceIPs',
-    'networkRecyclePort',
-    '4',
-    'networkSignUp',
-    'networkActivate'];
-
-  warpol('.network-functions').addClass('disabled');
-
-  var service = service;
-  var portID = portID;
-
-  //AJAX request
-  warpol.ajax(
-    {type:"GET",
-      url:"/" + routes[service],
-      data:{'portid':portID},
-      success: function(data)
-      {
-        if (data == 'ERROR')
-          alert(data);
-
-        warpol.each(data,function(i, item)
-        {
-          warpol('#' + i).html(item);
-        });
-        warpol('#basic-info-net').notify('OK');
-
-        service = 1;
-        warpol.ajax(
-          {type:"GET",
-            url:"/" + routes[service],
-            data:{'portid':portID},
-            success: function(data)
-            {
-              warpol.each(data,function(i, item)
-              {
-                warpol('#' + i).html(item);
-              });
-            }
-          }
-        );
-
-        service = 2;
-        warpol.ajax(
-          {type:"GET",
-            url:"/" + routes[service],
-            data:{'portid':portID},
-            success: function(data)
-            {
-
-              warpol('#IPs').notify('IPs Array.');
-              warpol('.network-functions').removeClass('disabled');
-
-//                   warpol.each(data,function(i, item)
-//                   {
-//                     warpol('#' + i).html(item);
-//                   });
-
-            }
-          }
-        );
-
-      }
-    }
-  );
-
-  if (service == 5)
-  {
-    warpol('.access-type-net').removeClass('btn-danger ');
-    warpol('.access-type-net').addClass('btn-info');
-    warpol('.access-type-net').html('Activate');
-    warpol('.access-type-net').attr('type','6');
-    warpol('#acces-network-id').html('signup');
-  }
-  else if ( service == 6 )
-  {
-    warpol('.access-type-net').removeClass('btn-info')
-    warpol('.access-type-net').addClass('btn-danger')
-    warpol('.access-type-net').html('Send to Signup');
-    warpol('.access-type-net').attr('type','5');
-    warpol('#acces-network-id').html('yes');
-  }
-
-};//INVALID
-
-//Preview Images Uploaded
-var imgPreview            = function() {
-  function readURL(input) {
-    if (input.files && input.files[0])
-    {
-      var reader = new FileReader();
-      reader.onload = function (e)
-      {
-        warpol('.prvw-img-form').attr('src', e.target.result);
-      }
-
-      reader.readAsDataURL(input.files[0]);
-    }
-  }
-
-  warpol(".inp-img-form").change(function()
-  {
-    readURL(this);
-  });
-};
-var utils = {
-
-  getParameterByName: function(name){
-
-    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-      results = regex.exec(location.search);
-    return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
-
-  },
-
-  createTable: function(selector, objects, data, column){
-
-//     console.log(data.length);
-
-    try{
-      var table = "<table id='rand'>";
-
-      var headFoot = "";
-
-      for(var i = 0; i < column.length; i++){
-
-        headFoot+="<th>" + column[i] + "</th>";
-
-      }
-
-      table+= "<thead><tr>" + headFoot + "</tr></thead>";
-      table+= "<tfoot><tr>" + headFoot + "</tr></tfoot>";
-
-      var body = "";
-
-      for(var i = 0; i < data.length; i++){
-
-        body+= "<tr>";
-
-        for(var j = 0; j < objects.length; j++){
-
-
-          body+= "<td>" + data[i][j][objects[j]] + "</td>";
-
-        }
-
-        body+= "</tr>";
-      }
-
-      table += body;
-      table += "</table>";
-      warpol(selector).append(table);
-
-
-      warpol("#rand").DataTable();
-      return true;
-
-    }catch(err){
-
-      console.log(err);
-
-    }
-
-
-
-  }
-
-};
-var editFormByType        = function () {
-  return function(data, textStatus, jqXHR)
-  {
-    var id = warpol(this).attr('id');
-    tempTicketID = id;
-
-    if (warpol('#' + id).attr('stand') == '1')
-    {
-      warpol('.' + id + '-label').css('display','table-cell');
-      warpol('.' + id + '-edit').css('display','none');
-      warpol('#save-' + id).fadeOut( "slow" );
-      warpol('#' + id).html('Edit');
-      warpol('#' + id).switchClass('btn-danger', 'btn-info');
-      warpol('#' + id).attr('stand', '2');
-      if(path == '/supportdash')
-      {
-        warpol('.resultadosComplex').html('');
-        warpol('.dis-input').val('');
-      }
-
-    }
-    else
-    {
-      warpol('.' + id + '-label').css('display','none');
-      warpol('.' + id + '-edit').fadeIn( "slow" );
-      warpol('#save-' + id).fadeIn( "slow" );
-      warpol('#' + id).html('Cancel');
-      warpol('#' + id).switchClass('btn-success', 'btn-danger');
-      warpol('#' + id).attr('stand', '1');
-    }
-  };
-};
-function refeshDisabledInput(id) {
-  if(!id)
-    return;
-
-  var name = warpol('#name-CID-' + id).html();
-
-  warpol('.' + tempTicketID + '-input').val(name.replace(/&nbsp;/g, ''));
-  globalName = warpol('.' + tempTicketID + '-input').val();
-  warpol('.' + tempTicketID + '-hidden').val(id);
-}
-var bgWindowClick         = function () {
-  return function(data, textStatus, jqXHR)
-  {
-    vistas.bgWindowCheck();
-    var idshown = warpol('#bg-black-window').attr('idshown');
-    switch (idshown)
-    {
-      case 'updateservicecontentbox':
-        warpol('.type-'+ warpol('#bg-black-window').attr('tipo')).css('display', 'none');
-        warpol('#updateServiceId-'+ warpol('#bg-black-window').attr('usid')).css('display', 'none');
-        warpol('#updateservicecontentbox').fadeOut('slow');
-        warpol('.btn-display-service').fadeOut('slow');
-        warpol('#bg-black-window').attr('idshown', '');
-        warpol('#bg-black-window').attr('tipo', '');
-        warpol('#bg-black-window').attr('usid', '');
-        break;
-      case 'addservicecontentbox':
-        warpol('#addservicecontentbox').fadeOut('slow');
-        warpol('#bg-black-window').attr('idshown', '');
-        break;
-
-    }
-
-
-  }
-};
-var addServiceBtn         = function () {
-  return function(data, textStatus, jqXHR)
-  {
-    var resultView = vistas.bgWindowCheck();
-    if(resultView == 'open')
-    {
-      warpol('#addservicecontentbox').fadeIn('slow');
-      warpol('#bg-black-window').attr('idshown', 'addservicecontentbox');
-    }
-    else
-    {
-      warpol('#addservicecontentbox').fadeOut('slow');
-      warpol('#bg-black-window').attr('idshown', '');
-    }
-
-  }
-};
-var displayServiceInfo    = function () {
-  return function(data, textStatus, jqXHR)
-  {
-    var existIdNow = warpol('#addservicecontentbox').attr('currentId');
-    if(existIdNow)
-    {
-      warpol('#addServiceId-' + existIdNow).css('display', 'none');
-//       warpol('.addServiceBoton').css('display', 'none');
-    }
-
-    var idToSHow  = warpol(this).attr('value');
-    if (idToSHow != '#')
-    {
-      warpol('#addServiceId-' + idToSHow).fadeIn('slow');
-//       warpol('.addServiceBoton').fadeIn('slow');
-      warpol('#addservicecontentbox').attr('currentId', idToSHow);
-    }
-  };
-};
-var modifServiceBtn       = function () {
-  return function(data, textStatus, jqXHR)
-  {
-    displayServiceInfo();
-    var resultView = vistas.bgWindowCheck();
-    var idToShow = warpol(this).attr('tipoid');
-    var kind = warpol(this).attr('kind');
-    var tipo = warpol(this).attr('tipo');
-    var serviceid = warpol(this).attr('serviceid');
-
-    if(resultView == 'open')
-    {
-      warpol('#updateservicecontentbox').fadeIn('slow');
-      warpol('.btn-display-service-' + serviceid).fadeIn('slow');
-      warpol('#bg-black-window').attr('idshown', 'updateservicecontentbox');
-      warpol('#bg-black-window').attr('tipo', tipo);
-      warpol('#bg-black-window').attr('usid', idToShow);
-
-      if (kind == 'update')
-      {
-        warpol('.type-'+ tipo).css('display', 'block');
-        warpol('#updateServiceId-'+ idToShow).css('display', 'block');
-      }
-//       else
-//       {
-//       }
-    }
-    else
-    {
-      warpol('#updateservicecontentbox').fadeOut('slow');
-      warpol('.btn-display-service-' + serviceid).fadeOut('slow');
-      warpol('#bg-black-window').attr('idshown', '');
-      warpol('.type-'+ tipo).css('display', 'none');
-      warpol('#updateServiceId-'+ idToShow).css('display', 'none');
-    }
-  };
-};
-
-//idType = type of id on table[CID,TID,ID...]
-//table = attr that has table Target.
-//route, attr that knows the target action.
-var updateBtn             = function () {
-  return function(data, textStatus, jqXHR)
-  {
-
-    var idType = warpol(this).attr('idType');
-    var bloque = warpol(this).attr('bloque');
-    var id = warpol(this).attr(idType);
-    var objects = warpol('#'+ bloque +'-form-' + id).serializeArray();
-    var table = warpol('#'+ bloque +'-form-' + id).attr('dbtable');
-    var route = warpol('#'+ bloque +'-form-' + id).attr('action');
-    var infoData = {};
-
-//     console.log(objects);
-//     return;
-
-    for(var obj in objects )
-    {
-      if(objects[obj]['value'] == 'err' || objects[obj]['value'] == '')
-      {
-        alert('Verify ' + objects[obj]['name'] + ' Field');
-        return;
-      }
-
-      infoData[objects[obj]['name']] = objects[obj]['value'];
-    }
-
-    infoData['id'] = id;
-    infoData['table'] = table;
-    infoData['bloque'] = bloque;
-
-    //AJAX request
-    warpol.ajax(
-      {type:"POST",
-        url:"/" + route,
-        data:infoData,
-        success: function(data)
-        {
-          switch(infoData['table'])
-          {
-            case 'supportTickets':
-              warpol('#block-' + id).click();
-              warpol.each(data[0], function(i, item)
-              {
-                if(i == '_token' || i == 'id')
-                  return true;
-                else
-                {
-                  warpol('#' + i + '-' + id).html(item);
-                }
-              });
-              break;
-            case 'supportTicketHistory':
-              var tbodyData = warpol('#'+ bloque + '-tbody-' + id).html();
-              var htmlContent = "<tr class='even' role='row'>";
-              htmlContent += "<td class='sorting_1'>" + data[0]['TimeStamp'] +"</td>";
-              htmlContent += "<td class='special-td'>" + data[0]['Comment'] +"</td>";
-              htmlContent += "<td>" + data[0]['Status'] +"</td>";
-              htmlContent += "<td>" + data[0]['Name'] +"</td>";
-              htmlContent += '</tr> ';
-
-              warpol('#'+ bloque + '-tbody-' + id).html(htmlContent + tbodyData);
-              warpol('#'+ bloque +'-comment-' + id).val('');
-
-              break;
-            case 'customers':
-              warpol('#block-' + bloque).click();
-
-              for(var objResp in objects )
-              {
-                if(objects[objResp]['name'] == '_token')
-                  continue;
-                  if(bloque == 'b')
-                    if(objects[objResp]['name'] == 'CCscode')
-                      continue;
-                    else if(objects[objResp]['name'] == 'CCnumber')
-                      warpol('#' + bloque + '-' + objects[objResp]['name']).html(objects[objResp]['value'].substr(12, 4));
-                    else
-                      warpol('#' + bloque + '-' + objects[objResp]['name']).html(objects[objResp]['value']);
-                  else
-                    warpol('#' + bloque + '-' + objects[objResp]['name']).html(objects[objResp]['value']);
-              }
-              break;
-            case 'supportTicketsID':
-
-              warpol('.block-' + id + '-' + bloque).click();
-//               var newName = warpol('.block-' + id + '-getName-' + bloque ).val();
-//               console.log('.bloque-' + id + '-CID-' + bloque);
-               warpol('#bloque-' + id + '-CID-' + bloque).html(globalName);
-
-
-              break;
-
-//             default:
-//             default code block
-          }
-        }
-      }
-    );
-  };
-};
-var insertCustomerTicket  = function () {
-  return function(data, textStatus, jqXHR)
-  {
-
-    var objects = warpol('#newticketform').serializeArray();
-    var infoData = {};
-
-
-    for(var obj in objects )
-    {
-      if(objects[obj]['value'] == 'err' || objects[obj]['value'] == '')
-      {
-        alert('Verify ' + objects[obj]['name'] + ' Field');
-        return;
-      }
-
-      infoData[objects[obj]['name']] = objects[obj]['value'];
-    }
-
-    //AJAX request
-    warpol.ajax(
-      {type:"POST",
-        url:"/insertCustomerData",
-        data:infoData,
-        success: function(data)
-        {
-
-          warpol('#create-customer-ticket').notify('Ticket created.');
-          document.getElementById("newticketform").reset();
-
-
-        }
-      }
-      );
-  };
-};
-
-var changeSeccionView     = function () {
-  return function(data, textStatus, jqXHR)
-  {
-    if (customerSeccion)
-      warpol(customerSeccion).css('display', 'none');
-
-    var window = warpol(this).attr('window');
-    customerSeccion = '.' + window;
-    warpol(customerSeccion).fadeIn("slow");
-  };
-};
-
-function updateActiveServiceInfo (CSID, ProdIDc) {
-
-  var ProdID = warpol('#select-csiu').val();
-
-  console.log(CSID);
-  console.log(ProdID);
-  console.log(ProdIDc);
-
-  //AJAX request
-  warpol.ajax(
-    {type:"GET",
-      url:"/updateCustomerActiveServiceInfo",
-      data:{'CSID':CSID, 'ProdID':ProdID},
-      success: function(data)
-      {
-        if (data == 'ERROR')
-          alert(data);
-
-        warpol.each(data[0],function(i, item)
-        {
-          console.log(i + '-'+ProdID+'::' + item);
-          warpol('#' + i + '-' + ProdIDc).html(item);
-        });
-
-        warpol('.btn-display-service-'+CSID).notify('Service Updated');
-
-
-      }
-    }
-  );
-}
-
 /* MENU */
-app.controller('menuController', ['$scope', '$http', function($scope, $http){
-  $scope.SiteMenu = [];
+app.controller('menuController', function($scope, $http){
   $http.get('/menumaker').then(function (data){
     $scope.SiteMenu = data.data;
   }), function (error){
     alert('Error');
   }
-}]);
+});
+
+
+
+
 app.controller('userController',                    function($scope, $http){
   $http.get("/getUserData")
     .then(function (response) {
@@ -901,15 +168,6 @@ console.log('entro');
 //       $scope.adminAccessAppElements = response.data;
 //     });
 });
-
-
-
-
-
-
-
-
-
 app.controller('buildingCtl', ['$scope','$route','$http', function($scope, $route, $http) {
   if (!$scope.sbid)
   {
@@ -1163,13 +421,17 @@ return;
 
 
 }]);
+app.controller('customerSearch', function ($scope, $http){
+  console.log('we in customerSearch');
+  $scope.buscador = function (){
+    console.log('fue keypress ' + this.search);
 
-
-
-
-
-
-
+    $http.get("getCustomersPreview", {params:{'string':this.search}})
+      .then(function (response) {
+        console.log(response.data);
+      });
+  }
+});
 app.controller('newbuildingform', ['$scope', '$http', function($scope, $http)
 {
   $http.get("newbuildingform")
@@ -1358,11 +620,6 @@ app.controller('customerControllerList',            function ($scope, $http){
       $scope.supportDataCustomer = response.data;
     });
 });
-
-
-
-
-
 app.controller('customerController',                function ($scope, $http, $routeParams, notify, $uibModal, $log){
   var idCustomer = $routeParams.id;
 
@@ -1530,12 +787,6 @@ app.controller('customerController',                function ($scope, $http, $ro
 
 
 });
-
-
-
-
-
-
 app.controller('addContInfoController',             function ($scope, $http, customerId, $uibModalInstance, mode){
   $http.get("getContactTypes")
     .then(function (response) {
@@ -1565,12 +816,6 @@ app.controller('addContInfoController',             function ($scope, $http, cus
     $uibModalInstance.dismiss('cancel');
   };
 });
-
-
-
-
-
-
 app.controller('supportTicketHistory',              function ($scope, $http){
   $http.get("supportTicketHistory", {params:{'id':$scope.history.id}})
     .then(function (response) {
@@ -1764,15 +1009,6 @@ app.controller('customerTicketHistoryController',   function ($scope, $http){
 //       $scope.ticketReason = response.data;
 //     });
 // });
-
-
-
-
-
-
-
-
-
 app.controller('customerBillingHistoryController',  function ($scope, $http, $uibModal, $log){
 
   $http.get("getBillingHistory", {params:{'id':$scope.customerData.id}})
@@ -1802,35 +1038,9 @@ app.controller('customerBillingHistoryController',  function ($scope, $http, $ui
 
   };
 });
-
-
-
-
-
-
-
 app.controller('invoiceController', function ($scope, $http, customerId, notify, $uibModalInstance){
   console.log('invoiceController');
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 app.controller('customerPaymentMethodsController',  function ($scope, $http,$uibModal, $log){
 
   $http.get("getCustomerPayment", {params:{'id':$scope.stcid?$scope.stcid:$scope.customerData.id}})
@@ -1929,8 +1139,6 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http,$uib
   };
 
 });
-
-
 app.controller('addPaymentMethodController',        function ($scope, $http, customerId, notify, $uibModalInstance){
 
   $scope.addNewPaymentMethod = function (){
@@ -1969,8 +1177,6 @@ app.controller('addPaymentMethodController',        function ($scope, $http, cus
       });
   }
 });
-
-
 app.controller('customerServicesController',        function ($scope, $http, $mdDialog){
 
   $http.get("getCustomerServices", {params:{'id':$scope.customerData.id}})
@@ -2371,10 +1577,6 @@ app.controller('actionsController',                 function ($scope) {
   };
 
 });
-
-
-
-
 app.controller('mainSearchController',              function ($scope, $http, $compile){
   $scope.closeSearch = function () {
     warpol('#globalSearch').fadeOut('fast');
@@ -2482,13 +1684,6 @@ app.controller('mainSearchController',              function ($scope, $http, $co
     warpol("#viewMidContent").html(compiledeHTML);
   };
 });
-
-
-
-
-
-
-
 app.controller('toolsController',                   function ($scope, $http) {
   $scope.letterLimit = 400;
   $scope.showFullComment = function(id) {
@@ -2923,7 +2118,6 @@ var popEventTool = '';
 var objArray = '';
 var objEdit = null;
 var winSize  = warpol( document ).width();
-
 function eventTool(event, id, toDo){
   event.stopPropagation();
   if (id == 9)
@@ -3003,8 +2197,6 @@ function editWindow() {
   warpol('.calendar-select').fadeIn();
   warpol('#new-event').css('left', '60px');
 }
-
-
 app.controller('calController', function ($scope){
   console.log('inside--calController');
   /*

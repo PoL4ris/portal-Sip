@@ -1,41 +1,5 @@
-<!-- aside -->
-<aside id="aside">
-  <div class="aside-wrap">
-    <div class="navi-wrap">
-      <!-- nav -->
-      <nav ui-nav class="navi clearfix">
-
-        <ul class="nav navbar-nav hidden-sm" >
-          <li ng-repeat="menu in SiteMenu">
-            <a href="{{ menu.url }}" class="dropdown-toggle">
-              <i class="{{ menu.icon }}"></i>
-            </a>
-          </li>
-        </ul>
-
-        <ul class="nav" ng-controller="menuController">
-          <li ng-repeat="menu in SiteMenu">
-            <a href="{{ menu.url }}" class="dropdown-toggle">
-              <i class="{{ menu.icon }}"></i>
-            </a>
-            <md-tooltip md-direction="right">{{menu.name}}</md-tooltip>
-
-            <!--HoverInfoText-->
-            <!--<ul class="nav nav-sub dk">-->
-              <!--<li class="nav-sub-header">-->
-                <!--<a href="{{menu.url}}">-->
-                  <!--<span>{{menu.name}}</span>-->
-                <!--</a>-->
-              <!--</li>-->
-            <!--</ul>-->
-            <!--END HoverInfoText-->
-
-          </li>
-        </ul>
-
-      </nav>
-      <!-- nav -->
-    </div>
-  </div>
-</aside>
-<!-- / aside -->
+<ul ng-controller="menuController">
+  <li ng-repeat="menu in SiteMenu">
+    <a href="{{ menu.url }}" title="{{ menu.name }}"><i class="fa fa-lg fa-fw {{ menu.icon }}"></i> <span class="menu-item-parent">{{ menu.name }}</span></a>
+  </li>
+</ul>

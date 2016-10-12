@@ -99,6 +99,36 @@ class MainController extends Controller
                       ->take(20)
                       ->get();
   }
+  public function getCustomersPreview(Request $request)
+  {
+    $input = $request->all();
+    print '<pre>';
+
+    $customersData = Customer::with('building', 'address', 'contact', 'services', 'type')
+                      ->where('first_name', 'LIKE', '%' . $input['string'] . '%')
+                      ->orWhere('last_name', 'LIKE', '%' . $input['string'] . '%')
+                      ->orWhere('email', 'LIKE', '%' . $input['string'] . '%')
+                      ->take(2)
+                      ->get();
+
+    print_r($customersData->toArray());
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    die();
+  }
   public function getTicketsSearch(Request $request){
     $stringA = explode("#", $request->string)[0];
     $string = explode(" ", $stringA)[0];

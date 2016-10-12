@@ -1,17 +1,18 @@
 <div id="viewMidContent">
-
-
-<div class="bg-light lter b-b wrapper-xs col-lg-12 inoutbtn-include">
-  <h1 class="m-n font-thin h3">Buildings</h1>
-  <md-button class="inout-click" ng-click="showHideSide()">
-    <i class="fa fa-fw fa-dedent"></i>
-    <md-tooltip md-direction="left">Side Tools</md-tooltip>
-  </md-button>
-</div>
-
-
-
-<div class="app-content-body hbox" ng-controller="buildingCtl">
+  <div class="bg-light lter b-b wrapper-xs col-lg-12 inoutbtn-include">
+    <h1 class="m-n font-thin h3 bld-h-uno">Buildings</h1>
+    <md-button class="inout-click bld-h-dos" ng-click="showHideSide()">
+      <i class="fa fa-fw fa-dedent"></i>
+      <md-tooltip md-direction="left">Side Tools</md-tooltip>
+    </md-button>
+    <div class="bld-h-tres">
+      <i class="type-ico type-c">C</i>    <span class="ref-colors">Commercial</span>
+      <i class="type-ico type-r">H-R</i>  <span class="ref-colors">High-Rise</span>
+      <i class="type-ico type-p">O</i>    <span class="ref-colors">Office</span>
+      <i class="type-ico type-b">T</i>    <span class="ref-colors">Town Homes</span>
+    </div>
+  </div>
+  <div class="app-content-body hbox" ng-controller="buildingCtl">
 
   <!-- LEFT COL-->
   <div class="col w-lg lter b-r b-tabs anim left-colinout">
@@ -147,6 +148,4 @@
   <!--END ELEMENTS -->
 
 </div>
-
-
 </div>
