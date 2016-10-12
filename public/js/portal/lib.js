@@ -7,6 +7,10 @@ app.controller('menuController', function($scope, $http){
   }
 });
 
+app.controller('tt', function($scope, $http){
+console.log(this);
+});
+
 
 
 

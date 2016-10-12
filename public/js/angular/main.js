@@ -8,12 +8,13 @@ var app = angular.module('app', ["ngRoute"]);
 app.config(['$routeProvider', function ($routeProvider) {
   $routeProvider
     .when("/",              {templateUrl: "/views/test.html"})
+    .when("/buildings",     {templateUrl: "/views/dummy.html"})
+//     .when("/buildings",     {templateUrl: "/views/building/buildings.html"})
 //     .when("/admin",         {templateUrl: "/views/admin.html", controller:"admin"})
 //     .when('#/',             {templateUrl: '/angularviews/partials/page-home.html', controller: 'mainController'})
 //     .when('#/about',        {templateUrl: '/angularviews/partials/page-about.html', controller: 'aboutController'})
 //     .when('#/contact',      {templateUrl: '/angularviews/partials/page-contact.html', controller: 'contactController'})
 //     .when("/buildingdash",  {templateUrl: "/views/building/dashboard.html"})
-//     .when("/buildings",     {templateUrl: "/views/building/buildings.html"})
 //     .when("/support",       {templateUrl: "/views/support.html"})
 //     .when("/adminusers",    {templateUrl: "/angularviews/partials/home.html", controller: "adminusers"})
 //     .when("/customer",      {templateUrl: "/views/customers.html"})
