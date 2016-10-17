@@ -10,6 +10,7 @@ use App\Http\Requests;
 use App\Models\Building\Building;
 use App\Models\Building\ServiceLocation;
 use App\Models\Building\BuildingProperty;
+use App\Models\BuildingPropertyValue;
 use App\Models\Building\BuildingContact;
 use App\Models\Building\Neighborhood;
 use App\Models\Type;
@@ -31,53 +32,30 @@ class BuildingController extends Controller
 
   public function buildings(Request $request)
   {
-
     $offset = 0;
-    $limit = 200;
-    $address = null;
-
+    $limit = 50;
+    $building = '';
 
     if ($request->id)
-    {
-      $building = Building::where('id', $request->id)->get();
-      $address = Address::where('id_buildings', $building[0]->id)->first();
-//      $bldType = Type::where('id', $building[0]->id_types)->get();
-//      $building[0]->typename = $bldType[0]->name;
-    }
+      $building = Building::with('address', 'neighborhood', 'contacts')->find($request->id);
     else
-      $building = Building::orderBy('id', 'desc')->skip($offset)->take($limit)->get();
+      $buildingList = Building::orderBy('id', 'desc')->skip($offset)->take($limit)->get();
 
-
-//    $buildingsList = DB::table('buildings')->skip($offset)->take($limit)->get();
-    $neighborhoodList = $this->getNeighborhoodList();
-    $buildingsTypes = $this->getBuildingsType();
-    $buildingsInfo = $this->getBuildingsInfo($building[0]->id);
-
-
-
-    if ($building[0]->id_neighborhoods != 0)
-    {
-      $bldNeigh = Neighborhood::where('id', $building[0]->id_neighborhoods)->get();
-      $building[0]->neighborhoodname = $bldNeigh[0]->name;
-    }
-
-//    $typesList = $this->getTypesList();
-
-    $data = ['building'     => $building[0],
-             'neighborhood' => $neighborhoodList,
-             'address'      => $address,
-             'exist'        => $buildingsInfo['exist'],
-             'properties'   => $buildingsInfo['properties'],
-             'contact'      => $buildingsInfo['contact'],
-             'buildingList' => $building,
-             'retail'       => $buildingsTypes['retail'],
-             'comer'        => $buildingsTypes['comer'],
+    $data = ['building'     => $building ? $building : $this->getBuilding($buildingList[0]->id),
+             'buildingList' => $buildingList ? $buildingList : '',
              'offset'       => $offset,
              'limit'        => $limit
     ];
-
-    
     return $data;
+  }
+  public function getBuilding($id){
+    $data = Building::with('address', 'neighborhood', 'contacts')->find(28);
+    $data->properties = BuildingPropertyValue::join('building_properties', 'building_property_values.id_building_properties', '=', 'building_properties.id')
+                      ->where('building_property_values.id_buildings', '=', 28)
+                      ->select('*')
+                      ->get();
+
+                     return $data;
   }
   public function newbuildingform()
   {

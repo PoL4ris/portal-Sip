@@ -1,22 +1,299 @@
-<!-- RIBBON -->
-<div id="ribbon" ng-model="item" ng-include='"/angularviews/templates/breadcrumbs.html"' ng-controller="tt"></div>
-<!-- END RIBBON -->
+<!-- LEFT CONTENT -->
+<div id="lcontent" class="content-column-left anim">
 
+  <!-- row -->
+  <div class="row">
+    <article class="col-sm-12">
 
+      <!-- new widget -->
+      <div id="wid-id-3" data-jarvis-widget  data-widget-editbutton="false" data-widget-deletebutton="false">
 
+        <header>
 
+          <ul class="nav nav-tabs pull-left in" id="myTab">
+            <li class="active">
+              <a data-toggle="tab" href="#s1"><i class="fa fa-clock-o"></i> <span class="hidden-mobile hidden-tablet slc-dfalse">All</span></a>
+            </li>
 
-<!-- col -->
-<div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
-  <h1 class="page-title txt-color-blueDark">
-    <!-- PAGE HEADER -->
-    <i class="fa-fw fa fa-home"></i>Page Header<span> >Subtitle</span>
-  </h1>
+            <li>
+              <a data-toggle="tab" href="#s2"><i class="fa fa-facebook"></i> <span class="hidden-mobile hidden-tablet slc-dfalse">Retail</span></a>
+            </li>
 
+            <li>
+              <a data-toggle="tab" href="#s3"><i class="fa fa-dollar"></i> <span class="hidden-mobile hidden-tablet slc-dfalse">Comercial</span></a>
+            </li>
+            <li ng-controller="globalToolsCtl">
+              <div class="cursor-pointer left-column-arrow" ng-click="leftColumnOpenClose()">
+                <i id="arrowChange" class="fa fa-arrow-circle-left"></i>
+              </div>
+            </li>
+
+          </ul>
+
+        </header>
+
+        <!-- widget div-->
+        <div class="no-padding bld-list" >
+
+          <div class="widget-body">
+            <!-- content -->
+            <div id="myTabContent" class="tab-content">
+              <div class="tab-pane fade active in padding-10 no-padding-bottom" id="s1">
+
+                <div id="bldlist-result" >
+                  <p ng-repeat="building in bldSearchResultLeft" ng-click="displayBldData(building.id)" ng-if="bldSearchResultLeft" class="animate-if">{{ building.name }}</p>
+                  <p ng-repeat="building in bldData['buildingList']" ng-click="displayBldData(building.id)" ng-if="!bldSearchResultLeft" class="animate-if">
+
+                    <i ng-if="building.code" class="slc-dtrue display-none bld-code-name-left-side">{{ building.code }}</i>
+                    <i ng-if="building.name" class="slc-dfalse">{{ building.name }}</i>
+                    <i ng-if="building.type == 'Commercial'" class="type-ico type-c slc-dfalse">C</i>
+                    <i ng-if="building.type == 'High-Rise'"  class="type-ico type-r slc-dfalse">H-R</i>
+                    <i ng-if="building.type == 'Office'"     class="type-ico type-p slc-dfalse">O</i>
+                    <i ng-if="building.type == 'Townhomes'"  class="type-ico type-b slc-dfalse">T</i>
+                  </p>
+                </div>
+
+              </div>
+              <!-- end s1 tab pane -->
+
+              <div class="tab-pane fade padding-10" id="s2">
+                SOMETHING NICE S2
+              </div>
+              <!-- end s2 tab pane -->
+
+              <div class="tab-pane fade padding-10" id="s3">
+                SOMETHING NICE S3
+              </div>
+              <!-- end s3 tab pane -->
+            </div>
+
+            <!-- end content -->
+          </div>
+
+        </div>
+        <!-- end widget div -->
+      </div>
+      <!-- end widget -->
+
+    </article>
+  </div>
+  <!-- end row -->
 
 </div>
-<!-- end col -->
+<!-- END LEFT CONTENT -->
 
-<!-- CONTENT -->
-HERE GOES THE CONTENT
-<!-- END CONTENT -->
+<!-- MAIN CONTENT -->
+<div id="content" class="content-column-right anim">
+
+  <!-- widget grid -->
+  <section id="widget-grid" widget-grid>
+
+    <!-- row -->
+    <div class="row">
+
+      <article class="col-sm-12 col-md-12 col-lg-6">
+
+
+        <!-- new widget -->
+        <div id="wid-id-" data-jarvis-widget data-widget-deletebutton="false" data-widget-editbutton="false">
+          <header>
+            <span class="widget-icon"> <i class="fa fa-building-o"></i> </span>
+
+            <h2>Building Info</h2>
+          </header>
+
+          <div class="col-sm-12 col-md-12 col-lg-12">
+            <!-- product -->
+            <div class="product-content product-wrap clearfix product-deatil">
+              <div class="row">
+                <div class="col-md-5 col-sm-12 col-xs-12 ">
+                  <div class="product-image">
+                    <div id="myCarousel-3" class="carousel fade">
+                      <ol class="carousel-indicators">
+                        <li data-target="#myCarousel-3" data-slide-to="0" class=""></li>
+                        <li data-target="#myCarousel-3" data-slide-to="1" class="active"></li>
+                        <li data-target="#myCarousel-3" data-slide-to="2" class=""></li>
+                      </ol>
+                      <div class="carousel-inner">
+                        <!-- Slide 1 -->
+                        <div class="item active">
+                          <img src="/img/buildings/{{bldData.building.img_building}}" alt="">
+                        </div>
+                        <!-- Slide 2 -->
+                        <div class="item">
+                          <img src="/img/buildings/{{bldData.building.img_building}}" alt="">
+                        </div>
+                        <!-- Slide 3 -->
+                        <div class="item">
+                          <img src="/img/buildings/{{bldData.building.img_building}}" alt="">
+                        </div>
+                      </div>
+                      <a class="left carousel-control" href="#myCarousel-3" ng-non-bindable data-slide="prev"> <span class="glyphicon glyphicon-chevron-left"></span> </a>
+                      <a class="right carousel-control" href="#myCarousel-3" ng-non-bindable data-slide="next"> <span class="glyphicon glyphicon-chevron-right"></span> </a>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-7 col-sm-12 col-xs-12">
+
+                  <h2 class="name">{{bldData.building.name}}</h2>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-6 bld-box-info">
+                      <p>Address</p>
+                      <p>Alias</p>
+                      <p>Neighborhood</p>
+                      <p>Code</p>
+                      <p>Year Built</p>
+                      <p>Units</p>
+                      <p>Floors</p>
+                      <p>Type</p>
+                      <p>Legal Builder</p>
+                    </div>
+                    <div class="col-sm-6 bld-box-info">
+                      <p>{{bldData.building.name}}</p>
+                      <p>{{bldData.building.alias}}</p>
+                      <p>{{bldData.building.neighborhood.name}}</p>
+                      <p>{{bldData.building.code}}</p>
+                      <p>{{bldData.building.year_built}}</p>
+                      <p>{{bldData.building.units}}</p>
+                      <p>{{bldData.building.floors}}</p>
+                      <p>{{bldData.building.type}}</p>
+                      <p>{{bldData.building.legal_name}}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- end product -->
+          </div>
+        </div>
+        <!-- end widget -->
+
+      </article>
+
+
+
+
+
+
+
+
+      <article class="col-sm-12 col-md-12 col-lg-6" ng-controller="FormPluginsCtrl">
+
+        <!-- Widget ID (each widget will need unique ID)-->
+        <div jarvis-widget id="wid-id-0"   data-widget-deletebutton="false" data-widget-editbutton="false" data-widget-custombutton="false" ng-controller="FormXeditableCtrl">
+          <header>
+            <span class="widget-icon"> <i class="fa fa-edit"></i> </span>
+            <h2>Building Properties</h2>
+          </header>
+
+          <div>
+            <!-- widget content -->
+            <div class="widget-body">
+              <div class="widget-body-toolbar">
+                <div class="row">
+                  <div class="col-sm-6">
+                    <button id="enable" class="btn btn btn-default" ng-click="toggleDisabled()">
+                      enable / disable
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <table id="user"  class="table table-bordered table-striped bld-prop-table" style="clear: both">
+                <tbody>
+                  <tr ng-repeat="properData in bldData.building.properties">
+                    <td>{{properData.name}}</td>
+                    <td ng-if="properData.name == 'Unit'"><p><a href="form-x-editable.html#" id="{{properData.name}}" data-type="textarea" data-pk="1" smart-xeditable data-ng-model="properData.name" data-options="editableOptions" data-original-title="Enter text" class="editable editable-click">{{properData.value}}</a></p></td>
+                    <td ng-if="properData.name != 'Unit'"><a href="form-x-editable.html#" id="{{properData.name}}" data-type="textarea" data-pk="1" smart-xeditable data-ng-model="properData.name" data-options="editableOptions" data-original-title="Enter text" class="editable editable-click">{{properData.value}}</a></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <!-- end widget content -->
+          </div>
+          <!-- end widget div -->
+
+        </div>
+        <!-- end widget -->
+      </article>
+
+
+
+
+
+
+
+
+      <article class="col-sm-12 col-md-12 col-lg-6">
+
+        <!-- new widget -->
+        <div id="wid-id-1" data-jarvis-widget  data-widget-editbutton="false" data-widget-deletebutton="false">
+
+          <header>
+            <span class="widget-icon"> <i class="fa fa-building-o"></i> </span>
+            <h2>Building Contacts</h2>
+          </header>
+
+          <!-- widget div-->
+          <div class="row">
+            <div class="col-xs-12 col-sm-4 col-md-4" ng-repeat="bldContact in bldData.building.contacts">
+              <div class="panel panel-darken">
+                <div class="panel-heading"><h3 class="panel-title">{{bldContact.first_name}} {{bldContact.last_name}}</h3></div>
+                <div class="panel-body no-padding text-align-center">
+                  <div class="the-price">
+                    <small>Company <br>{{bldContact.company}}</small>
+                  </div>
+                  <table class="table">
+                    <tr>
+                      <td>
+                        Contact
+                      </td>
+                    </tr>
+                    <tr class="active">
+                      <td>
+                        {{bldContact.contact}}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        Contact #2
+                      </td>
+                    </tr>
+                    <tr class="active">
+                      <td>
+                        {{bldContact.fax?bldContact.fax:'N/A'}}
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+                <div class="panel-footer no-padding">
+                  <a href-void class="btn bg-color-blue txt-color-white btn-block" role="button">EDIT</a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- end widget div -->
+        </div>
+        <!-- end widget -->
+
+      </article>
+
+
+
+
+
+
+
+
+
+    </div>
+    <!-- end row -->
+
+  </section>
+  <!-- end widget grid -->
+
+</div>
+<!-- END MAIN CONTENT -->
+
+
+

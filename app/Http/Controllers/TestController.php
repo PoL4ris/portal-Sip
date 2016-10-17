@@ -115,6 +115,21 @@ class TestController extends Controller
   public function supportTest()
   {
 
+
+
+    print '<pre>';
+    print_r(
+      Building::with('properties')
+      ->find(28)
+    );
+    die();
+
+
+
+
+
+
+die();
     /**
      * Add new card
      */

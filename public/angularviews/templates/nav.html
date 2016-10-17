@@ -1,5 +1,6 @@
 <ul ng-controller="menuController">
-  <li ng-repeat="menu in SiteMenu">
-    <a href="{{ menu.url }}" title="{{ menu.name }}"><i class="fa fa-lg fa-fw {{ menu.icon }}"></i> <span class="menu-item-parent">{{ menu.name }}</span></a>
+  <li data-ui-sref-active="active" ng-repeat="menu in SiteMenu">
+    <a data-ui-sref="app.{{ menu.url }}" title="{{ menu.name }}"><i class="fa fa-lg fa-fw {{ menu.icon }}"></i><span
+      class="menu-item-parent">{{ menu.name }}</span></a>
   </li>
 </ul>

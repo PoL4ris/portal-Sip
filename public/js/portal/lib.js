@@ -6,13 +6,260 @@ app.controller('menuController', function($scope, $http){
     alert('Error');
   }
 });
+//DONE
+app.controller('buildingCtl', ['$scope','$route','$http', function($scope, $route, $http) {
+  if (!$scope.sbid)
+  {
+    $scope.SiteMenu = [];
+    $http.get('buildings').then(function (data){
+      $scope.bldData = data.data;
+      $scope.offsetLimitFunction($scope.bldData.offset, $scope.bldData.limit);
+    }), function (error){
+      alert('Error');
+    }
+  }
+  else
+  {
+    $http.get("buildings/" + $scope.sbid)
+      .then(function (response) {
+        $scope.bld = response.data;
+      });
+  }
 
-app.controller('tt', function($scope, $http){
-console.log(this);
-});
+  $scope.displayBldData = function (idBld) {
+    $http.get("buildings/" + idBld)
+      .then(function (response) {
+        $scope.bld = response.data;
+      });
+
+  }
+  $scope.displayBldForm = function () {
+    if ($scope.show == false)
+    {
+      $scope.show = true;
+      warpol('#bld-content-form').fadeIn('slow');
+      warpol('#add-bld-btn').fadeOut('fast');
+      warpol('#cancel-bld-btn').fadeIn('fast');
+    }
+    else
+    {
+      $scope.show = false;
+      warpol('#bld-content-form').fadeOut('slow');
+      warpol('#add-bld-btn').fadeIn('fast');
+      warpol('#cancel-bld-btn').fadeOut('fast');
+    }
+  }
+  $scope.offsetLimitFunction = function (offset, limit) {
+    warpol('#ol-left-btn').attr('offset', offset);
+    warpol('#ol-left-btn').attr('limit', limit);
+    warpol('#ol-right-btn').attr('offset', offset);
+    warpol('#ol-right-btn').attr('limit', limit);
+  }
+  $scope.buildingsList = function (position) {
+    //Math var operations.
+    var offset              = parseInt($scope.bldData.offset);
+    var limit              = parseInt($scope.bldData.limit);
+    var a              = parseInt(offset);
+    var b              = parseInt(limit);
+    //Back Arrow empty
+    if (position == 0 && offset <= 0 || ($scope.limitoffset  == 'dif' && position == 1))
+      return;
+    //Solve correct LIMIT OFFSET info to request
+    if(position == 1)
+    {
+      offset = b;
+      limit = b + (b - a);
+    }
+    else
+    {
+      limit = a;
+      offset = a - (b - a);
+    }
+    //Case result is wrong
+    if (offset < 0 || limit <= 0)
+      return;
+    //Main info to do request
+    var query = {"offset": offset, "limit": limit, "position": position};
+
+
+    $http.get("buildingsList", {params:query})
+      .then(function (response) {
+        if (response.data.length == 0)
+          $scope.limitoffset  = 'dif';
+        else
+        {
+          $scope.bldData['buildingList'] = response.data;
+          $scope.limitoffset  = '';
+        }
+      });
+
+    if($scope.limitoffset  == 'dif')
+    {
+      limit = offset;
+      offset = (limit - 20);
+    }
+
+    $scope.bldData.offset = offset;
+    $scope.bldData.limit = limit;
+
+    $scope.offsetLimitFunction(offset, limit);
+  }
+  $scope.buscador = function(searchType, side) {
+    var query = {};
+
+    if (side == 'left')
+      query = {'querySearch' : this.searchLeft};
+    else
+      query = {'querySearch' : this.searchRight};
+
+    $http.get("buildingsSearch", {params:query})
+      .then(function (response) {
+//         console.log(response.data);
+        if (side == 'left')
+          $scope.bldSearchResultLeft = response.data;
+        else
+          $scope.bldSearchResultRight = response.data;
+      });
+
+    return;
+
+
+//END SEARCH TOOL
+
+
+    //id de quien solicita
+    idDivResult = idDivResult?idDivResult:warpol(this).attr('id');
 
 
 
+    if (!idDivResult)
+      return;
+
+    //Clean search fields
+    warpol('#' + idDivResult + '-result').html('');
+    warpol('.resultadosComplex').html('');
+
+    //checamos si es simple o complex
+    if(document.getElementById('complexSearch'))
+      searchType = 'Complex';
+
+    if (searchType == 'Simple')
+    {
+      warpol('.ntas-tmp').css('display', 'none');
+      query = {"querySearch" : warpol(this).val()};
+    }
+    else // if searchType == 'COMPLEX'
+    {
+      index = warpol(this).attr('index');
+      complexType[0] = 'complex';
+      complexType[index] = warpol(this).val();
+      query = {"querySearch" : complexType };
+    }
+
+    path = window.location.pathname;
+
+    //Split ID for Dynamic UrlRequest
+    urlTmp = idDivResult.split('id-');
+    urlTmp = urlTmp[1].split('-search');
+
+    //AJAX request
+    warpol.ajax(
+      {type:"GET",
+        url:"/"+ urlTmp[0] + "Search",
+        data:query,
+        success: function(data)
+        {
+          //Validate info existing or die
+          if (data == 'null')
+          {
+            warpol('.ntas-tmp').fadeIn("slow");
+            return;
+          }
+
+          //Result JsonParser tu use data
+          var resultData = jQuery.parseJSON(data);
+          warpol('#' + idDivResult + '-result').append('<p>Results...( '+ resultData.length +' )</p>');
+          warpol('.resultadosComplex').append('<p>Results...( '+ resultData.length +' )</p>');
+          warpol.each(resultData,function(i, item)
+          {
+            //Rewrite results
+            if (urlTmp[0] == 'customers')
+              var nombre = '<label>' + item.Firstname + ' ' + item.Lastname + ' </label><label> <b> CODE: </b> ' + item.ShortName + ' </label><label> <b> UNIT: </b> ' + item.Unit + ' </label><label> <b> Address: </b> </label><label>' + item.Address  + '</label>';
+            else
+              var nombre = item.Name;
+
+            if (path == '/supportdash')
+            {
+              warpol('.resultadosComplex').append('<p id="name-CID-' + item.CID + '" onclick="refeshDisabledInput(' + item.CID + ');">' + item.Firstname+ ' ' + item.Lastname + '</p>');
+            }
+            else
+            {
+              warpol('#' + idDivResult + '-result').append('<p><a href="/'+ urlTmp[0] +'/'+ item.LocID +'"> ' + nombre + '</a></p>');
+              warpol('.resultadosComplex').append('<p><a href="/'+ urlTmp[0] +'/'+ item.CID +'"> ' + nombre + '</a></p>');
+            }
+          });
+        }
+      }
+    );
+
+
+  }
+  $scope.editFormByType = function (id) {
+
+    tempTicketID = id;
+
+    if (warpol('#' + id).attr('stand') == '1')
+    {
+      warpol('.' + id + '-label').css('display','table-cell');
+      warpol('.' + id + '-edit').css('display','none');
+      warpol('#save-' + id).fadeOut( "slow" );
+      warpol('#' + id).html('Edit');
+      warpol('#' + id).switchClass('btn-danger', 'btn-info');
+      warpol('#' + id).attr('stand', '2');
+      if(path == '/supportdash')
+      {
+        warpol('.resultadosComplex').html('');
+        warpol('.dis-input').val('');
+      }
+
+    }
+    else
+    {
+      warpol('.' + id + '-label').css('display','none');
+      warpol('.' + id + '-edit').fadeIn( "slow" );
+      warpol('#save-' + id).fadeIn( "slow" );
+      warpol('#' + id).html('Cancel');
+      warpol('#' + id).switchClass('btn-success', 'btn-danger');
+      warpol('#' + id).attr('stand', '1');
+    }
+
+  }
+  $scope.submitForm = function () {
+    console.log('buildingCtl');
+    var objects = warpol('#building-update-form').serializeArray();
+    var infoData = {};
+    for(var obj in objects )
+    {
+      if(objects[obj]['value'] == 'err' || objects[obj]['value'] == '')
+      {
+        var tmp = objects[obj]['name'].split('id_');
+        alert('Verify ' + (tmp[1]?tmp[1]:objects[obj]['name']) + ' Field');
+        return;
+      }
+      infoData[objects[obj]['name']] = objects[obj]['value'];
+    }
+
+    $http.get("updateBuilding", {params:infoData})
+      .then(function (response) {
+        $scope.bld = response.data;
+      });
+
+    $scope.editFormByType('block-a');
+  }
+
+
+
+}]);
 
 app.controller('userController',                    function($scope, $http){
   $http.get("/getUserData")
@@ -172,259 +419,7 @@ console.log('entro');
 //       $scope.adminAccessAppElements = response.data;
 //     });
 });
-app.controller('buildingCtl', ['$scope','$route','$http', function($scope, $route, $http) {
-  if (!$scope.sbid)
-  {
-    $scope.SiteMenu = [];
-    $http.get('buildings').then(function (data){
-      $scope.bldData = data.data;
-      $scope.offsetLimitFunction($scope.bldData.offset, $scope.bldData.limit);
-    }), function (error){
-      alert('Error');
-    }
-  }
-  else
-  {
-    $http.get("buildings/" + $scope.sbid)
-      .then(function (response) {
-        $scope.bld = response.data;
-      });
-  }
 
-  $scope.displayBldData = function (idBld) {
-    $http.get("buildings/" + idBld)
-      .then(function (response) {
-        $scope.bld = response.data;
-      });
-
-  }
-  $scope.displayBldForm = function () {
-    if ($scope.show == false)
-    {
-      $scope.show = true;
-      warpol('#bld-content-form').fadeIn('slow');
-      warpol('#add-bld-btn').fadeOut('fast');
-      warpol('#cancel-bld-btn').fadeIn('fast');
-    }
-    else
-    {
-      $scope.show = false;
-      warpol('#bld-content-form').fadeOut('slow');
-      warpol('#add-bld-btn').fadeIn('fast');
-      warpol('#cancel-bld-btn').fadeOut('fast');
-    }
-  }
-  $scope.offsetLimitFunction = function (offset, limit) {
-    warpol('#ol-left-btn').attr('offset', offset);
-    warpol('#ol-left-btn').attr('limit', limit);
-    warpol('#ol-right-btn').attr('offset', offset);
-    warpol('#ol-right-btn').attr('limit', limit);
-  }
-  $scope.buildingsList = function (position) {
-    //Math var operations.
-    var offset              = parseInt($scope.bldData.offset);
-    var limit              = parseInt($scope.bldData.limit);
-    var a              = parseInt(offset);
-    var b              = parseInt(limit);
-    //Back Arrow empty
-    if (position == 0 && offset <= 0 || ($scope.limitoffset  == 'dif' && position == 1))
-      return;
-    //Solve correct LIMIT OFFSET info to request
-    if(position == 1)
-    {
-      offset = b;
-      limit = b + (b - a);
-    }
-    else
-    {
-      limit = a;
-      offset = a - (b - a);
-    }
-    //Case result is wrong
-    if (offset < 0 || limit <= 0)
-      return;
-    //Main info to do request
-    var query = {"offset": offset, "limit": limit, "position": position};
-
-
-    $http.get("buildingsList", {params:query})
-      .then(function (response) {
-        if (response.data.length == 0)
-          $scope.limitoffset  = 'dif';
-        else
-        {
-          $scope.bldData['buildingList'] = response.data;
-          $scope.limitoffset  = '';
-        }
-      });
-
-    if($scope.limitoffset  == 'dif')
-    {
-      limit = offset;
-      offset = (limit - 20);
-    }
-
-    $scope.bldData.offset = offset;
-    $scope.bldData.limit = limit;
-
-    $scope.offsetLimitFunction(offset, limit);
-  }
-  $scope.buscador = function(searchType, side) {
-    var query = {};
-
-    if (side == 'left')
-      query = {'querySearch' : this.searchLeft};
-    else
-      query = {'querySearch' : this.searchRight};
-
-    $http.get("buildingsSearch", {params:query})
-      .then(function (response) {
-//         console.log(response.data);
-        if (side == 'left')
-          $scope.bldSearchResultLeft = response.data;
-        else
-          $scope.bldSearchResultRight = response.data;
-      });
-
-return;
-
-
-//END SEARCH TOOL
-
-
-    //id de quien solicita
-    idDivResult = idDivResult?idDivResult:warpol(this).attr('id');
-
-
-
-    if (!idDivResult)
-      return;
-
-    //Clean search fields
-    warpol('#' + idDivResult + '-result').html('');
-    warpol('.resultadosComplex').html('');
-
-    //checamos si es simple o complex
-    if(document.getElementById('complexSearch'))
-      searchType = 'Complex';
-
-    if (searchType == 'Simple')
-    {
-      warpol('.ntas-tmp').css('display', 'none');
-      query = {"querySearch" : warpol(this).val()};
-    }
-    else // if searchType == 'COMPLEX'
-    {
-      index = warpol(this).attr('index');
-      complexType[0] = 'complex';
-      complexType[index] = warpol(this).val();
-      query = {"querySearch" : complexType };
-    }
-
-    path = window.location.pathname;
-
-    //Split ID for Dynamic UrlRequest
-    urlTmp = idDivResult.split('id-');
-    urlTmp = urlTmp[1].split('-search');
-
-    //AJAX request
-    warpol.ajax(
-      {type:"GET",
-        url:"/"+ urlTmp[0] + "Search",
-        data:query,
-        success: function(data)
-        {
-          //Validate info existing or die
-          if (data == 'null')
-          {
-            warpol('.ntas-tmp').fadeIn("slow");
-            return;
-          }
-
-          //Result JsonParser tu use data
-          var resultData = jQuery.parseJSON(data);
-          warpol('#' + idDivResult + '-result').append('<p>Results...( '+ resultData.length +' )</p>');
-          warpol('.resultadosComplex').append('<p>Results...( '+ resultData.length +' )</p>');
-          warpol.each(resultData,function(i, item)
-          {
-            //Rewrite results
-            if (urlTmp[0] == 'customers')
-              var nombre = '<label>' + item.Firstname + ' ' + item.Lastname + ' </label><label> <b> CODE: </b> ' + item.ShortName + ' </label><label> <b> UNIT: </b> ' + item.Unit + ' </label><label> <b> Address: </b> </label><label>' + item.Address  + '</label>';
-            else
-              var nombre = item.Name;
-
-            if (path == '/supportdash')
-            {
-              warpol('.resultadosComplex').append('<p id="name-CID-' + item.CID + '" onclick="refeshDisabledInput(' + item.CID + ');">' + item.Firstname+ ' ' + item.Lastname + '</p>');
-            }
-            else
-            {
-              warpol('#' + idDivResult + '-result').append('<p><a href="/'+ urlTmp[0] +'/'+ item.LocID +'"> ' + nombre + '</a></p>');
-              warpol('.resultadosComplex').append('<p><a href="/'+ urlTmp[0] +'/'+ item.CID +'"> ' + nombre + '</a></p>');
-            }
-          });
-        }
-      }
-    );
-
-
-  }
-  $scope.editFormByType = function (id) {
-
-    tempTicketID = id;
-
-    if (warpol('#' + id).attr('stand') == '1')
-    {
-      warpol('.' + id + '-label').css('display','table-cell');
-      warpol('.' + id + '-edit').css('display','none');
-      warpol('#save-' + id).fadeOut( "slow" );
-      warpol('#' + id).html('Edit');
-      warpol('#' + id).switchClass('btn-danger', 'btn-info');
-      warpol('#' + id).attr('stand', '2');
-      if(path == '/supportdash')
-      {
-        warpol('.resultadosComplex').html('');
-        warpol('.dis-input').val('');
-      }
-
-    }
-    else
-    {
-      warpol('.' + id + '-label').css('display','none');
-      warpol('.' + id + '-edit').fadeIn( "slow" );
-      warpol('#save-' + id).fadeIn( "slow" );
-      warpol('#' + id).html('Cancel');
-      warpol('#' + id).switchClass('btn-success', 'btn-danger');
-      warpol('#' + id).attr('stand', '1');
-    }
-
-  }
-  $scope.submitForm = function () {
-    console.log('buildingCtl');
-    var objects = warpol('#building-update-form').serializeArray();
-      var infoData = {};
-      for(var obj in objects )
-      {
-        if(objects[obj]['value'] == 'err' || objects[obj]['value'] == '')
-        {
-          var tmp = objects[obj]['name'].split('id_');
-          alert('Verify ' + (tmp[1]?tmp[1]:objects[obj]['name']) + ' Field');
-          return;
-        }
-        infoData[objects[obj]['name']] = objects[obj]['value'];
-      }
-
-      $http.get("updateBuilding", {params:infoData})
-        .then(function (response) {
-          $scope.bld = response.data;
-        });
-
-      $scope.editFormByType('block-a');
-    }
-
-
-
-}]);
 app.controller('customerSearch', function ($scope, $http){
   console.log('we in customerSearch');
   $scope.buscador = function (){

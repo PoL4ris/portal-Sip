@@ -1,6 +1,46 @@
-#logo{
+
+#logo {
   margin-top: 5px;
 }
 .anim {
   transition: all 0.7s ease 0s;
+}
+.cursor-pointer {
+  cursor: pointer !important;
+}
+.display-none {
+  display: none;
+}
+.content-column-left {
+  float: left;
+  height: 100%;
+  min-height: 500px;
+  width: 20%;
+}
+.content-column-right {
+  float: right;
+  width: 80%;
+}
+.ccl-small {
+  background: #fafafa none repeat scroll 0 0;
+  width: 5%;
+}
+.ccr-small {
+  width: 95%;
+}
+.left-column-arrow {
+  color: #aaa;
+  display: block;
+  font-size: 22px;
+  max-height: 31px;
+  padding: 5px 15px !important;
+  position: relative;
+}
+.left-column-arrow i {
+  display: block;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+.left-column-arrow:hover {
+  background: #eeeeee none repeat scroll 0 0;
 }
