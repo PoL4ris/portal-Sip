@@ -18,7 +18,7 @@ class CreateProductsTable extends Migration
         $table->string('name');
         $table->string('description');
         $table->integer('id_types')->comment('Type');
-        $table->integer('amount');
+        $table->double('amount');
         $table->string('frequency');
         $table->integer('id_products')->nullable()->comment('Parent');
         $table->timestamps();
