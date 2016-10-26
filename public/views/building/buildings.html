@@ -1,151 +1,53 @@
-<div id="viewMidContent">
-  <div class="bg-light lter b-b wrapper-xs col-lg-12 inoutbtn-include">
-    <h1 class="m-n font-thin h3 bld-h-uno">Buildings</h1>
-    <md-button class="inout-click bld-h-dos" ng-click="showHideSide()">
-      <i class="fa fa-fw fa-dedent"></i>
-      <md-tooltip md-direction="left">Side Tools</md-tooltip>
-    </md-button>
-    <div class="bld-h-tres">
-      <i class="type-ico type-c">C</i>    <span class="ref-colors">Commercial</span>
-      <i class="type-ico type-r">H-R</i>  <span class="ref-colors">High-Rise</span>
-      <i class="type-ico type-p">O</i>    <span class="ref-colors">Office</span>
-      <i class="type-ico type-b">T</i>    <span class="ref-colors">Town Homes</span>
-    </div>
-  </div>
-  <div class="app-content-body hbox" ng-controller="buildingCtl">
-
-  <!-- LEFT COL-->
-  <div class="col w-lg lter b-r b-tabs anim left-colinout">
-    <div class="vbox">
-      <!-- Building Search/Simple -->
-      <div class="b-b">
-        <div class="search-content">
-          <input type="text" id="id-buildings-search" class="input-search id-search" placeholder="Search Buildings..." ng-keyup="buscador('Simple', 'left')" ng-model="searchLeft"><i class="is-lupa fa fa-search"></i>
-
+<div id="wid-id-" data-jarvis-widget data-widget-deletebutton="false" data-widget-editbutton="false">
+  <header>
+    <span class="widget-icon"> <i class="fa fa-building-o"></i> </span><h2>Building Info</h2>
+  </header>
+  <div class="col-sm-12 col-md-12 col-lg-12">
+    <div class="product-content product-wrap clearfix product-deatil">
+      <div class="row">
+        <div class="col-md-5 col-sm-12 col-xs-12 ">
+          <div class="product-image">
+            <div id="myCarousel-3" class="carousel fade">
+              <ol class="carousel-indicators">
+                <li data-target="#myCarousel-3" data-slide-to="0" class=""></li>
+              </ol>
+              <div class="carousel-inner">
+                <div class="item active">
+                  <img src="/img/buildings/{{bld.img_building}}" alt="">
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-      <!-- END Building Search/Simple -->
-      <!-- TABS-->
-      <div class="nav-tabs-alt ntas-tmp" id="ntas-tmp">
-        <ul class="nav nav-tabs nav-justified">
-          <li class="active anim">
-            <a data-target="#tab-1" role="tab" data-toggle="tab">All</a>
-          </li>
-          <li class=" anim">
-            <a data-target="#tab-2" role="tab" data-toggle="tab">Retail</a>
-          </li>
-          <li class=" anim">
-            <a data-target="#tab-3" role="tab" data-toggle="tab">Comercial</a>
-          </li>
-        </ul>
-      </div>
-      <!-- END TABS-->
-      <!-- BLD DATA LEFT -->
-      <div class="row-row ntas-tmp">
-        <div class="tabs-content">
-          <div class="cell-inner">
-            <div class="tab-content" >
-
-              <div class="tab-pane active" id="tab-1">
-                <!--OFFSET LIMIT btn's -->
-                <!--<div id="bldlist-result-limits" class="lesmoreinfo">-->
-                  <!--<div offset="" limit="" position="0" class="newdata left anim left-btn-trigg bldlist-result-limits-0" id="ol-left-btn" ng-click=" buildingsList(0)"></div>-->
-                  <!--<div offset="" limit="" position="1" class="newdata right anim right-btn-trigg bldlist-result-limits-1" id="ol-right-btn" ng-click=" buildingsList(1)"></div>-->
-                <!--</div>-->
-                <!--END OFFSET LIMIT btn's -->
-                <!--CONTENT TABS-->
-                <div id="bldlist-result" >
-                  <p ng-repeat="building in bldSearchResultLeft" ng-click="displayBldData(building.id)" ng-if="bldSearchResultLeft" class="animate-if">{{ building.name }}</p>
-                  <p ng-repeat="building in bldData['buildingList']" ng-click="displayBldData(building.id)" ng-if="!bldSearchResultLeft" class="animate-if">
-                    {{ building.name }}
-                    <i ng-if="building.type == 'Commercial'" class="type-ico type-c">C</i>
-                    <i ng-if="building.type == 'High-Rise'"  class="type-ico type-r">H-R</i>
-                    <i ng-if="building.type == 'Office'"     class="type-ico type-p">O</i>
-                    <i ng-if="building.type == 'Townhomes'"  class="type-ico type-b">T</i>
-
-                    <!--<i ng-if="building.type == 'Comercial'" class="type-ico type-c">C</i>-->
-                    <!--<i ng-if="building.type == 'Retail'"    class="type-ico type-r">R</i>-->
-                    <!--<i ng-if="building.type == 'Prospect'"  class="type-ico type-p">P</i>-->
-                    <!--<i ng-if="building.type == 'Bulk'"      class="type-ico type-b">B</i>-->
-                  </p>
-                </div>
-              </div>
-
-              <div class="tab-pane fix-size-scroll" id="tab-2" >
-                <div class="wrapper-md">
-                  <p ng-repeat="bldretail in bldData['retail']" ng-click="displayBldData(bldretail.id)">
-                    {{ bldretail.Name?bldretail.Name:bldretail.name }}
-                    <i class="type-ico type-r">R</i>
-                  </p>
-                </div>
-              </div>
-
-              <div class="tab-pane fix-size-scroll" id="tab-3" >
-                <div class="wrapper-md">
-                  <p ng-repeat="bldcomer in bldData['comer']"ng-click="displayBldData(bldcomer.id)">
-                    {{ bldcomer.Name?bldcomer.Name:bldcomer.name }}
-                    <i class="type-ico type-c">C</i>
-                  </p>
-                </div>
-              </div>
-              <!-- BUILDING TABLE -->
-              <!-- END CONTENT TABS -->
+        <div class="col-md-7 col-sm-12 col-xs-12">
+          <h2 class="name">{{bld.name}}</h2>
+          <hr>
+          <div class="row">
+            <div class="col-sm-6 bld-box-info">
+              <p>Address</p>
+              <p>Alias</p>
+              <p>Neighborhood</p>
+              <p>Code</p>
+              <p>Year Built</p>
+              <p>Units</p>
+              <p>Floors</p>
+              <p>Type</p>
+              <p>Legal Builder</p>
+            </div>
+            <div class="col-sm-6 bld-box-info">
+              <p>{{bld.name}}</p>
+              <p>{{bld.alias}}</p>
+              <p>{{bld.neighborhood.name}}</p>
+              <p>{{bld.code}}</p>
+              <p>{{bld.year_built}}</p>
+              <p>{{bld.units}}</p>
+              <p>{{bld.floors}}</p>
+              <p>{{bld.type}}</p>
+              <p>{{bld.legal_name}}</p>
             </div>
           </div>
         </div>
       </div>
-      <!-- END BLD DATA LEFT -->
     </div>
   </div>
-  <!--END COL-->
-
-  <!-- ELEMENTS -->
-  <div class="building-elements">
-
-    <!-- ADD BLD -->
-    <!--<div class="col-lg-12 " ng-if="!bld" >-->
-      <!--<br />-->
-      <!--<a href="" ng-click="displayBldForm()" onclick="return false;" id="add-bld-btn">-->
-        <!--<button class="btn btn-primary btn-addon btn-lg "><i class="fa fa-plus"></i>Add new Building</button>-->
-      <!--</a>-->
-
-      <!--<a href="" ng-click="displayBldForm()" onclick="return false;" id="cancel-bld-btn" style="display: none;">-->
-        <!--<button class="btn btn-danger btn-addon btn-lg">Cancel</button>-->
-      <!--</a>-->
-    <!--</div>-->
-
-    <!--<div class="col-lg-12" ng-controller="newbuildingform" style="display: none;" id="bld-content-form" ng-if="!bld">-->
-      <!--<br />-->
-      <!--<div class="panel panel-default">-->
-        <!--<div class="panel-heading font-bold">Basic Building form</div>-->
-        <!--<div class="panel-body">-->
-          <!--<div id="bld-form-html"></div>-->
-        <!--</div>-->
-      <!--</div>-->
-    <!--</div>-->
-    <!-- END ADD BLD -->
-
-
-    <!-- Building Search/Simple -->
-    <div class="col-lg-10 bld-search-main" ng-if="!bld">
-      <div class="search-content">
-        <input type="text" class="input-search id-search" placeholder="Search Buildings..." ng-keyup="buscador('Simple', 'right')" ng-model="searchRight"><i class="is-lupa fa fa-search"></i>
-        <div class="search-result anim" >
-          <p ng-repeat="resultbldright in bldSearchResultRight" ng-click="displayBldData(resultbldright.id)" >{{ resultbldright.name }} <strong>{{ resultbldright.code }}</strong></p>
-        </div>
-      </div>
-    </div>
-    <!-- END Building Search/Simple -->
-
-
-    <!-- BUILDING -->
-    <div class="col-lg-12" ng-if="bld" >
-      <div my-Bld-View></div>
-    </div>
-    <!-- BUILDING -->
-
-  </div>
-  <!--END ELEMENTS -->
-
-</div>
 </div>

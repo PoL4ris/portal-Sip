@@ -1,0 +1,37 @@
+<div id="wid-id-5" data-jarvis-widget data-widget-deletebutton="false" data-widget-editbutton="false">
+  <header>
+    <span class="widget-icon"> <i class="fa fa-building-o"></i> </span><h2>Search</h2>
+  </header>
+  <div class="widget-body-toolbar" >
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="bld-search-main">
+          <div class="search-content">
+            <input type="text" class="input-search id-search" placeholder="Search Buildings..." ng-keyup="buscador('Simple', 'right')" ng-model="searchRight"><i class="is-lupa fa fa-search"></i>
+          </div>
+          <div class="bld-close-search" ng-click="clearSearch()">
+            <i class="fa fa-plus plus-cross"></i>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-12" ng-if="bldSearchResultRight">
+        <div class="search-result anim" >
+          <div ng-repeat="resultbldright in bldSearchResultRight" ng-click="displayBldData(resultbldright.id)" class="bld-result-container">
+            <div class="col-lg-1">
+              <img src="/img/buildings/{{resultbldright.img_building?resultbldright.img_building:'logoSmall.png'}}" alt="">
+            </div>
+            <div class="col-lg-2"></div>
+
+            <div class="col-lg-9">
+              <div class="col-lg-2 labe">Name</div>  <div class="col-lg-4 valu">{{resultbldright.name}}</div>
+              <div class="col-lg-2 labe">Code</div>  <div class="col-lg-4 valu">{{resultbldright.code}}</div>
+              <div class="col-lg-2 labe">Type</div>  <div class="col-lg-4 valu">{{resultbldright.type}}</div>
+              <div class="col-lg-2 labe">Units</div> <div class="col-lg-4 valu">{{resultbldright.units}}</div>
+              <div class="col-lg-2 labe">Floors</div><div class="col-lg-4 valu">{{resultbldright.floors}}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

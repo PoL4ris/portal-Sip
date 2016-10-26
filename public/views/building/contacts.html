@@ -1,0 +1,26 @@
+<div id="wid-id-1" data-jarvis-widget  data-widget-editbutton="false" data-widget-deletebutton="false" >
+  <header>
+    <span class="widget-icon"> <i class="fa fa-building-o"></i> </span><h2>Building Contacts</h2>
+  </header>
+  <div class="row">
+    <div class="col-xs-12 col-sm-4 col-md-4" ng-repeat="bldContact in bld.contacts">
+      <div class="panel panel-darken">
+        <div class="panel-heading"><h3 class="panel-title">{{bldContact.first_name}} {{bldContact.last_name}}</h3></div>
+        <div class="panel-body no-padding text-align-center">
+          <div class="the-price">
+            <small>Company <br>{{bldContact.company}}</small>
+          </div>
+          <table class="table">
+            <tr><td>Contact</td></tr>
+            <tr class="active"><td>{{bldContact.contact}}</td></tr>
+            <tr><td>Contact #2</td></tr>
+            <tr class="active"><td>{{bldContact.fax?bldContact.fax:'N/A'}}</td></tr>
+          </table>
+        </div>
+        <div class="panel-footer no-padding">
+          <a href-void class="btn bg-color-blue txt-color-white btn-block" role="button">EDIT</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

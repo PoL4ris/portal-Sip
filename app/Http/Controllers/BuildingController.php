@@ -34,14 +34,14 @@ class BuildingController extends Controller
   {
     $offset = 0;
     $limit = 50;
-    $building = '';
+    $building = $buildingList = '';
 
     if ($request->id)
-      $building = Building::with('address', 'neighborhood', 'contacts')->find($request->id);
+      $building = $this->getBuilding($request->id);
     else
       $buildingList = Building::orderBy('id', 'desc')->skip($offset)->take($limit)->get();
 
-    $data = ['building'     => $building ? $building : $this->getBuilding($buildingList[0]->id),
+    $data = ['building'     => $building ? $building : $this->getBuilding(rand(2,84)),
              'buildingList' => $buildingList ? $buildingList : '',
              'offset'       => $offset,
              'limit'        => $limit
@@ -49,10 +49,10 @@ class BuildingController extends Controller
     return $data;
   }
   public function getBuilding($id){
-    $data = Building::with('address', 'neighborhood', 'contacts')->find(28);
+    $data = Building::with('address', 'neighborhood', 'contacts')->find($id);
     $data->properties = BuildingPropertyValue::join('building_properties', 'building_property_values.id_building_properties', '=', 'building_properties.id')
-                      ->where('building_property_values.id_buildings', '=', 28)
-                      ->select('*')
+                      ->where('building_property_values.id_buildings', '=', $id)
+                      ->select('*', 'building_property_values.id as idBpv')
                       ->get();
 
                      return $data;
@@ -78,28 +78,17 @@ class BuildingController extends Controller
   }
   public function getBuildingsSearchSimple(Request $request)
   {
-
       $txt = $request['querySearch'];
-
       if(empty($txt))
         return;
 
-//      $buildingData = Building::where('name',       'LIKE', '%'. $txt .'%')
       return Building::where('name',        'LIKE', '%'. $txt .'%')
                       ->orWhere('alias',    'LIKE', '%'. $txt .'%')
                       ->orWhere('nickname', 'LIKE', '%'. $txt .'%')
                       ->orWhere('code',     'LIKE', '%'. $txt .'%')
                       ->orWhere('units',    'LIKE', '%'. $txt .'%')
+//                      ->limit(10)
                       ->get();
-      //BUILDING TABLE
-
-//      $buildingData = ServiceLocation::where('Name', 'LIKE', '%'. $txt .'%')->get();
-
-      return $buildingData;
-      
-      return json_encode($buildingData);
-
-
   }
   public function getBuildingsType()
   {
@@ -136,7 +125,9 @@ class BuildingController extends Controller
         return json_encode($buildingList);
 
   }
-
+  public function getBuildingProperties(){
+    return BuildingProperty::get();
+  }
   //Building Insert's
   public function insertBuildingData(Request $request)
   {
@@ -147,6 +138,17 @@ class BuildingController extends Controller
 
     return redirect('/buildings');
   }
+  public function insertBuildingProperties(Request $request){
+    $data = $request->all();
+
+    $record = new BuildingPropertyValue();
+    $record->id_buildings = $data['id_buildings'];
+    $record->id_building_properties = $data['id_building_properties'];
+    $record->value = $data['value'];
+    $record->save();
+
+    return $this->getBuilding($data['id_buildings']);
+  }
   //Building Update's
   public function updateBuilding(Request $request)
   {
@@ -154,8 +156,16 @@ class BuildingController extends Controller
     Building::where('id', $request->id)->update($data);
     return $this->buildings($request);
   }
+  public function updateBldPropValTable(Request $request)
+  {
+    $data = $request->all();
 
+    $record = BuildingPropertyValue::find($data['id']);
+    $record->value = $data['value'];
+    $record->save();
 
+    return 'OK';
+  }
 
 }
 

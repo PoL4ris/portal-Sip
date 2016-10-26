@@ -1,4 +1,4 @@
-console.log('LIB>JS');
+console.log('LIB->JS');
 app.controller('menuController',    function($scope, $http){
   $http.get('/menumaker').then(function (data){
     $scope.SiteMenu = data.data;
@@ -13,7 +13,7 @@ app.controller('buildingCtl',       function($scope, $http) {
     $scope.SiteMenu = [];
     $http.get('buildings').then(function (data){
       $scope.bldData = data.data;
-      $scope.offsetLimitFunction($scope.bldData.offset, $scope.bldData.limit);
+      $scope.bld = $scope.bldData.building;
     }), function (error){
       alert('Error');
     }
@@ -27,7 +27,7 @@ app.controller('buildingCtl',       function($scope, $http) {
   $scope.displayBldData = function (idBld) {
     $http.get("buildings/" + idBld)
       .then(function (response) {
-        $scope.bld = response.data;
+        $scope.bld = response.data.building;
       });
 
   }
@@ -44,61 +44,6 @@ app.controller('buildingCtl',       function($scope, $http) {
       $('#add-bld-btn').fadeIn('fast');
       $('#cancel-bld-btn').fadeOut('fast');
     }
-  }
-  $scope.offsetLimitFunction = function (offset, limit) {
-    $('#ol-left-btn').attr('offset', offset);
-    $('#ol-left-btn').attr('limit', limit);
-    $('#ol-right-btn').attr('offset', offset);
-    $('#ol-right-btn').attr('limit', limit);
-  }
-  $scope.buildingsList = function (position) {
-    //Math var operations.
-    var offset              = parseInt($scope.bldData.offset);
-    var limit               = parseInt($scope.bldData.limit);
-    var a                   = parseInt(offset);
-    var b                   = parseInt(limit);
-    //Back Arrow empty
-    if (position == 0 && offset <= 0 || ($scope.limitoffset  == 'dif' && position == 1))
-      return;
-    //Solve correct LIMIT OFFSET info to request
-    if(position == 1)
-    {
-      offset = b;
-      limit = b + (b - a);
-    }
-    else
-    {
-      limit = a;
-      offset = a - (b - a);
-    }
-    //Case result is wrong
-    if (offset < 0 || limit <= 0)
-      return;
-    //Main info to do request
-    var query = {"offset": offset, "limit": limit, "position": position};
-
-
-    $http.get("buildingsList", {params:query})
-      .then(function (response) {
-        if (response.data.length == 0)
-          $scope.limitoffset  = 'dif';
-        else
-        {
-          $scope.bldData['buildingList'] = response.data;
-          $scope.limitoffset  = '';
-        }
-      });
-
-    if($scope.limitoffset  == 'dif')
-    {
-      limit = offset;
-      offset = (limit - 20);
-    }
-
-    $scope.bldData.offset = offset;
-    $scope.bldData.limit = limit;
-
-    $scope.offsetLimitFunction(offset, limit);
   }
   $scope.buscador = function(searchType, side) {
     var query = {};
@@ -118,6 +63,10 @@ app.controller('buildingCtl',       function($scope, $http) {
 
     return;
 
+  }
+  $scope.clearSearch = function (){
+    this.searchRight = '';
+    $scope.buscador();
   }
   $scope.editFormByType = function (id) {
 
@@ -171,20 +120,41 @@ app.controller('buildingCtl',       function($scope, $http) {
 
     $scope.editFormByType('block-a');
   }
+  $scope.getBuildingPropertyValues = function(){
+    $http.get("getBuildingProperties")
+      .then(function (response) {
+        $scope.propValuesList = response.data;
+      });
+  }
+  $scope.insertBuildingProperty = function (){
+    var objects = $('#new-bpv-form').serializeArray();
+    var infoData = {};
+    for(var obj in objects ) {
+      infoData[objects[obj]['name']] = objects[obj]['value'];
+    }
+    infoData['id_buildings'] = $scope.bld.id;
 
+    $http.get("insertBuildingProperties", {params:infoData})
+      .then(function (response) {
+        $scope.bld = response.data;
+      });
 
+    angular.element('#add-property-cancel').scope().fadeViews('bpv-container', 'new-form-function', 0, 'enable', 'add-property', 'add-property-cancel')
+    $('#new-bpv-form').trigger("reset");
+  }
+})
+.directive('getBuildingPropValues', function (){
+  return function (scope){
+    scope.getBuildingPropertyValues();
+  }
 
-});
-
-
-
+})
 
 
 
 
 /* Global Tools */
-app.controller('globalToolsCtl', function ($scope){
-
+app.controller('globalToolsCtl', function ($scope, $http, $compile, $sce){
   $scope.leftColumnOpenClose = function (){
     if($('#content').hasClass("ccr-small"))
     {
@@ -192,8 +162,8 @@ app.controller('globalToolsCtl', function ($scope){
       $('#content').removeClass("ccr-small");
       $('.slc-dtrue').toggleClass("display-none");
       $('.slc-dfalse').removeClass("display-none");
-      $('#arrowChange').toggleClass("fa-arrow-circle-right");
-      $('#arrowChange').removeClass("fa-arrow-circle-left");
+      $('#arrowChange').toggleClass("fa-arrow-circle-left");
+      $('#arrowChange').removeClass("fa-arrow-circle-right");
     }
     else
     {
@@ -205,5 +175,49 @@ app.controller('globalToolsCtl', function ($scope){
       $('#arrowChange').removeClass("fa-arrow-circle-left");
     }
   };
+  $scope.singleUpdateXedit   = function(id, value, field, table) {
 
+    var data = {};
+    data['id']    = id;
+    data['value'] = value;
+    data['field'] = field;
+    data['table'] = table;
+//     data['id_customers'] = $scope.customerData.id;
+    $http.get("update" + table + "Table", {params:data})
+      .then(function (response) {
+        console.log('OK');
+      });
+  }
+  $scope.fadeViews           = function (view1, view2, action,bt1,bt2,bt3){
+  /*
+    view1 = view to hide
+    view2 = view to show
+    action = [0 = cancel
+              1 = addNew
+              2 = ]
+    bt1 = actionButtons
+    bt2 = actionButtons
+    bt3 = cancelButton
+   */
+
+    if(action == 0){
+      $('.' + view2).fadeOut();
+      $('.' + view1).fadeIn('slow');
+      $('#' + bt1).attr('disabled', false);
+      $('#' + bt2).attr('disabled', false);
+      $('#' + bt3).fadeOut();
+    }
+    if(action == 1) {
+      $('.' + view1).fadeOut();
+      $('.' + view2).fadeIn('slow');
+      $('#' + bt1).attr('disabled', 'disabled');
+      $('#' + bt2).attr('disabled', 'disabled');
+      $('#' + bt3).fadeIn();
+    }
+
+  };
 });
+
+function gToolsxEdit(value, field, id, idContainer, table){
+  angular.element('#' + idContainer + '-gTools').scope().singleUpdateXedit(id, value, field, table);
+}

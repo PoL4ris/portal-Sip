@@ -260,20 +260,9 @@ app.controller('buildingCtl', ['$scope','$route','$http', function($scope, $rout
 
 
 }]);
-
-app.controller('userController',                    function($scope, $http){
-  $http.get("/getUserData")
-    .then(function (response) {
-      $scope.usr = response.data;
-    });
-});
-app.controller('adminusers',                        function($scope, $http) {
-  $http.get("adminusers")
-    .then(function (response) {
-      $scope.users = response.data;
-    });
-});
+//DONE
 app.controller('admin',                             function($scope, $http, $compile, $sce, notify){
+  console.log('loco');
   $http.get("/admin")
     .then(function (response) {
       $scope.userData = response.data;
@@ -306,7 +295,7 @@ app.controller('admin',                             function($scope, $http, $com
 
     for(var obj in objects )
     {
-    //FRONT VALIDA
+      //FRONT VALIDA
       if(objects[obj]['value'] == '' && objects[obj]['name'] == 'avatar')
         continue;
 
@@ -340,6 +329,20 @@ app.controller('admin',                             function($scope, $http, $com
     $scope.insertForm = '';
   }
 });
+
+app.controller('userController',                    function($scope, $http){
+  $http.get("/getUserData")
+    .then(function (response) {
+      $scope.usr = response.data;
+    });
+});
+app.controller('adminusers',                        function($scope, $http) {
+  $http.get("adminusers")
+    .then(function (response) {
+      $scope.users = response.data;
+    });
+});
+
 app.controller('adminViewStatus',                   function($scope, $http){
   $http.get("adminStatus")
     .then(function (response) {

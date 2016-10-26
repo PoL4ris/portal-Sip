@@ -1,6 +1,7 @@
 "use strict";
 
 angular.module('app.forms').controller('FormXeditableCtrl', function($scope, $log){
+console.log('thi');
     $scope.username = 'superuser';
     $scope.firstname = null;
     $scope.sex = 'not selected';

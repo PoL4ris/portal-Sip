@@ -8,7 +8,7 @@ angular.module('app.buildings', ['ui.router'])
       },
       views: {
         "content@app": {
-          templateUrl: '/views/dummy.html',
+          templateUrl: '/views/building/building.html',
           controller: 'buildingCtl'
         }
       },

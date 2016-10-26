@@ -46,7 +46,45 @@
   overflow-y: hidden;
   position: absolute;
   width: 60%;
+  height: 33px;
 }
+.bld-result-container{
+  border-bottom: 1px solid #ddd;
+  color: #333;
+  float: left;
+  max-height: 100px;
+  overflow: hidden;
+  padding: 5px;
+  width: 100%;
+  cursor: pointer;
+}
+.bld-result-container img{
+  width: 100%;
+}
+.bld-result-container:hover{
+  background: #f8f8f8 none repeat scroll 0 0;
+}
+.bld-result-container .labe{
+
+}
+.bld-result-container .valu{
+  color:#ABABAB ;
+}
+.bld-close-search{
+  cursor: pointer;
+  float: left;
+  font-size: 20px;
+  font-weight: normal;
+  text-align: center;
+  width: 10%;
+}
+.bld-close-search:hover{
+  opacity: .7;
+}
+.carousel-inner > .item > a > img, .carousel-inner > .item > img{
+  width: 90%;
+}
+
 
 
 /*@import "http://fonts.googleapis.com/css?family=Open+Sans:400,600,700";*/

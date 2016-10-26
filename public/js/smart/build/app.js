@@ -2658,29 +2658,29 @@ angular.module('app.forms').controller('FormLayoutsCtrl', function($scope, $moda
 
 angular.module('app.forms').controller('FormPluginsCtrl', function($scope, $log){
 
-	$scope.editableOptions =  {
-		mode: 'popup',
-		disabled: false
-	};
+  $scope.editableOptions =  {
+    mode: 'popup',
+    disabled: true
+  };
 
-	$scope.toggleInline = function() {
-		if($scope.editableOptions.mode == 'popup') {
-			$scope.editableOptions.mode = 'inline';
-		}
-		else {
-			$scope.editableOptions.mode = 'popup'
-		}
-	};
+  $scope.toggleInline = function() {
+    if($scope.editableOptions.mode == 'popup') {
+      $scope.editableOptions.mode = 'inline';
+    }
+    else {
+      $scope.editableOptions.mode = 'popup'
+    }
+  };
 
-	$scope.toggleDisabled = function() {
-		$scope.editableOptions.disabled = !$scope.editableOptions.disabled;
-	};
+  $scope.toggleDisabled = function() {
+    $scope.editableOptions.disabled = !$scope.editableOptions.disabled;
+  };
 
 
-	$scope.datepickerOptions = {
-		changeMonth: true,
-		changeYear: true
-	}
+  $scope.datepickerOptions = {
+    changeMonth: true,
+    changeYear: true
+  }
 });
 "use strict";
 
@@ -3306,9 +3306,7 @@ angular.module('app.inbox').factory('InboxMessage', function($resource, APP_CONF
 "use strict";
 
 angular.module('app').controller("LanguagesCtrl",  function LanguagesCtrl($scope, $rootScope, $log, Language){
-
     $rootScope.lang = {};
-    
     Language.getLanguages(function(data){
 
         $rootScope.currentLanguage = data[0];
@@ -10770,50 +10768,54 @@ angular.module('SmartAdmin.Forms').directive('smartUislider', function ($parse, 
 
 angular.module('SmartAdmin.Forms').directive('smartXeditable', function($timeout, $log){
 
-	function link (scope, element, attrs, ngModel) {
+  function link (scope, element, attrs, ngModel) {
 
-        var defaults = {
-            // display: function(value, srcData) {
-            //     ngModel.$setViewValue(value);
-            //     // scope.$apply();
-            // }
-        };
 
-        var inited = false;
+    var defaults = {
+      validate: function (value){
+//         console.log(attrs);
+        gToolsxEdit(value, attrs.recordField, attrs.recordId, attrs.recordIdcontainer, attrs.recordTable);
+      }
+      // display: function(value, srcData) {
+      //     ngModel.$setViewValue(value);
+      //     // scope.$apply();
+      // }
+    };
 
-        var initXeditable = function() {
+    var inited = false;
 
-            var options = scope.options || {};
-    		var initOptions = angular.extend(defaults, options);
+    var initXeditable = function() {
+      var options = scope.options || {};
+      var initOptions = angular.extend(defaults, options);
 
-            // $log.log(initOptions);
-            element.editable('destroy');
-            element.editable(initOptions);
-        }
-
-        scope.$watch("options", function(newValue) {
-
-            if(!newValue) {
-                return false;
-            }
-
-            initXeditable();
-
-            // $log.log("Options changed...");
-
-        }, true);
-
+      // $log.log(initOptions);
+      element.editable('destroy');
+      element.editable(initOptions);
     }
 
-    return {
-    	restrict: 'A',
-    	require: "ngModel",
-        scope: {
-            options: "="
-        },
-    	link: link 
+    scope.$watch("options", function(newValue) {
 
-    }
+      if(!newValue) {
+        return false;
+      }
+
+      initXeditable();
+
+      // $log.log("Options changed...");
+
+    }, true);
+
+  }
+
+  return {
+    restrict: 'A',
+    require: "ngModel",
+    scope: {
+      options: "="
+    },
+    link: link
+
+  }
 });
 'use strict';
 
