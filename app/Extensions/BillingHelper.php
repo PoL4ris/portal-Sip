@@ -236,7 +236,7 @@ class BillingHelper {
 
             $count++;
         }
-        
+
         return $count;
     }
 
@@ -270,9 +270,9 @@ class BillingHelper {
         $firstDayOfMonth = mktime(0, 0, 0, date("m"), '01', date("Y"));
         $update_count = 0;
         foreach ($customerProductIds as $customerProductId) {    
-            
+
             $customerProduct = CustomerProduct::find($customerProductId);
-            
+
             if($updateChargeTimestampOnly == false){
 
                 $dateExpires = '';
@@ -294,7 +294,7 @@ class BillingHelper {
                 $customerProduct->renewed_at = date('Y-m-d H:i:s');
                 $customerProduct->amount_owed -= $customerProduct->product->amount;
             }
-            
+
             $customerProduct->last_charged = date('Y-m-d H:i:s');
             $customerProduct->save();
             $update_count++;
@@ -389,7 +389,7 @@ class BillingHelper {
                     ->where('customer_products.next_invoice_date', '<', $firstDayofNextMonthMysql);
             });    
         });
-        
+
         return $queryBuilder
             ->get(array('customers.id as customer_id'
                         ,'buildings.id as building_id'
@@ -401,5 +401,105 @@ class BillingHelper {
                         , 'products.frequency as product_frequency'
                         , 'products.id_types as product_type'
                         , 'customer_products.*'));
+    }
+
+    protected function createTicket($newTicketCID, $newTicketIssue, $newTicketDetails, $newTicketStatus, $AdminUser_ID, $sendEmail = false, $vendorTID = '')
+    {
+
+        $issue = $newTicketIssue;
+
+        if ($issue != '' && $newTicketDetails != '' && $newTicketStatus != '') {
+
+            //SQL INSERT TICKET
+            $ticketItemArray = array();
+            $ticketItemArray[] = "`CID` = '" . $newTicketCID . "'";
+            $ticketNumber = '';
+
+            //         $ticketNumberSql = "SELECT max(TicketNumber) AS ticket_id FROM supportTickets";
+            $ticketNumberSql = "SELECT TicketNumber AS ticket_id FROM supportTickets where TID in (SELECT max(TID) FROM supportTickets)";
+            $maxTnumberRes = mysql_query($ticketNumberSql) or die(mysql_error());
+            $rowTnumber = mysql_fetch_array($maxTnumberRes);
+            if ($rowTnumber['ticket_id']) {
+                $maxTNumberArr = explode("-", $rowTnumber['ticket_id']);
+                $maxTNumber = $maxTNumberArr[1] + 1;
+                $ticketNumber = 'ST-' . $maxTNumber;
+            }
+
+            $ticketItemArray[] = "`TicketNumber` = '" . $ticketNumber . "'";
+            if ($vendorTID != '') {
+                $ticketItemArray[] = "`VendorTID` = '" . $vendorTID . "'";
+            }
+            $ticketItemArray[] = "`RID` = '" . $issue . "'";
+            $ticketItemArray[] = "`Comment` = '" . sanitize($newTicketDetails, true) . "'";
+            $ticketItemArray[] = "`Status` = '" . $newTicketStatus . "'";
+
+            // Get the Staff ID from the left pane
+            $ticketItemArray[] = "`StaffID` = '" . $AdminUser_ID . "'";
+
+            $date = new DateTime();
+            $currTimestamp = $date->format('Y-m-d H:i:s');
+            $ticketItemArray[] = "`DateCreated` = '" . $currTimestamp . "'";
+
+            $imploded_array = implode(",", $ticketItemArray);
+            $strSQL = "INSERT INTO `supportTickets` SET " . $imploded_array;
+
+            //         echo 'Ticket Insertion SQL: '.$strSQL .'<br/>';
+
+            $result = mysql_query($strSQL);
+            $ticketID = mysql_insert_id();
+
+            if ($sendEmail) {
+                $reasonInfoSql = "SELECT * FROM supportTicketReasons WHERE `RID` = '" . $issue . "'";
+                $reasonInfoRes = mysql_query($reasonInfoSql) or die(mysql_error());
+                $reasonInfoRow = mysql_fetch_array($reasonInfoRes);
+                $customerInfo = getCustomerWithLocInfoByCID($newTicketCID);
+                $adminUserInfo = getAdminUserByID($AdminUser_ID);
+
+                $mail_config ['emailHeader'] = 'New Support Ticket';
+                $mail_config ['fields']['Ticket Status'] = ucfirst($newTicketStatus);
+
+                if ($newTicketCID == '0') {
+                    $mail_config ['fields']['Name'] = 'Unknown';
+                } else {
+                    $mail_config ['fields']['Name'] = $customerInfo['Firstname'] . ' ' . $customerInfo['Lastname'];
+                }
+
+                $mail_config ['fields']['Ticket'] = '<a href="https://admin.silverip.net/customerinfo/browser_detect.php?tid=' . $ticketID . '">' . $ticketNumber . '</a>';
+                $mail_config ['fields']['Timestamp'] = date("g:i a M j, Y ", strtotime($currTimestamp));
+                if(trim($customerInfo['Address']) != ''){
+                    $mail_config ['fields']['Address'] = $customerInfo['Address'] . ', #' . $customerInfo['Unit'];
+                }
+                if(trim($customerInfo['Tel']) != ''){
+                    $mail_config ['fields']['Phone'] = $customerInfo['Tel'];
+                }
+                if(trim($customerInfo['Email']) != ''){
+                    $mail_config ['fields']['Email'] = $customerInfo['Email'];
+                }
+
+                $mail_config ['fields']['Call Taker'] = $adminUserInfo['Name'];
+                $mail_config ['fields']['Reason For Calling'] = $reasonInfoRow['ReasonName'];
+                $mail_config ['fields']['Call Details'] = $newTicketDetails;
+                $mail_config ['Unit'] = $customerInfo['Unit'];
+                $mail_config ['ReasonCode'] = $reasonInfoRow['ReasonCategory'];
+
+                //            $serviceLocationInfoSql = "SELECT * FROM serviceLocation WHERE `LocID` = '" . $customerInfo['LocID'] . "'";
+                //            $serviceLocationInfoRes = mysql_query($serviceLocationInfoSql) or die(mysql_error());
+                //            $serviceLocationInfoRow = mysql_fetch_array($serviceLocationInfoRes);
+
+                $mail_config ['LocCode'] = $customerInfo['ShortName'];
+                $mail_config ['recipient'] = array('Silver Support Portal' => 'help@silverip.com');
+                $mail_config['senderName'] = 'New Ticket';
+                $mail_config['serverSenderName'] = $mail_config['senderName'];
+                $mail_config['serverSenderEmail'] = 'noreply@silverip.net';
+                $mail_config['emailServerHostname'] = 'mail.silverip.net';
+
+
+                sendSipEmail($mail_config);
+            }
+
+            return $ticketNumber;
+        }
+
+        return false;
     }
 }
