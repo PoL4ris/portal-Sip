@@ -1,0 +1,59 @@
+<div jarvis-widget id="wid-id-0" data-widget-deletebutton="false" data-widget-editbutton="false" data-widget-custombutton="false" ng-controller="FormXeditableCtrl">
+  <header>
+    <span class="widget-icon"> <i class="fa fa-edit"></i> </span><h2>Customer info</h2>
+  </header>
+  <div ng-controller="FormPluginsCtrl">
+    <div class="widget-body" >
+      <!--BOTONES-->
+      <div class="widget-body-toolbar">
+        <div class="row">
+          <div class="col-sm-6">
+            <button id="enable" class="btn btn btn-default" ng-click="toggleDisabled()">enable / disable</button>
+          </div>
+        </div>
+      </div>
+      <!--CONTENIDO-->
+      <h2 class="m-n font-thin h3">{{customerData.first_name + ' ' + customerData.last_name}} <strong style="font-size: 13px;">( id {{customerData.id}} )</strong></h2>
+      <div class="customer-info-card">
+        <div>
+          <p><strong>VIP:</strong></p><p><a href="form-x-editable.html#"        id="b-p-id-cvip"      record-table="CustValue"    data-pk="1"
+               data-options="editableOptions"       data-original-title="Set Value"     record-field="value"        smart-xeditable
+               data-ng-model="customerData.vip"     record-id="{{customerData.vip}}"    data-type="textarea"        record-idContainer="buildingProperties"
+               class="editable editable-click">{{customerData.vip?customerData.vip:'nada'}}</a></p>
+          <p><strong>Address:</strong></p><p><a href="form-x-editable.html#"    id="b-p-id-caddress"  record-table="CustValue"    data-pk="1"
+                 data-options="editableOptions"                data-original-title="Set Value"                 record-field="value"        smart-xeditable
+                 data-ng-model="customerData.address.address"  record-id="{{customerData.address.address}}"    data-type="textarea"        record-idContainer="buildingProperties"
+                 class="editable editable-click">{{customerData.address.address?customerData.address.address:'nada'}}</a></p>
+          <p><strong>Unit:</strong></p><p><a href="form-x-editable.html#"       id="b-p-id-cunit"     record-table="CustValue"    data-pk="1"
+                 data-options="editableOptions"              data-original-title="Set Value"              record-field="value"        smart-xeditable
+                 data-ng-model="customerData.address.unit"   record-id="{{customerData.address.unit}}"    data-type="textarea"        record-idContainer="buildingProperties"
+                 class="editable editable-click">{{customerData.address.unit?customerData.address.unit:'nada'}}</a></p>
+          <p><strong>Code:</strong></p><p><a href="form-x-editable.html#"       id="b-p-id-ccode"     record-table="CustValue"    data-pk="1"
+                 data-options="editableOptions"                data-original-title="Set Value"              record-field="value"        smart-xeditable
+                 data-ng-model="customerData.address.code"     record-id="{{customerData.address.code}}"    data-type="textarea"        record-idContainer="buildingProperties"
+                 class="editable editable-click">{{customerData.address.code?customerData.address.code:'nada'}}</a></p>
+          <p><strong>Signed Up:</strong></p><p>{{customerData.signedup_at?customerData.signedup_at:'nada'}}</p>
+        </div>
+        <div>
+          <p><strong>City:</strong></p><p><a href="form-x-editable.html#"       id="b-p-id-ccity"     record-table="CustValue"    data-pk="1"
+                 data-options="editableOptions"                data-original-title="Set Value"              record-field="value"        smart-xeditable
+                 data-ng-model="customerData.address.city"     record-id="{{customerData.address.city}}"    data-type="textarea"        record-idContainer="buildingProperties"
+                 class="editable editable-click">{{customerData.address.city?customerData.address.city:'nada'}}</a></p>
+          <p><strong>State:</strong></p><p><a href="form-x-editable.html#"      id="b-p-id-cstate"    record-table="CustValue"    data-pk="1"
+                 data-options="editableOptions"                 data-original-title="Set Value"               record-field="value"        smart-xeditable
+                 data-ng-model="customerData.address.state"     record-id="{{customerData.address.state}}"    data-type="textarea"        record-idContainer="buildingProperties"
+                 class="editable editable-click">{{customerData.address.state?customerData.address.state:'nada'}}</a></p>
+          <p><strong>Zip:</strong></p><p><a href="form-x-editable.html#"        id="b-p-id-czip"      record-table="CustValue"    data-pk="1"
+                 data-options="editableOptions"                data-original-title="Set Value"             record-field="value"        smart-xeditable
+                 data-ng-model="customerData.address.zip"      record-id="{{customerData.address.zip}}"    data-type="textarea"        record-idContainer="buildingProperties"
+                 class="editable editable-click">{{customerData.address.zip?customerData.address.zip:'nada'}}</a></p>
+          <p><strong>Username:</strong></p><p><a href="form-x-editable.html#"   id="b-p-id-cemail"    record-table="CustValue"    data-pk="1"
+                 data-options="editableOptions"          data-original-title="Set Value"       record-field="value"        smart-xeditable
+                 data-ng-model="customerData.email"      record-id="{{customerData.email}}"    data-type="textarea"        record-idContainer="buildingProperties"
+                 class="editable editable-click">{{customerData.email?customerData.email:'nada'}}</a></p>
+          <p><strong>Status:</strong></p><p>{{customerData.type.name?customerData.type.name:'Pending'}}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

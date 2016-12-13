@@ -2,36 +2,52 @@
   <h2 class="m-n font-thin h3">Network</h2>
 </div>
 
-
-<div class="col-lg-12" ng-controller="networkController">
-  <div class="wrapper-md">
-    <div class="panel panel-default" ng-if="networkData" ng-controller="tableSorterNetwork">
-      <table ng-table="usersTable" class="table table-striped b-b">
-        <thead>
-          <tr>
-            <th>More</th><th>NID</th><th>Location</th><th>Address</th><th>Core</th><th>Dist</th><th>Queue-set</th><th>Primary</th><th>Backup</th><th>Mgmt Subnet</th><th>segment #</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr ng-repeat="data in dataResult" id="det-net-{{ data.NID }}">
-            <td ng-click="addTR(data.NID)" class="details-control" id="net-btn-{{ data.NID }}" stance="1"><i class="fa fa-plus-circle txt-green sign-network"></i></td>
-            <td>{{ data.NID }}</td>
-            <td>{{ data.location }}</td>
-            <td>{{ data.address }}</td>
-            <td><a href="" class="SwitchStatusLink btn-link" loc="{{ data.location }}" ip="{{ data.core }}">{{ data.core }}</a></td>
-            <td><a href="" class="SwitchStatusLink btn-link" loc="{{ data.location }}" ip="{{ data.dist }}">{{ data.dist }}</a></td>
-            <td>{{ data.access_up_to_data }} </td>
-            <td>{{ data.primary }}</td>
-            <td>{{ data.backup }}</td>
-            <td>{{ data.mgmtnet }}</td>
-            <td>{{ data.segment }}</td>
-          </tr>
-        </tbody>
-      </table>
+<div id="content">
+  <section widget-grid id="widget-grid">
+    <div class="row">
+      <article class="col-sm-12">
+        <div jarvis-widget id="standard-datatable-widget" data-widget-color="darken" data-widget-editbutton="false" data-widget-deletebutton="false" data-widget-custombutton="false" >
+          <header>
+            <span class="widget-icon"> <i class="fa fa-table"></i> </span>
+            <h2>Standard Data Tables </h2>
+          </header>
+          <div ng-if="networkData">
+            <div ng-controller="networkControllerTSort as showCase">
+              <table datatable="ng"  class="row-border hover" dt-options="showCase.dtOptions" dt-column-defs="showCase.dtColumnDefs">
+                <thead>
+                <tr>
+                  <th>NID</th>
+                  <th>Access up to Date</th>
+                  <th>Address</th>
+                  <th>Backup</th>
+                  <th>Core</th>
+                  <th>Dist</th>
+                  <th>Location</th>
+                  <th>Management</th>
+                  <th>Primary</th>
+                  <th>Segment</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="dataNet in showCase.persons">
+                  <td>{{dataNet.NID}}</td>
+                  <td>{{dataNet.access_up_to_date}}</td>
+                  <td>{{dataNet.address}}</td>
+                  <td>{{dataNet.backup}}</td>
+                  <td>{{dataNet.core}}</td>
+                  <td>{{dataNet.dist}}</td>
+                  <td>{{dataNet.location}}</td>
+                  <td>{{dataNet.management}}</td>
+                  <td>{{dataNet.primary}}</td>
+                  <td>{{dataNet.segment}}</td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </article>
     </div>
-  </div>
+  </section>
 </div>
-
-
-
 

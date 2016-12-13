@@ -1,4 +1,9 @@
-
+.bg-white{
+  background: white;
+}
+.bg-black{
+  background: black;
+}
 #logo {
   margin-top: 5px;
 }
@@ -22,6 +27,20 @@
 }
 .m-b-lg {
   margin-bottom: 15px;
+}
+.b-b-ddd{
+  border-bottom: 1px solid #ddd;
+}
+.no-padding-sides{
+  padding-left:0 !important;
+  padding-right: 0 !important;
+}
+.bold-type {
+  font-weight: bold;
+}
+.label-form-align{
+  position: relative;
+  top:7px;
 }
 .content-column-left {
   float: left;
@@ -90,6 +109,14 @@
   right: 5%;
   top: 1px;
 }
+.new-form-blocks {
+  float: left;
+  width: 50%;
+  margin: 0 0 15px;
+}
+.new-form-blocks input {
+  width: 95%;
+}
 .new-form-fields {
   padding: 5px;
   width: 50%;
@@ -103,4 +130,17 @@
   min-height: 50px;
   min-width: 100%;
   width: 100%;
+}
+.panel-darken > .panel-heading h3 {
+  color: #3c92c9;
+  text-align: center;
+}
+.panel-darken > .panel-heading h3 span {
+  color: white;
+}
+#new-ct-form textarea{
+  max-height: 400px;
+  max-width: 100%;
+  min-height: 250px;
+  padding: 5px;
 }

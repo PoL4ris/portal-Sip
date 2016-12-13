@@ -261,6 +261,445 @@ app.controller('buildingCtl', ['$scope','$route','$http', function($scope, $rout
 
 }]);
 //DONE
+app.controller('networkController',                 function ($scope, $http){
+  $http.get("networkdash")
+    .then(function (response) {
+      $scope.networkData = response.data;
+    });
+
+  $scope.switchStatusLink = function (){
+
+//
+//     warpol('.SwitchStatusLink').click(function (event) {
+//       event.preventDefault();
+    var ipAddress = warpol(this).attr('IP');
+    var location = warpol(this).attr('LOC');
+//       var formDataLoadUrl = "assets/includes/network_switch_handler.php";
+
+    //        console.error('IP = '+ipAddress);
+
+    warpol('#switchInfoDialog').html('');
+//      displayAjaxLoader('#switchInfoDialog','<center><span>Loading</span><br><img src="assets/images/ajax-loader-bar.gif" alt=""></center>');
+    warpol('#switchInfoDialog').load(formDataLoadUrl, {
+      'action': 'get-core-switch-info-page',
+      'ipAddress': '"'+ipAddress+'"',
+      'location' : location
+    }, function(){
+//        hideAjaxLoader('#switchInfoDialog');
+    }); //, function(responseText){
+    warpol('#switchInfoDialog').dialog('open');
+    //        warpol('#ticketInfoDialog').css('display','block');
+    return false;
+//     });
+
+
+  };
+
+  $scope.addTR = function addTR(id)
+  {
+    var stance = warpol('#net-btn-' + id).attr('stance');
+    var iconoA = '<i class="fa fa-plus-circle txt-green sign-network"></i>';
+    var iconoB = '<i class="fa fa-minus-circle txt-red sign-network"></i>';
+
+    if (stance == '1')
+    {
+      warpol('#net-btn-' + id).attr('stance', '2');
+      warpol('#net-btn-' + id).html(iconoB);
+      warpol(getNetworkResult(id)).insertAfter('#det-net-' + id).hide().slideDown('slow');
+    }
+    else
+    {
+      warpol('#net-btn-' + id).attr('stance', '1');
+      warpol('#net-btn-' + id).html(iconoA);
+      warpol('#nt-tmp-data-' + id).remove();
+    }
+    //getNetworkResult();
+
+  };
+  function getNetworkResult(id)
+  {
+    var idString = 'nt-tmp-data-'+id;
+    return ' <tr id="' + idString + '"><td colspan="11">info</td></tr>';
+  };
+});
+//DONE
+app.controller('customerNetworkController',         function ($scope, $http, $mdDialog, $mdMedia){
+  $scope.status = '  ';
+  $scope.customFullscreen = $mdMedia('xs') || $mdMedia('sm');
+
+  $http.get("getCustomerNetwork", {params:{'id':$scope.customerData.id}})
+    .then(function (response) {
+      $scope.customerNetwork = response.data[0];
+      console.log($scope.customerNetwork);
+    });
+
+  $scope.networkServices = function (service)
+  {
+    networkServices(service);
+  }
+  function networkServices (service)
+  {
+    var routes = ['networkCheckStatus',
+      'netwokAdvancedInfo',
+      'networkAdvanceIPs',
+      'networkRecyclePort',
+      '4',
+      'networkSignUp',
+      'networkActivate'];
+
+    warpol('.network-functions').addClass('disabled');
+
+    var service = service;
+    var portID = $scope.customerNetwork.port_number;
+    var customerID = $scope.customerData.id;
+    var dataSend = {'portid':portID, 'id':customerID};
+
+    //AJAX request
+    warpol.ajax(
+      {type:"GET",
+        url:"/" + routes[service],
+        data:dataSend,
+        success: function(data)
+        {
+          if (data == 'ERROR')
+            alert(data);
+
+          warpol.each(data,function(i, item)
+          {
+            warpol('#' + i).html(item);
+          });
+          warpol('#basic-info-net').notify('OK');
+
+          service = 1;
+          warpol.ajax(
+            {type:"GET",
+              url:"/" + routes[service],
+              data:dataSend,
+              success: function(data)
+              {
+                warpol.each(data,function(i, item)
+                {
+                  warpol('#' + i).html(item);
+                });
+              }
+            }
+          );
+
+          service = 2;
+          warpol.ajax(
+            {type:"GET",
+              url:"/" + routes[service],
+              data:dataSend,
+              success: function(data)
+              {
+
+                warpol('#IPs').notify('IPs Array.');
+                warpol('.network-functions').removeClass('disabled');
+
+//                   warpol.each(data,function(i, item)
+//                   {
+//                     warpol('#' + i).html(item);
+//                   });
+
+              }
+            }
+          );
+
+        }
+      }
+    );
+
+    if (service == 5)
+    {
+      warpol('.access-type-net').removeClass('btn-danger ');
+      warpol('.access-type-net').addClass('btn-info');
+      warpol('.access-type-net').html('Activate');
+      warpol('.access-type-net').attr('type','6');
+      warpol('#acces-network-id').html('signup');
+    }
+    else if ( service == 6 )
+    {
+      warpol('.access-type-net').removeClass('btn-info')
+      warpol('.access-type-net').addClass('btn-danger')
+      warpol('.access-type-net').html('Send to Signup');
+      warpol('.access-type-net').attr('type','5');
+      warpol('#acces-network-id').html('yes');
+    }
+
+  };
+
+  //PENDING
+  function servicesInfoUpdate (serviceID, serviceStatus, routeID)
+  {
+    var routes = ['updateCustomerServiceInfo'];
+
+//   warpol('.network-functions').addClass('disabled');
+
+    //AJAX request
+    warpol.ajax(
+      {type:"GET",
+        url:"/" + routes[routeID],
+        data:{'serviceid':serviceID, 'status':serviceStatus},
+        success: function(data)
+        {
+          if (data == 'ERROR')
+            alert(data);
+
+          if (serviceStatus == 'active')
+          {
+            warpol('#serviceno-' + serviceID).addClass('disabled ital');
+            warpol('#serviceinfo-status-' + serviceID).html('disabled');
+            warpol('#xservice-btn-id-' + serviceID).attr('displaystatus','disabled');
+            warpol('#xservice-btn-id-' + serviceID).addClass('btn-success fa-check');
+            warpol('#xservice-btn-id-' + serviceID).removeClass('btn-dark');
+            warpol('#xservice-btn-id-' + serviceID).removeClass('fa-times');
+          }
+          else
+          {
+            warpol('#serviceno-' + serviceID).removeClass('disabled ital');
+            warpol('#serviceinfo-status-' + serviceID).html('active');
+            warpol('#xservice-btn-id-' + serviceID).attr('displaystatus','active');
+            warpol('#xservice-btn-id-' + serviceID).addClass('btn-dark fa-times');
+            warpol('#xservice-btn-id-' + serviceID).removeClass('btn-success');
+            warpol('#xservice-btn-id-' + serviceID).removeClass('fa-check');
+          }
+
+        }
+      }
+    );
+  };
+
+
+  $scope.showConfirm = function(ev)
+  {
+    var service       = warpol('#rport').attr('type');
+    var portID        = warpol('#rport').attr('portid');
+    var serviceID     = warpol('#rport').attr('serviceid');
+    var serviceStatus = warpol('#rport').attr('displaystatus');
+    var routeID       = warpol('#rport').attr('route');
+
+    var confirm = $mdDialog.confirm()
+      .title('Please Confirm Your Action!')
+      .textContent('Once you click Yes, you need to wait the process to finish.')
+      .ariaLabel('Lucky day')
+      .targetEvent(ev)
+      .clickOutsideToClose(true)
+      .ok('YES')
+      .cancel('NO');
+
+    // YES/NO
+    $mdDialog.show(confirm).then(function()
+    {
+      console.log('a' + confirm + ' ...b ' + service + 'PARAMS:  ' + serviceID + '...' + serviceStatus + '...' + routeID);
+      $scope.status = 'You decided to get rid of your debt.';
+
+      if (portID)
+        networkServices(service);
+      else if(serviceID)
+        servicesInfoUpdate(serviceID, serviceStatus, routeID);
+
+    }, function() {
+      $scope.status = 'You decided to keep your debt.';
+    });
+  };
+
+});
+//DONE
+app.controller('customerTicketHistoryController',   function ($scope, $http){
+  $http.get("getTicketHistory", {params:{'id':$scope.customerData.id}})
+    .then(function (response) {
+      $scope.ticketHistory = response.data;
+      $scope.letterLimit = 20;
+    });
+  $scope.showFullComment = function(id)
+  {
+    warpol('#ticket-' + id).fadeIn('slow');
+  }
+  $scope.hideFullComment = function(id)
+  {
+    warpol('#ticket-' + id).fadeOut('fast');
+  }
+});
+
+
+
+app.controller('customerControllerList',            function ($scope, $http){
+  $http.get("getCustomerList")
+    .then(function (response) {
+      $scope.supportDataCustomer = response.data;
+    });
+});
+app.controller('customerController',                function ($scope, $http, $routeParams, notify, $uibModal, $log){
+  var idCustomer = $routeParams.id;
+
+  if ($scope.stcid)
+    idCustomer = $scope.stcid;
+
+
+  if ((warpol(location).attr('href').split('http://silverip-portal.com/#/')[1]) == 'customer')
+    idCustomer = 13579;
+
+  $http.get("customersData", {params:{'id':idCustomer}})
+    .then(function (response) {
+      $scope.customerData = response.data;
+    });
+
+  $http.get("getContactTypes", {params:{'id':idCustomer}})
+    .then(function (response) {
+      $scope.contactTypes = response.data;
+    });
+
+  $scope.getAddressItems = function (){
+    $http.get("getAddress")
+      .then(function (response) {
+        $scope.addressData = response.data;
+      });
+  };
+
+  $scope.getCustomerContactData = function (){
+    $http.get("getCustomerContactData", {params:{'id':idCustomer}})
+      .then(function (response) {
+        $scope.customerContactsData = response.data.contacts;
+      });
+  }
+  $scope.getCustomerContactData();
+
+
+  $scope.checkboxModel = true;
+  $scope.checkboxModelA = true;
+  $scope.animationsEnabled = false;
+
+
+  $scope.submitForm = function (table) {
+    console.log('este' + table);
+    var objects = warpol('#'+table+'-insert-form').serializeArray();
+    var infoData = {};
+
+
+    for(var obj in objects )
+    {
+      if(objects[obj]['value'] == 'err' || objects[obj]['value'] == '')
+      {
+        var tmp = objects[obj]['name'].split('id_');
+        console.log(tmp);
+        alert('Verify ' + (tmp[1]?tmp[1]:objects[obj]['name']) + ' Field');
+        return;
+      }
+
+      infoData[objects[obj]['name']] = objects[obj]['value'];
+    }
+    infoData['id_customers'] = $scope.customerData.id;
+
+//     validator.startValidations;
+
+    $http.get("insertCustomerTicket", {params:infoData})
+      .then(function (response) {
+//         cancelForm();
+        if(response.data == 'OK')
+        {
+          document.getElementById(table+"-insert-form").reset();
+          notify({ message: 'New Ticket Created!', templateUrl:'/views/notify.html'} );
+
+        }
+      });
+
+//     callAdminView(infoData['table']);
+//     notify({ message: 'Data inserted!', templateUrl:'/views/notify.html'} );
+
+  }
+
+  $scope.validate = function(value, table, field) {
+    var data = {};
+    data[field] = value;
+    data['id_customers'] = $scope.customerData.id;
+
+    $http.get("update" + table + "Table", {params:data})
+      .then(function (response) {
+        console.log('OK');
+      });
+  }
+
+  $scope.customerEditMode = function (){
+    if ( $scope.checkboxModel == false)
+    {
+      warpol('.editable-text').fadeIn('slow');
+      warpol('.no-editable-text').css('display', 'none');
+    }
+    else
+    {
+      warpol('.no-editable-text').fadeIn('slow');
+      warpol('.editable-text').css('display', 'none');
+    }
+  };
+
+  $scope.customerEditMode();
+
+  $scope.contactEditMode = function (){
+    if ( $scope.checkboxModelA == false)
+    {
+      console.log($scope.checkboxModelA);
+      warpol('.c-no-editable-text').fadeIn('slow');
+      warpol('.c-editable-text').css('display', 'none');
+      $scope.checkboxModelA = true;
+    }
+    else
+    {
+      console.log($scope.checkboxModelA);
+      warpol('.c-editable-text').fadeIn('slow');
+      warpol('.c-no-editable-text').css('display', 'none');
+      $scope.checkboxModelA = false;
+    }
+  };
+
+  $scope.updateContactInfo = function (value, id){
+    var data = {};
+    data['id']    = id;
+    data['value'] = value;
+    $http.get("updateContactInfo", {params:data})
+      .then(function (response) {
+        console.log(response.data);
+      });
+  };
+
+  $scope.open = function (id, type){
+
+    $scope.customerId = id;
+    $scope.type = type;
+
+    var modalInstance = $uibModal.open(
+      {
+        animation: $scope.animationsEnabled,
+        templateUrl: 'myContactInfoAdd.html',
+        controller: 'addContInfoController',
+        size: 'md',
+        resolve: {
+          customerId: function () {
+            return $scope.customerId;
+          },
+          mode: function (){
+            return $scope
+          }
+        }
+      });
+
+    modalInstance.result.then(function () {}, function () {
+//       if (type == 'services' || type == 'updateService')
+//         $scope.cSrvCrlFun();
+
+      $log.info('Modal dismissed at: ' + new Date());
+    });
+
+
+
+  }
+
+
+
+});
+
+
+
+
 app.controller('admin',                             function($scope, $http, $compile, $sce, notify){
   console.log('loco');
   $http.get("/admin")
@@ -616,179 +1055,7 @@ app.controller('singleTicketInfo',                  function ($scope, $http){
       $scope.selectedTicket = response.data;
     });
 })
-app.controller('customerControllerList',            function ($scope, $http){
-  $http.get("getCustomerList")
-    .then(function (response) {
-      $scope.supportDataCustomer = response.data;
-    });
-});
-app.controller('customerController',                function ($scope, $http, $routeParams, notify, $uibModal, $log){
-  var idCustomer = $routeParams.id;
 
-  if ($scope.stcid)
-    idCustomer = $scope.stcid;
-
-
-    if ((warpol(location).attr('href').split('http://silverip-portal.com/#/')[1]) == 'customer')
-      idCustomer = 13579;
-
-  $http.get("customersData", {params:{'id':idCustomer}})
-    .then(function (response) {
-      $scope.customerData = response.data;
-    });
-
-  $http.get("getContactTypes", {params:{'id':idCustomer}})
-    .then(function (response) {
-    $scope.contactTypes = response.data;
-    });
-
-  $scope.getAddressItems = function (){
-    $http.get("getAddress")
-      .then(function (response) {
-        $scope.addressData = response.data;
-      });
-  };
-
-  $scope.getCustomerContactData = function (){
-    $http.get("getCustomerContactData", {params:{'id':idCustomer}})
-      .then(function (response) {
-        $scope.customerContactsData = response.data.contacts;
-      });
-  }
-  $scope.getCustomerContactData();
-
-
-  $scope.checkboxModel = true;
-  $scope.checkboxModelA = true;
-  $scope.animationsEnabled = false;
-
-
-  $scope.submitForm = function (table) {
-  console.log('este' + table);
-    var objects = warpol('#'+table+'-insert-form').serializeArray();
-    var infoData = {};
-
-
-    for(var obj in objects )
-    {
-      if(objects[obj]['value'] == 'err' || objects[obj]['value'] == '')
-      {
-        var tmp = objects[obj]['name'].split('id_');
-        console.log(tmp);
-        alert('Verify ' + (tmp[1]?tmp[1]:objects[obj]['name']) + ' Field');
-        return;
-      }
-
-      infoData[objects[obj]['name']] = objects[obj]['value'];
-    }
-    infoData['id_customers'] = $scope.customerData.id;
-
-//     validator.startValidations;
-
-    $http.get("insertCustomerTicket", {params:infoData})
-      .then(function (response) {
-//         cancelForm();
-        if(response.data == 'OK')
-        {
-          document.getElementById(table+"-insert-form").reset();
-          notify({ message: 'New Ticket Created!', templateUrl:'/views/notify.html'} );
-
-        }
-      });
-
-//     callAdminView(infoData['table']);
-//     notify({ message: 'Data inserted!', templateUrl:'/views/notify.html'} );
-
-  }
-
-  $scope.validate = function(value, table, field) {
-    var data = {};
-    data[field] = value;
-    data['id_customers'] = $scope.customerData.id;
-
-    $http.get("update" + table + "Table", {params:data})
-      .then(function (response) {
-        console.log('OK');
-      });
-  }
-
-  $scope.customerEditMode = function (){
-    if ( $scope.checkboxModel == false)
-    {
-       warpol('.editable-text').fadeIn('slow');
-       warpol('.no-editable-text').css('display', 'none');
-    }
-    else
-    {
-      warpol('.no-editable-text').fadeIn('slow');
-      warpol('.editable-text').css('display', 'none');
-    }
-  };
-
-  $scope.customerEditMode();
-
-  $scope.contactEditMode = function (){
-    if ( $scope.checkboxModelA == false)
-    {
-      console.log($scope.checkboxModelA);
-      warpol('.c-no-editable-text').fadeIn('slow');
-      warpol('.c-editable-text').css('display', 'none');
-      $scope.checkboxModelA = true;
-    }
-    else
-    {
-      console.log($scope.checkboxModelA);
-      warpol('.c-editable-text').fadeIn('slow');
-      warpol('.c-no-editable-text').css('display', 'none');
-      $scope.checkboxModelA = false;
-    }
-  };
-
-  $scope.updateContactInfo = function (value, id){
-    var data = {};
-    data['id']    = id;
-    data['value'] = value;
-    $http.get("updateContactInfo", {params:data})
-      .then(function (response) {
-        console.log(response.data);
-      });
-  };
-
-  $scope.open = function (id, type){
-
-    $scope.customerId = id;
-    $scope.type = type;
-
-    var modalInstance = $uibModal.open(
-    {
-      animation: $scope.animationsEnabled,
-      templateUrl: 'myContactInfoAdd.html',
-      controller: 'addContInfoController',
-      size: 'md',
-      resolve: {
-        customerId: function () {
-          return $scope.customerId;
-        },
-        mode: function (){
-          return $scope
-        }
-      }
-    });
-
-    modalInstance.result.then(function () {}, function () {
-//       if (type == 'services' || type == 'updateService')
-//         $scope.cSrvCrlFun();
-
-      $log.info('Modal dismissed at: ' + new Date());
-    });
-
-
-
-  }
-
-
-
-});
 app.controller('addContInfoController',             function ($scope, $http, customerId, $uibModalInstance, mode){
   $http.get("getContactTypes")
     .then(function (response) {
@@ -985,21 +1252,7 @@ app.controller('usrServiceController',              function ($scope, $http, $ui
   };
 
 });
-app.controller('customerTicketHistoryController',   function ($scope, $http){
-  $http.get("getTicketHistory", {params:{'id':$scope.customerData.id}})
-    .then(function (response) {
-      $scope.ticketHistory = response.data;
-      $scope.letterLimit = 20;
-    });
-  $scope.showFullComment = function(id)
-  {
-    warpol('#ticket-' + id).fadeIn('slow');
-  }
-  $scope.hideFullComment = function(id)
-  {
-    warpol('#ticket-' + id).fadeOut('fast');
-  }
-});
+
 // app.controller('customerTicketHistoryData',         function ($scope, $http){
 //   $http.get("getTicketHistoryNotes", {params:{'id':$scope.ticket.id_ticket_notes}})
 //     .then(function (response) {
@@ -1259,188 +1512,8 @@ app.controller('serviceProductController',          function ($scope, $http){
     });
 
 });
-app.controller('customerNetworkController',         function ($scope, $http, $mdDialog, $mdMedia){
-  $scope.status = '  ';
-  $scope.customFullscreen = $mdMedia('xs') || $mdMedia('sm');
 
-  $http.get("getCustomerNetwork", {params:{'id':$scope.customerData.id}})
-    .then(function (response) {
-      $scope.customerNetwork = response.data[0];
-      console.log($scope.customerNetwork);
-    });
-
-  $scope.networkServices = function (service)
-  {
-    networkServices(service);
-  }
-  function networkServices (service)
-  {
-    var routes = ['networkCheckStatus',
-                  'netwokAdvancedInfo',
-                  'networkAdvanceIPs',
-                  'networkRecyclePort',
-                  '4',
-                  'networkSignUp',
-                  'networkActivate'];
-
-    warpol('.network-functions').addClass('disabled');
-
-    var service = service;
-    var portID = $scope.customerNetwork.port_number;
-    var customerID = $scope.customerData.id;
-    var dataSend = {'portid':portID, 'id':customerID};
-
-    //AJAX request
-    warpol.ajax(
-      {type:"GET",
-        url:"/" + routes[service],
-        data:dataSend,
-        success: function(data)
-        {
-          if (data == 'ERROR')
-            alert(data);
-
-          warpol.each(data,function(i, item)
-          {
-            warpol('#' + i).html(item);
-          });
-          warpol('#basic-info-net').notify('OK');
-
-          service = 1;
-          warpol.ajax(
-            {type:"GET",
-              url:"/" + routes[service],
-              data:dataSend,
-              success: function(data)
-              {
-                warpol.each(data,function(i, item)
-                {
-                  warpol('#' + i).html(item);
-                });
-              }
-            }
-          );
-
-          service = 2;
-          warpol.ajax(
-            {type:"GET",
-              url:"/" + routes[service],
-              data:dataSend,
-              success: function(data)
-              {
-
-                warpol('#IPs').notify('IPs Array.');
-                warpol('.network-functions').removeClass('disabled');
-
-//                   warpol.each(data,function(i, item)
-//                   {
-//                     warpol('#' + i).html(item);
-//                   });
-
-              }
-            }
-          );
-
-        }
-      }
-    );
-
-    if (service == 5)
-    {
-      warpol('.access-type-net').removeClass('btn-danger ');
-      warpol('.access-type-net').addClass('btn-info');
-      warpol('.access-type-net').html('Activate');
-      warpol('.access-type-net').attr('type','6');
-      warpol('#acces-network-id').html('signup');
-    }
-    else if ( service == 6 )
-    {
-      warpol('.access-type-net').removeClass('btn-info')
-      warpol('.access-type-net').addClass('btn-danger')
-      warpol('.access-type-net').html('Send to Signup');
-      warpol('.access-type-net').attr('type','5');
-      warpol('#acces-network-id').html('yes');
-    }
-
-  };
-
-  //PENDING
-  function servicesInfoUpdate (serviceID, serviceStatus, routeID)
-  {
-    var routes = ['updateCustomerServiceInfo'];
-
-//   warpol('.network-functions').addClass('disabled');
-
-    //AJAX request
-    warpol.ajax(
-      {type:"GET",
-        url:"/" + routes[routeID],
-        data:{'serviceid':serviceID, 'status':serviceStatus},
-        success: function(data)
-        {
-          if (data == 'ERROR')
-            alert(data);
-
-          if (serviceStatus == 'active')
-          {
-            warpol('#serviceno-' + serviceID).addClass('disabled ital');
-            warpol('#serviceinfo-status-' + serviceID).html('disabled');
-            warpol('#xservice-btn-id-' + serviceID).attr('displaystatus','disabled');
-            warpol('#xservice-btn-id-' + serviceID).addClass('btn-success fa-check');
-            warpol('#xservice-btn-id-' + serviceID).removeClass('btn-dark');
-            warpol('#xservice-btn-id-' + serviceID).removeClass('fa-times');
-          }
-          else
-          {
-            warpol('#serviceno-' + serviceID).removeClass('disabled ital');
-            warpol('#serviceinfo-status-' + serviceID).html('active');
-            warpol('#xservice-btn-id-' + serviceID).attr('displaystatus','active');
-            warpol('#xservice-btn-id-' + serviceID).addClass('btn-dark fa-times');
-            warpol('#xservice-btn-id-' + serviceID).removeClass('btn-success');
-            warpol('#xservice-btn-id-' + serviceID).removeClass('fa-check');
-          }
-
-        }
-      }
-    );
-  };
-
-
-  $scope.showConfirm = function(ev)
-  {
-    var service       = warpol('#rport').attr('type');
-    var portID        = warpol('#rport').attr('portid');
-    var serviceID     = warpol('#rport').attr('serviceid');
-    var serviceStatus = warpol('#rport').attr('displaystatus');
-    var routeID       = warpol('#rport').attr('route');
-
-    var confirm = $mdDialog.confirm()
-      .title('Please Confirm Your Action!')
-      .textContent('Once you click Yes, you need to wait the process to finish.')
-      .ariaLabel('Lucky day')
-      .targetEvent(ev)
-      .clickOutsideToClose(true)
-      .ok('YES')
-      .cancel('NO');
-
-      // YES/NO
-    $mdDialog.show(confirm).then(function()
-    {
-      console.log('a' + confirm + ' ...b ' + service + 'PARAMS:  ' + serviceID + '...' + serviceStatus + '...' + routeID);
-      $scope.status = 'You decided to get rid of your debt.';
-
-      if (portID)
-        networkServices(service);
-      else if(serviceID)
-        servicesInfoUpdate(serviceID, serviceStatus, routeID);
-
-    }, function() {
-      $scope.status = 'You decided to keep your debt.';
-    });
-  };
-
-});
-app.controller('customerNewTicketCtrl',             function ($scope, $http){
+app.controller('customerNewTicketCtrl',             function ($scope, $http){//DONE
   $http.get("getTableData", {params:{'table':'reasons'}})
     .then(function (response) {
       $scope.newTicketData = response.data;
@@ -1489,67 +1562,7 @@ app.controller('submitController',                  function ($scope, $http) {
     warpol('.thistory-form-2').val('');
   }
 });
-app.controller('networkController',                 function ($scope, $http){
-  $http.get("networkdash")
-    .then(function (response) {
-      $scope.networkData = response.data;
-    });
 
-  $scope.switchStatusLink = function (){
-
-//
-//     warpol('.SwitchStatusLink').click(function (event) {
-//       event.preventDefault();
-      var ipAddress = warpol(this).attr('IP');
-      var location = warpol(this).attr('LOC');
-//       var formDataLoadUrl = "assets/includes/network_switch_handler.php";
-
-      //        console.error('IP = '+ipAddress);
-
-      warpol('#switchInfoDialog').html('');
-//      displayAjaxLoader('#switchInfoDialog','<center><span>Loading</span><br><img src="assets/images/ajax-loader-bar.gif" alt=""></center>');
-      warpol('#switchInfoDialog').load(formDataLoadUrl, {
-        'action': 'get-core-switch-info-page',
-        'ipAddress': '"'+ipAddress+'"',
-        'location' : location
-      }, function(){
-//        hideAjaxLoader('#switchInfoDialog');
-      }); //, function(responseText){
-      warpol('#switchInfoDialog').dialog('open');
-      //        warpol('#ticketInfoDialog').css('display','block');
-      return false;
-//     });
-
-
-  };
-
-  $scope.addTR = function addTR(id)
-  {
-    var stance = warpol('#net-btn-' + id).attr('stance');
-    var iconoA = '<i class="fa fa-plus-circle txt-green sign-network"></i>';
-    var iconoB = '<i class="fa fa-minus-circle txt-red sign-network"></i>';
-
-    if (stance == '1')
-    {
-      warpol('#net-btn-' + id).attr('stance', '2');
-      warpol('#net-btn-' + id).html(iconoB);
-      warpol(getNetworkResult(id)).insertAfter('#det-net-' + id).hide().slideDown('slow');
-    }
-    else
-    {
-      warpol('#net-btn-' + id).attr('stance', '1');
-      warpol('#net-btn-' + id).html(iconoA);
-      warpol('#nt-tmp-data-' + id).remove();
-    }
-    //getNetworkResult();
-
-  };
-  function getNetworkResult(id)
-  {
-    var idString = 'nt-tmp-data-'+id;
-    return ' <tr id="' + idString + '"><td colspan="11">info</td></tr>';
-  };
-});
 app.controller('actionsController',                 function ($scope) {
   $scope.actionA = function ()
   {

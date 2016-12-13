@@ -1,0 +1,49 @@
+<div class="row">
+  <article class="col-sm-12">
+    <div id="wid-id-3" data-jarvis-widget  data-widget-editbutton="false" data-widget-deletebutton="false">
+      <header>
+        <ul class="nav nav-tabs pull-left in" id="myTab">
+          <li class="active">
+            <a data-toggle="tab" href="#s1"><i class="fa fa-clock-o"></i> <span class="hidden-mobile hidden-tablet slc-dfalse">All</span></a>
+          </li>
+          <li>
+            <a data-toggle="tab" href="#s2"><i class="fa fa-facebook"></i> <span class="hidden-mobile hidden-tablet slc-dfalse">Retail</span></a>
+          </li>
+          <li>
+            <a data-toggle="tab" href="#s3"><i class="fa fa-dollar"></i> <span class="hidden-mobile hidden-tablet slc-dfalse">Comercial</span></a>
+          </li>
+          <li ng-controller="globalToolsCtl">
+            <div class="cursor-pointer left-column-arrow" ng-click="leftColumnOpenClose()">
+              <i id="arrowChange" class="fa fa-arrow-circle-left"></i>
+            </div>
+          </li>
+        </ul>
+      </header>
+      <div class="no-padding bld-list" >
+        <div class="widget-body">
+          <div id="myTabContent" class="tab-content">
+            <div class="tab-pane fade active in padding-10 no-padding-bottom" id="s1">
+              <div id="bldlist-result" >
+                <p ng-repeat="building in bldSearchResultLeft" ng-click="displayBldData(building.id)" ng-if="bldSearchResultLeft" class="animate-if">{{ building.name }}</p>
+                <p ng-repeat="building in bldData['buildingList']" ng-click="displayBldData(building.id)" ng-if="!bldSearchResultLeft" class="animate-if">
+                  <i ng-if="building.code" class="slc-dtrue display-none bld-code-name-left-side">{{ building.code }}</i>
+                  <i ng-if="building.name" class="slc-dfalse">{{ building.name }}</i>
+                  <i ng-if="building.type == 'Commercial'" class="type-ico type-c slc-dfalse">C</i>
+                  <i ng-if="building.type == 'High-Rise'"  class="type-ico type-r slc-dfalse">H-R</i>
+                  <i ng-if="building.type == 'Office'"     class="type-ico type-p slc-dfalse">O</i>
+                  <i ng-if="building.type == 'Townhomes'"  class="type-ico type-b slc-dfalse">T</i>
+                </p>
+              </div>
+            </div>
+            <div class="tab-pane fade padding-10" id="s2">
+              SOMETHING NICE S2
+            </div>
+            <div class="tab-pane fade padding-10" id="s3">
+              SOMETHING NICE S3
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </article>
+</div>

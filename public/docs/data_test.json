@@ -1,0 +1,121 @@
+[{"id":30,"address":"41 E 8th Street","code":"41E8","unit":"1106","city":"Chicago","zip":"60605","state"
+:"IL","country":"USA","id_customers":30,"id_buildings":4,"created_at":"2016-08-08 18:28:33","updated_at"
+:null,"first_name":"Ian","last_name":"Stone","email":"ianstone22@gmail.com","password":null,"company"
+:null,"vip":null,"id_types":null,"id_status":1,"signedup_at":"2011-02-28 20:26:22","cancelled_at":null
+},{"id":29,"address":"41 E 8th Street","code":"41E8","unit":"706","city":"Chicago","zip":"60605","state"
+:"IL","country":"USA","id_customers":29,"id_buildings":4,"created_at":"2016-08-08 18:28:33","updated_at"
+:null,"first_name":"Jason","last_name":"Newton","email":"jwnewton@gmail.com","password":null,"company"
+:null,"vip":null,"id_types":null,"id_status":1,"signedup_at":"2011-02-28 17:39:37","cancelled_at":null
+},{"id":28,"address":"41 E 8th Street","code":"41E8","unit":"1606","city":"Chicago","zip":"60605","state"
+:"IL","country":"USA","id_customers":28,"id_buildings":4,"created_at":"2016-08-08 18:28:33","updated_at"
+:null,"first_name":"Janice","last_name":"Wichmann","email":"huns3@sbcglobal.net","password":null,"company"
+:null,"vip":null,"id_types":null,"id_status":1,"signedup_at":"2011-02-28 17:35:44","cancelled_at":null
+},{"id":27,"address":"41 E 8th Street","code":"41E8","unit":"2201","city":"Chicago","zip":"60605","state"
+:"IL","country":"USA","id_customers":27,"id_buildings":4,"created_at":"2016-08-08 18:28:33","updated_at"
+:null,"first_name":"Yoav","last_name":"Gilad","email":"yoav.gilad@gmail.com","password":null,"company"
+:null,"vip":null,"id_types":null,"id_status":1,"signedup_at":"2011-02-28 13:47:50","cancelled_at":null
+},{"id":26,"address":"41 E 8th Street","code":"41E8","unit":"3302","city":"Chicago","zip":"60605","state"
+:"IL","country":"USA","id_customers":26,"id_buildings":4,"created_at":"2016-08-08 18:28:33","updated_at"
+:null,"first_name":"Helen","last_name":"Wu","email":"helensbwu@gmail.com","password":null,"company":null
+,"vip":null,"id_types":null,"id_status":1,"signedup_at":"2011-02-28 11:57:09","cancelled_at":null},{"id"
+:25,"address":"41 E 8th Street","code":"41E8","unit":"803","city":"Chicago","zip":"60605","state":"IL"
+,"country":"USA","id_customers":25,"id_buildings":4,"created_at":"2016-08-08 18:28:33","updated_at":null
+,"first_name":"Wenhui","last_name":"Dai","email":"wiendai@hotmail.com","password":null,"company":null
+,"vip":null,"id_types":null,"id_status":1,"signedup_at":"2011-02-28 11:54:27","cancelled_at":null},{"id"
+:24,"address":"41 E 8th Street","code":"41E8","unit":"2107","city":"Chicago","zip":"60605","state":"IL"
+,"country":"USA","id_customers":24,"id_buildings":4,"created_at":"2016-08-08 18:28:33","updated_at":null
+,"first_name":"Karl","last_name":"Zimmerman","email":"karl@steadfast.net","password":null,"company":null
+,"vip":"Friend of Silver","id_types":null,"id_status":1,"signedup_at":"2011-02-28 10:31:42","cancelled_at"
+  :null},{"id":44,"address":"41 E 8th Street","code":"41E8","unit":"1805","city":"Chicago","zip":"60605"
+,"state":"IL","country":"USA","id_customers":44,"id_buildings":4,"created_at":"2016-08-08 18:28:33","updated_at"
+  :null,"first_name":"Manisha","last_name":"Patel","email":"m21patel@yahoo.com","password":null,"company"
+  :null,"vip":null,"id_types":null,"id_status":1,"signedup_at":"2011-03-01 23:22:02","cancelled_at":null
+},{"id":23,"address":"41 E 8th Street","code":"41E8","unit":"1601","city":"Chicago","zip":"60605","state"
+:"IL","country":"USA","id_customers":23,"id_buildings":4,"created_at":"2016-08-08 18:28:33","updated_at"
+:null,"first_name":"Michael","last_name":"Dawson","email":"mc-dawson@uchicago.edu","password":null,"company"
+:null,"vip":null,"id_types":null,"id_status":1,"signedup_at":"2011-02-28 10:31:27","cancelled_at":null
+},{"id":43,"address":"41 E 8th Street","code":"41E8","unit":"1006","city":"Chicago","zip":"60605","state"
+:"IL","country":"USA","id_customers":43,"id_buildings":4,"created_at":"2016-08-08 18:28:33","updated_at"
+:null,"first_name":"John","last_name":"Dabkey","email":"imyy4u@gmail.com","password":"b1d6d0a4fd48d1ae3f73ad22dee41afa"
+,"company":null,"vip":null,"id_types":null,"id_status":1,"signedup_at":"2011-03-01 21:48:10","cancelled_at"
+  :null},{"id":42,"address":"41 E 8th Street","code":"41E8","unit":"907","city":"Chicago","zip":"60605"
+,"state":"IL","country":"USA","id_customers":42,"id_buildings":4,"created_at":"2016-08-08 18:28:33","updated_at"
+  :null,"first_name":"Marlon","last_name":"Fortineaux","email":"marlon.fortineaux@gmail.com","password"
+  :null,"company":null,"vip":null,"id_types":null,"id_status":1,"signedup_at":"2011-03-01 21:35:47","cancelled_at"
+  :null},{"id":40,"address":"41 E 8th Street","code":"41E8","unit":"1806","city":"Chicago","zip":"60605"
+,"state":"IL","country":"USA","id_customers":40,"id_buildings":4,"created_at":"2016-08-08 18:28:33","updated_at"
+  :null,"first_name":"Ricardo","last_name":"Garcia","email":"rch24@aol.com","password":null,"company":null
+,"vip":null,"id_types":null,"id_status":1,"signedup_at":"2011-03-01 19:41:30","cancelled_at":null},{"id"
+:41,"address":"41 E 8th Street","code":"41E8","unit":"1001","city":"Chicago","zip":"60605","state":"IL"
+,"country":"USA","id_customers":41,"id_buildings":4,"created_at":"2016-08-08 18:28:33","updated_at":null
+,"first_name":"Frances","last_name":"Luehrs","email":"freefrani@yahoo.com","password":null,"company"
+  :null,"vip":null,"id_types":null,"id_status":1,"signedup_at":"2011-03-01 20:19:01","cancelled_at":null
+},{"id":31,"address":"41 E 8th Street","code":"41E8","unit":"2801","city":"Chicago","zip":"60605","state"
+:"IL","country":"USA","id_customers":31,"id_buildings":4,"created_at":"2016-08-08 18:28:33","updated_at"
+:null,"first_name":"Henry","last_name":"Sinn","email":"hsinn2001@gmail.com","password":null,"company"
+:null,"vip":null,"id_types":null,"id_status":1,"signedup_at":"2011-02-28 22:00:32","cancelled_at":null
+},{"id":32,"address":"41 E 8th Street","code":"41E8","unit":"2007","city":"Chicago","zip":"60605","state"
+:"IL","country":"USA","id_customers":32,"id_buildings":4,"created_at":"2016-08-08 18:28:33","updated_at"
+:null,"first_name":"Manojit","last_name":"Paul","email":"manojit@hotmail.com","password":null,"company"
+:null,"vip":null,"id_types":null,"id_status":1,"signedup_at":"2011-03-01 08:02:32","cancelled_at":null
+},{"id":33,"address":"41 E 8th Street","code":"41E8","unit":"3207","city":"Chicago","zip":"60605","state"
+:"IL","country":"USA","id_customers":33,"id_buildings":4,"created_at":"2016-08-08 18:28:33","updated_at"
+:null,"first_name":"Rabya","last_name":"Khan","email":"rkhan44@gmail.com","password":null,"company":null
+,"vip":null,"id_types":null,"id_status":1,"signedup_at":"2011-03-01 09:16:29","cancelled_at":null},{"id"
+:34,"address":"41 E 8th Street","code":"41E8","unit":"1503","city":"Chicago","zip":"60605","state":"IL"
+,"country":"USA","id_customers":34,"id_buildings":4,"created_at":"2016-08-08 18:28:33","updated_at":null
+,"first_name":"James A","last_name":"Ciarlette II","email":"jimciarlette@yahoo.com","password":null,"company"
+  :null,"vip":null,"id_types":null,"id_status":1,"signedup_at":"2011-03-01 11:05:52","cancelled_at":null
+},{"id":35,"address":"41 E 8th Street","code":"41E8","unit":"1907","city":"Chicago","zip":"60605","state"
+:"IL","country":"USA","id_customers":35,"id_buildings":4,"created_at":"2016-08-08 18:28:33","updated_at"
+:null,"first_name":"Anna","last_name":"Shilov","email":"annashilov@yahoo.com","password":null,"company"
+:null,"vip":null,"id_types":null,"id_status":1,"signedup_at":"2011-03-01 12:25:41","cancelled_at":null
+},{"id":36,"address":"41 E 8th Street","code":"41E8","unit":"2002","city":"Chicago","zip":"60605","state"
+:"IL","country":"USA","id_customers":36,"id_buildings":4,"created_at":"2016-08-08 18:28:33","updated_at"
+:null,"first_name":"Elizabeth","last_name":"Chan","email":"emc35@case.edu","password":null,"company"
+:null,"vip":null,"id_types":null,"id_status":1,"signedup_at":"2011-03-01 14:29:01","cancelled_at":null
+},{"id":37,"address":"41 E 8th Street","code":"41E8","unit":"2701","city":"Chicago","zip":"60605","state"
+:"IL","country":"USA","id_customers":37,"id_buildings":4,"created_at":"2016-08-08 18:28:33","updated_at"
+:null,"first_name":"Mary","last_name":"Miller","email":"kmiller2701@gmail.com","password":null,"company"
+:null,"vip":null,"id_types":null,"id_status":1,"signedup_at":"2011-03-01 15:10:47","cancelled_at":null
+},{"id":38,"address":"41 E 8th Street","code":"41E8","unit":"2306","city":"Chicago","zip":"60605","state"
+:"IL","country":"USA","id_customers":38,"id_buildings":4,"created_at":"2016-08-08 18:28:33","updated_at"
+:null,"first_name":"Grace","last_name":"Kang","email":"graciek312@yahoo.com","password":null,"company"
+:null,"vip":null,"id_types":null,"id_status":1,"signedup_at":"2011-03-01 18:37:56","cancelled_at":null
+},{"id":39,"address":"41 E 8th Street","code":"41E8","unit":"2407","city":"Chicago","zip":"60605","state"
+:"IL","country":"USA","id_customers":39,"id_buildings":4,"created_at":"2016-08-08 18:28:33","updated_at"
+:null,"first_name":"David","last_name":"Fredlick","email":"dfredlick@gmail.com","password":null,"company"
+:null,"vip":null,"id_types":null,"id_status":1,"signedup_at":"2011-03-01 19:17:16","cancelled_at":null
+},{"id":45,"address":"41 E 8th Street","code":"41E8","unit":"1204","city":"Chicago","zip":"60605","state"
+:"IL","country":"USA","id_customers":45,"id_buildings":4,"created_at":"2016-08-08 18:28:33","updated_at"
+:null,"first_name":"Amy","last_name":"Benford","email":"abenford@gmail.com","password":null,"company"
+:null,"vip":null,"id_types":null,"id_status":1,"signedup_at":"2011-03-01 23:31:40","cancelled_at":null
+},{"id":46,"address":"41 E 8th Street","code":"41E8","unit":"3107","city":"Chicago","zip":"60605","state"
+:"IL","country":"USA","id_customers":46,"id_buildings":4,"created_at":"2016-08-08 18:28:33","updated_at"
+:null,"first_name":"Linda","last_name":"Kaul","email":"lindakaul@att.net","password":null,"company":null
+,"vip":null,"id_types":null,"id_status":1,"signedup_at":"2011-03-02 06:57:31","cancelled_at":null},{"id"
+:47,"address":"41 E 8th Street","code":"41E8","unit":"1306","city":"Chicago","zip":"60605","state":"IL"
+,"country":"USA","id_customers":47,"id_buildings":4,"created_at":"2016-08-08 18:28:33","updated_at":null
+,"first_name":"Susan","last_name":"Tsan","email":"susanslin@gmail.com","password":null,"company":null
+,"vip":null,"id_types":null,"id_status":1,"signedup_at":"2011-03-02 08:07:57","cancelled_at":null},{"id"
+:48,"address":"41 E 8th Street","code":"41E8","unit":"1107","city":"Chicago","zip":"60605","state":"IL"
+,"country":"USA","id_customers":48,"id_buildings":4,"created_at":"2016-08-08 18:28:33","updated_at":null
+,"first_name":"William","last_name":"Kable","email":"bkable@gmail.com","password":null,"company":null
+,"vip":null,"id_types":null,"id_status":1,"signedup_at":"2011-03-02 09:10:07","cancelled_at":null},{"id"
+:49,"address":"41 E 8th Street","code":"41E8","unit":"2003","city":"Chicago","zip":"60605","state":"IL"
+,"country":"USA","id_customers":49,"id_buildings":4,"created_at":"2016-08-08 18:28:33","updated_at":null
+,"first_name":"Ruperto","last_name":"Alba","email":"rupie60@gmail.com","password":null,"company":null
+,"vip":null,"id_types":null,"id_status":1,"signedup_at":"2011-03-02 11:00:36","cancelled_at":null},{"id"
+:50,"address":"41 E 8th Street","code":"41E8","unit":"705","city":"Chicago","zip":"60605","state":"IL"
+,"country":"USA","id_customers":50,"id_buildings":4,"created_at":"2016-08-08 18:28:33","updated_at":null
+,"first_name":"Mannett","last_name":"Foster","email":"foster1703@yahoo.com","password":null,"company"
+  :null,"vip":null,"id_types":null,"id_status":1,"signedup_at":"2011-03-02 17:36:08","cancelled_at":null
+},{"id":51,"address":"41 E 8th Street","code":"41E8","unit":"3006","city":"Chicago","zip":"60605","state"
+:"IL","country":"USA","id_customers":51,"id_buildings":4,"created_at":"2016-08-08 18:28:33","updated_at"
+:null,"first_name":"Philip","last_name":"Arquette","email":"phil.arquette@gmail.com","password":null
+,"company":null,"vip":null,"id_types":null,"id_status":1,"signedup_at":"2011-03-03 10:45:37","cancelled_at"
+  :null},{"id":92,"address":"41 E 8th Street","code":"41E8","unit":"3005","city":"Chicago","zip":"60605"
+,"state":"IL","country":"USA","id_customers":92,"id_buildings":4,"created_at":"2016-08-08 18:28:33","updated_at"
+  :null,"first_name":"Sabrina","last_name":"Downard","email":"viv@ziggurat.org","password":null,"company"
+  :null,"vip":null,"id_types":null,"id_status":1,"signedup_at":"2011-03-07 06:41:02","cancelled_at":null
+}]

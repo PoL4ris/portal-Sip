@@ -27,6 +27,9 @@
   <!-- Demo purpose only: goes with demo.js, you can delete this css when designing your own WebApp -->
   <link rel="stylesheet" type="text/css" media="screen" href="/css/smart/styles/css/demo.min.css">
 
+  <!-- Data Tables CSS -->
+  <link rel="stylesheet" type="text/css" media="screen" href="/css/smart/styles/css/datTables.min.css">
+
   <!-- SILVERIP CSS -->
   <link rel="stylesheet" type="text/css" media="screen" href="/css/style.css">
   <link rel="stylesheet" type="text/css" media="screen" href="/css/buildings.css">
@@ -108,7 +111,19 @@ Possible attributes
 
 <!-- Use for production after building the project with grunt -->
 <script src="/js/smart/build/vendor.js"></script>
-<script src="/js/smart/build/app.js"></script>
+{{--<script src="/js/smart/build/app.js"></script>--}}
+<script src="/js/smart/build/appJs/app-1.js"></script>
+<script src="/js/smart/build/appJs/app-2.js"></script>
+<script src="/js/smart/build/appJs/app-3.js"></script>
+<script src="/js/smart/build/appJs/app-4.js"></script>
+<script src="/js/smart/build/appJs/app-5.js"></script>
+<script src="/js/smart/build/appJs/app-6.js"></script>
+<script src="/js/smart/build/appJs/app-7.js"></script>
+<script src="/js/smart/build/appJs/app-8.js"></script>
+<script src="/js/smart/build/appJs/app-9.js"></script>
+<script src="/js/smart/build/appJs/app-10.js"></script>
+<script src="/js/smart/build/appJs/app-11.js"></script>
+
 <script src="/js/main.js"></script>
 <script src="/js/lib.js"></script>
 

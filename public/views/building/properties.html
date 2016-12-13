@@ -1,36 +1,63 @@
 <div jarvis-widget id="wid-id-0" data-widget-deletebutton="false" data-widget-editbutton="false" data-widget-custombutton="false" ng-controller="FormXeditableCtrl">
+
   <header>
     <span class="widget-icon"> <i class="fa fa-edit"></i> </span><h2>Building Properties</h2>
   </header>
-  <div ng-controller="globalToolsCtl" id="buildingProperties-gTools">
-    <div class="widget-body">
+
+  <div ng-controller="FormPluginsCtrl">
+    <div class="widget-body" ng-controller="globalToolsCtl" id="buildingProperties-gTools">
+
       <div class="widget-body-toolbar">
         <div class="row">
+
           <div class="col-sm-6">
             <button ng-if="bld.properties != ''" id="enable" class="btn btn btn-default" ng-click="toggleDisabled()">enable / disable</button>
-            <button ng-if="bld.properties == ''" id="enable" class="btn btn btn-default" ng-click="toggleDisabled()" disabled>enable / disable</button>
+            <button ng-if="bld.properties == ''" id="enable" class="btn btn btn-default" ng-click="toggleDisabled()" disabled >enable / disable</button>
           </div>
+
           <div class="col-sm-6">
+
             <button id="add-property"
                     class="btn btn btn-default pull-right"
                     ng-click="fadeViews('bpv-container', 'new-form-function', 1, 'enable', 'add-property', 'add-property-cancel')">
               Add new Property
             </button>
+
             <button id="add-property-cancel"
-                    class="btn btn btn-danger pull-right m-r-lg "
-                    style="display:none;"
+                    class="btn btn btn-danger pull-right m-r-lg no-display"
                     ng-click="fadeViews('bpv-container', 'new-form-function', 0, 'enable', 'add-property', 'add-property-cancel')">
               Cancel
             </button>
+
           </div>
+
         </div>
       </div>
+
       <table id="user"  class="table table-bordered table-striped bld-prop-table bpv-container" style="clear: both">
+
         <tbody>
-        <tr ng-repeat="properData in bld.properties">
-          <td>{{properData.name}}</td>
-          <td ng-if="properData.name == 'Unit'">
-            <p>
+          <tr ng-repeat="properData in bld.properties">
+            <td>{{properData.name}}</td>
+            <td ng-if="properData.name == 'Unit'">
+              <p>
+                <a href="form-x-editable.html#"
+                   id="b-p-id-{{properData.idBpv}}"
+                   data-type="textarea"
+                   data-pk="1"
+                   smart-xeditable
+                   data-ng-model="properData.name"
+                   data-options="editableOptions"
+                   data-original-title="Enter username"
+                   record-idContainer="buildingProperties"
+                   record-table="BldPropVal"
+                   record-field="value"
+                   record-id="{{properData.idBpv}}"
+                   class="editable editable-click">{{properData.value}}</a>
+                </a>
+              </p>
+            </td>
+            <td ng-if="properData.name != 'Unit'">
               <a href="form-x-editable.html#"
                  id="b-p-id-{{properData.idBpv}}"
                  data-type="textarea"
@@ -38,49 +65,41 @@
                  smart-xeditable
                  data-ng-model="properData.name"
                  data-options="editableOptions"
-                 data-original-title="Enter username"
+                 data-original-title="Enter text"
                  record-idContainer="buildingProperties"
                  record-table="BldPropVal"
                  record-field="value"
                  record-id="{{properData.idBpv}}"
                  class="editable editable-click">{{properData.value}}</a>
-              </a>
-            </p>
-          </td>
-          <td ng-if="properData.name != 'Unit'">
-            <a href="form-x-editable.html#"
-               id="b-p-id-{{properData.idBpv}}"
-               data-type="textarea"
-               data-pk="1"
-               smart-xeditable
-               data-ng-model="properData.name"
-               data-options="editableOptions"
-               data-original-title="Enter text"
-               record-idContainer="buildingProperties"
-               record-table="BldPropVal"
-               record-field="value"
-               record-id="{{properData.idBpv}}"
-               class="editable editable-click">{{properData.value}}</a>
-          </td>
-        </tr>
+            </td>
+          </tr>
         </tbody>
+
       </table>
 
       <div class="new-form-function no-display">
         <div get-building-prop-values>
           <h3>{{bld.name}} <small><strong>id: ({{bld.id}})</strong></small> </h3>
+
           <form action="" id="new-bpv-form">
-            <select name="id_building_properties" id="" class="new-form-select new-form-fields m-b-lg">
+            <select name="id_building_properties" id="" class="new-form-select new-form-fields m-b-lg" required>
               <option value="">Select Property</option>
               <option ng-repeat="property in propValuesList" value="{{property.id}}">{{property.name}}</option>
             </select>
-            <textarea class="new-form-fields new-form-textarea m-b-lg" placeholder="Example: 127.0.0.1/255" name="value"></textarea>
+            <textarea class="new-form-fields new-form-textarea m-b-lg" placeholder="Example: 127.0.0.1/255" name="value" required></textarea>
+            <button class="btn btn-primary" ng-click="insertBuildingProperty()">Add Property</button>
           </form>
-          <button class="btn btn-primary" ng-click="insertBuildingProperty()">Add Property</button>
+
+
         </div>
       </div>
 
-
     </div>
   </div>
+
+
+
+
+
+
 </div>

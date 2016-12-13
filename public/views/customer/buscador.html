@@ -1,0 +1,47 @@
+<div id="wid-id-5" data-jarvis-widget>
+  <header>
+    <span class="widget-icon"> <i class="fa fa-user"></i> </span><h2>Search</h2>
+  </header>
+
+  <div class="widget-body-toolbar" >
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="bld-search-main">
+
+          <div class="search-content">
+            <input type="text" class="input-search id-search" placeholder="Search Customer..." ng-keyup="buscador()" ng-model="searchCustomer"><i class="is-lupa fa fa-search"></i>
+          </div>
+
+          <div class="bld-close-search" ng-click="clearSearch()">
+            <i class="fa fa-plus plus-cross"></i>
+          </div>
+
+        </div>
+      </div>
+      <div class="col-lg-12" ng-if="customerSearchResult">
+        <div class="search-result anim" >
+          <div ng-repeat="resultSearch in customerSearchResult" ng-click="displayBldData(resultbldright.id)" class="bld-result-container">
+            <div class="col-lg-1">
+              <img src="/img/buildings/{{resultSearch.img_building?resultSearch.img_building:'logoSmall.png'}}" alt="">
+            </div>
+            <div class="col-lg-2"></div>
+
+            <div class="col-lg-9">
+              <div class="col-lg-2 labe">Customer Fname</div>  <div class="col-lg-4 valu">{{resultSearch.first_name}}</div>
+              <div class="col-lg-2 labe">Customer Lname</div>  <div class="col-lg-4 valu">{{resultSearch.last_name}}</div>
+
+              <div class="col-lg-2 labe">Customer email</div>  <div class="col-lg-4 valu">{{resultSearch.email}}</div>
+              <div class="col-lg-2 labe">Customer status</div>  <div class="col-lg-4 valu">{{resultSearch.id_status}}</div>
+
+              <div class="col-lg-2 labe">Address</div>  <div class="col-lg-4 valu">{{resultSearch.address}}</div>
+              <div class="col-lg-2 labe">Code</div>  <div class="col-lg-4 valu">{{resultSearch.code}}</div>
+              <div class="col-lg-2 labe">Unit</div> <div class="col-lg-4 valu">{{resultSearch.unit}}</div>
+              <div class="col-lg-2 labe">Zip</div><div class="col-lg-4 valu">{{resultSearch.zip}}</div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

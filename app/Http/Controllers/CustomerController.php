@@ -38,34 +38,48 @@ class CustomerController extends Controller
 //  }
   public function getCustomersSearch(Request $request)
   {
-    if($request->ajax())
+
+    $string = $request->querySearch;
+    $select = "select * from address inner join customers on address.id_customers = customers.id ";
+    $limit = 'limit 20';
+    $arrX = array();
+    $arrY = ' ';
+    $whereFlag = false;
+    $pattern = '/([0-9])\w+/';
+    $stringArray = explode(' ', $string);
+
+    foreach($stringArray as $index=> $item)
     {
+      preg_match($pattern, $item, $patternItemResult);
 
-      $data = $request['querySearch'];
-
-      if(empty($data))
-        return;
-
-        $txt = '';
-        $complex = '';
-
-        if ($data[0] == 'complex')
-        {
-          $txt = $data;
-          $complex = true;
-        }
-        else
-        {
-          for ($x = 0; $x <= sizeof($data)-1; $x ++)
-            $txt .= $data[$x] . ' ';
-        }
-
-      $customersData = $this->prepareQuery($txt, $complex);
-
-      return json_encode($customersData);
+      if(count($patternItemResult) == 0)
+        $arrX[$index] = " address.code like '%" . $item . "%' or address.unit like '%" . $item . "%' or customers.first_name like '%" . $item . "%' or customers.last_name like '%" . $item . "%' or customers.email like '%" . $item . "%'";
+      else
+      {
+        $whereFlag = true;
+        $arrX['where'] = " AND (address.code like '%" .  $patternItemResult[0] . "%' OR address.unit like '%". $patternItemResult[0] . "%') ";
+      }
     }
-    return "ERROR:";
 
+    if($whereFlag)
+    {
+      $tmpWhere = $arrX['where'];
+      unset($arrX['where']);
+    }
+
+    foreach($arrX as $idx => $or)
+    {
+      if ($idx == 0 )
+      {
+          $arrY .= ' where ' . $or;
+      }
+      else
+        $arrY .= ' or ' . $or;
+    }
+
+    $arrY .= $whereFlag?$tmpWhere:'';
+    print $select . $arrY . $limit;
+    return DB::select($select . $arrY . $limit);
   }
   public function prepareQuery($data, $complex = null)
   {

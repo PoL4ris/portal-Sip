@@ -82,9 +82,11 @@ Route::group(['middleware' => 'web'], function () {
   //Insert Building
   Route::post('insertbuildingData',     'BuildingController@insertBuildingData');
   Route::get('insertBuildingProperties','BuildingController@insertBuildingProperties');
+  Route::get('insertBuildingContacts',  'BuildingController@insertBuildingContacts');
   //Update Building
   Route::get('updateBuilding',          'BuildingController@updateBuilding');
   Route::get('updateBldPropValTable',   'BuildingController@updateBldPropValTable');
+  Route::get('updateBldContactTable',   'BuildingController@updateBldContactTable');
   Route::post('userupdate',             'MainController@updateUser');
   //Customers
   Route::get('customers/{id?}',         'CustomerController@customers');

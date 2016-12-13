@@ -80,6 +80,7 @@ class MainController extends Controller
 
     return view('admin.users', ['users' => $usersData]);
   }
+
   public function getCustomerCodeSearch(Request $request){
     $stringA = explode("#", $request->string)[0];
     $string = explode(" ", $stringA)[0];

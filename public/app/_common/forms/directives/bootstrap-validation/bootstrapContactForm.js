@@ -2,7 +2,6 @@
 
 
 angular.module('SmartAdmin.Forms').directive('bootstrapContactForm', function(){
-
     return {
         restrict: 'E',
         replace: true,

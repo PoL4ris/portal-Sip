@@ -41,6 +41,7 @@ class BuildingController extends Controller
     else
       $buildingList = Building::orderBy('id', 'desc')->skip($offset)->take($limit)->get();
 
+//    $data = ['building'     => $building ? $building : $this->getBuilding(28),
     $data = ['building'     => $building ? $building : $this->getBuilding(rand(2,84)),
              'buildingList' => $buildingList ? $buildingList : '',
              'offset'       => $offset,
@@ -149,6 +150,13 @@ class BuildingController extends Controller
 
     return $this->getBuilding($data['id_buildings']);
   }
+  public function insertBuildingContacts(Request $request)
+  {
+    $data = $request->all();
+    BuildingContact::insert($data);
+
+    return $this->getBuilding($data['id_buildings']);
+  }
   //Building Update's
   public function updateBuilding(Request $request)
   {
@@ -164,6 +172,12 @@ class BuildingController extends Controller
     $record->value = $data['value'];
     $record->save();
 
+    return 'OK';
+  }
+  public function updateBldContactTable(Request $request)
+  {
+    $objeto = [$request->field => $request->value];
+    BuildingContact::where('id', $request->id)->update($objeto);
     return 'OK';
   }
 

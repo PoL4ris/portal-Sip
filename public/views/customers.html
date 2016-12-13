@@ -1,10 +1,17 @@
-<!-- SearchPreview -->
-<div class="col-lg-10 bld-search-main" ng-controller="customerSearch">
-  <div class="search-content">
-    <input type="text" class="input-search id-search" placeholder="Search Customer..." ng-keyup="buscador('Simple', 'right')" ng-model="search"><i class="is-lupa fa fa-search"></i>
-    <div class="search-result anim" >
-      <p ng-repeat="resultbldright in bldSearchResultRight" ng-click="displayBldData(resultbldright.id)" >{{ resultbldright.name }} <strong>{{ resultbldright.code }}</strong></p>
+<!--<article class="col-sm-12 col-md-12 col-lg-12" ng-include="'/views/customer/buscador.html'" ng-if="buscadorFlag"></article>-->
+<!-- MAIN CONTENT -->
+<div id="content" class="anim">
+  <section id="widget-grid" widget-grid>
+    <div class="row">
+      <!-- CUSTOMER INFO -->
+      <article class="col-sm-2 col-md-2 col-lg-2" ng-include="'/views/customer/customer.html'"></article>
+      <!-- CUSTOMER CONTACTS -->
+      <article class="col-sm-4 col-md-4 col-lg-4" ng-include="'/views/customer/contactInfo.html'"></article>
+      <!-- NEW TICKET -->
+      <article class="col-sm-3 col-md-3 col-lg-3" ng-include="'/views/customer/newticket.html'"></article>
+      <!-- TICKETS -->
+      <article class="col-sm-3 col-md-3 col-lg-3" ng-include="'/views/customer/ticketshistory.html'"></article>
     </div>
-  </div>
+  </section>
 </div>
-<!-- End SearchPreview -->
+<!-- END MAIN CONTENT -->

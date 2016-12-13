@@ -77,7 +77,7 @@ $(function () {
     moment.locale('en')
 
     angular.bootstrap(document, ['app']);
- 
+
 });
 
 'use strict';
@@ -118,7 +118,10 @@ var app = angular.module('app', [
     'app.misc',
     'app.smartAdmin',
     'app.eCommerce',
-    'app.buildings'
+    'app.buildings',
+    'app.customers',
+    'app.network',
+    'app.support'
 ])
 .config(function ($provide, $httpProvider, RestangularProvider) {
 
@@ -206,7 +209,7 @@ angular.module('app.appViews', ['ui.router'])
                         }
                     }
                 }
-            }, 
+            },
             resolve: {
                 scripts: function(lazyScript){
                     return lazyScript.register([
@@ -237,7 +240,7 @@ angular.module('app.appViews', ['ui.router'])
                 "content@app": {
                     templateUrl: 'app/app-views/views/gallery-demo.html'
                 }
-            }, 
+            },
             resolve: {
                 scripts: function(lazyScript){
                     return lazyScript.register([
@@ -280,7 +283,7 @@ angular.module('app.appViews', ['ui.router'])
                 "content@app": {
                     templateUrl: 'app/app-views/views/forum-post-demo.html'
                 }
-            }, 
+            },
             resolve: {
                 scripts: function(lazyScript){
                     return lazyScript.register([
@@ -505,7 +508,7 @@ angular.module('app.eCommerce', ['ui.router'])
                         }
                     }
                 }
-            }, 
+            },
             resolve: {
                 scripts: function(lazyScript){
                     return lazyScript.register([
@@ -860,7 +863,7 @@ angular.module('app.inbox', [
     'ngResource'
 ])
 .config(function ($stateProvider) {
-    
+
     $stateProvider
         .state('app.inbox', {
             url: '/inbox',
@@ -1223,7 +1226,8 @@ angular.module('app.smartAdmin').config(function ($stateProvider) {
 angular.module('app.tables', [ 'ui.router', 'datatables', 'datatables.bootstrap']);
 
 angular.module('app.tables').config(function ($stateProvider) {
-
+console.log('app.tables');
+console.log($stateProvider);
     $stateProvider
         .state('app.tables', {
             abstract: true,
@@ -1272,8 +1276,8 @@ angular.module('app.tables').config(function ($stateProvider) {
             resolve: {
                 scripts: function(lazyScript){
                     return lazyScript.register([
-                        'smartadmin-plugin/legacy/jqgrid/js/minified/jquery.jqGrid.min.js',
-                        'smartadmin-plugin/legacy/jqgrid/js/i18n/grid.locale-en.js'
+                        '/js/smart/smartadmin-plugin/legacy/jqgrid/js/minified/jquery.jqGrid.min.js',
+                        '/js/smart/smartadmin-plugin/legacy/jqgrid/js/i18n/grid.locale-en.js'
                     ])
 
                 }
@@ -2320,20 +2324,20 @@ angular.module('app.calendar').directive('fullCalendar', function (CalendarEvent
 
                         // retrieve the dropped element's stored Event Object
                         var originalEventObject = $(this).data('eventObject');
-            
+
                         // we need to copy it, so that multiple events don't have a reference to the same object
                         var copiedEventObject = $.extend({}, originalEventObject);
-            
+
                         // assign it the date that was reported
                         copiedEventObject.start = date;
                         copiedEventObject.allDay = allDay;
 
                         // $log.log(scope);
-            
+
                         // render the event on the calendar
                         // the last `true` argument determines if the event "sticks" (http://arshaw.com/fullcalendar/docs/event_rendering/renderEvent/)
                         $('#calendar').fullCalendar('renderEvent', copiedEventObject, true);
-            
+
                         // is the "remove after drop" checkbox checked?
                         if ($('#drop-remove').is(':checked')) {
 
@@ -2346,7 +2350,7 @@ angular.module('app.calendar').directive('fullCalendar', function (CalendarEvent
                             $(this).remove();
 
                         }
-            
+
                     },
 
                     select: function (start, end, allDay) {
@@ -2417,18 +2421,18 @@ angular.module('app.calendar').directive('fullCalendar', function (CalendarEvent
 angular.module('app.calendar').factory('CalendarEvent', function($resource, APP_CONFIG){
     return $resource( APP_CONFIG.apiRootUrl + '/events.json', {_id:'@id'})
 });
-"use strict";	
+"use strict";
 
 angular.module('app').controller("ActivitiesCtrl", function ActivitiesCtrl($scope, $log, activityService){
 
 	$scope.activeTab = 'default';
 	$scope.currentActivityItems = [];
-	
+
 	// Getting different type of activites
 	activityService.get(function(data){
 
 		$scope.activities = data.activities;
-		
+
 	});
 
 
@@ -2474,9 +2478,9 @@ angular.module('app').directive('activitiesDropdownToggle', function($log) {
 
 			}
 			 else {
-				
+
 				ajax_dropdown.fadeOut(150);
-				
+
 				$(this).removeClass('active');
 
 			}
@@ -2490,7 +2494,7 @@ angular.module('app').directive('activitiesDropdownToggle', function($log) {
 			}
 		});
 	}
-	
+
 	return{
 		restrict:'EA',
 		link:link
@@ -2505,7 +2509,7 @@ angular.module('app').factory('activityService', function($http, $log, APP_CONFI
 		$http.get(APP_CONFIG.apiRootUrl + '/activities/activity.json').success(function(data){
 
 			callback(data);
-				
+
 		}).error(function(){
 
 			$log.log('Error');
@@ -2520,7 +2524,7 @@ angular.module('app').factory('activityService', function($http, $log, APP_CONFI
 		$http.get(APP_CONFIG.apiRootUrl + '/activities/activity-' + type + '.json').success(function(data){
 
 			callback(data);
-				
+
 		}).error(function(){
 
 			$log.log('Error');
@@ -2529,7 +2533,7 @@ angular.module('app').factory('activityService', function($http, $log, APP_CONFI
 		});
 
 	}
-	
+
 	return{
 		get:function(callback){
 			getActivities(callback);
@@ -2632,7 +2636,7 @@ angular.module('app.forms').controller('FormLayoutsCtrl', function($scope, $moda
     $scope.openModal = function () {
         var modalInstance = $modal.open({
             templateUrl: 'app/forms/views/form-layout-modal.html',
-            controller: 'ModalDemoCtrl' 
+            controller: 'ModalDemoCtrl'
         });
 
         modalInstance.result.then(function () {
@@ -2657,7 +2661,6 @@ angular.module('app.forms').controller('FormLayoutsCtrl', function($scope, $moda
 "use strict";
 
 angular.module('app.forms').controller('FormPluginsCtrl', function($scope, $log){
-
   $scope.editableOptions =  {
     mode: 'popup',
     disabled: true
@@ -2724,7 +2727,7 @@ angular.module('app.forms').controller('FormXeditableCtrl', function($scope, $lo
     $scope.comments = 'awesome user!';
     $scope.state2 = 'California';
     $scope.fruits = 'peach<br/>apple';
-    
+
 
     $scope.fruits_data = [
         {value: 'banana', text: 'banana'},
@@ -2748,7 +2751,7 @@ angular.module('app.forms').controller('FormXeditableCtrl', function($scope, $lo
         {value: 'Operator', text: 'Operator'},
         {value: 'Support', text: 'Support'},
         {value: 'Admin', text: 'Admin'}
-    ]; 
+    ];
 
 });
 "use strict";
@@ -3322,18 +3325,18 @@ angular.module('app').controller("LanguagesCtrl",  function LanguagesCtrl($scope
 
     $scope.selectLanguage = function(language){
         $rootScope.currentLanguage = language;
-        
+
         Language.getLang(language.key,function(data){
 
             $rootScope.lang = data;
-            
+
         });
     }
 
     $rootScope.getWord = function(key){
         if(angular.isDefined($rootScope.lang[key])){
             return $rootScope.lang[key];
-        } 
+        }
         else {
             return key;
         }
@@ -3349,7 +3352,7 @@ angular.module('app').factory('Language', function($http, APP_CONFIG){
 		$http.get(APP_CONFIG.apiRootUrl + '/langs/' + key + '.json').success(function(data){
 
 			callback(data);
-			
+
 		}).error(function(){
 
 			$log.log('Error');
@@ -3364,7 +3367,7 @@ angular.module('app').factory('Language', function($http, APP_CONFIG){
 		$http.get(APP_CONFIG.apiRootUrl + '/languages.json').success(function(data){
 
 			callback(data);
-			
+
 		}).error(function(){
 
 			$log.log('Error');
@@ -3403,7 +3406,7 @@ angular.module('app').directive('toggleShortcut', function($log,$timeout) {
 		var shortcut_dropdown = $('#shortcut');
 
 		$element.on('click',function(){
-		
+
 			if (shortcut_dropdown.is(":visible")) {
 				shortcut_buttons_hide();
 			} else {
@@ -3418,7 +3421,7 @@ angular.module('app').directive('toggleShortcut', function($log,$timeout) {
 			setTimeout(shortcut_buttons_hide, 300);
 		});
 
-		
+
 
 		// SHORTCUT buttons goes away if mouse is clicked outside of the area
 		$(document).mouseup(function(e) {
@@ -3548,10 +3551,10 @@ angular.module('app.maps').factory('SmartMapStyle', function ($q, $http, APP_CON
 
 
 angular.module('app.tables').controller('DatatablesCtrl', function(DTOptionsBuilder, DTColumnBuilder){
-
+console.log('DatatablesCtrl app.js-Controller');
 
     this.standardOptions = DTOptionsBuilder
-        .fromSource('api/tables/datatables.standard.json')
+        .fromSource('ttt/api/tables/datatables.standard.json')
          //Add Bootstrap compatibility
         .withDOM("<'dt-toolbar'<'col-xs-12 col-sm-6'f><'col-sm-6 col-xs-12 hidden-xs'l>r>" +
             "t" +
@@ -4367,7 +4370,7 @@ angular.module('app.ui').directive('smartJquiDialogLauncher', function () {
 
 angular.module('app.ui').directive('smartJquiDynamicTabs', function ($timeout) {
 
-	
+
 	function addDomEvents(element){
 
 		$('#tabs2').tabs();
@@ -4707,23 +4710,23 @@ angular.module('app.chat').factory('ChatApi', function ($q, $rootScope, User, $h
 
 });
 (function() {
-        
+
    'use strict';
 
     /*
     * SMARTCHAT PLUGIN ARRAYS & CONFIG
-    * Dependency: js/plugin/moment/moment.min.js 
-    *             js/plugin/cssemotions/jquery.cssemoticons.min.js 
+    * Dependency: js/plugin/moment/moment.min.js
+    *             js/plugin/cssemotions/jquery.cssemoticons.min.js
     *             js/smart-chat-ui/smart.chat.ui.js
-    * (DO NOT CHANGE) 
-    */ 
+    * (DO NOT CHANGE)
+    */
         var boxList = [],
         showList = [],
         nameList = [],
         idList = [];
     /*
     * Width of the chat boxes, and the gap inbetween in pixel (minus padding)
-    */ 
+    */
         var chatbox_config = {
             width: 200,
             gap: 35,
@@ -4953,7 +4956,7 @@ angular.module('app.chat').factory('ChatApi', function ($q, $rootScope, User, $h
             if (!self.options.hidden) {
                 uiChatbox.show();
             }
-            
+
             $(".ui-chatbox [rel=tooltip]").tooltip();
             //console.log("tooltip created");
         },
@@ -5050,7 +5053,7 @@ angular.module('app.chat').factory('ChatApi', function ($q, $rootScope, User, $h
       "[+=..]":  { cssClass: "no-rotate nintendo-controller" }
       //"OwO":  { cssClass: "no-rotate" }, // these emoticons overflow and look weird even if they're made even smaller, could probably fix this with some more css trickery
       //"O-O":  { cssClass: "no-rotate" },
-      //"O=)":    { cssClass: "small-emoticon" } 
+      //"O=)":    { cssClass: "small-emoticon" }
     }
 
     var specialRegex = new RegExp( '(\\' + escapeCharacters.join('|\\') + ')', 'g' );
@@ -5083,15 +5086,15 @@ angular.module('app.chat').factory('ChatApi', function ($q, $rootScope, User, $h
       var container = $(this);
       var cssClass = 'css-emoticon'
       if(opts.animate){ cssClass += ' un-transformed-emoticon animated-emoticon'; }
-      
+
       for( var emoticon in specialEmoticons ){
         var specialCssClass = cssClass + " " + specialEmoticons[emoticon].cssClass;
         container.html(container.html().replace(specialEmoticons[emoticon].regexp,"$1<span class='" + specialCssClass + "'>$2</span>"));
       }
       $(threeCharacterEmoticons).each(function(){
         container.html(container.html().replace(this,"$1<span class='" + cssClass + "'>$2</span>"));
-      });                                                          
-      $(twoCharacterEmoticons).each(function(){                    
+      });
+      $(twoCharacterEmoticons).each(function(){
         container.html(container.html().replace(this,"$1<span class='" + cssClass + " spaced-emoticon'>$2</span>"));
       });
       // fix emoticons that got matched more then once (where one emoticon is a subset of another emoticon), and thus got nested spans
@@ -5115,7 +5118,7 @@ angular.module('app.chat').factory('ChatApi', function ($q, $rootScope, User, $h
         var span = $(this);
         if(opts.animate){
           span.addClass('un-transformed-emoticon');
-          setTimeout(function(){span.replaceWith(span.text());}, opts.delay); 
+          setTimeout(function(){span.replaceWith(span.text());}, opts.delay);
         }else{
           span.replaceWith(span.text());
         }
@@ -5127,7 +5130,7 @@ angular.module('app.chat').factory('ChatApi', function ($q, $rootScope, User, $h
     })(jQuery);
 
     var chatboxManager = function () {
-        
+
     var init = function (options) {
         $.extend(chatbox_config, options)
     };
@@ -5228,7 +5231,7 @@ angular.module('app.chat').factory('ChatApi', function ($q, $rootScope, User, $h
 
 
                 chatboxManager.addBox(temp_chat_id, {
-                    // dest:"dest" + counter, 
+                    // dest:"dest" + counter,
                     // not used in demo
                     title: "username" + temp_chat_id,
                     first_name: fname,
@@ -5255,7 +5258,7 @@ angular.module('app.chat').factory('ChatApi', function ($q, $rootScope, User, $h
         }
     });
 
-})(); 
+})();
 "use strict";
 
 angular.module('app.chat').directive('chatUsers', function(ChatApi){
@@ -5349,7 +5352,7 @@ angular.module('app.chat').directive('chatWidget', function (ChatApi) {
                     } else {
                         console.log('Wat', todo, state);
                     }
-                    
+
                 }
             }).disableSelection();
 
@@ -8221,7 +8224,7 @@ angular.module('SmartAdmin.Layout').directive('smartDeviceDetect', function () {
             tElement.removeAttr('smart-device-detect data-smart-device-detect');
 
             var isMobile = (/iphone|ipad|ipod|android|blackberry|mini|windows\sce|palm/i.test(navigator.userAgent.toLowerCase()));
-            
+
             tElement.toggleClass('desktop-detected', !isMobile);
             tElement.toggleClass('mobile-detected', isMobile);
 
@@ -8312,7 +8315,7 @@ angular.module('SmartAdmin.Layout').directive('smartInclude', function () {
 'use strict';
 
 angular.module('SmartAdmin.Layout').directive('smartLayout', function ($rootScope, $timeout, $interval, $q, SmartCss, APP_CONFIG) {
-    
+
     var _debug = 0;
 
     function getDocHeight() {
@@ -8324,7 +8327,7 @@ angular.module('SmartAdmin.Layout').directive('smartLayout', function ($rootScop
         );
     }
 
-    var initialized = false, 
+    var initialized = false,
            initializedResolver = $q.defer();
     initializedResolver.promise.then(function () {
         initialized = true;
@@ -8548,7 +8551,7 @@ angular.module('SmartAdmin.Layout').directive('smartRouterAnimationWrap', functi
                         height: 'auto',
                         overflow: 'visible'
                     }).removeClass('active');
-                    
+
 
                     $(animateElementSelector).addClass('animated faster fadeInUp');
 
@@ -9203,7 +9206,7 @@ angular.module('SmartAdmin.Layout').factory('lazyScript', function($q, $http){
             el.src = scriptName;
             var x = document.getElementsByTagName('script')[0];
             x.parentNode.insertBefore(el, x);
-            
+
         }
         return cache[scriptName].promise;
 
@@ -9222,13 +9225,13 @@ angular.module('SmartAdmin.Layout').factory('lazyScript', function($q, $http){
                 dfd.resolve(scriptName);
             });
 
-            return dfd.promise; 
+            return dfd.promise;
 
         }
     }
     return {
         register: function (scripts) {
-            
+
             var dfd = $q.defer();
             var promises = [];
             if (angular.isString(scripts))
@@ -9836,7 +9839,7 @@ angular.module('SmartAdmin.Forms').directive('smartEditSummernote', function () 
             tElement.on('click', function(){
                 angular.element(tAttributes.smartEditSummernote).summernote({
                     focus : true
-                });  
+                });
             });
         }
     }
@@ -9885,7 +9888,7 @@ angular.module('SmartAdmin.Forms').directive('smartSummernoteEditor', function (
             }
 
             lazyScript.register('/js/smart/build/vendor.ui.js').then(function(){
-                tElement.summernote(options);                
+                tElement.summernote(options);
             });
         }
     }
@@ -10646,7 +10649,7 @@ angular.module('SmartAdmin.Forms').directive('smartMaskedInput', function(lazySc
 	            var options = {};
 	            if(tAttributes.maskPlaceholder) options.placeholder =  tAttributes.maskPlaceholder;
 	            tElement.mask(tAttributes.smartMaskedInput, options);
-        	})	            
+        	})
         }
     }
 });
@@ -10677,7 +10680,7 @@ angular.module('SmartAdmin.Forms').directive('smartNouislider', function ($parse
 
                 if(tAttributes.update) tElement.on('slide', function(){
                     $(tAttributes.update).text(JSON.stringify(tElement.val()));
-                });                
+                });
             })
         }
     }
@@ -10758,7 +10761,7 @@ angular.module('SmartAdmin.Forms').directive('smartUislider', function ($parse, 
             lazyScript.register('/js/smart/build/vendor.ui.js').then(function(){
 			    tElement.bootstrapSlider();
 
-			    $(tElement.data('bootstrapSlider').sliderElem).prepend(tElement);      	
+			    $(tElement.data('bootstrapSlider').sliderElem).prepend(tElement);
             })
 
         }
@@ -10770,16 +10773,15 @@ angular.module('SmartAdmin.Forms').directive('smartXeditable', function($timeout
 
   function link (scope, element, attrs, ngModel) {
 
-
     var defaults = {
       validate: function (value){
 //         console.log(attrs);
         gToolsxEdit(value, attrs.recordField, attrs.recordId, attrs.recordIdcontainer, attrs.recordTable);
       }
-      // display: function(value, srcData) {
-      //     ngModel.$setViewValue(value);
-      //     // scope.$apply();
-      // }
+//       ,display: function(value, srcData) {
+//           ngModel.$setViewValue(value);
+//           scope.$apply();
+//       }
     };
 
     var inited = false;
@@ -11266,7 +11268,7 @@ angular.module('SmartAdmin.Layout').directive('smartMenu', function ($state, $ro
     return {
         restrict: 'A',
         compile: function (element, attrs) {
-            
+
 
             function createItem(item, parent, level){
                 var li = $('<li />' ,{'ui-sref-active': "active"})
@@ -11285,7 +11287,7 @@ angular.module('SmartAdmin.Layout').directive('smartMenu', function ($state, $ro
                 }
                 if(item.title){
                     a.attr('title', item.title);
-                    if(level == 1){ 
+                    if(level == 1){
                         a.append(' <span class="menu-item-parent">' + item.title + '</span>');
                     } else {
                         a.append(' ' + item.title);
@@ -11300,9 +11302,9 @@ angular.module('SmartAdmin.Layout').directive('smartMenu', function ($state, $ro
                     _.forEach(item.items, function(child) {
                         createItem(child, ul, level+1);
                     })
-                } 
+                }
 
-                parent.append(li); 
+                parent.append(li);
             }
 
 
@@ -11313,14 +11315,14 @@ angular.module('SmartAdmin.Layout').directive('smartMenu', function ($state, $ro
                 _.forEach(res.data.items, function(item) {
                     createItem(item, ul, 1);
                 })
-                
+
                 var $scope = $rootScope.$new();
-                var html = $('<div>').append(ul).html(); 
+                var html = $('<div>').append(ul).html();
                 var linkingFunction = $compile(html);
-                
+
                 var _element = linkingFunction($scope);
 
-                element.replaceWith(_element);                
+                element.replaceWith(_element);
             })
         }
     }
@@ -11359,7 +11361,7 @@ angular.module('SmartAdmin.Layout').directive('jarvisWidget', function($rootScop
     }
 });
  "use strict";
- 
+
  angular.module('SmartAdmin.Layout').directive('widgetGrid', function ($rootScope, $compile, $q, $state, $timeout) {
 
     var jarvisWidgetsDefaults = {

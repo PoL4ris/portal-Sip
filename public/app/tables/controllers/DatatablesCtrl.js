@@ -4,7 +4,7 @@
 
 
 angular.module('app.tables').controller('DatatablesCtrl', function(DTOptionsBuilder, DTColumnBuilder){
-
+console.log('no use');
 
     this.standardOptions = DTOptionsBuilder
         .fromSource('api/tables/datatables.standard.json')

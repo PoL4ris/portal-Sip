@@ -52,8 +52,8 @@ angular.module('app.tables').config(function ($stateProvider) {
             resolve: {
                 scripts: function(lazyScript){
                     return lazyScript.register([
-                        'smartadmin-plugin/legacy/jqgrid/js/minified/jquery.jqGrid.min.js',
-                        'smartadmin-plugin/legacy/jqgrid/js/i18n/grid.locale-en.js'
+                        '/app/smartadmin-plugin/legacy/jqgrid/js/minified/jquery.jqGrid.min.js',
+                        '/app/smartadmin-plugin/legacy/jqgrid/js/i18n/grid.locale-en.js'
                     ])
 
                 }
