@@ -1,44 +1,45 @@
-<div class="col-lg-12" ng-controller="customerTicketHistoryController" ng-if="!stcFlag">
-  <!--{{ticketHistory}}-->
-  <div id="customer-view-0">
+<div jarvis-widget id="wid-id-3" data-widget-deletebutton="false" data-widget-editbutton="false" data-widget-custombutton="false" ng-controller="FormXeditableCtrl">
+  <header>
+    <span class="widget-icon"> <i class="fa fa-edit"></i> </span><h2>Tickets History</h2>
+  </header>
 
-    <div class="color-name-header btn-dark">
-      Tickets History:
-    </div>
-
-    <div ng-if="!ticketHistory">
-      <div class="loading-default animate-if"><img src="/img/default.gif" alt=""></div>
-    </div>
-
-    <div class="panel panel-default" ng-if="ticketHistory">
-      <table id="myTable" class="tablesorter table" >
-        <thead>
-        <tr><th>ID</th><th>Created</th><th>Reason</th><th>Details</th><th>Status</th><th>Update</th></tr>
-        </thead>
-        <tbody>
-          <tr ng-repeat="ticket in ticketHistory">
-          <!--<tr ng-repeat="ticket in ticketHistory.ticket_history" ng-controller="customerTicketHistoryData">-->
-            <td>{{ ticket.ticket_number }}</td>
-            <td>{{ ticket.created_at }}</td>
-            <td>{{ ticket.short_description }}</td>
-            <td ng-mouseover="showFullComment(ticket.id)" ng-mouseleave="hideFullComment(ticket.id)" style="position: relative;" ng-if="ticket.comment">
+  <div class="col-lg-12 tickets-history-table" ng-controller="customerTicketHistoryController">
+  <!--<div class="col-lg-12" ng-controller="customerTicketHistoryController" ng-if="!stcFlag">-->
+    <!--{{ticketHistory}}-->
+      <div ng-if="!ticketHistory">
+        <div class="loading-default animate-if"><img src="/img/default.gif" alt=""></div>
+      </div>
+      <div class="panel panel-default no-border" ng-if="ticketHistory">
+        <table id="myTable" class="tablesorter table" datatable="ng">
+          <thead>
+            <tr><th>ID</th><th>Created</th><th>Reason</th><th>Details</th><th>Status</th><th>Update</th></tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="ticket in ticketHistory">
+              <td>{{ ticket.ticket_number }}</td>
+              <td>{{ ticket.created_at }}</td>
+              <td>{{ ticket.short_reason }}</td>
+              <td ng-mouseover="showFullComment(ticket.id)"     style="position: relative;"
+                  ng-mouseleave="hideFullComment(ticket.id)"    ng-if="ticket.comment">
                   {{ ticket.comment | limitTo:letterLimit }}...
-                  <div id='ticket-{{ ticket.id }}' style="display: none;" class="ticket-comment-pop">{{ticket.comment}}</div>
-            </td>
-            <!--<td ng-mouseover="showFullComment(ticket.id)" ng-mouseleave="hideFullComment(ticket.id)" style="position: relative;" ng-if="ticketNotes.comment">{{ ticketNotes.comment | limitTo:letterLimit}}...</td>-->
-            <td ng-if="!ticket.comment"> No Comment </td>
-            <td>{{ ticket.status }}</td>
-            <td>{{ ticket.updated_at }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
+                <div id='ticket-{{ ticket.id }}' style="display: none;" class="ticket-comment-pop">{{ticket.comment}}</div>
+              </td>
+              <td ng-if="!ticket.comment"> No Comment </td>
+              <td>{{ ticket.status }}</td>
+              <td>{{ ticket.updated_at ? ticket.updated_at : 'ERROR' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
   </div>
-</div>
+
+<!--<div class="color-name-header" ng-if="stcFlag">-->
+  <!--Go to Customer Info.-->
+<!--</div>-->
 
 
 
-<div class="color-name-header" ng-if="stcFlag">
-  Go to Customer Info.
+
+
+
 </div>

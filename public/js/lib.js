@@ -346,42 +346,15 @@ app.controller('networkControllerTSort',      function (DTOptionsBuilder, DTColu
 });
 
 
+
+
+
 app.controller('customerControllerList',            function ($scope, $http){
   $http.get("getCustomerList")
     .then(function (response) {
       $scope.supportDataCustomer = response.data;
     });
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 app.controller('customerController',                function ($scope, $http){
 
   if ($scope.stcid)
@@ -392,29 +365,25 @@ app.controller('customerController',                function ($scope, $http){
     $scope.buscadorFlag = true;
   }
 
-
   $http.get("customersData", {params:{'id':$scope.idCustomer}})
     .then(function (response) {
       $scope.customerData = response.data;
-      console.log(response.data);
+      $scope.bld = $scope.customerData.address;
     });
-
   $http.get("getContactTypes", {params:{'id':$scope.idCustomer}})
     .then(function (response) {
       $scope.contactTypes = response.data;
     });
-
   $http.get("getTableData", {params:{'table':'reasons'}})
     .then(function (response) {
       $scope.newTicketData = response.data;
     });
 
-  $scope.clearSearch = function (){
+  $scope.clearSearch            = function (){
     this.searchCustomer = '';
     $scope.buscador();
   }
-
-  $scope.buscador = function() {
+  $scope.buscador               = function() {
 
     if(!this.searchCustomer)
     {
@@ -432,14 +401,12 @@ app.controller('customerController',                function ($scope, $http){
     return;
 
   }
-
-  $scope.getAddressItems = function (){
+  $scope.getAddressItems        = function (){
     $http.get("getAddress")
       .then(function (response) {
         $scope.addressData = response.data;
       });
   };
-
   $scope.getCustomerContactData = function (){
     $http.get("getCustomerContactData", {params:{'id':$scope.idCustomer}})
       .then(function (response) {
@@ -451,8 +418,10 @@ app.controller('customerController',                function ($scope, $http){
   $scope.checkboxModel = true;
   $scope.checkboxModelA = true;
   $scope.animationsEnabled = false;
+  $scope.currentServiceDisplay = '';
 
-  $scope.submitForm = function (table) {
+
+  $scope.submitForm             = function (table) {
     console.log('este' + table);
     return;
     var objects = $('#'+table+'-insert-form').serializeArray();
@@ -490,8 +459,7 @@ app.controller('customerController',                function ($scope, $http){
 //     notify({ message: 'Data inserted!', templateUrl:'/views/notify.html'} );
 
   };
-
-  $scope.submitNewTicketForm = function (){
+  $scope.submitNewTicketForm    = function (){
 
     var infoData = getFormValues('new-ct-form');
     infoData['id_customers'] = $scope.customerData.id;
@@ -508,12 +476,7 @@ app.controller('customerController',                function ($scope, $http){
           });
       });
   };
-
-
-
-
-
-  $scope.validate = function(value, table, field) {
+  $scope.validate               = function(value, table, field) {
     var data = {};
     data[field] = value;
     data['id_customers'] = $scope.customerData.id;
@@ -523,8 +486,7 @@ app.controller('customerController',                function ($scope, $http){
         console.log('OK');
       });
   }
-
-  $scope.customerEditMode = function (){
+  $scope.customerEditMode       = function (){
     if ( $scope.checkboxModel == false)
     {
       $('.editable-text').fadeIn('slow');
@@ -536,10 +498,8 @@ app.controller('customerController',                function ($scope, $http){
       $('.editable-text').css('display', 'none');
     }
   };
-
   $scope.customerEditMode();
-
-  $scope.contactEditMode = function (){
+  $scope.contactEditMode        = function (){
     if ( $scope.checkboxModelA == false)
     {
       console.log($scope.checkboxModelA);
@@ -555,8 +515,7 @@ app.controller('customerController',                function ($scope, $http){
       $scope.checkboxModelA = false;
     }
   };
-
-  $scope.updateContactInfo = function (value, id){
+  $scope.updateContactInfo      = function (value, id){
     var data = {};
     data['id']    = id;
     data['value'] = value;
@@ -565,8 +524,7 @@ app.controller('customerController',                function ($scope, $http){
         console.log(response.data);
       });
   };
-
-  $scope.open = function (id, type){
+  $scope.open                   = function (id, type){
 
     $scope.customerId = id;
     $scope.type = type;
@@ -597,9 +555,7 @@ app.controller('customerController',                function ($scope, $http){
 
 
   };
-
-
-  $scope.insertCustomerContact = function (){
+  $scope.insertCustomerContact  = function (){
 
     var infoData = getFormValues('new-cct-form');
     infoData['id_customers'] = $scope.customerData.id;
@@ -616,16 +572,382 @@ app.controller('customerController',                function ($scope, $http){
     $('#new-bpv-form').trigger("reset");
   }
 
+  $scope.addNewService          = function () {
 
+    var mode = $scope.customerData.servicesMode;
 
-console.log('----------------------------------------------------------------------------------------------');
-console.log($scope);
-console.log('----------------------------------------------------------------------------------------------');
+    //Mode updateService customerId = oldIdProduct
+
+    if (mode == 'updateService')
+    {
+      $http.get("updateCustomerServices", {params:{'id' : $scope.idCustomer,'newId' : $scope.currentServiceDisplay.id, 'oldId' : $scope.customerData.serviceTmpId}})
+        .then(function (response) {
+          console.log("Service Added / Updated::OK");
+          $scope.availableServices();
+        });
+        //$scope.cancel();
+      $('#myModalService').modal('toggle');
+    }
+    else
+    {
+      $http.get("insertCustomerService", {params:{'idCustomer':$scope.idCustomer,'idProduct' :$scope.currentServiceDisplay.id}})
+        .then(function (response) {
+          console.log("Service Added / Updated::OK");
+          $scope.availableServices();
+        });
+        //$scope.cancel();
+      $('#myModalService').modal('toggle');
+    }
+  }
+  $scope.setModeType            = function (modeType){
+    $scope.customerData.servicesMode = modeType;
+    $scope.customerData.serviceTmpId = this.service.id;
+  }
+  $scope.serviceDataDisplay     = function(option) {
+    if(option)
+      $scope.currentServiceDisplay = this.customerProduct.product;
+    else
+      $scope.currentServiceDisplay = this.selectedItem;
+  };
+  $scope.availableServices      = function(){
+    $http.get("getCustomerServices", {params:{'id':$scope.idCustomer}})
+      .then(function (response) {
+        $scope.customerData.customerServices = response.data;
+      });
+  }
+
 
 
 });
 
 
+
+
+
+app.controller('customerTicketHistoryController',   function ($scope, $http){
+  $http.get("getTicketHistory", {params:{'id':$scope.idCustomer}})
+    .then(function (response) {
+      $scope.ticketHistory = response.data;
+      $scope.letterLimit = 20;
+    });
+  $scope.showFullComment = function(id) {
+    $('#ticket-' + id).fadeIn('slow');
+  }
+  $scope.hideFullComment = function(id) {
+    $('#ticket-' + id).fadeOut('fast');
+  }
+});
+app.controller('customerBillingHistoryController',  function ($scope, $http){
+
+
+  if(!$scope.billingHistory)
+    $http.get("getBillingHistory", {params:{'id':$scope.idCustomer}})
+      .then(function (response) {
+        $scope.billingHistory = response.data;
+      });
+
+  $scope.setInvoiceData = function (){
+    $scope.customerData['prueba'] = this.billing;
+  };
+
+
+
+});
+app.controller('customerNetworkController',         function ($scope, $http){
+
+  $http.get("getCustomerNetwork", {params:{'id':$scope.idCustomer}})
+    .then(function (response) {
+      $scope.customerNetwork = response.data[0];
+    });
+
+  $scope.networkServices = function (service) {
+    networkServices(service);
+  }
+  function networkServices (service) {
+
+    var routes = ['networkCheckStatus',
+                  'netwokAdvancedInfo',
+                  'networkAdvanceIPs',
+                  'networkRecyclePort',
+                  '4',
+                  'networkSignUp',
+                  'networkActivate'];
+
+    $('.network-functions').addClass('disabled');
+
+    var service = service;
+    var portID = $scope.customerNetwork.port_number;
+    var customerID = $scope.customerData.id;
+    var dataSend = {'portid':portID, 'id':customerID};
+
+    //AJAX request
+    $.ajax(
+      {type:"GET",
+        url:"/" + routes[service],
+        data:dataSend,
+        success: function(data)
+        {
+          if (data == 'ERROR')
+            alert(data);
+
+          $.each(data,function(i, item) {
+            $('#' + i).html(item);
+          });
+//           $('#basic-info-net').notify('OK');
+
+          service = 1;
+          $.ajax(
+            {type:"GET",
+              url:"/" + routes[service],
+              data:dataSend,
+              success: function(data)
+              {
+                $.each(data,function(i, item)
+                {
+                  $('#' + i).html(item);
+                });
+              }
+            }
+          );
+
+          service = 2;
+          $.ajax(
+            {type:"GET",
+              url:"/" + routes[service],
+              data:dataSend,
+              success: function(data)
+              {
+
+//                 $('#IPs').notify('IPs Array.');
+                $.smallBox({
+                  title: "IPs Array.",
+                  content: "<i class='fa fa-clock-o'></i> <i>2 seconds ago...</i>",
+                  color: "#739E73",
+                  iconSmall: "fa fa-thumbs-up bounce animated",
+                  timeout: 6000
+                });
+
+                $('.network-functions').removeClass('disabled');
+
+//                   $.each(data,function(i, item)
+//                   {
+//                     $('#' + i).html(item);
+//                   });
+
+              }
+            }
+          );
+
+        }
+      }
+    );
+
+    if (service == 5) {
+      $('.access-type-net').removeClass('btn-danger ');
+      $('.access-type-net').addClass('btn-info');
+      $('.access-type-net').html('Activate');
+      $('.access-type-net').attr('type','6');
+      $('#acces-network-id').html('signup');
+    }
+    else if ( service == 6 ) {
+      $('.access-type-net').removeClass('btn-info')
+      $('.access-type-net').addClass('btn-danger')
+      $('.access-type-net').html('Send to Signup');
+      $('.access-type-net').attr('type','5');
+      $('#acces-network-id').html('yes');
+    }
+
+  };
+
+  //PENDING
+  function servicesInfoUpdate (serviceID, serviceStatus, routeID) {
+    var routes = ['updateCustomerServiceInfo'];
+
+//   $('.network-functions').addClass('disabled');
+
+    //AJAX request
+    $.ajax(
+      {type:"GET",
+        url:"/" + routes[routeID],
+        data:{'serviceid':serviceID, 'status':serviceStatus},
+        success: function(data)
+        {
+          if (data == 'ERROR')
+            alert(data);
+
+          if (serviceStatus == 'active')
+          {
+            $('#serviceno-' + serviceID).addClass('disabled ital');
+            $('#serviceinfo-status-' + serviceID).html('disabled');
+            $('#xservice-btn-id-' + serviceID).attr('displaystatus','disabled');
+            $('#xservice-btn-id-' + serviceID).addClass('btn-success fa-check');
+            $('#xservice-btn-id-' + serviceID).removeClass('btn-dark');
+            $('#xservice-btn-id-' + serviceID).removeClass('fa-times');
+          }
+          else
+          {
+            $('#serviceno-' + serviceID).removeClass('disabled ital');
+            $('#serviceinfo-status-' + serviceID).html('active');
+            $('#xservice-btn-id-' + serviceID).attr('displaystatus','active');
+            $('#xservice-btn-id-' + serviceID).addClass('btn-dark fa-times');
+            $('#xservice-btn-id-' + serviceID).removeClass('btn-success');
+            $('#xservice-btn-id-' + serviceID).removeClass('fa-check');
+          }
+
+        }
+      }
+    );
+  };
+
+  $scope.smartModEg1 =  function () {
+
+    var service       = $('#rport').attr('type');
+    var portID        = $('#rport').attr('portid');
+    var serviceID     = $('#rport').attr('serviceid');
+    var serviceStatus = $('#rport').attr('displaystatus');
+    var routeID       = $('#rport').attr('route');
+
+
+
+    $.SmartMessageBox({
+      title: "Please Confirm Your Action!",
+      content: "Once you click Yes, you need to wait the process to finish.",
+      buttons: '[No][Yes]'
+    }, function (ButtonPressed) {
+      if (ButtonPressed === "Yes") {
+
+        if (portID)
+          networkServices(service);
+        else if(serviceID)
+          servicesInfoUpdate(serviceID, serviceStatus, routeID);
+
+      }
+      if (ButtonPressed === "No") {
+
+        console.log('dijo que no');
+
+        $.smallBox({
+          title: "Callback function",
+          content: "<i class='fa fa-clock-o'></i> <i>You pressed No...</i>",
+          color: "#C46A69",
+          iconSmall: "fa fa-times fa-2x fadeInRight animated",
+          timeout: 4000
+        });
+      }
+
+    });
+  };
+
+});
+app.controller('customerBuildingController',        function ($scope, $http){
+
+console.log($scope.customerData);
+
+  console.log('this is Entramos');
+
+  if($scope.customerData)
+  {
+    $http.get("buildings/" + $scope.customerData.address.id_buildings)
+      .then(function (response) {
+        $scope.bld = response.data;
+      });
+  }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+app.controller('customerServicesController',        function ($scope, $http){
+
+  $http.get("getCustomerServices", {params:{'id':$scope.idCustomer}})
+    .then(function (response) {
+      $scope.customerData.customerServices = response.data;
+    });
+
+
+  $http.get("getAvailableServices", {params:{'id':$scope.idCustomer}})
+    .then(function (response) {
+      $scope.customerData.availableServices = response.data;
+    });
+
+
+
+  $scope.cSrvCrlFun = function (){
+    $http.get("getCustomerServices", {params:{'id':$scope.customerData.id}})
+      .then(function (response) {
+        $scope.customerServices = response.data;
+      });
+  }
+  $scope.showConfirm =  function (idProduct, status) {
+
+    $.SmartMessageBox({
+      title: "Please Confirm Your Action!",
+      content: 'Would you like to ' + (status == 'disable' ? 'cancel' : 'activate') + ' this service?',
+      buttons: '[No][Yes]'
+    }, function (ButtonPressed) {
+      if (ButtonPressed === "Yes") {
+
+        if (status == 'disable')
+          $scope.disableService(idProduct);
+        else
+          $scope.activeService(idProduct);
+
+      }
+      if (ButtonPressed === "No") {
+
+        console.log('dijo que no');
+
+        $.smallBox({
+          title: "Callback function",
+          content: "<i class='fa fa-clock-o'></i> <i>You pressed No...</i>",
+          color: "#C46A69",
+          iconSmall: "fa fa-times fa-2x fadeInRight animated",
+          timeout: 4000
+        });
+      }
+
+    });
+  };
+  $scope.disableService = function (id){
+    $http.get("disableCustomerServices", {params:{'id':$scope.idCustomer, 'idService':id}})
+      .then(function (response) {
+        $scope.customerServices = response.data;
+        $scope.availableServices();
+      });
+  }
+  $scope.activeService = function (id){
+    $http.get("activeCustomerServices", {params:{'id':$scope.idCustomer, 'idService':id}})
+      .then(function (response) {
+        $scope.customerServices = response.data;
+        $scope.availableServices();
+      });
+  }
+
+});
+app.controller('serviceProductController',          function ($scope, $http){
+
+  $http.get("getCustomerProduct", {params:{'id':$scope.service.id}})
+    .then(function (response) {
+
+      $scope.customerProduct = response.data;
+    });
+
+  $http.get("getCustomerProductType", {params:{'id':$scope.service.id}})
+    .then(function (response) {
+      $scope.customerProductStatus = response.data;
+    });
+
+});
 
 
 

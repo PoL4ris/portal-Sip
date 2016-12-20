@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\NetworkNodes;
+use App\Models\Building\Building;
+use App\Models\Address;
 use App\Models\Ticket;
 use App\Models\Reason;
 
@@ -48,11 +50,9 @@ class Customer extends Model
     {
         return $this->belongsTo('App\Models\Product', 'id_customers', 'id', 'App\Models\CustomerProduct');
     }
-    public function building()
-    {
-        return $this->belongsTo('App\Models\Address', 'id', 'id_buildings', 'App\Models\Building\Building');
+    public function building() {
+      return $this->belongsTo('App\Models\Address', 'id');
     }
-
     public function getNetworkNodes($id = null)
     {
         if($id == null){

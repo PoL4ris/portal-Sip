@@ -520,7 +520,36 @@ app.controller('customerTicketHistoryController',   function ($scope, $http){
     warpol('#ticket-' + id).fadeOut('fast');
   }
 });
+//DONE
+app.controller('customerBillingHistoryController',  function ($scope, $http, $uibModal, $log){
 
+  $http.get("getBillingHistory", {params:{'id':$scope.customerData.id}})
+    .then(function (response) {
+      $scope.billingHistory = response.data;
+    });
+
+  $scope.open = function (){
+    $scope.customerId = $scope.customerData.id;
+
+    var modalInstance = $uibModal.open(
+      {
+        animation: $scope.animationsEnabled,
+        templateUrl: 'seeInvoiceById.html',
+        controller: 'invoiceController',
+        size: 'md',
+        resolve: {
+          customerId: function () {
+            return $scope.customerId;
+          }
+        }
+      });
+
+    modalInstance.result.then(function () {}, function () {
+      $log.info('Modal dismissed at: ' + new Date());
+    });
+
+  };
+});
 
 
 app.controller('customerControllerList',            function ($scope, $http){
@@ -1264,35 +1293,7 @@ app.controller('usrServiceController',              function ($scope, $http, $ui
 //       $scope.ticketReason = response.data;
 //     });
 // });
-app.controller('customerBillingHistoryController',  function ($scope, $http, $uibModal, $log){
 
-  $http.get("getBillingHistory", {params:{'id':$scope.customerData.id}})
-    .then(function (response) {
-      $scope.billingHistory = response.data;
-    });
-
-  $scope.open = function (){
-    $scope.customerId = $scope.customerData.id;
-
-    var modalInstance = $uibModal.open(
-      {
-        animation: $scope.animationsEnabled,
-        templateUrl: 'seeInvoiceById.html',
-        controller: 'invoiceController',
-        size: 'md',
-        resolve: {
-          customerId: function () {
-            return $scope.customerId;
-          }
-        }
-      });
-
-    modalInstance.result.then(function () {}, function () {
-      $log.info('Modal dismissed at: ' + new Date());
-    });
-
-  };
-});
 app.controller('invoiceController', function ($scope, $http, customerId, notify, $uibModalInstance){
   console.log('invoiceController');
 });

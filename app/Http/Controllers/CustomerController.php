@@ -138,7 +138,7 @@ class CustomerController extends Controller
   }
   public function customersData(Request $request)
   {
-    return Customer::with('address', 'contact', 'type')->find($request->id);
+    return Customer::with('address', 'contact', 'type','address.buildings', 'address.buildings.neighborhood')->find($request->id);
   }
   public function getCustomerContactData(Request $request)
   {
@@ -383,15 +383,25 @@ class CustomerController extends Controller
   }
   public function updateCustomerServices(Request $request){
 
+    /*
+     * ID Customer
+     * OldId RecordId
+     * NewId to update on record.
+     *
+     * Status 4 = Active
+    */
+
     $when = $this->getTimeToAdd(Product::find($request->newId)->frequency);
     $expires = date("Y-m-d H:i:s", strtotime('first day of next ' . $when));
 
-    $updateService = CustomerProduct::find($request->id);
+    $updateService = CustomerProduct::find($request->oldId);
     $updateService->id_products = $request->newId;
     $updateService->signed_up = date("Y-m-d H:i:s");
     $updateService->expires = $expires;
     $updateService->id_users = Auth::user()->id;
+    $updateService->id_status = 4;
     $updateService->save();
+
   }
   public function insertContactInfo(Request $request){
 
@@ -404,15 +414,6 @@ class CustomerController extends Controller
     return Customer::with('contacts')->find($request->customerId);
 
   }
-
-
-
-
-
-
-
-
-
 
 
   public function customers(Request $request)

@@ -315,6 +315,7 @@ class NetworkController extends Controller
 
     print '<pre>';
     print_r($customerNetData);
+    return 'OK';
     die();
 
     $servicePort = dataServicePort::with('networkNode')

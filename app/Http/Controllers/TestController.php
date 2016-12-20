@@ -16,6 +16,7 @@ use App\Models\Product;
 use App\Models\NetworkNode;
 use App\Models\ContactType;
 use App\Models\PaymentMethod;
+use App\Http\Controllers\CustomerController;
 
 
 
@@ -114,14 +115,22 @@ class TestController extends Controller
 
   public function supportTest()
   {
-
-
-
     print '<pre>';
-    print_r(
-      Building::with('properties')
-      ->find(28)
-    );
+
+
+
+
+
+//    $customerControllerVar = new CustomerController();
+//    $customerControllerData = $customerControllerVar->customersData();
+//
+//    print '<pre>';
+//    print_r($customerControllerData);
+//    die();
+
+    $coso = CustomerProduct::where('id_customers',501)->get()->toArray();
+
+    print_r($coso);
     die();
 
 
@@ -129,39 +138,26 @@ class TestController extends Controller
 
 
 
-die();
-    /**
-     * Add new card
-     */
+
+    $coso = Customer::with('address', 'contact', 'type','address.buildings', 'address.buildings.neighborhood')->find(13579)->toarray();
+
+    $queries = DB::getQueryLog();
+    $last_query = end($queries);
+
+
+//    print_r($last_query);
+    print '----------------------------------------------<br>';
 
 
 
-//     print '<pre>';
-//     print_r('this is polaris rock');
-//     die();
 
-    $pm = new PaymentMethod;
-    $pm->id_customers = '13579';
-    $pm->id_address = '33';
-    $pm->types = 'Credit Card';
-    $pm->card_type = 'VS';
-    $pm->account_number = '4000000000000002';
-    $pm->CCscode = '123';
-    $pm->exp_month = '12';
-    $pm->exp_year = '2019';
-    $pm->billing_phone = '312-600-3903';
-    $result = $pm->save();
+      print_r(
+                $coso
+      );
 
-    print '<pre>';
-    print_r($pm);
+
+
     die();
-
-
-
-//        $queries = DB::getQueryLog();
-//        $last_query = end($queries);
-//        dd($last_query);
-
   }
 
   public function cleanView(){

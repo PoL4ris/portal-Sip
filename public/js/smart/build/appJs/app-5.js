@@ -33,7 +33,6 @@ $.widget("ui.dialog", $.extend({}, $.ui.dialog.prototype, {
 
 
 angular.module('app.ui').directive('smartJquiDialog', function () {
-
   var optionAttributes = ['autoOpen', 'modal', 'width', 'resizable'];
 
   var defaults = {

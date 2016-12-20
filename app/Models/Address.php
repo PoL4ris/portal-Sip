@@ -17,4 +17,9 @@ class Address extends Model
     public function ticket() {
       return $this->belongsTo('App\Models\Ticket', 'id_customers', 'id_customers', 'App\Models\Customer');
     }
+
+    public function buildings() {
+
+        return $this->belongsTo('App\Models\Building\Building', 'id_buildings');
+      }
 }

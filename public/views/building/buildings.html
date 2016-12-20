@@ -13,14 +13,14 @@
               </ol>
               <div class="carousel-inner">
                 <div class="item active">
-                  <img src="/img/buildings/{{bld.img_building}}" alt="">
+                  <img src="/img/buildings/{{bld.img_building?bld.img_building:bld.buildings.img_building}}" alt="">
                 </div>
               </div>
             </div>
           </div>
         </div>
         <div class="col-md-7 col-sm-12 col-xs-12">
-          <h2 class="name">{{bld.name}}</h2>
+          <h2 class="name">{{bld.name?bld.name:bld.buildings.name}}</h2>
           <hr>
           <div class="row">
             <div class="col-sm-6 bld-box-info">
@@ -35,15 +35,15 @@
               <p>Legal Builder</p>
             </div>
             <div class="col-sm-6 bld-box-info">
-              <p>{{bld.name}}</p>
-              <p>{{bld.alias}}</p>
-              <p>{{bld.neighborhood.name}}</p>
-              <p>{{bld.code}}</p>
-              <p>{{bld.year_built}}</p>
-              <p>{{bld.units}}</p>
-              <p>{{bld.floors}}</p>
-              <p>{{bld.type}}</p>
-              <p>{{bld.legal_name}}</p>
+              <p>{{bld.name?bld.name:bld.buildings.name}}</p>
+              <p>{{bld.alias?bld.alias:bld.buildings.alias}}</p>
+              <p>{{bld.neighborhood.name?bld.neighborhood.name:bld.buildings.neighborhood.name}}</p>
+              <p>{{bld.code?bld.code:bld.buildings.code}}</p>
+              <p>{{bld.year_built?bld.year_built:bld.buildings.year_built}}</p>
+              <p>{{bld.units?bld.units:bld.buildings.units}}</p>
+              <p>{{bld.floors?bld.floors:bld.buildings.floors}}</p>
+              <p>{{bld.type?bld.type:bld.buildings.type}}</p>
+              <p>{{bld.legal_name?bld.legal_name:bld.buildings.legal_name}}</p>
             </div>
           </div>
         </div>

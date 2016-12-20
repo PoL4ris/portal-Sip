@@ -25,5 +25,4 @@ class Building extends Model
   public function products() {
     return $this->hasMany('App\Models\BuildingProduct', 'id_buildings');
   }
-
 }
