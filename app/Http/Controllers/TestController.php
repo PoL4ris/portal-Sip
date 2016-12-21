@@ -115,29 +115,22 @@ class TestController extends Controller
 
   public function supportTest()
   {
+
     print '<pre>';
 
+    //    $customerControllerVar = new CustomerController();
+    //    $customerControllerData = $customerControllerVar->customersData();
+    //
+    //    print '<pre>';
+    //    print_r($customerControllerData);
+    //    die();
 
-
-
-
-//    $customerControllerVar = new CustomerController();
-//    $customerControllerData = $customerControllerVar->customersData();
-//
-//    print '<pre>';
-//    print_r($customerControllerData);
-//    die();
+    //    print_r($last_query);
 
     $coso = CustomerProduct::where('id_customers',501)->get()->toArray();
 
     print_r($coso);
     die();
-
-
-
-
-
-
 
     $coso = Customer::with('address', 'contact', 'type','address.buildings', 'address.buildings.neighborhood')->find(13579)->toarray();
 
@@ -145,19 +138,19 @@ class TestController extends Controller
     $last_query = end($queries);
 
 
-//    print_r($last_query);
+    //    print_r($last_query);
+
+
     print '----------------------------------------------<br>';
 
-
-
-
-      print_r(
-                $coso
-      );
+    print_r(
+      $coso
+    );
 
 
 
     die();
+
   }
 
   public function cleanView(){

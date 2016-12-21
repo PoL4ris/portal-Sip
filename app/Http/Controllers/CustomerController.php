@@ -222,22 +222,17 @@ class CustomerController extends Controller
     return $customer->getNetworkNodes($request->id);
 
     return NetworkNode::join('ports', 'ports.id_network_nodes', '=', 'network_nodes.id')
-                        ->join('customers', 'ports.id_customers', '=', 'customers.id')
-                        ->where('ports.id_customers', '=', $request->id)
-                        ->select('*')
-                        ->get();
+                      ->join('customers', 'ports.id_customers', '=', 'customers.id')
+                      ->where('ports.id_customers', '=', $request->id)
+                      ->select('*')
+                      ->get();
 
-//
 //
 //    print_r($warp);die();
 //
-//
 //    $data = $request->all();
 //
-//
-//
 //    $port = $this->getPortID($request->id);
-//
 //
 //    $networkControllerInfo = new NetworkController();
 //    $networkData = $networkControllerInfo->getCustomerConnectionInfo($port);
@@ -315,21 +310,21 @@ class CustomerController extends Controller
 
     /*
      * Status
-     * 3=active
-     * 4=disable
-     * 5=new
+     * 3 = active
+     * 4 = disable
+     * 5 = new
     */
 
     $when = $this->getTimeToAdd(Product::find($request->idProduct)->frequency);
     $expires = date("Y-m-d H:i:s", strtotime('first day of next ' . $when));
-    $data = array ('id_customers' =>  $request->idCustomer,
-                   'id_products'  =>  $request->idProduct,
-                   'id_status'    =>  3,
-                   'signed_up'    => date("Y-m-d H:i:s"),
-                   'expires'      => $expires,
-                   'id_users'     => Auth::user()->id,
-                   'created_at'   => date("Y-m-d H:i:s"),
-                   'updated_at'   => date("Y-m-d H:i:s")
+    $data = array ('id_customers'   => $request->idCustomer,
+                   'id_products'    => $request->idProduct,
+                   'id_status'      => 3,
+                   'signed_up'      => date("Y-m-d H:i:s"),
+                   'expires'        => $expires,
+                   'id_users'       => Auth::user()->id,
+                   'created_at'     => date("Y-m-d H:i:s"),
+                   'updated_at'     => date("Y-m-d H:i:s")
                    );
 
     CustomerProduct::insert($data);
@@ -340,11 +335,11 @@ class CustomerController extends Controller
   }
   public function getTimeToAdd($type){
 
-    $timeToAdd = array('annual'   =>'first day of next year',
-                       'monthly'  =>'first day of next month',
-                       'onetime'  =>'first day of next month',
-                       'Included'  =>'first day of next month',
-                       'included' =>'first day of next month'
+    $timeToAdd = array('annual'    => 'first day of next year',
+                       'monthly'   => 'first day of next month',
+                       'onetime'   => 'first day of next month',
+                       'Included'  => 'first day of next month',
+                       'included'  => 'first day of next month'
                        );
     return $timeToAdd[$type];
   }
@@ -352,9 +347,9 @@ class CustomerController extends Controller
   {
   /*
    * Status
-   * 3=active
-   * 4=disable
-   * 5=new
+   * 3 = active
+   * 4 = disable
+   * 5 = new
   */
 
     $activeService = CustomerProduct::find($request->idService);
@@ -363,15 +358,14 @@ class CustomerController extends Controller
 
     return $this->getCustomerServices($request);
 
-
   }
   public function activeCustomerServices(Request $request)
   {
   /*
    * Status
-   * 3=active
-   * 4=disable
-   * 5=new
+   * 3 = active
+   * 4 = disable
+   * 5 = new
   */
 
     $activeService = CustomerProduct::find($request->idService);
@@ -405,16 +399,14 @@ class CustomerController extends Controller
   }
   public function insertContactInfo(Request $request){
 
-
     $data = array('id_customers' => $request->customerId,
                   'id_types'     => $request->typeId,
                   'value'        => $request->contactInfoVal);
 
     Contact::insert($data);
+
     return Customer::with('contacts')->find($request->customerId);
-
   }
-
 
   public function customers(Request $request)
   {
