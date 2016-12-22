@@ -33,6 +33,7 @@
   <!-- SILVERIP CSS -->
   <link rel="stylesheet" type="text/css" media="screen" href="/css/style.css">
   <link rel="stylesheet" type="text/css" media="screen" href="/css/buildings.css">
+  <link rel="stylesheet" type="text/css" media="screen" href="/css/calendar.css">
 
   <!-- #FAVICONS -->
   <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
@@ -126,6 +127,7 @@ Possible attributes
 
 <script src="/js/main.js"></script>
 <script src="/js/lib.js"></script>
+<script src="/js/calendar.js"></script>
 
 
 </body>

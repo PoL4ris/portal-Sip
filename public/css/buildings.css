@@ -2,6 +2,14 @@
   max-height: 700px;
   overflow: auto !important;
 }
+.bld-list p{
+  cursor: pointer;
+}
+.bld-list p:hover{
+  opacity: .7;
+  color:black;
+
+}
 .type-ico {
   border-radius: 2px;
   color: white;

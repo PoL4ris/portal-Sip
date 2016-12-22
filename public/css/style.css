@@ -50,6 +50,12 @@
 .b-r-ddd{
   border-right:1px solid #ddd;
 }
+.float-left{
+  float: left;
+}
+.float-right{
+  float: right;
+}
 .label-form-align{
   position: relative;
   top:7px;

@@ -1,11 +1,11 @@
-app.controller('menuController',              function($scope, $http){
+app.controller('menuController',                    function($scope, $http){
   $http.get('/menumaker').then(function (data){
     $scope.SiteMenu = data.data;
   }), function (error){
     alert('Error');
   }
 });
-app.controller('buildingCtl',                 function($scope, $http) {
+app.controller('buildingCtl',                       function($scope, $http) {
 
   if (!$scope.sbid) {
     $scope.SiteMenu = [];
@@ -204,13 +204,13 @@ app.controller('buildingCtl',                 function($scope, $http) {
 
   };
 })
-.directive('getBuildingPropValues',           function (){
+.directive('getBuildingPropValues',                 function (){
   return function (scope){
     scope.getBuildingPropertyValues();
   }
 
 })
-.directive('buildingContactForm',             function(){
+.directive('buildingContactForm',                   function(){
 
 
   return {
@@ -276,7 +276,7 @@ app.controller('buildingCtl',                 function($scope, $http) {
   }
 })
 
-app.controller('networkController',           function ($scope, $http){
+app.controller('networkController',                 function ($scope, $http){
 
   $http.get("networkdash")
     .then(function (response) {
@@ -332,7 +332,7 @@ app.controller('networkController',           function ($scope, $http){
   };
 
 });
-app.controller('networkControllerTSort',      function (DTOptionsBuilder, DTColumnDefBuilder, $scope){
+app.controller('networkControllerTSort',            function (DTOptionsBuilder, DTColumnDefBuilder, $scope){
   var vm = this;
   vm.persons = [];
   vm.dtOptions = DTOptionsBuilder.newOptions().withPaginationType('full_numbers').withDisplayLength(25).withOption('order', [0, 'desc']);
@@ -344,9 +344,6 @@ app.controller('networkControllerTSort',      function (DTOptionsBuilder, DTColu
 
   vm.persons = $scope.networkData;
 });
-
-
-
 
 
 app.controller('customerControllerList',            function ($scope, $http){
@@ -379,11 +376,16 @@ app.controller('customerController',                function ($scope, $http){
       $scope.newTicketData = response.data;
     });
 
-  $scope.clearSearch            = function (){
+  $scope.checkboxModel = true;
+  $scope.checkboxModelA = true;
+  $scope.animationsEnabled = false;
+  $scope.currentServiceDisplay = '';
+
+  $scope.clearSearch                = function (){
     this.searchCustomer = '';
     $scope.buscador();
   }
-  $scope.buscador               = function() {
+  $scope.buscador                   = function() {
 
     if(!this.searchCustomer)
     {
@@ -401,27 +403,20 @@ app.controller('customerController',                function ($scope, $http){
     return;
 
   }
-  $scope.getAddressItems        = function (){
+  $scope.getAddressItems            = function (){
     $http.get("getAddress")
       .then(function (response) {
         $scope.addressData = response.data;
       });
   };
-  $scope.getCustomerContactData = function (){
+  $scope.getCustomerContactData     = function (){
     $http.get("getCustomerContactData", {params:{'id':$scope.idCustomer}})
       .then(function (response) {
         $scope.customerContactsData = response.data.contacts;
       });
   }
   $scope.getCustomerContactData();
-
-  $scope.checkboxModel = true;
-  $scope.checkboxModelA = true;
-  $scope.animationsEnabled = false;
-  $scope.currentServiceDisplay = '';
-
-
-  $scope.submitForm             = function (table) {
+  $scope.submitForm                 = function (table) {
     console.log('este' + table);
     return;
     var objects = $('#'+table+'-insert-form').serializeArray();
@@ -459,7 +454,7 @@ app.controller('customerController',                function ($scope, $http){
 //     notify({ message: 'Data inserted!', templateUrl:'/views/notify.html'} );
 
   };
-  $scope.submitNewTicketForm    = function (){
+  $scope.submitNewTicketForm        = function (){
 
     var infoData = getFormValues('new-ct-form');
     infoData['id_customers'] = $scope.customerData.id;
@@ -476,7 +471,7 @@ app.controller('customerController',                function ($scope, $http){
           });
       });
   };
-  $scope.validate               = function(value, table, field) {
+  $scope.validate                   = function(value, table, field) {
     var data = {};
     data[field] = value;
     data['id_customers'] = $scope.customerData.id;
@@ -486,7 +481,7 @@ app.controller('customerController',                function ($scope, $http){
         console.log('OK');
       });
   }
-  $scope.customerEditMode       = function (){
+  $scope.customerEditMode           = function (){
     if ( $scope.checkboxModel == false)
     {
       $('.editable-text').fadeIn('slow');
@@ -499,7 +494,7 @@ app.controller('customerController',                function ($scope, $http){
     }
   };
   $scope.customerEditMode();
-  $scope.contactEditMode        = function (){
+  $scope.contactEditMode            = function (){
     if ( $scope.checkboxModelA == false)
     {
       console.log($scope.checkboxModelA);
@@ -515,7 +510,7 @@ app.controller('customerController',                function ($scope, $http){
       $scope.checkboxModelA = false;
     }
   };
-  $scope.updateContactInfo      = function (value, id){
+  $scope.updateContactInfo          = function (value, id){
     var data = {};
     data['id']    = id;
     data['value'] = value;
@@ -524,7 +519,7 @@ app.controller('customerController',                function ($scope, $http){
         console.log(response.data);
       });
   };
-  $scope.open                   = function (id, type){
+  $scope.open                       = function (id, type){
 
     $scope.customerId = id;
     $scope.type = type;
@@ -555,7 +550,7 @@ app.controller('customerController',                function ($scope, $http){
 
 
   };
-  $scope.insertCustomerContact  = function (){
+  $scope.insertCustomerContact      = function (){
 
     var infoData = getFormValues('new-cct-form');
     infoData['id_customers'] = $scope.customerData.id;
@@ -571,8 +566,8 @@ app.controller('customerController',                function ($scope, $http){
     angular.element('#add-property-cancel').scope().fadeViews('bpv-container', 'new-form-function', 0, 'enable', 'add-property', 'add-property-cancel')
     $('#new-bpv-form').trigger("reset");
   }
-
-  $scope.addNewService          = function () {
+  //Product.html
+  $scope.addNewService              = function () {
 
     var mode = $scope.customerData.servicesMode;
 
@@ -599,30 +594,24 @@ app.controller('customerController',                function ($scope, $http){
       $('#myModalService').modal('toggle');
     }
   }
-  $scope.setModeType            = function (modeType){
+  $scope.setModeType                = function (modeType){
     $scope.customerData.servicesMode = modeType;
     $scope.customerData.serviceTmpId = this.service.id;
   }
-  $scope.serviceDataDisplay     = function(option) {
+  $scope.serviceDataDisplay         = function(option) {
     if(option)
       $scope.currentServiceDisplay = this.customerProduct.product;
     else
       $scope.currentServiceDisplay = this.selectedItem;
   };
-  $scope.availableServices      = function(){
+  $scope.availableServices          = function(){
     $http.get("getCustomerServices", {params:{'id':$scope.idCustomer}})
       .then(function (response) {
         $scope.customerData.customerServices = response.data;
       });
   }
 
-
-
 });
-
-
-
-
 
 app.controller('customerTicketHistoryController',   function ($scope, $http){
   $http.get("getTicketHistory", {params:{'id':$scope.idCustomer}})
@@ -630,15 +619,14 @@ app.controller('customerTicketHistoryController',   function ($scope, $http){
       $scope.ticketHistory = response.data;
       $scope.letterLimit = 20;
     });
-  $scope.showFullComment = function(id) {
+  $scope.showFullComment  = function(id) {
     $('#ticket-' + id).fadeIn('slow');
   }
-  $scope.hideFullComment = function(id) {
+  $scope.hideFullComment  = function(id) {
     $('#ticket-' + id).fadeOut('fast');
   }
 });
 app.controller('customerBillingHistoryController',  function ($scope, $http){
-
 
   if(!$scope.billingHistory)
     $http.get("getBillingHistory", {params:{'id':$scope.idCustomer}})
@@ -650,8 +638,6 @@ app.controller('customerBillingHistoryController',  function ($scope, $http){
     $scope.customerData['prueba'] = this.billing;
   };
 
-
-
 });
 app.controller('customerNetworkController',         function ($scope, $http){
 
@@ -660,7 +646,7 @@ app.controller('customerNetworkController',         function ($scope, $http){
       $scope.customerNetwork = response.data[0];
     });
 
-  $scope.networkServices = function (service) {
+  $scope.networkServices    = function (service) {
     networkServices(service);
   }
   function networkServices (service) {
@@ -798,8 +784,7 @@ app.controller('customerNetworkController',         function ($scope, $http){
       }
     );
   };
-
-  $scope.smartModEg1 =  function () {
+  $scope.smartModEg1        = function () {
 
     var service       = $('#rport').attr('type');
     var portID        = $('#rport').attr('portid');
@@ -841,32 +826,17 @@ app.controller('customerNetworkController',         function ($scope, $http){
 });
 app.controller('customerBuildingController',        function ($scope, $http){
 
-console.log($scope.customerData);
-
+  console.log($scope.customerData);
   console.log('this is Entramos');
 
-  if($scope.customerData)
-  {
+  if($scope.customerData) {
     $http.get("buildings/" + $scope.customerData.address.id_buildings)
       .then(function (response) {
         $scope.bld = response.data;
       });
   }
+
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 app.controller('customerServicesController',        function ($scope, $http){
 
   $http.get("getCustomerServices", {params:{'id':$scope.idCustomer}})
@@ -874,21 +844,18 @@ app.controller('customerServicesController',        function ($scope, $http){
       $scope.customerData.customerServices = response.data;
     });
 
-
   $http.get("getAvailableServices", {params:{'id':$scope.idCustomer}})
     .then(function (response) {
       $scope.customerData.availableServices = response.data;
     });
 
-
-
-  $scope.cSrvCrlFun = function (){
+  $scope.cSrvCrlFun       = function (){
     $http.get("getCustomerServices", {params:{'id':$scope.customerData.id}})
       .then(function (response) {
         $scope.customerServices = response.data;
       });
   }
-  $scope.showConfirm =  function (idProduct, status) {
+  $scope.showConfirm      = function (idProduct, status) {
 
     $.SmartMessageBox({
       title: "Please Confirm Your Action!",
@@ -918,14 +885,14 @@ app.controller('customerServicesController',        function ($scope, $http){
 
     });
   };
-  $scope.disableService = function (id){
+  $scope.disableService   = function (id){
     $http.get("disableCustomerServices", {params:{'id':$scope.idCustomer, 'idService':id}})
       .then(function (response) {
         $scope.customerServices = response.data;
         $scope.availableServices();
       });
   }
-  $scope.activeService = function (id){
+  $scope.activeService    = function (id){
     $http.get("activeCustomerServices", {params:{'id':$scope.idCustomer, 'idService':id}})
       .then(function (response) {
         $scope.customerServices = response.data;
@@ -938,7 +905,6 @@ app.controller('serviceProductController',          function ($scope, $http){
 
   $http.get("getCustomerProduct", {params:{'id':$scope.service.id}})
     .then(function (response) {
-
       $scope.customerProduct = response.data;
     });
 
@@ -1029,7 +995,6 @@ app.controller('globalToolsCtl',      function ($scope, $http, $compile, $sce){
   };
 
   });
-
 function gToolsxEdit(value, field, id, idContainer, table){
   angular.element('#' + idContainer + '-gTools').scope().singleUpdateXedit(id, value, field, table);
 }
@@ -1041,3 +1006,7 @@ function getFormValues(id){
   }
   return infoData;
 }
+
+
+
+
