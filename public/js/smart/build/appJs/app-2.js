@@ -502,7 +502,8 @@ angular.module('app.chat', ['ngSanitize'])
 })();
 'use strict';
 
-angular.module('app.dashboard').controller('DashboardCtrl', function ($scope, $interval, CalendarEvent) {
+angular.module('app.dashboard').controller('DashboardCtrl', function ($scope, $interval) {
+// angular.module('app.dashboard').controller('DashboardCtrl', function ($scope, $interval, CalendarEvent) {
   // Live Feeds Widget Data And Display Controls
   // Live Stats Tab
 
@@ -801,9 +802,9 @@ angular.module('app.dashboard').controller('DashboardCtrl', function ($scope, $i
 
   // Queriing our events from CalendarEvent resource...
   // Scope update will automatically update the calendar
-  CalendarEvent.query().$promise.then(function (events) {
-    $scope.events = events;
-  });
+//   CalendarEvent.query().$promise.then(function (events) {
+//     $scope.events = events;
+//   });
 
 
 });

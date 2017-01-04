@@ -1,8 +1,4 @@
-
-
-
 //CALENDAR ENGINE
-
 
 var popEventTool = '';
 var objArray = '';
@@ -50,17 +46,19 @@ function eventTool(event, id, toDo){
     angular.element('#output').scope().setSelectValue(t1,t2);
     angular.element('#output').scope().$apply()
 
-    editWindow();
+//     editWindow();
+    $("#newEventModal").modal();
     var e = jQuery.Event("keydown");
     e.keyCode = 39;
+    $('.calendar-select').fadeIn();
     $('.input-titulo').val(objEdit.summary).focus();
     $('.input-where').val(objEdit.location).focus();
     $('.input-description').val(objEdit.description).focus().trigger(e);
-    $('.select-calendar').focus();
+    $('#select-calendar').focus();//no funciona.
 
   }
   if (toDo == 3)
-    $(popEventTool).fadeOut();
+    $(popEventTool).fadeOut(); //This close!
 
 }
 function getTimeSelct(objEdit, when){
@@ -188,24 +186,26 @@ app.controller('calController', function ($scope){
 
     $scope.timeLine();
 
-    tttFunction = setInterval(function(){$scope.ttt();$scope.timeLine ();}, 25000);
+//     tttFunction = setInterval(function(){$scope.ttt();$scope.timeLine ();}, 25000);
   }
   $(".event-create").dblclick(function() {
+
+    $("#newEventModal").modal()
 
     idEventToSet = $(this.parentElement)[0].id;
 
     setEventName(idEventToSet);
 
-    $('#transparent-bg').fadeIn();
-    $('#new-event').fadeIn();
-    $('.calendar-select').fadeOut();
-
-    if(winSize <= 420){
-      $('#new-event').css('left', '0px');
-      $('#new-event').css('width', '80%');
-    }
-    else
-      $('#new-event').css('left', '0px');
+//     $('#transparent-bg').fadeIn();
+//     $('#new-event').fadeIn();
+//     $('.calendar-select').fadeOut();
+//
+//     if(winSize <= 420){
+//       $('#new-event').css('left', '0px');
+//       $('#new-event').css('width', '80%');
+//     }
+//     else
+//       $('#new-event').css('left', '0px');
 
     $('.input-titulo').focus();
 
@@ -289,13 +289,13 @@ app.controller('calController', function ($scope){
   $scope.cancelNewEvent = function () {
 
     console.log('evento nuevo cancelado');
-    $('#transparent-bg').fadeOut();
-    $('#new-event').fadeOut();
-    $('calendar-select').fadeOut();
-    if(winSize <= 420)
-      $('#new-event').css('width', '40%');
-    else
-      $('#new-event').css('left', '-50%');
+//     $('#transparent-bg').fadeOut();
+//     $('#new-event').fadeOut();
+//     $('calendar-select').fadeOut();
+//     if(winSize <= 420)
+//       $('#new-event').css('width', '40%');
+//     else
+//       $('#new-event').css('left', '-50%');
 
     this.eventtitle = '';
     this.timeIni = '';
@@ -312,6 +312,8 @@ app.controller('calController', function ($scope){
     objEdit = null;
 
     $scope.ttt();
+
+    $("#newEventModal").modal("hide");
 
   }
   $scope.setNewEvent = function (){

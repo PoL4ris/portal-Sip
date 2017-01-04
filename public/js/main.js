@@ -117,10 +117,11 @@ angular.module('app.calendar'  , ['ui.router']).config(function ($stateProvider)
     .state('app.calendar', {
       url: '/calendar',
       data: {
-        title: 'Calendar'
+        title: 'calendar'
       },
       views: {
         "content@app": {
+//           templateUrl: '/views/test.html'
           templateUrl: '/views/v2Test.html'
         }
       },

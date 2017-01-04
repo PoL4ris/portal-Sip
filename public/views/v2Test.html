@@ -170,99 +170,151 @@
 
 <div ng-controller="calController">
 
+
+
+<!--Authorize Access-->
   <div id="authorize-div" style="display: none">
     <span>Authorize access to Google Calendar API</span>
     <button id="authorize-button" onclick="handleAuthClick(event)">Authorize</button>
   </div>
   <pre id="output"></pre>
 
+<!--Btn Actions-->
   <button ng-click="ttt()" >RELOAD</button>
   <button ng-click="eventUpdateNotify('NotifyEvent')" >Notif event</button>
 
-  <div id="transparent-bg" ng-click="cancelNewEvent()"></div>
-
-  <div id="new-event" class="anim">
-    <div class="col-lg-12">
-      <form name="projectForm" id="new-event-form">
-        <div class="ev-btns">
-          <button class="ev-btn-back btn6" ng-click="cancelNewEvent()">Back</button>
-          <button class="btn3 savebtncal" type="submit" ng-click="setNewEvent()">SAVE</button>
-        </div>
-        <div layout="column" ng-cloak class="contact-form">
 
 
 
 
 
 
-          <div class="layout-padding">
+  <div class="modal fade" id="newEventModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
 
-
-
-            <div class="md-block">
-              <label>Event Title</label>
-              <input required name="eventtitle" ng-model="eventtitle" class="input-titulo">
-              <div ng-messages="projectForm.eventtitle.$error">
-                <div ng-message="required">This is required.</div>
-              </div>
-            </div>
-
-            <div class="md-block selects">
-              <label>From</label>
-              <select class="select-inicio" id="select-inicio-id" ng-model="timeIni" name="timeIni"  required>
-                <option ng-repeat="time in timeSelect" value="{{time}}">{{time}}</option>
-              </select>
-              <div class="errors" ng-messages="projectForm.timeIni.$error">
-                <div ng-message="required">Required</div>
-              </div>
-            </div>
-
-            <div class="md-block selects">
-              <label>To</label>
-              <select class="select-fin" ng-model="timeFin" name="timeFin" required>
-                <option ng-repeat="time in timeSelect" value="{{time}}">{{time}}</option>
-              </select>
-              <div class="errors" ng-messages="projectForm.timeFin.$error">
-                <div ng-message="required">Required</div>
-              </div>
-            </div>
-
-            <div class="md-block calendar-select selects">
-              <label>Calendar</label>
-              <select ng-model="calendar" name="calendar" class="select-calendar">
-                <option ng-repeat="calendar in calendarsName" value="{{calendar}}">{{calendar}}</option>
-              </select>
-            </div>
-
-            <div class="md-block">
-              <label>Where</label>
-              <input required name="where" ng-model="where" class="input-where">
-              <div ng-messages="projectForm.where.$error">
-                <div ng-message="required">This is required.</div>
-              </div>
-            </div>
-
-            <div class="md-block">
-              <label>Description</label>
-              <textarea class="input-description" ng-model="description" md-maxlength="550" rows="5" md-select-on-focus></textarea>
-            </div>
-
-
-
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="cancelNewEvent()">
+            &times;
+          </button>
+          <div class="ev-btns">
+            <button class="ev-btn-back btn6"  data-dismiss="modal" ng-click="cancelNewEvent()">Back</button>
+            <button class="btn3 savebtncal" type="submit" ng-click="setNewEvent()">SAVE</button>
           </div>
-
-
-
-
-
-
-
         </div>
-      </form>
+
+        <div class="modal-body">
+          <div class="wrapper-sm">
+            <div class="row">
+              <div class="field-data col-lg-12" >
+
+
+                <form name="projectForm" id="new-event-form">
+                  <div layout="column" ng-cloak class="contact-form">
+
+
+
+
+
+
+                    <div class="layout-padding">
+
+
+
+                      <div class="md-block">
+                        <label>Event Title</label>
+                        <input required name="eventtitle" ng-model="eventtitle" class="input-titulo">
+                        <div ng-messages="projectForm.eventtitle.$error">
+                          <div ng-message="required">This is required.</div>
+                        </div>
+                      </div>
+
+                      <div class="md-block selects">
+                        <label>From</label>
+                        <select class="select-inicio" id="select-inicio-id" ng-model="timeIni" name="timeIni"  required>
+                          <option ng-repeat="time in timeSelect" value="{{time}}">{{time}}</option>
+                        </select>
+                        <div class="errors" ng-messages="projectForm.timeIni.$error">
+                          <div ng-message="required">Required</div>
+                        </div>
+                      </div>
+
+                      <div class="md-block selects">
+                        <label>To</label>
+                        <select class="select-fin" ng-model="timeFin" name="timeFin" required>
+                          <option ng-repeat="time in timeSelect" value="{{time}}">{{time}}</option>
+                        </select>
+                        <div class="errors" ng-messages="projectForm.timeFin.$error">
+                          <div ng-message="required">Required</div>
+                        </div>
+                      </div>
+
+                      <div class="md-block calendar-select selects">
+                        <label>Calendar</label>
+                        <select ng-model="calendar" name="calendar" class="select-calendar" id="select-calendar">
+                          <option ng-repeat="calendar in calendarsName" value="{{calendar}}">{{calendar}}</option>
+                        </select>
+                      </div>
+
+                      <div class="md-block">
+                        <label>Where</label>
+                        <input required name="where" ng-model="where" class="input-where">
+                        <div ng-messages="projectForm.where.$error">
+                          <div ng-message="required">This is required.</div>
+                        </div>
+                      </div>
+
+                      <div class="md-block">
+                        <label>Description</label>
+                        <textarea class="input-description" ng-model="description" md-maxlength="550" rows="5" md-select-on-focus></textarea>
+                      </div>
+
+
+
+                    </div>
+
+
+
+
+
+
+
+                  </div>
+                </form>
+
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="cancelNewEvent()">
+            Cancel
+          </button>
+        </div>
+
+      </div>
     </div>
   </div>
 
 
+
+  <!--Modal New Event-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--Events Grid-->
   <div class="dataEventsCalendar">
     <div class="row-hrs"><div class="float-left time-label"></div>   <div class="float-right event-space">
       <div class="person color-1 text-center whois">Izzy</div>

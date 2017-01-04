@@ -116,234 +116,234 @@ angular.module('app.auth').factory('User', function ($http, $q, APP_CONFIG) {
 });
 
 'use strict';
-
-angular.module('app.calendar').controller('CalendarCtrl', function ($scope, $log, CalendarEvent) {
-
-
-  // Events scope
-  $scope.events = [];
-
-  // Unassigned events scope
-  $scope.eventsExternal = [
-    {
-      title: "Office Meeting",
-      description: "Currently busy",
-      className: "bg-color-darken txt-color-white",
-      icon: "fa-time"
-    },
-    {
-      title: "Lunch Break",
-      description: "No Description",
-      className: "bg-color-blue txt-color-white",
-      icon: "fa-pie"
-    },
-    {
-      title: "URGENT",
-      description: "urgent tasks",
-      className: "bg-color-red txt-color-white",
-      icon: "fa-alert"
-    }
-  ];
-
-
-  // Queriing our events from CalendarEvent resource...
-  // Scope update will automatically update the calendar
-  CalendarEvent.query().$promise.then(function (events) {
-    $scope.events = events;
-  });
-
-
-  $scope.newEvent = {};
-
-  $scope.addEvent = function() {
-
-    $log.log("Adding new event:", $scope.newEvent);
-
-    var newEventDefaults = {
-      title: "Untitled Event",
-      description: "no description",
-      className: "bg-color-darken txt-color-white",
-      icon: "fa-info"
-    };
-
-
-    $scope.newEvent = angular.extend(newEventDefaults, $scope.newEvent);
-
-    $scope.eventsExternal.unshift($scope.newEvent);
-
-    $scope.newEvent = {};
-
-    // $log.log("New events now:", $scope.eventsExternal);
-
-  };
-
-
-});
+//
+// angular.module('app.calendar').controller('CalendarCtrl', function ($scope, $log, CalendarEvent) {
+//
+//
+//   // Events scope
+//   $scope.events = [];
+//
+//   // Unassigned events scope
+//   $scope.eventsExternal = [
+//     {
+//       title: "Office Meeting",
+//       description: "Currently busy",
+//       className: "bg-color-darken txt-color-white",
+//       icon: "fa-time"
+//     },
+//     {
+//       title: "Lunch Break",
+//       description: "No Description",
+//       className: "bg-color-blue txt-color-white",
+//       icon: "fa-pie"
+//     },
+//     {
+//       title: "URGENT",
+//       description: "urgent tasks",
+//       className: "bg-color-red txt-color-white",
+//       icon: "fa-alert"
+//     }
+//   ];
+//
+//
+//   // Queriing our events from CalendarEvent resource...
+//   // Scope update will automatically update the calendar
+//   CalendarEvent.query().$promise.then(function (events) {
+//     $scope.events = events;
+//   });
+//
+//
+//   $scope.newEvent = {};
+//
+//   $scope.addEvent = function() {
+//
+//     $log.log("Adding new event:", $scope.newEvent);
+//
+//     var newEventDefaults = {
+//       title: "Untitled Event",
+//       description: "no description",
+//       className: "bg-color-darken txt-color-white",
+//       icon: "fa-info"
+//     };
+//
+//
+//     $scope.newEvent = angular.extend(newEventDefaults, $scope.newEvent);
+//
+//     $scope.eventsExternal.unshift($scope.newEvent);
+//
+//     $scope.newEvent = {};
+//
+//     // $log.log("New events now:", $scope.eventsExternal);
+//
+//   };
+//
+//
+// });
 
 "use strict";
 
-angular.module('app.calendar').directive('dragableEvent', function ($log) {
-  return {
-    restrict: 'A',
-    link: function (scope, element) {
-
-      // $log.log(element.scope());
-
-      var eventObject = element.scope().event;
-
-      element.data('eventObject', eventObject);
-
-
-      element.draggable({
-        zIndex: 999,
-        revert: true, // will cause the event to go back to its
-        revertDuration: 0 //  original position after the drag
-      });
-
-
-    }
-  }
-})
-"use strict";
-
-angular.module('app.calendar').directive('fullCalendar', function (CalendarEvent, $log, $timeout) {
-  return {
-    restrict: 'E',
-    replace: true,
-    templateUrl: 'app/calendar/directives/full-calendar.tpl.html',
-    scope: {
-      events: "=events"
-    },
-    link: function (scope, element) {
-
-
-      var $calendar = $("#calendar");
-
-      var calendar = null;
-
-
-      function initCalendar() {
-
-        // $log.log(events);
-
-
-        calendar = $calendar.fullCalendar({
-          lang: 'en',
-          editable: true,
-          draggable: true,
-          selectable: false,
-          selectHelper: true,
-          unselectAuto: false,
-          disableResizing: false,
-          droppable: true,
-
-          header: {
-            left: 'title', //,today
-            center: 'prev, next, today',
-            right: 'month, agendaWeek, agendaDay' //month, agendaDay,
-          },
-
-          drop: function (date, allDay) { // this function is called when something is dropped
-
-            // retrieve the dropped element's stored Event Object
-            var originalEventObject = $(this).data('eventObject');
-
-            // we need to copy it, so that multiple events don't have a reference to the same object
-            var copiedEventObject = $.extend({}, originalEventObject);
-
-            // assign it the date that was reported
-            copiedEventObject.start = date;
-            copiedEventObject.allDay = allDay;
-
-            // $log.log(scope);
-
-            // render the event on the calendar
-            // the last `true` argument determines if the event "sticks" (http://arshaw.com/fullcalendar/docs/event_rendering/renderEvent/)
-            $('#calendar').fullCalendar('renderEvent', copiedEventObject, true);
-
-            // is the "remove after drop" checkbox checked?
-            if ($('#drop-remove').is(':checked')) {
-
-              // if so, remove the element from the "Draggable Events" list
-              // $(this).remove();
-              // $log.log($(this).scope());
-              var index = $(this).scope().$index;
-
-              $("#external-events").scope().eventsExternal.splice(index, 1);
-              $(this).remove();
-
-            }
-
-          },
-
-          select: function (start, end, allDay) {
-            var title = prompt('Event Title:');
-            if (title) {
-              calendar.fullCalendar('renderEvent', {
-                  title: title,
-                  start: start,
-                  end: end,
-                  allDay: allDay
-                }, true // make the event "stick"
-              );
-            }
-            calendar.fullCalendar('unselect');
-          },
-
-          // events: scope.events,
-
-          events: function(start, end, timezone, callback) {
-
-            callback(scope.events);
-
-          },
-
-          eventRender: function (event, element, icon) {
-            if (!event.description == "") {
-              element.find('.fc-event-title').append("<br/><span class='ultra-light'>" + event.description + "</span>");
-            }
-            if (!event.icon == "") {
-              element.find('.fc-event-title').append("<i class='air air-top-right fa " + event.icon + " '></i>");
-            }
-          }
-        });
-
-        $('.fc-header-right, .fc-header-center', $calendar).hide();
-      }
-
-
-      initCalendar();
-
-
-      // Now events will be refetched every time events scope is updated in controller!!!
-      scope.$watch("events", function(newValue, oldValue) {
-
-        $calendar.fullCalendar( 'refetchEvents' );
-
-      }, true);
-
-
-      scope.next = function () {
-        $('.fc-button-next', $calendar).click();
-      };
-      scope.prev = function () {
-        $('.fc-button-prev', $calendar).click();
-      };
-      scope.today = function () {
-        $('.fc-button-today', $calendar).click();
-      };
-      scope.changeView = function (period) {
-        $calendar.fullCalendar('changeView', period);
-      };
-    }
-  }
-});
-
-"use strict";
-
-angular.module('app.calendar').factory('CalendarEvent', function($resource, APP_CONFIG){
-  return $resource( APP_CONFIG.apiRootUrl + '/events.json', {_id:'@id'})
-});
+// angular.module('app.calendar').directive('dragableEvent', function ($log) {
+//   return {
+//     restrict: 'A',
+//     link: function (scope, element) {
+//
+//       // $log.log(element.scope());
+//
+//       var eventObject = element.scope().event;
+//
+//       element.data('eventObject', eventObject);
+//
+//
+//       element.draggable({
+//         zIndex: 999,
+//         revert: true, // will cause the event to go back to its
+//         revertDuration: 0 //  original position after the drag
+//       });
+//
+//
+//     }
+//   }
+// })
+// "use strict";
+//
+// angular.module('app.calendar').directive('fullCalendar', function (CalendarEvent, $log, $timeout) {
+//   return {
+//     restrict: 'E',
+//     replace: true,
+//     templateUrl: 'app/calendar/directives/full-calendar.tpl.html',
+//     scope: {
+//       events: "=events"
+//     },
+//     link: function (scope, element) {
+//
+//
+//       var $calendar = $("#calendar");
+//
+//       var calendar = null;
+//
+//
+//       function initCalendar() {
+//
+//         // $log.log(events);
+//
+//
+//         calendar = $calendar.fullCalendar({
+//           lang: 'en',
+//           editable: true,
+//           draggable: true,
+//           selectable: false,
+//           selectHelper: true,
+//           unselectAuto: false,
+//           disableResizing: false,
+//           droppable: true,
+//
+//           header: {
+//             left: 'title', //,today
+//             center: 'prev, next, today',
+//             right: 'month, agendaWeek, agendaDay' //month, agendaDay,
+//           },
+//
+//           drop: function (date, allDay) { // this function is called when something is dropped
+//
+//             // retrieve the dropped element's stored Event Object
+//             var originalEventObject = $(this).data('eventObject');
+//
+//             // we need to copy it, so that multiple events don't have a reference to the same object
+//             var copiedEventObject = $.extend({}, originalEventObject);
+//
+//             // assign it the date that was reported
+//             copiedEventObject.start = date;
+//             copiedEventObject.allDay = allDay;
+//
+//             // $log.log(scope);
+//
+//             // render the event on the calendar
+//             // the last `true` argument determines if the event "sticks" (http://arshaw.com/fullcalendar/docs/event_rendering/renderEvent/)
+//             $('#calendar').fullCalendar('renderEvent', copiedEventObject, true);
+//
+//             // is the "remove after drop" checkbox checked?
+//             if ($('#drop-remove').is(':checked')) {
+//
+//               // if so, remove the element from the "Draggable Events" list
+//               // $(this).remove();
+//               // $log.log($(this).scope());
+//               var index = $(this).scope().$index;
+//
+//               $("#external-events").scope().eventsExternal.splice(index, 1);
+//               $(this).remove();
+//
+//             }
+//
+//           },
+//
+//           select: function (start, end, allDay) {
+//             var title = prompt('Event Title:');
+//             if (title) {
+//               calendar.fullCalendar('renderEvent', {
+//                   title: title,
+//                   start: start,
+//                   end: end,
+//                   allDay: allDay
+//                 }, true // make the event "stick"
+//               );
+//             }
+//             calendar.fullCalendar('unselect');
+//           },
+//
+//           // events: scope.events,
+//
+//           events: function(start, end, timezone, callback) {
+//
+//             callback(scope.events);
+//
+//           },
+//
+//           eventRender: function (event, element, icon) {
+//             if (!event.description == "") {
+//               element.find('.fc-event-title').append("<br/><span class='ultra-light'>" + event.description + "</span>");
+//             }
+//             if (!event.icon == "") {
+//               element.find('.fc-event-title').append("<i class='air air-top-right fa " + event.icon + " '></i>");
+//             }
+//           }
+//         });
+//
+//         $('.fc-header-right, .fc-header-center', $calendar).hide();
+//       }
+//
+//
+//       initCalendar();
+//
+//
+//       // Now events will be refetched every time events scope is updated in controller!!!
+//       scope.$watch("events", function(newValue, oldValue) {
+//
+//         $calendar.fullCalendar( 'refetchEvents' );
+//
+//       }, true);
+//
+//
+//       scope.next = function () {
+//         $('.fc-button-next', $calendar).click();
+//       };
+//       scope.prev = function () {
+//         $('.fc-button-prev', $calendar).click();
+//       };
+//       scope.today = function () {
+//         $('.fc-button-today', $calendar).click();
+//       };
+//       scope.changeView = function (period) {
+//         $calendar.fullCalendar('changeView', period);
+//       };
+//     }
+//   }
+// });
+//
+// "use strict";
+//
+// angular.module('app.calendar').factory('CalendarEvent', function($resource, APP_CONFIG){
+//   return $resource( APP_CONFIG.apiRootUrl + '/events.json', {_id:'@id'})
+// });
 "use strict";
 
 angular.module('app').controller("ActivitiesCtrl", function ActivitiesCtrl($scope, $log, activityService){
