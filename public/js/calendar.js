@@ -371,7 +371,7 @@ app.controller('calController', function ($scope){
         });
         request.execute(function(event) {
           console.log('Event created: ' + event.htmlLink);
-          $scope.eventUpdateNotify('Event Created');
+          $scope.notifySmallBoxAlert('Event Created');
           $scope.ttt();
         });
 
@@ -384,7 +384,7 @@ app.controller('calController', function ($scope){
           console.log(event);
           $scope.ttt();
         });
-        $scope.eventUpdateNotify('Event Updated');
+        $scope.notifySmallBoxAlert('Event Updated');
       }
       else
       {
@@ -397,7 +397,7 @@ app.controller('calController', function ($scope){
           console.log(event);
           $scope.ttt();
         });
-        $scope.eventUpdateNotify('Event Updated');
+        $scope.notifySmallBoxAlert('Event Updated');
       }
     }
     //THIS IS COMMON INSERT
@@ -497,5 +497,14 @@ app.controller('calController', function ($scope){
     $scope.timeIni = t1;
     $scope.timeFin = t2;
   };
-
+  $scope.notifySmallBoxAlert = function (algo)
+  {
+    $.smallBox({
+      title: "NOTIFY ALERT" + algo,
+      content: "<i class='fa fa-clock-o'></i> <i>2 seconds ago...</i>",
+      color: "#739E73",
+      iconSmall: "fa fa-thumbs-up bounce animated",
+      timeout: 6000
+    });
+  }
 });
