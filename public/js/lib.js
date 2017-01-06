@@ -354,6 +354,8 @@ app.controller('customerControllerList',            function ($scope, $http){
 });
 app.controller('customerController',                function ($scope, $http){
 
+console.log('customerController');
+
   if ($scope.stcid)
     $scope.idCustomer = $scope.stcid;
 

@@ -41,23 +41,33 @@ class CustomerController extends Controller
 
     $string = $request->querySearch;
     $select = "select * from address inner join customers on address.id_customers = customers.id ";
-    $limit = 'limit 20';
+    $limit = ' limit 50';
     $arrX = array();
     $arrY = ' ';
     $whereFlag = false;
     $pattern = '/([0-9])\w+/';
     $stringArray = explode(' ', $string);
 
-    foreach($stringArray as $index=> $item)
+
+
+
+
+
+    foreach($stringArray as $index => $item)
     {
       preg_match($pattern, $item, $patternItemResult);
 
       if(count($patternItemResult) == 0)
-        $arrX[$index] = " address.code like '%" . $item . "%' or address.unit like '%" . $item . "%' or customers.first_name like '%" . $item . "%' or customers.last_name like '%" . $item . "%' or customers.email like '%" . $item . "%'";
+        $arrX[$index] = " AND ( address.code like '%" . $item . "%' or address.unit like '%" . $item . "%' or customers.first_name like '%" . $item . "%' or customers.last_name like '%" . $item . "%' or customers.email like '%" . $item . "%')";
       else
       {
-        $whereFlag = true;
-        $arrX['where'] = " AND (address.code like '%" .  $patternItemResult[0] . "%' OR address.unit like '%". $patternItemResult[0] . "%') ";
+        if($whereFlag)
+          $arrX['where'] .= " AND (address.code like '%" .  $patternItemResult[0] . "%' OR address.unit like '%". $patternItemResult[0] . "%') ";
+        else
+        {
+          $whereFlag = true;
+          $arrX['where'] = " where (address.code like '%" .  $patternItemResult[0] . "%' OR address.unit like '%". $patternItemResult[0] . "%') ";
+        }
       }
     }
 
@@ -67,18 +77,20 @@ class CustomerController extends Controller
       unset($arrX['where']);
     }
 
+    $arrY .= $whereFlag?$tmpWhere:'';
+
     foreach($arrX as $idx => $or)
     {
-      if ($idx == 0 )
-      {
-          $arrY .= ' where ' . $or;
-      }
-      else
-        $arrY .= ' or ' . $or;
+//      if ($idx == 0 )
+//      {
+//        $arrY .= ' AND( ' . $or;
+//      }
+//      else
+//        $arrY .= ' or ' . $or;
+        $arrY .= $or;
     }
 
-    $arrY .= $whereFlag?$tmpWhere:'';
-    print $select . $arrY . $limit;
+//    print $select . $arrY . $limit;
     return DB::select($select . $arrY . $limit);
   }
   public function prepareQuery($data, $complex = null)

@@ -1,8 +1,9 @@
-.bg-white{
-  background: white;
+
+.bg-white {
+  background: white none repeat scroll 0 0;
 }
-.bg-black{
-  background: black;
+.bg-black {
+  background: black none repeat scroll 0 0;
 }
 #logo {
   margin-top: 5px;
@@ -28,37 +29,37 @@
 .m-b-lg {
   margin-bottom: 15px;
 }
-.b-b-ddd{
+.b-b-ddd {
   border-bottom: 1px solid #ddd;
 }
-.b-t-ddd{
+.b-t-ddd {
   border-top: 1px solid #ddd;
 }
-.no-padding-sides{
-  padding-left:0 !important;
+.no-padding-sides {
+  padding-left: 0 !important;
   padding-right: 0 !important;
 }
 .bold-type {
   font-weight: bold;
 }
-.no-border{
-  border:none !important;
+.no-border {
+  border: medium none !important;
 }
 .text-center {
   text-align: center;
 }
-.b-r-ddd{
-  border-right:1px solid #ddd;
+.b-r-ddd {
+  border-right: 1px solid #ddd;
 }
-.float-left{
+.float-left {
   float: left;
 }
-.float-right{
+.float-right {
   float: right;
 }
-.label-form-align{
+.label-form-align {
   position: relative;
-  top:7px;
+  top: 7px;
 }
 .content-column-left {
   float: left;
@@ -129,8 +130,8 @@
 }
 .new-form-blocks {
   float: left;
-  width: 50%;
   margin: 0 0 15px;
+  width: 50%;
 }
 .new-form-blocks input {
   width: 95%;
@@ -156,7 +157,7 @@
 .panel-darken > .panel-heading h3 span {
   color: white;
 }
-#new-ct-form textarea{
+#new-ct-form textarea {
   max-height: 400px;
   max-width: 100%;
   min-height: 250px;
@@ -186,18 +187,30 @@
   width: 80%;
   z-index: 10;
 }
-.tickets-history-table{}
-.tickets-history-table .dataTables_length,
-.tickets-history-table .dataTables_filter,
-.billing-history-table .dataTables_length,
-.billing-history-table .dataTables_filter
-{
+.tickets-history-table {
+}
+.tickets-history-table .dataTables_length, .tickets-history-table .dataTables_filter, .billing-history-table .dataTables_length, .billing-history-table .dataTables_filter {
   width: 50%;
 }
-.invoice-logo{
+.invoice-logo {
   float: left;
   width: 80%;
 }
-.billing-history-table tbody tr td:last-child{
+.billing-history-table tbody tr td:last-child {
   cursor: pointer;
+}
+.customer-result-container .valu.color-text {
+  background: #ddd none repeat scroll 0 0;
+  color: #0462b0;
+}
+.customer-result-container .valu.color-text.ct-code {
+  background: #0462b0 none repeat scroll 0 0;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+}
+.customer-result-container .valu.color-text.ct-status {
+  background: #fb3c4a none repeat scroll 0 0;
+  color: white;
+  text-align: center;
 }
