@@ -929,6 +929,7 @@ app.controller('serviceProductController',          function ($scope, $http){
 
 
 
+
 /* Global Tools */
 app.controller('globalToolsCtl',      function ($scope, $http, $compile, $sce){
 
@@ -1009,6 +1010,9 @@ function getFormValues(id){
   return infoData;
 }
 
-
+/* User Authenticated Data */
+app.controller('userAuthController',   function ($scope){
+  $scope.userDataAuth = JSON.parse($('#auth-user').val());
+})
 
 

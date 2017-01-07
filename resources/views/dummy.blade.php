@@ -105,8 +105,8 @@ Possible attributes
       data-smart-fast-click
       data-smart-layout
       data-smart-page-title="SilverIP Magnus" >
-
 <!-- ui-view container -->
+<input type="hidden" value="{{Auth::user()}}" id="auth-user"/>
 
 <div data-ui-view="root"  data-autoscroll="false"></div>
 
