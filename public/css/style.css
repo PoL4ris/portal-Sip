@@ -5,6 +5,22 @@
 .bg-black {
   background: black none repeat scroll 0 0;
 }
+.old-red{
+  background: rgba(255, 122, 122, 0.3) none repeat scroll 0 0 !important;
+  border: 2px solid #ff7a7a;
+}
+.old-yellow {
+  background: rgba(224, 219, 10, 0.3) none repeat scroll 0 0 !important;
+  border: 2px solid #e0db0a;
+}
+.old-green {
+  background: rgba(144, 224, 107, 0.3) none repeat scroll 0 0 !important;
+  border: 2px solid #90e06b;
+}
+.old {
+  background: rgba(250, 251, 252, 0.3) none repeat scroll 0 0 !important;
+  border: 2px solid #fafbfc;
+}
 #logo {
   margin-top: 5px;
 }
@@ -29,11 +45,29 @@
 .m-b-lg {
   margin-bottom: 15px;
 }
+.m-t-lg{
+  margin-top: 15px;
+}
+.m-t-md{
+  margin-top: 10px;
+}
+.m-t-sm{
+  margin-top: 5px;
+}
 .b-b-ddd {
   border-bottom: 1px solid #ddd;
 }
 .b-t-ddd {
   border-top: 1px solid #ddd;
+}
+.p-t-lg{
+  padding-top: 15px;
+}
+.p-b-lg{
+  padding-bottom: 15px;
+}
+.p-b-sm{
+  padding-bottom: 5px;
 }
 .no-padding-sides {
   padding-left: 0 !important;
@@ -214,3 +248,51 @@
   color: white;
   text-align: center;
 }
+.modal-ticket-size{}
+.thistory-container{
+  max-height: 350px;
+  overflow: auto;
+}
+.thistory-container .th-comment{
+  display: block;
+  font-size: 11px;
+  height: 150px;
+  overflow: auto;
+
+}
+.first-td{
+  background: rgba(0, 0, 0, 0.05) none repeat scroll 0 0;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  letter-spacing: 0.6px;
+}
+.first-td:hover{
+  opacity:.7;
+}
+.thistory-form-2{
+  border: 1px solid #ddd;
+  height: 100px;
+  max-height: 100px;
+  max-width: 100%;
+  min-height: 100px;
+  min-width: 100%;
+  width: 100%;
+}
+.suhs {
+  margin-bottom: 5px;
+}
+.suhs label {
+  float: left;
+  padding-right: 10px;
+}
+.suhs .suhs-label {
+  padding-left: 10px;
+}
+.suhs input {
+  float: left;
+}
+.update-btn-ticket{
+  float: right;
+}
+.update-btn-ticket button{}

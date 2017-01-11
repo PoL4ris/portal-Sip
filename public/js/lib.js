@@ -5,6 +5,7 @@ app.controller('menuController',                    function($scope, $http){
     alert('Error');
   }
 });
+
 app.controller('buildingCtl',                       function($scope, $http) {
 
   if (!$scope.sbid) {
@@ -352,12 +353,13 @@ app.controller('customerControllerList',            function ($scope, $http){
       $scope.supportDataCustomer = response.data;
     });
 });
-app.controller('customerController',                function ($scope, $http){
+app.controller('customerController',                function ($scope, $http, $stateParams){
 
-console.log('customerController');
+  console.log('customerController');
 
-  if ($scope.stcid)
-    $scope.idCustomer = $scope.stcid;
+
+  if ($scope.stcid || $stateParams.id)
+    $scope.idCustomer = $scope.stcid ? $scope.stcid : $stateParams.id;
 
   if (($(location).attr('href').split('http://silverip-portal.com/#/')[1]) == 'customers') {
     $scope.idCustomer = 501;
@@ -614,7 +616,6 @@ console.log('customerController');
   }
 
 });
-
 app.controller('customerTicketHistoryController',   function ($scope, $http){
   $http.get("getTicketHistory", {params:{'id':$scope.idCustomer}})
     .then(function (response) {
@@ -921,6 +922,303 @@ app.controller('serviceProductController',          function ($scope, $http){
 
 
 
+
+
+
+
+app.controller('supportController',                 function ($scope, $http, DTOptionsBuilder){
+
+  $http.get("supportTickets")
+    .then(function (response) {
+      $scope.supportData = response.data;
+    });
+
+  $http.get("getTicketOpenTime")
+    .then(function (response) {
+      $scope.ticketOpenTime = response.data;
+    });
+
+  $scope.dtOptions = DTOptionsBuilder.newOptions().withPaginationType('full_numbers').withDisplayLength(25).withOption('order', [10, 'desc']);
+
+  $scope.letterLimit = 400;
+
+  function callMidView (view) {
+    $scope.globalViewON = view;
+    var compiledeHTML = $compile("<div my-View-"+view+"></div>")($scope);
+//       warpol("#mid-content-tickets").html(compiledeHTML);
+    warpol("#viewMidContent").html(compiledeHTML);
+  };//NOT
+  function setActiveBtn (activeView) {
+    $scope.activeViewFull     = 'no-style';
+    $scope.activeViewBilling  = 'no-style';
+    $scope.activeViewAll      = 'no-style';
+  };//NOT
+
+
+
+
+
+
+
+
+
+  $scope.fullTickets = function (){
+    $http.get("supportTickets")
+      .then(function (response) {
+        $scope.supportData = response.data;
+      });
+    $scope.viewTicketsDirective = 'Full';
+    callMidView('Full');
+    setActiveBtn('Full');
+    $scope.activeViewFull     = 'Active';
+  };//All ticket
+
+
+
+
+  $scope.billingTickets = function (){
+    $http.get("supportTicketsBilling")
+      .then(function (response) {
+        $scope.supportData = response.data;
+      });
+    $scope.viewTicketsDirective = 'Billing';
+    callMidView('Billing');
+    setActiveBtn('Billing');
+    $scope.activeViewBilling     = 'Active';
+  };//Billing tickets
+
+
+
+
+  $scope.allTickets = function (){
+    $http.get("supportTicketsAll")
+      .then(function (response) {
+        $scope.supportData = response.data;
+      });
+    $scope.viewTicketsDirective = 'All';
+    callMidView('All');
+    setActiveBtn('All');
+    $scope.activeViewAll     = 'Active';
+  };//ALL?
+
+
+
+
+
+
+
+
+
+
+
+
+
+  $scope.showFullComment = function(id) {
+    $('#ticket-' + id).fadeIn('slow');
+  }
+  $scope.hideFullComment = function(id) {
+    $('#ticket-' + id).fadeOut('fast');
+  }
+
+  //MODAL DATA
+  $scope.displayTicketResume  = function (id, idCustomer){
+    $scope.midTicketId = id;
+    $scope.stcid = idCustomer;
+    $scope.stcFlag = true;
+
+    $scope.getTicketInfo();
+    $scope.getReasons();
+    $scope.getUsers();
+  };
+  $scope.getTicketInfo        = function () {
+    $http.get("getTicketInfo", {params:{'ticketId':$scope.midTicketId}})
+      .then(function (response) {
+        $scope.selectedTicket = response.data;
+      });
+
+  }
+  $scope.getReasons           = function () {
+    $http.get("getReasonsData")
+      .then(function (response) {
+        $scope.dataReasons = response.data;
+      });
+  }
+  $scope.getUsers             = function () {
+    $http.get("admin")
+      .then(function (response) {
+        $scope.dataUsersAssigned = response.data;
+      });
+  }
+  $scope.editFormByType       = function (id) {
+
+    tempTicketID = id;
+
+    if ($('#' + id).attr('stand') == '1')
+    {
+      $('.' + id + '-label').css('display','table-cell');
+      $('.' + id + '-edit').css('display','none');
+      $('#save-' + id).fadeOut( "slow" );
+      $('#' + id).html('Edit');
+      $('#' + id).switchClass('btn-danger', 'btn-info');
+      $('#' + id).attr('stand', '2');
+      if(path == '/supportdash')
+      {
+        $('.resultadosComplex').html('');
+        $('.dis-input').val('');
+      }
+
+    }
+    else
+    {
+      $('.' + id + '-label').css('display','none');
+      $('.' + id + '-edit').fadeIn( "slow" );
+      $('#save-' + id).fadeIn( "slow" );
+      $('#' + id).html('Cancel');
+      $('#' + id).switchClass('btn-success', 'btn-danger');
+      $('#' + id).attr('stand', '1');
+    }
+
+//     if (id == 'block-a')
+//     {
+//       $scope.getReasons();
+//       $scope.getUsers();
+//     }
+
+  }
+  $scope.submitForm           = function (idForm) {
+
+    var infoData = getFormValues(idForm);
+
+    infoData['id'] = $scope.selectedTicket.id;
+
+    $http.get("updateTicketDetails", {params:infoData})
+      .then(function (response) {
+        $scope.selectedTicket = response.data;
+      });
+  }
+  $scope.submitFormUpdate     = function (idForm) {
+
+    var infoData = getFormValues(idForm);
+    if (infoData.comment == '')
+      return;
+
+    infoData['id'] = $scope.selectedTicket.id;
+
+    $http.get("updateTicketHistory", {params:infoData})
+      .then(function (response) {
+        $scope.selectedTicket = response.data;
+      });
+    $('.thistory-form-2').val('');
+  }
+
+
+
+
+  $scope.displayCustomerResume = function (id){
+    $scope.stcid = id;
+    $scope.stcFlag = false;
+    callMidView('Customer');
+  };//NO USE
+
+
+
+
+
+
+
+});
+
+app.controller('supportControllerTools',            function ($scope, $http) {
+  console.log('supportControllerTools');
+  $scope.buscador = function(side) {
+    var query = {};
+    if (side == 'center')
+      query = {'code': this.searchCenterCode?this.searchCenterCode:false,
+        'unit': this.searchCenterUnit?this.searchCenterUnit:false};
+
+    if (query['code'] == false && query['unit'] == false)
+    {
+      $scope.customerCodeUnitList = '';
+      return;
+    }
+
+    $http.get("getTicketCustomerList", {params: query})
+      .then(function (response) {
+        $scope.customerCodeUnitList = response.data;
+      });
+  }
+  $scope.selectCustomerUpdate = function (name, id) {
+    warpol('.preview-name').val(name);
+    warpol('#save-block-b').attr('idCustomerUpdate', id);
+  };
+  $scope.updateCustomerTicketName = function () {
+    var customerID =  warpol('#save-block-b').attr('idCustomerUpdate')
+    var ticketID = $scope.selectedTicket.id;
+
+    $http.get("updateTicketCustomerName", {params:{'id':ticketID, 'id_customers':customerID}})
+      .then(function (response) {
+        $scope.selectedTicket = response.data;
+      });
+
+    $scope.customerCodeUnitList = '';
+    if ($scope.globalViewON != 'Resume')
+      $scope.cancel();
+    else
+      $scope.displayTicketResume(ticketID);
+
+  }
+  $scope.editFormByType = function (id) {
+
+    tempTicketID = id;
+
+    if (warpol('#' + id).attr('stand') == '1')
+    {
+      warpol('.' + id + '-label').css('display','table-cell');
+      warpol('.' + id + '-edit').css('display','none');
+      warpol('#save-' + id).fadeOut( "slow" );
+      warpol('#' + id).html('Edit');
+      warpol('#' + id).switchClass('btn-danger', 'btn-info');
+      warpol('#' + id).attr('stand', '2');
+      if(path == '/supportdash')
+      {
+        warpol('.resultadosComplex').html('');
+        warpol('.dis-input').val('');
+      }
+
+    }
+    else
+    {
+      warpol('.' + id + '-label').css('display','none');
+      warpol('.' + id + '-edit').fadeIn( "slow" );
+      warpol('#save-' + id).fadeIn( "slow" );
+      warpol('#' + id).html('Cancel');
+      warpol('#' + id).switchClass('btn-success', 'btn-danger');
+      warpol('#' + id).attr('stand', '1');
+    }
+
+    if (id == 'block-a')
+    {
+      $scope.getReasons();
+      $scope.getUsers();
+    }
+
+  }
+});
+app.controller('singleTicketInfo',                  function ($scope, $http){
+  console.log('singleTicketInfo');
+  $http.get("getTicketInfo", {params:{'ticketId':$scope.midTicketId}})
+    .then(function (response) {
+      $scope.selectedTicket = response.data;
+    });
+})
+
+
+app.controller('supportTicketHistory',              function ($scope, $http){
+  $http.get("supportTicketHistory", {params:{'id':$scope.history.id}})
+    .then(function (response) {
+      $scope.historyData = response.data;
+    });
+});
 
 
 

@@ -1787,7 +1787,7 @@ app.controller('directiveController',               function ($scope, $http, $co
 })
 .directive('myViewFull',                            function() {
   return {
-    templateUrl: '/views/supportFullList.html'
+    templateUrl: '/views/support.html'
   };
 })
 .directive('myViewAll',                             function() {

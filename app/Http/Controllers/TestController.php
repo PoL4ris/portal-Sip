@@ -115,6 +115,24 @@ class TestController extends Controller
 
   public function supportTest()
   {
+    $supController = new SupportController();
+
+
+    $record = Ticket::with('customer', 'reason', 'ticketNote','ticketHistory', 'user', 'userAssigned', 'address', 'contacts')
+      ->where('id_reasons','!=', 11)
+      ->where('status','!=', 'closed')
+      ->orderBy('updated_at', 'desc')
+      ->limit(3)
+      ->get()->toArray();
+
+    $result = $supController->getOldTimeTicket($record);
+
+
+
+//      print '<pre>';
+      dd($result);
+      die();
+
 
     print '<pre>';
 

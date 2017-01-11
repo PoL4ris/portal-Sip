@@ -23,7 +23,7 @@ angular.module('app.buildings', ['ui.router']).config(function ($stateProvider) 
 angular.module('app.customers', ['ui.router']).config(function ($stateProvider) {
     $stateProvider
       .state('app.customers', {
-        url: '/customers',
+        url: '/customers?{id:int}',
         data: {
           title: 'Customers'
         },
@@ -97,8 +97,8 @@ angular.module('app.support'  , ['ui.router']).config(function ($stateProvider) 
       },
       views: {
         "content@app": {
-          templateUrl: '/views/dummy.html',
-          controller: 'networkController as showCase'
+          templateUrl: '/views/support/support.html',
+          controller : 'supportController'
         }
       },
       resolve: {

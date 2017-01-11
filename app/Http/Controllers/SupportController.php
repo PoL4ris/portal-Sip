@@ -55,7 +55,9 @@ class SupportController extends Controller
     $record = Ticket::with('customer', 'reason', 'ticketNote','ticketHistory', 'user', 'userAssigned', 'address', 'contacts')
                       ->where('id_reasons','!=', 11)
                       ->where('status','!=', 'closed')
+//                      ->where('id',3413)
                       ->orderBy('updated_at', 'desc')
+//                      ->limit(1)
                       ->get()->toArray();
 
     $result = $this->getOldTimeTicket($record);
