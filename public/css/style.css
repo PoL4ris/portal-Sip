@@ -296,3 +296,54 @@
   float: right;
 }
 .update-btn-ticket button{}
+
+
+.profile-css {
+  padding-bottom: 30px;
+  padding-top: 25px;
+}
+.profile-css div {
+  font-size: 16px;
+}
+.profile-css h2 {
+  text-align: center;
+}
+.profile-css .img {
+  padding-top: 15px;
+}
+.profile-css img {
+  width: 100%;
+}
+.profile-css p {
+  border-bottom: 1px solid #ddd;
+  font-size: 14px;
+  font-weight: bold;
+}
+.profile-css p label {
+}
+.profile-css label {
+  font-weight: normal;
+}
+.profile-password {
+  -moz-border-bottom-colors: none;
+  -moz-border-left-colors: none;
+  -moz-border-right-colors: none;
+  -moz-border-top-colors: none;
+  background: white none repeat scroll 0 0;
+  border-image: none;
+  border-radius: 3px;
+  border-style: none none solid;
+  border-width: medium medium 1px;
+  font-size: 14px;
+  letter-spacing: 1px;
+  margin-bottom: 5px;
+  padding: 5px;
+  width: 100%;
+}
+.set-psw {
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 25px;
+}
+.bton {
+  display: none;
+}

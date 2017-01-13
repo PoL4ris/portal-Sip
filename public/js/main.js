@@ -42,30 +42,6 @@ angular.module('app.customers', ['ui.router']).config(function ($stateProvider) 
         }
       })
   });
-
-// angular.module('app.profile', ['ui.router']).config(function ($stateProvider) {
-//     $stateProvider
-//       .state('app.profile', {
-//         url: '/profile',
-//         data: {
-//           title: 'Profile'
-//         },
-//         views: {
-//           "content@app": {
-//             templateUrl: '/views/userprofile.html',
-//             controller: 'userProfileController'
-//           }
-//         },
-//         resolve: {
-//           scripts: function(lazyScript){
-//             return lazyScript.register([
-//               '/js/smart/build/vendor.ui.js'
-//             ]);
-//           }
-//         }
-//       })
-//   });
-
 angular.module('app.network'  , ['ui.router']).config(function ($stateProvider) {
   $stateProvider
     .state('app.network', {
@@ -110,8 +86,6 @@ angular.module('app.support'  , ['ui.router']).config(function ($stateProvider) 
       }
     })
 });
-
-
 angular.module('app.calendar'  , ['ui.router']).config(function ($stateProvider) {
   $stateProvider
     .state('app.calendar', {

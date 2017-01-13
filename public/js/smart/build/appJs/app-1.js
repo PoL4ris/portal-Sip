@@ -301,7 +301,8 @@ angular.module('app.appViews', ['ui.router'])
         },
         views: {
           "content@app": {
-            templateUrl: 'app/app-views/views/profile-demo.html'
+            templateUrl: '/views/userprofile.html',
+            controller: 'userProfileController'
           }
         }
       })

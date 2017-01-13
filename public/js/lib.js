@@ -5,7 +5,7 @@ app.controller('menuController',                    function($scope, $http){
     alert('Error');
   }
 });
-
+//Building Controllers
 app.controller('buildingCtl',                       function($scope, $http) {
 
   if (!$scope.sbid) {
@@ -276,7 +276,7 @@ app.controller('buildingCtl',                       function($scope, $http) {
     }
   }
 })
-
+//Network Controllers
 app.controller('networkController',                 function ($scope, $http){
 
   $http.get("networkdash")
@@ -345,8 +345,7 @@ app.controller('networkControllerTSort',            function (DTOptionsBuilder, 
 
   vm.persons = $scope.networkData;
 });
-
-
+//Customer Controllers
 app.controller('customerControllerList',            function ($scope, $http){
   $http.get("getCustomerList")
     .then(function (response) {
@@ -356,7 +355,7 @@ app.controller('customerControllerList',            function ($scope, $http){
 app.controller('customerController',                function ($scope, $http, $stateParams){
 
   console.log('customerController');
-
+  $scope.idCustomer = 501;
 
   if ($scope.stcid || $stateParams.id)
     $scope.idCustomer = $scope.stcid ? $scope.stcid : $stateParams.id;
@@ -365,6 +364,8 @@ app.controller('customerController',                function ($scope, $http, $st
     $scope.idCustomer = 501;
     $scope.buscadorFlag = true;
   }
+
+  console.log($scope.idCustomer);
 
   $http.get("customersData", {params:{'id':$scope.idCustomer}})
     .then(function (response) {
@@ -906,6 +907,7 @@ app.controller('customerServicesController',        function ($scope, $http){
 });
 app.controller('serviceProductController',          function ($scope, $http){
 
+  console.log($scope.service.id);
   $http.get("getCustomerProduct", {params:{'id':$scope.service.id}})
     .then(function (response) {
       $scope.customerProduct = response.data;
@@ -917,15 +919,7 @@ app.controller('serviceProductController',          function ($scope, $http){
     });
 
 });
-
-
-
-
-
-
-
-
-
+//Support Controllers
 app.controller('supportController',                 function ($scope, $http, DTOptionsBuilder){
 
   $http.get("supportTickets")
@@ -939,29 +933,34 @@ app.controller('supportController',                 function ($scope, $http, DTO
     });
 
   $scope.dtOptions = DTOptionsBuilder.newOptions().withPaginationType('full_numbers').withDisplayLength(25).withOption('order', [10, 'desc']);
-
   $scope.letterLimit = 400;
+
+  $scope.showFullComment = function(id) {
+    $('#ticket-' + id).fadeIn('slow');
+  }
+  $scope.hideFullComment = function(id) {
+    $('#ticket-' + id).fadeOut('fast');
+  }
 
   function callMidView (view) {
     $scope.globalViewON = view;
     var compiledeHTML = $compile("<div my-View-"+view+"></div>")($scope);
 //       warpol("#mid-content-tickets").html(compiledeHTML);
     warpol("#viewMidContent").html(compiledeHTML);
-  };//NOT
+  };//NO se usara mas
   function setActiveBtn (activeView) {
     $scope.activeViewFull     = 'no-style';
     $scope.activeViewBilling  = 'no-style';
     $scope.activeViewAll      = 'no-style';
-  };//NOT
+  };//NO se usara mas
 
+  $scope.displayCustomerResume = function (id){
+    $scope.stcid = id;
+    $scope.stcFlag = false;
+    callMidView('Customer');
+  };//NO se usara mas
 
-
-
-
-
-
-
-
+  //Faltan botones de ALL, Billing, No Billing.
   $scope.fullTickets = function (){
     $http.get("supportTickets")
       .then(function (response) {
@@ -971,11 +970,7 @@ app.controller('supportController',                 function ($scope, $http, DTO
     callMidView('Full');
     setActiveBtn('Full');
     $scope.activeViewFull     = 'Active';
-  };//All ticket
-
-
-
-
+  };//All ticket Not in use
   $scope.billingTickets = function (){
     $http.get("supportTicketsBilling")
       .then(function (response) {
@@ -985,11 +980,7 @@ app.controller('supportController',                 function ($scope, $http, DTO
     callMidView('Billing');
     setActiveBtn('Billing');
     $scope.activeViewBilling     = 'Active';
-  };//Billing tickets
-
-
-
-
+  };//Billing tickets Not in use
   $scope.allTickets = function (){
     $http.get("supportTicketsAll")
       .then(function (response) {
@@ -999,26 +990,9 @@ app.controller('supportController',                 function ($scope, $http, DTO
     callMidView('All');
     setActiveBtn('All');
     $scope.activeViewAll     = 'Active';
-  };//ALL?
+  };//ALL? Not in use
 
 
-
-
-
-
-
-
-
-
-
-
-
-  $scope.showFullComment = function(id) {
-    $('#ticket-' + id).fadeIn('slow');
-  }
-  $scope.hideFullComment = function(id) {
-    $('#ticket-' + id).fadeOut('fast');
-  }
 
   //MODAL DATA
   $scope.displayTicketResume  = function (id, idCustomer){
@@ -1110,24 +1084,14 @@ app.controller('supportController',                 function ($scope, $http, DTO
       });
     $('.thistory-form-2').val('');
   }
-
-
-
-
-  $scope.displayCustomerResume = function (id){
-    $scope.stcid = id;
-    $scope.stcFlag = false;
-    callMidView('Customer');
-  };//NO USE
-
-
-
-
-
-
-
 });
-
+app.controller('supportTicketHistory',              function ($scope, $http){
+  $http.get("supportTicketHistory", {params:{'id':$scope.history.id}})
+    .then(function (response) {
+      $scope.historyData = response.data;
+    });
+});
+//En espera de edicion de usuario data
 app.controller('supportControllerTools',            function ($scope, $http) {
   console.log('supportControllerTools');
   $scope.buscador = function(side) {
@@ -1204,29 +1168,85 @@ app.controller('supportControllerTools',            function ($scope, $http) {
 
   }
 });
-app.controller('singleTicketInfo',                  function ($scope, $http){
-  console.log('singleTicketInfo');
-  $http.get("getTicketInfo", {params:{'ticketId':$scope.midTicketId}})
-    .then(function (response) {
-      $scope.selectedTicket = response.data;
-    });
-})
 
 
-app.controller('supportTicketHistory',              function ($scope, $http){
-  $http.get("supportTicketHistory", {params:{'id':$scope.history.id}})
-    .then(function (response) {
-      $scope.historyData = response.data;
+//User Profile Controllers
+app.controller('userProfileController',             function ($scope, $http){
+
+  console.log('COSA LOCA');
+
+  $scope.checkboxModel = false;
+
+  $http.get("getProfileInfo")
+    .then(function (response){
+      $scope.profileData = response.data;
     });
+
+
+
+  $scope.customerEditMode = function (){
+    if ( $scope.checkboxModel == true)
+    {
+      $('.editable-text').fadeIn('slow');
+      $('.no-editable-text').css('display', 'none');
+    }
+    else
+    {
+      $('.no-editable-text').fadeIn('slow');
+      $('.editable-text').css('display', 'none');
+    }
+  };
+
+
+  $scope.updatePassword = function() {
+    var psw1 = this.psw1;
+    var psw2 = this.psw2;
+
+    if(psw1 == psw2)
+    {
+      console.log('passwords match update data');
+      $http.get("updateProfileInfo", {params:{'password':psw1}})
+        .then(function (response){
+          if (response.data == 'OK')
+          {
+
+            $.smallBox({
+              title: "Password Updated!",
+              content: "<i class='fa fa-clock-o'></i> <i>3 seconds ago...</i>",
+              color: "#739E73",
+              iconSmall: "fa fa-thumbs-up bounce animated",
+              timeout: 6000
+            });
+
+            $('#uno').val('');
+            $('#dos').val('');
+            $scope.checkboxModel = true;
+            $scope.customerEditMode();
+          }
+
+//           console.log( response.data);
+        });
+    }
+    else
+      alert('Passwords do not match.');
+
+  };
+
+  $scope.lengthpsw = function ()
+  {
+    var psw1Length = this.psw1?this.psw1.length:0;
+    var psw2Length = this.psw2?this.psw2.length:0;
+
+    if (psw1Length >= 5 && psw2Length >= 5 )
+      $('#pswbton').attr('disabled', false);
+    else
+      $('#pswbton').attr('disabled', true);
+  }
+
+
+
+
 });
-
-
-
-
-
-
-
-
 
 /* Global Tools */
 app.controller('globalToolsCtl',      function ($scope, $http, $compile, $sce){
@@ -1307,7 +1327,6 @@ function getFormValues(id){
   }
   return infoData;
 }
-
 /* User Authenticated Data */
 app.controller('userAuthController',   function ($scope){
   $scope.userDataAuth = JSON.parse($('#auth-user').val());
