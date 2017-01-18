@@ -1,0 +1,460 @@
+/*!
+ * This is the new theme
+ */
+
+.smart-style-7 a {
+  transition: color .1s linear 0s, background-color .1s linear 0s!important
+}
+.smart-style-7 body.container {
+  border-left: 1px solid rgba(34, 38, 46, .4);
+  border-right: 1px solid rgba(34, 38, 46, .4)
+}
+body.smart-style-7 {
+  background: white !important;
+}
+.smart-style-7 #header {
+  background-image: none;
+  background-color: white;
+}
+.smart-style-7 .project-context>:first-child {
+  color: #697B92;
+  text-shadow: 0 0 1px #111318
+}
+.smart-style-7 #ribbon {
+  background: #f9f9f9;
+}
+.smart-style-7 .breadcrumb>li+li:before {
+  color: #646464
+}
+.smart-style-7 .project-selector {
+  color: #B9B9B9
+}
+.smart-style-7 .btn.btn-ribbon {
+  background-color: #697486;
+  background-image: -moz-linear-gradient(top, #6f7d94, #697486);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#6f7d94), to(#697486));
+  background-image: -webkit-linear-gradient(top, #6f7d94, #697486);
+  background-image: -o-linear-gradient(top, #6f7d94, #697486);
+  background-image: linear-gradient(to bottom, #6f7d94, #697486)
+}
+.smart-style-7 #logo-group {
+  background: white !important
+}
+.smart-style-7 #logo-group span#activity {
+  background: #0d0f12;
+  border: 1px solid #0d0f12;
+  color: #fff;
+  cursor: pointer
+}
+.smart-style-7 #logo-group>span .badge {
+  background: #0aa699
+}
+.smart-style-7 .btn-header>:first-child>a {
+  background: #FB804B;
+  border: 1px solid #FB804B;
+  color: #fff!important;
+  cursor: pointer!important
+}
+.smart-style-7 .btn-header>:first-child>a:hover {
+  opacity: .9
+}
+.smart-style-7 #cancel-search-js {
+  background: #fb3c4a;
+  line-height: 29px!important
+}
+.smart-style-7 .MsgTitle .txt-color-orangeDark {
+  color: #fb3c4a!important
+}
+.smart-style-7 .minifyme {
+  background: #4497CD;
+  border-bottom: 1px solid #2F698F;
+  color: #FFF;
+}
+.smart-style-7 .minifyme:hover {
+  background: #4ba6e2;
+}
+.smart-style-7 #show-shortcut:hover>i {
+  color: #fff
+}
+.smart-style-7 .superbox-list.active:before {
+  color: #1b1e24
+}
+.smart-style-7 nav ul b {
+  font-size: 14px;
+  margin-top: 0
+}
+.smart-style-7 nav ul b .fa-plus-square-o:before {
+  content: "\f104"
+}
+.smart-style-7 nav ul b .fa-minus-square-o:before {
+  content: "\f107"
+}
+.smart-style-7 nav ul ul {
+  background: #22262E
+}
+.smart-style-7 nav ul ul li>a {
+  text-shadow: 0 1px 1px #000;
+  font-size: 13px;
+  padding-left: 43px;
+  color: #e1eaf1;
+  display: block;
+  font-weight: 300;
+  padding-top: 6px!important;
+  padding-bottom: 6px!important;
+  overflow: hidden
+}
+.smart-style-7 nav ul ul li>a:hover {
+  background: #1b1e24!important
+}
+.smart-style-7 nav ul ul ul li a {
+  padding: 8px 17px 8px 54px!important
+}
+.smart-style-7 nav ul ul ul ul li a {
+  padding-left: 72px!important
+}
+.smart-style-7 nav ul ul ul ul ul li a {
+  padding-left: 90px!important
+}
+.smart-style-7 nav ul ul ul ul ul ul li a {
+  padding-left: 108px!important
+}
+.smart-style-7 nav ul li a:active {
+  background: 0 0
+}
+.smart-style-7 nav ul li a:hover {
+  color: #333;
+}
+.smart-style-7 nav ul li a {
+  padding: 12px 17px 12px 16px
+}
+.smart-style-7 nav>ul>li>a>i {
+  font-size: 17px;
+  vertical-align: 0
+}
+.smart-style-7 nav>ul>li>a b {
+  right: 17px;
+  top: 12px
+}
+.smart-style-7 nav>ul>li>a>i:after {
+  border: 1px solid #fff
+}
+.smart-style-7 nav>ul>li>a:hover i {
+  -webkit-animation-name: none;
+  -moz-animation-name: none;
+  -o-animation-name: none;
+  animation-name: none
+}
+.smart-style-7 .header-search>input[type=text] {
+  border-color: #FFF!important;
+  border-radius: 2px
+}
+.smart-style-7 .header-dropdown-list a.dropdown-toggle {
+  color: #FFF;
+  text-decoration: none
+}
+.smart-style-7 .login-info {
+  height: auto;
+  box-shadow: 1px 1px 0 rgba(251, 128, 75, 0.3) inset, 0 -1px 0 rgba(251, 128, 75, 0.2) inset;
+}
+.smart-style-7 .login-info>span {
+  padding: 5px 10px
+}
+.smart-style-7 .login-info img {
+  width: 35px;
+  border-radius: 50%
+}
+.smart-style-7 .login-info a {
+  margin-top: 2px
+}
+.smart-style-7 .login-info a span {
+  max-width: 136px
+}
+.smart-style-7 .login-info a:hover {
+  color: #fff
+}
+.smart-style-7 #activity.active .badge {
+  background: #0aa699!important
+}
+.smart-style-7 .ajax-dropdown {
+  background: #E2E8F1
+}
+.smart-style-7 .ajax-notifications {
+  background: #fff
+}
+.smart-style-7 img.online {
+  border-left-color: #0AA699!important
+}
+.smart-style-7 .onoffswitch-inner:before {
+  background-color: #36AECC!important
+}
+.smart-style-7 .bg-color-red {
+  background-color: #fb3c4a!important
+}
+.smart-style-7 .jarviswidget-color-darken>header {
+  background: #1B1E24!important;
+  border-color: #1B1E24!important
+}
+.smart-style-7 .jarviswidget-color-blueDark>header {
+  background: #353D4B!important;
+  border-color: #353D4B!important
+}
+.smart-style-7 .jarviswidget-color-blue>header {
+  background: #688F9E;
+  border-color: #6A838D!important
+}
+.smart-style-7 .jarviswidget-color-purple>header {
+  background: #736086
+}
+.smart-style-7 .jarviswidget-color-red>header {
+  background: #C02631;
+  border-color: #8F2129!important
+}
+.smart-style-7 .jarviswidget .bg-color-red {
+  background: #C02631!important
+}
+.smart-style-7 .ui-chatbox-titlebar {
+  background: #3E4553!important
+}
+.smart-style-7 .ui-chatbox-titlebar.ui-state-focus {
+  background: #1B1F27!important
+}
+.smart-style-7 #ribbon .breadcrumb li:last-child,
+.smart-style-7 #ribbon .breadcrumb>.active {
+  color: #868686
+}
+.smart-style-7 #ribbon .breadcrumb,
+.smart-style-7 #ribbon .breadcrumb a {
+  color: #747474!important
+}
+.smart-style-7 .dropdown-menu,
+.smart-style-7 .open>.dropdown-menu {
+  padding: 4px
+}
+.smart-style-7 .dropdown-menu>li>a {
+  border-radius: 4px;
+  margin: 3px 0
+}
+.smart-style-7 .page-footer,
+.smart-style-7 .superbox-show,
+.smart-style-7 aside {
+  background: white;
+  border-right: 1px solid #FB804B;
+}
+.smart-style-7 .login-info,
+.smart-style-7 .login-info span {
+  border-bottom: none
+}
+.smart-style-7 nav>ul ul li::before,
+.smart-style-7 nav>ul>li>ul::before {
+  border: none!important
+}
+.smart-style-7 .login-info a,
+.smart-style-7 .login-info strong,
+.smart-style-7 nav ul li a {
+  color: #7f7f7f;
+}
+.smart-style-7 nav ul li.active a{
+  color: #FB804B !important;
+}
+nav ul li.active > a::before{
+  color: #FB804B;
+}
+.smart-style-7 .pagination>.active>a,
+.smart-style-7 .pagination>.active>a:focus,
+.smart-style-7 .pagination>.active>a:hover,
+.smart-style-7 .pagination>.active>span,
+.smart-style-7 .pagination>.active>span:focus,
+.smart-style-7 .pagination>.active>span:hover {
+  background-color: #36AECC;
+  border-color: #36AECC
+}
+.smart-style-7.minified .login-info a {
+  margin-top: 6px
+}
+.smart-style-7.minified .login-info img {
+  width: 30px!important
+}
+.smart-style-7.minified .login-info span {
+  padding: 0 5px!important
+}
+.smart-style-7.minified nav ul li a {
+  padding: 12px 17px 12px 14px
+}
+.smart-style-7.minified nav ul ul li>a:hover {
+  background: #30343D!important
+}
+.smart-style-7.minified nav ul ul li>a {
+  padding-left: 13px;
+  padding-right: 13px!important
+}
+.smart-style-7.minified nav ul ul ul li a {
+  padding-left: 33px!important;
+  padding-right: 13px!important
+}
+.smart-style-7.minified nav ul ul ul ul li a {
+  padding-left: 43px!important;
+  padding-right: 13px!important
+}
+.smart-style-7.minified nav ul ul ul ul ul li a {
+  padding-left: 53px!important;
+  padding-right: 13px!important
+}
+.smart-style-7.minified nav ul ul ul ul ul ul li a {
+  padding-left: 63px!important;
+  padding-right: 13px!important
+}
+.smart-style-7.minified nav ul>li>ul>li>ul {
+  background: #1B1E24
+}
+.smart-style-7.minified nav>ul>li {
+  border-bottom: 1px solid #131416;
+  border-top: 1px solid #303031
+}
+.smart-style-7.minified nav>ul>li>a>i {
+  font-size: 18px
+}
+.smart-style-7.minified nav>ul>li>ul {
+  background: #1B1E24
+}
+.smart-style-7.minified nav>ul>li>ul>li {
+  background: #22262E
+}
+.smart-style-7.minified nav>ul>li>ul>li>ul>li {
+  background: #1B1E24
+}
+.smart-style-7 .jarviswidget .bg-color-greenLight,
+.smart-style-7 .jarviswidget-color-greenLight>header {
+  border-color: #96B447!important;
+  background: #96B447!important
+}
+.smart-style-7 .jarviswidget .bg-color-yellow,
+.smart-style-7 .jarviswidget-color-yellow>header {
+  border-color: #DBB727!important;
+  background: #FDD01C!important;
+  color: #25241F
+}
+.smart-style-7 .jarviswidget .bg-color-pink,
+.smart-style-7 .jarviswidget-color-pink>header {
+  background: #DB8EBB!important
+}
+.smart-style-7.menu-on-top nav ul ul li>a {
+  text-shadow: none!important;
+  color: #646E75
+}
+.smart-style-7.menu-on-top nav ul ul li a {
+  padding-left: 10px!important;
+  font-size: 13px
+}
+.smart-style-7.menu-on-top nav ul ul li:hover>a {
+  color: #fff;
+  background-color: #1b1e24
+}
+.smart-style-7.menu-on-top nav ul ul .active>a {
+  color: #fff!important
+}
+.smart-style-7.menu-on-top nav>ul ul ul {
+  border-top: 1px solid #c7c7c7!important
+}
+.smart-style-7.menu-on-top nav>ul ul li:hover>ul {
+  background: #333
+}
+.smart-style-7.menu-on-top nav>ul>li>a:after {
+  color: #8AA1B3!important
+}
+.smart-style-7.menu-on-top aside {
+  background: #14161B
+}
+.smart-style-7.menu-on-top aside#left-panel {
+  -webkit-box-shadow: 0 2px 4px 0 rgba(0, 0, 0, .25);
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, .25);
+  border-bottom: 1px solid #222;
+  border-top: 1px solid #333
+}
+.smart-style-7.menu-on-top aside#left-panel nav>ul>li {
+  border-right: 1px solid transparent;
+  border-left: 1px solid transparent
+}
+.smart-style-7.menu-on-top aside#left-panel nav>ul>li>a {
+  text-shadow: none!important;
+  font-size: 13px;
+  padding: 10px 9px!important
+}
+.smart-style-7.menu-on-top aside#left-panel nav>ul>li>ul {
+  background: #3a3633
+}
+.smart-style-7.menu-on-top aside#left-panel nav>ul>li:hover {
+  border-right-color: #333;
+  border-left-color: #333;
+  background: #fff;
+  background: -moz-linear-gradient(top, #04070c 0, #2e3e57 66%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #cfcfcf), color-stop(66%, #2e3e57));
+  background: -webkit-linear-gradient(top, #04070c 0, #2e3e57 66%);
+  background: -o-linear-gradient(top, #04070c 0, #2e3e57 66%);
+  background: -ms-linear-gradient(top, #04070c 0, #2e3e57 66%);
+  background: linear-gradient(to bottom, #04070c, #2e3e57 66%);
+  filter: progid: DXImageTransform.Microsoft.gradient(startColorstr='#04070C', endColorstr='#2E3E57', GradientType=0)
+}
+.smart-style-7.menu-on-top aside#left-panel nav>ul>li:hover>a {
+  color: #F1F1F1!important;
+  border-left: 1px solid #000;
+  border-right: 1px solid #000;
+  padding-left: 8px!important;
+  padding-right: 8px!important
+}
+.smart-style-7.menu-on-top nav ul ul li a,
+.smart-style-7.menu-on-top nav ul ul ul li a {
+  color: #D8DEE5
+}
+.smart-style-7.menu-on-top nav ul ul li a:hover,
+.smart-style-7.menu-on-top nav ul ul ul li a:hover {
+  color: #fff;
+  background-color: #1b1e24!important
+}
+.smart-style-7.menu-on-top nav ul ul,
+.smart-style-7.menu-on-top nav ul ul ul {
+  background: #2e3e57!important;
+  border: 1px solid transparent;
+  padding: 0
+}
+.smart-style-7.menu-on-top nav ul ul li:hover>a:after,
+.smart-style-7.menu-on-top nav>ul ul>li a:after,
+.smart-style-7.menu-on-top nav>ul ul>li a:hover:after,
+.smart-style-7.menu-on-top nav>ul>li>a:after {
+  color: #D5D5D5
+}
+.smart-style-7.menu-on-top nav ul ul li:hover>a:after,
+.smart-style-7.menu-on-top nav>ul ul>li a:hover:after {
+  color: #fff
+}
+.smart-style-7.menu-on-top nav>ul ul>li a:only-child:after,
+.smart-style-7.menu-on-top nav>ul>li>a:only-child:after {
+  content: ""!important
+}
+.smart-style-7.menu-on-top nav ul ul li.active:hover>a,
+.smart-style-7.menu-on-top nav ul ul li.active>a:hover {
+  color: #fff!important
+}
+@media (max-width: 979px) and (min-width: 768px) {
+  .smart-style-7 #hide-menu i {
+    color: #fff!important
+  }
+}
+@media (max-width: 767px) {
+  .smart-style-7 #hide-menu i {
+    color: #fff!important
+  }
+}
+@media only screen and (max-width: 679px) and (min-width: 0) {
+  .smart-style-7 #hide-menu i {
+    color: #fff!important
+  }
+}
+@media only screen and (max-width: 479px) and (min-width: 320px) {
+  .smart-style-7 #sparks {
+    background: #fff
+  }
+  .smart-style-7 #cancel-search-js,
+  .smart-style-7 .search-mobile .header-search>button {
+    border-radius: 3px
+  }
+}

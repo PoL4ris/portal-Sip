@@ -31,6 +31,7 @@
   <link rel="stylesheet" type="text/css" media="screen" href="/css/smart/styles/css/datTables.min.css">
 
   <!-- SILVERIP CSS -->
+  <link rel="stylesheet" type="text/css" media="screen" href="/css/skin.css">
   <link rel="stylesheet" type="text/css" media="screen" href="/css/style.css">
   <link rel="stylesheet" type="text/css" media="screen" href="/css/buildings.css">
   <link rel="stylesheet" type="text/css" media="screen" href="/css/calendar.css">

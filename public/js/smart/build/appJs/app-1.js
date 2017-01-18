@@ -51,6 +51,14 @@ appConfig.skins = [
     style: "background: #2196F3; border: 1px solid rgba(121, 161, 221, 0.8); color: #FFF !important;",
     beta: true,
     label: "MaterialDesign"
+  },
+
+  {name: "smart-style-7",
+    logo: "styles/img/logo-white.png",
+//     logo: "styles/img/logo-white-ltrs.png",
+    class: "btn btn-xs btn-block txt-color-white margin-top-5",
+    style: "background:#3A4558;",
+    label: "SilverIP"
   }
 
 

@@ -119,7 +119,7 @@ angular.module('app.admin'  , ['ui.router']).config(function ($stateProvider) {
       },
       views: {
         "content@app": {
-          templateUrl: '/views/test.html'
+          templateUrl: '/views/test.html',
         }
       },
       resolve: {
