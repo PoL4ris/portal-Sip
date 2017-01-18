@@ -121,7 +121,8 @@ var app = angular.module('app', [
   'app.buildings',
   'app.customers',
   'app.network',
-  'app.support'
+  'app.support',
+  'app.admin'
 ])
   .config(function ($provide, $httpProvider, RestangularProvider) {
 

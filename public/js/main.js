@@ -108,3 +108,26 @@ angular.module('app.calendar'  , ['ui.router']).config(function ($stateProvider)
       }
     })
 });
+
+
+angular.module('app.admin'  , ['ui.router']).config(function ($stateProvider) {
+  $stateProvider
+    .state('app.admin', {
+      url: '/admin',
+      data: {
+        title: 'Admin'
+      },
+      views: {
+        "content@app": {
+          templateUrl: '/views/test.html'
+        }
+      },
+      resolve: {
+        scripts: function(lazyScript){
+          return lazyScript.register([
+            '/js/smart/build/vendor.ui.js'
+          ]);
+        }
+      }
+    })
+});
