@@ -21,7 +21,7 @@ body.smart-style-7 {
   text-shadow: 0 0 1px #111318
 }
 .smart-style-7 #ribbon {
-  background: #f9f9f9;
+  background: #d6d6d6;
 }
 .smart-style-7 .breadcrumb>li+li:before {
   color: #646464
@@ -154,7 +154,7 @@ body.smart-style-7 {
 }
 .smart-style-7 .login-info {
   height: auto;
-  box-shadow: 1px 1px 0 rgba(251, 128, 75, 0.3) inset, 0 -1px 0 rgba(251, 128, 75, 0.2) inset;
+  /*box-shadow: 1px 1px 0 rgba(251, 128, 75, 0.3) inset, 0 -1px 0 rgba(251, 128, 75, 0.2) inset;*/
 }
 .smart-style-7 .login-info>span {
   padding: 5px 10px
@@ -239,6 +239,7 @@ body.smart-style-7 {
 .smart-style-7 aside {
   background: white;
   border-right: 1px solid #FB804B;
+  box-shadow: 1px 3px 4px rgba(251, 128, 75, 0.5);
 }
 .smart-style-7 .login-info,
 .smart-style-7 .login-info span {
@@ -256,7 +257,7 @@ body.smart-style-7 {
 .smart-style-7 nav ul li.active a{
   color: #FB804B !important;
 }
-nav ul li.active > a::before{
+.smart-style-7 nav ul li.active > a::before{
   color: #FB804B;
 }
 .smart-style-7 .pagination>.active>a,
