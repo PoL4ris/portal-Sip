@@ -1,117 +1,119 @@
-<div class="color-name-header" ng-if="stcFlag">
-  Go to Customer Info.
-</div>
+<div jarvis-widget id="wid-id-59" data-widget-deletebutton="false" data-widget-editbutton="false" data-widget-custombutton="false" ng-controller="FormXeditableCtrl">
 
-<div class="col-lg-12" ng-controller="customerPaymentMethodsController" ng-if="!stcFlag" id="tom">
+  <header>
+    <span class="widget-icon"> <i class="fa fa-building-o"></i> </span><h2>Payment Method</h2>
+  </header>
 
-  <div class="col-lg-12 display-content-main-box anim">
-    <h2 class="float-left">Default Credit Card</h2>
+  <div class="col-lg-12" ng-controller="customerPaymentMethodsController" ng-if="!stcFlag" id="tom">
 
-    <div class="field-data bg-white col-lg-12">
-      <label class="b-r col-lg-6">Token (Acct Number)</label><label class="col-lg-6 block-b-label" id="b-CCnumber">{{ paymentData.account_number }}</label>
-    </div>
-    <div class="field-data bg-white col-lg-12">
-      <label class="b-r col-lg-6">Card Type</label><label class="col-lg-6 block-b-label" id="b-CCtype">{{ paymentData.card_type }}</label>
-    </div>
-    <div class="field-data bg-white col-lg-12">
-      <label class="b-r col-lg-6">Expiration Month</label><label class="col-lg-6 block-b-label" id="b-Expmo">{{ paymentData.exp_month }}</label>
-    </div>
-    <div class="field-data bg-white col-lg-12">
-      <label class="b-r col-lg-6">Expiration Year</label><label class="col-lg-6 block-b-label" id="b-Expyr">{{ paymentData.exp_year }}</label>
-    </div>
-    <div class="field-data bg-white col-lg-12">
-      <label class="b-r col-lg-6">Priority</label><label class="col-lg-6 block-b-label" id="b-Priority">{{ paymentData.priority == 1 ? 'YES' : 'NO' }}</label>
-    </div>
+    <div class="col-lg-4 display-content-main-box anim">
+      <h2 class="float-left">Default Credit Card</h2>
 
-    <div class="btn-group btn-group-justified float-right w-auto m-t-sm m-b-sm">
-      <div class="btn-warning wrapper-xs float-right r box-char" ng-click="openManualRef()">Manual Refund
-        <div class="manual-ref charge-box">
-          <div class="cbox-containter">
-            <!--<div class="x-manaual" ng-click="closeTransparentBGManual()">X</div>-->
-            <p>Manual Refund</p>
-            <div class="cboxc-top">
-              <label>Amount to Refund</label><input type="text" placeholder="Set amount with no comas or signs" id="mf-input-am">
+      <div class="field-data bg-white col-lg-12">
+        <label class="b-r col-lg-6">Token (Acct Number)</label><label class="col-lg-6 block-b-label" id="b-CCnumber">{{ paymentData.account_number }}</label>
+      </div>
+      <div class="field-data bg-white col-lg-12">
+        <label class="b-r col-lg-6">Card Type</label><label class="col-lg-6 block-b-label" id="b-CCtype">{{ paymentData.card_type }}</label>
+      </div>
+      <div class="field-data bg-white col-lg-12">
+        <label class="b-r col-lg-6">Expiration Month</label><label class="col-lg-6 block-b-label" id="b-Expmo">{{ paymentData.exp_month }}</label>
+      </div>
+      <div class="field-data bg-white col-lg-12">
+        <label class="b-r col-lg-6">Expiration Year</label><label class="col-lg-6 block-b-label" id="b-Expyr">{{ paymentData.exp_year }}</label>
+      </div>
+      <div class="field-data bg-white col-lg-12">
+        <label class="b-r col-lg-6">Priority</label><label class="col-lg-6 block-b-label" id="b-Priority">{{ paymentData.priority == 1 ? 'YES' : 'NO' }}</label>
+      </div>
+
+      <div class="btn-group btn-group-justified float-right w-auto m-t-sm m-b-sm">
+        <div class="btn-warning wrapper-xs float-right r box-char" ng-click="openManualRef()">Manual Refund
+          <div class="manual-ref charge-box">
+            <div class="cbox-containter">
+              <!--<div class="x-manaual" ng-click="closeTransparentBGManual()">X</div>-->
+              <p>Manual Refund</p>
+              <div class="cboxc-top">
+                <label>Amount to Refund</label><input type="text" placeholder="Set amount with no comas or signs" id="mf-input-am">
+              </div>
+              <div class="cboxc-bottom">
+                <label>Description</label><input type="text" placeholder="Describe the reason" id="mf-input-de">
+              </div>
+              <button class="btn2" ng-click="refundFunct()">Refund</button>
             </div>
-            <div class="cboxc-bottom">
-              <label>Description</label><input type="text" placeholder="Describe the reason" id="mf-input-de">
+          </div>
+        </div>
+        <div class="btn-danger wrapper-xs float-right m-r-sm r box-char" ng-click="openManualChar()">Manual Charge
+          <div class="manual-char charge-box">
+            <div class="cbox-containter">
+              <!--<div class="x-manaual" ng-click="closeTransparentBGManual()">X</div>-->
+              <p>Manual Charge</p>
+              <div class="cboxc-top">
+                <label>Amount to Charge</label><input type="text" placeholder="Set amount with no comas or signs" id="mc-input-am">
+              </div>
+              <div class="cboxc-bottom">
+                <label>Description</label><input type="text" placeholder="Describe the reason" id="mc-input-de">
+              </div>
+              <button class="btn2" ng-click="chargeFunct()">Charge</button>
             </div>
-            <button class="btn2" ng-click="refundFunct()">Refund</button>
           </div>
         </div>
       </div>
-      <div class="btn-danger wrapper-xs float-right m-r-sm r box-char" ng-click="openManualChar()">Manual Charge
-        <div class="manual-char charge-box">
-          <div class="cbox-containter">
-            <!--<div class="x-manaual" ng-click="closeTransparentBGManual()">X</div>-->
-            <p>Manual Charge</p>
-            <div class="cboxc-top">
-              <label>Amount to Charge</label><input type="text" placeholder="Set amount with no comas or signs" id="mc-input-am">
-            </div>
-            <div class="cboxc-bottom">
-              <label>Description</label><input type="text" placeholder="Describe the reason" id="mc-input-de">
-            </div>
-            <button class="btn2" ng-click="chargeFunct()">Charge</button>
-          </div>
-        </div>
+
+
+      <div class="transparent-charge" ng-click="closeTransparentBGManual()"></div>
+
+    </div>
+
+    <div class="col-lg-8" id="customer-view-0">
+
+      <div class="color-name-header btn-dark">
+        Payment Methods:
       </div>
-    </div>
+      <div class="panel panel-default">
+        <table id="myTable" class="tablesorter table" >
+          <thead>
+          <tr>
+            <th>ID</th>
+            <th>Token</th><th>Exp Month</th><th>Exp Year</th>
+            <th>Card Type</th>
+            <th>Type</th>
+            <th>Priority</th>
+            <th>Properties</th>
+            <th>Created At</th>
+            <th>Updated At</th>
+            <th>Set Default</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr ng-repeat="payment in paymentMethods" >
+            <td>{{ payment.id }}</td>
+            <td>{{ payment.account_number }}</td>
+            <td>{{ payment.exp_month }}</td>
+            <td>{{ payment.exp_year }}</td>
+            <td>{{ payment.card_type }}</td>
+            <td>{{ payment.types}}</td>
+            <td>{{ payment.priority == 1 ? 'Default' : '' }}</td>
+            <td>{{ payment.properties }}</td>
+            <td>{{ payment.created_at }}</td>
+            <td>{{ payment.updated_at }}</td>
+            <td>
+              <button class="md-primary md-raised anim-btn" ng-click="setDefault(payment.id)" ng-if="payment.priority != 1">
+                <label class="display-none">s</label>
+                <i class="icon-like"></i>
+              </button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
 
-
-    <div class="transparent-charge" ng-click="closeTransparentBGManual()"></div>
-
-  </div>
-
-  <div id="customer-view-0">
-
-    <div class="color-name-header btn-dark">
-      Payment Methods:
-    </div>
-    <div class="panel panel-default">
-      <table id="myTable" class="tablesorter table" >
-        <thead>
-        <tr>
-          <th>ID</th>
-          <th>Token</th><th>Exp Month</th><th>Exp Year</th>
-          <th>Card Type</th>
-          <th>Type</th>
-          <th>Priority</th>
-          <th>Properties</th>
-          <th>Created At</th>
-          <th>Updated At</th>
-          <th>Set Default</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr ng-repeat="payment in paymentMethods" >
-          <td>{{ payment.id }}</td>
-          <td>{{ payment.account_number }}</td>
-          <td>{{ payment.exp_month }}</td>
-          <td>{{ payment.exp_year }}</td>
-          <td>{{ payment.card_type }}</td>
-          <td>{{ payment.types}}</td>
-          <td>{{ payment.priority == 1 ? 'Default' : '' }}</td>
-          <td>{{ payment.properties }}</td>
-          <td>{{ payment.created_at }}</td>
-          <td>{{ payment.updated_at }}</td>
-          <td>
-            <button class="md-primary md-raised anim-btn" ng-click="setDefault(payment.id)" ng-if="payment.priority != 1">
-              <label class="display-none">s</label>
-              <i class="icon-like"></i>
-            </button>
-          </td>
-        </tr>
-        </tbody>
-      </table>
-
-    </div>
-    <div class="col-lg-12">
+      </div>
+      <div class="col-lg-12">
       <button class="btn5" ng-click="open()">New Payment Method</button>
     </div>
 
 
   </div>
 
-  <script type="text/ng-template" id="addPaymentMethod.html">
+    <script type="text/ng-template" id="addPaymentMethod.html">
 
   <div class="bg-white col-lg-12">
     <div class="color-name-header">New Payment Method</div>
@@ -168,5 +170,7 @@
   </div>
 
 </script>
+
+  </div>
 
 </div>

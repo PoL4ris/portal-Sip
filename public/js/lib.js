@@ -854,21 +854,21 @@ app.controller('customerBuildingController',        function ($scope, $http){
 
 
 app.controller('customerPaymentMethodsController',  function ($scope, $http){
-console.log('something here con el id de  : ' + $scope.idCustomer);
+// console.log('something here con el id de  : ' + $scope.idCustomer);
 // return;
 // app.controller('customerPaymentMethodsController',  function ($scope, $http,$uibModal, $log){
 // return;
   $http.get("getCustomerPayment", {params:{'id':$scope.stcid?$scope.stcid:$scope.idCustomer}})
     .then(function (response) {
       $scope.paymentData = response.data[0];
-      console.log(response.data);
+//       console.log(response.data);
     });
 
 
   $http.get("getPaymentMethods", {params:{'id':$scope.idCustomer}})
     .then(function (response) {
       $scope.paymentMethods = response.data;
-      console.log(response.data);
+//       console.log(response.data);
     });
 
   $scope.setDefault = function (id) {
@@ -920,7 +920,7 @@ console.log('something here con el id de  : ' + $scope.idCustomer);
     $http.get("chargeAmount", {params:{'cid':cid, 'amount':amount, 'desc':desc}})
       .then(function (response) {
 //         $scope.paymentMethods = response.data;
-        console.log(response.data);
+//         console.log(response.data);
         if(response.data.RESPONSETEXT == 'APPROVED')
           $scope.closeTransparentBGManual();
       });

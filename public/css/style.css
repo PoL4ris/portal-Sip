@@ -91,6 +91,9 @@
 .float-right {
   float: right;
 }
+.size-50{
+  width:50%;
+}
 .label-form-align {
   position: relative;
   top: 7px;
@@ -192,9 +195,10 @@
   color: white;
 }
 #new-ct-form textarea {
-  max-height: 400px;
+  max-height: 80px;
   max-width: 100%;
-  min-height: 250px;
+  min-height: 80px;
+  min-width: 100%;
   padding: 5px;
 }
 .ticket-comment-pop {

@@ -239,7 +239,7 @@ body.smart-style-7 {
 .smart-style-7 aside {
   background: white;
   border-right: 1px solid #FB804B;
-  box-shadow: 1px 3px 4px rgba(251, 128, 75, 0.5);
+  /*box-shadow: 1px 3px 4px rgba(251, 128, 75, 0.5);*/
 }
 .smart-style-7 .login-info,
 .smart-style-7 .login-info span {
