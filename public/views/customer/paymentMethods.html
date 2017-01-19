@@ -105,68 +105,82 @@
 
     </div>
     <div class="col-lg-12">
-      <button class="btn5" ng-click="open()">New Payment Method</button>
+      <button class="btn5" ng-click="open()" data-toggle="modal" data-target="#paymentMethodModal">New Payment Method</button>
     </div>
-
 
   </div>
 
-  <script type="text/ng-template" id="addPaymentMethod.html">
+  <div class="modal fade" id="paymentMethodModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" ng-controller="addPaymentMethodController">
+    <div class="modal-dialog modal-ticket-size">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="cancelNewEvent()">
+            &times;
+          </button>
+          <span>MODAL</span>
+        </div>
+        <div class="modal-body">
+          <div class="wrapper-sm">
+            <div class="row">
 
-  <div class="bg-white col-lg-12">
-    <div class="color-name-header">New Payment Method</div>
+              <form id="paymentmethodform">
 
-    <form id="paymentmethodform">
+                <label class="bold-type col-lg-4">Name on card:</label>
+                <input type="text" name="card_name" class="col-lg-8 input-text" placeholder="Ex: Pablo Uribe" required>
 
-    <label class="bold-type col-lg-4">Name on card:</label>
-    <input type="text" name="card_name" class="col-lg-8 input-text" placeholder="Ex: Pablo Uribe" required>
+                <label class="bold-type col-lg-4">Account Number:</label>
+                <input type="text" name="account_number" class="col-lg-8 input-text" placeholder="Account number with no signs(,/-)" required>
 
-    <label class="bold-type col-lg-4">Account Number:</label>
-    <input type="text" name="account_number" class="col-lg-8 input-text" placeholder="Account number with no signs(,/-)" required>
+                <label class="bold-type col-lg-4">Billing Phone:</label>
+                <input type="text" name="billing_phone" class="col-lg-8 input-text"  placeholder="Ex: 555-444-3322"required>
 
-    <label class="bold-type col-lg-4">Billing Phone:</label>
-    <input type="text" name="billing_phone" class="col-lg-8 input-text"  placeholder="Ex: 555-444-3322"required>
+                <span class="bold-type col-lg-3 m-t-sm">Exp Month :</span>
+                <select name="exp_month" class="col-lg-3  m-t-sm" required>
+                  <option value="">Select a Month</option>
+                  <option value="01">01</option><option  value="02">02</option><option  value="03">03</option>
+                  <option value="04">04</option><option  value="05">05</option><option  value="06">06</option>
+                  <option value="07">07</option><option  value="08">08</option><option  value="09">09</option>
+                  <option value="10">10</option><option  value="11">11</option><option  value="12">12</option>
+                </select>
 
-    <span class="bold-type col-lg-3 m-t-sm">Exp Month :</span>
-    <select name="exp_month" class="col-lg-3  m-t-sm" required>
-      <option value="">Select a Month</option>
-      <option value="01">01</option><option  value="02">02</option><option  value="03">03</option>
-      <option value="04">04</option><option  value="05">05</option><option  value="06">06</option>
-      <option value="07">07</option><option  value="08">08</option><option  value="09">09</option>
-      <option value="10">10</option><option value="11">11</option><option value="12">12</option>
-    </select>
+                <span class="bold-type col-lg-3  m-t-sm">Exp Year :</span>
+                <select name="exp_year" class="col-lg-3 m-t-sm" required>
+                  <option value="">Select a Year</option>
+                  <option value="2017">17</option><option value="2018">18</option>
+                  <option value="2019">19</option><option value="2020">20</option><option value="2021">21</option>
+                  <option value="2022">22</option>
+                </select>
 
-    <span class="bold-type col-lg-3  m-t-sm">Exp Year :</span>
-    <select name="exp_year" class="col-lg-3 m-t-sm" required>
-      <option value="">Select a Year</option>
-      <option value="2016">16</option><option value="2017">17</option><option value="2018">18</option>
-      <option value="2019">19</option><option value="2020">20</option><option value="2021">21</option>
-      <option value="2022">22</option>
-    </select>
+                <span class="bold-type col-lg-3 m-t-sm">Card Type</span>
+                <select name="card_type" class="col-lg-3 m-t-sm" required>
+                  <option value="">Select a Type</option>
+                  <option value="VS">Visa</option>
+                  <option value="MC">Master Card</option>
+                  <option value="AX">Amex</option>
+                </select>
 
-    <span class="bold-type col-lg-3 m-t-sm">Card Type</span>
-    <select name="card_type" class="col-lg-3 m-t-sm" required>
-      <option value="">Select a Type</option>
-      <option value="VS">Visa</option>
-      <option value="MC">Master Card</option>
-      <option value="AX">Amex</option>
-    </select>
-
-    <label class="bold-type col-lg-3 m-t-sm">CCV :</label>
-    <input type="text" name="CCscode" class="col-lg-3 input-text m-t-sm"   placeholder="CCV" required>
+                <label class="bold-type col-lg-3 m-t-sm">CCV :</label>
+                <input type="text" name="CCscode" class="col-lg-3 input-text m-t-sm"   placeholder="CCV" required>
 
 
-    <div class="col-lg-12 m-b-md"></div>
+                <div class="col-lg-12 m-b-md"></div>
 
-    <div class="col-lg-12 addServiceBoton m-b-sm">
-      <button type="submit" class="btn m-b-xs w-xs btn-primary float-right" ng-click="addNewPaymentMethod()" >Add</button>
+                <div class="col-lg-12 addServiceBoton m-b-sm">
+                  <button type="submit" class="btn m-b-xs w-xs btn-primary float-right" ng-click="addNewPaymentMethod()" >Add</button>
+                </div>
+
+              </form>
+
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">
+            Cancel
+          </button>
+        </div>
+      </div>
     </div>
-
-
-    </form>
-
   </div>
-
-</script>
 
 </div>

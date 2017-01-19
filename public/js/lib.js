@@ -959,21 +959,33 @@ console.log('something here con el id de  : ' + $scope.idCustomer);
 });
 app.controller('addPaymentMethodController',        function ($scope, $http){
 // app.controller('addPaymentMethodController',        function ($scope, $http, customerId, notify, $uibModalInstance){
-
+/*
+* value[0] = Name on Card
+* value[1] = Account Number
+* value[2] = Billing Phone
+* value[3] = Exp Month
+* value[4] = Exp Year
+* value[5] = Card Type
+* value[6] = CCV
+* */
+console.log('this is addPaymentMethodController ');
   $scope.addNewPaymentMethod = function (){
-    var objects = warpol('#paymentmethodform').serializeArray();
+    var objects = $('#paymentmethodform').serializeArray();
 
     if(!objects[0].value || !objects[1].value || !objects[2].value || !objects[3].value || !objects[4].value || !objects[5].value || !objects[6].value)
       return;
 
     var regexCC = /\b(?:3[47]\d{2}([\ \-]?)\d{6}\1\d|(?:(?:4\d|5[1-5]|65)\d{2}|6011)([\ \-]?)\d{4}\2\d{4}\2)\d{4}\b/g;
+    console.log(regexCC.test(objects[1].value));
 
     if (!regexCC.test(objects[1].value)) {
-      notify({ message: 'Verify your Account Number', templateUrl:'/views/notify.html'} );
+//       notify({ message: 'Verify your Account Number', templateUrl:'/views/notify.html'} );
+      console.log('Verify your Account Number');
       return;
     }
     if(objects[6].value.length < 3 || objects[6].value.length > 4) {
-      notify({ message: 'Verify your CCV Number', templateUrl:'/views/notify.html'} );
+//       notify({ message: 'Verify your CCV Number', templateUrl:'/views/notify.html'} );
+      console.log('Verify your CCV Number');
       return;
     }
 
@@ -988,11 +1000,15 @@ app.controller('addPaymentMethodController',        function ($scope, $http){
         if(response.data == 'OK')
         {
           $uibModalInstance.dismiss('cancel');
-          notify({ message: 'Account ' + infoData['account_number'] + ' ready to use.', templateUrl:'/views/notify.html'} );
+//           notify({ message: 'Account ' + infoData['account_number'] + ' ready to use.', templateUrl:'/views/notify.html'} );
+          console.log('Account ' + infoData['account_number'] + ' ready to use.');
           angular.element('#tom').scope().getPaymentMethods(customerId);
         }
         else
-          notify({ message: 'ERROR: Verify your information.', templateUrl:'/views/notify.html'} );
+        {
+//           notify({ message: 'ERROR: Verify your information.', templateUrl:'/views/notify.html'} );
+          console.log('ERROR: Verify your information.');
+        }
       });
   }
 });

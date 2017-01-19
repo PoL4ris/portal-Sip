@@ -1,165 +1,206 @@
-something fun
-
-
-<!-- Widget ID (each widget will need unique ID)-->
-<div jarvis-widget id="wid-id-5" data-widget-colorbutton="false" data-widget-editbutton="false" data-widget-fullscreenbutton="false" data-widget-custombutton="false" data-widget-sortable="false" data-widget-togglebutton="false" data-widget-deletebutton="false">
-  <!-- widget options:
-  usage: <div jarvis-widget id="wid-id-0" data-widget-editbutton="false">
-
-  data-widget-colorbutton="false"
-  data-widget-editbutton="false"
-  data-widget-togglebutton="false"
-  data-widget-deletebutton="false"
-  data-widget-fullscreenbutton="false"
-  data-widget-custombutton="false"
-  data-widget-collapsed="true"
-  data-widget-sortable="false"
-
-  -->
-  <header>
-    <h2>Tabs left </h2>
-  </header>
-
-  <!-- widget div-->
-  <div>
-
-    <!-- widget edit box -->
-    <div class="jarviswidget-editbox">
-      <!-- This area used as dropdown edit box -->
-
-    </div>
-    <!-- end widget edit box -->
-
-    <!-- widget content -->
-    <div class="widget-body">
-
-      <div class="tabs-left">
-        <ul class="nav nav-tabs tabs-left" id="demo-pill-nav">
-          <li class="active">
-            <a href="#tab-r1" data-toggle="tab"><span class="badge bg-color-blue txt-color-white">12</span> Item 1 </a>
-          </li>
-          <li>
-            <a href="#tab-r2" data-toggle="tab"><span class="badge bg-color-blueDark txt-color-white">3</span> Item 2</a>
-          </li>
-          <li>
-            <a href="#tab-r3" data-toggle="tab"><span class="badge bg-color-greenLight txt-color-white">0</span> Item 3</a>
-          </li>
-          <li>
-            <a href="#tab-r4" data-toggle="tab"><span class="badge bg-color-greenLight txt-color-white">0</span> Item 4</a>
-          </li>
-          <li>
-            <a href="#tab-r5" data-toggle="tab"><span class="badge bg-color-greenLight txt-color-white">0</span> Item 5</a>
-          </li>
-          <li>
-            <a href="#tab-r6" data-toggle="tab"><span class="badge bg-color-greenLight txt-color-white">0</span> Item 6</a>
-          </li>
-        </ul>
-        <div class="tab-content">
-          <div class="tab-pane active" id="tab-r1">
-            <p>
-              Dear Math, please grow up and solve your own problems, I'm tired of solving them for you.
-            </p>
-
-            <p>
-              They say that love is more important than money, but have you ever tried to pay your bills with a hug?
-            </p>
-          </div>
-          <div class="tab-pane" id="tab-r2">
-            <p>
-              Etsy mixtape wayfarers, ethical wes anderson tofu before they sold out mcsweeney's organic lomo retro fanny pack lo-fi farm-to-table readymade. Messenger bag gentrify pitchfork tattooed craft beer, iphone skateboard locavore carles etsy salvia banksy hoodie helvetica. DIY synth PBR banksy irony.
-            </p>
-          </div>
-          <div class="tab-pane" id="tab-r3">
-            <p>
-              Trust fund seitan letterpress, keytar raw denim keffiyeh etsy art party before they sold out master cleanse gluten-free squid scenester freegan cosby sweater. Fanny pack portland seitan DIY, art party locavore wolf cliche high life echo park Austin. Cred vinyl keffiyeh DIY salvia PBR, banh mi before they sold out farm-to-table.
-            </p>
-          </div>
-          <div class="tab-pane" id="tab-r4">
-            <p>
-              SOMETHING HERE
-            </p>
-          </div>
-          <div class="tab-pane" id="tab-r5">
-            <p>
-              TAB NUMBER 5
-            </p>
-          </div>
-          <div class="tab-pane" id="tab-r6">
-            <p>
-              TAB TAB NUMBER NUMBER ^6^
-            </p>
-          </div>
-        </div>
-      </div>
-
-    </div>
-    <!-- end widget content -->
-
-  </div>
-  <!-- end widget div -->
-
+<div class="color-name-header" ng-if="stcFlag">
+  Go to Customer Info.
 </div>
-<!-- end widget -->
 
+<div class="col-lg-12" ng-controller="customerPaymentMethodsController" ng-if="!stcFlag" id="tom">
 
+  <div class="col-lg-12 display-content-main-box anim">
+    <h2 class="float-left">Default Credit Card</h2>
 
+    <div class="field-data bg-white col-lg-12">
+      <label class="b-r col-lg-6">Token (Acct Number)</label><label class="col-lg-6 block-b-label" id="b-CCnumber">{{ paymentData.account_number }}</label>
+    </div>
+    <div class="field-data bg-white col-lg-12">
+      <label class="b-r col-lg-6">Card Type</label><label class="col-lg-6 block-b-label" id="b-CCtype">{{ paymentData.card_type }}</label>
+    </div>
+    <div class="field-data bg-white col-lg-12">
+      <label class="b-r col-lg-6">Expiration Month</label><label class="col-lg-6 block-b-label" id="b-Expmo">{{ paymentData.exp_month }}</label>
+    </div>
+    <div class="field-data bg-white col-lg-12">
+      <label class="b-r col-lg-6">Expiration Year</label><label class="col-lg-6 block-b-label" id="b-Expyr">{{ paymentData.exp_year }}</label>
+    </div>
+    <div class="field-data bg-white col-lg-12">
+      <label class="b-r col-lg-6">Priority</label><label class="col-lg-6 block-b-label" id="b-Priority">{{ paymentData.priority == 1 ? 'YES' : 'NO' }}</label>
+    </div>
 
-<div id="tabs-pills-widget-widget" data-widget-colorbutton="false" data-widget-editbutton="false" data-widget-togglebutton="false" data-widget-deletebutton="false" data-widget-fullscreenbutton="false" data-widget-custombutton="false" data-jarvis-widget="" ng-init="demoShowTabs = true" class="jarviswidget jarviswidget-sortable" style="" role="widget">
-  <header role="heading" class="ui-sortable-handle">
-    <h2><strong>Tabs / Pills</strong> <i>Widget</i></h2>
-    <ul id="widget-tab-1" class="nav pull-right nav-tabs" ng-class="{'nav-tabs' : !!demoShowTabs, 'nav-pills': !demoShowTabs }">
-      <li class="active">
-        <a data-toggle="tab" href="#hr1" aria-expanded="true"> <i class="fa fa-lg fa-arrow-circle-o-down"></i> <span class="hidden-mobile hidden-tablet"> Tab 1 </span> </a>
-      </li>
-      <li class="">
-        <a data-toggle="tab" href="#hr2" aria-expanded="false"> <i class="fa fa-lg fa-arrow-circle-o-up"></i> <span class="hidden-mobile hidden-tablet"> Tab 2 </span></a>
-      </li>
-      <li class="">
-        <a data-toggle="tab" href="#hr3" aria-expanded="false"> <i class="fa fa-lg fa-arrow-circle-o-down"></i> <span class="hidden-mobile hidden-tablet"> Tab 3 </span></a>
-      </li>
-      <li class="">
-        <a data-toggle="tab" href="#hr4" aria-expanded="false"> <i class="fa fa-lg fa-arrow-circle-o-up"></i> <span class="hidden-mobile hidden-tablet"> Tab 4 </span></a>
-      </li>
-      <li class="">
-        <a data-toggle="tab" href="#hr5" aria-expanded="false"> <i class="fa fa-lg fa-arrow-circle-o-down"></i> <span class="hidden-mobile hidden-tablet"> Tab 5 </span></a>
-      </li>
-      <li class="">
-        <a data-toggle="tab" href="#hr6" aria-expanded="false"> <i class="fa fa-lg fa-arrow-circle-o-up"></i> <span class="hidden-mobile hidden-tablet"> Tab 6 </span></a>
-      </li>
-    </ul>
-    <span class="jarviswidget-loader"><i class="fa fa-refresh fa-spin"></i></span></header>
-  <!-- widget div-->
-  <div role="content">
-    <!-- widget content -->
-    <div class="widget-body no-padding"><div class="jarviswidget-editbox"><input class="form-control" type="text"></div>
-      <!-- widget body text-->
-      <div class="tab-content padding-10">
-        <div class="tab-pane fade active in" id="hr1">
-          <h4 class="alert alert-danger"> Insert tabs / pills to widget header </h4>
-          I have six locks on my door all in a row. When I go out, I lock every other one. I figure no matter how long somebody stands there picking the locks, they are always locking three.
-        </div>
-        <div class="tab-pane fade" id="hr2">
-          <h4 class="alert alert-warning"> Checkout the <a href="general-elements.html">General Elements</a> page for more tab options </h4>
-          Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table craft beer twee.
-        </div>
-        <div class="tab-pane fade" id="hr3">
-          <h4 class="alert alert-warning"> Checkout the <a href="general-elements.html">General Elements</a> page for more tab options </h4>
-        </div>
-        <div class="tab-pane fade" id="hr4">
-          Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table craft beer twee.
-        </div>
-        <div class="tab-pane fade" id="hr5">
-          SOMETHING MORE FUN
-        </div>
-        <div class="tab-pane fade" id="hr6">
-          WICHOL
+    <div class="btn-group btn-group-justified float-right w-auto m-t-sm m-b-sm">
+      <div class="btn-warning wrapper-xs float-right r box-char" ng-click="openManualRef()">Manual Refund
+        <div class="manual-ref charge-box">
+          <div class="cbox-containter">
+            <!--<div class="x-manaual" ng-click="closeTransparentBGManual()">X</div>-->
+            <p>Manual Refund</p>
+            <div class="cboxc-top">
+              <label>Amount to Refund</label><input type="text" placeholder="Set amount with no comas or signs" id="mf-input-am">
+            </div>
+            <div class="cboxc-bottom">
+              <label>Description</label><input type="text" placeholder="Describe the reason" id="mf-input-de">
+            </div>
+            <button class="btn2" ng-click="refundFunct()">Refund</button>
+          </div>
         </div>
       </div>
-      <!-- end widget body text-->
-      <!-- widget footer -->
-      <!-- end widget footer -->
+      <div class="btn-danger wrapper-xs float-right m-r-sm r box-char" ng-click="openManualChar()">Manual Charge
+        <div class="manual-char charge-box">
+          <div class="cbox-containter">
+            <!--<div class="x-manaual" ng-click="closeTransparentBGManual()">X</div>-->
+            <p>Manual Charge</p>
+            <div class="cboxc-top">
+              <label>Amount to Charge</label><input type="text" placeholder="Set amount with no comas or signs" id="mc-input-am">
+            </div>
+            <div class="cboxc-bottom">
+              <label>Description</label><input type="text" placeholder="Describe the reason" id="mc-input-de">
+            </div>
+            <button class="btn2" ng-click="chargeFunct()">Charge</button>
+          </div>
+        </div>
+      </div>
     </div>
-    <!-- end widget content -->
+
+
+    <div class="transparent-charge" ng-click="closeTransparentBGManual()"></div>
+
   </div>
-  <!-- end widget div -->
+
+  <div id="customer-view-0">
+
+    <div class="color-name-header btn-dark">
+      Payment Methods:
+    </div>
+    <div class="panel panel-default">
+      <table id="myTable" class="tablesorter table" >
+        <thead>
+        <tr>
+          <th>ID</th>
+          <th>Token</th><th>Exp Month</th><th>Exp Year</th>
+          <th>Card Type</th>
+          <th>Type</th>
+          <th>Priority</th>
+          <th>Properties</th>
+          <th>Created At</th>
+          <th>Updated At</th>
+          <th>Set Default</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="payment in paymentMethods" >
+          <td>{{ payment.id }}</td>
+          <td>{{ payment.account_number }}</td>
+          <td>{{ payment.exp_month }}</td>
+          <td>{{ payment.exp_year }}</td>
+          <td>{{ payment.card_type }}</td>
+          <td>{{ payment.types}}</td>
+          <td>{{ payment.priority == 1 ? 'Default' : '' }}</td>
+          <td>{{ payment.properties }}</td>
+          <td>{{ payment.created_at }}</td>
+          <td>{{ payment.updated_at }}</td>
+          <td>
+            <button class="md-primary md-raised anim-btn" ng-click="setDefault(payment.id)" ng-if="payment.priority != 1">
+              <label class="display-none">s</label>
+              <i class="icon-like"></i>
+            </button>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+
+    </div>
+    <div class="col-lg-12">
+      <button class="btn5" ng-click="open()" data-toggle="modal" data-target="#paymentMethodModal">New Payment Method</button>
+    </div>
+
+
+  </div>
+
+  <script type="text/ng-template" id="addPaymentMethod.html">
+
+    <div class="bg-white col-lg-12">
+      <div class="color-name-header">New Payment Method</div>
+
+
+
+    </div>
+
+  </script>
+
+  <div class="modal fade" id="paymentMethodModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-ticket-size">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="cancelNewEvent()">
+            &times;
+          </button>
+          <span>MODAL</span>
+        </div>
+        <div class="modal-body">
+          <div class="wrapper-sm">
+            <div class="row">
+
+
+
+
+              <form id="paymentmethodform">
+
+                <label class="bold-type col-lg-4">Name on card:</label>
+                <input type="text" name="card_name" class="col-lg-8 input-text" placeholder="Ex: Pablo Uribe" required>
+
+                <label class="bold-type col-lg-4">Account Number:</label>
+                <input type="text" name="account_number" class="col-lg-8 input-text" placeholder="Account number with no signs(,/-)" required>
+
+                <label class="bold-type col-lg-4">Billing Phone:</label>
+                <input type="text" name="billing_phone" class="col-lg-8 input-text"  placeholder="Ex: 555-444-3322"required>
+
+                <span class="bold-type col-lg-3 m-t-sm">Exp Month :</span>
+                <select name="exp_month" class="col-lg-3  m-t-sm" required>
+                  <option value="">Select a Month</option>
+                  <option value="01">01</option><option  value="02">02</option><option  value="03">03</option>
+                  <option value="04">04</option><option  value="05">05</option><option  value="06">06</option>
+                  <option value="07">07</option><option  value="08">08</option><option  value="09">09</option>
+                  <option value="10">10</option><option value="11">11</option><option value="12">12</option>
+                </select>
+
+                <span class="bold-type col-lg-3  m-t-sm">Exp Year :</span>
+                <select name="exp_year" class="col-lg-3 m-t-sm" required>
+                  <option value="">Select a Year</option>
+                  <option value="2017">17</option><option value="2018">18</option>
+                  <option value="2019">19</option><option value="2020">20</option><option value="2021">21</option>
+                  <option value="2022">22</option>
+                </select>
+
+                <span class="bold-type col-lg-3 m-t-sm">Card Type</span>
+                <select name="card_type" class="col-lg-3 m-t-sm" required>
+                  <option value="">Select a Type</option>
+                  <option value="VS">Visa</option>
+                  <option value="MC">Master Card</option>
+                  <option value="AX">Amex</option>
+                </select>
+
+                <label class="bold-type col-lg-3 m-t-sm">CCV :</label>
+                <input type="text" name="CCscode" class="col-lg-3 input-text m-t-sm"   placeholder="CCV" required>
+
+
+                <div class="col-lg-12 m-b-md"></div>
+
+                <div class="col-lg-12 addServiceBoton m-b-sm">
+                  <button type="submit" class="btn m-b-xs w-xs btn-primary float-right" ng-click="addNewPaymentMethod()" >Add</button>
+                </div>
+
+
+              </form>
+
+
+
+
+
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>
