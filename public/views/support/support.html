@@ -1,5 +1,9 @@
+<div class="container text-center" ng-if="!supportData">
+  <i class="fa fa-gear loading-anim f-size-25 p-t-lg"></i>
+</div>
+
 <!--TICKET LIST-->
-<section widget-grid id="widget-grid">
+<section widget-grid id="widget-grid" ng-if="supportData">
   <div class="row">
     <article class="col-sm-12">
       <div>

@@ -852,7 +852,7 @@ app.controller('customerBuildingController',        function ($scope, $http){
 
 
 
-
+//PAYMENT METHOD INCOMPLETE.
 app.controller('customerPaymentMethodsController',  function ($scope, $http){
 console.log('something here con el id de  : ' + $scope.idCustomer);
 // return;

@@ -91,6 +91,12 @@
 .float-right {
   float: right;
 }
+.loading-anim{
+  animation: 2s linear 0s normal none infinite running fa-spin;
+}
+.f-size-25{
+  font-size: 25px;
+}
 .label-form-align {
   position: relative;
   top: 7px;
