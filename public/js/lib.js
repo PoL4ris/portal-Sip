@@ -976,13 +976,41 @@ console.log('this is addPaymentMethodController ');
       return;
 
     var regexCC = /\b(?:3[47]\d{2}([\ \-]?)\d{6}\1\d|(?:(?:4\d|5[1-5]|65)\d{2}|6011)([\ \-]?)\d{4}\2\d{4}\2)\d{4}\b/g;
+
+    console.log(objects);
     console.log(regexCC.test(objects[1].value));
+    var boolResult = regexCC.test(objects[1].value);
+
+
+
+    if (boolResult == true)
+      console.log('this is true ===> ' + boolResult);
+    else
+      console.log('this is false ===> ' + boolResult);
+
+
+      return;
+
+
+
+
+
+
+
 
     if (!regexCC.test(objects[1].value)) {
 //       notify({ message: 'Verify your Account Number', templateUrl:'/views/notify.html'} );
       console.log('Verify your Account Number');
-      return;
+//       return;
     }
+    else{
+      console.log('this is false');
+    }
+
+    return;
+
+
+
     if(objects[6].value.length < 3 || objects[6].value.length > 4) {
 //       notify({ message: 'Verify your CCV Number', templateUrl:'/views/notify.html'} );
       console.log('Verify your CCV Number');
