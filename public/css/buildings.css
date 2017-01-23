@@ -92,7 +92,10 @@
 .carousel-inner > .item > a > img, .carousel-inner > .item > img{
   width: 90%;
 }
-
+.product-deatil{
+  border:none;
+  padding:0;
+  }
 
 
 /*@import "http://fonts.googleapis.com/css?family=Open+Sans:400,600,700";*/

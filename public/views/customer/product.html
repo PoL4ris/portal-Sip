@@ -1,8 +1,5 @@
-<div jarvis-widget id="wid-id-5" data-widget-deletebutton="false" data-widget-editbutton="false" data-widget-custombutton="false" ng-controller="FormXeditableCtrl">
-
-  <header>
-    <span class="widget-icon"><i class="fa fa-gears"></i></span><h2>Services</h2>
-  </header>
+<!--<div jarvis-widget id="wid-id-5" data-widget-deletebutton="false" data-widget-editbutton="false" data-widget-custombutton="false" ng-controller="FormXeditableCtrl">-->
+<div ng-controller="FormXeditableCtrl" class="m-t-lg">
 
   <div class="color-name-header" ng-if="stcFlag">
     Go to Customer Info.
@@ -20,8 +17,8 @@
           <td>{{ service.id }}</td>
           <td>{{ customerProduct.product.name }}</td>
           <td>$ {{ customerProduct.product.amount }}.00</td>
-          <td>{{ customerProduct.product.frequency }}</td>
-          <td>{{ customerProductStatus.status.name }}</td>
+          <td class="text-capitalize">{{ customerProduct.product.frequency }}</td>
+          <td class="text-capitalize">{{ customerProductStatus.status.name }}</td>
           <td class="prod-btns">
             <button class="btn fa btn-danger fa-pencil modif-service-btn"
                     title="Edit Service"
@@ -45,7 +42,7 @@
       </table>
     </div>
     <div class="col-lg-12 add-Service-btn no-padding-sides m-b-lg">
-      <button class="btn m-b-xs btn-sm btn-info btn-addon bg-blue float-right" data-toggle="modal" data-target="#myModalService"  ng-click="setModeType('')">
+      <button class="btn m-b-xs btn-sm btn-primary btn-addon bg-blue float-right" data-toggle="modal" data-target="#myModalService"  ng-click="setModeType('')">
         <i class="fa fa-plus"></i>
         Add Service
       </button>

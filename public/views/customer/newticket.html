@@ -1,5 +1,6 @@
-<div jarvis-widget id="wid-id-2" data-widget-deletebutton="false" data-widget-editbutton="false" data-widget-custombutton="false" ng-controller="FormXeditableCtrl">
-  <header><span class="widget-icon"><i class="fa fa-wrench"></i></span><h2>New Ticket</h2></header>
+<!--<div jarvis-widget id="wid-id-2" data-widget-deletebutton="false" data-widget-editbutton="false" data-widget-custombutton="false" ng-controller="FormXeditableCtrl">-->
+<div ng-controller="FormXeditableCtrl" class="bg-royal b-test p-t-lg p-b-lg float-left">
+
   <div class="widget-body">
     <form class="customer-customer-form" id="new-ct-form">
       <div class="col-lg-12 margin-bottom-10 no-padding-sides b-b-ddd padding-bottom-10">
@@ -26,7 +27,7 @@
         <textarea name="comment" class="col-lg-12 common-textarea" placeholder="Ticket Info..." required></textarea>
       </div>
       <div class="col-lg-12">
-        <button id="create-customer-ticket" class="btn btn-primary" ng-click="submitNewTicketForm()">Create Ticket</button>
+        <button id="create-customer-ticket" class="btn btn-primary float-right" ng-click="submitNewTicketForm()">Create Ticket</button>
       </div>
     </form>
   </div>

@@ -1,9 +1,9 @@
-<div jarvis-widget id="wid-id-1" data-widget-deletebutton="false" data-widget-editbutton="false" data-widget-custombutton="false" ng-controller="FormXeditableCtrl">
-  <header><span class="widget-icon"><i class="fa fa-phone"></i></span><h2>Contacts Card</h2></header>
+<!--<div jarvis-widget id="wid-id-1" data-widget-deletebutton="false" data-widget-editbutton="false" data-widget-custombutton="false" ng-controller="FormXeditableCtrl">-->
+<div ng-controller="FormXeditableCtrl" class="p-t-lg b-test bg-royal">
   <div ng-controller="FormPluginsCtrl">
     <div class="widget-body" ng-controller="globalToolsCtl">
       <!--BOTONES-->
-      <div class="widget-body-toolbar">
+      <div class="widget-body-toolbar bg-white">
         <div class="row">
           <div class="col-sm-6">
             <button ng-if="customerContactsData != ''" id="customer-contact" class="btn btn btn-default" ng-click="toggleDisabled()">enable / disable</button>
@@ -61,7 +61,6 @@
           <button class="btn btn-primary" ng-click="insertCustomerContact()">Add Contact</button>
         </form>
       </div>
-    </div>
     </div>
   </div>
 </div>

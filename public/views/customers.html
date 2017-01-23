@@ -1,35 +1,68 @@
 <div class="row">
-  <!--<div class="col-sm-12 col-md-12 col-lg-12" ng-include="'/views/customer/buscador.html'" ></div>-->
-
+  <div class="col-sm-12 col-md-12 col-lg-12" ng-include="'/views/customer/buscador.html'" ></div>
   <!--<div class="col-sm-12 col-md-12 col-lg-12" ng-include="'/views/customer/buscador.html'" ng-if="buscadorFlag"></div>-->
 </div>
-
 <!-- MAIN CONTENT -->
 <div id="content" class="anim">
   <section id="widget-grid" widget-grid>
     <div class="row">
-
-      <!-- CUSTOMER INFO -->
-      <!--<article class="col-sm-2 col-md-2 col-lg-2"    ng-include="'/views/customer/customer.html'"></article>-->
-      <!-- CUSTOMER CONTACTS -->
-      <!--<article class="col-sm-4 col-md-4 col-lg-4"    ng-include="'/views/customer/contactInfo.html'"></article>-->
-      <!-- NEW TICKET -->
-      <!--<article class="col-sm-4 col-md-4 col-lg-4"    ng-include="'/views/customer/newticket.html'"></article>-->
-      <!-- SERVICES -->
-      <!--<article class="col-sm-6 col-md-6 col-lg-6"    ng-include="'/views/customer/product.html'"></article>-->
-      <!-- BUILDING -->
-      <!--<article class="col-sm-6 col-md-6 col-lg-6"    ng-include="'/views/building/buildings.html'"></article>-->
-       <!--NETWORK -->
-      <!--<article class="col-sm-6 col-md-6 col-lg-6"    ng-include="'/views/customer/network.html'"></article>-->
-      <!-- TICKETS -->
-      <!--<article class="col-sm-6 col-md-6 col-lg-6"    ng-include="'/views/customer/ticketshistory.html'"></article>-->
-      <!-- BILLING -->
-      <!--<article class="col-sm-12 col-md-12 col-lg-12" ng-include="'/views/customer/billinghistory.html'"></article>-->
-      <!-- PAYMENT -->
-      <article class="col-sm-6 col-md-6 col-lg-6" ng-include="'/views/customer/paymentMethods.html'"></article>
-      <!-- CUSTOM -->
-      <!--<article class="col-sm-12 col-md-12 col-lg-12" ng-include="'/views/test.html'"></article>-->
+      <article class="col-sm-6 col-md-6 col-lg-6"    ng-include="'/views/customer/customer.html'" ></article>
+      <article class="col-sm-6 col-md-6 col-lg-6"    ng-include="'/views/building/buildings.html'"></article>
     </div>
   </section>
 </div>
 <!-- END MAIN CONTENT -->
+<div jarvis-widget id="wid-id-UNIC" data-widget-colorbutton="false" data-widget-editbutton="false"
+     data-widget-fullscreenbutton="false" data-widget-custombutton="false" data-widget-sortable="false"
+     data-widget-togglebutton="false" data-widget-deletebutton="false">
+
+
+
+  <header role="heading" class="ui-sortable-handle">
+    <h2>Tools</h2>
+    <ul id="widget-tab-1" class="nav pull-right nav-tabs">
+      <li class="active"><a data-toggle="tab" href="#tab-r1" aria-expanded="true"> <i class="fa fa-lg fa-arrow-circle-o-down"></i> <span class="hidden-mobile hidden-tablet"> Contacts / New Ticket </span> </a></li>
+      <li class=""><a data-toggle="tab" href="#tab-r2" aria-expanded="false">      <i class="fa fa-lg fa-arrow-circle-o-up"></i>   <span class="hidden-mobile hidden-tablet"> Payment </span></a></li>
+      <li class=""><a data-toggle="tab" href="#tab-r3" aria-expanded="false">      <i class="fa fa-lg fa-arrow-circle-o-down"></i> <span class="hidden-mobile hidden-tablet"> Services </span></a></li>
+      <li class=""><a data-toggle="tab" href="#tab-r4" aria-expanded="false">      <i class="fa fa-lg fa-arrow-circle-o-up"></i>   <span class="hidden-mobile hidden-tablet"> Tickets </span></a></li>
+      <li class=""><a data-toggle="tab" href="#tab-r5" aria-expanded="false">      <i class="fa fa-lg fa-arrow-circle-o-down"></i> <span class="hidden-mobile hidden-tablet"> Network </span></a></li>
+    </ul>
+    <span class="jarviswidget-loader"><i class="fa fa-refresh fa-spin"></i></span></header>
+
+
+  <div>
+
+
+
+    <div class="widget-body">
+
+
+        <!--<ul class="nav nav-tabs tabs-left" id="demo-pill-nav">-->
+          <!--<li class="active"><a href="#tab-r1" data-toggle="tab">Contacts / New Ticket</a></li>-->
+          <!--<li><a href="#tab-r2" data-toggle="tab"> Payment </a></li>-->
+          <!--<li><a href="#tab-r3" data-toggle="tab"> Services </a></li>-->
+          <!--<li><a href="#tab-r4" data-toggle="tab"> Tickets </a></li>-->
+          <!--<li><a href="#tab-r5" data-toggle="tab"> Network </a></li>-->
+        <!--</ul>-->
+        <div class="tab-content">
+          <div class="tab-pane active" id="tab-r1">
+            <article class="col-sm-6 col-md-6 col-lg-6"    ng-include="'/views/customer/contactInfo.html'"></article>
+            <article class="col-sm-6 col-md-6 col-lg-6"    ng-include="'/views/customer/newticket.html'"></article>
+          </div>
+          <div class="tab-pane" id="tab-r2"><article class="col-sm-12 col-md-12 col-lg-12"    ng-include="'/views/customer/paymentMethods.html'"></article></div>
+          <div class="tab-pane" id="tab-r3"><article class="col-sm-12 col-md-12 col-lg-12"    ng-include="'/views/customer/product.html'"></article></div>
+          <div class="tab-pane" id="tab-r4"><article class="col-sm-12 col-md-12 col-lg-12"    ng-include="'/views/customer/ticketshistory.html'"></article></div>
+          <div class="tab-pane" id="tab-r5"><article class="col-sm-12 col-md-12 col-lg-12"    ng-include="'/views/customer/network.html'"></article></div>
+        </div>
+
+
+    </div>
+
+
+  </div>
+
+
+</div>
+
+
+<article class="col-sm-12 col-md-12 col-lg-12"  ng-include="'/views/customer/billinghistory.html'"></article>

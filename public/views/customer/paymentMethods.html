@@ -2,29 +2,30 @@
   Go to Customer Info.
 </div>
 
-<div class="col-lg-12" ng-controller="customerPaymentMethodsController" ng-if="!stcFlag" id="tom">
+<div class="col-lg-12 p-b-lg" ng-controller="customerPaymentMethodsController" ng-if="!stcFlag" id="tom">
 
-  <div class="col-lg-12 display-content-main-box anim">
+  <!--LADO UNO-->
+  <div class="col-lg-4">
     <h2 class="float-left">Default Credit Card</h2>
 
     <div class="field-data bg-white col-lg-12">
-      <label class="b-r col-lg-6">Token (Acct Number)</label><label class="col-lg-6 block-b-label" id="b-CCnumber">{{ paymentData.account_number }}</label>
+      <label class="b-r col-lg-6">Token (Acct Number)</label><label class="col-lg-6 block-b-label" id="b-CCnumber">{{ paymentData.account_number ? paymentData.account_number : '( ERROR )' }}</label>
     </div>
     <div class="field-data bg-white col-lg-12">
-      <label class="b-r col-lg-6">Card Type</label><label class="col-lg-6 block-b-label" id="b-CCtype">{{ paymentData.card_type }}</label>
+      <label class="b-r col-lg-6">Card Type</label><label class="col-lg-6 block-b-label" id="b-CCtype">{{ paymentData.card_type ? paymentData.card_type  : '( ERROR )'}}</label>
     </div>
     <div class="field-data bg-white col-lg-12">
-      <label class="b-r col-lg-6">Expiration Month</label><label class="col-lg-6 block-b-label" id="b-Expmo">{{ paymentData.exp_month }}</label>
+      <label class="b-r col-lg-6">Expiration Month</label><label class="col-lg-6 block-b-label" id="b-Expmo">{{ paymentData.exp_month  ? paymentData.exp_month : '( ERROR )'}}</label>
     </div>
     <div class="field-data bg-white col-lg-12">
-      <label class="b-r col-lg-6">Expiration Year</label><label class="col-lg-6 block-b-label" id="b-Expyr">{{ paymentData.exp_year }}</label>
+      <label class="b-r col-lg-6">Expiration Year</label><label class="col-lg-6 block-b-label" id="b-Expyr">{{ paymentData.exp_year ? paymentData.exp_year : '( ERROR )'}}</label>
     </div>
     <div class="field-data bg-white col-lg-12">
       <label class="b-r col-lg-6">Priority</label><label class="col-lg-6 block-b-label" id="b-Priority">{{ paymentData.priority == 1 ? 'YES' : 'NO' }}</label>
     </div>
 
     <div class="btn-group btn-group-justified float-right w-auto m-t-sm m-b-sm">
-      <div class="btn-warning wrapper-xs float-right r box-char" ng-click="openManualRef()">Manual Refund
+      <div class="btn btn-warning wrapper-xs float-right r box-char" ng-click="openManualRef()">Manual Refund
         <div class="manual-ref charge-box">
           <div class="cbox-containter">
             <!--<div class="x-manaual" ng-click="closeTransparentBGManual()">X</div>-->
@@ -39,7 +40,7 @@
           </div>
         </div>
       </div>
-      <div class="btn-danger wrapper-xs float-right m-r-sm r box-char" ng-click="openManualChar()">Manual Charge
+      <div class="btn btn-danger wrapper-xs float-right m-r-sm r box-char" ng-click="openManualChar()">Manual Charge
         <div class="manual-char charge-box">
           <div class="cbox-containter">
             <!--<div class="x-manaual" ng-click="closeTransparentBGManual()">X</div>-->
@@ -60,12 +61,9 @@
     <div class="transparent-charge" ng-click="closeTransparentBGManual()"></div>
 
   </div>
+  <!--LADO DOS-->
+  <div class="col-lg-8" id="customer-view-0" >
 
-  <div id="customer-view-0">
-
-    <div class="color-name-header btn-dark">
-      Payment Methods:
-    </div>
     <div class="panel panel-default">
       <table id="myTable" class="tablesorter table" >
         <thead>
@@ -104,12 +102,23 @@
       </table>
 
     </div>
-    <div class="col-lg-12">
-      <button class="btn5" ng-click="open()" data-toggle="modal" data-target="#paymentMethodModal">New Payment Method</button>
+    <div class="float-right">
+      <button class="btn btn-primary" ng-click="open()" data-toggle="modal" data-target="#paymentMethodModal">New Payment Method</button>
     </div>
 
   </div>
 
+
+
+
+
+
+
+
+
+
+
+  <!--MODAL-->
   <div class="modal fade" id="paymentMethodModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" ng-controller="addPaymentMethodController">
     <div class="modal-dialog modal-ticket-size">
       <div class="modal-content">

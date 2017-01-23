@@ -21,14 +21,17 @@
       <div class="col-lg-12" ng-if="customerSearchResult">
         <div class="search-result anim" >
           <div ng-repeat="resultSearch in customerSearchResult" ng-click="displayBldData(resultbldright.id)" class="bld-result-container customer-result-container">
+
+            <a href="#/customers?id={{resultSearch.id}}">
+
             <div class="col-lg-12">
 
 
-              <div class="col-lg-2 labe">Customer Status</div>  <div class="col-lg-2 valu color-text ct-status">{{resultSearch.id_status == 1?'ACTIVE':'DISABLED'}}</div>
-              <div class="col-lg-2 labe">Customer Fname</div>   <div class="col-lg-2 valu">{{resultSearch.first_name}}</div>
-              <div class="col-lg-2 labe">Customer Lname</div>   <div class="col-lg-2 valu color-text">{{resultSearch.last_name}}</div>
+              <div class="col-lg-2 labe">Status</div>       <div class="col-lg-2 valu color-text ct-status">{{resultSearch.id_status == 1?'ACTIVE':'DISABLED'}}</div>
+              <div class="col-lg-2 labe">First Name</div>   <div class="col-lg-2 valu">{{resultSearch.first_name}}</div>
+              <div class="col-lg-2 labe">Last Name</div>    <div class="col-lg-2 valu color-text">{{resultSearch.last_name}}</div>
 
-              <div class="col-lg-2 labe">Customer email</div>   <div class="col-lg-2 valu color-text">{{resultSearch.email}}</div>
+              <div class="col-lg-2 labe">Email</div>            <div class="col-lg-2 valu color-text">{{resultSearch.email}}</div>
               <div class="col-lg-2 labe">Address</div>          <div class="col-lg-2 valu">{{resultSearch.address}}</div>
               <div class="col-lg-2 labe">Code</div>             <div class="col-lg-2 valu color-text ct-code">{{resultSearch.code}}</div>
 
@@ -36,6 +39,9 @@
               <div class="col-lg-2 labe">Zip</div>              <div class="col-lg-2 valu">{{resultSearch.zip}}</div>
 
             </div>
+
+            </a>
+
           </div>
         </div>
       </div>

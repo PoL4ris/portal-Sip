@@ -390,7 +390,7 @@ app.controller('customerController',                function ($scope, $http, $st
     this.searchCustomer = '';
     $scope.buscador();
   }
-  $scope.buscador                   = function() {
+  $scope.buscador                   = function () {
 
     if(!this.searchCustomer)
     {
@@ -462,6 +462,10 @@ app.controller('customerController',                function ($scope, $http, $st
   $scope.submitNewTicketForm        = function (){
 
     var infoData = getFormValues('new-ct-form');
+
+    if(infoData.id_reasons == '' || infoData.status == '' || infoData.comment == '')
+      return;
+
     infoData['id_customers'] = $scope.customerData.id;
 
     $http.get("insertCustomerTicket", {params:infoData})
@@ -476,7 +480,7 @@ app.controller('customerController',                function ($scope, $http, $st
           });
       });
   };
-  $scope.validate                   = function(value, table, field) {
+  $scope.validate                   = function (value, table, field) {
     var data = {};
     data[field] = value;
     data['id_customers'] = $scope.customerData.id;
@@ -603,13 +607,13 @@ app.controller('customerController',                function ($scope, $http, $st
     $scope.customerData.servicesMode = modeType;
     $scope.customerData.serviceTmpId = this.service.id;
   }
-  $scope.serviceDataDisplay         = function(option) {
+  $scope.serviceDataDisplay         = function (option) {
     if(option)
       $scope.currentServiceDisplay = this.customerProduct.product;
     else
       $scope.currentServiceDisplay = this.selectedItem;
   };
-  $scope.availableServices          = function(){
+  $scope.availableServices          = function (){
     $http.get("getCustomerServices", {params:{'id':$scope.idCustomer}})
       .then(function (response) {
         $scope.customerData.customerServices = response.data;
@@ -854,21 +858,21 @@ app.controller('customerBuildingController',        function ($scope, $http){
 
 //PAYMENT METHOD INCOMPLETE.
 app.controller('customerPaymentMethodsController',  function ($scope, $http){
-console.log('something here con el id de  : ' + $scope.idCustomer);
+// console.log('something here con el id de  : ' + $scope.idCustomer);
 // return;
 // app.controller('customerPaymentMethodsController',  function ($scope, $http,$uibModal, $log){
 // return;
   $http.get("getCustomerPayment", {params:{'id':$scope.stcid?$scope.stcid:$scope.idCustomer}})
     .then(function (response) {
       $scope.paymentData = response.data[0];
-      console.log(response.data);
+//       console.log(response.data);
     });
 
 
   $http.get("getPaymentMethods", {params:{'id':$scope.idCustomer}})
     .then(function (response) {
       $scope.paymentMethods = response.data;
-      console.log(response.data);
+//       console.log(response.data);
     });
 
   $scope.setDefault = function (id) {
@@ -920,7 +924,7 @@ console.log('something here con el id de  : ' + $scope.idCustomer);
     $http.get("chargeAmount", {params:{'cid':cid, 'amount':amount, 'desc':desc}})
       .then(function (response) {
 //         $scope.paymentMethods = response.data;
-        console.log(response.data);
+//         console.log(response.data);
         if(response.data.RESPONSETEXT == 'APPROVED')
           $scope.closeTransparentBGManual();
       });
@@ -1480,7 +1484,7 @@ app.controller('userProfileController',             function ($scope, $http){
 
 });
 
-/* Global Tools */
+// Global Tools //
 app.controller('globalToolsCtl',      function ($scope, $http, $compile, $sce){
 
   console.log('globalToolsCtl');

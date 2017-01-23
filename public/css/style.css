@@ -1,4 +1,9 @@
-
+/*.b-test{*/
+  /*border: 2px solid red;*/
+/*}*/
+/*.bg-royal{*/
+  /*background: royalblue;*/
+/*}*/
 .bg-white {
   background: white none repeat scroll 0 0;
 }
@@ -68,6 +73,17 @@
 }
 .p-b-sm{
   padding-bottom: 5px;
+}
+.size-50{
+  width: 50%;
+}
+.size-100{
+  width: 100%;
+}
+.no-b-tbl{
+  border-top: none;
+  border-bottom: none;
+  border-left: none;
 }
 .no-padding-sides {
   padding-left: 0 !important;

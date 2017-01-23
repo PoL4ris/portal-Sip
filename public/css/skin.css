@@ -1,6 +1,46 @@
 /*!
  * This is the new theme
  */
+html{
+  background: white;
+}
+
+.fc-border-separate thead tr, .table thead tr{
+  background: #E4EAF3;
+}
+.jarviswidget > header{
+  background: #E4EAF3;
+}
+.smart-form.widget-body-toolbar, .widget-body-toolbar{
+  background: #E4EAF3;
+}
+.table-striped > tbody > tr:nth-of-type(2n+1){
+  background: #E4EAF3;
+}
+
+.nav > li > a:focus, .nav > li > a:hover{
+  background: #F7F9FB;
+}
+table.dataTable thead .sorting_asc, table.dataTable thead .sorting_desc{
+  background: #F7F9FB;
+}
+.btn-primary
+{
+  background-color: #3E6CC9;
+  background-image: -moz-linear-gradient(center top , #3E6CC9, #2E51B6);
+}
+.btn-danger
+{
+  background: #d14836 -moz-linear-gradient(center top , #dd4b39, #d14836) repeat scroll 0 0;
+}
+.btn-warning
+{
+  background: #ffc107 -moz-linear-gradient(center top , #ffc107, #c29306) repeat scroll 0 0;
+}
+
+
+
+
 
 .smart-style-7 a {
   transition: color .1s linear 0s, background-color .1s linear 0s!important
@@ -14,14 +54,14 @@ body.smart-style-7 {
 }
 .smart-style-7 #header {
   background-image: none;
-  background-color: #E3EAF3;
+  background-color: #1a3047;
 }
 .smart-style-7 .project-context>:first-child {
   color: #697B92;
   text-shadow: 0 0 1px #111318
 }
 .smart-style-7 #ribbon {
-  background: #e4e4e4;
+  background: #F7F9FB;
 }
 .smart-style-7 .breadcrumb>li+li:before {
   color: #646464
@@ -154,7 +194,9 @@ body.smart-style-7 {
 }
 .smart-style-7 .login-info {
   height: auto;
-  /*box-shadow: 1px 1px 0 rgba(251, 128, 75, 0.3) inset, 0 -1px 0 rgba(251, 128, 75, 0.2) inset;*/
+  /*border-top: 1px solid white;*/
+  /*border-bottom: 1px solid white;*/
+  box-shadow: 0 .5px 0 white;
 }
 .smart-style-7 .login-info>span {
   padding: 5px 10px
@@ -238,7 +280,7 @@ body.smart-style-7 {
 .smart-style-7 .superbox-show,
 .smart-style-7 aside {
   background: #1A3047;
-  border-right: 1px solid #FB804B;
+  /*border-right: 1px solid #FB804B;*/
 
 }
 .smart-style-7 .login-info,
@@ -255,10 +297,10 @@ body.smart-style-7 {
   color: #7190AA;
 }
 .smart-style-7 nav ul li.active a{
-  color: #FB804B !important;
+  color: #FFFFFF !important;
 }
 .smart-style-7 nav ul li.active > a::before{
-  color: #FB804B;
+  color: #FFFFFF;
 }
 .smart-style-7 .pagination>.active>a,
 .smart-style-7 .pagination>.active>a:focus,
