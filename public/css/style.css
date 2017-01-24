@@ -1,3 +1,60 @@
+/*MAIN*/
+#logo-group{
+  /*width: auto;*/
+}
+#silverip-side{
+  background: #ffffff -moz-linear-gradient(center top , #ffffff, #dfdfdf) repeat scroll 0 0;
+  height: 100%;
+  position: fixed;
+  top: 49px;
+  width: 350px;
+  z-index: 10;
+  /*display: none;*/
+  /*transform: scale(0);*/
+  transition: all .7s ease 0s;
+}
+.silverip-right-hide{
+  right: -350px;
+}
+.silverip-left-hide{
+  left: -130px;
+}
+.hidden-menu.silverip-left-hide{
+  left: -340px;
+}
+#silverip-side.silverip-left,
+#silverip-side.silverip-right{
+  /*transform: translate(0px);*/
+  /*display: block;*/
+}
+#silverip-side.silverip-left{
+  left:220px;
+  box-shadow: -3px -3px 3px 3px rgba(0, 0, 0, 1);
+}
+.hidden-menu #silverip-side.silverip-left{
+  left:10px;
+}
+#silverip-side.silverip-right{
+  right:0;
+  box-shadow: 3px 3px 3px 3px rgba(0,0,0,1);
+}
+.hidden-menu .silverip-left-location{
+  width: calc(100% - 360px);
+}
+.silverip-left-location{
+  width: calc(100% - 570px);
+  float: right;
+}
+.hidden-menu .silverip-right-location{
+  width: calc(100% - 360px);
+}
+.silverip-right-location{
+  width: calc(100% - 570px);
+}
+#main{
+  /*background: royalblue;*/
+}
+/*MAIN*/
 /*.b-test{*/
   /*border: 2px solid red;*/
 /*}*/

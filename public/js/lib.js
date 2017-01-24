@@ -1488,6 +1488,8 @@ app.controller('userProfileController',             function ($scope, $http){
 app.controller('globalToolsCtl',      function ($scope, $http, $compile, $sce){
 
   console.log('globalToolsCtl');
+  $scope.sipToolLeft = false;
+  $scope.sipToolRight = true;
 
   $scope.leftColumnOpenClose = function (){
     if($('#content').hasClass("ccr-small"))
@@ -1550,7 +1552,105 @@ app.controller('globalToolsCtl',      function ($scope, $http, $compile, $sce){
     }
 
   };
+  $scope.sipLeft = function (){
 
+
+  };
+  $scope.sipRight = function (){
+
+  };
+  $scope.sipTool = function (type, id, action){
+
+    /*
+    * Type
+    * 0 = left
+    * 1 = right
+    * 2 = show/hide
+    * */
+
+    if(type == 0)
+    {
+      var tmpTxt = 'right';
+      if(!$scope.sipToolLeft)
+      {
+        $scope.sipToolLeft = true;
+        $scope.sipToolRight = false;
+        $scope.resolveLocationClass(id, tmpTxt);
+//         $('#main').removeClass('silverip-right-location');
+//         $('#silverip-side').removeClass('silverip-right');
+//
+//         $('#silverip-side').toggleClass('silverip-left');
+//         $('#main').toggleClass('silverip-left-location');
+      }
+    }
+
+    if(type == 1)
+    {
+      var tmpTxt = 'left';
+      if (!$scope.sipToolRight)
+      {
+        $scope.sipToolLeft = false;
+        $scope.sipToolRight = true;
+        $scope.resolveLocationClass(id, tmpTxt);
+//         $('#main').removeClass('silverip-left-location');
+//         $('#silverip-side').removeClass('silverip-left');
+//
+//         $('#silverip-side').toggleClass('silverip-right');
+//         $('#main').toggleClass('silverip-right-location');
+      }
+    }
+
+
+    if(type == 2)
+    {
+      var claseA = $('#main').hasClass('silverip-right-location');
+      var claseB = $('#main').hasClass('silverip-left-location');
+
+      if(claseA || claseB)
+      {
+        if($scope.sipToolLeft)
+        {
+          $('#silverip-side').toggleClass('silverip-left-hide');
+        }
+        else
+        {
+          $('#silverip-side').toggleClass('silverip-right-hide');
+        }
+
+        $('#main').removeClass('silverip-left-location');
+        $('#silverip-side').removeClass('silverip-left');
+        $('#main').removeClass('silverip-right-location');
+        $('#silverip-side').removeClass('silverip-right');
+      }
+      else
+      {
+        $('#silverip-side').removeClass('silverip-left-hide');
+        $('#silverip-side').removeClass('silverip-right-hide');
+
+        if($scope.sipToolLeft)
+        {
+          $('#silverip-side').toggleClass('silverip-left');
+          $('#main').toggleClass('silverip-left-location');
+        }
+        else
+        {
+          $('#silverip-side').toggleClass('silverip-right');
+          $('#main').toggleClass('silverip-right-location');
+        }
+
+      }
+    }
+  }
+
+  $scope.resolveLocationClass = function (id, txt)
+  {
+
+    $('#main').removeClass('silverip-' + txt + '-location');
+    $('#silverip-side').removeClass('silverip-' + txt);
+
+    $('#silverip-side').toggleClass(id);
+    $('#main').toggleClass(id + '-location');
+  }
   });
 function gToolsxEdit(value, field, id, idContainer, table){
   angular.element('#' + idContainer + '-gTools').scope().singleUpdateXedit(id, value, field, table);

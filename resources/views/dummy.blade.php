@@ -105,7 +105,8 @@ Possible attributes
 <body data-smart-device-detect
       data-smart-fast-click
       data-smart-layout
-      data-smart-page-title="SilverIP Magnus" >
+      data-smart-page-title="SilverIP Magnus"
+      ng-controller="globalToolsCtl">
 <!-- ui-view container -->
 <input type="hidden" value="{{Auth::user()}}" id="auth-user"/>
 

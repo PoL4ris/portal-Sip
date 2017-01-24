@@ -6,30 +6,36 @@
 <!-- Left panel : Navigation area -->
 <!-- Note: This width of the aside area can be adjusted through LESS variables -->
 <div data-smart-include="app/layout/partials/navigation.tpl.html" class="placeholder-left-panel"></div>
-
+<div ng-include="'/views/silverip-tool.html'" id="silverip-side" class="silverip-right"></div>
 <!-- END NAVIGATION -->
 
 <!-- MAIN PANEL -->
-<div id="main" role="main">
+<!------------------------------------------------------------------------>
+
+
+
+<div id="main" role="main" class="silverip-right-location anim">
     <demo-states></demo-states>
 
-    <!-- RIBBON -->
-    <div id="ribbon">
 
-        <span class="ribbon-button-alignment">
-          <span id="refresh" class="btn btn-ribbon" reset-widgets
-                          tooltip-placement="bottom"
-                          smart-tooltip-html="<i class='text-warning fa fa-warning'></i> Warning! This will reset all your widget settings.">
-            <i class="fa fa-refresh"></i>
-          </span>
-        </span>
+
+    <!-- RIBBON -->
+    <!--<div id="ribbon">-->
+
+        <!--<span class="ribbon-button-alignment">-->
+          <!--<span id="refresh" class="btn btn-ribbon" reset-widgets-->
+                          <!--tooltip-placement="bottom"-->
+                          <!--smart-tooltip-html="<i class='text-warning fa fa-warning'></i> Warning! This will reset all your widget settings.">-->
+            <!--<i class="fa fa-refresh"></i>-->
+          <!--</span>-->
+        <!--</span>-->
 
         <!-- breadcrumb -->
-        <state-breadcrumbs></state-breadcrumbs>
+        <!--<state-breadcrumbs></state-breadcrumbs>-->
         <!-- end breadcrumb -->
 
 
-    </div>
+    <!--</div>-->
     <!-- END RIBBON -->
 
 
@@ -38,12 +44,14 @@
     </div>
 
 </div>
+
+<!------------------------------------------------------------------------>
 <!-- END MAIN PANEL -->
 
 <!-- PAGE FOOTER -->
-<div data-smart-include="app/layout/partials/footer.tpl.html"></div>
+<!--<div data-smart-include="app/layout/partials/footer.tpl.html"></div>-->
 
-<div data-smart-include="app/layout/shortcut/shortcut.tpl.html"></div>
+<!--<div data-smart-include="app/layout/shortcut/shortcut.tpl.html"></div>-->
 
 <!-- END PAGE FOOTER -->
 
