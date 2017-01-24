@@ -6,9 +6,18 @@ app.controller('menuController',                    function($scope, $http){
   }
 });
 //Building Controllers
+app.controller('buildingSideController', function ($scope, $http){
+
+  $http.get("getBuildingsListTMP")
+    .then(function (response) {
+      $scope.buildingResultSide = response.data;
+    });
+
+});
 app.controller('buildingCtl',                       function($scope, $http) {
 
   if (!$scope.sbid) {
+  console.log('awaw');
     $scope.SiteMenu = [];
     $http.get('buildings').then(function (data){
       $scope.bldData = data.data;
@@ -355,6 +364,7 @@ app.controller('customerControllerList',            function ($scope, $http){
 app.controller('customerController',                function ($scope, $http, $stateParams){
 
   console.log('customerController');
+  $scope.customerFlag = true;
   $scope.idCustomer = 501;
 
   if ($scope.stcid || $stateParams.id)
@@ -365,7 +375,7 @@ app.controller('customerController',                function ($scope, $http, $st
     $scope.buscadorFlag = true;
   }
 
-  console.log($scope.idCustomer);
+//   console.log($scope.idCustomer);
 
   $http.get("customersData", {params:{'id':$scope.idCustomer}})
     .then(function (response) {
@@ -834,7 +844,7 @@ app.controller('customerNetworkController',         function ($scope, $http){
 });
 app.controller('customerBuildingController',        function ($scope, $http){
 
-  console.log($scope.customerData);
+//   console.log($scope.customerData);
   console.log('this is Entramos');
 
   if($scope.customerData) {
@@ -981,8 +991,8 @@ console.log('this is addPaymentMethodController ');
 
     var regexCC = /\b(?:3[47]\d{2}([\ \-]?)\d{6}\1\d|(?:(?:4\d|5[1-5]|65)\d{2}|6011)([\ \-]?)\d{4}\2\d{4}\2)\d{4}\b/g;
 
-    console.log(objects);
-    console.log(regexCC.test(objects[1].value));
+//     console.log(objects);
+//     console.log(regexCC.test(objects[1].value));
     var boolResult = regexCC.test(objects[1].value);
 
 
@@ -1143,7 +1153,7 @@ app.controller('customerServicesController',        function ($scope, $http){
 });
 app.controller('serviceProductController',          function ($scope, $http){
 
-  console.log($scope.service.id);
+//   console.log($scope.service.id);
   $http.get("getCustomerProduct", {params:{'id':$scope.service.id}})
     .then(function (response) {
       $scope.customerProduct = response.data;
@@ -1484,10 +1494,17 @@ app.controller('userProfileController',             function ($scope, $http){
 
 });
 
+
+
+
+
 // Global Tools //
 app.controller('globalToolsCtl',      function ($scope, $http, $compile, $sce){
 
+
   console.log('globalToolsCtl');
+  $scope.globalScopeVar = true;
+
   $scope.sipToolLeft = false;
   $scope.sipToolRight = true;
 
@@ -1552,14 +1569,9 @@ app.controller('globalToolsCtl',      function ($scope, $http, $compile, $sce){
     }
 
   };
-  $scope.sipLeft = function (){
 
 
-  };
-  $scope.sipRight = function (){
-
-  };
-  $scope.sipTool = function (type, id, action){
+  $scope.sipTool              = function (type, id){
 
     /*
     * Type
@@ -1567,55 +1579,36 @@ app.controller('globalToolsCtl',      function ($scope, $http, $compile, $sce){
     * 1 = right
     * 2 = show/hide
     * */
-
-    if(type == 0)
-    {
+    if(type == 0) {
       var tmpTxt = 'right';
       if(!$scope.sipToolLeft)
       {
         $scope.sipToolLeft = true;
         $scope.sipToolRight = false;
         $scope.resolveLocationClass(id, tmpTxt);
-//         $('#main').removeClass('silverip-right-location');
-//         $('#silverip-side').removeClass('silverip-right');
-//
-//         $('#silverip-side').toggleClass('silverip-left');
-//         $('#main').toggleClass('silverip-left-location');
       }
     }
 
-    if(type == 1)
-    {
+    if(type == 1) {
       var tmpTxt = 'left';
       if (!$scope.sipToolRight)
       {
         $scope.sipToolLeft = false;
         $scope.sipToolRight = true;
         $scope.resolveLocationClass(id, tmpTxt);
-//         $('#main').removeClass('silverip-left-location');
-//         $('#silverip-side').removeClass('silverip-left');
-//
-//         $('#silverip-side').toggleClass('silverip-right');
-//         $('#main').toggleClass('silverip-right-location');
       }
     }
 
-
-    if(type == 2)
-    {
+    if(type == 2) {
       var claseA = $('#main').hasClass('silverip-right-location');
       var claseB = $('#main').hasClass('silverip-left-location');
 
       if(claseA || claseB)
       {
         if($scope.sipToolLeft)
-        {
           $('#silverip-side').toggleClass('silverip-left-hide');
-        }
         else
-        {
           $('#silverip-side').toggleClass('silverip-right-hide');
-        }
 
         $('#main').removeClass('silverip-left-location');
         $('#silverip-side').removeClass('silverip-left');
@@ -1640,17 +1633,40 @@ app.controller('globalToolsCtl',      function ($scope, $http, $compile, $sce){
 
       }
     }
+
   }
-
-  $scope.resolveLocationClass = function (id, txt)
-  {
-
+  $scope.resolveLocationClass = function (id, txt) {
     $('#main').removeClass('silverip-' + txt + '-location');
     $('#silverip-side').removeClass('silverip-' + txt);
 
     $('#silverip-side').toggleClass(id);
     $('#main').toggleClass(id + '-location');
   }
+
+
+  $scope.buscador                   = function () {
+
+    if(!this.searchCustomer)
+    {
+      $scope.customerSearchResult = false;
+      return;
+    }
+
+    var query = {'querySearch' : this.searchCustomer};
+
+    $http.get("customersSearch", {params:query})
+      .then(function (response) {
+        $scope.customerSearchResult = response.data;
+      });
+
+    return;
+
+  }
+  $scope.clearSearch                = function (){
+    this.searchCustomer = '';
+    $scope.buscador();
+  }
+
   });
 function gToolsxEdit(value, field, id, idContainer, table){
   angular.element('#' + idContainer + '-gTools').scope().singleUpdateXedit(id, value, field, table);

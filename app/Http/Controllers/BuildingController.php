@@ -41,8 +41,8 @@ class BuildingController extends Controller
     else
       $buildingList = Building::orderBy('id', 'desc')->skip($offset)->take($limit)->get();
 
-//    $data = ['building'     => $building ? $building : $this->getBuilding(28),
-    $data = ['building'     => $building ? $building : $this->getBuilding(rand(2,84)),
+    $data = ['building'     => $building ? $building : $this->getBuilding(28),
+//    $data = ['building'     => $building ? $building : $this->getBuilding(rand(2,84)),
              'buildingList' => $buildingList ? $buildingList : '',
              'offset'       => $offset,
              'limit'        => $limit
@@ -65,6 +65,10 @@ class BuildingController extends Controller
     return $data;
     return view('buildings.newbuildingform',['form' => $data]);
   }
+
+  public function getBuildingsListTMP(){
+    return Building::orderBy('id', 'desc')->get();
+  }//new
 
 
   //Building GET's

@@ -6,7 +6,8 @@
 <!-- Left panel : Navigation area -->
 <!-- Note: This width of the aside area can be adjusted through LESS variables -->
 <div data-smart-include="app/layout/partials/navigation.tpl.html" class="placeholder-left-panel"></div>
-<div ng-include="'/views/silverip-tool.html'" id="silverip-side" class="silverip-right"></div>
+<div ui-view="silveriptool" id="silverip-side" class="silverip-right"></div>
+
 <!-- END NAVIGATION -->
 
 <!-- MAIN PANEL -->
@@ -49,9 +50,9 @@
 <!-- END MAIN PANEL -->
 
 <!-- PAGE FOOTER -->
-<!--<div data-smart-include="app/layout/partials/footer.tpl.html"></div>-->
+<div data-smart-include="app/layout/partials/footer.tpl.html"></div>
 
-<!--<div data-smart-include="app/layout/shortcut/shortcut.tpl.html"></div>-->
+<div data-smart-include="app/layout/shortcut/shortcut.tpl.html"></div>
 
 <!-- END PAGE FOOTER -->
 

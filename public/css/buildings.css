@@ -1,5 +1,5 @@
 .bld-list{
-  max-height: 700px;
+  /*max-height: 700px;*/
   overflow: auto !important;
 }
 .bld-list p{

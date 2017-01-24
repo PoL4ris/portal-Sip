@@ -9,6 +9,10 @@ angular.module('app.buildings', ['ui.router']).config(function ($stateProvider) 
         "content@app": {
           templateUrl: '/views/building/building.html',
           controller: 'buildingCtl'
+        },
+        "silveriptool": {
+          templateUrl: '/views/test.html',
+          controller: 'buildingSideController'
         }
       },
       resolve: {
@@ -31,6 +35,10 @@ angular.module('app.customers', ['ui.router']).config(function ($stateProvider) 
           "content@app": {
             templateUrl: '/views/customers.html',
             controller: 'customerController'
+          },
+          "silveriptool": {
+            templateUrl: '/views/silverip-tool.html',
+//           controller: 'buildingCtl'
           }
         },
         resolve: {
@@ -86,7 +94,7 @@ angular.module('app.support'  , ['ui.router']).config(function ($stateProvider) 
       }
     })
 });
-angular.module('app.calendar'  , ['ui.router']).config(function ($stateProvider) {
+angular.module('app.calendar' , ['ui.router']).config(function ($stateProvider) {
   $stateProvider
     .state('app.calendar', {
       url: '/calendar',
@@ -108,8 +116,6 @@ angular.module('app.calendar'  , ['ui.router']).config(function ($stateProvider)
       }
     })
 });
-
-
 angular.module('app.admin'  , ['ui.router']).config(function ($stateProvider) {
   $stateProvider
     .state('app.admin', {
@@ -120,6 +126,9 @@ angular.module('app.admin'  , ['ui.router']).config(function ($stateProvider) {
       views: {
         "content@app": {
           templateUrl: '/views/test.html',
+        },
+        'silveriptool':{
+          templateUrl: '/views/silverip-tool.html',
         }
       },
       resolve: {
@@ -131,3 +140,5 @@ angular.module('app.admin'  , ['ui.router']).config(function ($stateProvider) {
       }
     })
 });
+
+

@@ -77,6 +77,7 @@ Route::group(['middleware' => 'web'], function () {
   //Buildings & List
   Route::get('buildings/{id?}',         'BuildingController@buildings');
   Route::get('buildingsList',           'BuildingController@getBuildingsList');
+  Route::get('getBuildingsListTMP',           'BuildingController@getBuildingsListTMP');//new
   //Building Form
   Route::get('newbuildingform',         'BuildingController@newbuildingform');
   //Insert Building
