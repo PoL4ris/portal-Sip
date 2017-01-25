@@ -130,6 +130,7 @@ Possible attributes
 <script src="/js/main.js"></script>
 <script src="/js/lib.js"></script>
 <script src="/js/calendar.js"></script>
+<script src="/js/sidebar.js"></script>
 
 
 </body>

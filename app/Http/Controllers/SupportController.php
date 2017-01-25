@@ -137,6 +137,10 @@ class SupportController extends Controller
     return Product::whereIn('id', $idList)->get();
   }
 
+  public function getProducts(){
+    return  Product::get();
+  }//new
+
 
   public function dashboard(Request $request)
   {

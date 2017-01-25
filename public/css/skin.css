@@ -4,7 +4,69 @@
 html{
   background: white;
 }
+.fixed-header #header{
+  box-shadow: 150px 4px 8px rgba(0, 0, 0, 0.6);
+  border:none;
+}
+#silverip-side{
+  background: #fff -moz-linear-gradient(center top , #fff, #dfdfdf) repeat scroll 0 0;
+  box-shadow: 0 -15px 5px -1px rgba(0, 0, 0, 0.3) inset;
+  height: 100%;
+  overflow: auto;
+  padding: 10px;
+  position: fixed;
+  top: 49px;
+  transition: all 0.7s ease 0s;
+  width: 350px;
+  z-index: 10;
+}
+.silverip-right-hide{
+  right: -350px;
+}
+.silverip-left-hide{
+  left: -200px;
+}
+.hidden-menu.silverip-left-hide{
+  left: -340px;
+}
+#silverip-side.silverip-left,
+#silverip-side.silverip-right{
 
+}
+#silverip-side.silverip-left{
+  left:150px;
+}
+.hidden-menu #silverip-side.silverip-left{
+  left:0px;
+}
+#silverip-side.silverip-right{
+  right:0;
+}
+.hidden-menu .silverip-left-location{
+  width: calc(100% - 350px);
+}
+.silverip-left-location{
+  width: calc(100% - 500px);
+  float: right;
+}
+.hidden-menu .silverip-right-location{
+  width: calc(100% - 350px);
+}
+.silverip-right-location{
+  width: calc(100% - 500px);
+}
+#main{
+
+  margin-left: 150px;
+}
+.hidden-menu #main{
+  margin-left: 0;
+}
+
+
+#header > *:first-child, aside {
+  width: 150px;
+}
 .fc-border-separate thead tr, .table thead tr{
   background: #E4EAF3;
 }

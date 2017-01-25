@@ -375,6 +375,9 @@ app.controller('customerController',                function ($scope, $http, $st
     $scope.buscadorFlag = true;
   }
 
+  //SET INPUT VALUE
+  $('#customerIdScope').val($scope.idCustomer);
+
 //   console.log($scope.idCustomer);
 
   $http.get("customersData", {params:{'id':$scope.idCustomer}})
@@ -1493,6 +1496,11 @@ app.controller('userProfileController',             function ($scope, $http){
 
 
 });
+
+
+
+
+
 
 
 
