@@ -8,7 +8,7 @@ html{
 
 }
 .fixed-header #header{
-  box-shadow:70px -1px 4px 2px rgba(0, 0, 0, .7);
+  box-shadow: 0 -1px 4px 2px rgba(0, 0, 0, 0.7);
   border:none;
 }
 #silverip-side{
@@ -74,11 +74,15 @@ html{
   position: relative;
   text-align: center;
   width: 70px;
+  display: none;
+}
+.hidden-menu #hide-menu.btn-header {
+  display: block;
 }
 #hide-menu.btn-header::after {
   bottom: 6px;
   color: white;
-  content: "HIDE MENU";
+  /*content: "HIDE MENU";*/
   font-size: 8px;
   height: 10px;
   left: 0;
@@ -86,8 +90,11 @@ html{
   position: absolute;
   width: 100%;
 }
+.hidden-menu #left-panel:hover{
+  left:-210px;
+}
 .hidden-menu #hide-menu.btn-header::after {
-  content: 'SHOW MENU';
+  content: 'MENU';
 }
 #hide-menu.btn-header button {
   background: transparent none repeat scroll 0 0;
@@ -140,6 +147,15 @@ html{
   width: 100%;
   transition: all 0.7s ease 0s;
 }
+.minifyme p{
+  font-family: Helvetica;
+  padding-top: 5px;
+}
+.minifyme p:hover{
+  border: 1px solid #ddd;
+  border-right:none;
+  border-radius: 5px;
+}
 .fc-border-separate thead tr, .table thead tr{
   background: #E4EAF3;
 }
@@ -185,6 +201,7 @@ body.smart-style-7 {
 .smart-style-7 #header {
   background-image: none;
   background-color: #1a3047;
+  box-shadow: 0 -1px 4px 2px rgba(0, 0, 0, 0.7);
 }
 .smart-style-7 .project-context>:first-child {
   color: #697B92;
