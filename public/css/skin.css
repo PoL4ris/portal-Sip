@@ -8,6 +8,12 @@ html {
   border: medium none;
   box-shadow: 0 -1px 4px 2px rgba(0, 0, 0, 0.7);
 }
+.fixed-navigation nav > ul {
+  overflow: hidden;
+  width: 100%;
+}
+.fixed-navigation nav > ul li {
+}
 #silverip-side {
   background: #f1f1f1 none repeat scroll 0 0;
   height: 100%;
@@ -62,21 +68,22 @@ html {
   background: #1a3047 none repeat scroll 0 0;
 }
 #hide-menu.btn-header {
-  background: #1e5f90 none repeat scroll 0 0;
+  transition: all 0.7s ease 0s;
 }
 #hide-menu.btn-header {
-  border-right: 1px solid white;
-
+  box-shadow: 0 0 1px white inset;
+  margin-left: 150px;
   position: relative;
   text-align: center;
   width: 70px;
 }
 .hidden-menu #hide-menu.btn-header {
-  display: block;
+  margin: 0;
 }
 #hide-menu.btn-header::after {
   bottom: 6px;
   color: white;
+  content: "CLOSE";
   font-size: 8px;
   height: 10px;
   left: 0;
@@ -88,7 +95,7 @@ html {
   left: -210px;
 }
 .hidden-menu #hide-menu.btn-header::after {
-  content: "MENU";
+  content: "OPEN";
 }
 #hide-menu.btn-header button {
   background: transparent none repeat scroll 0 0;
@@ -100,12 +107,29 @@ html {
 #hide-menu.btn-header button:hover {
   opacity: 0.6;
 }
+.hidden-menu #hide-menu.btn-header button .uno::after {
+  border-left: 5px solid transparent;
+  border-right: medium none;
+  left: 25px;
+}
+#hide-menu.btn-header button .uno::after {
+  border-bottom: 5px solid transparent;
+  border-right: 5px solid #7190aa;
+  border-top: 5px solid transparent;
+  content: " ";
+  height: 0;
+  left: -9px;
+  opacity: 1;
+  position: absolute;
+  top: -4px;
+  width: 0;
+}
 #hide-menu.btn-header button .uno {
   border-radius: 5px;
   height: 2px;
   left: 0;
   position: absolute;
-  top: 18px;
+  top: 20px;
   transition: all 0.7s ease 0s;
   width: 100%;
 }
@@ -116,19 +140,19 @@ html {
   background: transparent none repeat scroll 0 0;
 }
 #hide-menu.btn-header button .uno span::after {
-  top: 0;
-  transform: rotate(-45deg);
+  top: -1px;
+  transform: rotate(45deg);
 }
 .hidden-menu #hide-menu.btn-header button .uno span::after {
-  top: -7px;
+  top: 7px;
   transform: inherit;
 }
 #hide-menu.btn-header button .uno span::before {
-  top: 0;
-  transform: rotate(45deg);
+  top: -1px;
+  transform: rotate(-45deg);
 }
 .hidden-menu #hide-menu.btn-header button .uno span::before {
-  top: 7px;
+  top: -7px;
   transform: inherit;
 }
 #hide-menu.btn-header button .uno span::after, #hide-menu.btn-header button .uno span::before {
@@ -140,6 +164,10 @@ html {
   position: absolute;
   transition: all 0.7s ease 0s;
   width: 100%;
+}
+#left-panel {
+  padding-top: 0;
+  z-index: 905;
 }
 .minifyme p {
   font-family: Helvetica;
@@ -195,7 +223,8 @@ body.smart-style-7 {
   background: white none repeat scroll 0 0 !important;
 }
 .smart-style-7 #header {
-  background: #1a3047;
+  background-color: #1a3047;
+  background-image: none;
   box-shadow: 0 -1px 4px 2px rgba(0, 0, 0, 0.7);
 }
 .smart-style-7 .project-context > *:first-child {
@@ -216,7 +245,6 @@ body.smart-style-7 {
   background-image: linear-gradient(to bottom, #6f7d94, #697486);
 }
 .smart-style-7 #logo-group {
-  background: transparent none repeat scroll 0 0;
 }
 .smart-style-7 #logo-group span#activity {
   background: #0d0f12 none repeat scroll 0 0;
@@ -328,7 +356,6 @@ body.smart-style-7 {
   text-decoration: none;
 }
 .smart-style-7 .login-info {
-  box-shadow: 0 0.5px 0 white;
   height: auto;
 }
 .smart-style-7 .login-info > span {
@@ -420,15 +447,14 @@ body.smart-style-7 {
   border: medium none !important;
 }
 .smart-style-7 .login-info a, .smart-style-7 .login-info strong, .smart-style-7 nav ul li a {
-  color: white;
-  font-family: "Lucida Grande";
-  font-weight: lighter;
+  color: #7190aa;
 }
 .smart-style-7 nav ul li.active a {
   color: #ffffff !important;
 }
 .smart-style-7 nav ul li.active > a::before {
   color: #ffffff;
+  right: -35px;
 }
 .smart-style-7 .pagination > .active > a, .smart-style-7 .pagination > .active > a:focus, .smart-style-7 .pagination > .active > a:hover, .smart-style-7 .pagination > .active > span, .smart-style-7 .pagination > .active > span:focus, .smart-style-7 .pagination > .active > span:hover {
   background-color: #36aecc;
@@ -580,6 +606,14 @@ body.smart-style-7 {
 .smart-style-7.menu-on-top nav ul ul li.active:hover > a, .smart-style-7.menu-on-top nav ul ul li.active > a:hover {
   color: #fff !important;
 }
+#logo-group.logo-ui-uno {
+  bottom: 15px;
+  position: fixed;
+  width: 100%;
+}
+.smart-style-7 #header .user-ui-uno {
+  width: 150px;
+}
 @media (max-width: 979px) and (min-width: 768px) {
   .smart-style-7 #hide-menu i {
     color: #fff !important;
@@ -603,26 +637,3 @@ body.smart-style-7 {
     border-radius: 3px;
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
