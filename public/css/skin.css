@@ -12,6 +12,7 @@ html {
   width: 100%;
   overflow: hidden;
 }
+.fixed-navigation nav > ul li{}
 #silverip-side {
   background: #f1f1f1 none repeat scroll 0 0;
   height: 100%;
