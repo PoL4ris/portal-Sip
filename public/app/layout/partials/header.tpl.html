@@ -1,9 +1,23 @@
 <header id="header">
 
 
+  <div ng-controller="userAuthController" class="user-ui-uno">
+    <div class="login-info ng-cloak">
+      <span>
+        <a  href="" toggle-shortcut>
+            <img ng-src="{{userDataAuth.avatar}}"
+                 alt="{{userDataAuth.first_name}}"
+                 class="online"
+                 title="{{userDataAuth.first_name}}" />
+            <span>{{userDataAuth.first_name + ' ' + userDataAuth.last_name}}</span>
+            <i class="fa fa-angle-down"></i>
+        </a>
+      </span>
+    </div>
+  </div>
 
   <!-- collapse menu button -->
-  <div id="hide-menu" class="btn-header pull-left no-display">
+  <div id="hide-menu" class="btn-header pull-left">
     <button toggle-menu>
       <span class="uno">
         <span class="uno-inner"></span>
@@ -16,9 +30,9 @@
 
 
 
-  <div id="logo-group" class="">
-    <span id="logo" > <img src="/css/smart/styles/img/logo.png" alt="SilverIP" title="SilverIP"> </span>
-  </div>
+  <!--<div id="logo-group" class="">-->
+    <!--<span id="logo" > <img src="/css/smart/styles/img/logo.png" alt="SilverIP" title="SilverIP"> </span>-->
+  <!--</div>-->
 
 
 
