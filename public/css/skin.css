@@ -8,11 +8,12 @@ html {
   border: medium none;
   box-shadow: 0 -1px 4px 2px rgba(0, 0, 0, 0.7);
 }
-.fixed-navigation nav > ul{
-  width: 100%;
+.fixed-navigation nav > ul {
   overflow: hidden;
+  width: 100%;
 }
-.fixed-navigation nav > ul li{}
+.fixed-navigation nav > ul li {
+}
 #silverip-side {
   background: #f1f1f1 none repeat scroll 0 0;
   height: 100%;
@@ -71,10 +72,10 @@ html {
 }
 #hide-menu.btn-header {
   box-shadow: 0 0 1px white inset;
+  margin-left: 150px;
   position: relative;
   text-align: center;
   width: 70px;
-  margin-left: 150px;
 }
 .hidden-menu #hide-menu.btn-header {
   margin: 0;
@@ -82,13 +83,13 @@ html {
 #hide-menu.btn-header::after {
   bottom: 6px;
   color: white;
+  content: "CLOSE";
   font-size: 8px;
   height: 10px;
   left: 0;
   letter-spacing: 1px;
   position: absolute;
   width: 100%;
-  content: 'CLOSE';
 }
 .hidden-menu #left-panel:hover {
   left: -210px;
@@ -107,13 +108,13 @@ html {
   opacity: 0.6;
 }
 .hidden-menu #hide-menu.btn-header button .uno::after {
-  border-left: 5px solid #fb804b;
+  border-left: 5px solid transparent;
   border-right: medium none;
   left: 25px;
 }
 #hide-menu.btn-header button .uno::after {
   border-bottom: 5px solid transparent;
-  border-right: 5px solid #fb804b;
+  border-right: 5px solid #7190aa;
   border-top: 5px solid transparent;
   content: " ";
   height: 0;
@@ -133,24 +134,26 @@ html {
   width: 100%;
 }
 .hidden-menu #hide-menu.btn-header button .uno {
-  background: transparent;
-}
-#hide-menu.btn-header button .uno {
   background: white none repeat scroll 0 0;
 }
+#hide-menu.btn-header button .uno {
+  background: transparent none repeat scroll 0 0;
+}
 #hide-menu.btn-header button .uno span::after {
-  top: 7px;
+  top: -1px;
+  transform: rotate(45deg);
 }
 .hidden-menu #hide-menu.btn-header button .uno span::after {
+  top: 7px;
+  transform: inherit;
+}
+#hide-menu.btn-header button .uno span::before {
   top: -1px;
   transform: rotate(-45deg);
 }
-#hide-menu.btn-header button .uno span::before {
-  top: -7px;
-}
 .hidden-menu #hide-menu.btn-header button .uno span::before {
-  top: 0;
-  transform: rotate(45deg);
+  top: -7px;
+  transform: inherit;
 }
 #hide-menu.btn-header button .uno span::after, #hide-menu.btn-header button .uno span::before {
   background: white none repeat scroll 0 0;
@@ -162,7 +165,7 @@ html {
   transition: all 0.7s ease 0s;
   width: 100%;
 }
-#left-panel{
+#left-panel {
   padding-top: 0;
   z-index: 905;
 }
@@ -353,7 +356,6 @@ body.smart-style-7 {
   text-decoration: none;
 }
 .smart-style-7 .login-info {
-
   height: auto;
 }
 .smart-style-7 .login-info > span {
@@ -609,7 +611,7 @@ body.smart-style-7 {
   position: fixed;
   width: 100%;
 }
-.smart-style-7 #header .user-ui-uno{
+.smart-style-7 #header .user-ui-uno {
   width: 150px;
 }
 @media (max-width: 979px) and (min-width: 768px) {
