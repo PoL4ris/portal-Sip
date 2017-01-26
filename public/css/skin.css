@@ -66,16 +66,17 @@ html {
   background: #1a3047 none repeat scroll 0 0;
 }
 #hide-menu.btn-header {
-
+  transition: all 0.7s ease 0s;
 }
 #hide-menu.btn-header {
   box-shadow: 0 0 1px white inset;
   position: relative;
   text-align: center;
   width: 70px;
+  margin-left: 150px;
 }
 .hidden-menu #hide-menu.btn-header {
-  display: block;
+  margin: 0;
 }
 #hide-menu.btn-header::after {
   bottom: 6px;
@@ -131,7 +132,7 @@ html {
   width: 100%;
 }
 .hidden-menu #hide-menu.btn-header button .uno {
-  background: white none repeat scroll 0 0;
+  background: transparent;
 }
 #hide-menu.btn-header button .uno {
   background: white none repeat scroll 0 0;
@@ -140,15 +141,15 @@ html {
   top: 7px;
 }
 .hidden-menu #hide-menu.btn-header button .uno span::after {
-  top: -7px;
-  transform: inherit;
+  top: -1px;
+  transform: rotate(-45deg);
 }
 #hide-menu.btn-header button .uno span::before {
   top: -7px;
 }
 .hidden-menu #hide-menu.btn-header button .uno span::before {
-  top: 7px;
-  transform: inherit;
+  top: 0;
+  transform: rotate(45deg);
 }
 #hide-menu.btn-header button .uno span::after, #hide-menu.btn-header button .uno span::before {
   background: white none repeat scroll 0 0;
@@ -159,6 +160,10 @@ html {
   position: absolute;
   transition: all 0.7s ease 0s;
   width: 100%;
+}
+#left-panel{
+  padding-top: 0;
+  z-index: 905;
 }
 .minifyme p {
   font-family: Helvetica;
