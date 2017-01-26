@@ -4,8 +4,11 @@
 html{
   background: white;
 }
+.center-logo{
+
+}
 .fixed-header #header{
-  box-shadow:150px -1px 4px 2px rgba(0, 0, 0, .7);
+  box-shadow:70px -1px 4px 2px rgba(0, 0, 0, .7);
   border:none;
 }
 #silverip-side{
@@ -55,16 +58,87 @@ html{
   width: calc(100% - 500px);
 }
 #main{
-
   margin-left: 150px;
 }
 .hidden-menu #main{
   margin-left: 0;
 }
-
-
-#header > *:first-child, aside {
-  width: 150px;
+.hidden-menu #hide-menu.btn-header {
+  background: #1A3047 none repeat scroll 0 0;
+}
+#hide-menu.btn-header {
+  background: #1e5f90 none repeat scroll 0 0;
+}
+#hide-menu.btn-header {
+  border-right: 1px solid white;
+  position: relative;
+  text-align: center;
+  width: 70px;
+}
+#hide-menu.btn-header::after {
+  bottom: 6px;
+  color: white;
+  content: "HIDE MENU";
+  font-size: 8px;
+  height: 10px;
+  left: 0;
+  letter-spacing: 1px;
+  position: absolute;
+  width: 100%;
+}
+.hidden-menu #hide-menu.btn-header::after {
+  content: 'SHOW MENU';
+}
+#hide-menu.btn-header button {
+  background: transparent none repeat scroll 0 0;
+  border: medium none;
+  height: 100%;
+  position: relative;
+  width: 30%;
+}
+#hide-menu.btn-header button:hover {
+  opacity: 0.6;
+}
+#hide-menu.btn-header button .uno{
+  border-radius: 5px;
+  height: 2px;
+  left: 0;
+  position: absolute;
+  top: 18px;
+  transition: all 0.7s ease 0s;
+  width: 100%;
+}
+.hidden-menu #hide-menu.btn-header button .uno {
+  background: white none repeat scroll 0 0;
+}
+#hide-menu.btn-header button .uno {
+  background: transparent none repeat scroll 0 0;
+}
+#hide-menu.btn-header button .uno span::after {
+  top: 0;
+  transform: rotate(-45deg);
+}
+.hidden-menu #hide-menu.btn-header button .uno span::after {
+  top: -7px;
+  transform: inherit;
+}
+#hide-menu.btn-header button .uno span::before {
+  top: 0;
+  transform: rotate(45deg);
+}
+.hidden-menu #hide-menu.btn-header button .uno span::before {
+  top: 7px;
+  transform: inherit;
+}
+#hide-menu.btn-header button .uno span::after, #hide-menu.btn-header button .uno span::before {
+  background: white none repeat scroll 0 0;
+  border-radius: 5px;
+  content: " ";
+  height: 2px;
+  left: 0;
+  position: absolute;
+  width: 100%;
+  transition: all 0.7s ease 0s;
 }
 .fc-border-separate thead tr, .table thead tr{
   background: #E4EAF3;
@@ -98,11 +172,6 @@ table.dataTable thead .sorting_asc, table.dataTable thead .sorting_desc{
 {
   background: #ffc107 -moz-linear-gradient(center top , #ffc107, #c29306) repeat scroll 0 0;
 }
-
-
-
-
-
 .smart-style-7 a {
   transition: color .1s linear 0s, background-color .1s linear 0s!important
 }
@@ -139,8 +208,10 @@ body.smart-style-7 {
   background-image: linear-gradient(to bottom, #6f7d94, #697486)
 }
 .smart-style-7 #logo-group {
-  background: #1A3047 !important
+  background: #1A3047 !important;
 }
+
+
 .smart-style-7 #logo-group span#activity {
   background: #0d0f12;
   border: 1px solid #0d0f12;
@@ -341,8 +412,10 @@ body.smart-style-7 {
 .smart-style-7 .superbox-show,
 .smart-style-7 aside {
   background: #1A3047;
-  /*border-right: 1px solid #FB804B;*/
-
+  width: 150px;
+}
+.smart-style-7 .page-footer{
+  width: 100%;
 }
 .smart-style-7 .login-info,
 .smart-style-7 .login-info span {

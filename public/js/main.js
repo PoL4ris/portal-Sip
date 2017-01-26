@@ -128,7 +128,7 @@ angular.module('app.admin'  , ['ui.router']).config(function ($stateProvider) {
           templateUrl: '/views/test.html',
         },
         'silveriptool':{
-          templateUrl: '/views/silverip-tool.html',
+          templateUrl: '/views/test.html',
         }
       },
       resolve: {
