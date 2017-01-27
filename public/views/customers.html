@@ -1,6 +1,4 @@
-<div class="row">
-  <div class="col-sm-12 col-md-12 col-lg-12" ng-include="'/views/customer/buscador.html'" ></div>
-</div>
+<!--<div class="container"><div class="col-sm-12 col-md-12 col-lg-12 m-t-md" ng-include="'/views/customer/buscador.html'" ></div></div>-->
 <!-- MAIN CONTENT -->
 <div id="content" class="anim">
   <section id="widget-grid" widget-grid>
@@ -11,14 +9,13 @@
   </section>
 </div>
 <!-- END MAIN CONTENT -->
-<div jarvis-widget id="wid-id-UNIC"       data-widget-colorbutton="false"   data-widget-editbutton="false"
-     data-widget-fullscreenbutton="false" data-widget-custombutton="false"  data-widget-sortable="false"
-     data-widget-togglebutton="false"     data-widget-deletebutton="false">
+<div jarvis-widget id="wid-id-UNIC"         data-widget-colorbutton="false"   data-widget-editbutton="false"
+     data-widget-fullscreenbutton="false"   data-widget-custombutton="false"  data-widget-sortable="false"
+     data-widget-togglebutton="false"       data-widget-deletebutton="false">
 
 
 
   <header role="heading" class="ui-sortable-handle">
-    <h2>Tools</h2>
     <ul id="widget-tab-1" class="nav pull-right nav-tabs">
       <li class="active"><a data-toggle="tab" href="#tab-r1" aria-expanded="true"> <i class="fa fa-lg fa-arrow-circle-o-down"></i> <span class="hidden-mobile hidden-tablet"> Contacts / New Ticket </span> </a></li>
       <li class=""><a data-toggle="tab" href="#tab-r2" aria-expanded="false">      <i class="fa fa-lg fa-arrow-circle-o-up"></i>   <span class="hidden-mobile hidden-tablet"> Payment </span></a></li>
@@ -26,31 +23,22 @@
       <li class=""><a data-toggle="tab" href="#tab-r4" aria-expanded="false">      <i class="fa fa-lg fa-arrow-circle-o-up"></i>   <span class="hidden-mobile hidden-tablet"> Tickets </span></a></li>
       <li class=""><a data-toggle="tab" href="#tab-r5" aria-expanded="false">      <i class="fa fa-lg fa-arrow-circle-o-down"></i> <span class="hidden-mobile hidden-tablet"> Network </span></a></li>
     </ul>
-    <span class="jarviswidget-loader"><i class="fa fa-refresh fa-spin"></i></span></header>
-
-
-  <div>
-
-
-
+    <span class="jarviswidget-loader"><i class="fa fa-refresh fa-spin"></i></span>
+  </header>
+  <div class="no-border">
     <div class="widget-body">
-        <div class="tab-content">
-          <div class="tab-pane active" id="tab-r1">
-            <article class="col-sm-6 col-md-6 col-lg-6"    ng-include="'/views/customer/contactInfo.html'"></article>
-            <article class="col-sm-6 col-md-6 col-lg-6"    ng-include="'/views/customer/newticket.html'"></article>
-          </div>
-          <div class="tab-pane" id="tab-r2"><article class="col-sm-12 col-md-12 col-lg-12"    ng-include="'/views/customer/paymentMethods.html'"></article></div>
-          <div class="tab-pane" id="tab-r3"><article class="col-sm-12 col-md-12 col-lg-12"    ng-include="'/views/customer/product.html'"></article></div>
-          <div class="tab-pane" id="tab-r4"><article class="col-sm-12 col-md-12 col-lg-12"    ng-include="'/views/customer/ticketshistory.html'"></article></div>
-          <div class="tab-pane" id="tab-r5"><article class="col-sm-12 col-md-12 col-lg-12"    ng-include="'/views/customer/network.html'"></article></div>
+      <div class="tab-content">
+        <div class="tab-pane active" id="tab-r1">
+          <article class="col-sm-6 col-md-6 col-lg-6"    ng-include="'/views/customer/contactInfo.html'"></article>
+          <article class="col-sm-6 col-md-6 col-lg-6"    ng-include="'/views/customer/newticket.html'"></article>
         </div>
-
-
+        <div class="tab-pane" id="tab-r2"><article class="col-sm-12 col-md-12 col-lg-12"    ng-include="'/views/customer/paymentMethods.html'"></article></div>
+        <div class="tab-pane" id="tab-r3"><article class="col-sm-12 col-md-12 col-lg-12"    ng-include="'/views/customer/product.html'"></article></div>
+        <div class="tab-pane" id="tab-r4"><article class="col-sm-12 col-md-12 col-lg-12"    ng-include="'/views/customer/ticketshistory.html'"></article></div>
+        <div class="tab-pane" id="tab-r5"><article class="col-sm-12 col-md-12 col-lg-12"    ng-include="'/views/customer/network.html'"></article></div>
+      </div>
     </div>
-
-
   </div>
-
 
 </div>
 

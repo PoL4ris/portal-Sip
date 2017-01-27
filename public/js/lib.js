@@ -1675,6 +1675,16 @@ app.controller('globalToolsCtl',      function ($scope, $http, $compile, $sce){
     $scope.buscador();
   }
 
+  $scope.alertDummy = function (){
+    $.smallBox({
+      title: "Password Updated!",
+      content: "<i class='fa fa-clock-o'></i> <i>3 seconds ago...</i>",
+      color: "transparent",
+      iconSmall: "fa fa-thumbs-up bounce animated",
+      timeout: 6000
+    });
+  }
+
   });
 function gToolsxEdit(value, field, id, idContainer, table){
   angular.element('#' + idContainer + '-gTools').scope().singleUpdateXedit(id, value, field, table);

@@ -95,7 +95,7 @@ html {
   left: -210px;
 }
 .hidden-menu #hide-menu.btn-header::after {
-  content: "OPEN";
+  content: "MENU";
 }
 #hide-menu.btn-header button {
   background: transparent none repeat scroll 0 0;
@@ -256,8 +256,8 @@ body.smart-style-7 {
   background: #0aa699 none repeat scroll 0 0;
 }
 .smart-style-7 .btn-header > *:first-child > a {
-  background: #fb804b none repeat scroll 0 0;
-  border: 1px solid #fb804b;
+  background: #7190aa none repeat scroll 0 0;
+  border: 1px solid #7190aa;
   color: #fff !important;
   cursor: pointer !important;
 }
@@ -607,7 +607,7 @@ body.smart-style-7 {
   color: #fff !important;
 }
 #logo-group.logo-ui-uno {
-  bottom: 15px;
+  bottom: 40px;
   position: fixed;
   width: 100%;
 }
@@ -636,4 +636,12 @@ body.smart-style-7 {
   .smart-style-7 #cancel-search-js, .smart-style-7 .search-mobile .header-search > button {
     border-radius: 3px;
   }
+}
+
+
+#divSmallBoxes {
+  background: rgba(0, 0, 0, 0) linear-gradient(to right bottom, rgba(106, 219, 97, 0.7), rgba(77, 191, 116, 0.7)) repeat scroll 0 0;
+}
+#divSmallBoxes div {
+  background: rgba(0, 0, 0, 0) linear-gradient(to right bottom, rgba(106, 219, 97, 0.7), rgba(77, 191, 116, 0.7)) repeat scroll 0 0;
 }

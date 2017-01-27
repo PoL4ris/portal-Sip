@@ -1,10 +1,11 @@
+
 .bg-white {
   background: white none repeat scroll 0 0;
 }
 .bg-black {
   background: black none repeat scroll 0 0;
 }
-.old-red{
+.old-red {
   background: rgba(255, 122, 122, 0.3) none repeat scroll 0 0 !important;
   border: 2px solid #ff7a7a;
 }
@@ -41,16 +42,25 @@
 .m-r-lg {
   margin-right: 15px;
 }
+.m-l-sm{
+  margin-left: 5px;
+}
+.m-l-lg{
+  margin-left: 15px;
+}
 .m-b-lg {
   margin-bottom: 15px;
 }
-.m-t-lg{
+.m-t-lg {
   margin-top: 15px;
 }
-.m-t-md{
+.m-t-md {
   margin-top: 10px;
 }
-.m-t-sm{
+.m-r-sm{
+  margin-right: 5px;
+}
+.m-t-sm {
   margin-top: 5px;
 }
 .b-b-ddd {
@@ -59,25 +69,25 @@
 .b-t-ddd {
   border-top: 1px solid #ddd;
 }
-.p-t-lg{
+.p-t-lg {
   padding-top: 15px;
 }
-.p-b-lg{
+.p-b-lg {
   padding-bottom: 15px;
 }
-.p-b-sm{
+.p-b-sm {
   padding-bottom: 5px;
 }
-.size-50{
+.size-50 {
   width: 50%;
 }
-.size-100{
+.size-100 {
   width: 100%;
 }
-.no-b-tbl{
-  border-top: none;
-  border-bottom: none;
-  border-left: none;
+.no-b-tbl {
+  border-bottom: medium none;
+  border-left: medium none;
+  border-top: medium none;
 }
 .no-padding-sides {
   padding-left: 0 !important;
@@ -101,10 +111,10 @@
 .float-right {
   float: right;
 }
-.loading-anim{
+.loading-anim {
   animation: 2s linear 0s normal none infinite running fa-spin;
 }
-.f-size-25{
+.f-size-25 {
   font-size: 25px;
 }
 .label-form-align {
@@ -150,35 +160,45 @@
 .search-content {
   float: left;
   position: relative;
-  width: 90%;
+  width: 100%;
 }
 .search-result {
+  background: white none repeat scroll 0 0;
   border-top: 2px solid #ddd;
   margin-bottom: 15px;
-  max-height: 500px;
+  max-height: 650px;
   overflow: auto;
   padding-bottom: 10px;
   padding-top: 10px;
+  width: 100%;
+  border-radius: 0 0 3px 3px;
 }
+.search-result i{}
 .search-content .input-search {
   background: white none repeat scroll 0 0;
   border: medium none !important;
-  border-radius: 15px;
+  border-radius: 0;
   box-shadow: none !important;
   margin: 0 0 3px;
-  padding: 5px 0;
+  padding: 5px 10px;
   position: relative;
   width: 100%;
 }
 .search-content .is-lupa {
+  border-right: 1px solid #ddd;
   color: #ddd;
   cursor: text;
-  font-size: 20px;
+  font-size: 18px;
+  height: 29px;
+  padding-right: 8px;
+  padding-top: 4px;
   position: absolute;
-  right: 5%;
-  top: 1px;
-}Osk
-.new-form-blocks {
+  right: 25px;
+  text-align: center;
+  top: 0;
+  width: 25px;
+}
+Osk .new-form-blocks {
   float: left;
   margin: 0 0 15px;
   width: 50%;
@@ -264,29 +284,29 @@
   color: white;
   text-align: center;
 }
-.modal-ticket-size{}
-.thistory-container{
+.modal-ticket-size {
+}
+.thistory-container {
   max-height: 350px;
   overflow: auto;
 }
-.thistory-container .th-comment{
+.thistory-container .th-comment {
   display: block;
   font-size: 11px;
   height: 150px;
   overflow: auto;
-
 }
-.first-td{
+.first-td {
   background: rgba(0, 0, 0, 0.05) none repeat scroll 0 0;
   cursor: pointer;
   font-size: 14px;
   font-weight: bold;
   letter-spacing: 0.6px;
 }
-.first-td:hover{
-  opacity:.7;
+.first-td:hover {
+  opacity: 0.7;
 }
-.thistory-form-2{
+.thistory-form-2 {
   border: 1px solid #ddd;
   height: 100px;
   max-height: 100px;
@@ -308,12 +328,11 @@
 .suhs input {
   float: left;
 }
-.update-btn-ticket{
+.update-btn-ticket {
   float: right;
 }
-.update-btn-ticket button{}
-
-
+.update-btn-ticket button {
+}
 .profile-css {
   padding-bottom: 30px;
   padding-top: 25px;
@@ -362,4 +381,33 @@
 }
 .bton {
   display: none;
+}
+.main-search {
+  padding-top: 10px;
+  width: 15%;
+}
+.search-content-close{
+  cursor: pointer;
+  font-size: 20px;
+  font-weight: normal;
+  padding-top: 1px;
+  position: absolute;
+  right: 0;
+  text-align: center;
+  width: 26px;
+
+}
+.search-content-close:hover{
+  opacity: .7;
+}
+.main-search-result-container{
+  border-bottom: 1px solid #ddd;
+  color: #333;
+  cursor: pointer;
+  float: left;
+  max-height: 130px;
+  min-height: 100px;
+  overflow: hidden;
+  padding: 15px 0;
+  width: 100%;
 }
