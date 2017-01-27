@@ -17,7 +17,7 @@
 
       <div class="" ng-if="customerSearchResult">
         <div class="search-result anim" >
-          <div ng-repeat="resultSearch in customerSearchResult" ng-click="displayBldData(resultbldright.id)" class="main-search-result-container">
+          <div ng-repeat="resultSearch in customerSearchResult" ng-click="clearSearch()" class="main-search-result-container">
 
             <a href="#/customers?id={{resultSearch.id}}">
 
