@@ -113,7 +113,10 @@
           <p>{{customerData.type.name?customerData.type.name:'Pending'}}</p>
 
           <p class="float-left size-50"><strong>Addresses:</strong></p>
-          <p>{{customerData.addresses.length}}<label class="sm-view-action-btn" data-toggle="modal" data-target="#customerAddressesModal">Check</label></p>
+          <p>
+            {{customerData.addresses.length}}
+            <label class="sm-view-action-btn" data-toggle="modal" data-target="#customerAddressesModal" ng-click="clearAddressModal()">Check</label>
+          </p>
 
         </div>
 
@@ -184,8 +187,44 @@
           <div class="row">
             <div class="field-data col-lg-12" >
               <!--***********************************************-->
-              THIS IS MORE THAN EXPECTED
-              <button ng-click="editAddressModal(0)">CANCEL ACTION</button>
+
+              <form action="">
+                <p class="col-lg-5">
+                  <label class="col-lg-4">Address:</label>
+                  <input class="col-lg-8" type="text" placeholder="New Address" value="{{customerData.addresses[indexOfToShow].address}}">
+                </p>
+                <p class="col-lg-3">
+                  <label class="col-lg-4">Code:</label>
+                  <input class="col-lg-8" type="text" placeholder="New Code" value="{{customerData.addresses[indexOfToShow].code}}">
+                </p>
+                <p class="col-lg-4">
+                  <label class="col-lg-4">Unit:</label>
+                  <input class="col-lg-8" type="text" placeholder="New Code" value="{{customerData.addresses[indexOfToShow].unit}}">
+                </p>
+                <p class="col-lg-5">
+                  <label class="col-lg-4">City:</label>
+                  <input class="col-lg-8" type="text" placeholder="New Code" value="{{customerData.addresses[indexOfToShow].city}}">
+                </p>
+                <p class="col-lg-3">
+                  <label class="col-lg-4">ZIP:</label>
+                  <input class="col-lg-8" type="text" placeholder="New Code" value="{{customerData.addresses[indexOfToShow].zip}}">
+                </p>
+                <p class="col-lg-4">
+                  <label class="col-lg-4">State:</label>
+                  <input class="col-lg-8" type="text" placeholder="New Code" value="{{customerData.addresses[indexOfToShow].state}}">
+                </p>
+                <p class="col-lg-5">
+                  <label class="col-lg-4">Country:</label>
+                  <input class="col-lg-8" type="text" placeholder="New Code" value="{{customerData.addresses[indexOfToShow].country}}">
+                </p>
+                <div class="float-right">
+                  <button class="btn btn-primary">Update</button>
+                </div>
+              </form>
+              <button ng-click="editAddressModal(0)" class="btn btn-default float-right m-r-lg">
+                <i class="fa fa-arrow-left"></i>
+                Back
+              </button>
               <!--***********************************************-->
             </div>
           </div>
