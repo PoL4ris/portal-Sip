@@ -150,7 +150,7 @@ class CustomerController extends Controller
   }
   public function customersData(Request $request)
   {
-    return Customer::with('address', 'contact', 'type','address.buildings', 'address.buildings.neighborhood')->find($request->id);
+    return Customer::with('addresses', 'contacts', 'type','address.buildings', 'address.buildings.neighborhood', 'status', 'status.type')->find($request->id);
   }
   public function getCustomerContactData(Request $request)
   {

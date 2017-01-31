@@ -24,6 +24,13 @@ class Contact extends Model
         return $this->hasOne('App\Models\Type', 'id_types');
     }
 
+
+    public function types() {
+
+      return $this->belongsTo('App\Models\Contact','*', 'id_typess','*', 'customer', '*');
+//      return $this->belongsToMany('App\Models\Contact','types', 'id', 'id_types','App\Models\type');
+    }
+
     //    /**
     //     * 
     //     * @return type

@@ -1,55 +1,203 @@
-<div class="col-lg-12 b-test p-t-lg bg-royal" ng-controller="FormXeditableCtrl" >
-  <!--<header><span class="widget-icon"> <i class="fa fa-edit"></i> </span><h2>Customer info</h2></header>-->
+<div ng-controller="FormXeditableCtrl">
 
   <div ng-controller="FormPluginsCtrl">
     <div class="widget-body" >
-      <button id="enable" class="btn btn-default float-right" ng-click="toggleDisabled()">enable / disable</button>
-      <h2 class="m-n font-thin h3 float-left size-50 no-margin">
-        {{customerData.first_name + ' ' + customerData.last_name}}
-        <strong style="font-size: 13px;">( id {{customerData.id}} )</strong>
+
+      <h2 class="float-left no-margin">
+        <p class="float-left">
+          <a  href=""
+              id="b-p-id-cunitd"
+              record-table="CustValue"
+              data-pk="1"
+              data-options="editableOptions"
+              data-original-title="First Name Value"
+              record-field="value"
+              smart-xeditable
+              data-ng-model="customerData.first_name"
+              record-id="{{customerData.first_name}}"
+              data-type="text"
+              record-idContainer="buildingProperties"
+              data-placement="right"
+              class="editable editable-click"> {{customerData.first_name?customerData.first_name:'...'}}
+          </a>
+        </p>
+        <p class="float-left p-l-md">
+          <a  href=""
+              id="b-p-id-cunitE"
+              record-table="CustValue"
+              data-pk="1"
+              data-options="editableOptions"
+              data-original-title="Last Name Value"
+              record-field="value"
+              smart-xeditable
+              data-ng-model="customerData.last_name"
+              record-id="{{customerData.last_name}}"
+              data-type="text"
+              record-idContainer="buildingProperties"
+              data-placement="right"
+              class="editable editable-click">  {{customerData.last_name?customerData.last_name:'...'}}
+          </a>
+        </p>
+
+
       </h2>
 
+      <p class="vip-class float-left">
+        <a  href="" id="b-p-id-cvip"
+            record-table="CustValue"
+            data-pk="1"
+            smart-xeditable
+            data-options="editableOptions"
+            data-original-title="Set Value"
+            record-field="value"
+            record-idContainer="buildingProperties"
+            data-ng-model="customerData.vip"
+            record-id="{{customerData.vip}}"
+            data-type="text"
+            data-placement="right"
+            class="editable editable-click">
+            {{customerData.vip?customerData.vip:'Not Set'}}
+        </a>
+      </p>
+
       <div class="customer-info-card">
-        <div class="col-lg-6 no-padding-sides m-t-lg">
-          <p class="float-left size-50"><strong>VIP:</strong></p><p><a href="form-x-editable.html#"        id="b-p-id-cvip"      record-table="CustValue"    data-pk="1"
-               data-options="editableOptions"       data-original-title="Set Value"     record-field="value"        smart-xeditable
-               data-ng-model="customerData.vip"     record-id="{{customerData.vip}}"    data-type="textarea"        record-idContainer="buildingProperties"
-               class="editable editable-click">{{customerData.vip?customerData.vip:'Not Set'}}</a></p>
-          <p class="float-left size-50"><strong>Address:</strong></p><p><a href="form-x-editable.html#"    id="b-p-id-caddress"  record-table="CustValue"    data-pk="1"
-                 data-options="editableOptions"                data-original-title="Set Value"                 record-field="value"        smart-xeditable
-                 data-ng-model="customerData.address.address"  record-id="{{customerData.address.address}}"    data-type="textarea"        record-idContainer="buildingProperties"
-                 class="editable editable-click">{{customerData.address.address?customerData.address.address:'Not Set'}}</a></p>
-          <p class="float-left size-50"><strong>Unit:</strong></p><p><a href="form-x-editable.html#"       id="b-p-id-cunit"     record-table="CustValue"    data-pk="1"
-                 data-options="editableOptions"              data-original-title="Set Value"              record-field="value"        smart-xeditable
-                 data-ng-model="customerData.address.unit"   record-id="{{customerData.address.unit}}"    data-type="textarea"        record-idContainer="buildingProperties"
-                 class="editable editable-click">{{customerData.address.unit?customerData.address.unit:'Not Set'}}</a></p>
-          <p class="float-left size-50"><strong>Code:</strong></p><p><a href="form-x-editable.html#"       id="b-p-id-ccode"     record-table="CustValue"    data-pk="1"
-                 data-options="editableOptions"                data-original-title="Set Value"              record-field="value"        smart-xeditable
-                 data-ng-model="customerData.address.code"     record-id="{{customerData.address.code}}"    data-type="textarea"        record-idContainer="buildingProperties"
-                 class="editable editable-click">{{customerData.address.code?customerData.address.code:'Not Set'}}</a></p>
-          <p class="float-left size-50"><strong>Signed Up:</strong></p><p>{{customerData.signedup_at?customerData.signedup_at:'Not Set'}}</p>
+        <div class="col-lg-12 no-padding-sides m-t-lg">
+
+          <p class="float-left size-50"><strong>Address:</strong></p>
+          <p>{{customerData.address.address?customerData.address.address:'Not Set'}}</p>
+
+          <p class="float-left size-50"><strong>Unit:</strong></p>
+          <p>
+            <a  href="form-x-editable.html#"
+                id="b-p-id-cunit"
+                record-table="CustValue"
+                data-pk="1"
+                data-options="editableOptions"
+                data-original-title="Set Value"
+                record-field="value"
+                smart-xeditable
+                data-ng-model="customerData.address.unit"
+                record-id="{{customerData.address.unit}}"
+                data-type="text"
+                record-idContainer="buildingProperties"
+                data-placement="right"
+                class="editable editable-click"># {{customerData.address.unit?customerData.address.unit:'Not Set'}}
+            </a>
+          </p>
+
+          <p class="float-left size-50"><strong>Location:</strong></p>
+          <p>
+            {{customerData.address.city?customerData.address.city:'Not Set'}}, {{customerData.address.state?customerData.address.state:'Not Set'}}, {{customerData.address.zip?customerData.address.zip:'Not Set'}}
+          </p>
+
+          <p class="float-left size-50"><strong>Username:</strong></p>
+          <p>
+            <a  href="form-x-editable.html#"
+                id="b-p-id-cemail"
+                record-table="CustValue"
+                data-pk="1"
+                data-options="editableOptions"
+                data-original-title="Set Value"
+                record-field="value"
+                smart-xeditable
+                data-ng-model="customerData.email"
+                record-id="{{customerData.email}}"
+                data-type="text"
+                record-idContainer="buildingProperties"
+                data-placement="right"
+                class="editable editable-click">{{customerData.email?customerData.email:'Not Set'}}
+            </a>
+          </p>
+
+          <p class="float-left size-50"><strong>Status:</strong></p>
+          <p>{{customerData.type.name?customerData.type.name:'Pending'}}</p>
+
+          <p class="float-left size-50"><strong>Addresses:</strong></p>
+          <p>{{customerData.addresses.length}}<label class="sm-view-action-btn" data-toggle="modal" data-target="#customerAddressesModal">Check</label></p>
+
         </div>
-        <div class="col-lg-6 no-padding-sides m-t-lg">
-          <p class="float-left size-50"><strong>City:</strong></p><p><a href="form-x-editable.html#"       id="b-p-id-ccity"     record-table="CustValue"    data-pk="1"
-                 data-options="editableOptions"                data-original-title="Set Value"              record-field="value"        smart-xeditable
-                 data-ng-model="customerData.address.city"     record-id="{{customerData.address.city}}"    data-type="textarea"        record-idContainer="buildingProperties"
-                 class="editable editable-click">{{customerData.address.city?customerData.address.city:'Not Set'}}</a></p>
-          <p class="float-left size-50"><strong>State:</strong></p><p><a href="form-x-editable.html#"      id="b-p-id-cstate"    record-table="CustValue"    data-pk="1"
-                 data-options="editableOptions"                 data-original-title="Set Value"               record-field="value"        smart-xeditable
-                 data-ng-model="customerData.address.state"     record-id="{{customerData.address.state}}"    data-type="textarea"        record-idContainer="buildingProperties"
-                 class="editable editable-click">{{customerData.address.state?customerData.address.state:'Not Set'}}</a></p>
-          <p class="float-left size-50"><strong>Zip:</strong></p><p><a href="form-x-editable.html#"        id="b-p-id-czip"      record-table="CustValue"    data-pk="1"
-                 data-options="editableOptions"                data-original-title="Set Value"             record-field="value"        smart-xeditable
-                 data-ng-model="customerData.address.zip"      record-id="{{customerData.address.zip}}"    data-type="textarea"        record-idContainer="buildingProperties"
-                 class="editable editable-click">{{customerData.address.zip?customerData.address.zip:'Not Set'}}</a></p>
-          <p class="float-left size-50"><strong>Username:</strong></p><p><a href="form-x-editable.html#"   id="b-p-id-cemail"    record-table="CustValue"    data-pk="1"
-                 data-options="editableOptions"          data-original-title="Set Value"       record-field="value"        smart-xeditable
-                 data-ng-model="customerData.email"      record-id="{{customerData.email}}"    data-type="textarea"        record-idContainer="buildingProperties"
-                 class="editable editable-click">{{customerData.email?customerData.email:'Not Set'}}</a></p>
-          <p class="float-left size-50"><strong>Status:</strong></p><p>{{customerData.type.name?customerData.type.name:'Pending'}}</p>
+
+        <div class="col-lg-12 no-padding-sides m-t-lg">
+          <button id="enable" class="btn btn-primary float-left" ng-click="toggleDisabled()">Edit</button>
         </div>
+
       </div>
     </div>
   </div>
 
+</div>
+
+
+<!--MODAL-->
+<div class="modal fade cus-add-mod" id="customerAddressesModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+          &times;
+        </button>
+        <h4 class="modal-title" id="myModalServiceLabel">{{customerData.first_name + ' ' + customerData.last_name}} Addresses</h4>
+      </div>
+      <!--modal-body-customer-addresses-table-->
+      <div class="modal-body" id="mb-ca-table">
+        <div class="wrapper-sm">
+          <div class="row">
+            <div class="field-data col-lg-12" >
+              <!--***********************************************-->
+              <table datatable="ng"  class="row-border hover">
+                <thead>
+                <tr>
+                  <th>ID</th>
+                  <th class="addr-th">Address</th>
+                  <th>Code</th>
+                  <th>Unit</th>
+                  <th>City</th>
+                  <th>Zip</th>
+                  <th>State</th>
+                  <th>Country</th>
+                  <th>Edit</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="addrs in customerData.addresses">
+                  <td>{{addrs.id}}</td>
+                  <td class="addr-th">{{addrs.address}}</td>
+                  <td>{{addrs.code}}</td>
+                  <td>{{addrs.unit}}</td>
+                  <td>{{addrs.city}}</td>
+                  <td>{{addrs.zip}}</td>
+                  <td>{{addrs.state}}</td>
+                  <td>{{addrs.country}}</td>
+                  <td><span class="btn btn-primary" ng-click="editAddressModal(1)">Edit</span></td>
+                </tr>
+                </tbody>
+              </table>
+              <!--***********************************************-->
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--modal-body-customer-addresses-edit-->
+      <div class="modal-body no-display" id="mb-ca-edit">
+        <div class="wrapper-sm">
+          <div class="row">
+            <div class="field-data col-lg-12" >
+              <!--***********************************************-->
+              THIS IS MORE THAN EXPECTED
+              <button ng-click="editAddressModal(0)">CANCEL ACTION</button>
+              <!--***********************************************-->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">
+          Cancel
+        </button>
+      </div>
+
+    </div>
+  </div>
 </div>

@@ -378,8 +378,6 @@ app.controller('customerController',                function ($scope, $http, $st
   //SET INPUT VALUE
   $('#customerIdScope').val($scope.idCustomer);
 
-//   console.log($scope.idCustomer);
-
   $http.get("customersData", {params:{'id':$scope.idCustomer}})
     .then(function (response) {
       $scope.customerData = response.data;
@@ -615,11 +613,11 @@ app.controller('customerController',                function ($scope, $http, $st
         //$scope.cancel();
       $('#myModalService').modal('toggle');
     }
-  }
+  };
   $scope.setModeType                = function (modeType){
     $scope.customerData.servicesMode = modeType;
     $scope.customerData.serviceTmpId = this.service.id;
-  }
+  };
   $scope.serviceDataDisplay         = function (option) {
     if(option)
       $scope.currentServiceDisplay = this.customerProduct.product;
@@ -631,8 +629,24 @@ app.controller('customerController',                function ($scope, $http, $st
       .then(function (response) {
         $scope.customerData.customerServices = response.data;
       });
-  }
-
+  };
+  //addresses
+  $scope.editAddressModal           = function (action){
+  //  action = 1 EDIT
+  //  action = 0 CANCEL
+    if( action == 1)
+    {
+      console.log('aqui estamos ' + this.addrs.id);
+      $('#mb-ca-table').fadeOut();
+      $('#mb-ca-edit').fadeIn();
+    }
+    else
+    {
+      console.log('aqui estamos ' + action);
+      $('#mb-ca-edit').fadeOut();
+      $('#mb-ca-table').fadeIn();
+    }
+  };
 });
 app.controller('customerTicketHistoryController',   function ($scope, $http){
   $http.get("getTicketHistory", {params:{'id':$scope.idCustomer}})

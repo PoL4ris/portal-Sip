@@ -23,6 +23,11 @@ class Customer extends Model
     public function type() {
         return $this->hasOne('App\Models\Type', 'id', 'id_types');
     }
+
+
+
+
+
     public function status() {
         return $this->hasOne('App\Models\Status', 'id','id_status');
     }
@@ -34,6 +39,9 @@ class Customer extends Model
     }
     public function address() {
         return $this->hasOne('App\Models\Address', 'id_customers');
+    }
+    public function addresses() {
+        return $this->hasMany('App\Models\Address', 'id_customers');
     }
     public function payment() {
         return $this->hasOne('App\Models\PaymentMethod', 'id_customers');

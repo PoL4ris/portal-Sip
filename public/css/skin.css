@@ -1,6 +1,6 @@
 
 html {
-  background: white none repeat scroll 0 0;
+  background: #F1F1F1 none repeat scroll 0 0;
 }
 .center-logo {
 }
@@ -15,7 +15,7 @@ html {
 .fixed-navigation nav > ul li {
 }
 #silverip-side {
-  background: #f1f1f1 none repeat scroll 0 0;
+  background: #ddd none repeat scroll 0 0;
   height: 100%;
   overflow: auto;
   padding: 10px;
@@ -220,10 +220,10 @@ table.dataTable thead .sorting_asc, table.dataTable thead .sorting_desc {
   border-right: 1px solid rgba(34, 38, 46, 0.4);
 }
 body.smart-style-7 {
-  background: white none repeat scroll 0 0 !important;
+  background: #F8F8F8 none repeat scroll 0 0 !important;
 }
 .smart-style-7 #header {
-  background-color: #1a3047;
+  background-color: #152B45;
   background-image: none;
   box-shadow: 0 -1px 4px 2px rgba(0, 0, 0, 0.7);
 }
@@ -434,7 +434,7 @@ body.smart-style-7 {
   margin: 3px 0;
 }
 .smart-style-7 .page-footer, .smart-style-7 .superbox-show, .smart-style-7 aside {
-  background: #1a3047 none repeat scroll 0 0;
+  background: #152B45 none repeat scroll 0 0;
   width: 150px;
 }
 .smart-style-7 .page-footer {
@@ -644,4 +644,10 @@ body.smart-style-7 {
 }
 #divSmallBoxes div {
   background: rgba(0, 0, 0, 0) linear-gradient(to right bottom, rgba(106, 219, 97, 0.7), rgba(77, 191, 116, 0.7)) repeat scroll 0 0;
+}
+
+
+.bg-purple{
+  background: powderblue;
+  border: 1px solid red;
 }

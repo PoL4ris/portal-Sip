@@ -128,6 +128,12 @@ class TestController extends Controller
     $result = $supController->getOldTimeTicket($record);
 
 
+//    $result = Customer::with('contacts.types')
+    $result = Customer::with('addresses', 'contacts', 'type','address.buildings', 'address.buildings.neighborhood', 'status', 'status.type')
+              ->find(501)
+              ->toArray();
+
+
 
 //      print '<pre>';
       dd($result);

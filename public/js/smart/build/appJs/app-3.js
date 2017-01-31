@@ -639,7 +639,7 @@ angular.module('app.forms').controller('FormWizardCtrl', function($scope){
 "use strict";
 
 angular.module('app.forms').controller('FormXeditableCtrl', function($scope, $log){
-// console.log('in use');
+//   console.log('Si esta en uso');
   $scope.username = 'superuser';
   $scope.firstname = null;
   $scope.sex = 'not selected';

@@ -1,4 +1,11 @@
-
+.border{
+  border:2px solid red;
+}
+.border2{
+  border:2px solid blue;
+}
+.demo{
+  display: none; !important;}
 .bg-white {
   background: white none repeat scroll 0 0;
 }
@@ -71,6 +78,9 @@
 }
 .p-t-lg {
   padding-top: 15px;
+}
+.p-l-md{
+  padding-left: 10px;
 }
 .p-b-lg {
   padding-bottom: 15px;
@@ -410,4 +420,38 @@ Osk .new-form-blocks {
   overflow: hidden;
   padding: 15px 0;
   width: 100%;
+}
+.vip-class {
+  background: #1DA3FC;
+  float: right;
+  font-size: 13px;
+  padding: 1px 5px;
+  border-radius: 5px;
+  margin: 0;
+  position: relative;
+}
+.vip-class a{
+  color: white !important;white-space: inherit;
+}
+.vip-class a.editable-click{
+  border-color: red;
+}
+.sm-view-action-btn{
+  background: #FED368;
+  float: right;
+  padding: 1px 8px;
+  border-radius: 4px;
+  text-shadow: 1px 1px 1px rgba(0,0,0,.4);
+  color: white;
+  box-shadow: 0px 0px 3px 0px rgba(0,0,0,.3) inset;
+  cursor: pointer;
+}
+.sm-view-action-btn:hover{
+  background: #FCC441;
+}
+.cus-add-mod .dataTables_length{
+  display: none;
+}
+.addr-th{
+  width: 100px;
 }
