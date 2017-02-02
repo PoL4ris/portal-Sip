@@ -1,15 +1,15 @@
 <!--<div jarvis-widget id="wid-id-1" data-widget-deletebutton="false" data-widget-editbutton="false" data-widget-custombutton="false" ng-controller="FormXeditableCtrl">-->
-<div ng-controller="FormXeditableCtrl" class="p-t-lg b-test bg-royal">
+<div ng-controller="FormXeditableCtrl" class="">
   <div ng-controller="FormPluginsCtrl">
-    <div class="widget-body" ng-controller="globalToolsCtl">
+    <div ng-controller="globalToolsCtl">
       <!--BOTONES-->
-      <div class="widget-body-toolbar bg-white">
+
         <div class="row">
-          <div class="col-sm-6">
+          <div class="col-sm-4">
             <button ng-if="customerContactsData != ''" id="customer-contact" class="btn btn btn-default" ng-click="toggleDisabled()">enable / disable</button>
             <button ng-if="customerContactsData == ''" id="customer-contact" class="btn btn btn-default" ng-click="toggleDisabled()" disabled >enable / disable</button>
           </div>
-          <div class="col-sm-6">
+          <div class="col-sm-8">
             <button id="add-property"
                     class="btn btn btn-default pull-right"
                     ng-click="fadeViews('bpv-container', 'new-form-function', 1, 'customer-contact', 'add-property', 'add-property-cancel')">
@@ -22,9 +22,9 @@
             </button>
           </div>
         </div>
-      </div>
+
       <!--CONTENIDO-->
-      <div>
+      <div class="table-container m-t-lg tc-c-info">
         <table class="table table-bordered table-striped bpv-container">
           <tbody>
             <tr ng-repeat="contactinfo in customerContactsData">
@@ -42,6 +42,7 @@
                    record-id="{{contactinfo.value}}"
                    data-type="text"
                    record-idContainer="wid-id-1"
+                   data-placement="right"
                    class="editable editable-click">
                    {{contactinfo.value?contactinfo.value:'nada'}}
                 </a>
@@ -58,7 +59,7 @@
             <option ng-repeat="type in contactTypes" value="{{type.id}}">{{type.name}}</option>
           </select>
           <textarea class="new-form-fields new-form-textarea m-b-lg" placeholder="Example: 127.0.0.1/255" name="value" required></textarea>
-          <button class="btn btn-primary" ng-click="insertCustomerContact()">Add Contact</button>
+          <button class="btn btn-primary float-right" ng-click="insertCustomerContact()">Add Contact</button>
         </form>
       </div>
     </div>

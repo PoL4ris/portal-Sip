@@ -1,20 +1,15 @@
-<!--<div jarvis-widget id="wid-id-5" data-widget-deletebutton="false" data-widget-editbutton="false" data-widget-custombutton="false" ng-controller="FormXeditableCtrl">-->
-<div ng-controller="FormXeditableCtrl" class="m-t-lg">
+<div ng-controller="FormXeditableCtrl" id="customer-products">
 
-  <div class="color-name-header" ng-if="stcFlag">
-    Go to Customer Info.
-  </div>
+  <div ng-controller="customerServicesController">
 
-  <!-- Services -->
-  <div class="col-lg-12 display-content-main-box anim padder-md" id="customer-box-c" ng-controller="customerServicesController" ng-if="!stcFlag">
-    <div class="panel panel-default">
+    <div class="panel panel-default table-container">
       <table class="tablesorter table m-b-lg">
         <thead>
-        <tr><th>ID</th><th>Service</th><th>Amount</th><th>Cycle</th><th>Status</th><th>Actions</th></tr>
+        <tr><th>Service</th><th>Amount</th><th>Cycle</th><th>Status</th><th>Edit</th><th>On/Off</th></tr>
         </thead>
         <tbody>
         <tr ng-repeat="service in customerData.customerServices.services" ng-controller="serviceProductController">
-          <td>{{ service.id }}</td>
+          <!--<td>{{ service.id }}</td>-->
           <td>{{ customerProduct.product.name }}</td>
           <td>$ {{ customerProduct.product.amount }}.00</td>
           <td class="text-capitalize">{{ customerProduct.product.frequency }}</td>
@@ -26,6 +21,8 @@
                     data-toggle="modal"
                     data-target="#myModalService">
             </button>
+          </td>
+          <td>
             <button ng-if="customerProductStatus.status.name != 'disabled'"
                     class="btn fa fa-times action-confirm btn-dark"
                     ng-click="showConfirm(customerProduct.id, 'disable')"
@@ -41,12 +38,14 @@
         </tbody>
       </table>
     </div>
+
     <div class="col-lg-12 add-Service-btn no-padding-sides m-b-lg">
       <button class="btn m-b-xs btn-sm btn-primary btn-addon bg-blue float-right" data-toggle="modal" data-target="#myModalService"  ng-click="setModeType('')">
         <i class="fa fa-plus"></i>
         Add Service
       </button>
     </div>
+
   </div>
 
 </div>
