@@ -631,14 +631,19 @@ app.controller('customerController',                function ($scope, $http, $st
       });
   };
   //addresses
+  $scope.clearAddressModal          = function (){
+    $('#mb-ca-edit').fadeOut();
+    $('#mb-ca-table').fadeIn();
+  }
   $scope.editAddressModal           = function (action){
   //  action = 1 EDIT
   //  action = 0 CANCEL
     if( action == 1)
     {
-      console.log('aqui estamos ' + this.addrs.id);
+      console.log('aqui estamos ' + this.$index);
       $('#mb-ca-table').fadeOut();
       $('#mb-ca-edit').fadeIn();
+      $scope.indexOfToShow = this.$index;
     }
     else
     {

@@ -2,6 +2,16 @@
 html {
   background: #F1F1F1 none repeat scroll 0 0;
 }
+body{
+  font-family: "Lato",sans-serif;
+  font-size: 11px;
+}
+p{
+  margin:0 0 3px;
+}
+h2{
+  margin:0;
+}
 .center-logo {
 }
 .fixed-header #header {
@@ -184,17 +194,12 @@ html {
   border-style: solid none solid solid;
   border-width: 1px medium 1px 1px;
 }
-.fc-border-separate thead tr, .table thead tr {
-  background: #e4eaf3 none repeat scroll 0 0;
-}
 .jarviswidget > header {
   background: #e4eaf3 none repeat scroll 0 0;
 }
-.smart-form.widget-body-toolbar, .widget-body-toolbar {
-  background: #e4eaf3 none repeat scroll 0 0;
-}
+
 .table-striped > tbody > tr:nth-of-type(2n+1) {
-  background: #e4eaf3 none repeat scroll 0 0;
+  background: transparent none repeat scroll 0 0;
 }
 .nav > li > a:focus, .nav > li > a:hover {
   background: #f7f9fb none repeat scroll 0 0;
@@ -211,6 +216,12 @@ table.dataTable thead .sorting_asc, table.dataTable thead .sorting_desc {
 }
 .btn-warning {
   background: #ffc107 -moz-linear-gradient(center top , #ffc107, #c29306) repeat scroll 0 0;
+}
+.btn-success {
+  background: #4caf50 -moz-linear-gradient(center top , #4caf50, #66bb6a) repeat scroll 0 0;
+}
+.btn-default{
+  border:1px solid #ddd !important;
 }
 .smart-style-7 a {
   transition: color 0.1s linear 0s, background-color 0.1s linear 0s !important;
@@ -638,16 +649,48 @@ body.smart-style-7 {
   }
 }
 
-
 #divSmallBoxes {
-  background: rgba(0, 0, 0, 0) linear-gradient(to right bottom, rgba(106, 219, 97, 0.7), rgba(77, 191, 116, 0.7)) repeat scroll 0 0;
+  background: rgba(0, 0, 0, 0) linear-gradient(to right bottom, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)) repeat scroll 0 0;
 }
 #divSmallBoxes div {
-  background: rgba(0, 0, 0, 0) linear-gradient(to right bottom, rgba(106, 219, 97, 0.7), rgba(77, 191, 116, 0.7)) repeat scroll 0 0;
+  background: rgba(0, 0, 0, 0) linear-gradient(to right bottom, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)) repeat scroll 0 0;
+  color: #1DA3FC;
+  font-weight: inherit;
 }
-
-
-.bg-purple{
-  background: powderblue;
-  border: 1px solid red;
+nav ul li a {
+  font-size: 12px;
+}
+.table-container thead tr th{
+  border-bottom: 1px solid #ddd;
+}
+.table-container thead tr {
+  background: transparent none repeat scroll 0 0;
+}
+.table-container table tbody tr td {
+  padding: 5px 10px;
+  vertical-align: middle;
+}
+.table-container table tbody tr:hover{
+  background: #f8f8f8;
+}
+.table-container.tc-c-info table, .table-container.tc-c-info table tbody tr td {
+  border-color: -moz-use-text-color -moz-use-text-color #ddd;
+  border-style: none none solid;
+  border-width: medium medium 1px;
+}
+.nav-tabs > li.active > a{
+  box-shadow: 0 -2px 0 #fed368;
+}
+.customer-network .widget-body-toolbar {
+  background: transparent none repeat scroll 0 0;
+  border-bottom: 1px solid #ddd;
+  color: #666;
+  font-size: 13px;
+  margin: 0;
+  min-height: 2px;
+  padding: 0 13px 5px;
+}
+.btn{
+  border:none;
+  box-shadow: none;
 }

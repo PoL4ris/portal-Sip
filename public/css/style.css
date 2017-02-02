@@ -1,13 +1,29 @@
 .border{
   border:2px solid red;
 }
+.border1{
+  border:2px solid #1DA3FC;
+}
 .border2{
   border:2px solid blue;
+}
+.border3{
+  border:2px solid #EF2268;
+}
+.border4{
+  border:2px solid #35D6A7;
+}
+.border5{
+  border:2px solid #FED368;
 }
 .demo{
   display: none; !important;}
 .bg-white {
   background: white none repeat scroll 0 0;
+}
+.white-shadow{
+  box-shadow: 0 1px 1px #ececec;
+  border: 1px solid #ddd;
 }
 .bg-black {
   background: black none repeat scroll 0 0;
@@ -58,6 +74,9 @@
 .m-b-lg {
   margin-bottom: 15px;
 }
+.m-b-md {
+  margin-bottom: 10px;
+}
 .m-t-lg {
   margin-top: 15px;
 }
@@ -85,8 +104,14 @@
 .p-b-lg {
   padding-bottom: 15px;
 }
+.p-b-md {
+  padding-bottom: 10px;
+}
 .p-b-sm {
   padding-bottom: 5px;
+}
+.p-r-lg{
+  padding-right: 15px;
 }
 .size-50 {
   width: 50%;
@@ -240,7 +265,7 @@ Osk .new-form-blocks {
 #new-ct-form textarea {
   max-height: 400px;
   max-width: 100%;
-  min-height: 250px;
+  min-height: 100px;
   padding: 5px;
 }
 .ticket-comment-pop {
@@ -425,7 +450,7 @@ Osk .new-form-blocks {
   background: #1DA3FC;
   float: right;
   font-size: 13px;
-  padding: 1px 5px;
+  padding: 2px 5px 1px;
   border-radius: 5px;
   margin: 0;
   position: relative;
