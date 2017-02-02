@@ -694,3 +694,48 @@ nav ul li a {
   border:none;
   box-shadow: none;
 }
+.status-Client {
+  color: #85cc24;
+}
+.status-dot {
+  font-size: 14px;
+  position: relative;
+  top: -3px;
+}
+.edit-info-simple-text{
+  background: transparent none repeat scroll 0 0;
+  border: medium none;
+  color: #1da3fc;
+  font-size: 13px;
+  cursor: pointer;
+}
+.edit-info-simple-text:hover{
+  opacity:.7;
+}
+.Client{
+  color: #00c853;
+}
+.status-color-Client{
+  /*border-top: 5px solid #ffd600;*/
+  /*border-top: 5px solid #ff6d00;*/
+  border-top: 5px solid #00c853;
+  padding-top: 5px;
+}
+.address-bld-img-hover {
+  position: relative;
+  cursor: pointer;
+}
+.address-bld-img-hover:hover + div {
+  display: block;
+  right: -50%;
+  overflow: hidden;
+  position: absolute;
+  top: -30%;
+  width: 50%;
+  padding: 5px;
+  z-index: 100;
+  box-shadow: 1px 1px 3px rgba(0,0,0,.2);
+}
+.address-bld-img-hover:hover + div img {
+  width: 100%;
+}

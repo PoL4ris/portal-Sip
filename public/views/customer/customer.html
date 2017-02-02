@@ -3,7 +3,8 @@
   <div ng-controller="FormPluginsCtrl">
     <div class="widget-body" >
 
-      <h2 class="float-left no-margin">
+      <h2 class="no-margin">
+
         <p class="float-left">
           <a  href=""
               id="b-p-id-cunitd"
@@ -39,36 +40,42 @@
           </a>
         </p>
 
+        <div ng-if="customerData.vip" class="float-left m-l-md vip-class" title="VIP : {{customerData.vip}}"><i class="fa fa-star"></i></div>
 
       </h2>
 
-      <p class="vip-class float-left">
-        <a  href="" id="b-p-id-cvip"
-            record-table="CustValue"
-            data-pk="1"
-            smart-xeditable
-            data-options="editableOptions"
-            data-original-title="Set Value"
-            record-field="value"
-            record-idContainer="buildingProperties"
-            data-ng-model="customerData.vip"
-            record-id="{{customerData.vip}}"
-            data-type="text"
-            data-placement="right"
-            class="editable editable-click">
-            {{customerData.vip?customerData.vip:'Not Set'}}
-        </a>
-      </p>
+      <!--<p class="vip-class float-left">-->
+        <!--<a  href="" id="b-p-id-cvip"-->
+            <!--record-table="CustValue"-->
+            <!--data-pk="1"-->
+            <!--smart-xeditable-->
+            <!--data-options="editableOptions"-->
+            <!--data-original-title="Set Value"-->
+            <!--record-field="value"-->
+            <!--record-idContainer="buildingProperties"-->
+            <!--data-ng-model="customerData.vip"-->
+            <!--record-id="{{customerData.vip}}"-->
+            <!--data-type="text"-->
+            <!--data-placement="right"-->
+            <!--class="editable editable-click">-->
+            <!--{{customerData.vip?customerData.vip:'Not Set'}}-->
+        <!--</a>-->
+      <!--</p>-->
 
       <div class="customer-info-card">
         <div class="col-lg-12 no-padding-sides m-t-lg">
 
           <p class="float-left size-50"><strong>Address:</strong></p>
-          <p>{{customerData.address.address?customerData.address.address:'Not Set'}}</p>
+          <p class="address-bld-img-hover">{{customerData.address.address?customerData.address.address:'Not Set'}}
+            <div class="no-display">
+              <img src="/img/buildings/{{bld.img_building?bld.img_building:bld.buildings.img_building}}" alt="{{customerData.address.address}}" title="{{customerData.address.address}}">
+            </div>
+          </p>
 
-          <p class="float-left size-50"><strong>Unit:</strong></p>
-          <p>
-            <a  href="form-x-editable.html#"
+          <!--<p class=""><strong>Unit:</strong></p>-->
+          <p class=" col-lg-6"></p>
+          <p class="no-padding-sides col-lg-6">
+            <a  href=""
                 id="b-p-id-cunit"
                 record-table="CustValue"
                 data-pk="1"
@@ -85,10 +92,16 @@
             </a>
           </p>
 
-          <p class="float-left size-50"><strong>Location:</strong></p>
-          <p>
-            {{customerData.address.city?customerData.address.city:'Not Set'}}, {{customerData.address.state?customerData.address.state:'Not Set'}}, {{customerData.address.zip?customerData.address.zip:'Not Set'}}
+          <!--<p class="float-left size-50"><strong>Location:</strong></p>-->
+          <p class=" col-lg-6"></p>
+
+          <p class="col-lg-6 no-padding-sides">
+            {{customerData.address.city?customerData.address.city:'Not Set'}}<br> {{customerData.address.state?customerData.address.state:'Not Set'}}<br> {{customerData.address.zip?customerData.address.zip:'Not Set'}}
           </p>
+
+          <p class="float-left size-50"><strong>Code:</strong></p>
+          <p>{{bld.code?bld.code:bld.buildings.code}}</p>
+
 
           <p class="float-left size-50"><strong>Username:</strong></p>
           <p>
@@ -108,20 +121,33 @@
                 class="editable editable-click">{{customerData.email?customerData.email:'Not Set'}}
             </a>
           </p>
+          <p></p>
 
           <p class="float-left size-50"><strong>Status:</strong></p>
-          <p>{{customerData.type.name?customerData.type.name:'Pending'}}</p>
+          <p class="{{customerData.type.name}}">{{customerData.type.name?customerData.type.name:'Pending'}}</p>
 
-          <p class="float-left size-50"><strong>Addresses:</strong></p>
-          <p>
-            {{customerData.addresses.length}}
-            <label class="sm-view-action-btn" data-toggle="modal" data-target="#customerAddressesModal" ng-click="clearAddressModal()">Check</label>
+          <p class="float-left size-50"><strong>Neighborhood:</strong></p>
+          <p>{{bld.neighborhood.name?bld.neighborhood.name:bld.buildings.neighborhood.name}}</p>
+
+          <p class="float-left size-50"><strong>Type:</strong></p>
+          <p>{{bld.type?bld.type:bld.buildings.type}}</p>
+
+          <p class="float-left size-50"><strong>Units / Floors:</strong></p>
+          <p>{{bld.units?bld.units:bld.buildings.units}} / {{bld.floors?bld.floors:bld.buildings.floors}}</p>
+
+          <p class="float-left size-50"><strong>Building Name:</strong></p>
+          <p>{{bld.name?bld.name:bld.buildings.name}}</p>
+
+          <!--<p class="float-left size-50"><strong>Addresses:</strong></p>-->
+          <p data-toggle="modal" data-target="#customerAddressesModal" ng-click="clearAddressModal()" class="edit-info-simple-text m-t-md">
+            <i class="fa fa-map-marker "></i> {{customerData.addresses.length}} More
+            <!--<label class="sm-view-action-btn" data-toggle="modal" data-target="#customerAddressesModal" ng-click="clearAddressModal()">...</label>-->
           </p>
 
         </div>
 
         <div class="col-lg-12 no-padding-sides m-t-lg">
-          <button id="enable" class="btn btn-primary float-left" ng-click="toggleDisabled()">Edit</button>
+          <button id="enable" class="float-left edit-info-simple-text" ng-click="toggleDisabled()">Edit Info <i class="fa fa-arrow-circle-o-right"></i></button>
         </div>
 
       </div>

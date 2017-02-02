@@ -71,6 +71,9 @@
 .m-l-lg{
   margin-left: 15px;
 }
+.m-l-md{
+  margin-left: 10px;
+}
 .m-b-lg {
   margin-bottom: 15px;
 }
@@ -224,7 +227,7 @@
   color: #ddd;
   cursor: text;
   font-size: 18px;
-  height: 29px;
+  height: 26px;
   padding-right: 8px;
   padding-top: 4px;
   position: absolute;
@@ -446,24 +449,14 @@ Osk .new-form-blocks {
   padding: 15px 0;
   width: 100%;
 }
-.vip-class {
-  background: #1DA3FC;
-  float: right;
-  font-size: 13px;
-  padding: 2px 5px 1px;
-  border-radius: 5px;
-  margin: 0;
+.vip-class i{
+  color: #fcc515;
+  font-size: 17px;
   position: relative;
-}
-.vip-class a{
-  color: white !important;white-space: inherit;
-}
-.vip-class a.editable-click{
-  border-color: red;
+  top: -1px;
 }
 .sm-view-action-btn{
   background: #FED368;
-  float: right;
   padding: 1px 8px;
   border-radius: 4px;
   text-shadow: 1px 1px 1px rgba(0,0,0,.4);

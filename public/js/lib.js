@@ -1556,7 +1556,7 @@ app.controller('globalToolsCtl',      function ($scope, $http, $compile, $sce){
     }
   };
   $scope.singleUpdateXedit   = function(id, value, field, table) {
-
+    console.log('estamos aqui');
     var data = {};
     data['id']    = id;
     data['value'] = value;
@@ -1706,7 +1706,9 @@ app.controller('globalToolsCtl',      function ($scope, $http, $compile, $sce){
 
   });
 function gToolsxEdit(value, field, id, idContainer, table){
-  angular.element('#' + idContainer + '-gTools').scope().singleUpdateXedit(id, value, field, table);
+console.log('gToolsxEdit-----');
+//   angular.element('#' + idContainer + '-gTools').scope().singleUpdateXedit(id, value, field, table);
+alert(id + '|--id--|'+  value+ '|--value--|' +  field + '|--field--|' +  table + '|--table--|');
 }
 function getFormValues(id){
   var objects = $('#' + id).serializeArray();
