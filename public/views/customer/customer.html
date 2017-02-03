@@ -66,7 +66,7 @@
         <div class="col-lg-12 no-padding-sides m-t-lg">
 
           <p class="float-left size-50"><strong>Address:</strong></p>
-          <p class="address-bld-img-hover">{{customerData.address.address?customerData.address.address:'Not Set'}}
+          <p class="address-bld-img-hover">{{customerData.address.address?customerData.address.address:'Not Set'}} ({{bld.code?bld.code:bld.buildings.code}})
             <div class="no-display">
               <img src="/img/buildings/{{bld.img_building?bld.img_building:bld.buildings.img_building}}" alt="{{customerData.address.address}}" title="{{customerData.address.address}}">
             </div>
@@ -96,11 +96,11 @@
           <p class=" col-lg-6"></p>
 
           <p class="col-lg-6 no-padding-sides">
-            {{customerData.address.city?customerData.address.city:'Not Set'}}<br> {{customerData.address.state?customerData.address.state:'Not Set'}}<br> {{customerData.address.zip?customerData.address.zip:'Not Set'}}
+            {{customerData.address.city?customerData.address.city:'Not Set'}}, {{customerData.address.state?customerData.address.state:'Not Set'}}  {{customerData.address.zip?customerData.address.zip:'Not Set'}}
           </p>
 
-          <p class="float-left size-50"><strong>Code:</strong></p>
-          <p>{{bld.code?bld.code:bld.buildings.code}}</p>
+          <!--<p class="float-left size-50"><strong>Code:</strong></p>-->
+          <!--<p>{{bld.code?bld.code:bld.buildings.code}}</p>-->
 
 
           <p class="float-left size-50"><strong>Username:</strong></p>
@@ -126,28 +126,46 @@
           <p class="float-left size-50"><strong>Status:</strong></p>
           <p class="{{customerData.type.name}}">{{customerData.type.name?customerData.type.name:'Pending'}}</p>
 
-          <p class="float-left size-50"><strong>Neighborhood:</strong></p>
-          <p>{{bld.neighborhood.name?bld.neighborhood.name:bld.buildings.neighborhood.name}}</p>
 
-          <p class="float-left size-50"><strong>Type:</strong></p>
-          <p>{{bld.type?bld.type:bld.buildings.type}}</p>
 
-          <p class="float-left size-50"><strong>Units / Floors:</strong></p>
-          <p>{{bld.units?bld.units:bld.buildings.units}} / {{bld.floors?bld.floors:bld.buildings.floors}}</p>
-
-          <p class="float-left size-50"><strong>Building Name:</strong></p>
+          <p class="float-left size-50"><strong>Location Name:</strong></p>
           <p>{{bld.name?bld.name:bld.buildings.name}}</p>
+
+
+
+
+
+          <br>
+          <p>
+            <strong>{{bld.type?bld.type:bld.buildings.type}}</strong>
+            in  <strong>{{bld.neighborhood.name?bld.neighborhood.name:bld.buildings.neighborhood.name}}</strong>
+            with  <strong>{{bld.floors?bld.floors:bld.buildings.floors}}</strong> floors
+            and <strong>{{bld.units?bld.units:bld.buildings.units}}</strong> units
+          </p>
+
+
+
+          <!--<p class="float-left size-50"><strong>Neighborhood:</strong></p>-->
+          <!--<p>{{bld.neighborhood.name?bld.neighborhood.name:bld.buildings.neighborhood.name}}</p>-->
+
+          <!--<p class="float-left size-50"><strong>Type:</strong></p>-->
+          <!--<p>{{bld.type?bld.type:bld.buildings.type}}</p>-->
+
+          <!--<p class="float-left size-50"><strong>Units / Floors:</strong></p>-->
+          <!--<p>{{bld.units?bld.units:bld.buildings.units}} / {{bld.floors?bld.floors:bld.buildings.floors}}</p>-->
+
+
 
           <!--<p class="float-left size-50"><strong>Addresses:</strong></p>-->
           <p data-toggle="modal" data-target="#customerAddressesModal" ng-click="clearAddressModal()" class="edit-info-simple-text m-t-md">
-            <i class="fa fa-map-marker "></i> {{customerData.addresses.length}} More
+            <i class="fa fa-map-marker "></i> {{customerData.addresses.length}} addresses found on this account
             <!--<label class="sm-view-action-btn" data-toggle="modal" data-target="#customerAddressesModal" ng-click="clearAddressModal()">...</label>-->
           </p>
 
         </div>
 
-        <div class="col-lg-12 no-padding-sides m-t-lg">
-          <button id="enable" class="float-left edit-info-simple-text" ng-click="toggleDisabled()">Edit Info <i class="fa fa-arrow-circle-o-right"></i></button>
+        <div class="col-lg-12 no-padding-sides">
+          <button id="enable" class="float-left edit-info-simple-text no-padding-sides" ng-click="toggleDisabled()"><i class="fa fa-arrow-circle-o-right"></i> Edit customer</button>
         </div>
 
       </div>

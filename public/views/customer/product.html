@@ -5,7 +5,7 @@
     <div class="panel panel-default table-container">
       <table class="tablesorter table m-b-lg">
         <thead>
-        <tr><th>Service</th><th>Amount</th><th>Cycle</th><th>Status</th><th>Edit</th><th>On/Off</th></tr>
+        <tr><th>Service</th><th>Amount</th><th>Cycle</th><th>Status</th><th colspan="2">Actions</th></tr>
         </thead>
         <tbody>
         <tr ng-repeat="service in customerData.customerServices.services" ng-controller="serviceProductController">
@@ -21,8 +21,7 @@
                     data-toggle="modal"
                     data-target="#myModalService">
             </button>
-          </td>
-          <td>
+
             <button ng-if="customerProductStatus.status.name != 'disabled'"
                     class="btn fa fa-times action-confirm btn-dark"
                     ng-click="showConfirm(customerProduct.id, 'disable')"
