@@ -713,6 +713,7 @@ app.controller('customerNetworkController',         function ($scope, $http){
         data:dataSend,
         success: function(data)
         {
+        console.log(data);
           if (data == 'ERROR')
             alert(data);
 

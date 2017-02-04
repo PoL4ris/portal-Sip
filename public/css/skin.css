@@ -772,6 +772,7 @@ nav ul li a {
   background: #f6f6f6 none repeat scroll 0 0;
   border-radius: 7px;
   box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
+  float: left;
 }
 #activity-log .al-box {
   padding-top: 10px;
@@ -837,6 +838,7 @@ nav ul li a {
   max-height: 150px;
   overflow: auto;
   padding: 10px 0;
+  text-align: justify;
 }
 #activity-log .log-content .al-lg-actions {
   border-bottom: 1px solid #dad8da;
@@ -846,13 +848,143 @@ nav ul li a {
   float: left;
   width: 100%;
 }
-#activity-log .log-content .al-lg-actions button {
+#activity-log .log-content .al-lg-actions button, .al-lg-actions button {
   border: medium none;
   margin: 0 2%;
   padding: 0;
   width: 20%;
+  position: relative;
 }
 
 .big-font{
   font-size: 17px;
 }
+.type-ticket .btn-default:after,
+.type-ticket .btn-success:after,
+.type-ticket .btn-primary:after,
+.type-ticket .btn-danger:after
+{
+  bottom: -8px;
+  font-size: 9px;
+  left: 0;
+  position: absolute;
+  text-align: center;
+  width: 100%;
+}
+.type-ticket .btn-default:after{
+  color: #1da3fc;
+  content: "View Ticket";
+}
+.type-ticket .btn-success:after{
+  content: 'Escalate Ticket';
+  color: #4caf50;
+}
+.type-ticket .btn-primary:after{
+  content: 'View Invoice';
+  color: #3e6cc9;
+}
+.type-ticket .btn-danger:after{
+  content: 'Close Ticket';
+  color: #d14836;
+}
+
+.log-c-a{
+  float: left;
+  width: 75%;
+}
+.log-c-b{
+  float: left;
+  width: 20%;
+  text-align: center;
+}
+.al-box-container{
+  float: left;
+  width: 100%;
+}
+.log-c-b button{
+  height: 35px;
+  margin-bottom: 5px;
+  width: 100%;
+}
+
+
+
+
+
+
+
+.prueba {
+  border: 1px solid #f1f1f1;
+  border-radius: 2px;
+  font-size: 20px;
+  height: 130px;
+  margin-bottom: 30px;
+  overflow: hidden;
+  position: relative;
+  width: 100px;
+}
+.prueba .coso-a {
+  background: #a6c659 none repeat scroll 0 0;
+  border-bottom: 1px solid #859c44;
+  color: white;
+  float: left;
+  font-size: 32px;
+  height: 50%;
+  padding-top: 10px;
+  text-align: center;
+  text-shadow: 2px 2px 1px rgba(0, 0, 0, 0.3);
+  width: 100%;
+}
+.prueba .coso-a i {
+}
+.prueba .coso-b {
+  background: #a6c659 none repeat scroll 0 0;
+  border: 1px solid #849c44;
+  border-radius: 5px;
+  height: 10px;
+  left: 25%;
+  position: absolute;
+  top: 46%;
+  width: 50%;
+}
+.prueba .coso-c {
+  background: #f9f9f9 none repeat scroll 0 0;
+  color: #414b4c;
+  float: left;
+  font-size: 26px;
+  height: 50%;
+  padding-top: 18px;
+  text-align: center;
+  width: 100%;
+  z-index: 5;
+}
+.prueba .coso-b:after {
+  color: white;
+  content: "STATUS";
+  font-size: 7px;
+  letter-spacing: 0.8px;
+  position: absolute;
+  text-align: center;
+  width: 100%;
+}
+.prueba .coso-c:after {
+  bottom: 5px;
+  content: "PORT";
+  font-size: 9px;
+  left: 0;
+  position: absolute;
+  text-align: center;
+  width: 100%;
+}
+
+
+.dooos{}
+.prueba .dosa{
+  background: #EC6F69;
+  border-color: #AF605B;
+}
+.prueba .dosb{
+  background: #EC6F69;
+  border-color: #AF605B;
+}
+.dosc{}
