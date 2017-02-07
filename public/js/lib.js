@@ -17,7 +17,6 @@ app.controller('buildingSideController', function ($scope, $http){
 app.controller('buildingCtl',                       function($scope, $http) {
 
   if (!$scope.sbid) {
-  console.log('awaw');
     $scope.SiteMenu = [];
     $http.get('buildings').then(function (data){
       $scope.bldData = data.data;
@@ -363,7 +362,6 @@ app.controller('customerControllerList',            function ($scope, $http){
 });
 app.controller('customerController',                function ($scope, $http, $stateParams){
 
-  console.log('customerController');
   $scope.customerFlag = true;
   $scope.idCustomer = 501;
 
@@ -681,15 +679,19 @@ app.controller('customerBillingHistoryController',  function ($scope, $http){
 });
 app.controller('customerNetworkController',         function ($scope, $http){
 
+console.log('esto es  : customerNetworkController');
+
   $http.get("getCustomerNetwork", {params:{'id':$scope.idCustomer}})
     .then(function (response) {
       $scope.customerNetwork = response.data[0];
+      //to get network data rdy for dash MAYBE
+      networkServices(0, true);
     });
 
   $scope.networkServices    = function (service) {
     networkServices(service);
   }
-  function networkServices (service) {
+  function networkServices (service, flagService) {
 
     var routes = ['networkCheckStatus',
                   'netwokAdvancedInfo',
@@ -713,7 +715,8 @@ app.controller('customerNetworkController',         function ($scope, $http){
         data:dataSend,
         success: function(data)
         {
-        console.log(data);
+          console.log(data);
+          $scope.customerData.networkServices = data;
           if (data == 'ERROR')
             alert(data);
 
@@ -746,13 +749,16 @@ app.controller('customerNetworkController',         function ($scope, $http){
               {
 
 //                 $('#IPs').notify('IPs Array.');
-                $.smallBox({
-                  title: "IPs Array.",
-                  content: "<i class='fa fa-clock-o'></i> <i>2 seconds ago...</i>",
-                  color: "#739E73",
-                  iconSmall: "fa fa-thumbs-up bounce animated",
-                  timeout: 6000
-                });
+                if(!flagService)
+                {
+                  $.smallBox({
+                    title: "IPs Array.",
+                    content: "<i class='fa fa-clock-o'></i> <i>2 seconds ago...</i>",
+                    color: "#739E73",
+                    iconSmall: "fa fa-thumbs-up bounce animated",
+                    timeout: 6000
+                  });
+                }
 
                 $('.network-functions').removeClass('disabled');
 
@@ -1722,6 +1728,14 @@ function getFormValues(id){
 /* User Authenticated Data */
 app.controller('userAuthController',   function ($scope){
   $scope.userDataAuth = JSON.parse($('#auth-user').val());
+})
+
+
+
+
+
+app.controller('apol', function (){
+  console.log('this is apol');
 })
 
 

@@ -714,7 +714,7 @@ angular.module('SmartAdmin.Layout').factory('lazyScript', function($q, $http){
       cache[scriptName] = $q.defer();
       var el = document.createElement( 'script' );
       el.onload = function(script){
-        console.log('script is lazy loaded:', scriptName)
+//         console.log('script is lazy loaded:', scriptName)
         cache[scriptName].resolve(scriptName);
       };
       el.src = scriptName;

@@ -6,10 +6,16 @@
     <div class="col-lg-6 m-t-lg">
 
 
-      <div class="prueba pull-left m-r-lg">
+      <div class="prueba pull-left m-r-lg" ng-if="customerData.networkServices['oper-status'] == 'up' ">
         <div class="coso-a"><i class="fa fa-arrow-up"></i></div>
         <div class="coso-b"></div>
         <div class="coso-c"><span>UP</span></div>
+      </div>
+
+      <div class="prueba dooos pull-left m-l-lg" ng-if="customerData.networkServices['oper-status'] != 'up' ">
+        <div class="coso-a dosa"><i class="fa fa-arrow-down"></i></div>
+        <div class="coso-b dosb"></div>
+        <div class="coso-c dosc"><span>Down</span></div>
       </div>
 
       <div class="prueba dooos pull-left m-l-lg">
@@ -20,15 +26,18 @@
 
 
     </div>
+
+
+
     <div class="col-lg-2 border2 no-padding-sides">
-    Pligins SM
-
-
-
-
-
-
+      <div ng-click="apol()">
+        <button>ALGO POR AQUI</button>
+      </div>
     </div>
+
+
+
+
   </div>
 </article>
 
@@ -62,3 +71,4 @@
     </div>
   </div>
 </article>
+

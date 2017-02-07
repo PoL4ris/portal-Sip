@@ -227,8 +227,8 @@ angular.module('app.smartAdmin').config(function ($stateProvider) {
 angular.module('app.tables', [ 'ui.router', 'datatables', 'datatables.bootstrap']);
 
 angular.module('app.tables').config(function ($stateProvider) {
-  console.log('app.tables');
-  console.log($stateProvider);
+//   console.log('app.tables');
+//   console.log($stateProvider);
   return;
   $stateProvider
     .state('app.tables', {

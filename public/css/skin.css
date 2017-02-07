@@ -4,7 +4,8 @@ html {
 }
 body{
   font-family: "Lato",sans-serif;
-  font-size: 11px;
+  font-size: 12px;
+  /*11*/
 }
 p{
   margin:0 0 3px;
@@ -642,7 +643,8 @@ body.smart-style-7 {
   font-weight: inherit;
 }
 nav ul li a {
-  font-size: 12px;
+  font-size: 13px;
+  /*12*/
 }
 .table-container{
   border: none;
@@ -857,7 +859,7 @@ nav ul li a {
 }
 
 .big-font{
-  font-size: 17px;
+  font-size: 20px;
 }
 .type-ticket .btn-default:after,
 .type-ticket .btn-success:after,
@@ -916,21 +918,20 @@ nav ul li a {
 .prueba {
   border: 1px solid #f1f1f1;
   border-radius: 2px;
-  font-size: 20px;
-  height: 130px;
+  height: 100px;
   margin-bottom: 30px;
   overflow: hidden;
   position: relative;
-  width: 100px;
+  width: 70px;
 }
 .prueba .coso-a {
   background: #a6c659 none repeat scroll 0 0;
   border-bottom: 1px solid #859c44;
   color: white;
   float: left;
-  font-size: 32px;
+  font-size: 25px;
   height: 50%;
-  padding-top: 10px;
+  padding-top: 5px;
   text-align: center;
   text-shadow: 2px 2px 1px rgba(0, 0, 0, 0.3);
   width: 100%;
@@ -951,14 +952,14 @@ nav ul li a {
   background: #f9f9f9 none repeat scroll 0 0;
   color: #414b4c;
   float: left;
-  font-size: 26px;
+  font-size: 20px;
   height: 50%;
-  padding-top: 18px;
+  padding-top: 10px;
   text-align: center;
   width: 100%;
   z-index: 5;
 }
-.prueba .coso-b:after {
+.prueba .coso-b::after {
   color: white;
   content: "STATUS";
   font-size: 7px;
@@ -967,7 +968,7 @@ nav ul li a {
   text-align: center;
   width: 100%;
 }
-.prueba .coso-c:after {
+.prueba .coso-c::after {
   bottom: 5px;
   content: "PORT";
   font-size: 9px;
@@ -976,15 +977,55 @@ nav ul li a {
   text-align: center;
   width: 100%;
 }
+.dooos {
+}
+.prueba .dosa {
+  background: #ec6f69 none repeat scroll 0 0;
+  border-color: #af605b;
+}
+.prueba .dosb {
+  background: #ec6f69 none repeat scroll 0 0;
+  border-color: #af605b;
+}
+.dosc {
+}
 
 
-.dooos{}
-.prueba .dosa{
-  background: #EC6F69;
-  border-color: #AF605B;
+
+
+
+
+
+
+
+
+.warp{
+  background: red none repeat scroll 0 0;
+  border-radius: 50%;
+  height: 500px;
+  margin: 0 auto;
+  overflow: hidden;
+  position: relative;
+  width: 500px;
+  z-index: 1;
 }
-.prueba .dosb{
-  background: #EC6F69;
-  border-color: #AF605B;
+.warp .pizza{
+  border: 1px solid white;
+  float: left;
+  height: 250px;
+  width: 250px;
 }
-.dosc{}
+.warp .w-1{
+  background: cyan none repeat scroll 0 0;
+}
+.warp .w-1 .w1-content{}
+.warp .w-2{}
+.warp .w-3{}
+.warp .w-4{
+  background: cyan none repeat scroll 0 0;
+}
+.warp .w-1 .w4-content{}
+.warp .w-5{}
+.warp .centro{
+
+}
