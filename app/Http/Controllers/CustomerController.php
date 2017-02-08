@@ -22,6 +22,7 @@ use App\Models\Building\Building;
 use App\Models\NetworkNode;
 use App\Models\ContactType;
 use App\Models\Support\Ticketreasons;
+use App\Models\Log;
 use DB;
 use Schema;
 use Auth;
@@ -150,7 +151,7 @@ class CustomerController extends Controller
   }
   public function customersData(Request $request)
   {
-    return Customer::with('addresses', 'contacts', 'type','address.buildings', 'address.buildings.neighborhood', 'status', 'status.type')->find($request->id);
+    return Customer::with('addresses', 'contacts', 'type','address.buildings', 'address.buildings.neighborhood', 'status', 'status.type', 'openTickets')->find($request->id);
   }
   public function getCustomerContactData(Request $request)
   {
@@ -267,16 +268,55 @@ class CustomerController extends Controller
 
   public function updateAddressTable(Request $request)
   {
-    $data = $request->all();
-    unset($data['id_customers']);
-    Address::where('id_customers', $request->id_customers)->update($data);
+//    $data = $request->all();
+//    unset($data['id_customers']);
+//    Address::where('id_customers', $request->id_customers)->update($data);
+//    return 'OK';
+
+
+
+
+    $params = $request->all();
+    $data[$params['field']] = explode('# ', $params['value'])[1];
+
+    $recordCustomer = $data;
+    $recordCustomer['old_data'] = Address::find($request->id)->toArray();
+
+    Address::where('id', $request->id)->update($data);
+
+    $logData['id_users'] = Auth::user()->id;
+    $logData['id_customers'] = $recordCustomer['old_data']['id_customers'];
+    $logData['action']   = 'update';
+    $logData['route']    = 'updateAddressTable';
+    $logData['data']     = serialize($recordCustomer);
+
+    Log::insert($logData);
+
     return 'OK';
+
+
+
+
+
   }
   public function updateCustomersTable(Request $request)
   {
-    $data = $request->all();
-    unset($data['id_customers']);
-    Customer::where('id', $request->id_customers)->update($data);
+    $params = $request->all();
+    $data[$params['field']] = $params['value'];
+
+    $recordCustomer = $data;
+    $recordCustomer['old_data'] = Customer::find($request->id)->toArray();
+
+    Customer::where('id', $request->id)->update($data);
+
+    $logData['id_users'] = Auth::user()->id;
+    $logData['id_customers'] = $request->id;
+    $logData['action']   = 'update';
+    $logData['route']    = 'updateCustomersTable';
+    $logData['data']     = serialize($recordCustomer);
+
+    Log::insert($logData);
+
     return 'OK';
   }
   public function updateContactInfo(Request $request)

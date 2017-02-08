@@ -389,12 +389,27 @@ app.controller('customerController',                function ($scope, $http, $st
     .then(function (response) {
       $scope.newTicketData = response.data;
     });
+  $http.get("getStatus")
+    .then(function (response) {
+        $scope.customerTypes = response.data;
+        for(var obj in response.data ) {
+          $scope.customerTypes[obj]['value'] = response.data[obj].id;
+          $scope.customerTypes[obj]['text']  = response.data[obj].name;
+        }
+      });
 
-  $scope.checkboxModel = true;
-  $scope.checkboxModelA = true;
-  $scope.animationsEnabled = false;
+  $scope.checkboxModel         = true;
+  $scope.checkboxModelA        = true;
+  $scope.animationsEnabled     = false;
   $scope.currentServiceDisplay = '';
 
+
+  $scope.getCustomerData                  = function (){
+    $http.get("customersData", {params:{'id':$scope.idCustomer}})
+      .then(function (response) {
+        $scope.customerData = response.data;
+      });
+  };
   $scope.clearSearch                = function (){
     this.searchCustomer = '';
     $scope.buscador();
@@ -679,7 +694,7 @@ app.controller('customerBillingHistoryController',  function ($scope, $http){
 });
 app.controller('customerNetworkController',         function ($scope, $http){
 
-console.log('esto es  : customerNetworkController');
+// console.log('esto es  : customerNetworkController');
 
   $http.get("getCustomerNetwork", {params:{'id':$scope.idCustomer}})
     .then(function (response) {
@@ -715,7 +730,7 @@ console.log('esto es  : customerNetworkController');
         data:dataSend,
         success: function(data)
         {
-          console.log(data);
+//           console.log(data);
           $scope.customerData.networkServices = data;
           if (data == 'ERROR')
             alert(data);
@@ -884,13 +899,6 @@ app.controller('customerBuildingController',        function ($scope, $http){
   }
 
 });
-
-
-
-
-
-
-
 
 
 
@@ -1083,36 +1091,6 @@ console.log('this is addPaymentMethodController ');
       });
   }
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -1562,17 +1540,26 @@ app.controller('globalToolsCtl',      function ($scope, $http, $compile, $sce){
       $('#arrowChange').removeClass("fa-arrow-circle-left");
     }
   };
-  $scope.singleUpdateXedit   = function(id, value, field, table) {
-    console.log('estamos aqui');
+  $scope.singleUpdateXedit   = function(id, value, field, table, routeFunction) {
+    console.log('Function singleUpdateXedit--->');
+
     var data = {};
     data['id']    = id;
     data['value'] = value;
     data['field'] = field;
     data['table'] = table;
-//     data['id_customers'] = $scope.customerData.id;
     $http.get("update" + table + "Table", {params:data})
       .then(function (response) {
-        console.log('OK');
+        if(response.data == 'OK')
+        {
+          if(routeFunction)
+            $scope.resolveRouteFunction(routeFunction, id);
+
+          return 'OK'
+        }
+        else
+          alert('ERROR');
+
       });
   }
   $scope.fadeViews           = function (view1, view2, action,bt1,bt2,bt3){
@@ -1711,11 +1698,25 @@ app.controller('globalToolsCtl',      function ($scope, $http, $compile, $sce){
     });
   }
 
+
+  $scope.resolveRouteFunction   = function (routeFunction, id){
+    switch(routeFunction)
+    {
+      case 'getCustomerData':
+      {
+        angular.element('#customers-gTools').scope().getCustomerData(id);
+      }
+
+    }
+  };
+
+
+
+
   });
-function gToolsxEdit(value, field, id, idContainer, table){
-console.log('gToolsxEdit-----');
-//   angular.element('#' + idContainer + '-gTools').scope().singleUpdateXedit(id, value, field, table);
-alert(id + '|--id--|'+  value+ '|--value--|' +  field + '|--field--|' +  table + '|--table--|');
+function gToolsxEdit(value, field, id, idContainer, table, model){
+  angular.element('#' + idContainer + '-gTools').scope().singleUpdateXedit(id, value, field, table, model);
+  console.log(id + ' <--|--id--|'+  value+ ' <--|--value--|' +  field + ' <--|--field--|' +  table + ' <--|--table--|'+  idContainer + ' <--|--idContainer--|');
 }
 function getFormValues(id){
   var objects = $('#' + id).serializeArray();

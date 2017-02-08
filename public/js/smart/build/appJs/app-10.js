@@ -281,7 +281,7 @@ angular.module('SmartAdmin.Forms').directive('smartXeditable', function($timeout
     var defaults = {
       validate: function (value){
 //         console.log(attrs);
-        gToolsxEdit(value, attrs.recordField, attrs.recordId, attrs.recordIdcontainer, attrs.recordTable);
+        gToolsxEdit(value, attrs.recordField, attrs.recordId, attrs.recordIdcontainer, attrs.recordTable, attrs.ngModel);
       }
 //       ,display: function(value, srcData) {
 //           ngModel.$setViewValue(value);

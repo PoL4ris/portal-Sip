@@ -735,13 +735,32 @@ nav ul li a {
 .edit-info-simple-text:hover{
   opacity:.7;
 }
-.Client{
+.active #status-select{
   color: #00c853;
 }
-.status-color-Client{
-  /*border-top: 5px solid #ffd600;*/
-  /*border-top: 5px solid #ff6d00;*/
+.status-color-active{
   border-top: 5px solid #00c853;
+  padding-top: 5px;
+}
+.disabled #status-select{
+  color: #ffd600;
+}
+.status-color-disabled{
+  border-top: 5px solid #ffd600;
+  padding-top: 5px;
+}
+.decommissioned #status-select{
+  color: #ff6d00;
+}
+.status-color-decommissioned{
+  border-top: 5px solid #ff6d00;
+  padding-top: 5px;
+}
+.new #status-select{
+  color: #0086ff;
+}
+.status-color-new{
+  border-top: 5px solid #0086ff;
   padding-top: 5px;
 }
 .address-bld-img-hover {
@@ -762,6 +781,9 @@ nav ul li a {
 .address-bld-img-hover:hover + div img {
   width: 100%;
 }
+
+
+
 
 
 
@@ -999,33 +1021,77 @@ nav ul li a {
 
 
 
-.warp{
-  background: red none repeat scroll 0 0;
-  border-radius: 50%;
-  height: 500px;
-  margin: 0 auto;
-  overflow: hidden;
+.prueba-1 {
+  background: cyan none repeat scroll 0 0;
+  height: 35px;
   position: relative;
-  width: 500px;
-  z-index: 1;
+  width: 100px;
 }
-.warp .pizza{
-  border: 1px solid white;
+.prueba-1 div {
+  border: 1px solid #f1f1f1;
   float: left;
-  height: 250px;
-  width: 250px;
+  height: 100%;
+  width: 50%;
 }
-.warp .w-1{
-  background: cyan none repeat scroll 0 0;
+.prueba-1 .coso-a {
+  background: #ec6f69 none repeat scroll 0 0;
+  color: white;
+  font-size: 24px;
+  text-align: center;
+  text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.4);
 }
-.warp .w-1 .w1-content{}
-.warp .w-2{}
-.warp .w-3{}
-.warp .w-4{
-  background: cyan none repeat scroll 0 0;
+.prueba-1 .coso-b {
+  border: medium none;
+  bottom: -20px;
+  height: 20px;
+  padding-top: 2px;
+  position: absolute;
+  text-align: center;
+  width: 100%;
 }
-.warp .w-1 .w4-content{}
-.warp .w-5{}
-.warp .centro{
+.prueba-1 .coso-c {
+  background: #f9f9f9 none repeat scroll 0 0;
+  color: #414b4c;
+  font-size: 14px;
+  padding-top: 7px;
+  text-align: center;
+}
+.prueba-1 .coso-a.dosa {
+  background: #A6C659;
+}
 
+
+
+
+
+
+.openticket {
+  height: 80px;
+  width: 80px;
 }
+.openticket label{
+  color: #292c3f;
+  font-size: 14px;
+  margin: 0;
+  text-align: center;
+  width: 100%;
+}
+.openticket .ot-container {
+  background: #292c3f none repeat scroll 0 0;
+  border-radius: 50%;
+  height: 100%;
+  width: 100%;
+}
+.openticket .ot-container span {
+  color: #e15639;
+  display: table-cell;
+  font-size: 50px;
+  height: 80px;
+  text-align: center;
+  vertical-align: middle;
+  width: 80px;
+}
+
+
+
+

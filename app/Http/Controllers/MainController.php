@@ -14,6 +14,7 @@ use App\Models\Customer;
 use App\Models\Ticket;
 use App\Models\Address;
 use App\Models\Building\Building;
+use App\Models\Status;
 
 
 class MainController extends Controller
@@ -206,6 +207,9 @@ class MainController extends Controller
   public function getReasonsData()
   {
     return Reason::all();
+  }
+  public function getStatus(){
+    return Status::all();
   }
 }
 

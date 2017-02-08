@@ -136,6 +136,7 @@ Route::group(['middleware' => 'web'], function () {
   Route::get('getAddress',              'CustomerController@getAddress');
   Route::get('getBuildingProperties',   'BuildingController@getBuildingProperties');
   Route::get('getProducts',             'SupportController@getProducts');//new
+  Route::get('getStatus',               'MainController@getStatus');//new
 
   //SUPPORT
   Route::get('updateTicketDetails',     'SupportController@updateTicketData');

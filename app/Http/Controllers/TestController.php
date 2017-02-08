@@ -129,7 +129,14 @@ class TestController extends Controller
 
 
 //    $result = Customer::with('contacts.types')
-    $result = Customer::with('addresses', 'contacts', 'type','address.buildings', 'address.buildings.neighborhood', 'status', 'status.type')
+    $result = Customer::with('addresses',
+                             'contacts',
+                             'type',
+                             'address.buildings',
+                             'address.buildings.neighborhood',
+                             'status',
+                             'status.type',
+                             'openTickets')
               ->find(501)
               ->toArray();
 

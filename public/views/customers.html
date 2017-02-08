@@ -1,38 +1,65 @@
 <article class="col-sm-12 col-md-12 col-lg-12 p-b-lg bg-white white-shadow">
   <div class="row">
     <div class="col-lg-4">
-      <article class="col-sm-12 col-md-12 col-lg-12 no-padding-sides m-t-lg status-color-{{customerData.type.name}}"  ng-include="'/views/customer/customer.html'" ></article>
+      <article class="col-sm-12 col-md-12 col-lg-12 no-padding-sides m-t-lg status-color-{{customerData.status.name}}"  ng-include="'/views/customer/customer.html'" ></article>
     </div>
+
     <div class="col-lg-6 m-t-lg">
 
 
-      <div class="prueba pull-left m-r-lg" ng-if="customerData.networkServices['oper-status'] == 'up' ">
-        <div class="coso-a"><i class="fa fa-arrow-up"></i></div>
-        <div class="coso-b"></div>
-        <div class="coso-c"><span>UP</span></div>
-      </div>
+            <div class="prueba pull-left m-r-lg" ng-if="customerData.networkServices['oper-status'] == 'up' ">
+              <div class="coso-a"><i class="fa fa-arrow-up"></i></div>
+              <div class="coso-b"></div>
+              <div class="coso-c"><span>UP</span></div>
+            </div>
 
-      <div class="prueba dooos pull-left m-l-lg" ng-if="customerData.networkServices['oper-status'] != 'up' ">
-        <div class="coso-a dosa"><i class="fa fa-arrow-down"></i></div>
-        <div class="coso-b dosb"></div>
-        <div class="coso-c dosc"><span>Down</span></div>
-      </div>
+            <div class="prueba dooos pull-left m-l-lg" ng-if="customerData.networkServices['oper-status'] != 'up' ">
+              <div class="coso-a dosa"><i class="fa fa-arrow-down"></i></div>
+              <div class="coso-b dosb"></div>
+              <div class="coso-c dosc"><span>Down</span></div>
+            </div>
 
-      <div class="prueba dooos pull-left m-l-lg">
-        <div class="coso-a dosa"><i class="fa fa-arrow-down"></i></div>
-        <div class="coso-b dosb"></div>
-        <div class="coso-c dosc"><span>Down</span></div>
-      </div>
+            <div class="prueba-1 pull-left m-l-lg" ng-if="customerData.networkServices['oper-status'] == 'up' ">
+              <div class="coso-a "><i class="fa fa-arrow-down"></i></div>
+              <div class="coso-b ">Port Status</div>
+              <div class="coso-c "><span>Down</span></div>
+            </div>
+
+            <div class="prueba-1 pull-left m-l-lg"  ng-if="customerData.networkServices['oper-status'] != 'up' ">
+              <div class="coso-a dosa"><i class="fa fa-arrow-up"></i></div>
+              <div class="coso-b dosb">Port Status</div>
+              <div class="coso-c dosc"><span>UP</span></div>
+            </div>
+
+
+            <div class="openticket pull-left m-l-lg">
+              <label>Open tickets</label>
+              <div class="ot-container">
+                <span ng-if="customerData.open_tickets">{{customerData.open_tickets.length}}</span>
+                <span ng-if="!customerData.open_tickets"><i class="fa fa-spinner spinner-load" aria-hidden="true"></i></span>
+              </div>
+            </div>
+
+
+
+
+
 
 
     </div>
 
 
 
-    <div class="col-lg-2 border2 no-padding-sides">
-      <div ng-click="apol()">
-        <button>ALGO POR AQUI</button>
-      </div>
+
+    <div class="col-lg-2  no-padding-sides">
+
+
+      <!--<div ng-click="apol()">-->
+        <!--<button>BOTON</button>-->
+      <!--</div>-->
+
+
+
     </div>
 
 
