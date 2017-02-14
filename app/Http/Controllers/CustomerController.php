@@ -665,11 +665,9 @@ class CustomerController extends Controller
 
   public function getCustomerLog(Request $request){
 
-  return Log::where('id_customers',$request->id)->get();
-
-
-    print '<pre>';
-    print_r($request->all());
-    die();
+  return ActivityLog::where('type',$request->type)
+                    ->where('id_type',$request->id_type)
+                    ->orderBy('id', 'desc')
+                    ->get();
   }
 }

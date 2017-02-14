@@ -5,6 +5,8 @@ app.controller('menuController',                    function($scope, $http){
     alert('Error');
   }
 });
+
+
 //Building Controllers
 app.controller('buildingSideController', function ($scope, $http){
 
@@ -284,6 +286,8 @@ app.controller('buildingCtl',                       function($scope, $http) {
     }
   }
 })
+
+
 //Network Controllers
 app.controller('networkController',                 function ($scope, $http){
 
@@ -353,6 +357,8 @@ app.controller('networkControllerTSort',            function (DTOptionsBuilder, 
 
   vm.persons = $scope.networkData;
 });
+
+
 //Customer Controllers
 app.controller('customerControllerList',            function ($scope, $http){
   $http.get("getCustomerList")
@@ -360,74 +366,44 @@ app.controller('customerControllerList',            function ($scope, $http){
       $scope.supportDataCustomer = response.data;
     });
 });
-app.controller('customerController',                function ($scope, $http, $stateParams, customerFactory){
+app.controller('customerController',                function ($scope, $http, $stateParams){
 
+  if(!$scope.customerData.rightView) {
+    $scope.customerData.rightView = true;
 
-console.log('controller');
-
-
-console.log(customerFactory);
-
-return
-
-
-
-  if(!customerFactory.rightView)
-  {
-    customerFactory.rightView = true;
-    customerFactory.nombre = 'warp';
-    $scope.nombre = customerFactory.nombre;
-    console.log(customerFactory);
   }
-  else
-  {
-    customerFactory.leftView = true;
-    customerFactory.nombre = 'polo';
-    $scope.nombre = customerFactory.nombre;
+  else {
+    $scope.customerData.leftView = true;
 
-//     $http.get("customersData", {params:{'id' : customerFactory.idCustomer}})
-//       .then(function (response) {
-//         customerFactory.customerData = response.data;
-//       $scope.customerData = response.data;
-//       $scope.bld = $scope.customerData.address;
-//       console.log($scope.customerData);
-//         $scope.customerData = customerFactory.customerData;
-//       });
-  }
-
-
-  return;
-
-
-  $scope.customerFlag = true;
-  $scope.idCustomer = 501;
-
-  if ($scope.stcid || $stateParams.id)
-    $scope.idCustomer = $scope.stcid ? $scope.stcid : $stateParams.id;
-
-  if (($(location).attr('href').split('http://silverip-portal.com/#/')[1]) == 'customers') {
+    $scope.customerFlag = true;
     $scope.idCustomer = 501;
-    $scope.buscadorFlag = true;
-  }
 
-  //SET INPUT VALUE
-  $('#customerIdScope').val($scope.idCustomer);
+    if ($scope.stcid || $stateParams.id)
+      $scope.idCustomer = $scope.stcid ? $scope.stcid : $stateParams.id;
 
-//   $http.get("customersData", {params:{'id':$scope.idCustomer}})
-//     .then(function (response) {
-//       $scope.customerData = response.data;
-//       $scope.bld = $scope.customerData.address;
-//     });
-  $http.get("getContactTypes", {params:{'id':$scope.idCustomer}})
-    .then(function (response) {
-      $scope.contactTypes = response.data;
-    });
-  $http.get("getTableData", {params:{'table':'reasons'}})
-    .then(function (response) {
-      $scope.newTicketData = response.data;
-    });
-  $http.get("getStatus")
-    .then(function (response) {
+    if (($(location).attr('href').split('http://silverip-portal.com/#/')[1]) == 'customers') {
+      $scope.idCustomer = 501;
+      $scope.buscadorFlag = true;
+    }
+
+    //SET INPUT VALUE
+    $('#customerIdScope').val($scope.idCustomer);
+
+    $http.get("customersData", {params:{'id' : $scope.idCustomer}})
+      .then(function (response) {
+        $scope.customerData.customer = response.data;
+        $scope.bld = $scope.customerData.customer.address;
+      });
+    $http.get("getContactTypes", {params:{'id':$scope.idCustomer}})
+      .then(function (response) {
+        $scope.contactTypes = response.data;
+      });
+    $http.get("getTableData", {params:{'table':'reasons'}})
+      .then(function (response) {
+        $scope.newTicketData = response.data;
+      });
+    $http.get("getStatus")
+      .then(function (response) {
         $scope.customerTypes = response.data;
         for(var obj in response.data ) {
           $scope.customerTypes[obj]['value'] = response.data[obj].id;
@@ -435,13 +411,21 @@ return
         }
       });
 
-  $scope.checkboxModel         = true;
-  $scope.checkboxModelA        = true;
-  $scope.animationsEnabled     = false;
-  $scope.currentServiceDisplay = '';
+    $scope.checkboxModel         = true;
+    $scope.checkboxModelA        = true;
+    $scope.animationsEnabled     = false;
+    $scope.currentServiceDisplay = '';
 
+  }
 
-
+  //Reloads Data
+  $scope.getCustomerStatus          = function (id){
+    $http.get("getCustomerStatus", {params:{'id':id}})
+      .then(function (response) {
+        $scope.customerData.customer.status = response.data;
+      });
+  };
+  //----------
   $scope.clearSearch                = function (){
     this.searchCustomer = '';
     $scope.buscador();
@@ -933,8 +917,6 @@ app.controller('customerBuildingController',        function ($scope, $http){
 });
 
 
-
-
 //PAYMENT METHOD INCOMPLETE.
 app.controller('customerPaymentMethodsController',  function ($scope, $http){
 // console.log('something here con el id de  : ' + $scope.idCustomer);
@@ -1204,6 +1186,8 @@ app.controller('serviceProductController',          function ($scope, $http){
     });
 
 });
+
+
 //Support Controllers
 app.controller('supportController',                 function ($scope, $http, DTOptionsBuilder){
 
@@ -1376,6 +1360,8 @@ app.controller('supportTicketHistory',              function ($scope, $http){
       $scope.historyData = response.data;
     });
 });
+
+
 //En espera de edicion de usuario data
 app.controller('supportControllerTools',            function ($scope, $http) {
   console.log('supportControllerTools');
@@ -1458,8 +1444,6 @@ app.controller('supportControllerTools',            function ($scope, $http) {
 //User Profile Controllers
 app.controller('userProfileController',             function ($scope, $http){
 
-  console.log('COSA LOCA');
-
   $scope.checkboxModel = false;
 
   $http.get("getProfileInfo")
@@ -1467,9 +1451,7 @@ app.controller('userProfileController',             function ($scope, $http){
       $scope.profileData = response.data;
     });
 
-
-
-  $scope.customerEditMode = function (){
+  $scope.customerEditMode   = function (){
     if ( $scope.checkboxModel == true)
     {
       $('.editable-text').fadeIn('slow');
@@ -1481,9 +1463,7 @@ app.controller('userProfileController',             function ($scope, $http){
       $('.editable-text').css('display', 'none');
     }
   };
-
-
-  $scope.updatePassword = function() {
+  $scope.updatePassword     = function() {
     var psw1 = this.psw1;
     var psw2 = this.psw2;
 
@@ -1516,9 +1496,7 @@ app.controller('userProfileController',             function ($scope, $http){
       alert('Passwords do not match.');
 
   };
-
-  $scope.lengthpsw = function ()
-  {
+  $scope.lengthpsw          = function () {
     var psw1Length = this.psw1?this.psw1.length:0;
     var psw2Length = this.psw2?this.psw2.length:0;
 
@@ -1528,30 +1506,19 @@ app.controller('userProfileController',             function ($scope, $http){
       $('#pswbton').attr('disabled', true);
   }
 
-
-
-
 });
 
 
-
-
-
-
-
-
-
-
 // Global Tools //
-app.controller('globalToolsCtl',      function ($scope, $http, $compile, $sce){
+app.controller('globalToolsCtl',      function ($scope, $http, $compile, $sce, $stateParams){
 
   console.log('globalToolsCtl');
+  $scope.customerData   = {};
   $scope.globalScopeVar = true;
+  $scope.sipToolLeft    = false;
+  $scope.sipToolRight   = true;
 
-  $scope.sipToolLeft = false;
-  $scope.sipToolRight = true;
-
-  $scope.leftColumnOpenClose = function (){
+  $scope.leftColumnOpenClose  = function (){
     if($('#content').hasClass("ccr-small"))
     {
       $('#lcontent').removeClass("ccl-small");
@@ -1571,8 +1538,8 @@ app.controller('globalToolsCtl',      function ($scope, $http, $compile, $sce){
       $('#arrowChange').removeClass("fa-arrow-circle-left");
     }
   };
-  $scope.singleUpdateXedit   = function(id, value, field, table, routeFunction) {
-    console.log('Function singleUpdateXedit--->');
+  $scope.singleUpdateXedit    = function(id, value, field, table, routeFunction) {
+//     console.log('Function singleUpdateXedit--->');
 
     var data = {};
     data['id']    = id;
@@ -1593,7 +1560,7 @@ app.controller('globalToolsCtl',      function ($scope, $http, $compile, $sce){
 
       });
   }
-  $scope.fadeViews           = function (view1, view2, action,bt1,bt2,bt3){
+  $scope.fadeViews            = function (view1, view2, action,bt1,bt2,bt3){
   /*
     view1 = view to hide CLASS
     view2 = view to show CLASS
@@ -1621,8 +1588,6 @@ app.controller('globalToolsCtl',      function ($scope, $http, $compile, $sce){
     }
 
   };
-
-
   $scope.sipTool              = function (type, id){
 
     /*
@@ -1694,9 +1659,7 @@ app.controller('globalToolsCtl',      function ($scope, $http, $compile, $sce){
     $('#silverip-side').toggleClass(id);
     $('#main').toggleClass(id + '-location');
   }
-
-
-  $scope.buscador                   = function () {
+  $scope.buscador             = function () {
 
     if(!this.searchCustomer)
     {
@@ -1714,12 +1677,11 @@ app.controller('globalToolsCtl',      function ($scope, $http, $compile, $sce){
     return;
 
   }
-  $scope.clearSearch                = function (){
+  $scope.clearSearch          = function (){
     this.searchCustomer = '';
     $scope.buscador();
   }
-
-  $scope.alertDummy = function (){
+  $scope.alertDummy           = function (){
     $.smallBox({
       title: "Password Updated!",
       content: "<i class='fa fa-clock-o'></i> <i>3 seconds ago...</i>",
@@ -1728,12 +1690,7 @@ app.controller('globalToolsCtl',      function ($scope, $http, $compile, $sce){
       timeout: 6000
     });
   }
-
-
-  $scope.resolveRouteFunction   = function (routeFunction, id){
-
-//     console.log($scope);
-
+  $scope.resolveRouteFunction = function (routeFunction, id){
 
     switch(routeFunction)
     {
@@ -1741,33 +1698,19 @@ app.controller('globalToolsCtl',      function ($scope, $http, $compile, $sce){
       {
         angular.element('#customers-gTools').scope().getCustomerStatus(id);
       }
+    };
 
-    }
-  };
-
-
-
-
-
-  $scope.sepiom = 'one side';
-  $scope.asidanat = function (){
-    $scope.sepiom = 'two side';
-  }
-
-  $scope.getCustomerStatus          = function (id){
-    $http.get("getCustomerStatus", {params:{'id':id}})
+    $http.get("getCustomerLog", {params:{'type':'customer', 'id_type':id}})
       .then(function (response) {
-        $scope.customerData.status = response.data;
+        $scope.customerData.customer.log = response.data;
       });
+
   };
-
-
-
 
   });
 function gToolsxEdit(value, field, id, idContainer, table, model){
   angular.element('#' + idContainer + '-gTools').scope().singleUpdateXedit(id, value, field, table, model);
-  console.log(id + ' <--|--id--|'+  value+ ' <--|--value--|' +  field + ' <--|--field--|' +  table + ' <--|--table--|'+  idContainer + ' <--|--idContainer--|');
+//   console.log(id + ' <--|--id--|'+  value+ ' <--|--value--|' +  field + ' <--|--field--|' +  table + ' <--|--table--|'+  idContainer + ' <--|--idContainer--|');
 }
 function getFormValues(id){
   var objects = $('#' + id).serializeArray();
@@ -1781,27 +1724,6 @@ function getFormValues(id){
 app.controller('userAuthController',   function ($scope){
   $scope.userDataAuth = JSON.parse($('#auth-user').val());
 })
-
-
-
-
-
-app.factory('customerFactory', function ($stateParams, $http){
-  console.log('this is the factory');
-
-
-  var customerData = $http.get("customersData", {params:{'id' : 501}})
-    .then(function (response) {
-      return response.data;
-//       $scope.customerData = response.data;
-//       $scope.bld = $scope.customerData.address;
-    });
-
-console.log(customerData);
-
-  return customerData;
-});
-
 
 
 
