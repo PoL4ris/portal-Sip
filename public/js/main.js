@@ -34,11 +34,12 @@ angular.module('app.customers', ['ui.router']).config(function ($stateProvider) 
         views: {
           "content@app": {
             templateUrl: '/views/customers.html',
-            controller: 'customerController'
+            controller: 'customerController',
           },
           "silveriptool": {
             templateUrl: '/views/test.html',
-//             controller: 'sidebarController'
+            controller: 'customerController',
+
           }
         },
         resolve: {
@@ -125,11 +126,11 @@ angular.module('app.admin'  , ['ui.router']).config(function ($stateProvider) {
       },
       views: {
         "content@app": {
-          templateUrl: '/views/dummy.html',
+//           templateUrl: '/views/dummy.html',
         },
         'silveriptool':{
           templateUrl: '/views/test.html',
-          controller: 'apol',
+          controller: 'sidebarController',
         }
       },
       resolve: {

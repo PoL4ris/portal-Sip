@@ -129,14 +129,9 @@ class TestController extends Controller
 
 
 //    $result = Customer::with('contacts.types')
-    $result = Customer::with('addresses',
-                             'contacts',
-                             'type',
-                             'address.buildings',
-                             'address.buildings.neighborhood',
-                             'status',
-                             'status.type',
-                             'openTickets')
+    $result = Customer::with('addresses', 'contacts', 'type','address.buildings', 'address.buildings.neighborhood', 'status', 'status.type', 'openTickets', 'log')
+//                             'status.type',
+//                             'openTickets')
               ->find(501)
               ->toArray();
 
@@ -187,4 +182,36 @@ class TestController extends Controller
   public function cleanView(){
     return;
     }
+
+  public function logFunction() {
+    $customer = Customer::with('addresses', 'contacts', 'type','address.buildings', 'address.buildings.neighborhood', 'status', 'status.type', 'openTickets', 'log')->find(501)->toArray();
+    print '<pre>';
+    dd($customer);
+    die();
+
+
+    $params = $request->all();
+    $data[$params['field']] = $params['value'];
+
+    $recordCustomer = $data;
+    $recordCustomer['old_data'] = Customer::find($request->id)->toArray();
+
+    Customer::where('id', $request->id)->update($data);
+
+    $logData['id_users'] = Auth::user()->id;
+    $logData['id_customers'] = $request->id;
+    $logData['action']   = 'update';
+    $logData['route']    = 'updateCustomersTable';
+    $logData['data']     = json_encode($recordCustomer);
+
+    Log::insert($logData);
+
+    return 'OK';
+
+
+
+
+
+
+  }
 }

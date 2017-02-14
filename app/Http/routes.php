@@ -18,6 +18,7 @@ header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Ac
 //DB functions
 Route::get('db-test',            'TestController@testDBRelations');
 Route::get('supportTest',        'TestController@supportTest');
+Route::get('logFunction',        'TestController@logFunction');
 Route::get('testView',           'TestController@cleanView');
 Route::get('testTickets',        'TestController@testCustomerTickets');
 Route::get('getSignupProducts',  'SignupController@getSignupProducts');
@@ -96,6 +97,7 @@ Route::group(['middleware' => 'web'], function () {
   Route::get('disableCustomerServices', 'CustomerController@disableCustomerServices');
   Route::get('activeCustomerServices',  'CustomerController@activeCustomerServices');
   Route::get('updateCustomerServices',  'CustomerController@updateCustomerServices');
+  Route::get('getCustomerStatus',       'CustomerController@getCustomerStatus');//new
   //Customer Billing
   Route::get('refundAmount',            'BillingController@refund');
   Route::get('chargeAmount',            'BillingController@charge');
@@ -137,6 +139,9 @@ Route::group(['middleware' => 'web'], function () {
   Route::get('getBuildingProperties',   'BuildingController@getBuildingProperties');
   Route::get('getProducts',             'SupportController@getProducts');//new
   Route::get('getStatus',               'MainController@getStatus');//new
+
+  //LOGS
+  Route::get('getCustomerLog',          'CustomerController@getCustomerLog');//new
 
   //SUPPORT
   Route::get('updateTicketDetails',     'SupportController@updateTicketData');

@@ -78,4 +78,8 @@ class Customer extends Model
             ->select(['tickets.*', 'reasons.name as reason', 'reasons.short_description as short_reason', 'categories.name as category'])
             ->get();
     }
+
+    public function log() {
+      return $this->hasMany('App\Models\ActivityLog', 'id_type')->orderBy('id','desc');
+    }
 }

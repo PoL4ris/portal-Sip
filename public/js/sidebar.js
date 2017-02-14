@@ -1,20 +1,5 @@
 
 app.controller('sidebarController', function($scope, $http){
-  console.log('sidebarController');
+  console.log('inside sidebarController');
+  console.log($scope.customerData);
 });
-
-//sidebarControllers
-app.controller('cProducts', function ($scope, $http){
-
-
-//   console.log($scope.idCustomer);
-
-//   $http.get("getProducts")
-//     .then(function (response){
-//       $scope.productsList = response.data;
-//     });
-});
-
-
-
-

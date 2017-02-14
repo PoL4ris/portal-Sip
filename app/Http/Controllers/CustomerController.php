@@ -22,7 +22,7 @@ use App\Models\Building\Building;
 use App\Models\NetworkNode;
 use App\Models\ContactType;
 use App\Models\Support\Ticketreasons;
-use App\Models\Log;
+use App\Models\ActivityLog;
 use DB;
 use Schema;
 use Auth;
@@ -151,7 +151,11 @@ class CustomerController extends Controller
   }
   public function customersData(Request $request)
   {
-    return Customer::with('addresses', 'contacts', 'type','address.buildings', 'address.buildings.neighborhood', 'status', 'status.type', 'openTickets')->find($request->id);
+    return Customer::with('addresses', 'contacts', 'type','address.buildings', 'address.buildings.neighborhood', 'status', 'status.type', 'openTickets', 'log')->find($request->id);
+  }
+  public function getCustomerStatus(Request $request)
+  {
+    return Customer::with('status')->find($request->id)['status'];
   }
   public function getCustomerContactData(Request $request)
   {
@@ -309,13 +313,16 @@ class CustomerController extends Controller
 
     Customer::where('id', $request->id)->update($data);
 
-    $logData['id_users'] = Auth::user()->id;
-    $logData['id_customers'] = $request->id;
-    $logData['action']   = 'update';
-    $logData['route']    = 'updateCustomersTable';
-    $logData['data']     = serialize($recordCustomer);
+    $logData = new ActivityLog;
 
-    Log::insert($logData);
+    $logData->id_users = Auth::user()->id;
+    $logData->type     = 'customer';
+    $logData->id_type  = $request->id;
+    $logData->action   = 'update';
+    $logData->route    = 'updateCustomersTable';
+    $logData->log_data = json_encode($recordCustomer);
+
+    $logData->save();
 
     return 'OK';
   }
@@ -654,5 +661,15 @@ class CustomerController extends Controller
                                 WHERE CP.CSID = ' . $data['CSID']) ;
     }
 
+  }
+
+  public function getCustomerLog(Request $request){
+
+  return Log::where('id_customers',$request->id)->get();
+
+
+    print '<pre>';
+    print_r($request->all());
+    die();
   }
 }

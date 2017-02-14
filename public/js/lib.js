@@ -360,7 +360,44 @@ app.controller('customerControllerList',            function ($scope, $http){
       $scope.supportDataCustomer = response.data;
     });
 });
-app.controller('customerController',                function ($scope, $http, $stateParams){
+app.controller('customerController',                function ($scope, $http, $stateParams, customerFactory){
+
+
+console.log('controller');
+
+
+console.log(customerFactory);
+
+return
+
+
+
+  if(!customerFactory.rightView)
+  {
+    customerFactory.rightView = true;
+    customerFactory.nombre = 'warp';
+    $scope.nombre = customerFactory.nombre;
+    console.log(customerFactory);
+  }
+  else
+  {
+    customerFactory.leftView = true;
+    customerFactory.nombre = 'polo';
+    $scope.nombre = customerFactory.nombre;
+
+//     $http.get("customersData", {params:{'id' : customerFactory.idCustomer}})
+//       .then(function (response) {
+//         customerFactory.customerData = response.data;
+//       $scope.customerData = response.data;
+//       $scope.bld = $scope.customerData.address;
+//       console.log($scope.customerData);
+//         $scope.customerData = customerFactory.customerData;
+//       });
+  }
+
+
+  return;
+
 
   $scope.customerFlag = true;
   $scope.idCustomer = 501;
@@ -376,11 +413,11 @@ app.controller('customerController',                function ($scope, $http, $st
   //SET INPUT VALUE
   $('#customerIdScope').val($scope.idCustomer);
 
-  $http.get("customersData", {params:{'id':$scope.idCustomer}})
-    .then(function (response) {
-      $scope.customerData = response.data;
-      $scope.bld = $scope.customerData.address;
-    });
+//   $http.get("customersData", {params:{'id':$scope.idCustomer}})
+//     .then(function (response) {
+//       $scope.customerData = response.data;
+//       $scope.bld = $scope.customerData.address;
+//     });
   $http.get("getContactTypes", {params:{'id':$scope.idCustomer}})
     .then(function (response) {
       $scope.contactTypes = response.data;
@@ -404,12 +441,7 @@ app.controller('customerController',                function ($scope, $http, $st
   $scope.currentServiceDisplay = '';
 
 
-  $scope.getCustomerData                  = function (){
-    $http.get("customersData", {params:{'id':$scope.idCustomer}})
-      .then(function (response) {
-        $scope.customerData = response.data;
-      });
-  };
+
   $scope.clearSearch                = function (){
     this.searchCustomer = '';
     $scope.buscador();
@@ -1513,7 +1545,6 @@ app.controller('userProfileController',             function ($scope, $http){
 // Global Tools //
 app.controller('globalToolsCtl',      function ($scope, $http, $compile, $sce){
 
-
   console.log('globalToolsCtl');
   $scope.globalScopeVar = true;
 
@@ -1700,14 +1731,34 @@ app.controller('globalToolsCtl',      function ($scope, $http, $compile, $sce){
 
 
   $scope.resolveRouteFunction   = function (routeFunction, id){
+
+//     console.log($scope);
+
+
     switch(routeFunction)
     {
       case 'getCustomerData':
       {
-        angular.element('#customers-gTools').scope().getCustomerData(id);
+        angular.element('#customers-gTools').scope().getCustomerStatus(id);
       }
 
     }
+  };
+
+
+
+
+
+  $scope.sepiom = 'one side';
+  $scope.asidanat = function (){
+    $scope.sepiom = 'two side';
+  }
+
+  $scope.getCustomerStatus          = function (id){
+    $http.get("getCustomerStatus", {params:{'id':id}})
+      .then(function (response) {
+        $scope.customerData.status = response.data;
+      });
   };
 
 
@@ -1735,8 +1786,67 @@ app.controller('userAuthController',   function ($scope){
 
 
 
-app.controller('apol', function (){
-  console.log('this is apol');
-})
+app.factory('customerFactory', function ($stateParams, $http){
+  console.log('this is the factory');
+
+
+  var customerData = $http.get("customersData", {params:{'id' : 501}})
+    .then(function (response) {
+      return response.data;
+//       $scope.customerData = response.data;
+//       $scope.bld = $scope.customerData.address;
+    });
+
+console.log(customerData);
+
+  return customerData;
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
