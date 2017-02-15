@@ -27,11 +27,15 @@ use DB;
 use Schema;
 use Auth;
 use App\Http\Controllers\NetworkController;
+use ActivityLogs;
 
 class CustomerController extends Controller
 {
+    protected $logType;
+    
   public function __construct() {
     $this->middleware('auth');
+      $this->logType = 'customer';
   }
 //  public function dashboard()
 //  {
@@ -306,23 +310,17 @@ class CustomerController extends Controller
   public function updateCustomersTable(Request $request)
   {
     $params = $request->all();
-    $data[$params['field']] = $params['value'];
+    $newData = array();
+    $newData[$params['field']] = $params['value'];
 
-    $recordCustomer = $data;
-    $recordCustomer['old_data'] = Customer::find($request->id)->toArray();
+    // Get current customer data
+    $currrentData = Customer::find($request->id)->toArray();
 
-    Customer::where('id', $request->id)->update($data);
+    // Update customer data
+    Customer::where('id', $request->id)->update($newData);
 
-    $logData = new ActivityLog;
-
-    $logData->id_users = Auth::user()->id;
-    $logData->type     = 'customer';
-    $logData->id_type  = $request->id;
-    $logData->action   = 'update';
-    $logData->route    = 'updateCustomersTable';
-    $logData->log_data = json_encode($recordCustomer);
-
-    $logData->save();
+    // Log this activity
+    ActivityLogs::add($this->logType, $request->id, 'update', 'updateCustomersTable', $currrentData, $newData);
 
     return 'OK';
   }

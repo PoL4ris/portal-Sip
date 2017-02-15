@@ -5,7 +5,7 @@ namespace App\Extensions\Facades;
 use Illuminate\Support\Facades\Facade;
 
 
-class ActivityLog extends Facade
+class ActivityLogs extends Facade
 {
     /**
      * Get the registered name of the component.
@@ -14,6 +14,6 @@ class ActivityLog extends Facade
      */
     protected static function getFacadeAccessor()
     {
-        return 'activitylog';
+        return 'activitylogs';
     }
 }
