@@ -15,7 +15,7 @@ class CreateBillingTransactionLogsTable extends Migration
       Schema::create('billing_transaction_logs', function(Blueprint $table)
       {
         $table->increments('id');
-        $table->timestamp('date_time')->nullable();
+        $table->timestamp('date_time')->useCurrent();
         $table->string('transaction_id')->nullable();
         $table->string('username')->nullable();
         $table->integer('id_customers')->nullable();

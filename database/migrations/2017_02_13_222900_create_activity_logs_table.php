@@ -16,7 +16,7 @@ class CreateActivityLogsTable extends Migration
       $table->string('action');
       $table->string('route');
       $table->text('log_data')->comment('Json Data');
-      $table->timestamp('timestamp')->comment('Date')->default(DB::raw('CURRENT_TIMESTAMP'));
+      $table->timestamp('timestamp')->comment('Date')->useCurrent();
       $table->timestamps();
     });
   }

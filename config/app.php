@@ -156,10 +156,16 @@ return [
         App\Providers\AuthServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-        //Social thing
+        
+        //Social Authentication
         Laravel\Socialite\SocialiteServiceProvider::class,
+        
+        // Jeffrey Way Generator helpers
         Way\Generators\GeneratorsServiceProvider::class,
         Xethron\MigrationsGenerator\MigrationsGeneratorServiceProvider::class,
+    
+        // Custom activity logger
+        App\Providers\ActivityLogServiceProvider::class,
 
     ],
 
@@ -210,6 +216,7 @@ return [
 //        'Form'      => Illuminate\Html\FormFacade::class,
         //Social thing
         'Socialite' => Laravel\Socialite\Facades\Socialite::class,
+        'ActivityLog' => App\Extensions\Facades\ActivityLog::class,
 
     ],
 

@@ -16,6 +16,7 @@ header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Ac
 
 
 //DB functions
+Route::get('activity-log-test',  'TestController@testActivityLog');
 Route::get('db-test',            'TestController@testDBRelations');
 Route::get('supportTest',        'TestController@supportTest');
 Route::get('logFunction',        'TestController@logFunction');

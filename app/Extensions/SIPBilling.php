@@ -140,8 +140,6 @@ class SIPBilling {
 
     protected function storeXaction(Customer $customer, $xactionResult, Address $address = null, PaymentMethod $pm = null, $details = false) {
 
-
-
         $xactionLog = new BillingTransactionLog;
         $xactionLog->transaction_id = $xactionResult['TRANSACTIONID'];
         $xactionLog->payment_mode = 'CC';

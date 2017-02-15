@@ -17,9 +17,7 @@ use App\Models\NetworkNode;
 use App\Models\ContactType;
 use App\Models\PaymentMethod;
 use App\Http\Controllers\CustomerController;
-
-
-
+use ActivityLog;
 
 class TestController extends Controller
 {
@@ -29,16 +27,16 @@ class TestController extends Controller
     }
 
     public function testCustomerTickets(){
-//        $customer = Customer::with('tickets')
-//                            ->find('501');    
-//        dd($customer);
-        
+        //        $customer = Customer::with('tickets')
+        //                            ->find('501');    
+        //        dd($customer);
+
         $customer = new Customer;
         $tickets = $customer->getTickets('501');
         dd($tickets->toArray());
-        
+
     }
-    
+
     public function testCC(){
 
         //        $customer = Customers::find('10248');
@@ -98,120 +96,125 @@ class TestController extends Controller
         //        dd($tickets);
 
 
-//        $ticket1 = Ticket::find(18685);
-//        dd($ticket1);   
-        
-//        $customer = Customer::find($ticket1->id_customers);
-//        dd($customer);
-        
+        //        $ticket1 = Ticket::find(18685);
+        //        dd($ticket1);   
+
+        //        $customer = Customer::find($ticket1->id_customers);
+        //        dd($customer);
+
         $ticket2 = Ticket::with('address', 'customer')->find(18685);
-    
-//        $queries = DB::getQueryLog();
-//        $last_query = end($queries);
-//        dd($last_query);
-        
+
+        //        $queries = DB::getQueryLog();
+        //        $last_query = end($queries);
+        //        dd($last_query);
+
         dd($ticket2);
     }
 
-  public function supportTest()
-  {
-    $supController = new SupportController();
+    public function supportTest()
+    {
+        $supController = new SupportController();
 
 
-    $record = Ticket::with('customer', 'reason', 'ticketNote','ticketHistory', 'user', 'userAssigned', 'address', 'contacts')
-      ->where('id_reasons','!=', 11)
-      ->where('status','!=', 'closed')
-      ->orderBy('updated_at', 'desc')
-      ->limit(3)
-      ->get()->toArray();
+        $record = Ticket::with('customer', 'reason', 'ticketNote','ticketHistory', 'user', 'userAssigned', 'address', 'contacts')
+            ->where('id_reasons','!=', 11)
+            ->where('status','!=', 'closed')
+            ->orderBy('updated_at', 'desc')
+            ->limit(3)
+            ->get()->toArray();
 
-    $result = $supController->getOldTimeTicket($record);
-
-
-//    $result = Customer::with('contacts.types')
-    $result = Customer::with('addresses', 'contacts', 'type','address.buildings', 'address.buildings.neighborhood', 'status', 'status.type', 'openTickets', 'log')
-//                             'status.type',
-//                             'openTickets')
-              ->find(501)
-              ->toArray();
+        $result = $supController->getOldTimeTicket($record);
 
 
-
-//      print '<pre>';
-      dd($result);
-      die();
-
-
-    print '<pre>';
-
-    //    $customerControllerVar = new CustomerController();
-    //    $customerControllerData = $customerControllerVar->customersData();
-    //
-    //    print '<pre>';
-    //    print_r($customerControllerData);
-    //    die();
-
-    //    print_r($last_query);
-
-    $coso = CustomerProduct::where('id_customers',501)->get()->toArray();
-
-    print_r($coso);
-    die();
-
-    $coso = Customer::with('address', 'contact', 'type','address.buildings', 'address.buildings.neighborhood')->find(13579)->toarray();
-
-    $queries = DB::getQueryLog();
-    $last_query = end($queries);
-
-
-    //    print_r($last_query);
-
-
-    print '----------------------------------------------<br>';
-
-    print_r(
-      $coso
-    );
+        //    $result = Customer::with('contacts.types')
+        $result = Customer::with('addresses', 'contacts', 'type','address.buildings', 'address.buildings.neighborhood', 'status', 'status.type', 'openTickets', 'log')
+            //                             'status.type',
+            //                             'openTickets')
+            ->find(501)
+            ->toArray();
 
 
 
-    die();
+        //      print '<pre>';
+        dd($result);
+        die();
 
-  }
 
-  public function cleanView(){
-    return;
+        print '<pre>';
+
+        //    $customerControllerVar = new CustomerController();
+        //    $customerControllerData = $customerControllerVar->customersData();
+        //
+        //    print '<pre>';
+        //    print_r($customerControllerData);
+        //    die();
+
+        //    print_r($last_query);
+
+        $coso = CustomerProduct::where('id_customers',501)->get()->toArray();
+
+        print_r($coso);
+        die();
+
+        $coso = Customer::with('address', 'contact', 'type','address.buildings', 'address.buildings.neighborhood')->find(13579)->toarray();
+
+        $queries = DB::getQueryLog();
+        $last_query = end($queries);
+
+
+        //    print_r($last_query);
+
+
+        print '----------------------------------------------<br>';
+
+        print_r(
+            $coso
+        );
+
+
+
+        die();
+
     }
 
-  public function logFunction() {
-    $customer = Customer::with('addresses', 'contacts', 'type','address.buildings', 'address.buildings.neighborhood', 'status', 'status.type', 'openTickets', 'log')->find(501)->toArray();
-    print '<pre>';
-    dd($customer);
-    die();
+    public function cleanView(){
+        return;
+    }
+
+    public function logFunction() {
+        $customer = Customer::with('addresses', 'contacts', 'type','address.buildings', 'address.buildings.neighborhood', 'status', 'status.type', 'openTickets', 'log')->find(501)->toArray();
+        print '<pre>';
+        dd($customer);
+        die();
 
 
-    $params = $request->all();
-    $data[$params['field']] = $params['value'];
+        $params = $request->all();
+        $data[$params['field']] = $params['value'];
 
-    $recordCustomer = $data;
-    $recordCustomer['old_data'] = Customer::find($request->id)->toArray();
+        $recordCustomer = $data;
+        $recordCustomer['old_data'] = Customer::find($request->id)->toArray();
 
-    Customer::where('id', $request->id)->update($data);
+        Customer::where('id', $request->id)->update($data);
 
-    $logData['id_users'] = Auth::user()->id;
-    $logData['id_customers'] = $request->id;
-    $logData['action']   = 'update';
-    $logData['route']    = 'updateCustomersTable';
-    $logData['data']     = json_encode($recordCustomer);
+        $logData['id_users'] = Auth::user()->id;
+        $logData['id_customers'] = $request->id;
+        $logData['action']   = 'update';
+        $logData['route']    = 'updateCustomersTable';
+        $logData['data']     = json_encode($recordCustomer);
 
-    Log::insert($logData);
+        Log::insert($logData);
 
-    return 'OK';
-
-
+        return 'OK';
 
 
 
 
-  }
+
+
+    }
+
+    public function testActivityLog(){
+        ActivityLog::test();
+    }
+
 }
