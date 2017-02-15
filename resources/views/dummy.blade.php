@@ -107,7 +107,7 @@ Possible attributes
       data-smart-layout
       data-smart-page-title="SilverIP Magnus"
       ng-controller="globalToolsCtl"
-      class="fixed-navigation fixed-header">
+      class="fixed-navigation fixed-header smart-style-7">
 <!-- ui-view container -->
 <input type="hidden" value="{{Auth::user()}}" id="auth-user"/>
 
