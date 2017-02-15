@@ -165,7 +165,7 @@ return [
         Xethron\MigrationsGenerator\MigrationsGeneratorServiceProvider::class,
     
         // Custom activity logger
-        App\Providers\ActivityLogServiceProvider::class,
+        App\Providers\ActivityLogsServiceProvider::class,
 
     ],
 
@@ -216,7 +216,7 @@ return [
 //        'Form'      => Illuminate\Html\FormFacade::class,
         //Social thing
         'Socialite' => Laravel\Socialite\Facades\Socialite::class,
-        'ActivityLog' => App\Extensions\Facades\ActivityLog::class,
+        'ActivityLogs' => App\Extensions\Facades\ActivityLogs::class,
 
     ],
 

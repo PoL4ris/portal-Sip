@@ -5,7 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use App\Extensions\ActivityLogger;
 
-class ActivityLogServiceProvider extends ServiceProvider
+class ActivityLogsServiceProvider extends ServiceProvider
 {
     
 //    protected $defer = true;
@@ -27,6 +27,6 @@ class ActivityLogServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton('activitylog', function() { return new ActivityLogger; });
+        $this->app->singleton('activitylogs', function() { return new ActivityLogger; });
     }
 }
