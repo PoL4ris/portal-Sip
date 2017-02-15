@@ -845,6 +845,9 @@ nav ul li a {
   padding: 2px 5px;
   text-shadow: 2px 0 1px rgba(0, 0, 0, 0.2);
 }
+#activity-log .al-lg-header .lg-type:first-letter{
+  text-transform: uppercase;
+}
 #activity-log .al-lg-header .lg-user {
   float: left;
   margin: 0;
