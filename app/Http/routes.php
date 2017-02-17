@@ -23,7 +23,7 @@ Route::get('logFunction',        'TestController@logFunction');
 Route::get('testView',           'TestController@cleanView');
 Route::get('testTickets',        'TestController@testCustomerTickets');
 Route::get('getSignupProducts',  'SignupController@getSignupProducts');
-Route::get('getNetworkShell',    'ServiceShapeController@shapeData');
+Route::get('process-lease',        'DhcpController@processLease');
 
 
 Route::group(['middleware' => 'web'], function () {

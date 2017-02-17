@@ -53,7 +53,7 @@ class Customer extends Model
         return $this->belongsTo('App\Models\Product', 'id_customers', 'id', 'App\Models\CustomerProduct');
     }
     public function building() {
-      return $this->belongsTo('App\Models\Address', 'id');
+        return $this->belongsTo('App\Models\Address', 'id');
     }
     public function getNetworkNodes($id = null)
     {
@@ -80,6 +80,6 @@ class Customer extends Model
     }
 
     public function log() {
-      return $this->hasMany('App\Models\ActivityLog', 'id_type')->orderBy('id','desc');
+        return $this->hasMany('App\Models\ActivityLog', 'id_type')->orderBy('id','desc');
     }
 }
