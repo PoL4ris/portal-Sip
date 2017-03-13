@@ -16,8 +16,9 @@ use App\Models\Product;
 use App\Models\NetworkNode;
 use App\Models\ContactType;
 use App\Models\PaymentMethod;
+use App\Models\ActivityLog;
 use App\Http\Controllers\CustomerController;
-use ActivityLog;
+//use ActivityLogs;
 
 class TestController extends Controller
 {
@@ -182,31 +183,42 @@ class TestController extends Controller
     }
 
     public function logFunction() {
-        $customer = Customer::with('addresses', 'contacts', 'type','address.buildings', 'address.buildings.neighborhood', 'status', 'status.type', 'openTickets', 'log')->find(501)->toArray();
-        print '<pre>';
-        dd($customer);
-        die();
+
+      $a = 4000000;
+//      $a = 63245986;
+      $b = 0;
+
+      $x = 1;
+      $y = 0;
+      $z = 0;
+      $p = 0;
+
+      for($p = 0; $z < $a; $p++){
 
 
-        $params = $request->all();
-        $data[$params['field']] = $params['value'];
+//        print 'SERIE-->' . $p . '<br>';
+        $z = $x + $y;
+        $y = $x;
+        $x = $z;
 
-        $recordCustomer = $data;
-        $recordCustomer['old_data'] = Customer::find($request->id)->toArray();
-
-        Customer::where('id', $request->id)->update($data);
-
-        $logData['id_users'] = Auth::user()->id;
-        $logData['id_customers'] = $request->id;
-        $logData['action']   = 'update';
-        $logData['route']    = 'updateCustomersTable';
-        $logData['data']     = json_encode($recordCustomer);
-
-        Log::insert($logData);
-
-        return 'OK';
+        if($z % 2 == 0)
+        {
+          $b = $b + $z;
+          print '|----- <strong>' . $b . '</strong> -----|<br>';
+        }
 
 
+          print '[ z ] ::----> ' . ($z) . '<br>';
+
+
+//        if($p > 2000000 && $p < 2000001)
+//          print 'Z-->' . $z . '<br>';
+//        if($p > 3000000 && $p < 3000001)
+//          print 'Z-->' . $z . '<br>';
+//        if($p > 4000000 && $p < 4000001)
+//          print 'Z-->' . $z . '<br>';
+
+      }
 
 
 

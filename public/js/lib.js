@@ -409,6 +409,7 @@ app.controller('customerController',                function ($scope, $http, $st
           $scope.customerTypes[obj]['value'] = response.data[obj].id;
           $scope.customerTypes[obj]['text']  = response.data[obj].name;
         }
+        $scope.customerData.statusList = $scope.customerTypes;
       });
 
     $scope.checkboxModel         = true;
@@ -417,6 +418,9 @@ app.controller('customerController',                function ($scope, $http, $st
     $scope.currentServiceDisplay = '';
 
   }
+
+
+
 
   //Reloads Data
   $scope.getCustomerStatus          = function (id){
@@ -1706,6 +1710,9 @@ app.controller('globalToolsCtl',      function ($scope, $http, $compile, $sce, $
       });
 
   };
+  $scope.parJson = function (json) {
+    return JSON.parse(json);
+  }
 
   });
 function gToolsxEdit(value, field, id, idContainer, table, model){
@@ -1724,9 +1731,6 @@ function getFormValues(id){
 app.controller('userAuthController',   function ($scope){
   $scope.userDataAuth = JSON.parse($('#auth-user').val());
 })
-
-
-
 
 
 

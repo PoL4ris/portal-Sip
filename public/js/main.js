@@ -126,11 +126,12 @@ angular.module('app.admin'  , ['ui.router']).config(function ($stateProvider) {
       },
       views: {
         "content@app": {
-//           templateUrl: '/views/dummy.html',
+          templateUrl: '/views/dummy.html',
+          controller: 'eulerController'
         },
         'silveriptool':{
-          templateUrl: '/views/test.html',
-          controller: 'sidebarController',
+//           templateUrl: '/views/test.html',
+//           controller: 'sidebarController',
         }
       },
       resolve: {

@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
+//use App\Http\Requests;
 use App\Models\Product;
 use App\Models\Support\Adminaccess;
-use Illuminate\Http\Request;
-
 use App\Models\PaymentMethod;
-use App\Http\Requests;
 use App\Models\Customer\Customers;
 use App\Models\Customer;
 use App\Models\TicketNote;
@@ -23,27 +22,23 @@ use App\Models\NetworkNode;
 use App\Models\ContactType;
 use App\Models\Support\Ticketreasons;
 use App\Models\ActivityLog;
+use App\Http\Controllers\NetworkController;
 use DB;
 use Schema;
 use Auth;
-use App\Http\Controllers\NetworkController;
 use ActivityLogs;
 
 class CustomerController extends Controller
 {
-    protected $logType;
-    
+  protected $logType;
+
   public function __construct() {
     $this->middleware('auth');
       $this->logType = 'customer';
   }
-//  public function dashboard()
-//  {
-//    return view('customer.dashboard');
-//  }
+
   public function getCustomersSearch(Request $request)
   {
-
     $string = $request->querySearch;
     $select = "select * from address inner join customers on address.id_customers = customers.id ";
     $limit = ' limit 50';
@@ -52,11 +47,6 @@ class CustomerController extends Controller
     $whereFlag = false;
     $pattern = '/([0-9])\w+/';
     $stringArray = explode(' ', $string);
-
-
-
-
-
 
     foreach($stringArray as $index => $item)
     {
@@ -97,7 +87,8 @@ class CustomerController extends Controller
 
 //    print $select . $arrY . $limit;
     return DB::select($select . $arrY . $limit);
-  }
+  }//MAIN SEARCH NEEDS TO RENAME
+
   public function prepareQuery($data, $complex = null)
   {
 
@@ -152,31 +143,43 @@ class CustomerController extends Controller
     //BUILDING TABLE
     return  DB::select('SELECT * FROM serviceLocation building INNER JOIN customers ON building.LocID = customers.LocID WHERE ' . ($tmpQueryData?$tmpQueryData:$defaultData) . ' LIMIT 100 ');
 
-  }
+  }//NO
+
   public function customersData(Request $request)
   {
-    return Customer::with('addresses', 'contacts', 'type','address.buildings', 'address.buildings.neighborhood', 'status', 'status.type', 'openTickets', 'log')->find($request->id);
-  }
+    return Customer::with('addresses',
+                          'contacts',
+                          'type',
+                          'address.buildings',
+                          'address.buildings.neighborhood',
+                          'status',
+                          'status.type',
+                          'openTickets',
+                          'log',
+                          'log.user')
+                          ->find($request->id);
+  }//MAIN FUNCTION CUSTOMER NEED TO RENAME
+
   public function getCustomerStatus(Request $request)
   {
     return Customer::with('status')->find($request->id)['status'];
-  }
+  }//SI
   public function getCustomerContactData(Request $request)
   {
     return Customer::with('contacts')->find($request->id);
-  }
+  }//SI
   public function getContactTypes()
   {
     return ContactType::get();
-  }
+  }//SI
   public function getCustomerPayment(Request $request)
   {
     return Customer::with('payment')->getRelation('payment')->where('priority', 1)->where('id_customers', $request->id)->get();
-  }
+  }//SI
   public function getPaymentMethods(Request $request)
   {
     return Customer::with('payment')->getRelation('payment')->where('id_customers', $request->id)->where('account_number','!=','ERROR')->orderBy('priority', 'DESC')->get();
-  }
+  }//SI
   public function updatePaymentMethods(Request $request)
   {
 
@@ -190,41 +193,41 @@ class CustomerController extends Controller
 
     return Customer::with('payment')->getRelation('payment')->where('id_customers', $request->customerID)->where('account_number','!=','ERROR')->orderBy('priority', 'DESC')->get();
 
-  }
+  }//SI
   public function getNewTicketData(Request $request)
   {
     return Customer::with('tickets')->find($request->id);
-  }
+  }//SI
   public function getTicketHistory(Request $request)
   {
     $customer = new Customer;
     return $customer->getTickets($request->id);
-  }
+  }//SI
   public function getTicketHistoryNotes(Request $request)
   {
     return TicketNote::find($request->id);
-  }//
+  }//SI
   public function getTicketHistoryReason(Request $request)
   {
     return Reason::find($request->id);
-  }//
+  }//SI
   public function getBillingHistory(Request $request)
   {
     return BillingTransactionLog::where('id_customers', $request->id)->get();
-  }
-  public function getCustomerServices(Request $request)
+  }//SI
+  public function getCustomerServices(Request $request)//SI
   {
     return Customer::with('services')->find($request->id?$request->id:$request->idCustomer);
   }
-  public function getCustomerProduct(Request $request)
+  public function getCustomerProduct(Request $request)//SI
   {
     return CustomerProduct::with('product')->find($request->id);
   }
-  public function getCustomerProductType(Request $request)
+  public function getCustomerProductType(Request $request)//SI
   {
     return CustomerProduct::with('status')->find($request->id);
   }
-  public function getCustomerBuilding(Request $request)
+  public function getCustomerBuilding(Request $request)//SI
   {
 
     print '<pre>';
@@ -236,7 +239,7 @@ class CustomerController extends Controller
 
     return CustomerProduct::with('status')->find($request->id);
   }
-  public function getCustomerNetwork(Request $request)
+  public function getCustomerNetwork(Request $request)//SI
   {
 
     $customer = new Customer;
@@ -261,28 +264,26 @@ class CustomerController extends Controller
 //    return $networkData;
 
   }
-  public function getPortID($id)
+  public function getPortID($id)//SI
   {
     return CustomerProduct::with('port')->where('id_customers', $id)->get()[0]->id;
   }
-  public function getCustomerList ()
+  public function getCustomerList ()//SI
   {
     return Ticket::with('customer', 'address')->orderBy('created_at', 'asc')->where('id_customers', '!=', 1)->groupBy('id_customers')->take(100)->get();
     return Customer::all()->take(100);
   }
-  public function getAddress(){
+  public function getAddress()//SI
+  {
      return Address::groupBy('id_buildings')->get();
   }
 
-  public function updateAddressTable(Request $request)
+  public function updateAddressTable(Request $request)//???
   {
 //    $data = $request->all();
 //    unset($data['id_customers']);
 //    Address::where('id_customers', $request->id_customers)->update($data);
 //    return 'OK';
-
-
-
 
     $params = $request->all();
     $data[$params['field']] = explode('# ', $params['value'])[1];
@@ -302,12 +303,8 @@ class CustomerController extends Controller
 
     return 'OK';
 
-
-
-
-
   }
-  public function updateCustomersTable(Request $request)
+  public function updateCustomersTable(Request $request)//SI
   {
     $params = $request->all();
     $newData = array();
@@ -324,7 +321,7 @@ class CustomerController extends Controller
 
     return 'OK';
   }
-  public function updateContactInfo(Request $request)
+  public function updateContactInfo(Request $request)//SI
   {
     if (empty($request->value))
       return 'ERROR';
@@ -335,7 +332,7 @@ class CustomerController extends Controller
     return 'OK';
 
   }
-  public function updateContactsTable(Request $request)
+  public function updateContactsTable(Request $request)//SI
   {
     //type 2 = tel.
     $data = $request->all();
@@ -359,11 +356,12 @@ class CustomerController extends Controller
     return 'OK';
 
   }
-  public function getCustomerDataTicket(Request $request)
+  public function getCustomerDataTicket(Request $request)//SI
   {
     return Customer::find($request->id);
   }
-  public function insertCustomerService(Request $request){
+  public function insertCustomerService(Request $request)//SI
+  {
 
     /*
      * Status
@@ -390,7 +388,8 @@ class CustomerController extends Controller
     return $this->getCustomerServices($request);
 
   }
-  public function getTimeToAdd($type){
+  public function getTimeToAdd($type)//SI
+  {
 
     $timeToAdd = array('annual'    => 'first day of next year',
                        'monthly'   => 'first day of next month',
@@ -400,7 +399,7 @@ class CustomerController extends Controller
                        );
     return $timeToAdd[$type];
   }
-  public function disableCustomerServices(Request $request)
+  public function disableCustomerServices(Request $request)//SI
   {
   /*
    * Status
@@ -416,7 +415,7 @@ class CustomerController extends Controller
     return $this->getCustomerServices($request);
 
   }
-  public function activeCustomerServices(Request $request)
+  public function activeCustomerServices(Request $request)//SI
   {
   /*
    * Status
@@ -432,7 +431,8 @@ class CustomerController extends Controller
     return $this->getCustomerServices($request);
     
   }
-  public function updateCustomerServices(Request $request){
+  public function updateCustomerServices(Request $request)//SI
+  {
 
     /*
      * ID Customer
@@ -454,7 +454,8 @@ class CustomerController extends Controller
     $updateService->save();
 
   }
-  public function insertContactInfo(Request $request){
+  public function insertContactInfo(Request $request)//SI
+  {
 
     $data = array('id_customers' => $request->customerId,
                   'id_types'     => $request->typeId,
@@ -465,7 +466,7 @@ class CustomerController extends Controller
     return Customer::with('contacts')->find($request->customerId);
   }
 
-  public function customers(Request $request)
+  public function customers(Request $request)//NO
   {
     if ($request->id)
       $customer = $this->getCustomerData($request->id);
@@ -474,7 +475,7 @@ class CustomerController extends Controller
 
     return view('customer.customers', ['customer' => $customer]);
   }
-  public function getCustomerData($id)
+  public function getCustomerData($id)//NO
   {
     $networkControllerInfo = new NetworkController();
     $customer['customer']           = Customers::where('CID', $id)->first();
@@ -528,7 +529,7 @@ class CustomerController extends Controller
     return $customer;
 
   }
-  public function updateCustomerData(Request $request)
+  public function updateCustomerData(Request $request)//NO
   {
     $idsChart = ['customers' => 'CID', 'supportTicketHistory' => 'TID'];
 
@@ -567,7 +568,7 @@ class CustomerController extends Controller
     }
     return "ERROR:";
   }
-  public function insertCustomerData(Request $request)
+  public function insertCustomerData(Request $request)//NO
   {
     if($request->ajax())
     {
@@ -591,11 +592,9 @@ class CustomerController extends Controller
     }
 
   }
-  public function insertCustomerTicket(Request $request)
+  public function insertCustomerTicket(Request $request)//???
   {
     $data = $request->all();
-//    $comment = $data['comment'];
-//    unset($data['comment']);
 
     $lastTicketNumber = Ticket::all()->last()->ticket_number;
     $ticketNumber = explode('ST-',$lastTicketNumber);
@@ -604,21 +603,16 @@ class CustomerController extends Controller
     $data['ticket_number'] = 'ST-' . $ticketNumberCast;
     $data['id_users'] = Auth::user()->id;
 
-//    DB::table('ticket_notes')->insert(['comment'=>$comment, 'id_users'=>$data['id_users']]);
-//    $ticketNoteId = TicketNote::all()->last()->id;
-//    $data['id_ticket_notes'] = $ticketNoteId;
-
     //Default User
     $data['id_users_assigned'] = 10;
     $data['created_at'] = date("Y-m-d H:i:s");
     $data['updated_at'] = date("Y-m-d H:i:s");
 
-
     DB::table('tickets')->insert($data);
 
     return 'OK';
   }
-  public function updateCustomerServiceInfo(Request $request)
+  public function updateCustomerServiceInfo(Request $request)//NO
   {
     if($request->ajax())
     {
@@ -635,7 +629,7 @@ class CustomerController extends Controller
     }
 
   }
-  public function updateCustomerActiveServiceInfo(Request $request)
+  public function updateCustomerActiveServiceInfo(Request $request)//NO
   {
     if($request->ajax())
     {
@@ -661,9 +655,11 @@ class CustomerController extends Controller
 
   }
 
-  public function getCustomerLog(Request $request){
+  public function getCustomerLog(Request $request)//SI
+  {
 
-  return ActivityLog::where('type',$request->type)
+  return ActivityLog::with('user')
+                    ->where('type',$request->type)
                     ->where('id_type',$request->id_type)
                     ->orderBy('id', 'desc')
                     ->get();

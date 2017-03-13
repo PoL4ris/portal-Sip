@@ -1,25 +1,27 @@
-<timer />
-<hr>
 <article class="activity-log" id="activity-log">
   <div class="al-box">
     <h3 class="no-margin al-title"><i class="fa fa-caret-down"></i>Activity Log</h3>
     <h3 class="no-margin al-type-title">Type A - Ticket - Support - BILLING</h3>
 
-    <div ng-repeat="logEntry in customerData.customer.log" class="border{{$index}} border1">
-      <!--{{coso.id}}&#45;&#45;{{coso.id_users}}&#45;&#45;{{coso.id_customers}}&#45;&#45;{{coso.action}}&#45;&#45;{{coso.route}}&#45;&#45;{{coso.timestamp}}-->
+    <div ng-repeat="logEntry in customerData.customer.log" class="log-entry">
+      <!--<h3 class="no-margin al-type-title" ng-if="logEntry.type == customer">Type A - Ticket - Support - BILLING</h3>-->
 
 
       <div class="type-a al-box-container">
         <div class="log-content">
-          <label class="al-lg-timestamp">{{logEntry.timestamp}}</label>
           <div class="al-lg-header">
+            <label class="al-lg-timestamp">{{logEntry.timestamp}}</label>
             <label class="lg-type"><span>{{logEntry.type}}</span></label>
-            <label class="lg-user"><span>{{logEntry.id_users}}</span></label>
+            <label class="lg-user"><span>{{logEntry.user.first_name}}</span></label>
           </div>
-          <div class="al-lg-description">
-            <!--{{logEntry.log_data}}-->DATA
+          <div class="al-lg-description" ng-init="arrayData = parJson(logEntry.log_data)">
+            {{logEntry.user.first_name + ' ' + logEntry.user.last_name}} updated:
+            <span ng-if="arrayData.new['id_status']">Status.</span>
+            <span ng-if="arrayData.new['first_name']">First name.</span>
+            <span ng-if="arrayData.new['last_name']">Last name.</span>
+            <span ng-if="arrayData.new['email']">Username.</span>
           </div>
-          <div class="al-lg-actions type-ticket">
+          <div class="al-lg-actions type-ticket" ng-if="logEntry.type == 'ticket'">
             <button class="btn btn-default big-font" title="View Ticket"><i class="fa fa-eye"></i></button>
             <button class="btn btn-danger big-font"  title="Close Ticket"><i class="fa fa-close"></i></button>
             <button class="btn btn-success big-font" title="Escalate Ticket"><i class="fa fa-arrow-circle-o-up"></i></button>

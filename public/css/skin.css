@@ -791,12 +791,16 @@ nav ul li a {
 
 
 
-
 #activity-log {
   background: #f6f6f6 none repeat scroll 0 0;
   border-radius: 7px;
   box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
   float: left;
+}
+#activity-log .log-entry {
+  background: red none repeat scroll 0 0 !important;
+  float: left;
+  width: 100%;
 }
 #activity-log .al-box {
   padding-top: 10px;
@@ -811,7 +815,7 @@ nav ul li a {
 }
 #activity-log .al-box .al-box-container {
   background: #f3f3f3 none repeat scroll 0 0;
-  padding: 0 0 10px;
+  padding: 0;
 }
 #activity-log .al-box .al-type-title {
   background: #e8e8e8 none repeat scroll 0 0;
@@ -826,7 +830,10 @@ nav ul li a {
   padding: 10px;
 }
 #activity-log .log-content .al-lg-timestamp {
+  float: left;
   font-weight: bold;
+  letter-spacing: 0.7px;
+  width: 50%;
 }
 #activity-log .log-content .al-lg-header {
   clear: both;
@@ -836,7 +843,7 @@ nav ul li a {
 #activity-log .al-lg-header .lg-type {
   float: left;
   margin: 0;
-  width: 50%;
+  width: 25%;
 }
 #activity-log .al-lg-header .lg-type span {
   background: #1ae6e6 none repeat scroll 0 0;
@@ -845,13 +852,13 @@ nav ul li a {
   padding: 2px 5px;
   text-shadow: 2px 0 1px rgba(0, 0, 0, 0.2);
 }
-#activity-log .al-lg-header .lg-type:first-letter{
+#activity-log .al-lg-header .lg-type::first-letter {
   text-transform: uppercase;
 }
 #activity-log .al-lg-header .lg-user {
   float: left;
   margin: 0;
-  width: 50%;
+  width: 25%;
 }
 #activity-log .al-lg-header .lg-user span {
   background: #ffce54 none repeat scroll 0 0;
@@ -864,8 +871,9 @@ nav ul li a {
   clear: both;
   max-height: 150px;
   overflow: auto;
-  padding: 10px 0;
-  text-align: justify;
+  padding: 0;
+  text-align: left;
+  border-bottom: 1px solid #dad8da;
 }
 #activity-log .log-content .al-lg-actions {
   border-bottom: 1px solid #dad8da;
@@ -879,8 +887,8 @@ nav ul li a {
   border: medium none;
   margin: 0 2%;
   padding: 0;
-  width: 20%;
   position: relative;
+  width: 20%;
 }
 
 .big-font{
