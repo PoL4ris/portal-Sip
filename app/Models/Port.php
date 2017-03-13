@@ -6,7 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class Port extends Model
 {
-  public function networkNodes() {
-    return $this->belongsTo('App\Models\NetworkNode', 'id');
-  }
+    public function networkNodes() {
+        return $this->belongsTo('App\Models\NetworkNode', 'id');
+    }
+
+    public function customer() {
+        return $this->hasOne('App\Models\Customer', 'id_customers');
+    }
+    
+    public function customerProduct() {
+        return $this->hasOne('App\Models\CustomerProduct', 'id_customer_products');
+    }
 }
