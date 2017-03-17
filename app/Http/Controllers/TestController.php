@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Extensions\SIPBilling;
+use App\Extensions\BillingHelper;
 use DB;
 use App\Models\Customer;
 use App\Models\Ticket;
@@ -207,7 +208,25 @@ class TestController extends Controller
           print '|----- <strong>' . $b . '</strong> -----|<br>';
         }
 
+        /**
+     * Add new card
+     */
+        $pm = new PaymentMethod;
+        $pm->id_customers = '4667';
+        $pm->id_address = '33';
+        $pm->types = 'Credit Card';
+        $pm->card_type = 'VS';
+        $pm->account_number = '4000000000000002';
+        $pm->CCscode = '123';
+        $pm->exp_month = '12';
+        $pm->exp_year = '2019';
+        $pm->billing_phone = '3126003903';
+        $result = $pm->save();
 
+        print '<pre>';
+        print_r($pm);
+        die();
+          
           print '[ z ] ::----> ' . ($z) . '<br>';
 
 
@@ -221,8 +240,29 @@ class TestController extends Controller
       }
 
 
+        //        $queries = DB::getQueryLog();
+        //        $last_query = end($queries);
+        //        dd($last_query);
 
+    }
 
+    public function invoiceTest(){
+//        $customerModel = new Customer;
+//        dd($customerModel->getActiveCustomerProductsByBuildingID('28'));
+//        dd($customerModel->getActiveCustomerProductsByCustomerID('3839'));
+//        dd($customerModel->getInvoiceableCustomerProducts(null, '28'));
+        
+//        $customer = Customer::with('payment')->find(3818);
+//        dd($customer);
+        
+//        dd($billingHelper->getMode());        
+        $billingHelper = new BillingHelper();
+        dd($billingHelper->generateResidentialInvoiceRecords());
+//        $billingHelper->processAutopayInvoices();
+    }
+
+    public function cleanView(){
+        return;
     }
 
     public function testActivityLog(){
