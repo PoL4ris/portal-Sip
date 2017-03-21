@@ -1730,6 +1730,7 @@ function getFormValues(id){
 /* User Authenticated Data */
 app.controller('userAuthController',   function ($scope){
   $scope.userDataAuth = JSON.parse($('#auth-user').val());
+  console.log($scope.userDataAuth);
 })
 
 

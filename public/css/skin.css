@@ -82,7 +82,7 @@ h2{
   transition: all 0.7s ease 0s;
 }
 #hide-menu.btn-header {
-  box-shadow: 0 0 1px white inset;
+  box-shadow: 8px 0px 7px -10px #aaaaaa inset;
   margin-left: 150px;
   position: relative;
   text-align: center;
