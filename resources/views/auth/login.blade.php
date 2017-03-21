@@ -70,7 +70,7 @@
                     </form>
                 </div>
             </div>
-            <div style="text-align: center; color: #98a6ad;margin-bottom: 15px">SilverIP Communications © 2016</div>
+            <div style="text-align: center; color: #98a6ad;margin-bottom: 15px">Silver<i>IP </i>  Communications © 2017</div>
         </div>
     </div>
 </div>
