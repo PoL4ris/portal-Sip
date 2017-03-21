@@ -6,7 +6,7 @@ var appConfig = window.appConfig || {};
 
 appConfig.menu_speed = 200;
 
-appConfig.smartSkin = "smart-style-0";
+appConfig.smartSkin = "smart-style-7";
 
 appConfig.skins = [
   {name: "smart-style-0",
