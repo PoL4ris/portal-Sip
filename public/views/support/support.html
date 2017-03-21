@@ -3,12 +3,14 @@
 </div>
 
 <!--TICKET LIST-->
-<section widget-grid id="widget-grid" ng-if="supportData">
+<section id="widget-grid" ng-if="supportData" class="support-table bg-white">
   <div class="row">
-    <article class="col-sm-12">
-      <div>
-        <div class="col-lg-12 padding-10">
-          <div class="bg-white padding-10">
+    <article class="col-sm-12 col-lg-12 tickets-history-table">
+
+        <!--<div class="col-lg-12 padding-10">-->
+          <!--<div class="bg-white padding-10">-->
+
+
             <table datatable="ng" class="table table-striped b-t b-b"   show-filter="true" dt-options="dtOptions">
               <thead>
               <tr>
@@ -54,9 +56,11 @@
                 </tr>
               </tbody>
             </table>
-          </div>
-        </div>
-      </div>
+
+
+          <!--</div>-->
+        <!--</div>-->
+
     </article>
   </div>
 </section>

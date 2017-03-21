@@ -300,9 +300,11 @@ Osk .new-form-blocks {
 }
 .tickets-history-table {
 }
-.tickets-history-table .dataTables_length, .tickets-history-table .dataTables_filter, .billing-history-table .dataTables_length, .billing-history-table .dataTables_filter {
+.support-table .dataTables_length, .support-table .dataTables_filter, .tickets-history-table .dataTables_length,
+ .tickets-history-table .dataTables_filter, .billing-history-table .dataTables_length, .billing-history-table .dataTables_filter {
   width: 50%;
 }
+.support-table{}
 .invoice-logo {
   float: left;
   width: 80%;
