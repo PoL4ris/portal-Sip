@@ -24,7 +24,7 @@ Route::get('testView',           'TestController@cleanView');
 Route::get('testTickets',        'TestController@testCustomerTickets');
 Route::get('getSignupProducts',  'SignupController@getSignupProducts');
 Route::get('process-lease',        'DhcpController@processLease');
-
+Route::get('invoiceTest',       'TestController@invoiceTest');
 
 Route::group(['middleware' => 'web'], function () {
 

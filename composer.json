@@ -12,7 +12,8 @@
         "laravel/socialite": "^2.0",
         "google/apiclient": "1.*",
         "socialiteproviders/google": "^1.1",
-        "monolog/monolog": "^1.18"
+        "monolog/monolog": "^1.18",
+        "doctrine/dbal": "^2.5"
 
     },
     "require-dev": {

@@ -417,7 +417,6 @@ class SIPBilling {
         $request['UDField2'] = isset($xactionRequest['UDField2']) ? $xactionRequest['UDField2'] : ''; // User defied feild - descripton of the charge, i.e. Signup
         $request['UDField3'] = isset($xactionRequest['UDField3']) ? $xactionRequest['UDField3'] :'';
 
-
         $ippayresult = array();
         $ipPayHandle = new IpPay();
 
@@ -440,6 +439,8 @@ class SIPBilling {
         $result['TransactionType'] = $request['TransactionType'];
         $result['Comment'] = $customer->comment;
         $result['TotalAmount'] = $totAmount;
+        $result['PaymentType'] = $pm->types;
+        $result['PaymentTypeDetails'] = ($pm->properties != '') ? json_decode($pm->properties, true)[0] : '';
 
         $this->storeXaction($customer, $result, $pm->address, $pm,  $details);
         return $result;

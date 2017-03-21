@@ -20,7 +20,6 @@ class CustomerProduct extends Model
      * @return type
      */
     public function product() {
-
         return $this->hasOne('App\Models\Product', 'id', 'id_products');
     }
     public function status() {
