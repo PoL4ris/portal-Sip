@@ -37,7 +37,7 @@ angular.module('app.customers', ['ui.router']).config(function ($stateProvider) 
             controller: 'customerController',
           },
           "silveriptool": {
-            templateUrl: '/views/test.html',
+            templateUrl: '/views/silverip-tool.html',
             controller: 'customerController',
 
           }

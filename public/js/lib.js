@@ -712,15 +712,23 @@ app.controller('customerBillingHistoryController',  function ($scope, $http){
   };
 
 });
+
+
+
+
+
+
+
+
 app.controller('customerNetworkController',         function ($scope, $http){
 
-// console.log('esto es  : customerNetworkController');
+// console.log('esto es  : customerNetworkController con el id de -- > ' + $scope.idCustomer);
 
   $http.get("getCustomerNetwork", {params:{'id':$scope.idCustomer}})
     .then(function (response) {
       $scope.customerNetwork = response.data[0];
       //to get network data rdy for dash MAYBE
-      networkServices(0, true);
+//       networkServices(0, true);
     });
 
   $scope.networkServices    = function (service) {
@@ -906,6 +914,17 @@ app.controller('customerNetworkController',         function ($scope, $http){
   };
 
 });
+
+
+
+
+
+
+
+
+
+
+
 app.controller('customerBuildingController',        function ($scope, $http){
 
 //   console.log($scope.customerData);
@@ -927,9 +946,10 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http){
 // return;
 // app.controller('customerPaymentMethodsController',  function ($scope, $http,$uibModal, $log){
 // return;
-  $http.get("getCustomerPayment", {params:{'id':$scope.stcid?$scope.stcid:$scope.idCustomer}})
+  $http.get("getCustomerPayment", {params:{'id':$scope.stcid ? $scope.stcid : $scope.idCustomer}})
     .then(function (response) {
       $scope.paymentData = response.data[0];
+      $scope.customerData.defaultPayment = $scope.paymentData;
 //       console.log(response.data);
     });
 
@@ -957,21 +977,13 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http){
         $scope.paymentMethods = response.data;
       });
   };
-  $scope.openManualRef = function (){
-    $scope.openTransparentBGManual();
-    $('.manual-ref').fadeIn('slow');
-  };
-  $scope.openManualChar = function (){
-    $scope.openTransparentBGManual();
-    $('.manual-char').fadeIn('slow');
-  };
-  $scope.openTransparentBGManual = function (){
-    $('.transparent-charge').fadeIn();
-  };
   $scope.refundFunct = function (){
     var cid = $scope.customerData.id;
     var amount = $('#mf-input-am').val();
     var desc = $('#mf-input-de').val();
+
+    if(!cid || !amount || !desc)
+      return;
 
     $http.get("refundAmount", {params:{'cid':cid, 'amount':amount, 'desc':desc}})
       .then(function (response) {
@@ -986,6 +998,9 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http){
     var amount = $('#mc-input-am').val();
     var desc = $('#mc-input-de').val();
 
+    if(!cid || !amount || !desc)
+      return;
+
     $http.get("chargeAmount", {params:{'cid':cid, 'amount':amount, 'desc':desc}})
       .then(function (response) {
 //         $scope.paymentMethods = response.data;
@@ -994,15 +1009,7 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http){
           $scope.closeTransparentBGManual();
       });
   };
-  $scope.closeTransparentBGManual = function (){
-    $('.transparent-charge').fadeOut();
-    $('.manual-ref').fadeOut();
-    $('.manual-char').fadeOut();
-    $('#mc-input-am').val('');
-    $('#mc-input-de').val('');
-    $('#mf-input-am').val('');
-    $('#mf-input-de').val('');
-  };
+
   $scope.open = function (){
     $scope.customerId = $scope.customerData.id;
 
@@ -1543,7 +1550,10 @@ app.controller('globalToolsCtl',      function ($scope, $http, $compile, $sce, $
     }
   };
   $scope.singleUpdateXedit    = function(id, value, field, table, routeFunction) {
-//     console.log('Function singleUpdateXedit--->');
+
+  console.log($scope.customerData);
+
+    console.log('Function singleUpdateXedit---> with routeFunction ---' + routeFunction);
 
     var data = {};
     data['id']    = id;
@@ -1557,7 +1567,7 @@ app.controller('globalToolsCtl',      function ($scope, $http, $compile, $sce, $
           if(routeFunction)
             $scope.resolveRouteFunction(routeFunction, id);
 
-          return 'OK'
+          return 'OK';
         }
         else
           alert('ERROR');
@@ -1696,6 +1706,10 @@ app.controller('globalToolsCtl',      function ($scope, $http, $compile, $sce, $
   }
   $scope.resolveRouteFunction = function (routeFunction, id){
 
+
+  console.log($scope);
+
+
     switch(routeFunction)
     {
       case 'getCustomerData':
@@ -1711,13 +1725,33 @@ app.controller('globalToolsCtl',      function ($scope, $http, $compile, $sce, $
 
   };
   $scope.parJson = function (json) {
+//     console.log(json[0]);
     return JSON.parse(json);
   }
+  $scope.xEditVisual          = function (valor, id){
+
+
+    switch (id)
+    {
+      case 'c-c-i-e':
+      if(valor)
+        $('#' + id).html('<i class="fa fa-pencil"></i> Edit customer').css('color', '#1da3fc');
+      else
+        $('#' + id).html('<i class="fa fa-plus plus-cross"></i> Cancel ').css('color', 'crimson');
+      case 'customer-contact':
+        if(valor)
+          $('#' + id).html('<i class="fa fa-pencil"></i> Edit Info').css('color', '#1da3fc');
+        else
+          $('#' + id).html('<i class="fa fa-plus plus-cross"></i> Cancel ').css('color', 'crimson');
+    }
+  }
+
+
 
   });
 function gToolsxEdit(value, field, id, idContainer, table, model){
+//   console.log(id + ' <--|--id|:: '+  value+ ' <--|--value|:: ' +  field + ' <--|--field|:: ' +  table + ' <--|--table|:: '+  idContainer + ' <--|--idContainer|');
   angular.element('#' + idContainer + '-gTools').scope().singleUpdateXedit(id, value, field, table, model);
-//   console.log(id + ' <--|--id--|'+  value+ ' <--|--value--|' +  field + ' <--|--field--|' +  table + ' <--|--table--|'+  idContainer + ' <--|--idContainer--|');
 }
 function getFormValues(id){
   var objects = $('#' + id).serializeArray();
@@ -1730,7 +1764,6 @@ function getFormValues(id){
 /* User Authenticated Data */
 app.controller('userAuthController',   function ($scope){
   $scope.userDataAuth = JSON.parse($('#auth-user').val());
-  console.log($scope.userDataAuth);
 })
 
 

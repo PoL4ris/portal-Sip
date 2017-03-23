@@ -5,58 +5,73 @@
       <article class="col-sm-12 col-md-12 col-lg-12 no-padding-sides m-t-lg status-color-{{customerData.customer.status.name}}"  ng-include="'/views/customer/customer.html'" ></article>
     </div>
 
-    <div class="col-lg-6 m-t-lg">
+    <div class="col-lg-8 m-t-lg customer-dash-grid">
 
-      <div class="prueba pull-left m-r-lg" ng-if="customerData.customer.networkServices['oper-status'] == 'up' ">
-        <div class="coso-a"><i class="fa fa-arrow-up"></i></div>
-        <div class="coso-b"></div>
-        <div class="coso-c"><span>UP</span></div>
-      </div>
-
-      <div class="prueba dooos pull-left m-l-lg" ng-if="customerData.customer.networkServices['oper-status'] != 'up' ">
-        <div class="coso-a dosa"><i class="fa fa-arrow-down"></i></div>
-        <div class="coso-b dosb"></div>
-        <div class="coso-c dosc"><span>Down</span></div>
-      </div>
-
-      <div class="prueba-1 pull-left m-l-lg" ng-if="customerData.customer.networkServices['oper-status'] == 'up' ">
-        <div class="coso-a "><i class="fa fa-arrow-down"></i></div>
-        <div class="coso-b ">Port Status</div>
-        <div class="coso-c "><span>Down</span></div>
-      </div>
-
-      <div class="prueba-1 pull-left m-l-lg"  ng-if="customerData.customer.networkServices['oper-status'] != 'up' ">
-        <div class="coso-a dosa"><i class="fa fa-arrow-up"></i></div>
-        <div class="coso-b dosb">Port Status</div>
-        <div class="coso-c dosc"><span>UP</span></div>
-      </div>
-
-      <div class="openticket pull-left m-l-lg">
-        <label>Open tickets</label>
-        <div class="ot-container">
-          <span ng-if="customerData.customer.open_tickets">{{customerData.customer.open_tickets.length}}</span>
-          <span ng-if="!customerData.customer.open_tickets"><i class="fa fa-spinner loading-anim" aria-hidden="true"></i></span>
+      <div class="cdg-block col-lg-6 m-b-lg">
+        <div class="cdg-status cdg-color-up float-left"></div>
+        <div class="cdg-content float-right">
+          <label>Port Status</label>
+          <span>UP</span>
+          <i class="fa fa-angle-right"></i>
         </div>
       </div>
 
+      <div class="cdg-block col-lg-6 m-b-lg">
+        <div class="cdg-status cdg-color-down float-left"></div>
+        <div class="cdg-content float-right">
+          <label>Port Status</label>
+          <span>DOWN</span>
+          <i class="fa fa-angle-right"></i>
+        </div>
+      </div>
+
+
+      <div class="cdg-block col-lg-6 m-b-lg">
+        <div class="cdg-status cdg-color-t1 float-left"></div>
+        <div class="cdg-content float-right">
+          <label>Open tickets</label>
+          <span ng-if="customerData.customer.open_tickets">{{customerData.customer.open_tickets.length}}</span>
+          <span ng-if="!customerData.customer.open_tickets"><i class="fa fa-spinner loading-anim" aria-hidden="true"></i></span>
+          <i class="fa fa-angle-right"></i>
+        </div>
+      </div>
+
+
+      <div class="cdg-block col-lg-6 m-b-lg" ng-if="customerData.defaultPayment">
+        <div class="cdg-status cdg-color-missing float-left"></div>
+        <div class="cdg-content float-right">
+          <label>Payment Method</label>
+          <span>NO</span>
+          <i class="fa fa-angle-right"></i>
+        </div>
+      </div>
+
+      <div class="cdg-block col-lg-6 m-b-lg" ng-if="customerData.defaultPayment">
+        <div class="cdg-status cdg-color-ok float-left"></div>
+        <div class="cdg-content float-right">
+          <label>Payment Method</label>
+          <span>NO</span>
+          <i class="fa fa-angle-right"></i>
+        </div>
+      </div>
+
+
+
     </div>
 
-    <div class="col-lg-2  no-padding-sides">
-      <div>
-        <button>BOTON</button>
-      </div>
-    </div>
 
   </div>
 </article>
+
+
 
 
 <article class="col-sm-12 col-md-12 col-lg-12  bg-white white-shadow m-t-lg p-b-lg">
   <div class="row">
     <header role="heading" class="ui-sortable-handle">
       <ul id="widget-tab-1" class="nav pull-left nav-tabs size-100">
-        <li class="active"><a data-toggle="tab" href="#tab-r1" aria-expanded="false"> <i class="fa fa-lg fa-signal"></i> <span class="hidden-mobile hidden-tablet"> Services </span></a></li>
-        <li class=""><a data-toggle="tab" href="#tab-r2" aria-expanded="false"> <i class="fa fa-lg fa-signal"></i> <span class="hidden-mobile hidden-tablet"> Network </span></a></li>
+        <li class="active"><a data-toggle="tab" href="#tab-r1" aria-expanded="false"> <i class="fa fa-lg fa-gears"></i> <span class="hidden-mobile hidden-tablet"> Services </span></a></li>
+        <li class=""><a data-toggle="tab" href="#tab-r2" aria-expanded="false">       <i class="fa fa-lg fa-signal"></i> <span class="hidden-mobile hidden-tablet"> Network </span></a></li>
         <li class=""><a data-toggle="tab" href="#tab-r3" aria-expanded="false">       <i class="fa fa-lg fa-arrow-circle-o-down"></i> <span class="hidden-mobile hidden-tablet"> Billing History </span></a></li>
         <li class=""><a data-toggle="tab" href="#tab-r4" aria-expanded="true">        <i class="fa fa-lg fa-arrow-circle-o-down"></i> <span class="hidden-mobile hidden-tablet"> Contacts / New Ticket </span> </a></li>
         <li class=""><a data-toggle="tab" href="#tab-r5" aria-expanded="false">       <i class="fa fa-lg fa-dollar"></i>   <span class="hidden-mobile hidden-tablet"> Payment </span></a></li>
@@ -66,9 +81,9 @@
 
     <div class="col-lg-12 m-t-lg">
       <div class="tab-content">
-        <div class="tab-pane active" id="tab-r1"><article class="col-sm-12 col-md-12 col-lg-12 no-padding-sides m-t-lg"  ng-include="'/views/customer/product.html'"></article></div>
-        <div class="tab-pane" id="tab-r2">       <article class="col-sm-12 col-md-12 col-lg-12 no-padding-sides"         ng-include="'/views/customer/network.html'"></article></div>
-        <div class="tab-pane" id="tab-r3">       <article class="col-sm-12 col-md-12 col-lg-12 no-padding-sides"         ng-include="'/views/customer/billinghistory.html'"></article></div>
+        <div class="tab-pane active" id="tab-r1">   <article class="col-sm-12 col-md-12 col-lg-12 no-padding-sides m-t-lg"  ng-include="'/views/customer/product.html'"></article></div>
+        <div class="tab-pane" id="tab-r2">          <article class="col-sm-12 col-md-12 col-lg-12 no-padding-sides"         ng-include="'/views/customer/network.html'"></article></div>
+        <div class="tab-pane" id="tab-r3">          <article class="col-sm-12 col-md-12 col-lg-12 no-padding-sides"         ng-include="'/views/customer/billinghistory.html'"></article></div>
         <div class="tab-pane" id="tab-r4">
           <article class="col-sm-6 col-md-6 col-lg-6 "    ng-include="'/views/customer/contactInfo.html'"></article>
           <article class="col-sm-6 col-md-6 col-lg-6 "    ng-include="'/views/customer/newticket.html'"></article>
@@ -79,4 +94,20 @@
     </div>
   </div>
 </article>
+
+
+
+
+
+
+
+
+
+
+<!--<hr>-->
+
+<!--<pre>-->
+<!--{{customerData | json}}-->
+<!--</pre>-->
+
 

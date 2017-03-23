@@ -6,8 +6,8 @@
 
         <div class="row">
           <div class="col-sm-4">
-            <button ng-if="customerContactsData != ''" id="customer-contact" class="btn btn btn-default" ng-click="toggleDisabled()">enable / disable</button>
-            <button ng-if="customerContactsData == ''" id="customer-contact" class="btn btn btn-default" ng-click="toggleDisabled()" disabled >enable / disable</button>
+            <button id="customer-contact" class="btn btn btn-default" ng-click="toggleDisabled('customer-contact')"><i class="fa fa-pencil"></i>Edit Info</button>
+            <!--<button ng-if="customerContactsData == ''" id="customer-contact" class="btn btn btn-default" ng-click="toggleDisabled()" disabled >Disabled</button>-->
           </div>
           <div class="col-sm-8">
             <button id="add-property"
@@ -24,24 +24,24 @@
         </div>
 
       <!--CONTENIDO-->
-      <div class="table-container m-t-lg tc-c-info">
+      <div class="table-container m-t-lg tc-c-info" id="ccontactlist-gTools">
         <table class="table table-bordered table-striped bpv-container">
           <tbody>
             <tr ng-repeat="contactinfo in customerContactsData">
               <td><strong>{{ contactTypes[(contactinfo.id_types - 1)].name }}:</strong></td>
               <td>
-                <a href="form-x-editable.html#"
+                <a href=""
                    id="b-p-id-{{contactinfo.id}}"
-                   record-table="CustValue"
+                   record-table="Contacts"
                    data-pk="1"
                    data-options="editableOptions"
                    data-original-title="Set Value"
                    record-field="value"
                    smart-xeditable
                    data-ng-model="contactinfo.value"
-                   record-id="{{contactinfo.value}}"
+                   record-id="{{contactinfo.id}}"
                    data-type="text"
-                   record-idContainer="wid-id-1"
+                   record-idContainer="ccontactlist"
                    data-placement="right"
                    class="editable editable-click">
                    {{contactinfo.value?contactinfo.value:'nada'}}
@@ -59,7 +59,7 @@
             <option ng-repeat="type in contactTypes" value="{{type.id}}">{{type.name}}</option>
           </select>
           <textarea class="new-form-fields new-form-textarea m-b-lg" placeholder="Example: 127.0.0.1/255" name="value" required></textarea>
-          <button class="btn btn-primary float-right" ng-click="insertCustomerContact()">Add Contact</button>
+          <button class="btn btn-default float-right" ng-click="insertCustomerContact()">Add Contact</button>
         </form>
       </div>
     </div>

@@ -1,6 +1,5 @@
 
-
-  <div class="col-md-5 col-sm-12 col-xs-12">
+<div class="col-md-5 col-sm-12 col-xs-12">
     <div class="product-image">
       <div id="myCarousel-3" class="carousel fade">
         <div class="carousel-inner">
@@ -26,7 +25,7 @@
         <!--<p>Legal Builder</p>-->
       </div>
       <div class="col-lg-7 bld-box-info text-align-right">
-        <p>{{bld.address?bld.address:bld.buildings.name}}</p>
+        <p>{{bld.address ? bld.address[0].address : bld.name}}</p>
         <!--<p>{{bld.alias?bld.alias:bld.buildings.alias}}</p>-->
         <p>{{bld.neighborhood.name?bld.neighborhood.name:bld.buildings.neighborhood.name}}</p>
         <p>{{bld.code?bld.code:bld.buildings.code}}</p>

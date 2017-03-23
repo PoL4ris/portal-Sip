@@ -6,8 +6,8 @@ var appConfig = window.appConfig || {};
 
 appConfig.menu_speed = 200;
 
+// appConfig.smartSkin = "fixed-navigation fixed-header fixed-page-footer";
 appConfig.smartSkin = "smart-style-7";
-//style7
 
 appConfig.skins = [
   {name: "smart-style-0",

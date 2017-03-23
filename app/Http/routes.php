@@ -23,8 +23,8 @@ Route::get('logFunction',        'TestController@logFunction');
 Route::get('testView',           'TestController@cleanView');
 Route::get('testTickets',        'TestController@testCustomerTickets');
 Route::get('getSignupProducts',  'SignupController@getSignupProducts');
-Route::get('process-lease',        'DhcpController@processLease');
-Route::get('invoiceTest',       'TestController@invoiceTest');
+Route::get('process-lease',      'DhcpController@processLease');
+Route::get('invoiceTest',        'TestController@invoiceTest');
 
 Route::group(['middleware' => 'web'], function () {
 
@@ -79,7 +79,7 @@ Route::group(['middleware' => 'web'], function () {
   //Buildings & List
   Route::get('buildings/{id?}',         'BuildingController@buildings');
   Route::get('buildingsList',           'BuildingController@getBuildingsList');
-  Route::get('getBuildingsListTMP',           'BuildingController@getBuildingsListTMP');//new
+  Route::get('getBuildingsListTMP',     'BuildingController@getBuildingsListTMP');//new
   //Building Form
   Route::get('newbuildingform',         'BuildingController@newbuildingform');
   //Insert Building

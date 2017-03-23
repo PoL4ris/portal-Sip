@@ -39,7 +39,7 @@
     </div>
 
     <div class="col-lg-12 add-Service-btn no-padding-sides m-b-lg">
-      <button class="btn m-b-xs btn-sm btn-primary btn-addon bg-blue float-right" data-toggle="modal" data-target="#myModalService"  ng-click="setModeType('')">
+      <button class="btn m-b-xs btn-sm btn-default btn-addon bg-blue float-right" data-toggle="modal" data-target="#myModalService"  ng-click="setModeType('')">
         <i class="fa fa-plus"></i>
         Add Service
       </button>
@@ -92,8 +92,8 @@
       </div>
 
       <div class="modal-footer">
-        <div class="col-lg-1 addServiceBoton" ng-if="!customerData.servicesMode"><button class="btn m-b-xs w-xs btn-primary" ng-click="addNewService()" >Add</button></div>
-        <div class="col-lg-1 addServiceBoton" ng-if="customerData.servicesMode"><button class="btn m-b-xs w-xs btn-primary" ng-click="addNewService()" >Update</button></div>
+        <div class="col-lg-1 addServiceBoton" ng-if="!customerData.servicesMode"><button class="btn m-b-xs w-xs btn-default" ng-click="addNewService()" >Add</button></div>
+        <div class="col-lg-1 addServiceBoton" ng-if="customerData.servicesMode"><button class="btn m-b-xs w-xs btn-default" ng-click="addNewService()" >Update</button></div>
         <button type="button" class="btn btn-default" data-dismiss="modal">
           Cancel
         </button>

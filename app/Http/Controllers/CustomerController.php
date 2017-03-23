@@ -334,16 +334,25 @@ class CustomerController extends Controller
   }
   public function updateContactsTable(Request $request)//SI
   {
-    //type 2 = tel.
-    $data = $request->all();
-    $contactExist = Contact::where('id_customers',$request->id_customers);
+
+    $newData = array();
+    $newData[$request->field] = $request->value;
+
+    $contactExist = Contact::find($request->id);
+    $contactExist->value = $request->value;
+    $contactExist->save();
+
+    ActivityLogs::add($this->logType, $request->id, 'update', 'updateContactsTable', $contactExist, $newData);
+
+    return 'OK';
+
 
     if($contactExist)
     {
+
       $contactId = Contact::where('id_customers',$request->id_customers)->get()->toArray()[0]['id'];
       $contact = Contact::find($contactId);
       $contact->value = $request->value;
-      $contact->save();
     }
     else
     {

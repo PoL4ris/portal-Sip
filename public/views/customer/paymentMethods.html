@@ -5,53 +5,24 @@
     <h2 class="float-left m-b-lg">Default Credit Card</h2>
 
 
-    <label class="col-lg-6 no-padding-sides"><strong>Token (Acct Number):</strong></label>
-    <label class="col-lg-6 block-b-label no-padding-sides" id="b-CCnumber">{{ paymentData.account_number ? paymentData.account_number : '( ERROR )' }}</label>
-    <label class="col-lg-6 no-padding-sides"><strong>Card Type:</strong>          </label>
-    <label class="col-lg-6 block-b-label no-padding-sides" id="b-CCtype">{{ paymentData.card_type ? paymentData.card_type  : '( ERROR )'}}</label>
-    <label class="col-lg-6 no-padding-sides"><strong>Expiration Month:</strong>   </label>
-    <label class="col-lg-6 block-b-label no-padding-sides" id="b-Expmo">{{ paymentData.exp_month ? paymentData.exp_month : '( ERROR )'}}</label>
-    <label class="col-lg-6 no-padding-sides"><strong>Expiration Year:</strong>    </label>
-    <label class="col-lg-6 block-b-label no-padding-sides" id="b-Expyr">{{ paymentData.exp_year ? paymentData.exp_year : '( ERROR )'}}</label>
-    <label class="col-lg-6 no-padding-sides"><strong>Priority:</strong>           </label>
-    <label class="col-lg-6 block-b-label no-padding-sides" id="b-Priority">{{ paymentData.priority == 1 ? 'YES' : 'NO' }}</label>
+    <label class="col-lg-12 no-padding-sides"><strong>Token (Acct Number):    </strong>   </label>
+    <label class="col-lg-12 block-b-label no-padding-sides" id="b-CCnumber">  {{ paymentData.account_number ? paymentData.account_number : '( ERROR )' }}</label>
+    <label class="col-lg-8 no-padding-sides"><strong>Card Type:               </strong>   </label>
+    <label class="col-lg-4 block-b-label no-padding-sides" id="b-CCtype">     {{ paymentData.card_type ? paymentData.card_type  : '( ERROR )'}}</label>
+    <label class="col-lg-8 no-padding-sides"><strong>Expiration Month:        </strong>   </label>
+    <label class="col-lg-4 block-b-label no-padding-sides" id="b-Expmo">      {{ paymentData.exp_month ? paymentData.exp_month : '( ERROR )'}}</label>
+    <label class="col-lg-8 no-padding-sides"><strong>Expiration Year:         </strong>   </label>
+    <label class="col-lg-4 block-b-label no-padding-sides" id="b-Expyr">      {{ paymentData.exp_year ? paymentData.exp_year : '( ERROR )'}}</label>
+    <label class="col-lg-8 no-padding-sides"><strong>Priority:                </strong>   </label>
+    <label class="col-lg-4 block-b-label no-padding-sides" id="b-Priority">   {{ paymentData.priority == 1 ? 'YES' : 'NO' }}</label>
 
 
     <div class="col-lg-12 no-padding-sides m-t-md">
-      <div class="btn btn-danger float-left col-lg-4 no-padding-sides" ng-click="openManualChar()">Manual Charge
-        <div class="manual-char charge-box">
-          <div class="cbox-containter">
-            <!--<div class="x-manaual" ng-click="closeTransparentBGManual()">X</div>-->
-            <p>Manual Charge</p>
-            <div class="cboxc-top">
-              <label>Amount to Charge</label><input type="text" placeholder="Set amount with no comas or signs" id="mc-input-am">
-            </div>
-            <div class="cboxc-bottom">
-              <label>Description</label><input type="text" placeholder="Describe the reason" id="mc-input-de">
-            </div>
-            <button class="btn2" ng-click="chargeFunct()">Charge</button>
-          </div>
-        </div>
-      </div>
-      <div class="btn btn-warning float-right col-lg-4 no-padding-sides m-r-lg" ng-click="openManualRef()">Manual Refund
-        <div class="manual-ref charge-box">
-          <div class="cbox-containter">
-            <!--<div class="x-manaual" ng-click="closeTransparentBGManual()">X</div>-->
-            <p>Manual Refund</p>
-            <div class="cboxc-top">
-              <label>Amount to Refund</label><input type="text" placeholder="Set amount with no comas or signs" id="mf-input-am">
-            </div>
-            <div class="cboxc-bottom">
-              <label>Description</label><input type="text" placeholder="Describe the reason" id="mf-input-de">
-            </div>
-            <button class="btn2" ng-click="refundFunct()">Refund</button>
-          </div>
-        </div>
-      </div>
+      <div class="btn btn-danger float-left col-lg-4 no-padding-sides"  data-toggle="modal" data-target="#paymentManualCharge">Manual Charge</div>
+      <div class="btn btn-warning float-right col-lg-4 no-padding-sides m-r-lg" data-toggle="modal" data-target="#paymentManualRefound" >Manual Refund</div>
     </div>
 
 
-    <div class="transparent-charge" ng-click="closeTransparentBGManual()"></div>
 
   </div>
   <!--LADO DOS-->
@@ -83,9 +54,9 @@
           <td>{{ payment.card_type }}</td>
           <!--<td>{{ payment.types == 'Credit Card'?'CC':payment.types}}</td>-->
           <td>{{ payment.priority == 1 ? 'Default' : '' }}</td>
-          <td>{{ payment.properties }}</td>
+          <td ng-init="pproperties = parJson(payment.properties)[0]">{{ pproperties['last four'] }}</td>
           <!--<td>{{ payment.created_at }}</td>-->
-          <td>{{ payment.updated_at }}</td>
+          <td>{{ payment.updated_at | limitTo : 10 }}</td>
           <td class="text-center">
             <button class="btn btn-default anim-btn" ng-click="setDefault(payment.id)" ng-if="payment.priority != 1">
               <label class="display-none">s</label>
@@ -98,7 +69,7 @@
 
     </div>
     <div class="float-right">
-      <button class="btn btn-primary" ng-click="open()" data-toggle="modal" data-target="#paymentMethodModal">New Payment Method</button>
+      <button class="btn btn-default" data-toggle="modal" data-target="#paymentMethodModal">New Payment Method</button>
     </div>
 
   </div>
@@ -109,11 +80,97 @@
 
 
 
+  <!--MODAL Manual Refound-->
+  <div class="modal fade" id="paymentManualRefound" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+
+    <div class="modal-dialog modal-ticket-size">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="cancelNewEvent()">
+            &times;
+          </button>
+          <span>Manual Refund</span>
+        </div>
+        <div class="modal-body">
+          <div class="wrapper-sm">
+            <div class="row">
+              <div class="col-lg-12">
+                <div class="manual-ref">
+                  <div class="cbox-containter">
+                    <form action="#">
+                      <div class="cboxc-top">
+                        <label>Amount to Refund</label><input type="text" placeholder="Set amount with no comas or signs" id="mf-input-am" required>
+                      </div>
+                      <div class="cboxc-bottom">
+                        <label>Description</label><input type="text" placeholder="Describe the reason" id="mf-input-de" required>
+                      </div>
+                      <button class="btn btn-default float-right m-t-lg" ng-click="refundFunct()">Refund</button>
+                    </form>
+                  </div>
+                </div>
 
 
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">
+            Cancel
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!--MODAL Manual Charge-->
+  <div class="modal fade" id="paymentManualCharge" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+
+    <div class="modal-dialog modal-ticket-size">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="cancelNewEvent()">
+            &times;
+          </button>
+          <span>Manual Charge</span>
+        </div>
+        <div class="modal-body">
+          <div class="wrapper-sm">
+            <div class="row">
+              <div class="col-lg-12">
+                <div class="manual-char" >
+                  <div class="cbox-containter">
+                    <form action="#">
+                      <div class="cboxc-top">
+                        <label>Amount to Charge</label><input type="text" placeholder="Set amount with no comas or signs" id="mc-input-am" required>
+                      </div>
+                      <div class="cboxc-bottom">
+                        <label>Description</label><input type="text" placeholder="Describe the reason" id="mc-input-de" required>
+                      </div>
+                      <button class="btn btn-default float-right m-t-lg" ng-click="chargeFunct()">Charge</button>
+                    </form>
+                  </div>
+                </div>
 
 
-  <!--MODAL-->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">
+            Cancel
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!--MODAL New Payment Method-->
   <div class="modal fade" id="paymentMethodModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" ng-controller="addPaymentMethodController">
     <div class="modal-dialog modal-ticket-size">
       <div class="modal-content">
@@ -121,11 +178,15 @@
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="cancelNewEvent()">
             &times;
           </button>
-          <span>MODAL</span>
+          <span>New Payment Method</span>
         </div>
         <div class="modal-body">
           <div class="wrapper-sm">
             <div class="row">
+            <div class="col-lg-12">
+
+
+
 
               <form id="paymentmethodform">
 
@@ -138,8 +199,8 @@
                 <label class="bold-type col-lg-4">Billing Phone:</label>
                 <input type="text" name="billing_phone" class="col-lg-8 input-text"  placeholder="Ex: 555-444-3322"required>
 
-                <span class="bold-type col-lg-3 m-t-sm">Exp Month :</span>
-                <select name="exp_month" class="col-lg-3  m-t-sm" required>
+                <span class="bold-type col-lg-3 m-t-lg">Exp Month :</span>
+                <select name="exp_month" class="col-lg-3  m-t-lg" required>
                   <option value="">Select a Month</option>
                   <option value="01">01</option><option  value="02">02</option><option  value="03">03</option>
                   <option value="04">04</option><option  value="05">05</option><option  value="06">06</option>
@@ -147,33 +208,35 @@
                   <option value="10">10</option><option  value="11">11</option><option  value="12">12</option>
                 </select>
 
-                <span class="bold-type col-lg-3  m-t-sm">Exp Year :</span>
-                <select name="exp_year" class="col-lg-3 m-t-sm" required>
+                <span class="bold-type col-lg-3  m-t-lg p-l-lg">Exp Year :</span>
+                <select name="exp_year" class="col-lg-3 m-t-lg" required>
                   <option value="">Select a Year</option>
                   <option value="2017">17</option><option value="2018">18</option>
                   <option value="2019">19</option><option value="2020">20</option><option value="2021">21</option>
                   <option value="2022">22</option>
                 </select>
 
-                <span class="bold-type col-lg-3 m-t-sm">Card Type</span>
-                <select name="card_type" class="col-lg-3 m-t-sm" required>
+                <span class="bold-type col-lg-3 m-t-lg">Card Type</span>
+                <select name="card_type" class="col-lg-3 m-t-lg" required>
                   <option value="">Select a Type</option>
                   <option value="VS">Visa</option>
                   <option value="MC">Master Card</option>
                   <option value="AX">Amex</option>
                 </select>
 
-                <label class="bold-type col-lg-3 m-t-sm">CCV :</label>
-                <input type="text" name="CCscode" class="col-lg-3 input-text m-t-sm"   placeholder="CCV" required>
+                <label class="bold-type col-lg-3 m-t-lg p-l-lg">CCV :</label>
+                <input type="text" name="CCscode" class="col-lg-3 input-text m-t-lg"   placeholder="CCV" required>
 
 
                 <div class="col-lg-12 m-b-md"></div>
 
                 <div class="col-lg-12 addServiceBoton m-b-sm">
-                  <button type="submit" class="btn m-b-xs w-xs btn-primary float-right" ng-click="addNewPaymentMethod()" >Add</button>
+                  <button type="submit" class="btn m-b-xs w-xs btn-default float-right" ng-click="addNewPaymentMethod()" >Add</button>
                 </div>
 
               </form>
+
+            </div>
 
             </div>
           </div>
@@ -188,3 +251,8 @@
   </div>
 
 </div>
+
+
+
+
+
