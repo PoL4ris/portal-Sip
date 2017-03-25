@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Extensions\SIPBilling;
 use App\Extensions\BillingHelper;
+use App\Extensions\DataMigrationUtils;
 use DB;
 use App\Models\Customer;
 use App\Models\Ticket;
@@ -292,6 +293,14 @@ class TestController extends Controller
 
     public function testActivityLog(){
         ActivityLog::test();
+    }
+
+    public function testDataMigration() {
+
+        $dbMigrationUtil = new DataMigrationUtils();
+        $dbMigrationUtil->migrateCustomersTable();
+//        $dbMigrationUtil->migrateSupportTicketReasons();
+        dd('done');
     }
 
 }
