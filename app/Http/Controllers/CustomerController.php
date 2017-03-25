@@ -16,6 +16,7 @@ use App\Models\Ticket;
 use App\Models\Address;
 use App\Models\Contact;
 use App\Models\BillingTransactionLog;
+use App\Models\Invoice;
 use App\Models\Building\Servicelocation;
 use App\Models\Building\Building;
 use App\Models\NetworkNode;
@@ -211,9 +212,9 @@ class CustomerController extends Controller
   {
     return Reason::find($request->id);
   }//SI
-  public function getBillingHistory(Request $request)
+  public function getInvoiceHistory(Request $request)
   {
-    return BillingTransactionLog::where('id_customers', $request->id)->get();
+    return Invoice::where('id_customers', $request->id)->get();
   }//SI
   public function getCustomerServices(Request $request)//SI
   {
@@ -280,10 +281,21 @@ class CustomerController extends Controller
 
   public function updateAddressTable(Request $request)//???
   {
-//    $data = $request->all();
-//    unset($data['id_customers']);
-//    Address::where('id_customers', $request->id_customers)->update($data);
-//    return 'OK';
+
+    $newData = array();
+    $newData[$request->field] = explode('#', $request->value)[1];
+
+    $addressExist = Address::find($request->id_table);
+    $addressExist->unit = explode('#', $request->value)[1];
+    $addressExist->save();
+
+    ActivityLogs::add($this->logType, $request->id, 'update', 'updateAddressTable', $addressExist, $newData);
+
+    return 'OK';
+
+
+
+
 
     $params = $request->all();
     $data[$params['field']] = explode('# ', $params['value'])[1];
@@ -335,10 +347,12 @@ class CustomerController extends Controller
   public function updateContactsTable(Request $request)//SI
   {
 
+
+//    dd($request->all());
     $newData = array();
     $newData[$request->field] = $request->value;
 
-    $contactExist = Contact::find($request->id);
+    $contactExist = Contact::find($request->id_table);
     $contactExist->value = $request->value;
     $contactExist->save();
 

@@ -16,7 +16,14 @@ app.controller('buildingSideController', function ($scope, $http){
     });
 
 });
-app.controller('buildingCtl',                       function($scope, $http) {
+app.controller('buildingCtl',                       function($scope, $http, customerService) {
+
+  if(!customerService.sideBarFlag) {
+    $scope.sipTool(2);
+    customerService.sideBarFlag = true;
+  }
+
+
 
   if (!$scope.sbid) {
     $scope.SiteMenu = [];
@@ -366,17 +373,28 @@ app.controller('customerControllerList',            function ($scope, $http){
       $scope.supportDataCustomer = response.data;
     });
 });
-app.controller('customerController',                function ($scope, $http, $stateParams){
 
-  if(!$scope.customerData.rightView) {
-    $scope.customerData.rightView = true;
 
+
+
+app.controller('customerController',                function ($scope, $http, $stateParams, customerService){
+
+
+  if(!customerService.rightView) {
+    customerService.rightView = true;
+//     console.log('right');
   }
   else {
-    $scope.customerData.leftView = true;
+    //console.log('left');
+    //SideBar verify if need to be there.
+    if(!customerService.sideBarFlag) {
+      $scope.sipTool(2);
+      customerService.sideBarFlag = true;
+    }
 
-    $scope.customerFlag = true;
-    $scope.idCustomer = 501;
+    customerService.leftView = true;
+    $scope.customerFlag      = true;
+    $scope.idCustomer        = 501;
 
     if ($scope.stcid || $stateParams.id)
       $scope.idCustomer = $scope.stcid ? $scope.stcid : $stateParams.id;
@@ -391,7 +409,8 @@ app.controller('customerController',                function ($scope, $http, $st
 
     $http.get("customersData", {params:{'id' : $scope.idCustomer}})
       .then(function (response) {
-        $scope.customerData.customer = response.data;
+        customerService.customer = response.data;
+        $scope.customerData.customer = customerService.customer;
         $scope.bld = $scope.customerData.customer.address;
       });
     $http.get("getContactTypes", {params:{'id':$scope.idCustomer}})
@@ -416,6 +435,9 @@ app.controller('customerController',                function ($scope, $http, $st
     $scope.checkboxModelA        = true;
     $scope.animationsEnabled     = false;
     $scope.currentServiceDisplay = '';
+
+
+
 
   }
 
@@ -685,7 +707,12 @@ app.controller('customerController',                function ($scope, $http, $st
       $('#mb-ca-table').fadeIn();
     }
   };
+
 });
+
+
+
+
 app.controller('customerTicketHistoryController',   function ($scope, $http){
   $http.get("getTicketHistory", {params:{'id':$scope.idCustomer}})
     .then(function (response) {
@@ -699,27 +726,20 @@ app.controller('customerTicketHistoryController',   function ($scope, $http){
     $('#ticket-' + id).fadeOut('fast');
   }
 });
-app.controller('customerBillingHistoryController',  function ($scope, $http){
+app.controller('customerInvoiceHistoryController',  function ($scope, $http){
+  console.log($scope.customerData);
 
-  if(!$scope.billingHistory)
-    $http.get("getBillingHistory", {params:{'id':$scope.idCustomer}})
+  if(!$scope.invoiceData)
+    $http.get("getInvoiceHistory", {params:{'id':$scope.idCustomer}})
       .then(function (response) {
-        $scope.billingHistory = response.data;
+        $scope.invoiceData = response.data;
       });
 
   $scope.setInvoiceData = function (){
-    $scope.customerData['prueba'] = this.billing;
+    $scope.modalInvoice = this.invoice;
   };
 
 });
-
-
-
-
-
-
-
-
 app.controller('customerNetworkController',         function ($scope, $http){
 
 // console.log('esto es  : customerNetworkController con el id de -- > ' + $scope.idCustomer);
@@ -914,17 +934,6 @@ app.controller('customerNetworkController',         function ($scope, $http){
   };
 
 });
-
-
-
-
-
-
-
-
-
-
-
 app.controller('customerBuildingController',        function ($scope, $http){
 
 //   console.log($scope.customerData);
@@ -938,8 +947,6 @@ app.controller('customerBuildingController',        function ($scope, $http){
   }
 
 });
-
-
 //PAYMENT METHOD INCOMPLETE.
 app.controller('customerPaymentMethodsController',  function ($scope, $http){
 // console.log('something here con el id de  : ' + $scope.idCustomer);
@@ -1044,7 +1051,7 @@ app.controller('addPaymentMethodController',        function ($scope, $http){
 * value[5] = Card Type
 * value[6] = CCV
 * */
-console.log('this is addPaymentMethodController ');
+// console.log('this is addPaymentMethodController ');
   $scope.addNewPaymentMethod = function (){
     var objects = $('#paymentmethodform').serializeArray();
 
@@ -1116,9 +1123,6 @@ console.log('this is addPaymentMethodController ');
       });
   }
 });
-
-
-
 app.controller('customerServicesController',        function ($scope, $http){
 
   $http.get("getCustomerServices", {params:{'id':$scope.idCustomer}})
@@ -1200,7 +1204,14 @@ app.controller('serviceProductController',          function ($scope, $http){
 
 
 //Support Controllers
-app.controller('supportController',                 function ($scope, $http, DTOptionsBuilder){
+app.controller('supportController',                 function ($scope, $http, DTOptionsBuilder, customerService){
+
+  if(customerService.sideBarFlag) {
+    $scope.sipTool(2);
+    customerService.sideBarFlag = false;
+  }
+
+
 
   $http.get("supportTickets")
     .then(function (response) {
@@ -1212,7 +1223,7 @@ app.controller('supportController',                 function ($scope, $http, DTO
       $scope.ticketOpenTime = response.data;
     });
 
-  $scope.dtOptions = DTOptionsBuilder.newOptions().withPaginationType('full_numbers').withDisplayLength(25).withOption('order', [10, 'desc']);
+  $scope.dtOptions = DTOptionsBuilder.newOptions().withPaginationType('full_numbers').withDisplayLength(50);
   $scope.letterLimit = 400;
 
   $scope.showFullComment = function(id) {
@@ -1521,9 +1532,11 @@ app.controller('userProfileController',             function ($scope, $http){
 
 
 // Global Tools //
-app.controller('globalToolsCtl',      function ($scope, $http, $compile, $sce, $stateParams){
+app.controller('globalToolsCtl',      function ($scope, $http, $compile, $sce, $stateParams, customerService){
 
   console.log('globalToolsCtl');
+
+
   $scope.customerData   = {};
   $scope.globalScopeVar = true;
   $scope.sipToolLeft    = false;
@@ -1556,16 +1569,18 @@ app.controller('globalToolsCtl',      function ($scope, $http, $compile, $sce, $
     console.log('Function singleUpdateXedit---> with routeFunction ---' + routeFunction);
 
     var data = {};
-    data['id']    = id;
-    data['value'] = value;
-    data['field'] = field;
-    data['table'] = table;
+    data['id']        = customerService.customer.id;
+    data['value']     = value;
+    data['field']     = field;
+    data['table']     = table;
+    data['id_table']  = id;
+
     $http.get("update" + table + "Table", {params:data})
       .then(function (response) {
         if(response.data == 'OK')
         {
           if(routeFunction)
-            $scope.resolveRouteFunction(routeFunction, id);
+            $scope.resolveRouteFunction(routeFunction, customerService.customer.id);
 
           return 'OK';
         }
@@ -1603,7 +1618,6 @@ app.controller('globalToolsCtl',      function ($scope, $http, $compile, $sce, $
 
   };
   $scope.sipTool              = function (type, id){
-
     /*
     * Type
     * 0 = left
@@ -1637,9 +1651,9 @@ app.controller('globalToolsCtl',      function ($scope, $http, $compile, $sce, $
       if(claseA || claseB)
       {
         if($scope.sipToolLeft)
-          $('#silverip-side').toggleClass('silverip-left-hide');
+          $('#silverip-side').addClass('silverip-left-hide');
         else
-          $('#silverip-side').toggleClass('silverip-right-hide');
+          $('#silverip-side').addClass('silverip-right-hide');
 
         $('#main').removeClass('silverip-left-location');
         $('#silverip-side').removeClass('silverip-left');
@@ -1653,13 +1667,13 @@ app.controller('globalToolsCtl',      function ($scope, $http, $compile, $sce, $
 
         if($scope.sipToolLeft)
         {
-          $('#silverip-side').toggleClass('silverip-left');
-          $('#main').toggleClass('silverip-left-location');
+          $('#silverip-side').addClass('silverip-left');
+          $('#main').addClass('silverip-left-location');
         }
         else
         {
-          $('#silverip-side').toggleClass('silverip-right');
-          $('#main').toggleClass('silverip-right-location');
+          $('#silverip-side').addClass('silverip-right');
+          $('#main').addClass('silverip-right-location');
         }
 
       }
@@ -1670,8 +1684,8 @@ app.controller('globalToolsCtl',      function ($scope, $http, $compile, $sce, $
     $('#main').removeClass('silverip-' + txt + '-location');
     $('#silverip-side').removeClass('silverip-' + txt);
 
-    $('#silverip-side').toggleClass(id);
-    $('#main').toggleClass(id + '-location');
+    $('#silverip-side').addClass(id);
+    $('#main').addClass(id + '-location');
   }
   $scope.buscador             = function () {
 
@@ -1707,8 +1721,7 @@ app.controller('globalToolsCtl',      function ($scope, $http, $compile, $sce, $
   $scope.resolveRouteFunction = function (routeFunction, id){
 
 
-  console.log($scope);
-
+console.log(id);
 
     switch(routeFunction)
     {
@@ -1718,13 +1731,17 @@ app.controller('globalToolsCtl',      function ($scope, $http, $compile, $sce, $
       }
     };
 
+
+
+    console.log('obtenemos el log');
     $http.get("getCustomerLog", {params:{'type':'customer', 'id_type':id}})
       .then(function (response) {
-        $scope.customerData.customer.log = response.data;
+      console.log(response.data);
+        customerService.customer.log = response.data;
       });
 
   };
-  $scope.parJson = function (json) {
+  $scope.parJson              = function (json) {
 //     console.log(json[0]);
     return JSON.parse(json);
   }

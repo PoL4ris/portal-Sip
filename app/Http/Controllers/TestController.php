@@ -116,6 +116,22 @@ class TestController extends Controller
     public function supportTest()
     {
 
+      $cus = Customer::with('addresses',
+        'contacts',
+        'type',
+        'address.buildings',
+        'address.buildings.neighborhood',
+        'status',
+        'status.type',
+        'openTickets',
+        'log',
+        'log.user')
+        ->find(501);
+
+
+      print '<pre>';
+      dd($cus->toArray());
+      die();
 
 
 

@@ -39,11 +39,11 @@ angular.module('app.customers', ['ui.router']).config(function ($stateProvider) 
           "silveriptool": {
             templateUrl: '/views/silverip-tool.html',
             controller: 'customerController',
-
           }
         },
         resolve: {
-          scripts: function(lazyScript){
+          scripts: function(lazyScript, customerService){
+            customerService.rightView = false;
             return lazyScript.register([
               '/js/smart/build/vendor.ui.js'
             ]);
@@ -144,3 +144,28 @@ angular.module('app.admin'  , ['ui.router']).config(function ($stateProvider) {
 });
 
 
+
+app.factory('customerService', function() {
+  return {
+    exist : true,
+    sideBarFlag : true,
+    rightView : false
+  };
+});
+
+
+
+//
+//Aprovechar Servicio con servicios.
+// app.factory('myFactory', function() {
+//
+//   var exist = true;
+//   return {
+//     getExist : function() {
+//       return exist;
+//     },
+//     setExist : function(ex){
+//       exist = ex;
+//     }
+//   }
+// });

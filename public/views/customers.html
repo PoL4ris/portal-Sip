@@ -1,62 +1,12 @@
-<article class="col-sm-12 col-md-12 col-lg-12 p-b-lg bg-white white-shadow">
+<article class="col-sm-12 col-md-12 col-lg-12 p-b-lg bg-white white-shadow null-article">
   <div class="row">
 
     <div class="col-lg-4">
-      <article class="col-sm-12 col-md-12 col-lg-12 no-padding-sides m-t-lg status-color-{{customerData.customer.status.name}}"  ng-include="'/views/customer/customer.html'" ></article>
+      <article class="col-sm-12 col-md-12 col-lg-12 no-padding-sides m-t-lg status-color-{{customerData.customer.status.name}} null-article"  ng-include="'/views/customer/customer.html'" ></article>
     </div>
 
     <div class="col-lg-8 m-t-lg customer-dash-grid">
-
-      <div class="cdg-block col-lg-6 m-b-lg">
-        <div class="cdg-status cdg-color-up float-left"></div>
-        <div class="cdg-content float-right">
-          <label>Port Status</label>
-          <span>UP</span>
-          <i class="fa fa-angle-right"></i>
-        </div>
-      </div>
-
-      <div class="cdg-block col-lg-6 m-b-lg">
-        <div class="cdg-status cdg-color-down float-left"></div>
-        <div class="cdg-content float-right">
-          <label>Port Status</label>
-          <span>DOWN</span>
-          <i class="fa fa-angle-right"></i>
-        </div>
-      </div>
-
-
-      <div class="cdg-block col-lg-6 m-b-lg">
-        <div class="cdg-status cdg-color-t1 float-left"></div>
-        <div class="cdg-content float-right">
-          <label>Open tickets</label>
-          <span ng-if="customerData.customer.open_tickets">{{customerData.customer.open_tickets.length}}</span>
-          <span ng-if="!customerData.customer.open_tickets"><i class="fa fa-spinner loading-anim" aria-hidden="true"></i></span>
-          <i class="fa fa-angle-right"></i>
-        </div>
-      </div>
-
-
-      <div class="cdg-block col-lg-6 m-b-lg" ng-if="customerData.defaultPayment">
-        <div class="cdg-status cdg-color-missing float-left"></div>
-        <div class="cdg-content float-right">
-          <label>Payment Method</label>
-          <span>NO</span>
-          <i class="fa fa-angle-right"></i>
-        </div>
-      </div>
-
-      <div class="cdg-block col-lg-6 m-b-lg" ng-if="customerData.defaultPayment">
-        <div class="cdg-status cdg-color-ok float-left"></div>
-        <div class="cdg-content float-right">
-          <label>Payment Method</label>
-          <span>NO</span>
-          <i class="fa fa-angle-right"></i>
-        </div>
-      </div>
-
-
-
+      <article ng-include="'/views/customer/dashboard.html'" class="null-article"></article>
     </div>
 
 
@@ -66,13 +16,13 @@
 
 
 
-<article class="col-sm-12 col-md-12 col-lg-12  bg-white white-shadow m-t-lg p-b-lg">
+<article class="col-sm-12 col-md-12 col-lg-12  bg-white white-shadow m-t-lg p-b-lg " id="c-fixed-content">
   <div class="row">
     <header role="heading" class="ui-sortable-handle">
       <ul id="widget-tab-1" class="nav pull-left nav-tabs size-100">
         <li class="active"><a data-toggle="tab" href="#tab-r1" aria-expanded="false"> <i class="fa fa-lg fa-gears"></i> <span class="hidden-mobile hidden-tablet"> Services </span></a></li>
         <li class=""><a data-toggle="tab" href="#tab-r2" aria-expanded="false">       <i class="fa fa-lg fa-signal"></i> <span class="hidden-mobile hidden-tablet"> Network </span></a></li>
-        <li class=""><a data-toggle="tab" href="#tab-r3" aria-expanded="false">       <i class="fa fa-lg fa-arrow-circle-o-down"></i> <span class="hidden-mobile hidden-tablet"> Billing History </span></a></li>
+        <li class=""><a data-toggle="tab" href="#tab-r3" aria-expanded="false">       <i class="fa fa-lg fa-arrow-circle-o-down"></i> <span class="hidden-mobile hidden-tablet"> Invoice History </span></a></li>
         <li class=""><a data-toggle="tab" href="#tab-r4" aria-expanded="true">        <i class="fa fa-lg fa-arrow-circle-o-down"></i> <span class="hidden-mobile hidden-tablet"> Contacts / New Ticket </span> </a></li>
         <li class=""><a data-toggle="tab" href="#tab-r5" aria-expanded="false">       <i class="fa fa-lg fa-dollar"></i>   <span class="hidden-mobile hidden-tablet"> Payment </span></a></li>
         <li class=""><a data-toggle="tab" href="#tab-r6" aria-expanded="false">       <i class="fa fa-lg fa-arrow-circle-o-up"></i>   <span class="hidden-mobile hidden-tablet"> Tickets </span></a></li>
@@ -81,15 +31,15 @@
 
     <div class="col-lg-12 m-t-lg">
       <div class="tab-content">
-        <div class="tab-pane active" id="tab-r1">   <article class="col-sm-12 col-md-12 col-lg-12 no-padding-sides m-t-lg"  ng-include="'/views/customer/product.html'"></article></div>
-        <div class="tab-pane" id="tab-r2">          <article class="col-sm-12 col-md-12 col-lg-12 no-padding-sides"         ng-include="'/views/customer/network.html'"></article></div>
-        <div class="tab-pane" id="tab-r3">          <article class="col-sm-12 col-md-12 col-lg-12 no-padding-sides"         ng-include="'/views/customer/billinghistory.html'"></article></div>
+        <div class="tab-pane active" id="tab-r1">   <article class="col-sm-12 col-md-12 col-lg-12 no-padding-sides m-t-lg null-article"  ng-include="'/views/customer/product.html'"></article></div>
+        <div class="tab-pane" id="tab-r2">          <article class="col-sm-12 col-md-12 col-lg-12 no-padding-sides null-article"         ng-include="'/views/customer/network.html'"></article></div>
+        <div class="tab-pane" id="tab-r3">          <article class="col-sm-12 col-md-12 col-lg-12 no-padding-sides null-article"         ng-include="'/views/customer/invoicehistory.html'"></article></div>
         <div class="tab-pane" id="tab-r4">
-          <article class="col-sm-6 col-md-6 col-lg-6 "    ng-include="'/views/customer/contactInfo.html'"></article>
-          <article class="col-sm-6 col-md-6 col-lg-6 "    ng-include="'/views/customer/newticket.html'"></article>
+          <article class="col-sm-6 col-md-6 col-lg-6 null-article"    ng-include="'/views/customer/contactInfo.html'"></article>
+          <article class="col-sm-6 col-md-6 col-lg-6 null-article"    ng-include="'/views/customer/newticket.html'"></article>
         </div>
-        <div class="tab-pane" id="tab-r5"><article class="col-sm-12 col-md-12 col-lg-12 no-padding-sides"    ng-include="'/views/customer/paymentMethods.html'"></article></div>
-        <div class="tab-pane" id="tab-r6"><article class="col-sm-12 col-md-12 col-lg-12 no-padding-sides"    ng-include="'/views/customer/ticketshistory.html'"></article></div>
+        <div class="tab-pane" id="tab-r5"><article class="col-sm-12 col-md-12 col-lg-12 no-padding-sides null-article"    ng-include="'/views/customer/paymentMethods.html'"></article></div>
+        <div class="tab-pane" id="tab-r6"><article class="col-sm-12 col-md-12 col-lg-12 no-padding-sides null-article"    ng-include="'/views/customer/ticketshistory.html'"></article></div>
       </div>
     </div>
   </div>
@@ -104,10 +54,10 @@
 
 
 
-<!--<hr>-->
+<hr>
 
-<!--<pre>-->
-<!--{{customerData | json}}-->
-<!--</pre>-->
+<pre>
+{{customerData.customer.log | json}}
+</pre>
 
 

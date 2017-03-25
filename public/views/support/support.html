@@ -9,14 +9,14 @@
 
         <!--<div class="col-lg-12 padding-10">-->
           <!--<div class="bg-white padding-10">-->
-            <table id="myTable" class="tablesorter table" datatable="ng">
+            <table id="myTable" class="tablesorter table" datatable="ng" dt-options="dtOptions">
               <thead>
               <tr>
                 <th>Ticket</th>
                 <th>Status</th>
                 <th>Name</th>
-                <!--<th>Address</th>-->
-                <th>Code</th>
+                <th>Address</th>
+                <!--<th>Code</th>-->
                 <th>Tel</th>
                 <th>Email</th>
                 <th>Issue</th>
@@ -53,11 +53,6 @@
                     <label ng-if="data.old == 'old-green'">> 12Hrs</label>
                     <label ng-if="data.old == 'old'">Minutes ago</label>
                   </td>
-
-                  <!--<td class="{{data.old}}" ng-if="data.old == 'old-red'">> 48Hrs</td>-->
-                  <!--<td class="{{data.old}}" ng-if="data.old == 'old-yellow'">> 24Hrs.</td>-->
-                  <!--<td class="{{data.old}}" ng-if="data.old == 'old-green'">> 12Hrs</td>-->
-                  <!--<td class="{{data.old}}" ng-if="data.old == 'old'">Minutes ago</td>-->
                 </tr>
               </tbody>
             </table>
@@ -231,3 +226,4 @@
   </div>
 </div>
 <!-- END MODAL DE TICKET -->
+

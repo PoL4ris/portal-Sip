@@ -41,6 +41,12 @@ h2 {
 .silverip-left-hide {
   left: -200px;
 }
+.silverip-right.true{
+  display: block;
+}
+.silverip-right.false{
+  display: none;
+}
 .hidden-menu.silverip-left-hide {
   left: -340px;
 }
@@ -607,6 +613,12 @@ body.smart-style-7 {
 .smart-style-7 #header .user-ui-uno {
   width: 150px;
 }
+.smart-style-7 section, .smart-style-7 article{
+  margin-bottom: 100px;
+}
+.smart-style-7 section.null-section, .smart-style-7 article.null-article{
+  margin-bottom: inherit;
+}
 @media (max-width: 979px) and (min-width: 768px) {
   .smart-style-7 #hide-menu i {
     color: #fff !important;
@@ -702,14 +714,14 @@ nav ul li a {
   color: #1da3fc;
 }
 .btn.btn-default{
-  border: 1px solid #ddd;
+  /*border: 1px solid #ddd;*/
 }
 .btn-dark:hover {
   color: #1da3fc;
 }
 .btn {
   background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
-  border: medium none;
+  border: 1px solid #ddd;
   box-shadow: none;
   font-size: 13px;
   min-width: 30px;
@@ -797,6 +809,7 @@ nav ul li a {
   border-radius: 7px;
   box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
   float: left;
+  width: 100%;
 }
 #activity-log .log-entry {
   background: red none repeat scroll 0 0 !important;
