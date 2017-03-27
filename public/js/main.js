@@ -156,7 +156,7 @@ app.factory('customerService', function() {
 
 
 //
-//Aprovechar Servicio con servicios.
+//Stronger Service Dif Solution.
 // app.factory('myFactory', function() {
 //
 //   var exist = true;

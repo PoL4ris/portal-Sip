@@ -296,24 +296,24 @@ class CustomerController extends Controller
 
 
 
-
-    $params = $request->all();
-    $data[$params['field']] = explode('# ', $params['value'])[1];
-
-    $recordCustomer = $data;
-    $recordCustomer['old_data'] = Address::find($request->id)->toArray();
-
-    Address::where('id', $request->id)->update($data);
-
-    $logData['id_users'] = Auth::user()->id;
-    $logData['id_customers'] = $recordCustomer['old_data']['id_customers'];
-    $logData['action']   = 'update';
-    $logData['route']    = 'updateAddressTable';
-    $logData['data']     = serialize($recordCustomer);
-
-    Log::insert($logData);
-
-    return 'OK';
+//RECHECK
+//    $params = $request->all();
+//    $data[$params['field']] = explode('# ', $params['value'])[1];
+//
+//    $recordCustomer = $data;
+//    $recordCustomer['old_data'] = Address::find($request->id)->toArray();
+//
+//    Address::where('id', $request->id)->update($data);
+//
+//    $logData['id_users'] = Auth::user()->id;
+//    $logData['id_customers'] = $recordCustomer['old_data']['id_customers'];
+//    $logData['action']   = 'update';
+//    $logData['route']    = 'updateAddressTable';
+//    $logData['data']     = serialize($recordCustomer);
+//
+//    Log::insert($logData);
+//
+//    return 'OK';
 
   }
   public function updateCustomersTable(Request $request)//SI
@@ -360,23 +360,23 @@ class CustomerController extends Controller
 
     return 'OK';
 
-
-    if($contactExist)
-    {
-
-      $contactId = Contact::where('id_customers',$request->id_customers)->get()->toArray()[0]['id'];
-      $contact = Contact::find($contactId);
-      $contact->value = $request->value;
-    }
-    else
-    {
-      $data['id_types'] = 2;
-      $data['created_at'] = date("Y-m-d H:i:s");
-      $data['updated_at'] = date("Y-m-d H:i:s");
-      Contact::insert($data);
-    }
-
-    return 'OK';
+//RECHECK
+//    if($contactExist)
+//    {
+//
+//      $contactId = Contact::where('id_customers',$request->id_customers)->get()->toArray()[0]['id'];
+//      $contact = Contact::find($contactId);
+//      $contact->value = $request->value;
+//    }
+//    else
+//    {
+//      $data['id_types'] = 2;
+//      $data['created_at'] = date("Y-m-d H:i:s");
+//      $data['updated_at'] = date("Y-m-d H:i:s");
+//      Contact::insert($data);
+//    }
+//
+//    return 'OK';
 
   }
   public function getCustomerDataTicket(Request $request)//SI
@@ -680,7 +680,7 @@ class CustomerController extends Controller
 
   public function getCustomerLog(Request $request)//SI
   {
-
+//RECHECK
   return ActivityLog::with('user')
                     ->where('type',$request->type)
                     ->where('id_type',$request->id_type)

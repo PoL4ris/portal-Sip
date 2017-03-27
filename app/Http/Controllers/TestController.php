@@ -117,13 +117,13 @@ class TestController extends Controller
     {
 
       $cus = Customer::with('addresses',
-        'contacts',
-        'type',
-        'address.buildings',
-        'address.buildings.neighborhood',
-        'status',
-        'status.type',
-        'openTickets',
+//        'contacts',
+//        'type',
+//        'address.buildings',
+//        'address.buildings.neighborhood',
+//        'status',
+//        'status.type',
+//        'openTickets',
         'log',
         'log.user')
         ->find(501);
