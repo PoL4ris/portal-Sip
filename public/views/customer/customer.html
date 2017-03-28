@@ -44,35 +44,40 @@
 
       </h2>
 
-      <!--<p class="vip-class float-left">-->
-        <!--<a  href="" id="b-p-id-cvip"-->
-            <!--record-table="CustValue"-->
-            <!--data-pk="1"-->
-            <!--smart-xeditable-->
-            <!--data-options="editableOptions"-->
-            <!--data-original-title="Set Value"-->
-            <!--record-field="value"-->
-            <!--record-idContainer="buildingProperties"-->
-            <!--data-ng-model="customerData.customer.vip"-->
-            <!--record-id="{{customerData.customer.vip}}"-->
-            <!--data-type="text"-->
-            <!--data-placement="right"-->
-            <!--class="editable editable-click">-->
-            <!--{{customerData.customer.vip?customerData.customer.vip:'Not Set'}}-->
-        <!--</a>-->
-      <!--</p>-->
+<!--
+
+      <p class="vip-class float-left">
+        <a  href="" id="b-p-id-cvip"
+            record-table="CustValue"
+            data-pk="1"
+            smart-xeditable
+            data-options="editableOptions"
+            data-original-title="Set Value"
+            record-field="value"
+            record-idContainer="buildingProperties"
+            data-ng-model="customerData.customer.vip"
+            record-id="{{customerData.customer.vip}}"
+            data-type="text"
+            data-placement="right"
+            class="editable editable-click">
+            {{customerData.customer.vip?customerData.customer.vip:'Not Set'}}
+        </a>
+      </p>
+
+      -->
 
       <div class="customer-info-card">
         <div class="col-lg-12 no-padding-sides m-t-lg">
 
           <p class="col-lg-4 no-padding-sides"><strong>Address:</strong></p>
-          <p class="address-bld-img-hover">{{customerData.customer.address.address?customerData.customer.address.address:'Not Set'}}
+          <p class="address-bld-img-hover">{{customerData.customer.address.address ? customerData.customer.address.address : 'Not Set'}}
             <div class="no-display">
-              <img src="/img/buildings/{{bld.img_building?bld.img_building:bld.buildings.img_building}}" alt="{{customerData.customer.address.address}}" title="{{customerData.customer.address.address}}">
+              <img src="/img/buildings/{{bld.img_building ? bld.img_building : bld.buildings.img_building}}"
+                   alt="{{customerData.customer.address.address}}"
+                   title="{{customerData.customer.address.address}}">
             </div>
           </p>
 
-          <!--<p class=""><strong>Unit:</strong></p>-->
           <p class=" col-lg-4"></p>
           <p class="no-padding-sides col-lg-7">
             <a  href=""
@@ -88,21 +93,18 @@
                 data-type="text"
                 record-idContainer="customers"
                 data-placement="right"
-                class="editable editable-click"># {{customerData.customer.address.unit?customerData.customer.address.unit:'Not Set'}}
+                class="editable editable-click"># {{customerData.customer.address.unit ? customerData.customer.address.unit : 'Not Set'}}
             </a>
           </p>
 
 
-
-          <!--<p class="float-left size-50"><strong>Location:</strong></p>-->
           <p class=" col-lg-4"></p>
 
           <p class="col-lg-7 no-padding-sides">
-            {{customerData.customer.address.city?customerData.customer.address.city:'Not Set'}}, {{customerData.customer.address.state?customerData.customer.address.state:'Not Set'}}  {{customerData.customer.address.zip?customerData.customer.address.zip:'Not Set'}}
+            {{customerData.customer.address.city  ? customerData.customer.address.city  : 'Not Set'}},
+            {{customerData.customer.address.state ? customerData.customer.address.state : 'Not Set'}}
+            {{customerData.customer.address.zip   ? customerData.customer.address.zip   : 'Not Set'}}
           </p>
-
-          <!--<p class="float-left size-50"><strong>Code:</strong></p>-->
-          <!--<p>{{bld.code?bld.code:bld.buildings.code}}</p>-->
 
 
           <p class="col-lg-4 no-padding-sides"><strong>Username:</strong></p>
@@ -125,6 +127,8 @@
           </p>
           <p></p>
 
+
+
           <p class="col-lg-4 no-padding-sides"><strong>Status:</strong></p>
           <p class="{{customerData.customer.status.name}} capital-first" ng-if="customerTypes">
             <a id="status-select"
@@ -143,28 +147,26 @@
                data-source="{{customerTypes}}"
                record-id="{{customerData.customer.id}}"
                data-original-title="Select Customer Status">
-               {{customerData.customer.status.name?customerData.customer.status.name:'Pending'}}
+               {{customerData.customer.status.name ? customerData.customer.status.name : 'Pending'}}
             </a>
           </p>
 
 
-
-
-
           <p class="col-lg-4 no-padding-sides"><strong>Location:</strong></p>
-          <p>{{bld.name?bld.name:bld.buildings.name}}  ({{bld.code?bld.code:bld.buildings.code}})</p>
-
-
-
+          <p>{{bld.name ? bld.name:bld.buildings.name}}  ({{bld.code ? bld.code : bld.buildings.code}})</p>
 
 
           <br>
           <p>
-            <strong>{{bld.type?bld.type:bld.buildings.type}}</strong>
-            in  <strong>{{bld.neighborhood.name?bld.neighborhood.name:bld.buildings.neighborhood.name}}</strong>
-            with  <strong>{{bld.floors?bld.floors:bld.buildings.floors}}</strong> floors
-            and <strong>{{bld.units?bld.units:bld.buildings.units}}</strong> units
+            <strong>{{bld.type ?bld.type : bld.buildings.type}}</strong>
+            in  <strong>{{bld.neighborhood.name ? bld.neighborhood.name : bld.buildings.neighborhood.name}}</strong>
+            with  <strong>{{bld.floors ? bld.floors : bld.buildings.floors}}</strong> floors
+            and <strong>{{bld.units ? bld.units : bld.buildings.units}}</strong> units
           </p>
+
+
+
+
 
 
 

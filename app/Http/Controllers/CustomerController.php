@@ -279,7 +279,7 @@ class CustomerController extends Controller
      return Address::groupBy('id_buildings')->get();
   }
 
-  public function updateAddressTable(Request $request)//???
+  public function updateAddressTable(Request $request)//SI
   {
 
     $newData = array();
@@ -289,11 +289,9 @@ class CustomerController extends Controller
     $addressExist->unit = explode('#', $request->value)[1];
     $addressExist->save();
 
-    ActivityLogs::add($this->logType, $request->id, 'update', 'updateAddressTable', $addressExist, $newData);
+    ActivityLogs::add($this->logType, $request->id, 'update', 'updateAddressTable', $addressExist, $newData, null, 'update-unit');
 
     return 'OK';
-
-
 
 
 //RECHECK
@@ -329,7 +327,7 @@ class CustomerController extends Controller
     Customer::where('id', $request->id)->update($newData);
 
     // Log this activity
-    ActivityLogs::add($this->logType, $request->id, 'update', 'updateCustomersTable', $currrentData, $newData);
+    ActivityLogs::add($this->logType, $request->id, 'update', 'updateCustomersTable', $currrentData, $newData, null, ('update-' . $params['field']));
 
     return 'OK';
   }
@@ -348,7 +346,7 @@ class CustomerController extends Controller
   {
 
 
-//    dd($request->all());
+
     $newData = array();
     $newData[$request->field] = $request->value;
 
@@ -356,7 +354,8 @@ class CustomerController extends Controller
     $contactExist->value = $request->value;
     $contactExist->save();
 
-    ActivityLogs::add($this->logType, $request->id, 'update', 'updateContactsTable', $contactExist, $newData);
+    ActivityLogs::add($this->logType, $request->id, 'update', 'updateContactsTable',  $contactExist, $newData, null, 'update-contact');
+
 
     return 'OK';
 
@@ -393,22 +392,31 @@ class CustomerController extends Controller
      * 5 = new
     */
 
+
+
     $when = $this->getTimeToAdd(Product::find($request->idProduct)->frequency);
+
     $expires = date("Y-m-d H:i:s", strtotime('first day of next ' . $when));
-    $data = array ('id_customers'   => $request->idCustomer,
-                   'id_products'    => $request->idProduct,
-                   'id_status'      => 3,
-                   'signed_up'      => date("Y-m-d H:i:s"),
-                   'expires'        => $expires,
-                   'id_users'       => Auth::user()->id,
-                   'created_at'     => date("Y-m-d H:i:s"),
-                   'updated_at'     => date("Y-m-d H:i:s")
-                   );
 
-    CustomerProduct::insert($data);
+    $newData = new CustomerProduct();
+    $newData->id_customers   = $request->idCustomer;
+    $newData->id_products    = $request->idProduct;
+    $newData->id_status      = 3;
+    $newData->signed_up      = date("Y-m-d H:i:s");
+    $newData->expires        = $expires;
+    $newData->id_users       = Auth::user()->id;
+    $newData->save();
 
-//    return Customer::find($request->idCustomer);
+    $relationData = Product::find($request->idProduct);
+
+
+
+    ActivityLogs::add($this->logType, $request->idCustomer, 'insert', 'insertCustomerService', null, $newData, $relationData, 'insert-service');
+
     return $this->getCustomerServices($request);
+
+
+
 
   }
   public function getTimeToAdd($type)//SI
@@ -475,6 +483,12 @@ class CustomerController extends Controller
     $updateService->id_users = Auth::user()->id;
     $updateService->id_status = 4;
     $updateService->save();
+
+
+
+    //Verify DATA NEW OLD AND LABEL TYPE
+    //ActivityLogs::add($this->logType, $request->idCustomer, 'insert', 'insertCustomerService', null, $newData, $relationData, 'insert-service');
+
 
   }
   public function insertContactInfo(Request $request)//SI
@@ -680,11 +694,11 @@ class CustomerController extends Controller
 
   public function getCustomerLog(Request $request)//SI
   {
-//RECHECK
-  return ActivityLog::with('user')
-                    ->where('type',$request->type)
-                    ->where('id_type',$request->id_type)
-                    ->orderBy('id', 'desc')
-                    ->get();
+    //RECHECK
+    return ActivityLog::with('user')
+                      ->where('type'    ,$request->type)
+                      ->where('id_type' ,$request->id_type)
+                      ->orderBy('id'    , 'desc')
+                      ->get();
   }
 }

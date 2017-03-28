@@ -12,16 +12,29 @@ class ActivityLogger {
         Log::info('Testing ActivityLog class. test() called.');
     }
 
-    public function add($type, $idType, $action, $route, $currData, $newData){
+    /*
+     * Function add()
+     * $type = Entry type : Customer, Building...
+     * $idType = idCustomer
+     * $action = Insert/Update
+     * $route = Function Triggered
+     * $currentData = Old Data
+     * $newData = New Data
+     * $data = Relation data of the new Data
+     * $logType = Front Value to check
+     * */
+    public function add($type, $idType, $action, $route, $currData, $newData, $data, $logType){
 
-        $newLogEntry = new ActivityLog;
-        $newLogEntry->id_users = Auth::user()->id;
-        $newLogEntry->type = $type;
-        $newLogEntry->id_type = $idType;
-        $newLogEntry->action = $action;
-        $newLogEntry->route = $route;
-        $newLogEntry->log_data = json_encode(array('previous' => $currData,
-                                       'new' => $newData));
+        $newLogEntry              = new ActivityLog;
+        $newLogEntry->id_users    = Auth::user()->id;
+        $newLogEntry->type        = $type;
+        $newLogEntry->id_type     = $idType;
+        $newLogEntry->action      = $action;
+        $newLogEntry->route       = $route;
+        $newLogEntry->log_data    = json_encode(array('previous'  =>  $currData,
+                                                      'new'       =>  $newData,
+                                                      'data'      =>  $data,
+                                                      'type'      =>  $logType));
         $newLogEntry->save();
     }
 

@@ -377,6 +377,27 @@ app.controller('customerControllerList',            function ($scope, $http){
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 app.controller('customerController',                function ($scope, $http, $stateParams, customerService){
 
 
@@ -421,7 +442,7 @@ app.controller('customerController',                function ($scope, $http, $st
       .then(function (response) {
         $scope.newTicketData = response.data;
       });
-    $http.get("getStatus")
+    $http.get("getStatus")//VERIFY HOW TO CREATE INDEX 0 ON THE SELECT OPTION X-EDIT
       .then(function (response) {
         $scope.customerTypes = response.data;
         for(var obj in response.data ) {
@@ -644,6 +665,13 @@ app.controller('customerController',                function ($scope, $http, $st
   //Product.html
   $scope.addNewService              = function () {
 
+    if(!$scope.currentServiceDisplay)
+    {
+      $('.add-prod-select-color').css('border-color', 'red');
+      return;
+    }
+    $('.add-prod-select-color').css('border-color', 'inherit');
+
     var mode = $scope.customerData.servicesMode;
 
     //Mode updateService customerId = oldIdProduct
@@ -660,7 +688,7 @@ app.controller('customerController',                function ($scope, $http, $st
     }
     else
     {
-      $http.get("insertCustomerService", {params:{'idCustomer':$scope.idCustomer,'idProduct' :$scope.currentServiceDisplay.id}})
+      $http.get("insertCustomerService", {params : {'idCustomer' : $scope.idCustomer,'idProduct' : $scope.currentServiceDisplay.id}})
         .then(function (response) {
           console.log("Service Added / Updated::OK");
           $scope.availableServices();
@@ -668,10 +696,13 @@ app.controller('customerController',                function ($scope, $http, $st
         //$scope.cancel();
       $('#myModalService').modal('toggle');
     }
+
+    $scope.resolveRouteFunction(null, $scope.idCustomer);
+
   };
   $scope.setModeType                = function (modeType){
     $scope.customerData.servicesMode = modeType;
-    $scope.customerData.serviceTmpId = this.service.id;
+    $scope.customerData.serviceTmpId = this.service ? this.service.id : false;
   };
   $scope.serviceDataDisplay         = function (option) {
     if(option)
@@ -713,6 +744,30 @@ app.controller('customerController',                function ($scope, $http, $st
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 app.controller('customerTicketHistoryController',   function ($scope, $http){
   $http.get("getTicketHistory", {params:{'id':$scope.idCustomer}})
     .then(function (response) {
@@ -736,7 +791,8 @@ app.controller('customerInvoiceHistoryController',  function ($scope, $http){
       });
 
   $scope.setInvoiceData = function (){
-    $scope.modalInvoice = this.invoice;
+    $scope.modalInvoice         = this.invoice;
+    $scope.modalInvoice.details = $scope.parJson($scope.modalInvoice.details);
   };
 
 });
@@ -1534,7 +1590,8 @@ app.controller('userProfileController',             function ($scope, $http){
 // Global Tools //
 app.controller('globalToolsCtl',      function ($scope, $http, $compile, $sce, $stateParams, customerService){
 
-  console.log('globalToolsCtl');
+  console.log('globalToolsCtl & service - - - >');
+  console.log(customerService);
 
 
   $scope.customerData   = {};
@@ -1720,9 +1777,6 @@ app.controller('globalToolsCtl',      function ($scope, $http, $compile, $sce, $
   }
   $scope.resolveRouteFunction = function (routeFunction, id){
 
-
-console.log(id);
-
     switch(routeFunction)
     {
       case 'getCustomerData':
@@ -1731,18 +1785,13 @@ console.log(id);
       }
     };
 
-
-
-    console.log('obtenemos el log');
     $http.get("getCustomerLog", {params:{'type':'customer', 'id_type':id}})
       .then(function (response) {
-      console.log(response.data);
         customerService.customer.log = response.data;
       });
 
   };
   $scope.parJson              = function (json) {
-//     console.log(json[0]);
     return JSON.parse(json);
   }
   $scope.xEditVisual          = function (valor, id){

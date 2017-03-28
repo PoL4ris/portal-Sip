@@ -161,6 +161,9 @@
 .f-size-25 {
   font-size: 25px;
 }
+.f-size-17 {
+  font-size: 17px;
+}
 .label-form-align {
   position: relative;
   top: 7px;
@@ -310,7 +313,9 @@ Osk .new-form-blocks {
 .support-table{}
 .invoice-logo {
   float: left;
-  width: 80%;
+  width: 70%;
+  position: relative;
+  top:-10px;
 }
 .billing-history-table tbody tr td:last-child {
   cursor: pointer;
@@ -482,6 +487,9 @@ Osk .new-form-blocks {
   width: 100px;
 }
 
-
+.right-side-invoice{
+  position: relative;
+  top:-5px;
+}
 #c-fixed-content{
 }
