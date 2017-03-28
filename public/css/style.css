@@ -254,7 +254,7 @@ Osk .new-form-blocks {
   width: 95%;
 }
 .new-form-fields {
-  padding: 5px;
+  padding: 3px;
   width: 50%;
 }
 .new-form-select {
@@ -492,4 +492,8 @@ Osk .new-form-blocks {
   top:-5px;
 }
 #c-fixed-content{
+}
+.select-control{
+  padding: 3px 0;
+  width: 100%;
 }

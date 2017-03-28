@@ -116,21 +116,36 @@ class TestController extends Controller
     public function supportTest()
     {
 
-      $cus = Customer::with('addresses',
+
+      $record = Ticket::with('customer', 'reason', 'ticketNote','ticketHistory', 'user', 'userAssigned', 'address', 'contacts')
+        ->where('id_reasons','!=', 11)
+        ->where('status','!=', 'closed')
+        ->orderBy('updated_at', 'desc')
+        ->get()->toArray();
+
+      $result = $this->getOldTimeTicket($record);
+      return $result;
+
+
+
+
+      $cus = Customer::with(
+//        'addresses',
 //        'contacts',
 //        'type',
 //        'address.buildings',
 //        'address.buildings.neighborhood',
 //        'status',
 //        'status.type',
-//        'openTickets',
-        'log',
-        'log.user')
+        'openTickets'
+//        'log',
+//        'log.user'
+        )
         ->find(501);
 
 
       print '<pre>';
-      dd($cus->toArray());
+      dd($cus->openTickets->toArray());
       die();
 
 

@@ -8,12 +8,13 @@
 
       <div class="type-a al-box-container">
         <div class="log-content">
+
           <div class="al-lg-header">
             <label class="al-lg-timestamp">{{logEntry.timestamp}}</label>
             <label class="lg-type"><span>{{logEntry.type}}</span></label>
             <label class="lg-user"><span>{{logEntry.user.first_name + ' ' + logEntry.user.alias}}</span></label>
           </div>
-          <!--<div>{{logEntry.log_data}}</div>-->
+
           <div class="al-lg-description" ng-init="arrayData = parJson(logEntry.log_data)">
             <span ng-if="arrayData.type == 'update-id_status'"><b>Status</b> updated to <b>{{customerData.statusList[arrayData.new['id_status']].name}}</b></span>
             <span ng-if="arrayData.type == 'update-first_name'"><b>First name</b>  updated to <b>{{arrayData.new['first_name']}}</b></span>
@@ -21,14 +22,20 @@
             <span ng-if="arrayData.type == 'update-email'"><b>Username</b> updated to <b>{{arrayData.new['email']}}</b></span>
             <span ng-if="arrayData.type == 'update-contact'"><b>Contact field </b> updated to <b>{{arrayData.new['value']}}</b></span>
             <span ng-if="arrayData.type == 'update-unit'"><b>Unit number</b> updated to <b>{{arrayData.new['unit']}}</b></span>
-            <span ng-if="arrayData.type == 'insert-service'">Service<b> {{arrayData.data.name}}</b> added</span>
+            <span ng-if="arrayData.type == 'insert-service'">Product<b> {{arrayData.data.name}}</b> added</span>
+            <span ng-if="arrayData.type == 'update-service'">Product updated to <b> {{arrayData.data.name}}</b> </span>
+            <span ng-if="arrayData.type == 'disable-service'">Product <b> {{arrayData.data.name}}</b> now is disabled</span>
+            <span ng-if="arrayData.type == 'active-service'">Product <b> {{arrayData.data.name}}</b> now is active</span>
+            <span ng-if="arrayData.type == 'update-payment'">Payment ending <b> {{ arrayData.data | limitTo : 5 : 14 }} now is Default</b> </span>
           </div>
+
           <div class="al-lg-actions type-ticket" ng-if="logEntry.type == 'ticket'">
             <button class="btn btn-default big-font" title="View Ticket"><i class="fa fa-eye"></i></button>
             <button class="btn btn-danger big-font"  title="Close Ticket"><i class="fa fa-close"></i></button>
             <button class="btn btn-success big-font" title="Escalate Ticket"><i class="fa fa-arrow-circle-o-up"></i></button>
             <button class="btn btn-primary big-font" title="View Invoice"><i class="fa fa-file-pdf-o"></i></button>
           </div>
+
         </div>
       </div>
 

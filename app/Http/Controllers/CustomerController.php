@@ -192,6 +192,15 @@ class CustomerController extends Controller
     $newMethod->priority = 1;
     $newMethod->save();
 
+
+    $data = json_decode($newMethod->properties , true)[0]['last four'];
+
+    $newData = array();
+    $newData['priority'] = 1;
+
+    ActivityLogs::add($this->logType, $request->customerID, 'update', 'updatePaymentMethods', $oldMethod, $newData, $data, ('update-payment'));
+
+
     return Customer::with('payment')->getRelation('payment')->where('id_customers', $request->customerID)->where('account_number','!=','ERROR')->orderBy('priority', 'DESC')->get();
 
   }//SI
@@ -434,30 +443,50 @@ class CustomerController extends Controller
   {
   /*
    * Status
-   * 3 = active
-   * 4 = disable
-   * 5 = new
+    1 = active
+    2 = disabled
+    3 = decommissioned
+    4 = pending
+    5 = admin
   */
 
     $activeService = CustomerProduct::find($request->idService);
-    $activeService->id_status = 4;
+    $activeService->id_status = 2;
     $activeService->save();
+
+    $newData = array();
+    $newData['id_status'] = 2;
+
+    $relationData = Product::find($activeService->id_products);
+
+    ActivityLogs::add($this->logType, $request->id, 'update', 'disableCustomerServices', $activeService, $newData, $relationData, 'disable-service');
 
     return $this->getCustomerServices($request);
 
   }
   public function activeCustomerServices(Request $request)//SI
   {
-  /*
-   * Status
-   * 3 = active
-   * 4 = disable
-   * 5 = new
-  */
+    /*
+     * Status
+      1 = active
+      2 = disabled
+      3 = decommissioned
+      4 = pending
+      5 = admin
+    */
 
     $activeService = CustomerProduct::find($request->idService);
-    $activeService->id_status = 3;
+    $activeService->id_status = 1;
     $activeService->save();
+
+
+    $newData = array();
+    $newData['id_status'] = 1;
+
+    $relationData = Product::find($activeService->id_products);
+
+    ActivityLogs::add($this->logType, $request->id, 'update', 'disableCustomerServices', $activeService, $newData, $relationData, 'active-service');
+
 
     return $this->getCustomerServices($request);
     
@@ -470,7 +499,7 @@ class CustomerController extends Controller
      * OldId RecordId
      * NewId to update on record.
      *
-     * Status 4 = Active
+     * Status 1 = Active
     */
 
     $when = $this->getTimeToAdd(Product::find($request->newId)->frequency);
@@ -478,16 +507,21 @@ class CustomerController extends Controller
 
     $updateService = CustomerProduct::find($request->oldId);
     $updateService->id_products = $request->newId;
-    $updateService->signed_up = date("Y-m-d H:i:s");
-    $updateService->expires = $expires;
-    $updateService->id_users = Auth::user()->id;
-    $updateService->id_status = 4;
+    $updateService->signed_up   = date("Y-m-d H:i:s");
+    $updateService->expires     = $expires;
+    $updateService->id_users    = Auth::user()->id;
+    $updateService->id_status   = 1;
     $updateService->save();
 
 
+    $newData = array();
+    $newData['id_products'] = $request->newId;
 
-    //Verify DATA NEW OLD AND LABEL TYPE
-    //ActivityLogs::add($this->logType, $request->idCustomer, 'insert', 'insertCustomerService', null, $newData, $relationData, 'insert-service');
+    $relationData = Product::find($request->newId);
+
+    ActivityLogs::add($this->logType, $request->id, 'update', 'updateCustomerServices', $updateService, $newData, $relationData, 'update-service');
+
+    return 'OK';
 
 
   }

@@ -375,29 +375,6 @@ app.controller('customerControllerList',            function ($scope, $http){
 });
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 app.controller('customerController',                function ($scope, $http, $stateParams, customerService){
 
 
@@ -440,6 +417,7 @@ app.controller('customerController',                function ($scope, $http, $st
       });
     $http.get("getTableData", {params:{'table':'reasons'}})
       .then(function (response) {
+        console.log(response.data);
         $scope.newTicketData = response.data;
       });
     $http.get("getStatus")//VERIFY HOW TO CREATE INDEX 0 ON THE SELECT OPTION X-EDIT
@@ -557,7 +535,7 @@ app.controller('customerController',                function ($scope, $http, $st
 
     $http.get("insertCustomerTicket", {params:infoData})
       .then(function (response) {
-        if(response.data == 'OK')
+        if(response.data == 'OK'){
           $.smallBox({
             title: "New Ticket Created!",
             content: "<i class='fa fa-clock-o'></i> <i>2 seconds ago...</i>",
@@ -565,6 +543,8 @@ app.controller('customerController',                function ($scope, $http, $st
             iconSmall: "fa fa-thumbs-up bounce animated",
             timeout: 6000
           });
+          $('#new-ct-form').trigger("reset");
+        }
       });
   };
   $scope.validate                   = function (value, table, field) {
@@ -647,6 +627,7 @@ app.controller('customerController',                function ($scope, $http, $st
 
   };
   $scope.insertCustomerContact      = function (){
+    alert('disabled action.');
 
     var infoData = getFormValues('new-cct-form');
     infoData['id_customers'] = $scope.customerData.id;
@@ -683,7 +664,6 @@ app.controller('customerController',                function ($scope, $http, $st
           console.log("Service Added / Updated::OK");
           $scope.availableServices();
         });
-        //$scope.cancel();
       $('#myModalService').modal('toggle');
     }
     else
@@ -693,11 +673,8 @@ app.controller('customerController',                function ($scope, $http, $st
           console.log("Service Added / Updated::OK");
           $scope.availableServices();
         });
-        //$scope.cancel();
       $('#myModalService').modal('toggle');
     }
-
-    $scope.resolveRouteFunction(null, $scope.idCustomer);
 
   };
   $scope.setModeType                = function (modeType){
@@ -715,6 +692,8 @@ app.controller('customerController',                function ($scope, $http, $st
       .then(function (response) {
         $scope.customerData.customerServices = response.data;
       });
+
+    $scope.resolveRouteFunction(null, $scope.idCustomer);
   };
   //addresses
   $scope.clearAddressModal          = function (){
@@ -740,32 +719,6 @@ app.controller('customerController',                function ($scope, $http, $st
   };
 
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 app.controller('customerTicketHistoryController',   function ($scope, $http){
@@ -1024,11 +977,11 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http){
     });
 
   $scope.setDefault = function (id) {
-    $http.get("updatePaymentMethods", {params:{'id':id, 'customerID':$scope.customerData.id}})
+    $http.get("updatePaymentMethods", {params:{'id' : id, 'customerID' : $scope.idCustomer}})
       .then(function (response) {
         $scope.paymentMethods = response.data;
 
-        $http.get("getCustomerPayment", {params:{'id':$scope.stcid?$scope.stcid:$scope.customerData.id}})
+        $http.get("getCustomerPayment", {params:{'id' : $scope.idCustomer}})
           .then(function (response) {
             $scope.paymentData = response.data[0];
           });
@@ -1262,22 +1215,23 @@ app.controller('serviceProductController',          function ($scope, $http){
 //Support Controllers
 app.controller('supportController',                 function ($scope, $http, DTOptionsBuilder, customerService){
 
-  if(customerService.sideBarFlag) {
-    $scope.sipTool(2);
-    customerService.sideBarFlag = false;
+  if(customerService.stateRoute == 'support'){
+
+    if(customerService.sideBarFlag) {
+      $scope.sipTool(2);
+      customerService.sideBarFlag = false;
+    }
+
+    $http.get("supportTickets")
+      .then(function (response) {
+        $scope.supportData = response.data;
+      });
+
+    $http.get("getTicketOpenTime")
+      .then(function (response) {
+        $scope.ticketOpenTime = response.data;
+      });
   }
-
-
-
-  $http.get("supportTickets")
-    .then(function (response) {
-      $scope.supportData = response.data;
-    });
-
-  $http.get("getTicketOpenTime")
-    .then(function (response) {
-      $scope.ticketOpenTime = response.data;
-    });
 
   $scope.dtOptions = DTOptionsBuilder.newOptions().withPaginationType('full_numbers').withDisplayLength(50);
   $scope.letterLimit = 400;
@@ -1344,8 +1298,8 @@ app.controller('supportController',                 function ($scope, $http, DTO
   //MODAL DATA
   $scope.displayTicketResume  = function (id, idCustomer){
     $scope.midTicketId = id;
-    $scope.stcid = idCustomer;
-    $scope.stcFlag = true;
+    $scope.stcid       = idCustomer;
+    $scope.stcFlag     = true;
 
     $scope.getTicketInfo();
     $scope.getReasons();
@@ -1620,8 +1574,6 @@ app.controller('globalToolsCtl',      function ($scope, $http, $compile, $sce, $
     }
   };
   $scope.singleUpdateXedit    = function(id, value, field, table, routeFunction) {
-
-  console.log($scope.customerData);
 
     console.log('Function singleUpdateXedit---> with routeFunction ---' + routeFunction);
 

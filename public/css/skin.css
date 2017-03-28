@@ -700,6 +700,7 @@ nav ul li a {
   background: transparent none repeat scroll 0 0;
   color: inherit;
   opacity: 0.7;
+  border-color: #ddd;
 }
 .btn-warning {
   background: #ffc107 -moz-linear-gradient(center top , #ffc107, #c29306) repeat scroll 0 0;

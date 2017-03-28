@@ -6,7 +6,7 @@
       <div class="col-lg-12 margin-bottom-10 no-padding-sides b-b-ddd padding-bottom-10">
         <label class="bold-type col-lg-3 text-left label-form-align">Issue:</label>
         <div class="col-lg-9">
-          <select class="form-control select-control" name="id_reasons" required>
+          <select class=" select-control" name="id_reasons" required>
             <option value="">Select an issue</option>
             <option ng-repeat="reason in newTicketData" value="{{ reason.id }}">{{ reason.short_description }}</option>
           </select>
@@ -15,7 +15,7 @@
       <div class="col-lg-12 margin-bottom-10 no-padding-sides b-b-ddd padding-bottom-10">
         <label class="bold-type col-lg-3 text-left label-form-align">Status:</label>
         <div class="col-lg-9">
-          <select class="form-control select-control" name="status" required>
+          <select class=" select-control" name="status" required>
             <option value="">Select an ticket status</option>
             <option value="escalated">Escalate</option>
             <option value="closed">Close</option>

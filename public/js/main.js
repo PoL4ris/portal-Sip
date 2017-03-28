@@ -43,7 +43,7 @@ angular.module('app.customers', ['ui.router']).config(function ($stateProvider) 
         },
         resolve: {
           scripts: function(lazyScript, customerService){
-            customerService.rightView = false;
+            customerService.stateRoute = 'customers';
             return lazyScript.register([
               '/js/smart/build/vendor.ui.js'
             ]);
@@ -87,7 +87,8 @@ angular.module('app.support'  , ['ui.router']).config(function ($stateProvider) 
         }
       },
       resolve: {
-        scripts: function(lazyScript){
+        scripts: function(lazyScript, customerService){
+          customerService.stateRoute = 'support';
           return lazyScript.register([
             '/js/smart/build/vendor.ui.js'
           ]);
