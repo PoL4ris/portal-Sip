@@ -4,8 +4,12 @@ namespace App\Extensions;
 
 use DB;
 use Log;
+use \Carbon\Carbon;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+
+use Symfony\Component\Console\Output\ConsoleOutput;
+use Symfony\Component\Console\Helper\ProgressBar;
 
 /**
 ** New database models
@@ -38,6 +42,8 @@ use App\Models\Payment;
 use App\Models\PaymentMethod;
 use App\Models\Port;
 use App\Models\Product;
+use App\Models\ProductProperty;
+use App\Models\ProductPropertyValue;
 use App\Models\Profile;
 use App\Models\Reason;
 use App\Models\Status;
@@ -76,14 +82,45 @@ use App\Models\Legacy\SupportTicketHistory;
 use App\Models\Legacy\SupportTicketReason;
 
 
-
 class DataMigrationUtils {
 
     //    private $testMode = true;
     //    private $passcode = '$2y$10$igbvfItrwUkvitqONf4FkebPyD0hhInH.Be4ztTaAUlxGQ4yaJd1K';
 
-    public function __construct() {
-        DB::connection()->enableQueryLog();
+    private $console = false;
+    private $progress = null;
+    private $output = null;
+
+    private $tableMap = array('customers'                       => ['App\Models\Legacy\CustomerOld', 'CID', 'App\Models\Customer'],
+                              'serviceLocation'                 => ['App\Models\Legacy\ServiceLocation', 'LocID', 'App\Models\Building'],
+                              'serviceLocationProperties'       => ['App\Models\Legacy\ServiceLocationProperty', 'PropID', 'App\Models\BuildingProperty'],
+                              'serviceLocationPropertyValues'   => ['App\Models\Legacy\ServiceLocationPropertyValue', 'VID', 'App\Models\BuildingPropertyValue'],
+                              'products'                        => ['App\Models\Legacy\ProductOld', 'ProdID', 'App\Models\Product'],
+                              'productProperties'               => ['App\Models\Legacy\ProductPropertyOld', 'PropID', 'App\Models\ProductProperty'],
+                              'productPropertyValues'           => ['App\Models\Legacy\ProductPropertyValueOld', 'VID', 'App\Models\ProductPropertyValue'],
+                              'customerProducts'                => ['App\Models\Legacy\CustomerProductOld', 'CSID', 'App\Models\CustomerProduct'],
+                              'serviceLocationProducts'         => ['App\Models\Legacy\ServiceLocationProduct', 'SLPID', 'App\Models\BuildingProduct'],
+                              'networkNodes'                    => ['App\Models\Legacy\NetworkNodeOld', 'NodeID', 'App\Models\NetworkNode'],
+                              'dataServicePorts'                => ['App\Models\Legacy\DataServicePort', 'PortID', 'App\Models\Port'],
+                              'supportTicketReasons'            => ['App\Models\Legacy\SupportTicketReason', 'RID', 'App\Models\Reason'],
+                              'supportTickets'                  => ['App\Models\Legacy\SupportTicket', 'TID', 'App\Models\Ticket'],
+                              'supportTicketHistory'            => ['App\Models\Legacy\SupportTicketHistory', 'THID', 'App\Models\TicketHistory'],
+                              'billingTransactionLog'           => ['App\Models\Legacy\BillingTransactionLogOld',  'LogID', 'App\Models\BillingTransactionLog']);
+
+    public function __construct($console = false) {
+
+        $emptyFunction = function(){ };
+        foreach($this->tableMap as $key => $migrationArray) {
+            $this->tableMap[$key][] = $emptyFunction;
+        }
+
+        if($console == true) {
+            $this->console = $console;
+            $this->output = new ConsoleOutput();
+        }
+
+        // DO NOT ENABLE QUERY LOGGING IN PRODUCTION
+        // DB::connection()->enableQueryLog();
         //        $queries = DB::getQueryLog();
         //        $last_query = end($queries);
         //        dd($last_query);
@@ -91,500 +128,629 @@ class DataMigrationUtils {
         //        $this->testMode = (Hash::check($configPasscode, $this->passcode)) ? false : true;
     }
 
-    protected function updateDataMigration($dataArray){
-        $dataMigration = DataMigration::where('table_name', $dataArray['table_name'])->first();
-        if($dataMigration == null) { return false; }
-        $dataMigration->last_processed_id = $dataArray['last_processed_id'];
-        $dataMigration->last_created_at = $dataArray['last_created_at'];
-        $dataMigration->last_updated_at = $dataArray['last_updated_at'];
-        $dataMigration->records_processed += $dataArray['record_count'];
-        $dataMigration->save();
+    public function testProgressBar(){
+
+        $this->startProgressBar();
+        if($this->output != null){
+            $this->output->writeln('Display this on the screen');
+        }
+
+        return;
+
+        $units = 50;
+
+        $output = new ConsoleOutput();
+        //        $output->setFormatter(new OutputFormatter(true));
+
+        // create a new progress bar (50 units)
+        $progress = new ProgressBar($output, $units);
+        //        $progress->setFormat(' %current%/%max% [%bar%] %percent:3s%% %elapsed:6s%/%estimated:-6s% %memory:6s%');
+        //        $progress->setFormat('table1:   %current% [%bar%] %percent:3s%%       %estimated:-6s%');
+
+        $progress->setFormatDefinition('custom', ' %table%:    %current%/%max% [%bar%] %percent:3s%%       %estimated:-6s%');
+        $progress->setFormat('custom');
+
+        $i = 0;
+        while ($i++ < $units) {
+
+            //            $progress->setMessage('Importing ...');
+            $progress->setMessage($i, 'table');
+
+            // advance the progress bar 1 unit
+            $progress->advance();
+            // $progress->setProgress($progress);
+
+            // you can also advance the progress bar by more than 1 unit
+            // $progress->advance(3);
+            usleep(500000);
+        }
+        $progress->finish();
+        $output->writeln('');
     }
 
-    protected function getMigrationInfoArray($tableName) {
-        return array('table_name' => $tableName,
-                     'last_processed_id' => null,
-                     'last_created_at' => null,
-                     'last_updated_at' => null,
-                     'record_count' => 0);
+    public function migrateCustomersTable(){
+        $legacyTableName = 'customers';
+        $this->tableMap[$legacyTableName][3] = function($legacyCustomer){
+            $this->updateCustomer($legacyCustomer, new Customer);
+            $this->updateAddressByCustomer($legacyCustomer, new Address);
+            $this->updatePaymentMethod($legacyCustomer, new PaymentMethod);
+            $this->addContactsForCustomer($legacyCustomer);
+            return true;
+        };
+        $this->migrateTable($legacyTableName, $this->tableMap[$legacyTableName]);
     }
 
-    public function migrateCustomersTable($startingId = -1){
-
-        $recordsPerCycle = 200; //$this->getJobProperty('lease-request-job', 'records_per_cycle');
-        $migrationInfoArray = $this->getMigrationInfoArray('customers');
-        $run = true;
-        while ($run) {
-
-            $legacyCustomers = CustomerOld::where('CID', '>', $startingId)
-                ->orderBy('CID', 'asc')
+    public function migrateServiceLocationsTable(){
+        $legacyTableName = 'serviceLocation';
+        $customQueryFunction = function($legacyDataModelName, $legacyModelId, $startingId, $recordsPerCycle){
+            return ServiceLocation::where($legacyModelId, '>', $startingId)
+                ->where($legacyModelId, '!=', 1)
+                ->orderBy($legacyModelId, 'asc')
                 ->take($recordsPerCycle)
                 ->get();
+        };
 
-            if($legacyCustomers->count() == 0){
-                break;
+        $this->tableMap[$legacyTableName][3] = function($legacyLocation){
+
+            $result = $this->updateBuilding($legacyLocation, new Building);
+            if($result == false) {
+                return false;
             }
+            $this->updateAddressByBuilding($legacyLocation, new Address);
+            $this->updateBuildingPropertyValues($legacyLocation);
+            return true;
+        };
 
-            foreach ($legacyCustomers as $legacyCustomer) {
+        $this->migrateTable($legacyTableName, $this->tableMap[$legacyTableName], -1, $customQueryFunction);
 
-                $this->updateCustomer($legacyCustomer, new Customer);
-                $this->updateAddressByCustomer($legacyCustomer, new Address);
-                $this->updatePaymentMethod($legacyCustomer, new PaymentMethod);
-                $startingId = $legacyCustomer->CID;
-                $migrationInfoArray['record_count']++;
-                $migrationInfoArray['last_processed_id'] = $legacyCustomer->CID;
-                $migrationInfoArray['last_created_at'] = $legacyCustomer->created_at;
-                $migrationInfoArray['last_updated_at'] = $legacyCustomer->updated_at;
-            }
-            sleep(2);
-        }
-        $this->updateDataMigration($migrationInfoArray);
-        Log::info('Migrated '.$migrationInfoArray['record_count'].' customer records');
+        $this->updateBuildingData();
     }
 
-    public function migrateServiceLocationsTable($startingId = -1){
-
-        $recordsPerCycle = 200; //$this->getJobProperty('lease-request-job', 'records_per_cycle');
-        $migrationInfoArray = $this->getMigrationInfoArray('serviceLocation');
-        $run = true;
-        while ($run) {
-
-            $legacyLocations = ServiceLocation::where('LocID', '>', $startingId)
-                ->where('LocID', '!=', 1)
-                ->orderBy('LocID', 'asc')
-                ->take($recordsPerCycle)
-                ->get();
-
-            if($legacyLocations->count() == 0){
-                break;
-            }
-
-            foreach ($legacyLocations as $legacyLocation) {
-
-                $result = $this->updateBuilding($legacyLocation, new Building);
-                if($result == false) {
-                    $startingId = $legacyLocation->LocID;
-                    continue;
-                }
-                $this->updateAddressByBuilding($legacyLocation, new $address);
-                $this->updateBuildingPropertyValues($legacyLocation);
-                $startingId = $legacyLocation->LocID;
-                $migrationInfoArray['record_count']++;
-                $migrationInfoArray['last_processed_id'] = $legacyLocation->LocID;
-                $migrationInfoArray['last_created_at'] = $legacyLocation->created_at;
-                $migrationInfoArray['last_updated_at'] = $legacyLocation->updated_at;
-            }
-            sleep(2);
-        }
-        $this->updateDataMigration($migrationInfoArray);
-        Log::info('Migrated '.$migrationInfoArray['record_count'].' serviceLocation records');
+    public function migrateServiceLocationPropertiesTable() {
+        $legacyTableName = 'serviceLocationProperties';
+        $this->tableMap[$legacyTableName][3] = function($legacyLocationProperty){
+            $this->updateBuildingProperty($legacyLocationProperty, new BuildingProperty);
+            return true;
+        };
+        $this->migrateTable($legacyTableName, $this->tableMap[$legacyTableName]);
     }
 
-    public function migrateServiceLocationPropertiesTable($startingId = -1){
-
-        $recordsPerCycle = 200; //$this->getJobProperty('lease-request-job', 'records_per_cycle');
-        $migrationInfoArray = $this->getMigrationInfoArray('serviceLocationProperties');
-        $run = true;
-        while ($run) {
-
-            $legacyLocationProperties = ServiceLocationProperties::where('PropID', '>', $startingId)
-                ->orderBy('PropID', 'asc')
-                ->take($recordsPerCycle)
-                ->get();
-
-            if($legacyLocationProperties->count() == 0){
-                break;
-            }
-
-            foreach ($legacyLocationProperties as $legacyLocationProperty) {
-
-                $this->updateBuildingProperty($legacyLocationProperty, new BuildingProperty);
-                $startingId = $legacyLocationProperty->PropID;
-                $migrationInfoArray['record_count']++;
-                $migrationInfoArray['last_processed_id'] = $legacyLocationProperty->PropID;
-                $migrationInfoArray['last_created_at'] = $legacyLocationProperty->created_at;
-                $migrationInfoArray['last_updated_at'] = $legacyLocationProperty->updated_at;
-            }
-            sleep(2);
-        }
-        $this->updateDataMigration($migrationInfoArray);
-        Log::info('Migrated '.$migrationInfoArray['record_count'].' serviceLocationProperty records');
+    public function migrateAdditionalServiceLocationPropertyValues(){
+        $legacyTableName = 'serviceLocationPropertyValues';
+        $this->tableMap[$legacyTableName][3] = function($serviceLocationPropertyValue){
+            $this->findOrCreateBuildingPropertyValue($serviceLocationPropertyValue->LocID, $serviceLocationPropertyValue->PropID, $serviceLocationPropertyValue->Value);
+            return true;
+        };
+        $this->migrateTable($legacyTableName, $this->tableMap[$legacyTableName]);
+        BuildingPropertyValue::where('id_buildings', 0)
+            ->update(['id_buildings' => 1]);
     }
 
-    public function migrateAdditionalServiceLocationPropertyValues($startingId = -1){
+    public function migrateProductsTable(){
+        $legacyTableName = 'products';
+        $this->tableMap[$legacyTableName][3] = function($legacyProduct){
+            $this->updateProduct($legacyProduct, new Product);
+            return true;
+        };
+        $this->migrateTable($legacyTableName, $this->tableMap[$legacyTableName]);
+    }
 
-        $recordsPerCycle = 200; //$this->getJobProperty('lease-request-job', 'records_per_cycle');
-        $migrationInfoArray = $this->getMigrationInfoArray('serviceLocationPropertyValues');
-        $run = true;
-        while ($run) {
+    public function migrateProductPropertiesTable(){
+        $legacyTableName = 'productProperties';
+        $this->tableMap[$legacyTableName][3] = function($legacyProductProperty){
+            $this->updateProductProperty($legacyProductProperty, new ProductProperty);
+            return true;
+        };
+        $this->migrateTable($legacyTableName, $this->tableMap[$legacyTableName]);
+    }
 
-            $serviceLocationPropertyValues = ServiceLocationPropertyValue::where('VID', '>', $startingId)
-                ->take($recordsPerCycle)
-                ->get();
+    public function migrateProductPropertyValuesTable(){
+        $legacyTableName = 'productPropertyValues';
+        $this->tableMap[$legacyTableName][3] = function($legacyProductPropertyValue){
+            $this->updateProductPropertyValue($legacyProductPropertyValue, new ProductPropertyValue);
+            return true;
+        };
+        $this->migrateTable($legacyTableName, $this->tableMap[$legacyTableName]);
+    }
 
-            if($serviceLocationPropertyValues->count() == 0){
-                break;
-            }
+    public function migrateCustomerProductsTable(){
+        $legacyTableName = 'customerProducts';
+        $this->tableMap[$legacyTableName][3] = function($legacyCustomerProduct){
+            $this->updateCustomerProduct($legacyCustomerProduct, new CustomerProduct);
+            return true;
+        };
+        $this->migrateTable($legacyTableName, $this->tableMap[$legacyTableName]);
+    }
 
-            foreach ($serviceLocationPropertyValues as $serviceLocationPropertyValue) {
+    public function migrateBuildingProductsTable() {
+        $legacyTableName = 'serviceLocationProducts';
+        $this->tableMap[$legacyTableName][3] = function($legacyBuildingProduct){
+            $this->updateBuildingProduct($legacyBuildingProduct, new BuildingProduct);
+            return true;
+        };
+        $this->migrateTable($legacyTableName, $this->tableMap[$legacyTableName]);
+    }
 
-                $this->findOrCreateBuildingPropertyValue($serviceLocationPropertyValue->LocID, $serviceLocationPropertyValue->PropID, $serviceLocationPropertyValue->Value);
-                $startingId = $buildingPropertyValue->VID;
-                $migrationInfoArray['record_count']++;
-                $migrationInfoArray['last_processed_id'] = $buildingPropertyValue->VID;
-                $migrationInfoArray['last_created_at'] = $buildingPropertyValue->created_at;
-                $migrationInfoArray['last_updated_at'] = $buildingPropertyValue->updated_at;
-            }
-            sleep(2);
+    public function migrateNetworkNodesTable(){
+        $legacyTableName = 'networkNodes';
+        $this->tableMap[$legacyTableName][3] = function($legacyNetworkNode){
+            $this->updateNetworkNode($legacyNetworkNode, new NetworkNode);
+            return true;
+        };
+        $this->migrateTable($legacyTableName, $this->tableMap[$legacyTableName]);
+    }
+
+    public function migrateDataServicePortsTable(){
+        $legacyTableName = 'dataServicePorts';
+        $this->tableMap[$legacyTableName][3] = function($legacyPort){
+            $this->updatePort($legacyPort, new Port);
+            return true;
+        };
+        $this->migrateTable($legacyTableName, $this->tableMap[$legacyTableName]);
+    }
+
+    public function migrateSupportTicketReasonsTable() {
+        $legacyTableName = 'supportTicketReasons';
+        $this->tableMap[$legacyTableName][3] = function($legacyReason){
+            $this->updateReason($legacyReason, new Reason);
+            return true;
+        };
+        $this->migrateTable($legacyTableName, $this->tableMap[$legacyTableName]);
+    }
+
+    public function migrateSupportTicketsTable(){
+        $legacyTableName = 'supportTickets';
+        $this->tableMap[$legacyTableName][3] = function($legacyTicket){
+            $this->updateTicket($legacyTicket, new Ticket);
+            return true;
+        };
+        $this->migrateTable($legacyTableName, $this->tableMap[$legacyTableName]);
+    }
+
+    public function migrateSupportTicketHistoryTable(){
+        $legacyTableName = 'supportTicketHistory';
+        $this->tableMap[$legacyTableName][3] = function($legacyTicketHistory){
+            $this->updateTicketHistory($legacyTicketHistory, new TicketHistory);
+            return true;
+        };
+        $this->migrateTable($legacyTableName, $this->tableMap[$legacyTableName]);
+    }
+
+    public function migrateBillingTransactionLogsTable(){
+        $legacyTableName = 'billingTransactionLog';
+        $this->tableMap[$legacyTableName][3] = function($legacyTransactionLog){
+            $this->updateTransactionLog($legacyTransactionLog, new BillingTransactionLog);
+            return true;
+        };
+        $this->migrateTable($legacyTableName, $this->tableMap[$legacyTableName]);
+    }
+
+    #############################
+    # Seed functions
+    #############################
+
+    public function seedDataMigrationsTable(){
+
+        if($this->output != null){
+            $this->output->writeln('<info> Seeding data_migrations table</info>');
         }
-        $this->updateDataMigration($migrationInfoArray);
-        Log::info('Migrated '.$migrationInfoArray['record_count'].' productPropertyValue records');
+
+        foreach($this->tableMap as $tableName => $tableModelMap){
+            DataMigration::firstOrCreate(['table_name' => $tableName]);
+        }
+
+        DataMigration::firstOrCreate(['table_name' => 'categories']);
+        DataMigration::firstOrCreate(['table_name' => 'contacts']);
 
     }
 
-    public function migrateProductsTable($startingId = -1){
-
-        $recordsPerCycle = 200; //$this->getJobProperty('lease-request-job', 'records_per_cycle');
-        $migrationInfoArray = $this->getMigrationInfoArray('products');
-        $run = true;
-        while ($run) {
-
-            $legacyProducts = ProductOld::where('ProdID', '>', $startingId)
-                ->take($recordsPerCycle)
-                ->get();
-
-            if($legacyProducts->count() == 0){
-                break;
-            }
-
-            foreach ($legacyProducts as $legacyProduct) {
-
-                $this->updateProduct($legacyProduct, new Product);
-                $startingId = $legacyProduct->ProdID;
-                $migrationInfoArray['record_count']++;
-                $migrationInfoArray['last_processed_id'] = $legacyProduct->ProdID;
-                $migrationInfoArray['last_created_at'] = $legacyProduct->created_at;
-                $migrationInfoArray['last_updated_at'] = $legacyProduct->updated_at;
-            }
-            sleep(2);
+    public function seedCategoriesTable() {
+        if($this->output != null){
+            $this->output->writeln('<info> Seeding categories table</info>');
         }
-        $this->updateDataMigration($migrationInfoArray);
-        Log::info('Migrated '.$migrationInfoArray['record_count'].' product records');
+        Category::firstOrCreate(['id' => 1, 'name' => 'INT']);
+        Category::firstOrCreate(['id' => 2, 'name' => 'PH']);
+        Category::firstOrCreate(['id' => 3, 'name' => 'MISC']);
+        Category::firstOrCreate(['id' => 4, 'name' => 'TV']);
     }
 
-    public function migrateProductPropertiesTable($startingId = -1){
-
-        $recordsPerCycle = 200; //$this->getJobProperty('lease-request-job', 'records_per_cycle');
-        $migrationInfoArray = $this->getMigrationInfoArray('productProperties');
-        $run = true;
-        while ($run) {
-
-            $legacyProductProperties = ProductPropertyOld::where('PropID', '>', $startingId)
-                ->take($recordsPerCycle)
-                ->get();
-
-            if($legacyProductProperties->count() == 0){
-                break;
-            }
-
-            foreach ($legacyProductProperties as $legacyProductProperty) {
-
-                $this->updateProductProperty($legacyProductProperty, new ProductProperty);
-                $startingId = $legacyProductProperty->PropID;
-                $migrationInfoArray['record_count']++;
-                $migrationInfoArray['last_processed_id'] = $legacyProductProperty->PropID;
-                $migrationInfoArray['last_created_at'] = $legacyProductProperty->created_at;
-                $migrationInfoArray['last_updated_at'] = $legacyProductProperty->updated_at;
-            }
-            sleep(2);
+    public function seedAppsTable() {
+        if($this->output != null){
+            $this->output->writeln('<info> Seeding apps table</info>');
         }
-        $this->updateDataMigration($migrationInfoArray);
-        Log::info('Migrated '.$migrationInfoArray['record_count'].' productProperty records');
+
+        App::firstOrCreate(['id' => 1, 'id_apps' => 0, 'name' => 'Support', 'icon' => 'fa-wrench', 'url' => 'support']);
+        App::firstOrCreate(['id' => 2, 'id_apps' => 0, 'name' => 'Customers', 'icon' => 'fa-user ', 'url' => 'customers']);
+        App::firstOrCreate(['id' => 3, 'id_apps' => 0, 'name' => 'Building', 'icon' => 'fa-building-o', 'url' => 'buildings']);
+        App::firstOrCreate(['id' => 4, 'id_apps' => 0, 'name' => 'Network', 'icon' => 'fa-signal', 'url' => 'network']);
+
+        // FOR FUTURE USE
+        //        App::firstOrCreate(['id' => 1, 'id_apps' => 0, 'name' => 'Home', 'icon' => 'icon-home', 'url' => '#/']);
+        //        App::firstOrCreate(['id' => 5, 'id_apps' => 0, 'name' => 'Admin', 'icon' => 'icon-ghost', 'url' => '#/admin']);
+        //        App::firstOrCreate(['id' => 6, 'id_apps' => 0, 'name' => 'Clients', 'icon' => 'fa fa-money', 'url' => '#/clients']);
+        //        App::firstOrCreate(['id' => 8, 'id_apps' => 0, 'name' => 'Support Calendar', 'icon' => 'icon-calendar', 'url' => '#/calendar']);
     }
 
-    public function migrateProductPropertyValuesTable($startingId = -1){
+    public function seedUsersTable() {
 
-        $recordsPerCycle = 200; //$this->getJobProperty('lease-request-job', 'records_per_cycle');
-        $migrationInfoArray = $this->getMigrationInfoArray('productPropertyValues');
-        $run = true;
-        while ($run) {
-
-            $legacyProductPropertyValues = ProductPropertyValueOld::where('VID', '>', $startingId)
-                ->take($recordsPerCycle)
-                ->get();
-
-            if($legacyProductPropertyValues->count() == 0){
-                break;
-            }
-
-            foreach ($legacyProductPropertyValues as $legacyProductPropertyValue) {
-
-                $this->updateProductPropertyValue($legacyProductPropertyValue, new ProductPropertyValue);
-                $startingId = $legacyProductPropertyValue->VID;
-                $migrationInfoArray['record_count']++;
-                $migrationInfoArray['last_processed_id'] = $legacyProductPropertyValue->VID;
-                $migrationInfoArray['last_created_at'] = $legacyProductPropertyValue->created_at;
-                $migrationInfoArray['last_updated_at'] = $legacyProductPropertyValue->updated_at;
-            }
-            sleep(2);
+        if($this->output != null){
+            $this->output->writeln('<info> Seeding users table</info>');
         }
-        $this->updateDataMigration($migrationInfoArray);
-        Log::info('Migrated '.$migrationInfoArray['record_count'].' productPropertyValue records');
+
+        User::firstOrCreate(['id' => 1, 'first_name' => 'Pablo', 'last_name' => 'Laris', 'email' => 'pablo@silverip.com', 'password' => '$2y$10$u.sqr/WkAQaJL7FCCQVmGue8efy3wAdF1E/OKGr5XQgxS8vDPCJ.2', 'remember_token' => 'Jonk6hBM0kmkQipY2WTTmrfFN2YZrZDQzzj37GqwTObdij5LOOUnjFeLF8Qb', 'social_token' => 'ya29.Gl0WBAIa60ypaAaSdSo-rfT08I_1X4poFF9TM3MgF2Bs3E83GYaYoTiTP2ljuN_n4dP6sf6ZDhNBzYp9zo2I-Vl7D-VWkmk', 'social_access' => 1, 'avatar' => 'https://lh4.googleusercontent.com/-MY1G9QEJ8M4/AAAAAAAAAAI/AAAAAAAAABM/wLAg7FpkX5E/photo.jpg?sz=50', 'alias' => 'PL', 'id_status' => 3, 'id_profiles' => 1]);
+        User::firstOrCreate(['id' => 2, 'first_name' => 'Farzad', 'last_name' => 'Farzad', 'email' => 'farzad@silverip.com', 'password' => '$2a$08$UdmCQyKxZlWEfbl94yB4e.M4zS9lg88Osea8lQ8Ay0NQ9KxD05Rkq', 'remember_token' => 'DN5OipGB4aH2dU233R3hAKnCQ1qoeqSN1VnQHnxJPHyKLnvg5ldpYdPU8Qov', 'social_token' => '', 'social_access' => 1, 'avatar' => 'https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg?sz=50', 'alias' => 'FM', 'id_status' => 3, 'id_profiles' => 1]);
+        User::firstOrCreate(['id' => 3, 'first_name' => 'Peyman', 'last_name' => 'Pourkermani', 'email' => 'peyman@silverip.com', 'password' => '$2y$10$12q8f3L/WXUiwRpQdYjOX.7HzTx/7akNIfqItbJncfYCr5z5egEjO', 'remember_token' => 'MA1xsnRUhbTRteuxmziO9Pe1eBp74nzBifwRhC2cmkSyu45ZA7TvYOKK2Khq', 'social_token' => 'ya29.CjNrA0b1vBMPk49P_gZ9TOSlV7ajVYFVixiKE6py_eBOcgL7isD2bFuIrxzO-CiSlre8r7g', 'social_access' => 1, 'avatar' => 'https://lh6.googleusercontent.com/-2JxSuRyHszI/AAAAAAAAAAI/AAAAAAAAABA/FXimdQSdkwQ/photo.jpg?sz=50', 'alias' => 'PP', 'id_status' => 3, 'id_profiles' => 1]);
+        User::firstOrCreate(['id' => 4, 'first_name' => 'admin', 'last_name' => 'admin', 'email' => 'admin@admin.com', 'password' => '$2a$06$lRhl6zzwSxCKUrGPKAWM0OL6MgYECwjB6Hv02zPOGsGThmmKjINl2', 'remember_token' => '', 'social_token' => '', 'social_access' => 1, 'avatar' => '', 'alias' => 'A', 'id_status' => 3, 'id_profiles' => 1]);
     }
 
-    public function migrateCustomerProductsTable($startingId = -1){
-
-        $recordsPerCycle = 200; //$this->getJobProperty('lease-request-job', 'records_per_cycle');
-        $migrationInfoArray = $this->getMigrationInfoArray('customerProducts');
-        $run = true;
-        while ($run) {
-
-            $legacyCustomerProducts = CustomerProductOld::where('CSID', '>', $startingId)
-                ->take($recordsPerCycle)
-                ->get();
-
-            if($legacyCustomerProducts->count() == 0){
-                break;
-            }
-
-            foreach ($legacyCustomerProducts as $legacyCustomerProduct) {
-
-                $this->updateCustomerProduct($legacyCustomerProduct, new CustomerProduct);
-                $startingId = $legacyCustomerProduct->CSID;
-                $migrationInfoArray['record_count']++;
-                $migrationInfoArray['last_processed_id'] = $legacyCustomerProduct->CSID;
-                $migrationInfoArray['last_created_at'] = $legacyCustomerProduct->created_at;
-                $migrationInfoArray['last_updated_at'] = $legacyCustomerProduct->updated_at;
-            }
-            sleep(2);
+    public function seedStatusTable() {
+        if($this->output != null){
+            $this->output->writeln('<info> Seeding status table</info>');
         }
-        $this->updateDataMigration($migrationInfoArray);
-        Log::info('Migrated '.$migrationInfoArray['record_count'].' customerProduct records');
+        Status::firstOrCreate(['id' => 1, 'name' => 'DISABLED']);
+        Status::firstOrCreate(['id' => 2, 'name' => 'ACTIVE']);
+        Status::firstOrCreate(['id' => 3, 'name' => 'active']);
+        Status::firstOrCreate(['id' => 4, 'name' => 'disabled']);
+        Status::firstOrCreate(['id' => 5, 'name' => 'new']);
+        Status::firstOrCreate(['id' => 6, 'name' => 'decommissioned']);
     }
 
-    public function migrateBuildingProductsTable($startingId = -1){
-
-        $recordsPerCycle = 200; //$this->getJobProperty('lease-request-job', 'records_per_cycle');
-        $migrationInfoArray = $this->getMigrationInfoArray('serviceLocationProducts');
-        $run = true;
-        while ($run) {
-
-            $legacyBuildingProducts = ServiceLocationProduct::where('SLPID', '>', $startingId)
-                ->take($recordsPerCycle)
-                ->get();
-
-            if($legacyBuildingProducts->count() == 0){
-                break;
-            }
-
-            foreach ($legacyBuildingProducts as $legacyBuildingProduct) {
-
-                $this->updateBuildingProduct($legacyBuildingProduct, new BuildingProduct);
-                $startingId = $legacyBuildingProduct->SLPID;
-                $migrationInfoArray['record_count']++;
-                $migrationInfoArray['last_processed_id'] = $legacyBuildingProduct->SLPID;
-                $migrationInfoArray['last_created_at'] = $legacyBuildingProduct->created_at;
-                $migrationInfoArray['last_updated_at'] = $legacyBuildingProduct->updated_at;
-            }
-            sleep(2);
+    public function seedTypesTable() {
+        if($this->output != null){
+            $this->output->writeln('<info> Seeding types table</info>');
         }
-        $this->updateDataMigration($migrationInfoArray);
-        Log::info('Migrated '.$migrationInfoArray['record_count'].' buildingProduct records');
+        Type::firstOrCreate(['id' => 1, 'name' => 'Internet']);
+        Type::firstOrCreate(['id' => 2, 'name' => 'Phone']);
+        Type::firstOrCreate(['id' => 3, 'name' => 'Phone-Option']);
+        Type::firstOrCreate(['id' => 4, 'name' => 'Customer Router']);
+        Type::firstOrCreate(['id' => 5, 'name' => 'Ethernet Jack']);
+        Type::firstOrCreate(['id' => 6, 'name' => 'Other']);
+        Type::firstOrCreate(['id' => 7, 'name' => 'Router']);
+        Type::firstOrCreate(['id' => 8, 'name' => 'Switch']);
+        Type::firstOrCreate(['id' => 9, 'name' => 'Credit Card']);
+        Type::firstOrCreate(['id' => 10, 'name' => 'Debit Card']);
+        Type::firstOrCreate(['id' => 11, 'name' => 'Cable Run']);
+        Type::firstOrCreate(['id' => 12, 'name' => 'Activation Fee']);
+        Type::firstOrCreate(['id' => 13, 'name' => 'Autopay']);
+        Type::firstOrCreate(['id' => 14, 'name' => 'Manual Pay']);
     }
 
-    public function migrateNetworkNodesTable($startingId = -1){
-
-        $recordsPerCycle = 200; //$this->getJobProperty('lease-request-job', 'records_per_cycle');
-        $migrationInfoArray = $this->getMigrationInfoArray('networkNodes');
-        $run = true;
-        while ($run) {
-
-            $legacyNetworkNodes = NetworkNodeOld::where('NodeID', '>', $startingId)
-                ->take($recordsPerCycle)
-                ->get();
-
-            if($legacyNetworkNodes->count() == 0){
-                break;
-            }
-
-            foreach ($legacyNetworkNodes as $legacyNetworkNode) {
-
-                $this->updateNetworkNode($legacyNetworkNode, new NetworkNode);
-                $startingId = $legacyNetworkNode->NodeID;
-                $migrationInfoArray['record_count']++;
-                $migrationInfoArray['last_processed_id'] = $legacyNetworkNode->NodeID;
-                $migrationInfoArray['last_created_at'] = $legacyNetworkNode->created_at;
-                $migrationInfoArray['last_updated_at'] = $legacyNetworkNode->updated_at;
-            }
-            sleep(2);
+    public function seedContactTypesTable() {
+        if($this->output != null){
+            $this->output->writeln('<info> Seeding contacts table</info>');
         }
-        $this->updateDataMigration($migrationInfoArray);
-        Log::info('Migrated '.$migrationInfoArray['record_count'].' networkNode records');
+        ContactType::firstOrCreate(['id' => 1, 'name' => 'Mobile Phone']);
+        ContactType::firstOrCreate(['id' => 2, 'name' => 'Home Phone']);
+        ContactType::firstOrCreate(['id' => 3, 'name' => 'Fax']);
+        ContactType::firstOrCreate(['id' => 4, 'name' => 'Work Phone']);
+        ContactType::firstOrCreate(['id' => 5, 'name' => 'Email']);
     }
 
-    public function migrateDataServicePortsTable($startingId = -1){
-
-        $recordsPerCycle = 200; //$this->getJobProperty('lease-request-job', 'records_per_cycle');
-        $migrationInfoArray = $this->getMigrationInfoArray('dataServicePorts');
-        $run = true;
-        while ($run) {
-
-            $legacyPorts = DataServicePort::where('PortID', '>', $startingId)
-                ->take($recordsPerCycle)
-                ->get();
-
-            if($legacyPorts->count() == 0){
-                break;
-            }
-
-            foreach ($legacyPorts as $legacyPort) {
-
-                $this->updatePort($legacyPort, new Port);
-                $startingId = $legacyPort->PortID;
-                $migrationInfoArray['record_count']++;
-                $migrationInfoArray['last_processed_id'] = $legacyPort->PortID;
-                $migrationInfoArray['last_created_at'] = $legacyPort->created_at;
-                $migrationInfoArray['last_updated_at'] = $legacyPort->updated_at;
-            }
-            sleep(2);
+    public function seedBuildingPropertiesTable() {
+        if($this->output != null){
+            $this->output->writeln('<info> Seeding building_properties table</info>');
         }
-        $this->updateDataMigration($migrationInfoArray);
-        Log::info('Migrated '.$migrationInfoArray['record_count'].' dataServicePort records');
+        BuildingProperty::firstOrCreate(['id' => '1', 'name' => 'Type', 'description' => 'Type']);
+        BuildingProperty::firstOrCreate(['id' => '2', 'name' => 'Units', 'description' => 'Units']);
+        BuildingProperty::firstOrCreate(['id' => '3', 'name' => 'Service Type', 'description' => 'Service type']);
+        BuildingProperty::firstOrCreate(['id' => '4', 'name' => 'Contract Expires', 'description' => 'Contract expires on']);
+        BuildingProperty::firstOrCreate(['id' => '5', 'name' => 'Mgmt Company', 'description' => 'Management company']);
+        BuildingProperty::firstOrCreate(['id' => '6', 'name' => 'Ethernet', 'description' => 'Ethernet service available?']);
+        BuildingProperty::firstOrCreate(['id' => '7', 'name' => 'Wireless', 'description' => 'Common are wifi details']);
+        BuildingProperty::firstOrCreate(['id' => '8', 'name' => 'Speeds', 'description' => 'Available Internet speeds and packages']);
+        BuildingProperty::firstOrCreate(['id' => '9', 'name' => 'Billing', 'description' => 'Billing information for available packages']);
+        BuildingProperty::firstOrCreate(['id' => '10', 'name' => 'Email Service', 'description' => 'Do we provide email service']);
+        BuildingProperty::firstOrCreate(['id' => '11', 'name' => 'IP', 'description' => 'IP']);
+        BuildingProperty::firstOrCreate(['id' => '12', 'name' => 'DNS', 'description' => 'DNS']);
+        BuildingProperty::firstOrCreate(['id' => '13', 'name' => 'Gateway', 'description' => 'Gateway']);
+        BuildingProperty::firstOrCreate(['id' => '14', 'name' => 'How To Connect', 'description' => 'Instructions on how to connect to the service']);
+        BuildingProperty::firstOrCreate(['id' => '15', 'name' => 'Description', 'description' => 'Description']);
+        BuildingProperty::firstOrCreate(['id' => '16', 'name' => 'Support Number', 'description' => 'Support number']);
+        BuildingProperty::firstOrCreate(['id' => '17', 'name' => 'Image', 'description' => 'Building image']);
     }
 
-    public function migrateSupportTicketReasonsTable($startingId = -1){
-
-        $recordsPerCycle = 200; //$this->getJobProperty('lease-request-job', 'records_per_cycle');
-        $migrationInfoArray = $this->getMigrationInfoArray('supportTicketReasons');
-        $run = true;
-        while ($run) {
-
-            $legacyReasons = SupportTicketReason::where('RID', '>', $startingId)
-                ->orderBy('RID', 'asc')
-                ->take($recordsPerCycle)
-                ->get();
-
-            if($legacyReasons->count() == 0){
-                break;
-            }
-
-            foreach ($legacyReasons as $legacyReason) {
-
-                $this->updateReason($legacyReason, new Reason);
-                $startingId = $legacyReason->RID;
-                $migrationInfoArray['record_count']++;
-                $migrationInfoArray['last_processed_id'] = $legacyReason->RID;
-                $migrationInfoArray['last_created_at'] = $legacyReason->created_at;
-                $migrationInfoArray['last_updated_at'] = $legacyReason->updated_at;
-            }
-            sleep(2);
+    public function seedNeighborhoodTable() {
+        if($this->output != null){
+            $this->output->writeln('<info> Seeding neighborhoods table</info>');
         }
-        $this->updateDataMigration($migrationInfoArray);
-        Log::info('Migrated '.$migrationInfoArray['record_count'].' supportTicketReason records');
+        Neighborhood::firstOrCreate(['id' => 1, 'name' => 'Gold Coast']);
+        Neighborhood::firstOrCreate(['id' => 2, 'name' => 'River North']);
+        Neighborhood::firstOrCreate(['id' => 3, 'name' => 'South Loop']);
+        Neighborhood::firstOrCreate(['id' => 4, 'name' => 'University Village']);
+        Neighborhood::firstOrCreate(['id' => 5, 'name' => 'West Loop']);
+        Neighborhood::firstOrCreate(['id' => 6, 'name' => 'Loop']);
+        Neighborhood::firstOrCreate(['id' => 7, 'name' => 'Lakeshore East']);
+        Neighborhood::firstOrCreate(['id' => 8, 'name' => 'Streeterville']);
+        Neighborhood::firstOrCreate(['id' => 9, 'name' => 'Lincoln Park']);
+        Neighborhood::firstOrCreate(['id' => 10, 'name' => 'Fulton River District']);
+        Neighborhood::firstOrCreate(['id' => 11, 'name' => 'South Side']);
+        Neighborhood::firstOrCreate(['id' => 12, 'name' => 'Lake View']);
+        Neighborhood::firstOrCreate(['id' => 13, 'name' => 'Kingsbury Park']);
+        Neighborhood::firstOrCreate(['id' => 14, 'name' => 'Edgewater']);
+        Neighborhood::firstOrCreate(['id' => 15, 'name' => 'East Hyde Park']);
+        Neighborhood::firstOrCreate(['id' => 16, 'name' => 'McKinley Park']);
+        Neighborhood::firstOrCreate(['id' => 17, 'name' => 'Near North Side']);
+        Neighborhood::firstOrCreate(['id' => 18, 'name' => 'West Town']);
     }
 
-    public function migrateSupportTicketsTable($startingId = -1){
+    protected function updateBuildingData() {
 
-        $recordsPerCycle = 200; //$this->getJobProperty('lease-request-job', 'records_per_cycle');
-        $migrationInfoArray = $this->getMigrationInfoArray('supportTickets');
-        $run = true;
-        while ($run) {
-
-            $legacyTickets = SupportTicket::where('TID', '>', $startingId)
-                ->take($recordsPerCycle)
-                ->get();
-
-            if($legacyTickets->count() == 0){
-                break;
-            }
-
-            foreach ($legacyTickets as $legacyTicket) {
-
-                $this->updateTicket($legacyTicket, new Ticket);
-                $startingId = $legacyTicket->TID;
-                $migrationInfoArray['record_count']++;
-                $migrationInfoArray['last_processed_id'] = $legacyTicket->TID;
-                $migrationInfoArray['last_created_at'] = $legacyTicket->created_at;
-                $migrationInfoArray['last_updated_at'] = $legacyTicket->updated_at;
-            }
-            sleep(2);
+        if($this->output != null){
+            $this->output->writeln('<info> Updating building table data.</info>');
         }
-        $this->updateDataMigration($migrationInfoArray);
-        Log::info('Migrated '.$migrationInfoArray['record_count'].' supportTicket records');
+        Building::where('code', '1400MP')->update(['floors' => 34, 'id_neighborhoods' => 3]);
+        Building::where('code', 'UC2')->update(['floors' => 4, 'id_neighborhoods' => 4]);
+        Building::where('code', 'UC3')->update(['floors' => 4, 'id_neighborhoods' => 4]);
+        Building::where('code', 'UC1')->update(['floors' => 4, 'id_neighborhoods' => 4]);
+        Building::where('code', '111M')->update(['floors' => 32, 'id_neighborhoods' => 1]);
+        Building::where('code', 'UC5')->update(['floors' => 4, 'id_neighborhoods' => 4]);
+        Building::where('code', '1235P')->update(['floors' => 38, 'id_neighborhoods' => 3]);
+        Building::where('code', '125J')->update(['floors' => 32, 'id_neighborhoods' => 5]);
+        Building::where('code', '222C')->update(['floors' => 57, 'id_neighborhoods' => 7]);
+        Building::where('code', '340R')->update(['floors' => 62, 'id_neighborhoods' => 7]);
+        Building::where('code', '41E8')->update(['floors' => 33, 'id_neighborhoods' => 6]);
+        Building::where('code', '565Q')->update(['floors' => 18, 'id_neighborhoods' => 5]);
+        Building::where('code', '60M')->update(['floors' => 72, 'id_neighborhoods' => 6]);
+        Building::where('code', '659R')->update(['floors' => 17, 'id_neighborhoods' => 5]);
+        Building::where('code', '701W')->update(['floors' => 34, 'id_neighborhoods' => 6]);
+        Building::where('code', '737W')->update(['floors' => 38, 'id_neighborhoods' => 5]);
+        Building::where('code', '800C')->update(['floors' => 11, 'id_neighborhoods' => 6]);
+        Building::where('code', '901M')->update(['floors' => 10, 'id_neighborhoods' => 5]);
+        Building::where('code', '1250I')->update(['floors' => 13, 'id_neighborhoods' => 3]);
+        Building::where('code', '4800C')->update(['floors' => 27, 'id_neighborhoods' => 15]);
+        Building::where('code', '2323P')->update(['floors' => 4, 'id_neighborhoods' => 16]);
+        Building::where('code', '616F')->update(['floors' => 7, 'id_neighborhoods' => 5]);
+        Building::where('code', '1910I')->update(['floors' => 7, 'id_neighborhoods' => 3]);
+        Building::where('code', 'UC4')->update(['floors' => 4, 'id_neighborhoods' => 4]);
+        Building::where('code', 'UC6')->update(['floors' => 4, 'id_neighborhoods' => 4]);
+        Building::where('code', '1550B')->update(['floors' => 12, 'id_neighborhoods' => 4]);
+        Building::where('code', '657F')->update(['floors' => 7, 'id_neighborhoods' => 5]);
+        Building::where('code', '65M')->update(['floors' => 48, 'id_neighborhoods' => 6]);
+        Building::where('code', '1901C')->update(['floors' => 29, 'id_neighborhoods' => 3]);
+        Building::where('code', '212C')->update(['floors' => 13, 'id_neighborhoods' => 3]);
+        Building::where('code', '1335P')->update(['floors' => 20, 'id_neighborhoods' => 3]);
+        Building::where('code', '125E13')->update(['floors' => 14, 'id_neighborhoods' => 3]);
+        Building::where('code', '1300S')->update(['floors' => 11, 'id_neighborhoods' => 1]);
+        Building::where('code', '4000B')->update(['floors' => 1, 'id_neighborhoods' => 16]);
+        Building::where('code', '30O')->update(['floors' => 24, 'id_neighborhoods' => 1]);
+        Building::where('code', '57D')->update(['floors' => 41, 'id_neighborhoods' => 8]);
+        Building::where('code', '130C')->update(['floors' => 10, 'id_neighborhoods' => 6]);
+        Building::where('code', '711D')->update(['floors' => 10, 'id_neighborhoods' => 3]);
+        Building::where('code', '850C')->update(['floors' => 11, 'id_neighborhoods' => 3]);
+        Building::where('code', '111P')->update(['floors' => 11, 'id_neighborhoods' => 3]);
+        Building::where('code', '333D')->update(['floors' => 7, 'id_neighborhoods' => 6]);
+        Building::where('code', '845S')->update(['floors' => 34, 'id_neighborhoods' => 17]);
+        Building::where('code', '240I')->update(['floors' => 31, 'id_neighborhoods' => 8]);
+        Building::where('code', '14P')->update(['floors' => 8, 'id_neighborhoods' => 18]);
+        Building::where('code', '909W')->update(['floors' => 10, 'id_neighborhoods' => 18]);
+        Building::where('code', '1224V')->update(['floors' => 8, 'id_neighborhoods' => 18]);
+        Building::where('code', '1524S')->update(['floors' => 8, 'id_neighborhoods' => 4]);
+        Building::where('code', '1201P')->update(['floors' => 53, 'id_neighborhoods' => 3]);
+        Building::where('code', '1525S')->update(['floors' => 8, 'id_neighborhoods' => 4]);
+        Building::where('code', '8R')->update(['floors' => 33, 'id_neighborhoods' => 6]);
+        Building::where('code', '1901CC')->update(['floors' => 1, 'id_neighborhoods' => 3]);
+        Building::where('code', '2000M')->update(['floors' => 3, 'id_neighborhoods' => 3]);
+        Building::where('code', '1600I')->update(['floors' => 19, 'id_neighborhoods' => 3]);
+        Building::where('code', '730C')->update(['floors' => 28, 'id_neighborhoods' => 3]);
+        Building::where('code', '610M')->update(['floors' => 5, 'id_neighborhoods' => 3]);
+        Building::where('code', '200G')->update(['floors' => 27, 'id_neighborhoods' => 2]);
+        Building::where('code', '345C')->update(['floors' => 7, 'id_neighborhoods' => 6]);
+        Building::where('code', '1635B')->update(['floors' => 7, 'id_neighborhoods' => 12]);
+        Building::where('code', '845F')->update(['floors' => 3, 'id_neighborhoods' => 18]);
+        Building::where('code', '77W')->update(['floors' => 1, 'id_neighborhoods' => 8]);
+        Building::where('code', '159W')->update(['floors' => 33, 'id_neighborhoods' => 8]);
+        Building::where('code', '213I')->update(['floors' => 4, 'id_neighborhoods' => 17]);
+        Building::where('code', '70H')->update(['floors' => 26, 'id_neighborhoods' => 2]);
+        Building::where('code', '1339D')->update(['floors' => 16, 'id_neighborhoods' => 1]);
+        Building::where('code', '360R')->update(['floors' => 40, 'id_neighborhoods' => 6]);
+        Building::where('code', '235V')->update(['floors' => 46, 'id_neighborhoods' => 6]);
+        Building::where('code', '501C')->update(['floors' => 34, 'id_neighborhoods' => 5]);
+        Building::where('code', '900C')->update(['floors' => 24, 'id_neighborhoods' => 3]);
+        Building::where('code', '1700E56')->update(['floors' => 39, 'id_neighborhoods' => 15]);
+        Building::where('code', '1623L')->update(['floors' => 2, 'id_neighborhoods' => 3]);
+        Building::where('code', '1046K')->update(['floors' => 4, 'id_neighborhoods' => 10]);
+        Building::where('code', 'CHASE')->update(['floors' => 58, 'id_neighborhoods' => 6]);
+        Building::where('code', '400C')->update(['floors' => 7, 'id_neighborhoods' => 5]);
+        Building::where('code', '400X')->update(['floors' => 1, 'id_neighborhoods' => 5]);
+        Building::where('code', '270P')->update(['floors' => 16, 'id_neighborhoods' => 17]);
+        Building::where('code', '2037C')->update(['floors' => 4, 'id_neighborhoods' => 5]);
+        Building::where('code', '308E')->update(['floors' => 7, 'id_neighborhoods' => 2]);
+        Building::where('code', '505M')->update(['floors' => 49, 'id_neighborhoods' => 8]);
+        Building::where('code', '71H')->update(['floors' => 50, 'id_neighborhoods' => 2]);
+        Building::where('code', '770H')->update(['floors' => 6, 'id_neighborhoods' => 5]);
+        Building::where('code', '1211P')->update(['floors' => 62, 'id_neighborhoods' => 3]);
+        Building::where('code', '1331P')->update(['floors' => 2, 'id_neighborhoods' => 3]);
     }
 
-    public function migrateSupportTicketHistoryTable($startingId = -1){
+    public function truncateAllTables() {
 
-        $recordsPerCycle = 200; //$this->getJobProperty('lease-request-job', 'records_per_cycle');
-        $migrationInfoArray = $this->getMigrationInfoArray('supportTicketHistory');
-        $run = true;
-        while ($run) {
+        $this->startProgressBar(18, 'truncating tables');
+        $tables = ['users', 'apps', 'customers', 'buildings', 'building_properties',
+                   'building_property_values', 'products', 'product_properties',
+                   'product_property_values', 'customer_products', 'building_products',
+                   'network_nodes', 'ports', 'ticket_reasons', 'tickets', 'ticket_history',
+                   'billing_transaction_logs', 'data_migrations'];
 
-            $legacyTicketHistories = SupportTicketHistory::where('THID', '>', $startingId)
-                ->take($recordsPerCycle)
-                ->get();
-
-            if($legacyTicketHistories->count() == 0){
-                break;
-            }
-
-            foreach ($legacyTicketHistories as $legacyTicketHistory) {
-
-                $this->updateTicketHistory($legacyTicketHistory, new TicketHistory);
-                $startingId = $legacyTicketHistory->THID;
-                $migrationInfoArray['record_count']++;
-                $migrationInfoArray['last_processed_id'] = $legacyTicketHistory->THID;
-                $migrationInfoArray['last_created_at'] = $legacyTicketHistory->created_at;
-                $migrationInfoArray['last_updated_at'] = $legacyTicketHistory->updated_at;
-            }
-            sleep(2);
+        $count = 1;
+        foreach($tables as $table) {
+            DB::table('users')->truncate();
+            $this->advanceProgressBar($count);
+            $count++;
         }
-        $this->updateDataMigration($migrationInfoArray);
-        Log::info('Migrated '.$migrationInfoArray['record_count'].' supportTicketHistory records');
-    }
-
-    public function migrateBillingTransactionLogsTable($startingId = -1){
-
-        $recordsPerCycle = 200; //$this->getJobProperty('lease-request-job', 'records_per_cycle');
-        $migrationInfoArray = $this->getMigrationInfoArray('billingTransactionLog');
-        $run = true;
-        while ($run) {
-
-            $legacyTransactionLogs = BillingTransactionLogOld::where('LogID', '>', $startingId)
-                ->take($recordsPerCycle)
-                ->get();
-
-            if($legacyTransactionLogs->count() == 0){
-                break;
-            }
-
-            foreach ($legacyTransactionLogs as $legacyTransactionLog) {
-
-                $this->updateTransactionLog($legacyTransactionLog, new BillingTransactionLog);
-                $startingId = $legacyTransactionLog->LogID;
-                $migrationInfoArray['record_count']++;
-                $migrationInfoArray['last_processed_id'] = $legacyTransactionLog->LogID;
-                $migrationInfoArray['last_created_at'] = $legacyTransactionLog->created_at;
-                $migrationInfoArray['last_updated_at'] = $legacyTransactionLog->updated_at;
-            }
-            sleep(2);
-        }
-        $this->updateDataMigration($migrationInfoArray);
-        Log::info('Migrated '.$migrationInfoArray['record_count'].' billingTransactionLog records');
+        $this->stopProgressBar();
     }
 
     #############################
     # Supporting functions
     #############################
 
-    public function findOrCreateCustomer(ProductOld $legacyCustomer) {
+    public function migrateTable($legacyTableName, $migrationDataMap, $startingId = -1, $customQueryFuction = null){
+
+        $legacyDataModelName = $migrationDataMap[0];
+        $legacyModelId = $migrationDataMap[1];
+        $newDataModelName = $migrationDataMap[2];
+        $customFunc = $migrationDataMap[3];
+
+        $recordsPerCycle = 200; //$this->getJobProperty('lease-request-job', 'records_per_cycle');
+
+        $totalLegacyRecords = $legacyDataModelName::count();
+        $this->startProgressBar($totalLegacyRecords, $legacyTableName);
+
+        // Get the data migration record from the database
+        $dataMigration = DataMigration::where('table_name', $legacyTableName)->first();
+        if($dataMigration == null){
+            $this->progressBarError('<fg=magenta>Could not find '.$legacyTableName.' in the data_migrations table. Ignoring.</>');
+            $this->stopProgressBar();
+            Log::info('Could not find '.$legacyTableName.' in the data_migrations table. Ignoring.');
+            return false;
+        }
+
+        // Check to see if we can migrate or if it was already done
+        if($dataMigration->status == 1){
+
+            $this->progressBarError('<fg=magenta>already migrated</>');
+            $this->stopProgressBar();
+            Log::info('Table '.$legacyTableName.' has already been migrated. Ignoring.');
+            return false;
+        }
+
+        // Reset the records processed count
+        $dataMigration->records_processed = 0;
+        // Set the total record count
+        $dataMigration->total_records = $totalLegacyRecords;
+
+        $runQuery = function($legacyDataModelName, $legacyModelId, $startingId, $recordsPerCycle){
+            return $legacyDataModelName::where($legacyModelId, '>', $startingId)
+                ->orderBy($legacyModelId, 'asc')
+                ->take($recordsPerCycle)
+                ->get();
+        };
+
+        // If the caller has specified a custom query function then use that instead
+        if($customQueryFuction != null){
+            $runQuery = $customQueryFuction;
+        }
+
+        // Set the progress bar to 0 so it displays on the screen
+        $this->advanceProgressBar(0, 0);
+
+        while (true) {
+
+            $legacyRecords = $runQuery($legacyDataModelName, $legacyModelId, $startingId, $recordsPerCycle);
+
+            if($legacyRecords->count() == 0){
+                break;
+            }
+
+            foreach ($legacyRecords as $legacyRecord) {
+
+                // Call the custom function to process the migration from legacy to new
+                $result = $customFunc($legacyRecord);
+
+                if($result == false){
+                    Log::info('Call to customFunc() returned false. Skipping record.');
+                    $startingId = $legacyRecord->$legacyModelId;
+                    continue;
+                }
+
+                // Do some accounting
+                $startingId = $legacyRecord->$legacyModelId;
+                $dataMigration->records_processed++;
+                $dataMigration->max_processed_id = ($legacyRecord->$legacyModelId > $dataMigration->max_processed_id) ? $legacyRecord->$legacyModelId : $dataMigration->max_processed_id;
+
+                if($dataMigration->max_created_at == null){
+                    $dataMigration->max_created_at = $legacyRecord->created_at;
+                } else {
+                    $dataMigration->max_created_at = $this->maxMysqlTimestamp($dataMigration->max_created_at, $legacyRecord->created_at);
+                }
+
+                if($dataMigration->max_updated_at == null){
+                    $dataMigration->max_updated_at = $legacyRecord->updated_at;
+                } else {
+                    $dataMigration->max_updated_at = $this->maxMysqlTimestamp($dataMigration->max_updated_at, $legacyRecord->updated_at);
+                }
+            }
+
+            // Update the progress bar
+            $this->advanceProgressBar(0, $dataMigration->records_processed);
+            usleep(500000);
+        }
+        // mark the data migration status as complete and save it
+        $dataMigration->status = 1;
+        $dataMigration->save();
+        $this->stopProgressBar();
+        Log::info('Migrated '.$dataMigration->records_processed.' '.$legacyTableName.' records');
+        return true;
+    }
+
+    public function maxMysqlTimestamp($timestamp1, $timestamp2, $timezone1 = 'America/Chicago', $timezone2 = 'America/Chicago'){
+        if($timestamp1 == null){
+            return $timestamp2;
+        }
+
+        if($timestamp2 == null){
+            return $timestamp1;
+        }
+
+        $carbonTimestamp1 = Carbon::createFromFormat('Y-m-d H:i:s', $timestamp1, 'America/Chicago');
+        $carbonTimestamp2 = Carbon::createFromFormat('Y-m-d H:i:s', $timestamp2, 'America/Chicago');
+        $unixTimestamp1 = $carbonTimestamp1->timestamp;
+        $unixTimestamp2 = $carbonTimestamp2->timestamp;
+        return (max($unixTimestamp1, $unixTimestamp2) == $unixTimestamp1) ? $carbonTimestamp1->format('Y-m-d H:i:s') : $carbonTimestamp2->format('Y-m-d H:i:s');
+    }
+
+    protected function startProgressBar($units = 0, $component = ''){
+
+        if($this->console == false){ return; }
+
+        $this->progress = new ProgressBar($this->output, $units);
+        $this->progress->setFormatDefinition('custom', ' %component%:    %current%/%max% [%bar%] %percent:3s%%       %estimated:-6s%');
+        $this->progress->setFormat('custom');
+        $this->progress->setMessage($component, 'component');
+        //        $output->setFormatter(new OutputFormatter(true));
+    }
+
+    protected function advanceProgressBar($count = 0, $progress = null){
+
+        if($this->progress == null) { return; }
+
+        if($count > 0) {
+            $this->progress->advance($count);
+            return;
+        }
+
+        if($progress != null) {
+            $this->progress->setProgress($progress);
+            return;
+        }
+    }
+
+    protected function progressBarError($errorMessage) {
+
+        if($this->progress == null) { return; }
+        $this->progress->setFormatDefinition('custom', ' %table%:    %error_message%');
+        $this->progress->setMessage($errorMessage, 'error_message');
+    }
+
+    protected function stopProgressBar(){
+        if($this->progress == null) { return; }
+        // ensure that the progress bar is at 100%
+        $this->progress->finish();
+        $this->output->writeln('');
+    }
+
+    ########################################
+    # Creation and maintenance functions
+    ########################################
+
+    public function findOrCreateCustomer(CustomerOld $legacyCustomer) {
 
         $customer = Customer::find($legacyCustomer->CID);
 
         if($customer == null) {
             $customer = new Customer;
         }
-        $this->updateCustomer($legacyCustomer, $customer);
+        return $this->updateCustomer($legacyCustomer, $customer);
     }
 
     protected function updateCustomer(CustomerOld $legacyCustomer, Customer $customer){
@@ -608,7 +774,10 @@ class DataMigrationUtils {
             $customer->id_status = 2;
         }
         $customer->signedup_at = $legacyCustomer->DateSignup;
+        $customer->created_at = $legacyCustomer->created_at;
+        $customer->updated_at = $legacyCustomer->updated_at;
         $customer->save();
+        return true;
     }
 
     public function findOrCreateAddressByCustomer(CustomerOld $legacyCustomer) {
@@ -619,7 +788,7 @@ class DataMigrationUtils {
         if($address == null) {
             $address = new Address;
         }
-        $this->updateAddressByCustomer($legacyCustomer, $address);
+        return $this->updateAddressByCustomer($legacyCustomer, $address);
     }
 
     protected function updateAddressByCustomer(CustomerOld $legacyCustomer, Address $address) {
@@ -633,11 +802,41 @@ class DataMigrationUtils {
         $address->country = $legacyCustomer->Country;
         $address->id_customers = $legacyCustomer->CID;
         $address->id_buildings = $legacyCustomer->LocID;
+        $address->created_at = $legacyCustomer->created_at;
         $serviceLocation = $legacyCustomer->serviceLocation;
         if($serviceLocation != null){
             $address->code = $serviceLocation->Shortname;
         }
         $address->save();
+        return true;
+    }
+
+    public function addContactsForCustomer(CustomerOld $legacyCustomer) {
+
+        if($legacyCustomer->Email != ''){
+            Contact::create(['id_customers' => $legacyCustomer->CID, 'id_types' => 5, 'value' => $legacyCustomer->Email]);
+        }
+
+        if($legacyCustomer->Tel != ''){
+            Contact::create(['id_customers' => $legacyCustomer->CID, 'id_types' => 1, 'value' => $legacyCustomer->Tel]);
+        }
+    }
+
+    protected function updateContactByCustomer(CustomerOld $legacyCustomer) {
+
+        if($legacyCustomer->Email != ''){
+            $emailContact = Contact::firstOrCreate(['id_customers' => $legacyCustomer->CID, 'id_types' => 5]);
+            $emailContact->value = $legacyCustomer->Email;
+            $emailContact->created_at = $legacyCustomer->created_at;
+            $emailContact->save();
+        }
+
+        if($legacyCustomer->Tel != ''){
+            $phoneContact = Contact::firstOrCreate(['id_customers' => $legacyCustomer->CID, 'id_types' => 1]);
+            $phoneContact->value = $legacyCustomer->Tel;
+            $phoneContact->created_at = $legacyCustomer->created_at;
+            $phoneContact->save();
+        }
     }
 
     public function findOrCreateAddressByBuilding(ServiceLocation $legacyLocation) {
@@ -648,7 +847,7 @@ class DataMigrationUtils {
         if($address == null) {
             $address = new Address;
         }
-        $this->updateAddressByBuilding($legacyLocation, $address);
+        return $this->updateAddressByBuilding($legacyLocation, $address);
     }
 
     protected function updateAddressByBuilding(ServiceLocation $legacyLocation, Address $address) {
@@ -660,7 +859,10 @@ class DataMigrationUtils {
         $address->state = $legacyLocation->State;
         $address->country = $legacyLocation->Country;
         $address->id_buildings = $legacyLocation->LocID;
+        $address->created_at = $legacyLocation->created_at;
+        $address->updated_at = $legacyLocation->updated_at;
         $address->save();
+        return true;
     }
 
     public function findOrCreatePaymentMethod(CustomerOld $legacyCustomer) {
@@ -671,7 +873,7 @@ class DataMigrationUtils {
         if($paymentMethod == null) {
             $paymentMethod = new PaymentMethod;
         }
-        $this->updatePaymentMethod($legacyCustomer, $paymentMethod);
+        return $this->updatePaymentMethod($legacyCustomer, $paymentMethod);
     }
 
     protected function updatePaymentMethod(CustomerOld $legacyCustomer, PaymentMethod $paymentMethod) {
@@ -687,14 +889,18 @@ class DataMigrationUtils {
             $paymentMethod->billing_phone = $legacyCustomer->Tel;
             $paymentMethod->priority = 1;
             $paymentMethod->id_customers = $legacyCustomer->CID;
+            $paymentMethod->created_at = $legacyCustomer->created_at;
+            $paymentMethod->updated_at = $legacyCustomer->updated_at;
 
             $address = Address::where('id_customers', $legacyCustomer->CID)->first();
             if($address != null){
-            $paymentMethod->id_address = $address->id;
+                $paymentMethod->id_address = $address->id;
             }
 
             $paymentMethod->save();
+            return true;
         }
+        return false;
     }
 
     public function findOrCreateBuilding(ServiceLocation $legacyLocation) {
@@ -705,7 +911,7 @@ class DataMigrationUtils {
             $building = new Building;
         }
 
-        $this->updateBuilding($legacyLocation, $building);
+        return $this->updateBuilding($legacyLocation, $building);
     }
 
     protected function updateBuilding(ServiceLocation $legacyLocation, Building $building){
@@ -726,7 +932,10 @@ class DataMigrationUtils {
         $building->year_built = date('Y-M-d H:i:s');
         $building->units = ($legacyLocation->Units == null || $legacyLocation->Units == '') ? 0 : $legacyLocation->Units;
         $building->floors = 0;
+        $building->created_at = $legacyLocation->created_at;
+        $building->updated_at = $legacyLocation->updated_at;
         $building->save();
+        return true;
     }
 
     public function findOrCreateBuildingProperty(ServiceLocationProperty $legacyLocationProperty) {
@@ -737,15 +946,18 @@ class DataMigrationUtils {
             $buildingProperty = new BuildingProperty;
         }
 
-        $this->updateBuildingProperty($legacyLocationProperty, $buildingProperty);
+        return $this->updateBuildingProperty($legacyLocationProperty, $buildingProperty);
     }
 
     protected function updateBuildingProperty(ServiceLocationProperty $legacyLocationProperty, BuildingProperty $buildingProperty){
 
         $buildingProperty->id = $legacyLocationProperty->PropID;
-        $buildingProperty->name = $legacyLocationProperty->->FieldTitle;
-        $buildingProperty->description = $legacyLocationProperty->->Description;
-        $building->save();
+        $buildingProperty->name = $legacyLocationProperty->FieldTitle;
+        $buildingProperty->description = $legacyLocationProperty->Description;
+        $buildingProperty->created_at = $legacyLocationProperty->created_at;
+        $buildingProperty->updated_at = $legacyLocationProperty->updated_at;
+        $buildingProperty->save();
+        return true;
     }
 
     public function updateBuildingPropertyValues(ServiceLocation $legacyLocation){
@@ -769,13 +981,22 @@ class DataMigrationUtils {
         $this->findOrCreateBuildingPropertyValue($buildingId, 15, $legacyLocation->Description);
         $this->findOrCreateBuildingPropertyValue($buildingId, 16, $legacyLocation->SupportNumber);
         $this->findOrCreateBuildingPropertyValue($buildingId, 17, $legacyLocation->fnImage);
+        return true;
     }
 
     public function findOrCreateBuildingPropertyValue($buildingId, $propertyId, $value) {
 
+        $building = Building::find($buildingId);
         $buildingPropertyValue = BuildingPropertyValue::firstOrCreate(['id_buildings' => $buildingId, 'id_building_properties' => $propertyId]);
         $buildingPropertyValue->value = $value;
+
+        if($building != null){
+            $buildingPropertyValue->created_at = $building->created_at;
+            $buildingPropertyValue->updated_at = $building->updated_at;
+        }
+
         $buildingPropertyValue->save();
+        return true;
     }
 
     public function findOrCreateProduct(ProductOld $legacyProduct) {
@@ -785,7 +1006,7 @@ class DataMigrationUtils {
         if($product == null) {
             $product = new Product;
         }
-        $this->updateProduct($legacyProduct, $product);
+        return $this->updateProduct($legacyProduct, $product);
     }
 
     protected function updateProduct(ProductOld $legacyProduct, Product $product){
@@ -796,6 +1017,8 @@ class DataMigrationUtils {
         $product->amount = $legacyProduct->Amount;
         $product->frequency = $legacyProduct->ChargeFrequency;
         $product->id_products = $legacyProduct->ParentProdID;
+        $product->created_at = $legacyProduct->created_at;
+        $product->updated_at = $legacyProduct->updated_at;
 
         switch ($legacyProduct->ProdType) {
 
@@ -828,6 +1051,7 @@ class DataMigrationUtils {
         }
 
         $product->save();
+        return true;
     }
 
     public function findOrCreateProductProperty(ProductPropertyOld $legacyProductProperty) {
@@ -837,7 +1061,7 @@ class DataMigrationUtils {
         if($productProperty == null) {
             $productProperty = new ProductProperty;
         }
-        $this->updateProductProperty($legacyProductProperty, $productProperty);
+        return $this->updateProductProperty($legacyProductProperty, $productProperty);
     }
 
     protected function updateProductProperty(ProductPropertyOld $legacyProductProperty, ProductProperty $productProperty) {
@@ -845,7 +1069,10 @@ class DataMigrationUtils {
         $productProperty->id = $legacyProductProperty->PropID;
         $productProperty->name = $legacyProductProperty->FieldTitle;
         $productProperty->description = $legacyProductProperty->Description;
-        $productPropertyValue->save();
+        $productProperty->created_at = $legacyProductProperty->created_at;
+        $productProperty->updated_at = $legacyProductProperty->updated_at;
+        $productProperty->save();
+        return true;
     }
 
     public function findOrCreateProductPropertyValue(ProductPropertyOld $legacyProductProperty) {
@@ -855,7 +1082,7 @@ class DataMigrationUtils {
         if($productPropertyValue == null) {
             $productPropertyValue = new ProductPropertyValue;
         }
-        $this->updateProductPropertyValue($legacyProductProperty, $productPropertyValue);
+        return $this->updateProductPropertyValue($legacyProductProperty, $productPropertyValue);
     }
 
     protected function updateProductPropertyValue(ProductPropertyValueOld $legacyProductPropertyValue, ProductPropertyValue $productPropertyValue) {
@@ -864,7 +1091,10 @@ class DataMigrationUtils {
         $productPropertyValue->id_products = $legacyProductPropertyValue->ProdID;
         $productPropertyValue->id_product_properties = $legacyProductPropertyValue->PropID;
         $productPropertyValue->value = $legacyProductPropertyValue->Value;
+        $productPropertyValue->created_at = $legacyProductPropertyValue->created_at;
+        $productPropertyValue->updated_at = $legacyProductPropertyValue->updated_at;
         $productPropertyValue->save();
+        return true;
     }
 
     public function findOrCreateCustomerProduct(CustomerProductOld $legacyCustomerProduct) {
@@ -874,7 +1104,7 @@ class DataMigrationUtils {
         if($customerProduct == null) {
             $customerProduct = new CustomerProduct;
         }
-        $this->updateCustomerProduct($legacyCustomerProduct, $customerProduct);
+        return $this->updateCustomerProduct($legacyCustomerProduct, $customerProduct);
     }
 
     protected function updateCustomerProduct(CustomerProductOld $legacyCustomerProduct, CustomerProduct $customerProduct) {
@@ -883,7 +1113,7 @@ class DataMigrationUtils {
             return false;
         }
 
-        $customerProduct->id = $legacyCustomerProduct->cp.CSID;
+        $customerProduct->id = $legacyCustomerProduct->CSID;
         $customerProduct->id_customers = $legacyCustomerProduct->CID;
         $customerProduct->id_products = $legacyCustomerProduct->ProdID;
         $customerProduct->id_customer_products = $legacyCustomerProduct->ParentCSID;
@@ -917,7 +1147,11 @@ class DataMigrationUtils {
         if($address != null){
             $customerProduct->id_address = $address->id;
         }
+
+        $customerProduct->created_at = $legacyCustomerProduct->created_at;
+        $customerProduct->updated_at = $legacyCustomerProduct->updated_at;
         $customerProduct->save();
+        return true;
     }
 
     public function findOrCreateBuildingProduct(ServiceLocationProduct $legacyBuildingProduct) {
@@ -927,7 +1161,7 @@ class DataMigrationUtils {
         if($buildingProduct == null) {
             $buildingProduct = new BuildingProduct;
         }
-        $this->updateBuildingProduct($legacyBuildingProduct, $buildingProduct);
+        return $this->updateBuildingProduct($legacyBuildingProduct, $buildingProduct);
     }
 
     protected function updateBuildingProduct(ServiceLocationProduct $legacyBuildingProduct, BuildingProduct $buildingProduct) {
@@ -935,7 +1169,10 @@ class DataMigrationUtils {
         $buildingProduct->id = $legacyBuildingProduct->SLPID;
         $buildingProduct->id_buildings = $legacyBuildingProduct->LocID;
         $buildingProduct->id_products = $legacyBuildingProduct->ProdID;
+        $buildingProduct->created_at = $legacyBuildingProduct->created_at;
+        $buildingProduct->updated_at = $legacyBuildingProduct->updated_at;
         $buildingProduct->save();
+        return true;
     }
 
     public function findOrCreateNetworkNode(NetworkNodeOld $legacyNetworkNode) {
@@ -945,10 +1182,10 @@ class DataMigrationUtils {
         if($networkNode == null) {
             $networkNode = new NetworkNode;
         }
-        $this->updateNetworkNode($legacyNetworkNode, $networkNode);
+        return $this->updateNetworkNode($legacyNetworkNode, $networkNode);
     }
 
-    protected function updateNetworkNode(DataServicePort $legacyNetworkNode, NetworkNode $networkNode) {
+    protected function updateNetworkNode(NetworkNodeOld $legacyNetworkNode, NetworkNode $networkNode) {
 
         $networkNode->id = $legacyNetworkNode->NodeID;
         $networkNode->ip_address = $legacyNetworkNode->IPAddress;
@@ -971,7 +1208,10 @@ class DataMigrationUtils {
             default:
                 break;
         }
+        $networkNode->created_at = $legacyNetworkNode->created_at;
+        $networkNode->updated_at = $legacyNetworkNode->updated_at;
         $networkNode->save();
+        return true;
     }
 
     public function findOrCreatePort(DataServicePort $legacyPort) {
@@ -981,7 +1221,7 @@ class DataMigrationUtils {
         if($port == null) {
             $port = new Port;
         }
-        $this->updatePort($legacyPort, $port);
+        return $this->updatePort($legacyPort, $port);
     }
 
     protected function updatePort(DataServicePort $legacyPort, Port $port) {
@@ -999,7 +1239,10 @@ class DataMigrationUtils {
             $port->id_customers = $legacyCustomer->CID;
         }
 
+        $port->created_at = $legacyPort->created_at;
+        $port->updated_at = $legacyPort->updated_at;
         $port->save();
+        return true;
     }
 
     public function findOrCreateReason(SupportTicketReason $legacyReason) {
@@ -1009,7 +1252,7 @@ class DataMigrationUtils {
         if($reason == null) {
             $reason = new Reason;
         }
-        $this->updateReason($legacyReason, $reason);
+        return $this->updateReason($legacyReason, $reason);
     }
 
     protected function updateReason(SupportTicketReason $legacyReason, Reason $reason) {
@@ -1043,8 +1286,11 @@ class DataMigrationUtils {
             default:
                 break;
         }
-        Log::info('Saving record: '.$reason->id);
+        $reason->created_at = $legacyReason->created_at;
+        $reason->updated_at = $legacyReason->updated_at;
+        //        Log::info('Saving record: '.$reason->id);
         $reason->save();
+        return true;
     }
 
     public function findOrCreateTicket(SupportTicket $legacyTicket) {
@@ -1054,7 +1300,7 @@ class DataMigrationUtils {
         if($ticket == null) {
             $ticket = new Ticket;
         }
-        $this->updateTicket($legacyTicket, $ticket);
+        return $this->updateTicket($legacyTicket, $ticket);
     }
 
     protected function updateTicket(SupportTicket $legacyTicket, Ticket $ticket) {
@@ -1079,6 +1325,7 @@ class DataMigrationUtils {
             $ticket->id_reasons = 1;
         }
         $ticket->save();
+        return true;
     }
 
     public function findOrCreateTicketHistory(SupportTicketHistory $legacyTicketHistory) {
@@ -1088,11 +1335,12 @@ class DataMigrationUtils {
         if($ticketHistory == null) {
             $ticketHistory = new Ticket;
         }
-        $this->updateTicketHistory($legacyTicketHistory, $ticketHistory);
+        return $this->updateTicketHistory($legacyTicketHistory, $ticketHistory);
     }
 
-    protected function updateTicketHistory(SupportTicketHistory $legacyTicketHistory, TicketHistory $ticketHistory) {
+    protected function updateTicketHistory(SupportTicketHistory $legacyTicketHistory, $ticketHistory = null) {
 
+        if($ticketHistory == null) { $ticketHistory = new TicketHistory; }
         $ticketHistory->id = $legacyTicketHistory->THID;
         $ticketHistory->id_tickets = $legacyTicketHistory->TID;
         $ticketHistory->id_reasons = $legacyTicketHistory->RID;
@@ -1108,7 +1356,11 @@ class DataMigrationUtils {
         if($legacyTicketHistory->RID == 0) {
             $ticketHistory->id_reasons = 1;
         }
+        $ticketHistory->created_at = $legacyTicketHistory->created_at;
+        $ticketHistory->updated_at = $legacyTicketHistory->updated_at;
         $ticketHistory->save();
+        //        $ticketHistory = null;
+        return true;
     }
 
     public function findOrCreateTransactionLog(BillingTransactionLogOld $legacyTransactionLog) {
@@ -1118,7 +1370,7 @@ class DataMigrationUtils {
         if($transactionLog == null) {
             $transactionLog = new BillingTransactionLog;
         }
-        $this->updateTransactionLog($legacyTransactionLog, $transactionLog);
+        return $this->updateTransactionLog($legacyTransactionLog, $transactionLog);
     }
 
     protected function updateTransactionLog(BillingTransactionLogOld $legacyTransactionLog, BillingTransactionLog $transactionLog) {
@@ -1143,7 +1395,10 @@ class DataMigrationUtils {
         $transactionLog->address = $legacyTransactionLog->Address;
         $transactionLog->unit = $legacyTransactionLog->Unit;
         $transactionLog->comment = $legacyTransactionLog->Comment;
+        $transactionLog->created_at = $legacyTransactionLog->created_at;
+        $transactionLog->updated_at = $legacyTransactionLog->updated_at;
         $transactionLog->save();
+        return true;
     }
 }
 ?>

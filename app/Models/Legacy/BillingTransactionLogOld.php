@@ -1,4 +1,4 @@
-p<?php
+<?php
 
 namespace App\Models\Legacy;
 
@@ -31,6 +31,6 @@ class BillingTransactionLogOld extends Model
      *
      * @var bool
      */
-    public $timestamps = false;
+//    public $timestamps = false;
 
 }

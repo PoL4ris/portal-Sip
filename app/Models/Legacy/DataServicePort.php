@@ -14,6 +14,13 @@ class DataServicePort extends Model
      */
     protected $connection = 'old-portal';
 
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'dataServicePorts';
+
     /* The primary key for the model.
      *
      * @var string
@@ -25,7 +32,7 @@ class DataServicePort extends Model
      *
      * @var bool
      */
-    public $timestamps = false;
+//    public $timestamps = false;
 
     /**
      *

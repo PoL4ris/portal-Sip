@@ -12,7 +12,7 @@ class CreateDataMigrationTable extends Migration
      */
     public function up()
     {
-        Schema::create('data_migration', function(Blueprint $table) {
+        Schema::create('data_migrations', function(Blueprint $table) {
             $table->increments('id');
             $table->string('table_name');
             $table->integer('last_processed_id')->nullable();

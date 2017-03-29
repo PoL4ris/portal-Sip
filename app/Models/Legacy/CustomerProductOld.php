@@ -18,7 +18,7 @@ class CustomerProductOld extends Model {
      *
      * @var string
      */
-    protected $table = 'customerProduct';
+    protected $table = 'customerProducts';
 
 
     /* The primary key for the model.
@@ -32,7 +32,7 @@ class CustomerProductOld extends Model {
      *
      * @var bool
      */
-    public $timestamps = false;
+//    public $timestamps = false;
 
     /**
      *

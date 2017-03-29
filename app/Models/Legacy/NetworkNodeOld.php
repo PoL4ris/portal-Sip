@@ -18,7 +18,7 @@ class NetworkNodeOld extends Model {
      *
      * @var string
      */
-    protected $table = 'networkNode';
+    protected $table = 'networkNodes';
 
     /* The primary key for the model.
      *
@@ -31,7 +31,7 @@ class NetworkNodeOld extends Model {
      *
      * @var bool
      */
-    public $timestamps = false;
+//    public $timestamps = false;
 
     /**
      *
