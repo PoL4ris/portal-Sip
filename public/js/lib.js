@@ -1215,6 +1215,33 @@ app.controller('serviceProductController',          function ($scope, $http){
 //Support Controllers
 app.controller('supportController',                 function ($scope, $http, DTOptionsBuilder, customerService){
 
+  $scope.getAllOpenTickets = function (){
+    $http.get("getAllOpenTickets")
+      .then(function (response) {
+        $scope.supportData = response.data;
+      });
+  };
+  $scope.getNoneBillingTickets = function (){
+    $http.get("getNoneBillingTickets")
+      .then(function (response) {
+        $scope.supportData = response.data;
+      });
+  };
+  $scope.getBillingTickets = function (){
+    $http.get("getBillingTickets")
+      .then(function (response) {
+        $scope.supportData = response.data;
+      });
+  };
+  $scope.getMyTickets = function (){
+    $http.get("getMyTickets")
+      .then(function (response) {
+        $scope.supportData = response.data;
+      });
+  };
+
+
+
   if(customerService.stateRoute == 'support'){
 
     if(customerService.sideBarFlag) {
@@ -1222,10 +1249,7 @@ app.controller('supportController',                 function ($scope, $http, DTO
       customerService.sideBarFlag = false;
     }
 
-    $http.get("supportTickets")
-      .then(function (response) {
-        $scope.supportData = response.data;
-      });
+    $scope.getAllOpenTickets();
 
     $http.get("getTicketOpenTime")
       .then(function (response) {
@@ -1233,8 +1257,13 @@ app.controller('supportController',                 function ($scope, $http, DTO
       });
   }
 
+
+
+
   $scope.dtOptions = DTOptionsBuilder.newOptions().withPaginationType('full_numbers').withDisplayLength(50);
-  $scope.letterLimit = 400;
+  $scope.letterLimit = 40;
+
+
 
   $scope.showFullComment = function(id) {
     $('#ticket-' + id).fadeIn('slow');
@@ -1259,39 +1288,7 @@ app.controller('supportController',                 function ($scope, $http, DTO
     $scope.stcid = id;
     $scope.stcFlag = false;
     callMidView('Customer');
-  };//NO se usara mas
-
-  //Faltan botones de ALL, Billing, No Billing.
-  $scope.fullTickets = function (){
-    $http.get("supportTickets")
-      .then(function (response) {
-        $scope.supportData = response.data;
-      });
-    $scope.viewTicketsDirective = 'Full';
-    callMidView('Full');
-    setActiveBtn('Full');
-    $scope.activeViewFull     = 'Active';
-  };//All ticket Not in use
-  $scope.billingTickets = function (){
-    $http.get("supportTicketsBilling")
-      .then(function (response) {
-        $scope.supportData = response.data;
-      });
-    $scope.viewTicketsDirective = 'Billing';
-    callMidView('Billing');
-    setActiveBtn('Billing');
-    $scope.activeViewBilling     = 'Active';
-  };//Billing tickets Not in use
-  $scope.allTickets = function (){
-    $http.get("supportTicketsAll")
-      .then(function (response) {
-        $scope.supportData = response.data;
-      });
-    $scope.viewTicketsDirective = 'All';
-    callMidView('All');
-    setActiveBtn('All');
-    $scope.activeViewAll     = 'Active';
-  };//ALL? Not in use
+  };//NO se usará mas
 
 
 
@@ -1444,7 +1441,7 @@ app.controller('supportControllerTools',            function ($scope, $http) {
       warpol('.' + id + '-edit').css('display','none');
       warpol('#save-' + id).fadeOut( "slow" );
       warpol('#' + id).html('Edit');
-      warpol('#' + id).switchClass('btn-danger', 'btn-info');
+      warpol('#' + id).switchClass('btn-danger', 'btn-default');
       warpol('#' + id).attr('stand', '2');
       if(path == '/supportdash')
       {

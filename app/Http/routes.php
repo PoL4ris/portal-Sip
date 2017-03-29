@@ -61,9 +61,14 @@ Route::group(['middleware' => 'web'], function () {
   Route::get('supportdash/{filter?}',   'SupportController@dashboard');
   Route::get('salesdash',               'MainController@salesdashboard');
   Route::get('networkdash',             'MainController@networkDashboard');
-  Route::get('supportTickets',          'SupportController@supportTickets');
-  Route::get('supportTicketsBilling',   'SupportController@supportTicketsBilling');
-  Route::get('supportTicketsAll',       'SupportController@supportTicketsAll');
+
+
+  Route::get('getAllOpenTickets',       'SupportController@getAllOpenTickets');
+  Route::get('getNoneBillingTickets',   'SupportController@getNoneBillingTickets');
+  Route::get('getBillingTickets',       'SupportController@getBillingTickets');
+  Route::get('getMyTickets',            'SupportController@getMyTickets');
+
+
   Route::get('supportTicketHistory',    'SupportController@supportTicketHistory');
   //Search
   Route::get('buildingsSearch',         'BuildingController@getBuildingsSearchSimple');

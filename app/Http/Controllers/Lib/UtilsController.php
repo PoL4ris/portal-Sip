@@ -35,4 +35,38 @@ class UtilsController extends Controller
       return false;
 
   }
+
+  function cleanInput($input){
+
+    $search = array(
+      '@<script[^>]*?>.*?</script>@si',   // Limpia JS
+      '@<[\/\!]*?[^<>]*?>@si',            // Limpia HTML
+      '@<style[^>]*?>.*?</style>@siU',    // Limpia CSS
+      '@<![\s\S]*?--[ \t\n\r]*>@'         // Limpia extra enters
+    );
+
+    $output = preg_replace($search, '', $input);
+    return $output;
+
+  }
+
+
+  function sanitize($input) {
+    if (is_array($input)) {
+      foreach($input as $var=>$val) {
+        $output[$var] = sanitize($val);
+      }
+    }
+    else {
+      if (get_magic_quotes_gpc()) {
+        $input = stripslashes($input);
+      }
+      $input  = $this->cleanInput($input);
+    }
+    return $input ? $input : $output;
+  }
+
+
+
+
 }

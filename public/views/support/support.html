@@ -5,63 +5,62 @@
 <!--TICKET LIST-->
 <section ng-if="supportData" class="col-sm-12 col-md-12 col-lg-12 bg-white white-shadow m-t-lg p-b-lg support-table-grid">
   <div class="row">
+
+    <div class="col-lg-12 m-t-lg m-b-lg">
+      <div class="btn btn-default m-r-lg" ng-click="getAllOpenTickets()">All Open Tickets</div>
+      <div class="btn btn-default m-r-lg" ng-click="getNoneBillingTickets()">Non-Billing Tickets</div>
+      <div class="btn btn-default m-r-lg" ng-click="getBillingTickets()">Billing Tickets</div>
+      <div class="btn btn-default m-r-lg" ng-click="getMyTickets()">My Tickets</div>
+    </div>
+
     <article class="col-lg-12 tickets-history-table m-t-lg table-container">
+      <table id="myTable" class="tablesorter table" datatable="ng" dt-options="dtOptions">
+        <thead>
+        <tr>
+          <th>Ticket</th>
+          <th>Status</th>
+          <th>Name</th>
+          <th>Address</th>
+          <th>Tel</th>
+          <th>Issue</th>
+          <th>Comment</th>
+          <th>Assigned</th>
+          <th>LastUpdate</th>
+        </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="data in supportData" class="{{(data.ticket_history.id_users == 777) ? 'customer-new-updated' : '' }}">
+            <td class="first-td" ng-click="displayTicketResume(data.id, data.id_customers)" data-toggle="modal" data-target="#ticketModal">{{data.ticket_number}}</td>
+            <td>{{data.status}}</a></td>
+            <td><a href="#/customers?id={{data.customer.id}}">{{data.customer.first_name}}</a></td>
+            <td>{{data.address.code}}</td>
+            <td>{{data.contacts.value}}</td>
+            <td>{{data.reason.short_description}}</td>
 
-        <!--<div class="col-lg-12 padding-10">-->
-          <!--<div class="bg-white padding-10">-->
-            <table id="myTable" class="tablesorter table" datatable="ng" dt-options="dtOptions">
-              <thead>
-              <tr>
-                <th>Ticket</th>
-                <th>Status</th>
-                <th>Name</th>
-                <th>Address</th>
-                <!--<th>Code</th>-->
-                <th>Tel</th>
-                <!--<th>Email</th>-->
-                <th>Issue</th>
-                <th>Comment</th>
-                <th>Assigned</th>
-                <th>LastUpdate</th>
-                <!--<th>Color</th>-->
-              </tr>
-              </thead>
-              <tbody>
-                <tr ng-repeat="data in supportData">
-                  <td class="first-td" ng-click="displayTicketResume(data.id, data.id_customers)" data-toggle="modal" data-target="#ticketModal">{{data.ticket_number}}</td>
-                  <td>{{data.status}}</a></td>
-                  <td><a href="#/customers?id={{data.customer.id}}">{{data.customer.first_name}}</a></td>
-                  <!--<td>{{data.address.address}}</td>-->
-                  <td>{{data.address.code}}</td>
-                  <td>{{data.contacts.value}}</td>
-                  <!--<td>{{data.contacts.value}}</td>-->
-                  <td>{{data.reason.short_description}}</td>
-                  <td ng-mouseover="showFullComment(data.id)"
-                      ng-mouseleave="hideFullComment(data.id)"
-                      ng-if="data.ticket_note.comment"
-                      class="comment-long">
-                      {{ data.ticket_note.comment | limitTo:letterLimit }}...
-                    <div id='ticket-{{ data.id }}' style="display: none;" class="ticket-comment-pop">{{data.ticket_note.comment}}</div>
-                  </td>
-                  <td ng-if="!data.ticket_note.comment"> Ø </td>
-                  <td>{{data.user_assigned.first_name ? (data.user_assigned.first_name) : 'AUTO' }}</td>
+            <td ng-mouseover="showFullComment(data.id)"
+                ng-mouseleave="hideFullComment(data.id)"
+                ng-if="data.ticket_history.comment"
+                class="comment-long">
+                {{ data.ticket_history.comment | limitTo:letterLimit }}...
+              <div id='ticket-{{ data.id }}' style="display: none;" class="ticket-comment-pop">{{data.ticket_history.comment}}</div>
+            </td>
 
-                  <td class="{{data.old}}">
-                    <!--{{data.updated_at | limitTo : 10}}-->
-                    <label ng-if="data.old == 'old-red'">> 48Hrs</label>
-                    <label ng-if="data.old == 'old-yellow'">> 24Hrs.</label>
-                    <label ng-if="data.old == 'old-green'">> 12Hrs</label>
-                    <label ng-if="data.old == 'old'">Minutes ago</label>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+            <td ng-if="!data.ticket_history.comment"> {{data.ticket_history.comment}} </td>
 
+            <td>{{data.user_assigned.first_name ? (data.user_assigned.first_name) : 'AUTO' }}</td>
 
-          <!--</div>-->
-        <!--</div>-->
-
+            <td class="{{data.old}}">
+              <!--{{data.updated_at | limitTo : 10}}-->
+              <label ng-if="data.old == 'old-red'">> 48Hrs</label>
+              <label ng-if="data.old == 'old-yellow'">> 24Hrs.</label>
+              <label ng-if="data.old == 'old-green'">> 12Hrs</label>
+              <label ng-if="data.old == 'old'">Minutes ago</label>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </article>
+
   </div>
 </section>
 <!--END TICKET LIST-->
@@ -83,7 +82,6 @@
             <div class="field-data col-lg-12" >
               <!--Name-->
               <div class="col-lg-12 no-padding-sides">
-                <i class="fa fa-circle text-success pull-right text-xs m-t-sm"></i>
                 <label><strong> {{selectedTicket.customer.first_name + ' ' + selectedTicket.customer.last_name}}</strong></label>
               </div>
               <!--Default Info-->
@@ -97,27 +95,27 @@
               </div>
               <div class="col-lg-3 no-padding-sides">
                 <div>Email</div>
-                <small class="text-muted">{{selectedTicket.contacts.value}}</small>
+                <small class="text-muted">{{selectedTicket.customer.email}}</small>
               </div>
               <div class="col-lg-3 no-padding-sides">
                 <div>Status</div>
                 <small class="text-muted">{{selectedTicket.status}}</small>
               </div>
               <!--Details Info-->
-              <div class="col-lg-12 no-padding-sides p-t-lg ">
+              <div class="col-lg-12 no-padding-sides p-t-lg m-b-sm">
                 <form id="form-1-ticket">
-                  <div class="col-lg-12 no-padding-sides b-t-ddd" >
-                    <div>Details:</div>
-                    <button type="submit"
-                            class="btn m-b-xs w-xs btn-success save-btn ticket-right ticket-right-save no-display"
-                            id="save-block-a"
-                            ng-click="submitForm('form-1-ticket'); editFormByType('block-a')">
-                            Save
-                    </button>
-                    <button class="btn m-b-xs w-xs btn-info btn-edit ticket-right"
+                  <div class="col-lg-12 no-padding-sides b-t-ddd " >
+                    <div class="pull-left m-t-md">Details:</div>
+                    <button class="btn m-b-xs w-xs btn-default btn-edit ticket-right pull-right m-t-sm m-b-sm"
                             id="block-a"
                             ng-click="editFormByType('block-a')">
                             Edit
+                    </button>
+                    <button type="submit"
+                            class="btn m-b-xs w-xs btn-default save-btn ticket-right ticket-right-save no-display pull-right m-t-sm m-b-sm m-r-lg"
+                            id="save-block-a"
+                            ng-click="submitForm('form-1-ticket'); editFormByType('block-a')">
+                            Save
                     </button>
                   </div>
                   <div class="col-lg-3 no-padding-sides">
@@ -151,6 +149,7 @@
                 </form>
               </div>
               <!--Comments-->
+              <!--
               <div class="col-lg-12 b-t-ddd no-padding-sides p-t-lg p-b-lg m-t-lg">
                 <div>Info:</div>
                 <div class="comment-content m-b-md">{{selectedTicket.ticket_note.comment}}
@@ -159,6 +158,7 @@
                   </p>
                 </div>
               </div>
+              -->
               <!--Info Left Block-->
               <div class="col-lg-4 no-padding-sides">
                 <div>Created by</div>
@@ -205,9 +205,9 @@
                     <tbody>
                       <tr ng-repeat="history in selectedTicket.ticket_history_full" ng-controller="supportTicketHistory">
                         <td>{{history.created_at}}</td>
-                        <td class="th-comment" height="100">{{historyData.reason.description}}</td>
+                        <td class="th-comment" height="100">{{history.comment}}</td>
                         <td>{{history.status}}</td>
-                        <td>{{historyData.user.first_name}}</td>
+                        <td>{{dataUsersAssigned[history.id_users].alias}}</td>
                       </tr>
                     </tbody>
                   </table>

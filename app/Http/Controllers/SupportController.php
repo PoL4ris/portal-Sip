@@ -46,22 +46,21 @@ class SupportController extends Controller
   {
    return Ticket::with('customer', 'address', 'contacts', 'userAssigned', 'reason', 'ticketNote', 'ticketHistoryFull')->find($request['ticketId']);
   }
-  public function supportTicketHistory(Request $request)
-  {
-    return TicketHistory::with('reason', 'user', 'ticketNote')->find($request->id);
-  }
-  public function supportTickets()
+
+
+
+  public function getAllOpenTickets()
   {
     $record = Ticket::with('customer', 'reason', 'ticketNote','ticketHistory', 'user', 'userAssigned', 'address', 'contacts')
                       ->where('id_reasons','!=', 11)
                       ->where('status','!=', 'closed')
                       ->orderBy('updated_at', 'desc')
-                      ->get()->toArray();
+                      ->get();
 
     $result = $this->getOldTimeTicket($record);
     return $result;
 
-  }
+  }//MAIN
   public function getOldTimeTicket($record)
   {
     //$new_time   = date("Y-m-d H:i:s");
@@ -82,7 +81,50 @@ class SupportController extends Controller
     }
 
     return $record;
+  }//Works with main
+
+  public function getNoneBillingTickets(){
+    $record = Ticket::with('customer', 'reason', 'ticketNote','ticketHistory', 'user', 'userAssigned', 'address', 'contacts')
+      ->where('id_reasons','!=', 11)
+      ->where('id_reasons','!=', 18)
+      ->where('status','!=', 'closed')
+      ->orderBy('updated_at', 'desc')
+      ->get();
+
+    $result = $this->getOldTimeTicket($record);
+    return $result;
+
   }
+  public function getBillingTickets(){
+    $record = Ticket::with('customer', 'reason', 'ticketNote','ticketHistory', 'user', 'userAssigned', 'address', 'contacts')
+      ->where('id_reasons','!=', 11)
+      ->where('id_reasons', 18)
+      ->where('status','!=', 'closed')
+      ->orderBy('updated_at', 'desc')
+      ->get();
+
+    $result = $this->getOldTimeTicket($record);
+    return $result;
+
+  }
+  public function getMyTickets(){
+    $record = Ticket::with('customer', 'reason', 'ticketNote','ticketHistory', 'user', 'userAssigned', 'address', 'contacts')
+      ->where('id_reasons','!=', 11)
+      ->where('id_users', Auth::user()->id)
+      ->where('status','!=', 'closed')
+      ->orderBy('updated_at', 'desc')
+      ->get();
+
+    $result = $this->getOldTimeTicket($record);
+    return $result;
+
+  }
+
+  public function supportTicketHistory(Request $request)
+  {
+    return TicketHistory::with('reason', 'user', 'ticketNote')->find($request->id);
+  }//not in use anymore....
+
   public function getTicketOpenTime()
   {
     $time12     = date("Y-m-d H:i:s", strtotime('-12 hours'));
@@ -101,26 +143,8 @@ class SupportController extends Controller
     return $result;
 
   }
-  public function supportTicketsBilling()
-  {
-    $record =  Ticket::with('customer', 'reason', 'ticketNote','ticketHistory', 'user', 'userAssigned', 'address', 'contacts')
-                    ->where('id_reasons', 11)
-                    ->orderBy('updated_at', 'desc')
-                    ->get();
 
-    $result = $this->getOldTimeTicket($record);
-    return $result;
-  }
-  public function supportTicketsAll()
-  {
-    $record =  Ticket::with('customer', 'reason', 'ticketNote','ticketHistory', 'user', 'userAssigned', 'address', 'contacts')
-                    ->where('status','!=', 'closed')
-                    ->orderBy('updated_at', 'desc')
-                    ->get();
 
-    $result = $this->getOldTimeTicket($record);
-    return $result;
-  }
   public function getAvailableServices(Request $request){
 
     $idList = array();
@@ -253,11 +277,11 @@ class SupportController extends Controller
 //    $ticketNoteRecord->save();
 
     $ticketHistoryRecord = new TicketHistory();
-    $ticketHistoryRecord->id_tickets = $request->id;
-    $ticketHistoryRecord->id_reasons = $request->id_reasons;
-    $ticketHistoryRecord->comment = $request->comment;
-    $ticketHistoryRecord->status = $request->status;
-    $ticketHistoryRecord->id_users = Auth::user()->id;
+    $ticketHistoryRecord->id_tickets  = $request->id;
+    $ticketHistoryRecord->id_reasons  = $request->id_reasons;
+    $ticketHistoryRecord->comment     = $request->comment;
+    $ticketHistoryRecord->status      = $request->status;
+    $ticketHistoryRecord->id_users    = Auth::user()->id;
     $ticketHistoryRecord->id_users_assigned = $request->id_users_assigned;
     $ticketHistoryRecord->save();
 

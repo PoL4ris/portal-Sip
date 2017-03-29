@@ -663,10 +663,12 @@ nav ul li a {
 }
 .table-container table tbody tr:nth-child(2n) {
 }
+.tickets-history-table.table-container table tbody tr td {}
 .table-container table tbody tr td {
   border: medium none;
   padding: 5px 10px;
   vertical-align: middle;
+  position: relative;
 }
 .table-container table tbody tr:hover {
   background: #f8f8f8 none repeat scroll 0 0;

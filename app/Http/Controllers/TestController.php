@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\TicketHistory;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Extensions\SIPBilling;
@@ -19,7 +20,8 @@ use App\Models\ContactType;
 use App\Models\PaymentMethod;
 use App\Models\ActivityLog;
 use App\Http\Controllers\CustomerController;
-//use ActivityLogs;
+use App\Http\Controllers\Lib\UtilsController;
+
 
 class TestController extends Controller
 {
@@ -115,66 +117,25 @@ class TestController extends Controller
 
     public function supportTest()
     {
+      $utils = new UtilsController();
 
+      $record = TicketHistory::find(34523);
+      $good_string = $utils->sanitize($record->comment);
 
-      $record = Ticket::with('customer', 'reason', 'ticketNote','ticketHistory', 'user', 'userAssigned', 'address', 'contacts')
-        ->where('id_reasons','!=', 11)
-        ->where('status','!=', 'closed')
-        ->orderBy('updated_at', 'desc')
-        ->get()->toArray();
-
-      $result = $this->getOldTimeTicket($record);
-      return $result;
+      print($good_string);
 
 
 
-
-      $cus = Customer::with(
-//        'addresses',
-//        'contacts',
-//        'type',
-//        'address.buildings',
-//        'address.buildings.neighborhood',
-//        'status',
-//        'status.type',
-        'openTickets'
-//        'log',
-//        'log.user'
-        )
-        ->find(501);
+    dd('pablo laris');
 
 
-      print '<pre>';
-      dd($cus->openTickets->toArray());
+
+
+      $result = $supController->getOldTimeTicket($record);
+//      print '<pre>';
+      dd($result->toArray());
       die();
 
-
-
-        $supController = new SupportController();
-
-
-        $record = Ticket::with('customer', 'reason', 'ticketNote','ticketHistory', 'user', 'userAssigned', 'address', 'contacts')
-            ->where('id_reasons','!=', 11)
-            ->where('status','!=', 'closed')
-            ->orderBy('updated_at', 'desc')
-            ->limit(3)
-            ->get()->toArray();
-
-        $result = $supController->getOldTimeTicket($record);
-
-
-        //    $result = Customer::with('contacts.types')
-        $result = Customer::with('addresses', 'contacts', 'type','address.buildings', 'address.buildings.neighborhood', 'status', 'status.type', 'openTickets', 'log')
-            //                             'status.type',
-            //                             'openTickets')
-            ->find(501)
-            ->toArray();
-
-
-
-        //      print '<pre>';
-        dd($result);
-        die();
 
 
     }
