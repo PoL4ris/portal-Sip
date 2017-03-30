@@ -130,35 +130,43 @@ class DataMigrationUtils {
 
     public function testProgressBar(){
 
-        $this->startProgressBar();
+//        $this->startProgressBar(1);
         if($this->output != null){
-            $this->output->writeln('Display this on the screen');
+            $this->output->writeln('Console output initialized');
         }
 
-        return;
+//        return;
 
         $units = 50;
+//
+//        $output = new ConsoleOutput();
+//        //        $output->setFormatter(new OutputFormatter(true));
+//
+//        $this->output->writeln('Starting in 5 seconds ...');
+//        // create a new progress bar (50 units)
+//        $progress = new ProgressBar($output, $units);
+//        //        $progress->setFormat(' %current%/%max% [%bar%] %percent:3s%% %elapsed:6s%/%estimated:-6s% %memory:6s%');
+//        //        $progress->setFormat('table1:   %current% [%bar%] %percent:3s%%       %estimated:-6s%');
+//        $progress->setFormatDefinition('custom', ' %component%:    %current%/%max% [%bar%] %percent:3s%%       %estimated:-6s%');
+//        $progress->setFormat('custom');
+//        $progress->setMessage('test', 'component');
+//        $progress->start();
+//        sleep(5);
 
-        $output = new ConsoleOutput();
-        //        $output->setFormatter(new OutputFormatter(true));
-
-        // create a new progress bar (50 units)
-        $progress = new ProgressBar($output, $units);
-        //        $progress->setFormat(' %current%/%max% [%bar%] %percent:3s%% %elapsed:6s%/%estimated:-6s% %memory:6s%');
-        //        $progress->setFormat('table1:   %current% [%bar%] %percent:3s%%       %estimated:-6s%');
-
-        $progress->setFormatDefinition('custom', ' %table%:    %current%/%max% [%bar%] %percent:3s%%       %estimated:-6s%');
-        $progress->setFormat('custom');
+        if($this->startProgressBar($units, 'test') == false){
+            return false;
+        }
 
         $i = 0;
         while ($i++ < $units) {
 
             //            $progress->setMessage('Importing ...');
-            $progress->setMessage($i, 'table');
+//            $progress->setMessage($i, 'table');
 
             // advance the progress bar 1 unit
-            $progress->advance();
-            // $progress->setProgress($progress);
+//            $progress->advance();
+            $this->advanceProgressBar();
+//             $this->progress->setProgress($progress);
 
             // you can also advance the progress bar by more than 1 unit
             // $progress->advance(3);
@@ -564,18 +572,19 @@ class DataMigrationUtils {
 
     public function truncateAllTables() {
 
-        $this->startProgressBar(18, 'truncating tables');
+
         $tables = ['users', 'apps', 'customers', 'buildings', 'building_properties',
                    'building_property_values', 'products', 'product_properties',
                    'product_property_values', 'customer_products', 'building_products',
-                   'network_nodes', 'ports', 'ticket_reasons', 'tickets', 'ticket_history',
-                   'billing_transaction_logs', 'data_migrations'];
+                   'network_nodes', 'ports', 'reasons', 'tickets', 'ticket_history',
+                   'billing_transaction_logs', 'data_migrations', 'payment_methods',
+                   'address', 'contacts', 'contact_types', 'categories', 'status',
+                   'types', 'neighborhoods'];
 
-        $count = 1;
+        $this->startProgressBar(count($tables), 'truncating tables');
         foreach($tables as $table) {
-            DB::table('users')->truncate();
-            $this->advanceProgressBar($count);
-            $count++;
+            DB::table($table)->truncate();
+            $this->advanceProgressBar();
         }
         $this->stopProgressBar();
     }
@@ -591,7 +600,7 @@ class DataMigrationUtils {
         $newDataModelName = $migrationDataMap[2];
         $customFunc = $migrationDataMap[3];
 
-        $recordsPerCycle = 200; //$this->getJobProperty('lease-request-job', 'records_per_cycle');
+        $recordsPerCycle = 50; //$this->getJobProperty('lease-request-job', 'records_per_cycle');
 
         $totalLegacyRecords = $legacyDataModelName::count();
         $this->startProgressBar($totalLegacyRecords, $legacyTableName);
@@ -630,9 +639,6 @@ class DataMigrationUtils {
         if($customQueryFuction != null){
             $runQuery = $customQueryFuction;
         }
-
-        // Set the progress bar to 0 so it displays on the screen
-        $this->advanceProgressBar(0, 0);
 
         while (true) {
 
@@ -699,30 +705,42 @@ class DataMigrationUtils {
         return (max($unixTimestamp1, $unixTimestamp2) == $unixTimestamp1) ? $carbonTimestamp1->format('Y-m-d H:i:s') : $carbonTimestamp2->format('Y-m-d H:i:s');
     }
 
-    protected function startProgressBar($units = 0, $component = ''){
+    protected function copyTimestamps($legacyRecord, $newRecord){
+        $newRecord->created_at = ($legacyRecord->created_at == '0000-00-00 00:00:00') ? null : $legacyRecord->created_at;
+        $newRecord->updated_at = ($legacyRecord->updated_at == '0000-00-00 00:00:00') ? null : $legacyRecord->updated_at;
+        if($legacyRecord->created_at == null && $legacyRecord->updated_at != null){
+            $newRecord->created_at = $newRecord->updated_at;
+        }
+        return $newRecord;
+    }
+
+    protected function startProgressBar($units = null, $component = ''){
 
         if($this->console == false){ return; }
+
+        if($units == null || $units < 1) {
+            $this->output->writeln('<error>Progress bar units not set</error>');
+            return false;
+        }
 
         $this->progress = new ProgressBar($this->output, $units);
         $this->progress->setFormatDefinition('custom', ' %component%:    %current%/%max% [%bar%] %percent:3s%%       %estimated:-6s%');
         $this->progress->setFormat('custom');
         $this->progress->setMessage($component, 'component');
+        $this->progress->start();
+        return true;
         //        $output->setFormatter(new OutputFormatter(true));
     }
 
-    protected function advanceProgressBar($count = 0, $progress = null){
-
-        if($this->progress == null) { return; }
+    protected function advanceProgressBar($count = 1, $progress = null){
 
         if($count > 0) {
             $this->progress->advance($count);
             return;
         }
 
-        if($progress != null) {
-            $this->progress->setProgress($progress);
-            return;
-        }
+        if($this->progress == null) { return; }
+        $this->progress->setProgress($progress);
     }
 
     protected function progressBarError($errorMessage) {
@@ -742,6 +760,8 @@ class DataMigrationUtils {
     ########################################
     # Creation and maintenance functions
     ########################################
+
+
 
     public function findOrCreateCustomer(CustomerOld $legacyCustomer) {
 
@@ -774,8 +794,7 @@ class DataMigrationUtils {
             $customer->id_status = 2;
         }
         $customer->signedup_at = $legacyCustomer->DateSignup;
-        $customer->created_at = $legacyCustomer->created_at;
-        $customer->updated_at = $legacyCustomer->updated_at;
+        $customer = $this->copyTimestamps($legacyCustomer, $customer);
         $customer->save();
         return true;
     }
@@ -802,11 +821,11 @@ class DataMigrationUtils {
         $address->country = $legacyCustomer->Country;
         $address->id_customers = $legacyCustomer->CID;
         $address->id_buildings = $legacyCustomer->LocID;
-        $address->created_at = $legacyCustomer->created_at;
         $serviceLocation = $legacyCustomer->serviceLocation;
         if($serviceLocation != null){
             $address->code = $serviceLocation->Shortname;
         }
+        $address = $this->copyTimestamps($legacyCustomer, $address);
         $address->save();
         return true;
     }
@@ -827,14 +846,14 @@ class DataMigrationUtils {
         if($legacyCustomer->Email != ''){
             $emailContact = Contact::firstOrCreate(['id_customers' => $legacyCustomer->CID, 'id_types' => 5]);
             $emailContact->value = $legacyCustomer->Email;
-            $emailContact->created_at = $legacyCustomer->created_at;
+            $emailContact = $this->copyTimestamps($legacyCustomer, $emailContact);
             $emailContact->save();
         }
 
         if($legacyCustomer->Tel != ''){
             $phoneContact = Contact::firstOrCreate(['id_customers' => $legacyCustomer->CID, 'id_types' => 1]);
             $phoneContact->value = $legacyCustomer->Tel;
-            $phoneContact->created_at = $legacyCustomer->created_at;
+            $phoneContact = $this->copyTimestamps($legacyCustomer, $phoneContact);
             $phoneContact->save();
         }
     }
@@ -859,8 +878,7 @@ class DataMigrationUtils {
         $address->state = $legacyLocation->State;
         $address->country = $legacyLocation->Country;
         $address->id_buildings = $legacyLocation->LocID;
-        $address->created_at = $legacyLocation->created_at;
-        $address->updated_at = $legacyLocation->updated_at;
+        $address = $this->copyTimestamps($legacyLocation, $address);
         $address->save();
         return true;
     }
@@ -891,7 +909,7 @@ class DataMigrationUtils {
             $paymentMethod->id_customers = $legacyCustomer->CID;
             $paymentMethod->created_at = $legacyCustomer->created_at;
             $paymentMethod->updated_at = $legacyCustomer->updated_at;
-
+            $paymentMethod = $this->copyTimestamps($legacyCustomer, $paymentMethod);
             $address = Address::where('id_customers', $legacyCustomer->CID)->first();
             if($address != null){
                 $paymentMethod->id_address = $address->id;
@@ -932,8 +950,7 @@ class DataMigrationUtils {
         $building->year_built = date('Y-M-d H:i:s');
         $building->units = ($legacyLocation->Units == null || $legacyLocation->Units == '') ? 0 : $legacyLocation->Units;
         $building->floors = 0;
-        $building->created_at = $legacyLocation->created_at;
-        $building->updated_at = $legacyLocation->updated_at;
+        $building = $this->copyTimestamps($legacyLocation, $building);
         $building->save();
         return true;
     }
@@ -954,8 +971,7 @@ class DataMigrationUtils {
         $buildingProperty->id = $legacyLocationProperty->PropID;
         $buildingProperty->name = $legacyLocationProperty->FieldTitle;
         $buildingProperty->description = $legacyLocationProperty->Description;
-        $buildingProperty->created_at = $legacyLocationProperty->created_at;
-        $buildingProperty->updated_at = $legacyLocationProperty->updated_at;
+        $buildingProperty = $this->copyTimestamps($legacyLocationProperty, $buildingProperty);
         $buildingProperty->save();
         return true;
     }
@@ -1017,8 +1033,7 @@ class DataMigrationUtils {
         $product->amount = $legacyProduct->Amount;
         $product->frequency = $legacyProduct->ChargeFrequency;
         $product->id_products = $legacyProduct->ParentProdID;
-        $product->created_at = $legacyProduct->created_at;
-        $product->updated_at = $legacyProduct->updated_at;
+        $product = $this->copyTimestamps($legacyProduct, $product);
 
         switch ($legacyProduct->ProdType) {
 
@@ -1069,8 +1084,7 @@ class DataMigrationUtils {
         $productProperty->id = $legacyProductProperty->PropID;
         $productProperty->name = $legacyProductProperty->FieldTitle;
         $productProperty->description = $legacyProductProperty->Description;
-        $productProperty->created_at = $legacyProductProperty->created_at;
-        $productProperty->updated_at = $legacyProductProperty->updated_at;
+        $productProperty = $this->copyTimestamps($legacyProductProperty, $productProperty);
         $productProperty->save();
         return true;
     }
@@ -1091,8 +1105,7 @@ class DataMigrationUtils {
         $productPropertyValue->id_products = $legacyProductPropertyValue->ProdID;
         $productPropertyValue->id_product_properties = $legacyProductPropertyValue->PropID;
         $productPropertyValue->value = $legacyProductPropertyValue->Value;
-        $productPropertyValue->created_at = $legacyProductPropertyValue->created_at;
-        $productPropertyValue->updated_at = $legacyProductPropertyValue->updated_at;
+        $productPropertyValue = $this->copyTimestamps($legacyProductPropertyValue, $productPropertyValue);
         $productPropertyValue->save();
         return true;
     }
@@ -1148,8 +1161,7 @@ class DataMigrationUtils {
             $customerProduct->id_address = $address->id;
         }
 
-        $customerProduct->created_at = $legacyCustomerProduct->created_at;
-        $customerProduct->updated_at = $legacyCustomerProduct->updated_at;
+        $customerProduct = $this->copyTimestamps($legacyCustomerProduct, $customerProduct);
         $customerProduct->save();
         return true;
     }
@@ -1169,8 +1181,7 @@ class DataMigrationUtils {
         $buildingProduct->id = $legacyBuildingProduct->SLPID;
         $buildingProduct->id_buildings = $legacyBuildingProduct->LocID;
         $buildingProduct->id_products = $legacyBuildingProduct->ProdID;
-        $buildingProduct->created_at = $legacyBuildingProduct->created_at;
-        $buildingProduct->updated_at = $legacyBuildingProduct->updated_at;
+        $buildingProduct = $this->copyTimestamps($legacyBuildingProduct, $buildingProduct);
         $buildingProduct->save();
         return true;
     }
@@ -1208,8 +1219,7 @@ class DataMigrationUtils {
             default:
                 break;
         }
-        $networkNode->created_at = $legacyNetworkNode->created_at;
-        $networkNode->updated_at = $legacyNetworkNode->updated_at;
+        $networkNode = $this->copyTimestamps($legacyNetworkNode, $networkNode);
         $networkNode->save();
         return true;
     }
@@ -1239,8 +1249,7 @@ class DataMigrationUtils {
             $port->id_customers = $legacyCustomer->CID;
         }
 
-        $port->created_at = $legacyPort->created_at;
-        $port->updated_at = $legacyPort->updated_at;
+        $port = $this->copyTimestamps($legacyPort, $port);
         $port->save();
         return true;
     }
@@ -1288,7 +1297,7 @@ class DataMigrationUtils {
         }
         $reason->created_at = $legacyReason->created_at;
         $reason->updated_at = $legacyReason->updated_at;
-        //        Log::info('Saving record: '.$reason->id);
+        $reason = $this->copyTimestamps($legacyReason, $reason);
         $reason->save();
         return true;
     }
@@ -1314,8 +1323,7 @@ class DataMigrationUtils {
         $ticket->status = $legacyTicket->Status;
         $ticket->id_users = ($legacyTicket->StaffID == '') ? 0 : $legacyTicket->StaffID;
         $ticket->id_users_assigned = ($legacyTicket->AssignedToID == '') ? 0 : $legacyTicket->AssignedToID;
-        $ticket->created_at = $legacyTicket->DateCreated;
-        $ticket->updated_at = $legacyTicket->LastUpdate;
+        $ticket = $this->copyTimestamps($legacyTicket, $ticket);
 
         if($legacyTicket->RID == 1) {
             $ticket->id_reasons = 29;
@@ -1356,8 +1364,7 @@ class DataMigrationUtils {
         if($legacyTicketHistory->RID == 0) {
             $ticketHistory->id_reasons = 1;
         }
-        $ticketHistory->created_at = $legacyTicketHistory->created_at;
-        $ticketHistory->updated_at = $legacyTicketHistory->updated_at;
+        $ticketHistory = $this->copyTimestamps($legacyTicketHistory, $ticketHistory);
         $ticketHistory->save();
         //        $ticketHistory = null;
         return true;
@@ -1397,6 +1404,7 @@ class DataMigrationUtils {
         $transactionLog->comment = $legacyTransactionLog->Comment;
         $transactionLog->created_at = $legacyTransactionLog->created_at;
         $transactionLog->updated_at = $legacyTransactionLog->updated_at;
+        $transactionLog = $this->copyTimestamps($legacyTransactionLog, $transactionLog);
         $transactionLog->save();
         return true;
     }

@@ -41,7 +41,6 @@ class MigrateFromLegacyDatabase extends Command
         $this->info('Starting data migration');
         $dbMigrationUtil = new DataMigrationUtils(true);
 
-//        $dbMigrationUtil->memoryTest();
 //        $dbMigrationUtil->testProgressBar();
 
         $dbMigrationUtil->seedDataMigrationsTable();

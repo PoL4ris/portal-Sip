@@ -22,7 +22,8 @@ class BillingHelper {
     private $passcode = '$2y$10$igbvfItrwUkvitqONf4FkebPyD0hhInH.Be4ztTaAUlxGQ4yaJd1K';
 
     public function __construct() {
-        DB::connection()->enableQueryLog();
+        // DO NOT ENABLE QUERY LOGGING IN PRODUCTION
+        //        DB::connection()->enableQueryLog();
         $configPasscode = config('billing.ippay.passcode');    
         $this->testMode = (Hash::check($configPasscode, $this->passcode)) ? false : true;
     }

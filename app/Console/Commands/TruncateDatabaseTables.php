@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use App\Extensions\DataMigrationUtils;
 
 class TruncateDatabaseTables extends Command
 {

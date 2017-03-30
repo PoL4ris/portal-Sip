@@ -13,7 +13,8 @@ use DB;
 class SIPNetwork {
 
     public function __construct() {
-        DB::connection()->enableQueryLog();
+        // DO NOT ENABLE QUERY LOGGING IN PRODUCTION
+        //        DB::connection()->enableQueryLog();
     }
 
     protected function isRequestFromRouter(Request $request){
