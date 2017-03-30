@@ -502,10 +502,15 @@ angular.module('app.chat', ['ngSanitize'])
 })();
 'use strict';
 
-angular.module('app.dashboard').controller('DashboardCtrl', function ($scope, $interval) {
+angular.module('app.dashboard').controller('DashboardCtrl', function ($scope, $interval, customerService) {
 // angular.module('app.dashboard').controller('DashboardCtrl', function ($scope, $interval, CalendarEvent) {
   // Live Feeds Widget Data And Display Controls
   // Live Stats Tab
+
+  if(customerService.sideBarFlag) {
+    $scope.sipTool(2);
+    customerService.sideBarFlag = false;
+  }
 
 
   function getFakeItem(index, prevValue){

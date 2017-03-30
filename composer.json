@@ -13,7 +13,8 @@
         "google/apiclient": "1.*",
         "socialiteproviders/google": "^1.1",
         "monolog/monolog": "^1.18",
-        "doctrine/dbal": "^2.5"
+        "doctrine/dbal": "^2.5",
+        "guzzlehttp/guzzle": "~5.3|~6.0"
 
     },
     "require-dev": {

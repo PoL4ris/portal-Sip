@@ -25,6 +25,7 @@ Route::get('testTickets',        'TestController@testCustomerTickets');
 Route::get('getSignupProducts',  'SignupController@getSignupProducts');
 Route::get('process-lease',      'DhcpController@processLease');
 Route::get('invoiceTest',        'TestController@invoiceTest');
+Route::get('mail',               'TestController@mail');
 
 Route::group(['middleware' => 'web'], function () {
 
@@ -145,6 +146,7 @@ Route::group(['middleware' => 'web'], function () {
   Route::get('getBuildingProperties',   'BuildingController@getBuildingProperties');
   Route::get('getProducts',             'SupportController@getProducts');//new
   Route::get('getStatus',               'MainController@getStatus');//new
+  Route::get('getBuildingLocations',    'MainController@getBuildingLocations');//new
 
   //LOGS
   Route::get('getCustomerLog',          'CustomerController@getCustomerLog');//new

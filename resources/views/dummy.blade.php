@@ -133,6 +133,8 @@ Possible attributes
 <script src="/js/lib.js"></script>
 <script src="/js/calendar.js"></script>
 <script src="/js/sidebar.js"></script>
+{{--<script src="/js/portal/cluster.js"></script>--}}
+<script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"></script>
 
 
 </body>

@@ -21,6 +21,10 @@ use App\Models\PaymentMethod;
 use App\Models\ActivityLog;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\Lib\UtilsController;
+use Mail;
+use Config;
+use Auth;
+use View;
 
 
 class TestController extends Controller
@@ -117,27 +121,20 @@ class TestController extends Controller
 
     public function supportTest()
     {
-      $utils = new UtilsController();
+      $test = new TestController();
+      $test->mail();
 
-      $record = TicketHistory::find(34523);
-      $good_string = $utils->sanitize($record->comment);
-
-      print($good_string);
-
-
-
-    dd('pablo laris');
+      Mail::send('mail.signup', ['users' => 'asa'], function ($mensaje){
+        $mensaje->to('pablo@silverip.com', 'Pablo Laris')->subject('Prueba #2');
+      });
+      return 'OK';
 
 
-
-
-      $result = $supController->getOldTimeTicket($record);
-//      print '<pre>';
-      dd($result->toArray());
-      die();
-
-
-
+    }
+    public function mail(){
+      $view = View::make('mail.signup')->with(['prueba' => 'pablo Laris', 'warpol' => 'esto es todo' ]);
+      $html = $view->render();
+      return $html;
     }
 
     public function cleanView(){

@@ -211,5 +211,8 @@ class MainController extends Controller
   public function getStatus(){
     return Status::all();
   }
+  public function getBuildingLocations(){
+    return Address::groupBy('id_buildings')->get();
+  }
 }
 
