@@ -167,6 +167,9 @@ return [
         // Custom activity logger
         App\Providers\ActivityLogsServiceProvider::class,
 
+        //CSS inline
+        Fedeisas\LaravelMailCssInliner\LaravelMailCssInlinerServiceProvider::class,
+
     ],
 
     /*

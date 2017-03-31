@@ -121,20 +121,54 @@ class TestController extends Controller
 
     public function supportTest()
     {
-      $test = new TestController();
-      $test->mail();
 
-      Mail::send('mail.signup', ['users' => 'asa'], function ($mensaje){
-        $mensaje->to('pablo@silverip.com', 'Pablo Laris')->subject('Prueba #2');
-      });
-      return 'OK';
+      $customer  = Customer::with('address')->find(501);
+      $address   = $customer->address;
+//      $toAddress = ['pablo@silverip.com', 'pol.laris@gmail.com', 'peyman@silverip.com'];
+      $toAddress = ['pablo@silverip.com'];
+      $template  = 'mail.signup';
+      $subject   = 'dummy Test Mail';
+
+      $data = array();
+      $data['uno']  = '111';
+      $data['dos']  = '222';
+      $data['tres'] = '333';
+
+      Mail::send(array('html'     => $template),
+
+                      ['customer' => $customer,
+                       'address'  => $address,
+                       'data'     => $data
+                      ], function($message) use($toAddress,
+                                                $subject,
+                                                $customer,
+                                                $address,
+                                                $data)
+                                                {
+                                                  $message->from('pablo@silverip.com', 'SilverIP');
+                                                  $message->to($toAddress,
+                                                               trim($customer->first_name).' '.trim($customer->last_name)
+                                                              )->subject($subject);
+                                                }
+                  );
+
+      return 'MAIL SENT';
 
 
     }
     public function mail(){
-      $view = View::make('mail.signup')->with(['prueba' => 'pablo Laris', 'warpol' => 'esto es todo' ]);
-      $html = $view->render();
-      return $html;
+      $customer  = Customer::with('address')->find(501);
+      $address   = $customer->address;
+      $toAddress = 'pablo@silverip.com';
+      $template  = 'mail.signup';
+      $subject   = 'dummy Test Mail';
+
+      $data = array();
+      $data['uno']  = '111';
+      $data['dos']  = '222';
+      $data['tres'] = '333';
+
+      return view('mail.signup', ['customer' => $customer, 'address' => $address]);
     }
 
     public function cleanView(){

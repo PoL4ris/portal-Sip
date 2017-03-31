@@ -11,6 +11,8 @@
 </style>
 <article class="col-sm-12 col-md-12 col-lg-12 ">
 
+  <div class="container ">SilverIP Locations.</div>
+
     <div class="row">
       <div id="map"></div>
     </div>
@@ -171,30 +173,32 @@ var toma = [
       center: {lat: 41.8599896, lng: -87.6814276}
     });
 
-    // Create an array of alphabetical characters used to label the markers.
     var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
     var markers = locations.map(function(location, i) {
-//    console.log(location);
-      return new google.maps.Marker({
+
+      var dataText = geocoder.geocode({'location': location}, function(results, status) {
+          if(status == 'OK'){
+            return results[0].formatted_address;
+          }
+        });
+
+      var infowindow = new google.maps.InfoWindow({
+        content: dataText
+      });
+
+      var marker =  new google.maps.Marker({
         position: location,
         label: labels[i % labels.length],
         animation: google.maps.Animation.DROP,
-        title: 'hola bola',
-        click: function(){console.log('warpol');}
-//        title:geocoder.geocode({'location': location}, function(results, status) {
-//          if(status == 'OK'){
-//            console.log(results[0].formatted_address);
-//            console.log(results[1].formatted_address);
-//            return results[0].formatted_address;
-//          }
-//        }),
+        title:'hola'
       });
 
-
-      var infowindow = new google.maps.InfoWindow({
-        content: 'shalom'
+      marker.addListener('click', function() {
+        infowindow.open(map, marker);
       });
+
+      return marker;
 
     });
 
@@ -213,7 +217,7 @@ var toma = [
     {lat: 41.883999 , lng: -87.645037},
     {lat: 41.8865424 , lng: -87.62150199999996},
     {lat: 41.806603 , lng: -87.58658100000002},
-
+//
     {lat: 41.87993609999999 , lng: -87.64207629999999},
     {lat: 41.822647 , lng: -87.683246},
     {lat: 41.8871622 , lng: -87.64364810000001},
