@@ -44,7 +44,7 @@ class Kernel extends ConsoleKernel
             ->name('data:update-from-legacy')
             ->everyMinute()
             ->withoutOverlapping()
-            ->sendOutputTo(config('joblogs.update-data-from-legacy-job-log'));
+            ->sendOutputTo(config('joblogs.update-data-from-legacy-db-job-log'));
 
 
         $schedule->call(function() use ($events, $schedule) {
