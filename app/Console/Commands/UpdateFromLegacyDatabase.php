@@ -40,7 +40,7 @@ class UpdateFromLegacyDatabase extends Command
     {
         $this->info('Starting data migration');
         $dbMigrationUtil = new DataMigrationUtils(true);
-        $dbMigrationUtil->updateAllDataFromLegacyDatabase();
+        $dbMigrationUtil->updateAllDataFromLegacyDatabaseJob();
         $this->info('Done');
     }
 
