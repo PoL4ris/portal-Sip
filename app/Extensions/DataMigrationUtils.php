@@ -996,17 +996,22 @@ class DataMigrationUtils {
     public function updateAllDataFromLegacyDatabaseJob(){
         $jobName = 'update-from-legacy-db-job';
         if($this->isJobEnabled($jobName) == false){
-            Log::info('Job: '.$this->jobNames[$jobName].' is disabled');
+            Log::notice('Job: '.$this->jobNames[$jobName].' is disabled');
             return false;
         }
 
-        Log::info('Job: '.$this->jobNames[$jobName].' Looking for records to update ...');
         $this->setJobStatus($jobName, 'running');
-
-        $this->updateAllDataFromLegacyDatabase();
-
+        Log::notice('Job: '.$this->jobNames[$jobName].' Looking for records to update ...');
+        while(true){
+            $this->updateAllDataFromLegacyDatabase();
+            sleep(15);
+            if($this->isJobEnabled($jobName) == false){
+                Log::notice('Job: '.$this->jobNames[$jobName].' has been disabled');
+                break;
+            }
+        }
+        Log::notice('Job: '.$this->jobNames[$jobName].' done updating data from legacy database.');
         $this->setJobStatus($jobName, 'stopped');
-        Log::info('Job: '.$this->jobNames[$jobName].' done updating data from legacy database.');
     }
 
     public function updateAllDataFromLegacyDatabase() {
