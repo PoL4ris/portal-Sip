@@ -1009,6 +1009,7 @@ class DataMigrationUtils {
                 Log::notice('Job: '.$this->jobNames[$jobName].' has been disabled');
                 break;
             }
+            $this->updateJobTimestamp($jobName);
         }
         Log::notice('Job: '.$this->jobNames[$jobName].' done updating data from legacy database.');
         $this->setJobStatus($jobName, 'stopped');
