@@ -26,6 +26,7 @@ Route::get('getSignupProducts',  'SignupController@getSignupProducts');
 Route::get('process-lease',      'DhcpController@processLease');
 Route::get('invoiceTest',        'TestController@invoiceTest');
 Route::get('mail',               'TestController@mail');
+Route::get('migrate',            'TestController@testDataMigration');
 
 Route::group(['middleware' => 'web'], function () {
 

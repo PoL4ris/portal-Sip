@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Contact extends Model
 {
+    protected $fillable = ['id_customers', 'id_types', 'value'];
+
     /**
      * 
      * @return type

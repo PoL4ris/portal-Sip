@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Extensions\SIPBilling;
 use App\Extensions\BillingHelper;
+use App\Extensions\DataMigrationUtils;
 use DB;
 use App\Models\Customer;
 use App\Models\Ticket;
@@ -26,6 +27,8 @@ use Config;
 use Auth;
 use View;
 
+//use ActivityLogs;
+use Symfony\Component\Console\Helper\ProgressBar;
 
 class TestController extends Controller
 {
@@ -172,124 +175,124 @@ class TestController extends Controller
     }
 
     public function cleanView(){
-      $supController = new SupportController();
+        $supController = new SupportController();
 
 
-      $record = Ticket::with('customer', 'reason', 'ticketNote','ticketHistory', 'user', 'userAssigned', 'address', 'contacts')
-        ->where('id_reasons','!=', 11)
-        ->where('status','!=', 'closed')
-        ->orderBy('updated_at', 'desc')
-        ->limit(3)
-        ->get()->toArray();
+        $record = Ticket::with('customer', 'reason', 'ticketNote','ticketHistory', 'user', 'userAssigned', 'address', 'contacts')
+            ->where('id_reasons','!=', 11)
+            ->where('status','!=', 'closed')
+            ->orderBy('updated_at', 'desc')
+            ->limit(3)
+            ->get()->toArray();
 
-      $result = $supController->getOldTimeTicket($record);
-
-
-      //    $result = Customer::with('contacts.types')
-      $result = Customer::with('addresses', 'contacts', 'type','address.buildings', 'address.buildings.neighborhood', 'status', 'status.type', 'openTickets', 'log')
-        //                             'status.type',
-        //                             'openTickets')
-        ->find(501)
-        ->toArray();
+        $result = $supController->getOldTimeTicket($record);
 
 
-
-      //      print '<pre>';
-      dd($result);
-      die();
-
-
-      print '<pre>';
-
-      //    $customerControllerVar = new CustomerController();
-      //    $customerControllerData = $customerControllerVar->customersData();
-      //
-      //    print '<pre>';
-      //    print_r($customerControllerData);
-      //    die();
-
-      //    print_r($last_query);
-
-      $coso = CustomerProduct::where('id_customers',501)->get()->toArray();
-
-      print_r($coso);
-      die();
-
-      $coso = Customer::with('address', 'contact', 'type','address.buildings', 'address.buildings.neighborhood')->find(13579)->toarray();
-
-      $queries = DB::getQueryLog();
-      $last_query = end($queries);
-
-
-      //    print_r($last_query);
-
-
-      print '----------------------------------------------<br>';
-
-      print_r(
-        $coso
-      );
+        //    $result = Customer::with('contacts.types')
+        $result = Customer::with('addresses', 'contacts', 'type','address.buildings', 'address.buildings.neighborhood', 'status', 'status.type', 'openTickets', 'log')
+            //                             'status.type',
+            //                             'openTickets')
+            ->find(501)
+            ->toArray();
 
 
 
-      die();
+        //      print '<pre>';
+        dd($result);
+        die();
+
+
+        print '<pre>';
+
+        //    $customerControllerVar = new CustomerController();
+        //    $customerControllerData = $customerControllerVar->customersData();
+        //
+        //    print '<pre>';
+        //    print_r($customerControllerData);
+        //    die();
+
+        //    print_r($last_query);
+
+        $coso = CustomerProduct::where('id_customers',501)->get()->toArray();
+
+        print_r($coso);
+        die();
+
+        $coso = Customer::with('address', 'contact', 'type','address.buildings', 'address.buildings.neighborhood')->find(13579)->toarray();
+
+        $queries = DB::getQueryLog();
+        $last_query = end($queries);
+
+
+        //    print_r($last_query);
+
+
+        print '----------------------------------------------<br>';
+
+        print_r(
+            $coso
+        );
+
+
+
+        die();
     }
 
     public function logFunction() {
 
-      $a = 4000000;
-//      $a = 63245986;
-      $b = 0;
+        $a = 4000000;
+        //      $a = 63245986;
+        $b = 0;
 
-      $x = 1;
-      $y = 0;
-      $z = 0;
-      $p = 0;
+        $x = 1;
+        $y = 0;
+        $z = 0;
+        $p = 0;
 
-      for($p = 0; $z < $a; $p++){
+        for($p = 0; $z < $a; $p++){
 
 
-//        print 'SERIE-->' . $p . '<br>';
-        $z = $x + $y;
-        $y = $x;
-        $x = $z;
+            //        print 'SERIE-->' . $p . '<br>';
+            $z = $x + $y;
+            $y = $x;
+            $x = $z;
 
-        if($z % 2 == 0)
-        {
-          $b = $b + $z;
-          print '|----- <strong>' . $b . '</strong> -----|<br>';
-        }
+            if($z % 2 == 0)
+            {
+                $b = $b + $z;
+                print '|----- <strong>' . $b . '</strong> -----|<br>';
+            }
 
-        /**
+            /**
      * Add new card
      */
-        $pm = new PaymentMethod;
-        $pm->id_customers = '4667';
-        $pm->id_address = '33';
-        $pm->types = 'Credit Card';
-        $pm->card_type = 'VS';
-        $pm->account_number = '4000000000000002';
-        $pm->CCscode = '123';
-        $pm->exp_month = '12';
-        $pm->exp_year = '2019';
-        $pm->billing_phone = '3126003903';
-        $result = $pm->save();
+            $pm = new PaymentMethod;
+            $pm->id_customers = '4667';
+            $pm->id_address = '33';
+            $pm->types = 'Credit Card';
+            $pm->card_type = 'VS';
+            $pm->account_number = '4000000000000002';
+            $pm->CCscode = '123';
+            $pm->exp_month = '12';
+            $pm->exp_year = '2019';
+            $pm->billing_phone = '3126003903';
+            $result = $pm->save();
 
-        print '<pre>';
-        print_r($pm);
-        die();
-          
-          print '[ z ] ::----> ' . ($z) . '<br>';
+            print '<pre>';
+            print_r($pm);
+            die();
+
+            print '[ z ] ::----> ' . ($z) . '<br>';
 
 
-//        if($p > 2000000 && $p < 2000001)
-//          print 'Z-->' . $z . '<br>';
-//        if($p > 3000000 && $p < 3000001)
-//          print 'Z-->' . $z . '<br>';
-//        if($p > 4000000 && $p < 4000001)
-//          print 'Z-->' . $z . '<br>';
+            //        if($p > 2000000 && $p < 2000001)
+            //          print 'Z-->' . $z . '<br>';
+            //        if($p > 3000000 && $p < 3000001)
+            //          print 'Z-->' . $z . '<br>';
+            //        if($p > 4000000 && $p < 4000001)
+            //          print 'Z-->' . $z . '<br>';
 
-      }
+        }
 
 
         //        $queries = DB::getQueryLog();
@@ -299,22 +302,36 @@ class TestController extends Controller
     }
 
     public function invoiceTest(){
-//        $customerModel = new Customer;
-//        dd($customerModel->getActiveCustomerProductsByBuildingID('28'));
-//        dd($customerModel->getActiveCustomerProductsByCustomerID('3839'));
-//        dd($customerModel->getInvoiceableCustomerProducts(null, '28'));
-        
-//        $customer = Customer::with('payment')->find(3818);
-//        dd($customer);
-        
-//        dd($billingHelper->getMode());        
+        //        $customerModel = new Customer;
+        //        dd($customerModel->getActiveCustomerProductsByBuildingID('28'));
+        //        dd($customerModel->getActiveCustomerProductsByCustomerID('3839'));
+        //        dd($customerModel->getInvoiceableCustomerProducts(null, '28'));
+
+        //        $customer = Customer::with('payment')->find(3818);
+        //        dd($customer);
+
+        //        dd($billingHelper->getMode());
         $billingHelper = new BillingHelper();
         dd($billingHelper->generateResidentialInvoiceRecords());
-//        $billingHelper->processAutopayInvoices();
+        //        $billingHelper->processAutopayInvoices();
     }
 
     public function testActivityLog(){
         ActivityLog::test();
+    }
+
+    public function testDataMigration() {
+
+        $dbMigrationUtil = new DataMigrationUtils();
+
+        $dbMigrationUtil->updateFromCustomersTable();
+
+//        dd($dbMigrationUtil->maxMysqlTimestamp('2017-03-26 12:32:12', '2017-03-27 12:32:12'));
+//        $dbMigrationUtil->migrateCustomersTable();
+//        $dbMigrationUtil->migrateSupportTicketHistoryTable();
+//        $dbMigrationUtil->migrateSupportTicketReasons();
+
+        dd('done');
     }
 
 }

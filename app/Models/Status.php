@@ -6,9 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Status extends Model
 {
-  protected $table = 'status';
+    protected $table = 'status';
 
-  public function type() {
-    return $this->belongsTo('App\Models\Customer', 'id_types');
-  }
+    protected $fillable = ['id', 'name'];
+
+    public function type() {
+        return $this->belongsTo('App\Models\Customer', 'id_types');
+    }
 }

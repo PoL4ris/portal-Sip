@@ -12,7 +12,8 @@ class DhcpHandler {
     //    private $passcode = '$2y$10$igbvfItrwUkvitqONf4FkebPyD0hhInH.Be4ztTaAUlxGQ4yaJd1K';
 
     public function __construct() {
-        DB::connection()->enableQueryLog();
+        // DO NOT ENABLE QUERY LOGGING IN PRODUCTION
+        //        DB::connection()->enableQueryLog();
         //        $queries = DB::getQueryLog();
         //        $last_query = end($queries);
         //        dd($last_query);
