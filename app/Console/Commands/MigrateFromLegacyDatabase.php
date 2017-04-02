@@ -41,8 +41,6 @@ class MigrateFromLegacyDatabase extends Command
         $this->info('Starting data migration');
         $dbMigrationUtil = new DataMigrationUtils(true);
 
-//        $dbMigrationUtil->testProgressBar();
-
         $dbMigrationUtil->seedDataMigrationsTable();
         $dbMigrationUtil->seedUsersTable();
         $dbMigrationUtil->seedAppsTable();
@@ -68,6 +66,7 @@ class MigrateFromLegacyDatabase extends Command
         $dbMigrationUtil->migrateSupportTicketsTable();
         $dbMigrationUtil->migrateSupportTicketHistoryTable();
         $dbMigrationUtil->migrateBillingTransactionLogsTable();
+        $dbMigrationUtil->migrateNetworkTabTable();
 
         $this->info('Done');
     }

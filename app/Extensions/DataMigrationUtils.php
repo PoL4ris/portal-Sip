@@ -37,6 +37,7 @@ use App\Models\Invoice;
 use App\Models\InvoiceLog;
 use App\Models\Neighborhood;
 use App\Models\NetworkNode;
+use App\Models\NetworkTab;
 use App\Models\Note;
 use App\Models\Payment;
 use App\Models\PaymentMethod;
@@ -63,6 +64,7 @@ use App\Models\Legacy\CustomerOld;
 use App\Models\Legacy\CustomerProductOld;
 use App\Models\Legacy\DataServicePort;
 use App\Models\Legacy\NetworkNodeOld;
+use App\Models\Legacy\NetworkTabOld;
 use App\Models\Legacy\ProductOld;
 use App\Models\Legacy\ProductPropertyOld;
 use App\Models\Legacy\ProductPropertyValueOld;
@@ -105,7 +107,10 @@ class DataMigrationUtils {
                               'supportTicketReasons'            => ['App\Models\Legacy\SupportTicketReason', 'RID', 'App\Models\Reason'],
                               'supportTickets'                  => ['App\Models\Legacy\SupportTicket', 'TID', 'App\Models\Ticket'],
                               'supportTicketHistory'            => ['App\Models\Legacy\SupportTicketHistory', 'THID', 'App\Models\TicketHistory'],
-                              'billingTransactionLog'           => ['App\Models\Legacy\BillingTransactionLogOld',  'LogID', 'App\Models\BillingTransactionLog']);
+                              'billingTransactionLog'           => ['App\Models\Legacy\BillingTransactionLogOld',  'LogID', 'App\Models\BillingTransactionLog'],
+                              'networkTab'                      => ['App\Models\Legacy\NetworkTabOld',  'NID', 'App\Models\NetworkTab']);
+
+    private $jobNames = [ 'update-from-legacy-db-job' => 'data:update-from-legacy' ];
 
     public function __construct($console = false) {
 
@@ -130,28 +135,28 @@ class DataMigrationUtils {
 
     public function testProgressBar(){
 
-//        $this->startProgressBar(1);
+        //        $this->startProgressBar(1);
         if($this->output != null){
             $this->output->writeln('Console output initialized');
         }
 
-//        return;
+        //        return;
 
         $units = 50;
-//
-//        $output = new ConsoleOutput();
-//        //        $output->setFormatter(new OutputFormatter(true));
-//
-//        $this->output->writeln('Starting in 5 seconds ...');
-//        // create a new progress bar (50 units)
-//        $progress = new ProgressBar($output, $units);
-//        //        $progress->setFormat(' %current%/%max% [%bar%] %percent:3s%% %elapsed:6s%/%estimated:-6s% %memory:6s%');
-//        //        $progress->setFormat('table1:   %current% [%bar%] %percent:3s%%       %estimated:-6s%');
-//        $progress->setFormatDefinition('custom', ' %component%:    %current%/%max% [%bar%] %percent:3s%%       %estimated:-6s%');
-//        $progress->setFormat('custom');
-//        $progress->setMessage('test', 'component');
-//        $progress->start();
-//        sleep(5);
+        //
+        //        $output = new ConsoleOutput();
+        //        //        $output->setFormatter(new OutputFormatter(true));
+        //
+        //        $this->output->writeln('Starting in 5 seconds ...');
+        //        // create a new progress bar (50 units)
+        //        $progress = new ProgressBar($output, $units);
+        //        //        $progress->setFormat(' %current%/%max% [%bar%] %percent:3s%% %elapsed:6s%/%estimated:-6s% %memory:6s%');
+        //        //        $progress->setFormat('table1:   %current% [%bar%] %percent:3s%%       %estimated:-6s%');
+        //        $progress->setFormatDefinition('custom', ' %component%:    %current%/%max% [%bar%] %percent:3s%%       %estimated:-6s%');
+        //        $progress->setFormat('custom');
+        //        $progress->setMessage('test', 'component');
+        //        $progress->start();
+        //        sleep(5);
 
         if($this->startProgressBar($units, 'test') == false){
             return false;
@@ -161,12 +166,12 @@ class DataMigrationUtils {
         while ($i++ < $units) {
 
             //            $progress->setMessage('Importing ...');
-//            $progress->setMessage($i, 'table');
+            //            $progress->setMessage($i, 'table');
 
             // advance the progress bar 1 unit
-//            $progress->advance();
+            //            $progress->advance();
             $this->advanceProgressBar();
-//             $this->progress->setProgress($progress);
+            //             $this->progress->setProgress($progress);
 
             // you can also advance the progress bar by more than 1 unit
             // $progress->advance(3);
@@ -175,6 +180,10 @@ class DataMigrationUtils {
         $progress->finish();
         $output->writeln('');
     }
+
+    #############################
+    # Migrate functions
+    #############################
 
     public function migrateCustomersTable(){
         $legacyTableName = 'customers';
@@ -333,6 +342,163 @@ class DataMigrationUtils {
         $this->migrateTable($legacyTableName, $this->tableMap[$legacyTableName]);
     }
 
+    public function migrateNetworkTabTable(){
+        $legacyTableName = 'networkTab';
+        $this->tableMap[$legacyTableName][3] = function($legacyNetworkTab){
+            $this->updateNetworkTab($legacyNetworkTab, new NetworkTab);
+            return true;
+        };
+        $this->migrateTable($legacyTableName, $this->tableMap[$legacyTableName]);
+    }
+
+    #################################
+    # Update/Maintenance functions
+    #################################
+
+    public function updateFromCustomersTable(){
+        $legacyTableName = 'customers';
+        $updateFunction = function($legacyCustomer){
+            Log::info('Updating customer: '.$legacyCustomer->CID);
+            $this->findOrCreateCustomer($legacyCustomer);
+            $this->findOrCreateAddressByCustomer($legacyCustomer);
+            $this->findOrCreatePaymentMethod($legacyCustomer);
+            $this->updateContactByCustomer($legacyCustomer);
+            return true;
+        };
+        $this->updateTable($legacyTableName, $this->tableMap[$legacyTableName], $updateFunction, $updateFunction);
+    }
+
+    public function updateFromServiceLocationsTable(){
+        $legacyTableName = 'serviceLocation';
+        $updateFunction = function($legacyLocation){
+            $result = $this->findOrCreateBuilding($legacyLocation);
+            if($result == false) {
+                return false;
+            }
+            $this->findOrCreateAddressByBuilding($legacyLocation);
+            $this->updateBuildingPropertyValues($legacyLocation);
+            return true;
+        };
+        $this->updateTable($legacyTableName, $this->tableMap[$legacyTableName], $updateFunction, $updateFunction);
+    }
+
+    public function updateFromServiceLocationPropertiesTable() {
+        $legacyTableName = 'serviceLocationProperties';
+        $updateFunction = function($legacyLocationProperty){
+            $this->findOrCreateBuildingProperty($legacyLocationProperty);
+            return true;
+        };
+        $this->updateTable($legacyTableName, $this->tableMap[$legacyTableName], $updateFunction, $updateFunction);
+    }
+
+    public function updateFromProductsTable(){
+        $legacyTableName = 'products';
+        $updateFunction = function($legacyProduct){
+            $this->findOrCreateProduct($legacyProduct);
+            return true;
+        };
+        $this->updateTable($legacyTableName, $this->tableMap[$legacyTableName], $updateFunction, $updateFunction);
+    }
+
+    public function updateFromProductPropertiesTable(){
+        $legacyTableName = 'productProperties';
+        $updateFunction = function($legacyProductProperty){
+            $this->findOrCreateProductProperty($legacyProductProperty);
+            return true;
+        };
+        $this->updateTable($legacyTableName, $this->tableMap[$legacyTableName], $updateFunction, $updateFunction);
+    }
+
+    public function updateFromProductPropertyValuesTable(){
+        $legacyTableName = 'productPropertyValues';
+        $updateFunction = function($legacyProductPropertyValue){
+            $this->findOrCreateBuildingPropertyValue($legacyProductPropertyValue->LocID, $legacyProductPropertyValue->PropID, $legacyProductPropertyValue->Value);
+            return true;
+        };
+        $this->updateTable($legacyTableName, $this->tableMap[$legacyTableName], $updateFunction, $updateFunction);
+    }
+
+    public function updateFromCustomerProductsTable(){
+        $legacyTableName = 'customerProducts';
+        $updateFunction = function($legacyCustomerProduct){
+            $this->findOrCreateCustomerProduct($legacyCustomerProduct);
+            return true;
+        };
+        $this->updateTable($legacyTableName, $this->tableMap[$legacyTableName], $updateFunction, $updateFunction);
+    }
+
+    public function updateFromBuildingProductsTable() {
+        $legacyTableName = 'serviceLocationProducts';
+        $updateFunction = function($legacyBuildingProduct){
+            $this->findOrCreateBuildingProduct($legacyBuildingProduct);
+            return true;
+        };
+        $this->updateTable($legacyTableName, $this->tableMap[$legacyTableName], $updateFunction, $updateFunction);
+    }
+
+    public function updateFromNetworkNodesTable(){
+        $legacyTableName = 'networkNodes';
+        $updateFunction = function($legacyNetworkNode){
+            $this->findOrCreateNetworkNode($legacyNetworkNode);
+            return true;
+        };
+        $this->updateTable($legacyTableName, $this->tableMap[$legacyTableName], $updateFunction, $updateFunction);
+    }
+
+    public function updateFromDataServicePortsTable(){
+        $legacyTableName = 'dataServicePorts';
+        $updateFunction = function($legacyPort){
+            $this->findOrCreatePort($legacyPort);
+            return true;
+        };
+        $this->updateTable($legacyTableName, $this->tableMap[$legacyTableName], $updateFunction, $updateFunction);
+    }
+
+    public function updateFromSupportTicketReasonsTable() {
+        $legacyTableName = 'supportTicketReasons';
+        $updateFunction = function($legacyReason){
+            $this->findOrCreateReason($legacyReason);
+            return true;
+        };
+        $this->updateTable($legacyTableName, $this->tableMap[$legacyTableName], $updateFunction, $updateFunction);
+    }
+
+    public function updateFromSupportTicketsTable(){
+        $legacyTableName = 'supportTickets';
+        $updateFunction = function($legacyTicket){
+            $this->findOrCreateTicket($legacyTicket);
+            return true;
+        };
+        $this->updateTable($legacyTableName, $this->tableMap[$legacyTableName], $updateFunction, $updateFunction);
+    }
+
+    public function updateFromSupportTicketHistoryTable(){
+        $legacyTableName = 'supportTicketHistory';
+        $updateFunction = function($legacyTicketHistory){
+            $this->findOrCreateTicketHistory($legacyTicketHistory);
+            return true;
+        };
+        $this->updateTable($legacyTableName, $this->tableMap[$legacyTableName], $updateFunction, $updateFunction);
+    }
+
+    public function updateFromBillingTransactionLogsTable(){
+        $legacyTableName = 'billingTransactionLog';
+        $updateFunction = function($legacyTransactionLog){
+            $this->findOrCreateTransactionLog($legacyTransactionLog);
+            return true;
+        };
+        $this->updateTable($legacyTableName, $this->tableMap[$legacyTableName], $updateFunction, $updateFunction);
+    }
+
+    public function updateFromNetworkTabTable(){
+        $legacyTableName = 'networkTab';
+        $updateFunction = function($legacyNetworkTab){
+            $this->findOrCreateNetworkTab($legacyNetworkTab);
+            return true;
+        };
+        $this->updateTable($legacyTableName, $this->tableMap[$legacyTableName], $updateFunction, $updateFunction);
+    }
+
     #############################
     # Seed functions
     #############################
@@ -347,8 +513,8 @@ class DataMigrationUtils {
             DataMigration::firstOrCreate(['table_name' => $tableName]);
         }
 
-        DataMigration::firstOrCreate(['table_name' => 'categories']);
-        DataMigration::firstOrCreate(['table_name' => 'contacts']);
+        //        DataMigration::firstOrCreate(['table_name' => 'categories']);
+        //        DataMigration::firstOrCreate(['table_name' => 'contacts']);
 
     }
 
@@ -395,12 +561,12 @@ class DataMigrationUtils {
         if($this->output != null){
             $this->output->writeln('<info> Seeding status table</info>');
         }
-        Status::firstOrCreate(['id' => 1, 'name' => 'DISABLED']);
-        Status::firstOrCreate(['id' => 2, 'name' => 'ACTIVE']);
-        Status::firstOrCreate(['id' => 3, 'name' => 'active']);
-        Status::firstOrCreate(['id' => 4, 'name' => 'disabled']);
-        Status::firstOrCreate(['id' => 5, 'name' => 'new']);
-        Status::firstOrCreate(['id' => 6, 'name' => 'decommissioned']);
+        //        Status::firstOrCreate(['id' => 1, 'name' => 'DISABLED']);
+        //        Status::firstOrCreate(['id' => 2, 'name' => 'ACTIVE']);
+        Status::firstOrCreate(['id' => 1, 'name' => 'active']);
+        Status::firstOrCreate(['id' => 2, 'name' => 'disabled']);
+        Status::firstOrCreate(['id' => 3, 'name' => 'new']);
+        Status::firstOrCreate(['id' => 4, 'name' => 'decommissioned']);
     }
 
     public function seedTypesTable() {
@@ -685,8 +851,179 @@ class DataMigrationUtils {
         $dataMigration->status = 1;
         $dataMigration->save();
         $this->stopProgressBar();
-        Log::info('Migrated '.$dataMigration->records_processed.' '.$legacyTableName.' records');
+        Log::info('Migrated '.$dataMigration->records_processed.' records');
         return true;
+    }
+
+    public function updateTable($legacyTableName, $migrationDataMap, $updateFunction, $createFunction){
+
+        $legacyDataModelName = $migrationDataMap[0];
+        $legacyModelId = $migrationDataMap[1];
+        $recordsPerCycle = 50; //$this->getJobProperty('lease-request-job', 'records_per_cycle');
+        $totalLegacyRecords = $legacyDataModelName::count();
+
+        // Get the data migration record from the database
+        $dataMigration = DataMigration::where('table_name', $legacyTableName)->first();
+        if($dataMigration == null){
+            $this->progressBarError('<fg=magenta>Could not find '.$legacyTableName.' in the data_migrations table. Ignoring.</>');
+            $this->stopProgressBar();
+            Log::info('Could not find '.$legacyTableName.' in the data_migrations table. Ignoring.');
+            return false;
+        }
+
+        // Check to see if we can migrate or if it was already done
+        if($dataMigration->status == 0){
+            $this->progressBarError('<fg=magenta>need to migrate first then call update</>');
+            $this->stopProgressBar();
+            Log::info('Table '.$legacyTableName.' need to migrate first then call update. Ignoring.');
+            return false;
+        }
+
+        $lastUpdateTimestamp = $dataMigration->max_updated_at;
+        $updateQueryBuilder = function($legacyDataModelName, $lastUpdateTimestamp){
+            if($lastUpdateTimestamp == null){
+                return $legacyDataModelName::where('updated_at', '!=', $lastUpdateTimestamp);
+            }
+            return $legacyDataModelName::where('updated_at', '>', $lastUpdateTimestamp);
+        };
+        $totalUpdateRecords = $updateQueryBuilder($legacyDataModelName, $lastUpdateTimestamp)->count();
+
+        $lastCreateTimestamp = $dataMigration->max_created_at;
+        $createQueryBuilder = function($legacyDataModelName, $lastCreateTimestamp){
+            if($lastCreateTimestamp == null){
+                return $legacyDataModelName::where('created_at', '!=', $lastCreateTimestamp);
+            }
+            return $legacyDataModelName::where('created_at', '>', $lastCreateTimestamp);
+        };
+        $totalCreateRecords = $createQueryBuilder($legacyDataModelName, $lastCreateTimestamp)->count();
+
+        $updateCount = 0;
+        $createCount = 0;
+        if($totalUpdateRecords > 0){
+            $this->startProgressBar($totalUpdateRecords, $legacyTableName.' updating');
+            while (true) {
+
+                $legacyRecords = $updateQueryBuilder($legacyDataModelName, $dataMigration->max_updated_at)
+                    ->take($recordsPerCycle)
+                    ->get();
+
+                if($legacyRecords->count() == 0){
+                    break;
+                }
+
+                foreach ($legacyRecords as $legacyRecord) {
+
+                    // Call the custom function to process the migration from legacy to new
+                    $result = $updateFunction($legacyRecord);
+
+                    if($result == false){
+                        Log::info('Call to customFunc() returned false. Skipping record.');
+                        $startingId = $legacyRecord->$legacyModelId;
+                        continue;
+                    }
+
+                    // Do some accounting
+                    if($dataMigration->max_updated_at == null){
+                        $dataMigration->max_updated_at = $legacyRecord->updated_at;
+                    } else {
+                        $dataMigration->max_updated_at = $this->maxMysqlTimestamp($dataMigration->max_updated_at, $legacyRecord->updated_at);
+                    }
+                    $updateCount++;
+                }
+
+                // Update the progress bar
+                $this->advanceProgressBar($updateCount);
+                usleep(500000);
+            }
+            $this->stopProgressBar();
+        }
+
+
+        if($totalCreateRecords > 0){
+            $this->startProgressBar($totalCreateRecords, $legacyTableName.' adding');
+            while (true) {
+
+                $legacyRecords = $createQueryBuilder($legacyDataModelName, $dataMigration->max_created_at)
+                    ->take($recordsPerCycle)
+                    ->get();
+
+                if($legacyRecords->count() == 0){
+                    break;
+                }
+
+                foreach ($legacyRecords as $legacyRecord) {
+
+                    // Call the custom function to process the migration from legacy to new
+                    $result = $createFunction($legacyRecord);
+
+                    if($result == false){
+                        Log::info('Call to customFunc() returned false. Skipping record.');
+                        $startingId = $legacyRecord->$legacyModelId;
+                        continue;
+                    }
+
+                    // Do some accounting
+                    $startingId = $legacyRecord->$legacyModelId;
+                    $dataMigration->records_processed++;
+                    $dataMigration->max_processed_id = ($legacyRecord->$legacyModelId > $dataMigration->max_processed_id) ? $legacyRecord->$legacyModelId : $dataMigration->max_processed_id;
+
+                    if($dataMigration->max_created_at == null){
+                        $dataMigration->max_created_at = $legacyRecord->created_at;
+                    } else {
+                        $dataMigration->max_created_at = $this->maxMysqlTimestamp($dataMigration->max_created_at, $legacyRecord->created_at);
+                    }
+                    $createCount++;
+                }
+
+                // Update the progress bar
+                $this->advanceProgressBar($createCount);
+                usleep(500000);
+            }
+            $this->stopProgressBar();
+        }
+
+        // mark the data migration status as complete and save it
+        $dataMigration->total_records = $totalLegacyRecords;
+        $dataMigration->save();
+        Log::info('Updated '.$updateCount.' and added '.$createCount.' '.$legacyTableName.' records');
+        if($this->output != null){
+            $this->output->writeln('<info> Updated '.$updateCount.' and added '.$createCount.' '.$legacyTableName.' records</info>');
+        }
+        return true;
+    }
+
+    public function updateAllDataFromLegacyDatabaseJob(){
+        $jobName = 'update-from-legacy-db-job';
+        if($this->isJobEnabled($jobName) == false){
+            Log::info('Job: '.$this->jobNames[$jobName].' is disabled');
+            return false;
+        }
+
+        Log::info('Job: '.$this->jobNames[$jobName].' Looking for records to update ...');
+        $this->setJobStatus($jobName, 'running');
+
+        $this->updateAllDataFromLegacyDatabase();
+
+        $this->setJobStatus($jobName, 'stopped');
+        Log::info('Job: '.$this->jobNames[$jobName].' done updating data from legacy database.');
+    }
+
+    public function updateAllDataFromLegacyDatabase() {
+        $this->updateFromCustomersTable();
+        $this->updateFromServiceLocationsTable();
+        $this->updateFromServiceLocationPropertiesTable();
+        $this->updateFromProductsTable();
+        $this->updateFromProductPropertiesTable();
+        $this->updateFromProductPropertyValuesTable();
+        $this->updateFromCustomerProductsTable();
+        $this->updateFromBuildingProductsTable();
+        $this->updateFromNetworkNodesTable();
+        $this->updateFromDataServicePortsTable();
+        $this->updateFromSupportTicketReasonsTable();
+        $this->updateFromSupportTicketsTable();
+        $this->updateFromSupportTicketHistoryTable();
+        $this->updateFromBillingTransactionLogsTable();
+        $this->updateFromNetworkTabTable();
     }
 
     public function maxMysqlTimestamp($timestamp1, $timestamp2, $timezone1 = 'America/Chicago', $timezone2 = 'America/Chicago'){
@@ -757,11 +1094,46 @@ class DataMigrationUtils {
         $this->output->writeln('');
     }
 
+    protected function isJobEnabled($jobNameKey) {
+
+        $job = ScheduledJob::where('command', $this->jobNames[$jobNameKey])->first();
+        if($job != null && $job->enabled == 'yes') {
+            return true;
+        }
+        return false;
+    }
+
+    protected function setJobStatus($jobNameKey, $status) {
+
+        $job = ScheduledJob::where('command', $this->jobNames[$jobNameKey])->first();
+        if($job != null) {
+            $job->status = $status;
+            $job->last_run = ($status == 'stopped') ? date('Y-m-d H:i:s') : $job->last_run;
+            $job->save();
+            return true;
+        }
+        return false;
+    }
+
+    protected function updateJobTimestamp($jobNameKey) {
+
+        $job = ScheduledJob::where('command', $this->jobNames[$jobNameKey])->first();
+        if($job && $job->enabled == 'yes') {
+            $job->touch();
+            return true;
+        }
+        return false;
+    }
+
+    protected function getJobProperty($jobNameKey, $propName) {
+
+        $job = ScheduledJob::where('command', $this->jobNames[$jobNameKey])->first();
+        return $job->getProperty($propName);
+    }
+
     ########################################
     # Creation and maintenance functions
     ########################################
-
-
 
     public function findOrCreateCustomer(CustomerOld $legacyCustomer) {
 
@@ -789,9 +1161,9 @@ class DataMigrationUtils {
            $legacyCustomer->AccountStatus == 'DISABLED' ||
            $legacyCustomer->AccountStatus == 'decommissioned') {
 
-            $customer->id_status = 1;
-        } else {
             $customer->id_status = 2;
+        } else {
+            $customer->id_status = 1;
         }
         $customer->signedup_at = $legacyCustomer->DateSignup;
         $customer = $this->copyTimestamps($legacyCustomer, $customer);
@@ -1141,16 +1513,16 @@ class DataMigrationUtils {
         switch ($legacyCustomerProduct->Status) {
 
             case 'active':
-                $customerProduct->id_status = 3;
+                $customerProduct->id_status = 1;
                 break;
             case 'disabled':
-                $customerProduct->id_status = 4;
+                $customerProduct->id_status = 2;
                 break;
             case 'new':
-                $customerProduct->id_status = 5;
+                $customerProduct->id_status = 3;
                 break;
             case 'decommissioned':
-                $customerProduct->id_status = 6;
+                $customerProduct->id_status = 4;
                 break;
             default:
                 break;
@@ -1338,10 +1710,10 @@ class DataMigrationUtils {
 
     public function findOrCreateTicketHistory(SupportTicketHistory $legacyTicketHistory) {
 
-        $ticketHistory = TicketHistory::find($legacyTicketHistory->TID);
+        $ticketHistory = TicketHistory::find($legacyTicketHistory->THID);
 
         if($ticketHistory == null) {
-            $ticketHistory = new Ticket;
+            $ticketHistory = new TicketHistory;
         }
         return $this->updateTicketHistory($legacyTicketHistory, $ticketHistory);
     }
@@ -1402,10 +1774,33 @@ class DataMigrationUtils {
         $transactionLog->address = $legacyTransactionLog->Address;
         $transactionLog->unit = $legacyTransactionLog->Unit;
         $transactionLog->comment = $legacyTransactionLog->Comment;
-        $transactionLog->created_at = $legacyTransactionLog->created_at;
-        $transactionLog->updated_at = $legacyTransactionLog->updated_at;
         $transactionLog = $this->copyTimestamps($legacyTransactionLog, $transactionLog);
         $transactionLog->save();
+        return true;
+    }
+
+    public function findOrCreateNetworkTab(NetworkTabOld $legacyNetworkTab) {
+
+        $networkTab = NetworkTab::find($legacyNetworkTab->NID);
+
+        if($networkTab == null) {
+            $networkTab = new NetworkTab;
+        }
+        return $this->updateNetworkTab($legacyNetworkTab, $networkTab);
+    }
+
+    protected function updateNetworkTab(NetworkTabOld $legacyNetworkTab, NetworkTab $networkTab) {
+
+        $networkTab->id = $legacyNetworkTab->NID;
+        $networkTab->location = $legacyNetworkTab->location;
+        $networkTab->address = $legacyNetworkTab->address;
+        $networkTab->core = $legacyNetworkTab->core;
+        $networkTab->dist = $legacyNetworkTab->dist;
+        $networkTab->primary = $legacyNetworkTab->primary;
+        $networkTab->backup = $legacyNetworkTab->backup;
+        $networkTab->mgmt_net = $legacyNetworkTab->mgmt_net;
+        $networkTab = $this->copyTimestamps($legacyNetworkTab, $networkTab);
+        $networkTab->save();
         return true;
     }
 }
