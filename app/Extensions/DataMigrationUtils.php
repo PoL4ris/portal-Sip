@@ -47,6 +47,7 @@ use App\Models\ProductProperty;
 use App\Models\ProductPropertyValue;
 use App\Models\Profile;
 use App\Models\Reason;
+use App\Models\ScheduledJob;
 use App\Models\Status;
 use App\Models\Term;
 use App\Models\Ticket;
