@@ -324,8 +324,7 @@ class TestController extends Controller
 
         $dbMigrationUtil = new DataMigrationUtils();
 
-        $dbMigrationUtil->updateFromCustomersTable();
-
+//        $dbMigrationUtil->updateFromCustomersTable();
 //        dd($dbMigrationUtil->maxMysqlTimestamp('2017-03-26 12:32:12', '2017-03-27 12:32:12'));
 //        $dbMigrationUtil->migrateCustomersTable();
 //        $dbMigrationUtil->migrateSupportTicketHistoryTable();
