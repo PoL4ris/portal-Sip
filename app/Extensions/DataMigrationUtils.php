@@ -760,7 +760,7 @@ class DataMigrationUtils {
     # Supporting functions
     #############################
 
-    public function migrateTable($legacyTableName, $migrationDataMap, $startingId = -1, $customQueryFuction = null){
+    protected function migrateTable($legacyTableName, $migrationDataMap, $startingId = -1, $customQueryFuction = null){
 
         $legacyDataModelName = $migrationDataMap[0];
         $legacyModelId = $migrationDataMap[1];
@@ -856,7 +856,7 @@ class DataMigrationUtils {
         return true;
     }
 
-    public function updateTable($legacyTableName, $migrationDataMap, $updateFunction, $createFunction){
+    protected function updateTable($legacyTableName, $migrationDataMap, $updateFunction, $createFunction){
 
         $legacyDataModelName = $migrationDataMap[0];
         $legacyModelId = $migrationDataMap[1];
@@ -1033,7 +1033,7 @@ class DataMigrationUtils {
         $this->updateFromNetworkTabTable();
     }
 
-    public function maxMysqlTimestamp($timestamp1, $timestamp2, $timezone1 = 'America/Chicago', $timezone2 = 'America/Chicago'){
+    protected function maxMysqlTimestamp($timestamp1, $timestamp2, $timezone1 = 'America/Chicago', $timezone2 = 'America/Chicago'){
         if($timestamp1 == null){
             return $timestamp2;
         }
@@ -1142,7 +1142,7 @@ class DataMigrationUtils {
     # Creation and maintenance functions
     ########################################
 
-    public function findOrCreateCustomer(CustomerOld $legacyCustomer) {
+    protected function findOrCreateCustomer(CustomerOld $legacyCustomer) {
 
         $customer = Customer::find($legacyCustomer->CID);
 
@@ -1178,7 +1178,7 @@ class DataMigrationUtils {
         return true;
     }
 
-    public function findOrCreateAddressByCustomer(CustomerOld $legacyCustomer) {
+    protected function findOrCreateAddressByCustomer(CustomerOld $legacyCustomer) {
 
         $address = Address::where('id_customers', $legacyCustomer->CID)
             ->first();
@@ -1209,7 +1209,7 @@ class DataMigrationUtils {
         return true;
     }
 
-    public function addContactsForCustomer(CustomerOld $legacyCustomer) {
+    protected function addContactsForCustomer(CustomerOld $legacyCustomer) {
 
         if($legacyCustomer->Email != ''){
             Contact::create(['id_customers' => $legacyCustomer->CID, 'id_types' => 5, 'value' => $legacyCustomer->Email]);
@@ -1237,7 +1237,7 @@ class DataMigrationUtils {
         }
     }
 
-    public function findOrCreateAddressByBuilding(ServiceLocation $legacyLocation) {
+    protected function findOrCreateAddressByBuilding(ServiceLocation $legacyLocation) {
 
         $address = Address::where('id_buildings', $legacyLocation->LocID)
             ->first();
@@ -1262,7 +1262,7 @@ class DataMigrationUtils {
         return true;
     }
 
-    public function findOrCreatePaymentMethod(CustomerOld $legacyCustomer) {
+    protected function findOrCreatePaymentMethod(CustomerOld $legacyCustomer) {
 
         $paymentMethod = PaymentMethod::where('id_customers', $legacyCustomer->CID)
             ->first();
@@ -1300,7 +1300,7 @@ class DataMigrationUtils {
         return false;
     }
 
-    public function findOrCreateBuilding(ServiceLocation $legacyLocation) {
+    protected function findOrCreateBuilding(ServiceLocation $legacyLocation) {
 
         $building = Building::find($legacyLocation->LocID);
 
@@ -1334,7 +1334,7 @@ class DataMigrationUtils {
         return true;
     }
 
-    public function findOrCreateBuildingProperty(ServiceLocationProperty $legacyLocationProperty) {
+    protected function findOrCreateBuildingProperty(ServiceLocationProperty $legacyLocationProperty) {
 
         $buildingProperty = BuildingProperty::find($legacyLocationProperty->PropID);
 
@@ -1355,7 +1355,7 @@ class DataMigrationUtils {
         return true;
     }
 
-    public function updateBuildingPropertyValues(ServiceLocation $legacyLocation){
+    protected function updateBuildingPropertyValues(ServiceLocation $legacyLocation){
 
         $buildingId = $legacyLocation->LocID;
 
@@ -1379,7 +1379,7 @@ class DataMigrationUtils {
         return true;
     }
 
-    public function findOrCreateBuildingPropertyValue($buildingId, $propertyId, $value) {
+    protected function findOrCreateBuildingPropertyValue($buildingId, $propertyId, $value) {
 
         $building = Building::find($buildingId);
         $buildingPropertyValue = BuildingPropertyValue::firstOrCreate(['id_buildings' => $buildingId, 'id_building_properties' => $propertyId]);
@@ -1394,7 +1394,7 @@ class DataMigrationUtils {
         return true;
     }
 
-    public function findOrCreateProduct(ProductOld $legacyProduct) {
+    protected function findOrCreateProduct(ProductOld $legacyProduct) {
 
         $product = Product::find($legacyProduct->ProdID);
 
@@ -1448,7 +1448,7 @@ class DataMigrationUtils {
         return true;
     }
 
-    public function findOrCreateProductProperty(ProductPropertyOld $legacyProductProperty) {
+    protected function findOrCreateProductProperty(ProductPropertyOld $legacyProductProperty) {
 
         $productProperty = ProductProperty::find($legacyProductProperty->PropID);
 
@@ -1468,7 +1468,7 @@ class DataMigrationUtils {
         return true;
     }
 
-    public function findOrCreateProductPropertyValue(ProductPropertyOld $legacyProductProperty) {
+    protected function findOrCreateProductPropertyValue(ProductPropertyOld $legacyProductProperty) {
 
         $productPropertyValue = ProductPropertyValue::find($legacyProductPropertyValue->VID);
 
@@ -1489,7 +1489,7 @@ class DataMigrationUtils {
         return true;
     }
 
-    public function findOrCreateCustomerProduct(CustomerProductOld $legacyCustomerProduct) {
+    protected function findOrCreateCustomerProduct(CustomerProductOld $legacyCustomerProduct) {
 
         $customerProduct = CustomerProduct::find($legacyCustomerProduct->CSID);
 
@@ -1545,7 +1545,7 @@ class DataMigrationUtils {
         return true;
     }
 
-    public function findOrCreateBuildingProduct(ServiceLocationProduct $legacyBuildingProduct) {
+    protected function findOrCreateBuildingProduct(ServiceLocationProduct $legacyBuildingProduct) {
 
         $buildingProduct = BuildingProduct::find($legacyBuildingProduct->SLPID);
 
@@ -1565,7 +1565,7 @@ class DataMigrationUtils {
         return true;
     }
 
-    public function findOrCreateNetworkNode(NetworkNodeOld $legacyNetworkNode) {
+    protected function findOrCreateNetworkNode(NetworkNodeOld $legacyNetworkNode) {
 
         $networkNode = NetworkNode::find($legacyNetworkNode->NodeID);
 
@@ -1603,7 +1603,7 @@ class DataMigrationUtils {
         return true;
     }
 
-    public function findOrCreatePort(DataServicePort $legacyPort) {
+    protected function findOrCreatePort(DataServicePort $legacyPort) {
 
         $port = Port::find($legacyPort->PortID);
 
@@ -1633,7 +1633,7 @@ class DataMigrationUtils {
         return true;
     }
 
-    public function findOrCreateReason(SupportTicketReason $legacyReason) {
+    protected function findOrCreateReason(SupportTicketReason $legacyReason) {
 
         $reason = Reason::find($legacyReason->RID);
 
@@ -1681,7 +1681,7 @@ class DataMigrationUtils {
         return true;
     }
 
-    public function findOrCreateTicket(SupportTicket $legacyTicket) {
+    protected function findOrCreateTicket(SupportTicket $legacyTicket) {
 
         $ticket = Ticket::find($legacyTicket->TID);
 
@@ -1715,7 +1715,7 @@ class DataMigrationUtils {
         return true;
     }
 
-    public function findOrCreateTicketHistory(SupportTicketHistory $legacyTicketHistory) {
+    protected function findOrCreateTicketHistory(SupportTicketHistory $legacyTicketHistory) {
 
         $ticketHistory = TicketHistory::find($legacyTicketHistory->THID);
 
@@ -1749,7 +1749,7 @@ class DataMigrationUtils {
         return true;
     }
 
-    public function findOrCreateTransactionLog(BillingTransactionLogOld $legacyTransactionLog) {
+    protected function findOrCreateTransactionLog(BillingTransactionLogOld $legacyTransactionLog) {
 
         $transactionLog = BillingTransactionLog::find($legacyTransactionLog->LogID);
 
@@ -1786,7 +1786,7 @@ class DataMigrationUtils {
         return true;
     }
 
-    public function findOrCreateNetworkTab(NetworkTabOld $legacyNetworkTab) {
+    protected function findOrCreateNetworkTab(NetworkTabOld $legacyNetworkTab) {
 
         $networkTab = NetworkTab::find($legacyNetworkTab->NID);
 
