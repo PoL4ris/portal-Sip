@@ -693,10 +693,12 @@ nav ul li a {
   background-color: #3e6cc9;
   background-image: -moz-linear-gradient(center top , #3e6cc9, #2e51b6);
   color: #3e6cc9;
+  color: white;
 }
 .btn-danger {
   background: #d14836 -moz-linear-gradient(center top , #dd4b39, #d14836) repeat scroll 0 0;
   color: #d14836;
+  color: white;
 }
 .btn-danger:hover, .btn-success:hover, .btn-default:hover, .btn-primary:hover, .btn-warning:hover {
   background: transparent none repeat scroll 0 0;
@@ -707,10 +709,12 @@ nav ul li a {
 .btn-warning {
   background: #ffc107 -moz-linear-gradient(center top , #ffc107, #c29306) repeat scroll 0 0;
   color: #ffc107;
+  color: white;
 }
 .btn-success {
   background: #4caf50 -moz-linear-gradient(center top , #4caf50, #66bb6a) repeat scroll 0 0;
   color: #4caf50;
+  color: white;
 }
 .btn-default {
   color: #1da3fc;
@@ -722,8 +726,8 @@ nav ul li a {
   color: #1da3fc;
 }
 .btn {
-  background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
-  border: 1px solid #ddd;
+  /*background: rgba(0, 0, 0, 0) none repeat scroll 0 0;*/
+  /*border: 1px solid #ddd;*/
   box-shadow: none;
   font-size: 13px;
   min-width: 30px;

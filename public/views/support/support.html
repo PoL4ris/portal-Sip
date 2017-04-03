@@ -11,6 +11,26 @@
       <div class="btn btn-default m-r-lg" ng-click="getNoneBillingTickets()">Non-Billing Tickets</div>
       <div class="btn btn-default m-r-lg" ng-click="getBillingTickets()">Billing Tickets</div>
       <div class="btn btn-default m-r-lg" ng-click="getMyTickets()">My Tickets</div>
+
+
+
+      <div class="ticket-timing-results block-table-inline">
+        <div class="ttr-container">
+          <div class="old-gray   float-left time-data"><label>Total:</label>   {{ticketOpenTime.old}}</div>
+          <div class="old-green  float-left time-data"><label><b>></b> 12Hrs.</label> {{ticketOpenTime.old12}}</div>
+          <div class="old-yellow float-left time-data"><label><b>></b> 24Hrs.</label> {{ticketOpenTime.old24}}</div>
+          <div class="old-red    float-left time-data"><label><b>></b> 48Hrs.</label> {{ticketOpenTime.old48}}</div>
+        </div>
+      </div>
+
+
+      <div class="ticket-search-table block-table-inline">
+        <label>
+          Ticket Search:
+          <input type="text" placeholder="Search for Open/Closed Tickets...">
+        </label>
+      </div>
+
     </div>
 
     <article class="col-lg-12 tickets-history-table m-t-lg table-container">
@@ -25,7 +45,8 @@
           <th>Issue</th>
           <th>Comment</th>
           <th>Assigned</th>
-          <th>LastUpdate</th>
+          <th>Last Update</th>
+          <th>Last Update</th>
         </tr>
         </thead>
         <tbody>
@@ -48,6 +69,8 @@
             <td ng-if="!data.ticket_history.comment"> {{data.ticket_history.comment}} </td>
 
             <td>{{data.user_assigned.first_name ? (data.user_assigned.first_name) : 'AUTO' }}</td>
+            <td ng-init="resultDate = convertDate(data.updated_at)">{{resultDate | date : "MMM d, y h:mm a" }}</td>
+
 
             <td class="{{data.old}}">
               <!--{{data.updated_at | limitTo : 10}}-->
@@ -102,17 +125,17 @@
                 <small class="text-muted">{{selectedTicket.status}}</small>
               </div>
               <!--Details Info-->
-              <div class="col-lg-12 no-padding-sides p-t-lg m-b-sm">
+              <div class="col-lg-12 no-padding-sides m-t-lg m-b-sm bg-gray p-b-lg">
                 <form id="form-1-ticket">
-                  <div class="col-lg-12 no-padding-sides b-t-ddd " >
+                  <div class="col-lg-12 no-padding-sides b-t-ddd b-b-ddd m-b-lg" >
                     <div class="pull-left m-t-md">Details:</div>
-                    <button class="btn m-b-xs w-xs btn-default btn-edit ticket-right pull-right m-t-sm m-b-sm"
+                    <button class="btn m-b-xs w-xs btn-primary btn-edit ticket-right pull-right m-t-sm m-b-sm"
                             id="block-a"
                             ng-click="editFormByType('block-a')">
                             Edit
                     </button>
                     <button type="submit"
-                            class="btn m-b-xs w-xs btn-default save-btn ticket-right ticket-right-save no-display pull-right m-t-sm m-b-sm m-r-lg"
+                            class="btn m-b-xs w-xs btn-primary save-btn ticket-right ticket-right-save no-display pull-right m-t-sm m-b-sm m-r-lg"
                             id="save-block-a"
                             ng-click="submitForm('form-1-ticket'); editFormByType('block-a')">
                             Save
@@ -160,13 +183,13 @@
               </div>
               -->
               <!--Info Left Block-->
-              <div class="col-lg-4 no-padding-sides">
+              <div class="col-lg-4 no-padding-sides bg-gray">
                 <div>Created by</div>
                 <small class="text-muted">Auto</small>
-                <div class="b-t-ddd m-t-md">Created on</div>
-                <small class="text-muted">{{selectedTicket.created_at}}</small>
-                <div class="b-t-ddd m-t-md">LastUpdate</div>
-                <small class="text-muted">{{selectedTicket.updated_at}}</small>
+                <div class="b-t-ddd m-t-md p-t-lg">Created on</div>
+                <small class="text-muted" ng-init="resultDate = convertDate(selectedTicket.created_at)" ng-if="selectedTicket.created_at">{{resultDate | date : "MMM d, y h:mm a" }}</small>
+                <div class="b-t-ddd m-t-md p-t-lg">LastUpdate</div>
+                <small class="text-muted" ng-init="resultDate = convertDate(selectedTicket.updated_at)" ng-if="selectedTicket.updated_at">{{resultDate | date : "MMM d, y h:mm a" }}</small>
               </div>
               <!--Update History Right Block-->
               <div class="col-lg-8 p-b-lg ">
@@ -204,7 +227,7 @@
                     </thead>
                     <tbody>
                       <tr ng-repeat="history in selectedTicket.ticket_history_full" ng-controller="supportTicketHistory">
-                        <td>{{history.created_at}}</td>
+                        <td ng-init="resultDate = convertDate(history.created_at)" ng-if="history.created_at">{{resultDate | date : "MMM d, y h:mm a" }}</td>
                         <td class="th-comment" height="100">{{history.comment}}</td>
                         <td>{{history.status}}</td>
                         <td>{{dataUsersAssigned[history.id_users].alias}}</td>

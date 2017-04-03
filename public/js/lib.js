@@ -1219,6 +1219,7 @@ app.controller('supportController',                 function ($scope, $http, DTO
     $http.get("getAllOpenTickets")
       .then(function (response) {
         $scope.supportData = response.data;
+        console.log(supportData);
       });
   };
   $scope.getNoneBillingTickets = function (){
@@ -1759,6 +1760,9 @@ app.controller('globalToolsCtl',      function ($scope, $http, $compile, $sce, $
         else
           $('#' + id).html('<i class="fa fa-plus plus-cross"></i> Cancel ').css('color', 'crimson');
     }
+  }
+  $scope.convertDate          = function(valor){
+    return new Date(valor);
   }
 
 
