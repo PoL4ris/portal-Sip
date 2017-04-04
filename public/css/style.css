@@ -625,3 +625,25 @@ table.dataTable tbody tr {
 .default-priority-1{
   border-left:2px solid #4caf50;
 }
+.cnf-comment {
+}
+.cnf-comment p {
+}
+.cnf-comment textarea {
+  border: 1px solid #ddd;
+  margin-bottom: 15px;
+  max-height: 200px;
+  max-width: 100%;
+  min-height: 100px;
+  min-width: 100%;
+  padding: 5px 10px;
+  width: 100%;
+}
+.cnf-comment button {
+}
+.notes-list {
+  margin-top: 15px;
+  overflow: auto;
+}
+.notes-list p {
+}

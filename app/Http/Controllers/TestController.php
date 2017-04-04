@@ -126,7 +126,7 @@ class TestController extends Controller
     {
 
 
-      $warpol = Customer::with('services')->find(554);
+      $warpol = Customer::with('contact')->find(501);
 
       print '<pre>';
       print_r($warpol->toArray());

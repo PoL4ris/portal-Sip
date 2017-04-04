@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Note;
 use Illuminate\Http\Request;
 //use App\Http\Requests;
 use App\Models\Product;
@@ -165,6 +166,39 @@ class CustomerController extends Controller
   {
     return Customer::with('status')->find($request->id)['status'];
   }//SI
+  public function insertCustomerNote(Request $request){
+
+    $note = new Note;
+    $note->comment = $request->note;
+    $note->created_by = Auth::user()->id;
+    $note->id_customers = $request->id;
+    $note->save();
+
+    return Note::where('id_customers', $request->id)->get();
+  }
+  public function getCustomerNotes(Request $request){
+    return Note::where('id_customers', $request->id)->get();
+  }
+  public function resetCustomerPassword(Request $request){
+
+    $customer = Customer::with('contact')->find($request->id);
+
+    $match = preg_split('/[^0-9]+/', $customer->contact->value);
+
+    foreach($match as $item){
+      if(isset($result))
+        $result .= $item;
+      else
+        $result = $item;
+    }
+
+    $customer->password = bcrypt($result);
+    $customer->save();
+
+    //ADD ACTIVITY LOG HERE
+    return ['response' => 'OK', 'password' => $result];
+
+  }
   public function getCustomerContactData(Request $request)
   {
     return Customer::with('contacts')->find($request->id);

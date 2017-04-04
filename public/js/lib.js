@@ -716,7 +716,25 @@ app.controller('customerController',                function ($scope, $http, $st
       $('#mb-ca-table').fadeIn();
     }
   };
+  //ResetPassword
+  $scope.resetPassword              = function (){
 
+    $http.get("resetCustomerPassword", {params:{'id':$scope.idCustomer}})
+      .then(function (response){
+
+        if (response.data['response'] == 'OK')
+        {
+          $.smallBox({
+            title: "Password Updated to " + response.data['password'],
+            content: "<i class='fa fa-clock-o'></i> <i>3 seconds ago...</i>",
+            color: "#739E73",
+            iconSmall: "fa fa-thumbs-up bounce animated",
+            timeout: 6000
+          });
+        }
+
+      });
+  };
 });
 
 
@@ -955,7 +973,6 @@ app.controller('customerBuildingController',        function ($scope, $http){
   }
 
 });
-//PAYMENT METHOD INCOMPLETE.
 app.controller('customerPaymentMethodsController',  function ($scope, $http){
 // console.log('something here con el id de  : ' + $scope.idCustomer);
 // return;
@@ -1209,6 +1226,38 @@ app.controller('serviceProductController',          function ($scope, $http){
     });
 
 });
+
+
+
+
+app.controller('customerNotesController',           function($scope, $http){
+
+  $http.get("getCustomerNotes", {params:{'id':$scope.idCustomer}})
+    .then(function (response) {
+      $scope.customerNotes = response.data;
+    });
+
+  $scope.newNote = function(){
+    var content = $('#textarea-note-customer').val();
+    if(content)
+    {
+      $http.get("insertCustomerNote", {params:{'id':$scope.idCustomer, 'note':content}})
+        .then(function (response) {
+          $scope.customerNotes = response.data;
+          $('#c-n-f').trigger("reset");
+        });
+    }
+    else
+      return;
+  }
+});
+
+
+
+
+
+
+
 
 
 //Support Controllers
