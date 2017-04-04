@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Note;
 use Illuminate\Http\Request;
 //use App\Http\Requests;
 use App\Models\Product;
@@ -165,6 +166,39 @@ class CustomerController extends Controller
   {
     return Customer::with('status')->find($request->id)['status'];
   }//SI
+  public function insertCustomerNote(Request $request){
+
+    $note = new Note;
+    $note->comment = $request->note;
+    $note->created_by = Auth::user()->id;
+    $note->id_customers = $request->id;
+    $note->save();
+
+    return Note::where('id_customers', $request->id)->get();
+  }
+  public function getCustomerNotes(Request $request){
+    return Note::where('id_customers', $request->id)->get();
+  }
+  public function resetCustomerPassword(Request $request){
+
+    $customer = Customer::with('contact')->find($request->id);
+
+    $match = preg_split('/[^0-9]+/', $customer->contact->value);
+
+    foreach($match as $item){
+      if(isset($result))
+        $result .= $item;
+      else
+        $result = $item;
+    }
+
+    $customer->password = bcrypt($result);
+    $customer->save();
+
+    //ADD ACTIVITY LOG HERE
+    return ['response' => 'OK', 'password' => $result];
+
+  }
   public function getCustomerContactData(Request $request)
   {
     return Customer::with('contacts')->find($request->id);
@@ -292,10 +326,12 @@ class CustomerController extends Controller
   {
 
     $newData = array();
-    $newData[$request->field] = explode('#', $request->value)[1];
+    $hasHashtag = explode('#', $request->value);
+
+    $newData[$request->field] = (count($hasHashtag) == 1) ? $hasHashtag[0] : $hasHashtag[1];
 
     $addressExist = Address::find($request->id_table);
-    $addressExist->unit = explode('#', $request->value)[1];
+    $addressExist->unit = (count($hasHashtag) == 1) ? $hasHashtag[0] : $hasHashtag[1];
     $addressExist->save();
 
     ActivityLogs::add($this->logType, $request->id, 'update', 'updateAddressTable', $addressExist, $newData, null, 'update-unit');
@@ -394,23 +430,14 @@ class CustomerController extends Controller
   public function insertCustomerService(Request $request)//SI
   {
 
-    /*
-     * Status
-     * 3 = active
-     * 4 = disable
-     * 5 = new
-    */
-
-
-
     $when = $this->getTimeToAdd(Product::find($request->idProduct)->frequency);
 
-    $expires = date("Y-m-d H:i:s", strtotime('first day of next ' . $when));
+    $expires = date("Y-m-d H:i:s", strtotime($when));
 
     $newData = new CustomerProduct();
     $newData->id_customers   = $request->idCustomer;
     $newData->id_products    = $request->idProduct;
-    $newData->id_status      = 3;
+    $newData->id_status      = 1;
     $newData->signed_up      = date("Y-m-d H:i:s");
     $newData->expires        = $expires;
     $newData->id_users       = Auth::user()->id;
@@ -418,14 +445,9 @@ class CustomerController extends Controller
 
     $relationData = Product::find($request->idProduct);
 
-
-
     ActivityLogs::add($this->logType, $request->idCustomer, 'insert', 'insertCustomerService', null, $newData, $relationData, 'insert-service');
 
     return $this->getCustomerServices($request);
-
-
-
 
   }
   public function getTimeToAdd($type)//SI
