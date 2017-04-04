@@ -417,7 +417,6 @@ app.controller('customerController',                function ($scope, $http, $st
       });
     $http.get("getTableData", {params:{'table':'reasons'}})
       .then(function (response) {
-        console.log(response.data);
         $scope.newTicketData = response.data;
       });
     $http.get("getStatus")//VERIFY HOW TO CREATE INDEX 0 ON THE SELECT OPTION X-EDIT
@@ -735,7 +734,7 @@ app.controller('customerTicketHistoryController',   function ($scope, $http){
   }
 });
 app.controller('customerInvoiceHistoryController',  function ($scope, $http){
-  console.log($scope.customerData);
+//   console.log($scope.customerData);
 
   if(!$scope.invoiceData)
     $http.get("getInvoiceHistory", {params:{'id':$scope.idCustomer}})
@@ -1219,6 +1218,7 @@ app.controller('supportController',                 function ($scope, $http, DTO
     $http.get("getAllOpenTickets")
       .then(function (response) {
         $scope.supportData = response.data;
+        console.log(supportData);
       });
   };
   $scope.getNoneBillingTickets = function (){
@@ -1745,20 +1745,28 @@ app.controller('globalToolsCtl',      function ($scope, $http, $compile, $sce, $
   }
   $scope.xEditVisual          = function (valor, id){
 
-
     switch (id)
     {
       case 'c-c-i-e':
       if(valor)
-        $('#' + id).html('<i class="fa fa-pencil"></i> Edit customer').css('color', '#1da3fc');
+        $('#' + id).html('<i class="fa fa-pencil"></i> Edit customer').removeClass('btn-danger').addClass('btn-primary');
       else
-        $('#' + id).html('<i class="fa fa-plus plus-cross"></i> Cancel ').css('color', 'crimson');
+        $('#' + id).html('<i class="fa fa-plus plus-cross"></i> Cancel ').removeClass('btn-primary').addClass('btn-danger');
+      break;
       case 'customer-contact':
         if(valor)
-          $('#' + id).html('<i class="fa fa-pencil"></i> Edit Info').css('color', '#1da3fc');
+          $('#' + id).html('<i class="fa fa-pencil"></i> Edit customer').removeClass('btn-danger').addClass('btn-primary');
         else
-          $('#' + id).html('<i class="fa fa-plus plus-cross"></i> Cancel ').css('color', 'crimson');
+          $('#' + id).html('<i class="fa fa-plus plus-cross"></i> Cancel ').removeClass('btn-primary').addClass('btn-danger');
+        break;
     }
+  }
+  $scope.convertDate          = function(valor){
+    return new Date(valor);
+  }
+  $scope.warpol = function (warp){
+    console.log('Esto entro en Warpol y mando :');
+    console.log(warp);
   }
 
 

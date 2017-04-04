@@ -5,16 +5,24 @@
     <h2 class="float-left m-b-lg">Default Credit Card</h2>
 
 
-    <label class="col-lg-12 no-padding-sides"><strong>Token (Acct Number):    </strong>   </label>
-    <label class="col-lg-12 block-b-label no-padding-sides" id="b-CCnumber">  {{ paymentData.account_number ? paymentData.account_number : '( ERROR )' }}</label>
     <label class="col-lg-8 no-padding-sides"><strong>Card Type:               </strong>   </label>
     <label class="col-lg-4 block-b-label no-padding-sides" id="b-CCtype">     {{ paymentData.card_type ? paymentData.card_type  : '( ERROR )'}}</label>
+
+    <!--<label class="col-lg-8 no-padding-sides"><strong>Token (Acct Number):    </strong>   </label>-->
+    <!--<label class="col-lg-4 block-b-label no-padding-sides" id="b-CCnumber">  {{ paymentData.account_number ? paymentData.account_number : '( ERROR )' }}</label>-->
+
+    <label class="col-lg-8 no-padding-sides"><strong>Last 4 Digits :    </strong>   </label>
+    <label class="col-lg-4 block-b-label no-padding-sides" id="b-CCnumber" ng-init="pproperties = parJson(paymentData.properties)[0]" ng-if="paymentData">
+    {{ pproperties['last four'] | limitTo : 9 : 10}}
+    </label>
+
+
     <label class="col-lg-8 no-padding-sides"><strong>Expiration Month:        </strong>   </label>
     <label class="col-lg-4 block-b-label no-padding-sides" id="b-Expmo">      {{ paymentData.exp_month ? paymentData.exp_month : '( ERROR )'}}</label>
     <label class="col-lg-8 no-padding-sides"><strong>Expiration Year:         </strong>   </label>
     <label class="col-lg-4 block-b-label no-padding-sides" id="b-Expyr">      {{ paymentData.exp_year ? paymentData.exp_year : '( ERROR )'}}</label>
-    <label class="col-lg-8 no-padding-sides"><strong>Priority:                </strong>   </label>
-    <label class="col-lg-4 block-b-label no-padding-sides" id="b-Priority">   {{ paymentData.priority == 1 ? 'YES' : 'NO' }}</label>
+    <!--<label class="col-lg-8 no-padding-sides"><strong>Priority:                </strong>   </label>-->
+    <!--<label class="col-lg-4 block-b-label no-padding-sides" id="b-Priority">   {{ paymentData.priority == 1 ? 'YES' : 'NO' }}</label>-->
 
 
     <div class="col-lg-12 no-padding-sides m-t-md">
@@ -32,36 +40,43 @@
       <table id="myTable" class="tablesorter table" >
         <thead>
         <tr>
+          <th>Type</th>
+
+          <th>Last 4</th>
+
+          <th>Expiration</th>
+          <!--<th>Exp Year</th>-->
+          <!--<th>Priority</th>-->
+
           <!--<th>ID</th>-->
           <!--<th>Token</th>-->
-          <th>Exp Month</th>
-          <th>Exp Year</th>
-          <th>Brand</th>
-          <!--<th>Type</th>-->
-          <th>Priority</th>
-          <th>Last 4 Digits</th>
+          <!--<th>Brand</th>-->
           <!--<th>Created At</th>-->
-          <th>Updated At</th>
-          <th>Set Default</th>
+          <th>Updated</th>
+          <th>Set as Default</th>
         </tr>
         </thead>
         <tbody>
-        <tr ng-repeat="payment in paymentMethods" >
+        <tr ng-repeat="payment in paymentMethods"  class="default-priority-{{payment.priority}}">
           <!--<td>{{ payment.id }}</td>-->
-          <!--<td>{{ payment.account_number }}</td>-->
-          <td>{{ payment.exp_month }}</td>
-          <td>{{ payment.exp_year }}</td>
           <td>{{ payment.card_type }}</td>
-          <!--<td>{{ payment.types == 'Credit Card'?'CC':payment.types}}</td>-->
-          <td>{{ payment.priority == 1 ? 'Default' : '' }}</td>
           <td ng-init="pproperties = parJson(payment.properties)[0]">{{ pproperties['last four'] | limitTo : 4 : 15 }}</td>
+          <!--<td>{{ payment.account_number }}</td>-->
+          <td>{{ payment.exp_month }} / {{ payment.exp_year | limitTo : 2 : 2 }}</td>
+          <!--<td>{{ payment.types == 'Credit Card'?'CC':payment.types}}</td>-->
+          <!--<td>{{ payment.priority == 1 ? 'Default' : '' }}</td>-->
           <!--<td>{{ payment.created_at }}</td>-->
-          <td>{{ payment.updated_at | limitTo : 10 }}</td>
+          <!--<td>{{ payment.updated_at | limitTo : 10 }}</td>-->
+          <td ng-init="resultDate = convertDate(payment.updated_at)">{{resultDate | date : "MMM d, y h:mm a" }}</td>
           <td class="text-center">
             <button class="btn btn-default anim-btn" ng-click="setDefault(payment.id)" ng-if="payment.priority != 1">
               <label class="display-none">s</label>
               <i class="fa fa-thumbs-o-up "></i>
             </button>
+
+            <label class="" ng-if="payment.priority == 1">
+              Default
+            </label>
           </td>
         </tr>
         </tbody>
@@ -69,7 +84,7 @@
 
     </div>
     <div class="float-right">
-      <button class="btn btn-default" data-toggle="modal" data-target="#paymentMethodModal">New Payment Method</button>
+      <button class="btn btn-primary" data-toggle="modal" data-target="#paymentMethodModal">New Payment Method</button>
     </div>
 
   </div>
@@ -104,7 +119,7 @@
                       <div class="cboxc-bottom">
                         <label>Description</label><input type="text" placeholder="Describe the reason" id="mf-input-de" required>
                       </div>
-                      <button class="btn btn-default float-right m-t-lg" ng-click="refundFunct()">Refund</button>
+                      <button class="btn btn-primary float-right m-t-lg" ng-click="refundFunct()">Refund</button>
                     </form>
                   </div>
                 </div>
@@ -116,7 +131,7 @@
         </div>
 
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">
+          <button type="button" class="btn btn-danger" data-dismiss="modal">
             Cancel
           </button>
         </div>
@@ -149,7 +164,7 @@
                       <div class="cboxc-bottom">
                         <label>Description</label><input type="text" placeholder="Describe the reason" id="mc-input-de" required>
                       </div>
-                      <button class="btn btn-default float-right m-t-lg" ng-click="chargeFunct()">Charge</button>
+                      <button class="btn btn-primary float-right m-t-lg" ng-click="chargeFunct()">Charge</button>
                     </form>
                   </div>
                 </div>
@@ -161,7 +176,7 @@
         </div>
 
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">
+          <button type="button" class="btn btn-danger" data-dismiss="modal">
             Cancel
           </button>
         </div>
@@ -231,7 +246,7 @@
                 <div class="col-lg-12 m-b-md"></div>
 
                 <div class="col-lg-12 addServiceBoton m-b-sm">
-                  <button type="submit" class="btn m-b-xs w-xs btn-default float-right" ng-click="addNewPaymentMethod()" >Add</button>
+                  <button type="submit" class="btn m-b-xs w-xs btn-primary float-right" ng-click="addNewPaymentMethod()" >Add</button>
                 </div>
 
               </form>
@@ -242,7 +257,7 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">
+          <button type="button" class="btn btn-danger" data-dismiss="modal">
             Cancel
           </button>
         </div>

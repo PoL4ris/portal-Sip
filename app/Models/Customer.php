@@ -46,7 +46,7 @@ class Customer extends Model
     }
     public function services()
     {
-        return $this->hasMany('App\Models\CustomerProduct', 'id_customers', 'id');
+        return $this->hasMany('App\Models\CustomerProduct', 'id_customers', 'id')->orderBy('id_status', 'asc');
     }
     public function product()
     {

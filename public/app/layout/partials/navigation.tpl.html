@@ -8,8 +8,9 @@
   <div ng-controller="userAuthController">
     <div class="login-info ng-cloak">
       <span>
-        <a  href="" toggle-shortcut>
-            <img ng-src="{{userDataAuth.avatar}}"
+        <!--<a  href="" toggle-shortcut>-->
+        <a  href="" >
+            <img ng-src="{{userDataAuth.avatar ? userDataAuth.avatar : '/img/male.png'}}"
                  alt="{{userDataAuth.first_name}}"
                  class="online"
                  title="{{userDataAuth.first_name}}" />

@@ -125,6 +125,16 @@ class TestController extends Controller
     public function supportTest()
     {
 
+
+      $warpol = Customer::with('services')->find(554);
+
+      print '<pre>';
+      print_r($warpol->toArray());
+      die();
+
+
+
+
       $customer  = Customer::with('address')->find(501);
       $address   = $customer->address;
 //      $toAddress = ['pablo@silverip.com', 'pol.laris@gmail.com', 'peyman@silverip.com'];

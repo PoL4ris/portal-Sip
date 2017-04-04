@@ -40,7 +40,8 @@
           </a>
         </p>
 
-        <div ng-if="customerData.customer.vip" class="float-left m-l-md vip-class" title="VIP : {{customerData.customer.vip}}"><i class="fa fa-star"></i></div>
+        <!--<div ng-if="customerData.customer.vip" class="float-left m-l-md vip-class" title="VIP : {{customerData.customer.vip}}"><i class="fa fa-star"></i></div>-->
+        <div ng-if="customerData.customer.vip" class="float-left m-l-md vip-class" title="VIP : {{customerData.customer.vip}}"><label>VIP</label> - <span>{{customerData.customer.vip}}</span></div>
 
       </h2>
 
@@ -155,6 +156,17 @@
           <p class="col-lg-4 no-padding-sides"><strong>Location:</strong></p>
           <p>{{bld.name ? bld.name:bld.buildings.name}}  ({{bld.code ? bld.code : bld.buildings.code}})</p>
 
+          <div ng-repeat="contacto in customerData.customer.contacts">
+            <p class="col-lg-4 no-padding-sides"><strong>{{contactTypes[contacto.id_types - 1].name}}:</strong></p>
+            <p>{{contacto.value}}</p>
+          </div>
+
+
+
+
+
+
+
 
           <br>
           <p>
@@ -181,17 +193,28 @@
 
 
 
+
           <!--<p class="float-left size-50"><strong>Addresses:</strong></p>-->
-          <p data-toggle="modal" data-target="#customerAddressesModal" ng-click="clearAddressModal()" class="edit-info-simple-text m-t-md">
-            <i class="fa fa-map-marker "></i> {{customerData.customer.addresses.length}} addresses found on this account
+          <!--<p data-toggle="modal" data-target="#customerAddressesModal" ng-click="clearAddressModal()" class="edit-info-simple-text m-t-md">-->
+          <p   class=" m-t-md m-b-lg">
+            <i class="fa fa-map-marker "></i> {{customerData.customer.addresses.length}}
+            <label ng-if="customerData.customer.addresses.length == 1"> address found on this account</label>
+            <label ng-if="customerData.customer.addresses.length != 1"> addresses found on this account</label>
             <!--<label class="sm-view-action-btn" data-toggle="modal" data-target="#customerAddressesModal" ng-click="clearAddressModal()">...</label>-->
+            <button class="btn btn-primary m-l-lg" ng-click="clearAddressModal()" data-toggle="modal" data-target="#customerAddressesModal">View</button>
           </p>
 
         </div>
 
-        <div class="col-lg-12 no-padding-sides">
-          <button id="c-c-i-e" class="float-left edit-info-simple-text no-padding-sides" ng-click="toggleDisabled('c-c-i-e');">
+        <div class="col-lg-6 no-padding-sides">
+          <button id="c-c-i-e" class="float-left btn btn-primary" ng-click="toggleDisabled('c-c-i-e');">
             <i class="fa fa-pencil"></i> Edit customer
+          </button>
+        </div>
+
+        <div class="col-lg-16 no-padding-sides">
+          <button id="c-c-i-e1" class="float-left btn btn-danger" ng-click="toggleDisabled('c-c-i-e');">
+            <i class="fa fa-lock"></i> Reset password
           </button>
         </div>
 
@@ -303,7 +326,7 @@
       </div>
 
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">
           Cancel
         </button>
       </div>

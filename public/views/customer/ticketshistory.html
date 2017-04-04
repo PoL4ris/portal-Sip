@@ -71,7 +71,6 @@
             <div class="field-data col-lg-12" >
               <!--Name-->
               <div class="col-lg-12 no-padding-sides">
-                <i class="fa fa-circle text-success pull-right text-xs m-t-sm"></i>
                 <label><strong> {{selectedTicket.customer.first_name + ' ' + selectedTicket.customer.last_name}}</strong></label>
               </div>
               <!--Default Info-->
@@ -85,27 +84,27 @@
               </div>
               <div class="col-lg-3 no-padding-sides">
                 <div>Email</div>
-                <small class="text-muted">{{selectedTicket.contacts.value}}</small>
+                <small class="text-muted">{{selectedTicket.customer.email}}</small>
               </div>
               <div class="col-lg-3 no-padding-sides">
                 <div>Status</div>
                 <small class="text-muted">{{selectedTicket.status}}</small>
               </div>
               <!--Details Info-->
-              <div class="col-lg-12 no-padding-sides p-t-lg ">
+              <div class="col-lg-12 no-padding-sides m-t-lg m-b-sm bg-gray p-b-lg">
                 <form id="form-1-ticket">
-                  <div class="col-lg-12 no-padding-sides b-t-ddd" >
-                    <div>Details:</div>
-                    <button type="submit"
-                            class="btn m-b-xs w-xs btn-success save-btn ticket-right ticket-right-save no-display"
-                            id="save-block-a"
-                            ng-click="submitForm('form-1-ticket'); editFormByType('block-a')">
-                      Save
-                    </button>
-                    <button class="btn m-b-xs w-xs btn-info btn-edit ticket-right"
+                  <div class="col-lg-12 no-padding-sides b-t-ddd b-b-ddd m-b-lg" >
+                    <div class="pull-left m-t-md">Details:</div>
+                    <button class="btn m-b-xs w-xs btn-primary btn-edit ticket-right pull-right m-t-sm m-b-sm"
                             id="block-a"
                             ng-click="editFormByType('block-a')">
                       Edit
+                    </button>
+                    <button type="submit"
+                            class="btn m-b-xs w-xs btn-primary save-btn ticket-right ticket-right-save no-display pull-right m-t-sm m-b-sm m-r-lg"
+                            id="save-block-a"
+                            ng-click="submitForm('form-1-ticket'); editFormByType('block-a')">
+                      Save
                     </button>
                   </div>
                   <div class="col-lg-3 no-padding-sides">
@@ -139,6 +138,7 @@
                 </form>
               </div>
               <!--Comments-->
+              <!--
               <div class="col-lg-12 b-t-ddd no-padding-sides p-t-lg p-b-lg m-t-lg">
                 <div>Info:</div>
                 <div class="comment-content m-b-md">{{selectedTicket.ticket_note.comment}}
@@ -147,14 +147,15 @@
                   </p>
                 </div>
               </div>
+              -->
               <!--Info Left Block-->
-              <div class="col-lg-4 no-padding-sides">
+              <div class="col-lg-4 no-padding-sides bg-gray">
                 <div>Created by</div>
                 <small class="text-muted">Auto</small>
-                <div class="b-t-ddd m-t-md">Created on</div>
-                <small class="text-muted">{{selectedTicket.created_at}}</small>
-                <div class="b-t-ddd m-t-md">LastUpdate</div>
-                <small class="text-muted">{{selectedTicket.updated_at}}</small>
+                <div class="b-t-ddd m-t-md p-t-lg">Created on</div>
+                <small class="text-muted" ng-init="resultDate = convertDate(selectedTicket.created_at)" ng-if="selectedTicket.created_at">{{resultDate | date : "MMM d, y h:mm a" }}</small>
+                <div class="b-t-ddd m-t-md p-t-lg">LastUpdate</div>
+                <small class="text-muted" ng-init="resultDate = convertDate(selectedTicket.updated_at)" ng-if="selectedTicket.updated_at">{{resultDate | date : "MMM d, y h:mm a" }}</small>
               </div>
               <!--Update History Right Block-->
               <div class="col-lg-8 p-b-lg ">
@@ -192,10 +193,10 @@
                     </thead>
                     <tbody>
                     <tr ng-repeat="history in selectedTicket.ticket_history_full" ng-controller="supportTicketHistory">
-                      <td>{{history.created_at}}</td>
-                      <td class="th-comment" height="100">{{historyData.reason.description}}</td>
+                      <td ng-init="resultDate = convertDate(history.created_at)" ng-if="history.created_at">{{resultDate | date : "MMM d, y h:mm a" }}</td>
+                      <td class="th-comment" height="100">{{history.comment}}</td>
                       <td>{{history.status}}</td>
-                      <td>{{historyData.user.first_name}}</td>
+                      <td>{{dataUsersAssigned[history.id_users].alias}}</td>
                     </tr>
                     </tbody>
                   </table>
