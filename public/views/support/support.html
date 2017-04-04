@@ -27,7 +27,7 @@
       <div class="ticket-search-table block-table-inline">
         <label>
           Ticket Search:
-          <input type="text" placeholder="Search for Open/Closed Tickets...">
+          <input type="text" placeholder="Search for Open / Closed Tickets...">
         </label>
       </div>
 
@@ -53,8 +53,8 @@
           <tr ng-repeat="data in supportData" class="{{(data.ticket_history.id_users == 777) ? 'customer-new-updated' : '' }}">
             <td class="first-td" ng-click="displayTicketResume(data.id, data.id_customers)" data-toggle="modal" data-target="#ticketModal">{{data.ticket_number}}</td>
             <td>{{data.status}}</a></td>
-            <td><a href="#/customers?id={{data.customer.id}}">{{data.customer.first_name}}</a></td>
-            <td>{{data.address.code}}</td>
+            <td><a href="#/customers?id={{data.customer.id}}">{{data.customer.first_name}} {{data.customer.last_name}}</a></td>
+            <td>{{data.address.code}} #{{data.address.unit}}</td>
             <td>{{data.contacts.value}}</td>
             <td>{{data.reason.short_description}}</td>
 

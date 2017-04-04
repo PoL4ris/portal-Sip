@@ -484,6 +484,29 @@ table.dataTable tbody tr {
   padding: 15px 0;
   width: 100%;
 }
+.main-search-result-container:hover{
+  background: #f4f4f4;
+}
+
+.tmp-container-search{
+  min-height: 20px;
+  padding: 3px 0;
+}
+.status-type-1{
+  color: #00c853;
+}
+.status-type-2{
+  color: #E8E8E8;
+}
+.status-type-3{
+  color: #ff6d00;
+}
+.status-type-4{
+  color: #ffd600;
+}
+.status-type-5{
+  color: #0086ff;
+}
 .vip-class i {
   color: #fcc515;
   font-size: 17px;
@@ -564,4 +587,41 @@ table.dataTable tbody tr {
   width: auto;
 }
 .ticket-timing-results .ttr-container div label b {
+}
+.vip-class {
+  position: relative;
+  top: -3px;
+}
+.vip-class label {
+  background: crimson none repeat scroll 0 0;
+  border-radius: 3px;
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  padding: 2px 5px 0;
+  text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
+}
+.vip-class span{
+  font-size: 16px;
+}
+.bg-status-active:last-child {
+  border-bottom: 2px solid #333;
+}
+.bg-status-disabled {
+  color: rgba(0, 0, 0, 0.4);
+}
+.display-service-status-active{}
+.display-service-status-disabled{
+  position: relative;
+  z-index: -1;
+}
+.label-data-service {
+  font-size: 16px;
+}
+.block-a-label:first-letter{
+  text-transform: uppercase;
+}
+.default-priority-1{
+  border-left:2px solid #4caf50;
 }

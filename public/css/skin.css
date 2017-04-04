@@ -618,6 +618,10 @@ body.smart-style-7 {
 .smart-style-7 section.null-section, .smart-style-7 article.null-article{
   margin-bottom: inherit;
 }
+.smart-style-7 .editable-click, .smart-style-7 a.editable-click, .smart-style-7 a.editable-click:hover{
+  border-color: red;
+}
+
 @media (max-width: 979px) and (min-width: 768px) {
   .smart-style-7 #hide-menu i {
     color: #fff !important;
@@ -689,6 +693,10 @@ nav ul li a {
   min-height: 2px;
   padding: 0 13px 5px;
 }
+.btn-primary:focus , .btn-primary.active, .btn-primary:active, .btn-primary:hover, .open > .dropdown-toggle.btn-primary{
+  background-color: #3e6cc9;
+  background-image: -moz-linear-gradient(center top , #3e6cc9, #2e51b6);
+}
 .btn-primary {
   background-color: #3e6cc9;
   background-image: -moz-linear-gradient(center top , #3e6cc9, #2e51b6);
@@ -705,6 +713,12 @@ nav ul li a {
   color: inherit;
   opacity: 0.7;
   border-color: #ddd;
+}
+.btn-dark {
+  background-color: #afafaf;
+  background-image: -moz-linear-gradient(center top , #afafaf, #a8a8a8);
+  color: #afafaf;
+  color: white;
 }
 .btn-warning {
   background: #ffc107 -moz-linear-gradient(center top , #ffc107, #c29306) repeat scroll 0 0;
@@ -1030,4 +1044,5 @@ nav ul li a {
 .bld-search .bld-close-search{
   width: 5%;
 }
+
 

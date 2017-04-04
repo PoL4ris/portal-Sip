@@ -26,7 +26,8 @@
             <td>$ {{ invoice.amount }}</td>
             <td>{{ invoice.bill_cycle_day }}st.</td>
             <td>{{ invoice.processing_type == 13 ? 'Autopay' : invoice.processing_type }}</td>
-            <td>{{ invoice.due_date | limitTo : 10 }}</td>
+            <td ng-init="resultDate = convertDate(invoice.due_date)">{{resultDate | date : "MMM d, y h:mm a" }}</td>
+            <!--<td>{{ invoice.due_date | limitTo : 10 }}</td>-->
 
             <!--<td>{{ billing.action_code }}</td>-->
             <!--<td>{{ billing.transaction_id }}</td>-->
@@ -58,7 +59,7 @@
           <div class="modal-body">
             <div class="wrapper-sm">
               <div>
-                <a href class="btn btn-default pull-right" onClick="alert('sending copy to customer')">Send to Customer</a>
+                <a href class="btn btn-success pull-right" onClick="alert('sending copy to customer')">Send to Customer</a>
                 <div class="invoice-logo "><img src="/img/silverip-logo-100px.png" alt="SilverIp"/></div>
                 <!--<div class="col-lg-12">{{modalInvoice}} aqui viene todo</div> -->
                 <div class="row">
@@ -109,7 +110,7 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">
+            <button type="button" class="btn btn-danger" data-dismiss="modal">
               Cancel
             </button>
           </div>

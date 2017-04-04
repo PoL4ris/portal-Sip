@@ -5,17 +5,20 @@
     <div class="panel panel-default table-container">
       <table class="tablesorter table m-b-lg">
         <thead>
-        <tr><th>Service</th><th>Amount</th><th>Cycle</th><th>Status</th><th colspan="2">Actions</th></tr>
+        <tr><th>Service</th><th>Signed at</th><th>Amount</th><th>Cycle</th><th>Status</th><th>Last Updated</th><th colspan="2">Actions</th></tr>
         </thead>
         <tbody>
-        <tr ng-repeat="service in customerData.customerServices.services" ng-controller="serviceProductController">
-          <!--<td>{{ service.id }}</td>-->
+        <tr ng-repeat="service in customerData.customerServices.services" ng-controller="serviceProductController" class="bg-status-{{customerProductStatus.status.name}}">
+
           <td>{{ customerProduct.product.name }}</td>
+          <td ng-init="resultDate = convertDate(service.signed_up)">{{resultDate | date : "MMM d, y h:mm a" }}</td>
           <td>$ {{ customerProduct.product.amount }}.00</td>
           <td class="text-capitalize">{{ customerProduct.product.frequency }}</td>
           <td class="text-capitalize">{{ customerProductStatus.status.name }}</td>
+          <td ng-init="resultDate = convertDate(service.updated_at)">{{resultDate | date : "MMM d, y h:mm a" }}</td>
+
           <td class="prod-btns">
-            <button class="btn fa btn-danger fa-pencil modif-service-btn"
+            <button class="btn fa btn-primary fa-pencil modif-service-btn display-service-status-{{customerProductStatus.status.name}}"
                     title="Edit Service"
                     ng-click="setModeType('updateService'); serviceDataDisplay(true)"
                     data-toggle="modal"
@@ -39,7 +42,7 @@
     </div>
 
     <div class="col-lg-12 add-Service-btn no-padding-sides m-b-lg">
-      <button class="btn m-b-xs btn-sm btn-default btn-addon bg-blue float-right" data-toggle="modal" data-target="#myModalService"  ng-click="setModeType('')">
+      <button class="btn m-b-xs btn-sm btn-primary btn-addon bg-blue float-right" data-toggle="modal" data-target="#myModalService"  ng-click="setModeType('')">
         <i class="fa fa-plus"></i>
         Add Service
       </button>
@@ -82,12 +85,12 @@
                 <label class="bold-type col-lg-6">Cycle</label>
                 <label class="col-lg-6 block-a-label">{{ currentServiceDisplay ? currentServiceDisplay.frequency : 'Select Service' }}</label>
                 <label class="bold-type col-lg-6">Status</label>
-                <label class="col-lg-6 block-a-label">{{ currentServiceDisplay ? currentServiceDisplay.id_types : 'Select Service' }}</label>
+                <label class="col-lg-6 block-a-label">{{ currentServiceDisplay ? 'Active' : 'Select Service' }}</label>
               </div>
 
             </div>
 
-            <div class="field-data col-lg-12" ng-if="currentServiceDisplay">
+            <div class="label-data-service col-lg-12" ng-if="currentServiceDisplay">
               <label>{{currentServiceDisplay.name}}</label>
             </div>
 
@@ -97,12 +100,12 @@
 
       <div class="modal-footer">
         <div class="col-lg-1 addServiceBoton" ng-if="!customerData.servicesMode">
-          <button class="btn m-b-xs w-xs btn-default" ng-click="addNewService()" >Add</button>
+          <button class="btn m-b-xs w-xs btn-primary" ng-click="addNewService()" >Add</button>
         </div>
         <div class="col-lg-1 addServiceBoton" ng-if="customerData.servicesMode">
-          <button class="btn m-b-xs w-xs btn-default" ng-click="addNewService()" >Update</button>
+          <button class="btn m-b-xs w-xs btn-primary" ng-click="addNewService()" >Update</button>
         </div>
-        <button type="button" class="btn btn-default" data-dismiss="modal">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">
           Cancel
         </button>
       </div>

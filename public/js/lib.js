@@ -1746,23 +1746,27 @@ app.controller('globalToolsCtl',      function ($scope, $http, $compile, $sce, $
   }
   $scope.xEditVisual          = function (valor, id){
 
-
     switch (id)
     {
       case 'c-c-i-e':
       if(valor)
-        $('#' + id).html('<i class="fa fa-pencil"></i> Edit customer').css('color', '#1da3fc');
+        $('#' + id).html('<i class="fa fa-pencil"></i> Edit customer').removeClass('btn-danger').addClass('btn-primary');
       else
-        $('#' + id).html('<i class="fa fa-plus plus-cross"></i> Cancel ').css('color', 'crimson');
+        $('#' + id).html('<i class="fa fa-plus plus-cross"></i> Cancel ').removeClass('btn-primary').addClass('btn-danger');
+      break;
       case 'customer-contact':
         if(valor)
-          $('#' + id).html('<i class="fa fa-pencil"></i> Edit Info').css('color', '#1da3fc');
+          $('#' + id).html('<i class="fa fa-pencil"></i> Edit customer').removeClass('btn-danger').addClass('btn-primary');
         else
-          $('#' + id).html('<i class="fa fa-plus plus-cross"></i> Cancel ').css('color', 'crimson');
+          $('#' + id).html('<i class="fa fa-plus plus-cross"></i> Cancel ').removeClass('btn-primary').addClass('btn-danger');
+        break;
     }
   }
   $scope.convertDate          = function(valor){
     return new Date(valor);
+  }
+  $scope.warpol = function (warp){
+    console.log('Esto entro en Warpol y mando :' + warp);
   }
 
 
