@@ -26,7 +26,7 @@
           <tbody>
             <tr ng-repeat="ticket in customerData.customer.open_tickets">
               <td class="first-td" ng-click="displayTicketResume(ticket.id, ticket.id_customers)" data-toggle="modal" data-target="#ticketModal">{{ ticket.ticket_number }}</td>
-              <td>{{ ticket.created_at }}</td>
+              <td ng-init="ticketDateA = convertDate(ticket.created_at)">{{ ticketDateA | date : "MMM d, y h:mm a" }}</td>
               <td>{{ newTicketData[ticket.id_reasons].short_description }}</td>
               <td ng-mouseover="showFullComment(ticket.id)"     style="position: relative;"
                   ng-mouseleave="hideFullComment(ticket.id)"    ng-if="ticket.comment">
@@ -35,7 +35,7 @@
               </td>
               <td ng-if="!ticket.comment"> No Comment </td>
               <td>{{ ticket.status }}</td>
-              <td>{{ ticket.updated_at ? ticket.updated_at : 'ERROR' }}</td>
+              <td ng-init="ticketDateB = convertDate(ticket.updated_at)" >{{ ticketDateB | date : "MMM d, y h:mm a" }}</td>
             </tr>
           </tbody>
         </table>
