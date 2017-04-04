@@ -417,7 +417,6 @@ app.controller('customerController',                function ($scope, $http, $st
       });
     $http.get("getTableData", {params:{'table':'reasons'}})
       .then(function (response) {
-        console.log(response.data);
         $scope.newTicketData = response.data;
       });
     $http.get("getStatus")//VERIFY HOW TO CREATE INDEX 0 ON THE SELECT OPTION X-EDIT
@@ -735,7 +734,7 @@ app.controller('customerTicketHistoryController',   function ($scope, $http){
   }
 });
 app.controller('customerInvoiceHistoryController',  function ($scope, $http){
-  console.log($scope.customerData);
+//   console.log($scope.customerData);
 
   if(!$scope.invoiceData)
     $http.get("getInvoiceHistory", {params:{'id':$scope.idCustomer}})
@@ -1766,7 +1765,8 @@ app.controller('globalToolsCtl',      function ($scope, $http, $compile, $sce, $
     return new Date(valor);
   }
   $scope.warpol = function (warp){
-    console.log('Esto entro en Warpol y mando :' + warp);
+    console.log('Esto entro en Warpol y mando :');
+    console.log(warp);
   }
 
 

@@ -5,20 +5,24 @@
     <div class="panel panel-default table-container">
       <table class="tablesorter table m-b-lg">
         <thead>
-        <tr><th>Service</th><th>Signed at</th><th>Amount</th><th>Cycle</th><th>Status</th><th>Last Updated</th><th colspan="2">Actions</th></tr>
+        <tr><th>Service</th>
+        <!--<th>Signed at</th>-->
+        <th>Amount</th><th>Cycle</th><th>Status</th>
+        <!--<th>Last Updated</th>-->
+        <th colspan="2">Actions</th></tr>
         </thead>
         <tbody>
         <tr ng-repeat="service in customerData.customerServices.services" ng-controller="serviceProductController" class="bg-status-{{customerProductStatus.status.name}}">
 
           <td>{{ customerProduct.product.name }}</td>
-          <td ng-init="resultDate = convertDate(service.signed_up)">{{resultDate | date : "MMM d, y h:mm a" }}</td>
+          <!--<td ng-init="resultDate = convertDate(service.signed_up)">{{resultDate | date : "M/d/yy h:mm a" }}</td>-->
           <td>$ {{ customerProduct.product.amount }}.00</td>
           <td class="text-capitalize">{{ customerProduct.product.frequency }}</td>
           <td class="text-capitalize">{{ customerProductStatus.status.name }}</td>
-          <td ng-init="resultDate = convertDate(service.updated_at)">{{resultDate | date : "MMM d, y h:mm a" }}</td>
+          <!--<td ng-init="resultDate = convertDate(service.updated_at)">{{resultDate | date : "short" }}</td>-->
 
           <td class="prod-btns">
-            <button class="btn fa btn-primary fa-pencil modif-service-btn display-service-status-{{customerProductStatus.status.name}}"
+            <button class="btn fa btn-primary fa-eye modif-service-btn display-service-status-{{customerProductStatus.status.name}}"
                     title="Edit Service"
                     ng-click="setModeType('updateService'); serviceDataDisplay(true)"
                     data-toggle="modal"

@@ -709,9 +709,9 @@ nav ul li a {
   color: white;
 }
 .btn-danger:hover, .btn-success:hover, .btn-default:hover, .btn-primary:hover, .btn-warning:hover {
-  background: transparent none repeat scroll 0 0;
-  color: inherit;
-  opacity: 0.7;
+  /*background: transparent none repeat scroll 0 0;*/
+  color: white;
+  opacity: 0.8;
   border-color: #ddd;
 }
 .btn-dark {

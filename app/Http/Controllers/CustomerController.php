@@ -292,10 +292,12 @@ class CustomerController extends Controller
   {
 
     $newData = array();
-    $newData[$request->field] = explode('#', $request->value)[1];
+    $hasHashtag = explode('#', $request->value);
+
+    $newData[$request->field] = (count($hasHashtag) == 1) ? $hasHashtag[0] : $hasHashtag[1];
 
     $addressExist = Address::find($request->id_table);
-    $addressExist->unit = explode('#', $request->value)[1];
+    $addressExist->unit = (count($hasHashtag) == 1) ? $hasHashtag[0] : $hasHashtag[1];
     $addressExist->save();
 
     ActivityLogs::add($this->logType, $request->id, 'update', 'updateAddressTable', $addressExist, $newData, null, 'update-unit');
