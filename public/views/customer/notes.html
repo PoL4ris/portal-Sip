@@ -1,0 +1,21 @@
+<div ng-controller="customerNotesController">
+
+  <div class="col-lg-12">
+    <form id="c-n-f" class="cnf-comment">
+      <p class="bold-type">New Comment:</p>
+      <textarea placeholder="Comment" required id="textarea-note-customer"></textarea>
+      <button ng-click="newNote()" class="btn btn-primary pull-right"><i class="fa fa-plus m-r-md"></i> Add comment</button>
+    </form>
+  </div>
+
+
+  <div class="col-lg-12 notes-list">
+    <p class="bold-type">Latest Comments:</p>
+    <p ng-repeat="note in customerNotes" class="b-b-ddd m-t-md m-b-md p-b-md">
+      {{note.comment}}
+    </p>
+  </div>
+
+
+</div>
+

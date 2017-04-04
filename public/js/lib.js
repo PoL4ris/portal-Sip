@@ -955,7 +955,6 @@ app.controller('customerBuildingController',        function ($scope, $http){
   }
 
 });
-//PAYMENT METHOD INCOMPLETE.
 app.controller('customerPaymentMethodsController',  function ($scope, $http){
 // console.log('something here con el id de  : ' + $scope.idCustomer);
 // return;
@@ -1209,6 +1208,50 @@ app.controller('serviceProductController',          function ($scope, $http){
     });
 
 });
+
+
+
+
+app.controller('customerNotesController',           function($scope, $http){
+  console.log('customerNotesController');
+
+
+  $http.get("getCustomerNotes", {params:{'id':$scope.idCustomer}})
+    .then(function (response) {
+      $scope.customerNotes = response.data;
+    });
+
+  $scope.newNote = function(){
+
+    var content = $('#textarea-note-customer').val();
+
+    if(content)
+    {
+
+      console.log('tiene algo');
+
+      $http.get("insertCustomerNote", {params:{'id':$scope.idCustomer, 'note':content}})
+        .then(function (response) {
+          $scope.customerNotes = response.data;
+          $('#c-n-f').trigger("reset");
+        });
+
+
+    }
+    else
+    {
+      console.log('no trae nada woe');
+      return;
+    }
+  }
+});
+
+
+
+
+
+
+
 
 
 //Support Controllers

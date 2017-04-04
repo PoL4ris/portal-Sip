@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Note;
 use Illuminate\Http\Request;
 //use App\Http\Requests;
 use App\Models\Product;
@@ -165,6 +166,19 @@ class CustomerController extends Controller
   {
     return Customer::with('status')->find($request->id)['status'];
   }//SI
+  public function insertCustomerNote(Request $request){
+
+    $note = new Note;
+    $note->comment = $request->note;
+    $note->created_by = Auth::user()->id;
+    $note->id_customers = $request->id;
+    $note->save();
+
+    return Note::where('id_customers', $request->id)->get();
+  }
+  public function getCustomerNotes(Request $request){
+    return Note::where('id_customers', $request->id)->get();
+  }
   public function getCustomerContactData(Request $request)
   {
     return Customer::with('contacts')->find($request->id);
