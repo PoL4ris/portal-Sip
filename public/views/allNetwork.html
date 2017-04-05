@@ -1,9 +1,14 @@
-<div class="bg-light lter b-b wrapper-xs col-lg-12 ng-scope">
-  <h2 class="m-n font-thin h3">Network</h2>
+<div class="col-lg-12 easy-links">
+
+  <p class="pull-left"><a href="http://chi-web-cld-2.silverip.net/ipam" title="" class="" display="" target="_blank">IPAM</a></p>
+  <p class="pull-left"><a href="http://10.11.101.228/zabbix" title="" class="" display="" target="_blank">Zabbix (switches)</a></p>
+  <p class="pull-left"><a href="http://10.11.101.243/zabbix" title="" class="" display="" target="_blank">Zabbix (wireless links)</a></p>
+  <p class="pull-left"><a href="http://observe2.silverip.net" title="" class="" display="" target="_blank">Observium</a></p>
+  <p class="pull-left"><a href="https://10.11.101.108:8443" title="" class="" display="" target="_blank">UniFi WiFi Management</a></p>
+  <p class="pull-left"><a href="http://confluence.silverip.net:8090" title="" class="" display="" target="_blank">Confluence</a></p>
+  <p class="pull-left"><a href="http://100.64.138.200" title="" class="" display="" target="_blank">PRTG</a></p>
+  <p class="pull-left"><a href="http://10.11.101.101:8089/Orion/External.aspx?Site=1" title="" class="" display="" target="_blank">Orion</a></p>
 </div>
-
-
-
 
 <article class="col-sm-12 col-md-12 col-lg-12 p-b-lg bg-white white-shadow p-t-lg m-b-lg">
   <div ng-if="networkData">
@@ -11,18 +16,18 @@
       <table datatable="ng"  class="row-border hover" dt-options="showCase.dtOptions" dt-column-defs="showCase.dtColumnDefs">
         <thead>
           <tr>
-            <th>MORE</th>
+            <th>More</th>
 
             <th>Location</th>
             <th>Address</th>
             <th>Core</th>
             <th>Dist</th>
 
-            <th>Queue-set</th>
-            <th>Primary</th>
-            <th>Backup</th>
+            <!--<th>Queue-set</th>-->
+            <th>Primary Link</th>
+            <th>Backup Link</th>
             <th>Management</th>
-            <th>Segment</th>
+            <!--<th>Segment</th>-->
 
           </tr>
         </thead>
@@ -40,7 +45,7 @@
             <td>{{dataNet.core}}</td>
             <td>{{dataNet.dist}}</td>
 
-            <td>{{dataNet.access_up_to_date}}</td>
+            <!--<td>{{dataNet.access_up_to_date}}</td>-->
 
             <td ng-init="netDataFieldP = cleanNetField(dataNet.primary)">
               <a ng-init="netDataHrefP = cleanHrefField(dataNet.primary)" href="{{netDataHrefP}}" target="_blank">
@@ -55,7 +60,7 @@
             </td>
 
             <td>{{dataNet.management}}</td>
-            <td>{{dataNet.segment}}</td>
+            <!--<td>{{dataNet.segment}}</td>-->
           </tr>
         </tbody>
       </table>
