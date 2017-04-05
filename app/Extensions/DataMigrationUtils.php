@@ -193,6 +193,7 @@ class DataMigrationUtils {
             $this->updateAddressByCustomer($legacyCustomer, new Address);
             $this->updatePaymentMethod($legacyCustomer, new PaymentMethod);
             $this->addContactsForCustomer($legacyCustomer);
+            $this->addNoteForCustomer($legacyCustomer);
             return true;
         };
         $this->migrateTable($legacyTableName, $this->tableMap[$legacyTableName]);
@@ -364,6 +365,7 @@ class DataMigrationUtils {
             $this->findOrCreateAddressByCustomer($legacyCustomer);
             $this->findOrCreatePaymentMethod($legacyCustomer);
             $this->updateContactByCustomer($legacyCustomer);
+            $this->updateNotesByCustomer($legacyCustomer);
             return true;
         };
         $this->updateTable($legacyTableName, $this->tableMap[$legacyTableName], $updateFunction, $updateFunction);
@@ -743,7 +745,7 @@ class DataMigrationUtils {
         $tables = ['users', 'apps', 'customers', 'buildings', 'building_properties',
                    'building_property_values', 'products', 'product_properties',
                    'product_property_values', 'customer_products', 'building_products',
-                   'network_nodes', 'ports', 'reasons', 'tickets', 'ticket_history',
+                   'network_nodes', 'network_tabs', 'notes', 'ports', 'reasons', 'tickets', 'ticket_history',
                    'billing_transaction_logs', 'data_migrations', 'payment_methods',
                    'address', 'contacts', 'contact_types', 'categories', 'status',
                    'types', 'neighborhoods'];
@@ -1168,9 +1170,9 @@ class DataMigrationUtils {
            $legacyCustomer->AccountStatus == 'DISABLED' ||
            $legacyCustomer->AccountStatus == 'decommissioned') {
 
-            $customer->id_status = 2;
+            $customer->id_status = config('const.status.disabled');
         } else {
-            $customer->id_status = 1;
+            $customer->id_status = config('const.status.active');
         }
         $customer->signedup_at = $legacyCustomer->DateSignup;
         $customer = $this->copyTimestamps($legacyCustomer, $customer);
@@ -1200,9 +1202,9 @@ class DataMigrationUtils {
         $address->country = $legacyCustomer->Country;
         $address->id_customers = $legacyCustomer->CID;
         $address->id_buildings = $legacyCustomer->LocID;
-        $serviceLocation = $legacyCustomer->serviceLocation;
+        $serviceLocation = $legacyCustomer->servicelocations;
         if($serviceLocation != null){
-            $address->code = $serviceLocation->Shortname;
+            $address->code = $serviceLocation->ShortName;
         }
         $address = $this->copyTimestamps($legacyCustomer, $address);
         $address->save();
@@ -1220,20 +1222,36 @@ class DataMigrationUtils {
         }
     }
 
+    protected function addNoteForCustomer(CustomerOld $legacyCustomer) {
+
+        if($legacyCustomer->Comments != null && $legacyCustomer->Comments != ''){
+            Note::create(['id_customers' => $legacyCustomer->CID, 'comment' => $legacyCustomer->Comments, 'created_by' => 1]);
+        }
+    }
+
     protected function updateContactByCustomer(CustomerOld $legacyCustomer) {
 
         if($legacyCustomer->Email != ''){
-            $emailContact = Contact::firstOrCreate(['id_customers' => $legacyCustomer->CID, 'id_types' => 5]);
+            $emailContact = Contact::firstOrCreate(['id_customers' => $legacyCustomer->CID, 'id_types' => config('const.contact_type.email')]);
             $emailContact->value = $legacyCustomer->Email;
             $emailContact = $this->copyTimestamps($legacyCustomer, $emailContact);
             $emailContact->save();
         }
 
         if($legacyCustomer->Tel != ''){
-            $phoneContact = Contact::firstOrCreate(['id_customers' => $legacyCustomer->CID, 'id_types' => 1]);
+            $phoneContact = Contact::firstOrCreate(['id_customers' => $legacyCustomer->CID, 'id_types' => config('const.contact_type.mobile_phone')]);
             $phoneContact->value = $legacyCustomer->Tel;
             $phoneContact = $this->copyTimestamps($legacyCustomer, $phoneContact);
             $phoneContact->save();
+        }
+    }
+
+    protected function updateNotesByCustomer(CustomerOld $legacyCustomer) {
+
+        if($legacyCustomer->Comments != null && $legacyCustomer->Comments != ''){
+            $note = Note::firstOrCreate(['id_customers' => $legacyCustomer->CID, 'created_by' => 1]);
+            $note->comment = $legacyCustomer->Comments;
+            $note->save();
         }
     }
 
@@ -1359,23 +1377,23 @@ class DataMigrationUtils {
 
         $buildingId = $legacyLocation->LocID;
 
-        $this->findOrCreateBuildingPropertyValue($buildingId, 1, $legacyLocation->Type);
-        $this->findOrCreateBuildingPropertyValue($buildingId, 2, $legacyLocation->Units);
-        $this->findOrCreateBuildingPropertyValue($buildingId, 3, $legacyLocation->ServiceType);
-        $this->findOrCreateBuildingPropertyValue($buildingId, 4, $legacyLocation->ContractExpire);
-        $this->findOrCreateBuildingPropertyValue($buildingId, 5, $legacyLocation->MgrCompany);
-        $this->findOrCreateBuildingPropertyValue($buildingId, 6, $legacyLocation->Ethernet);
-        $this->findOrCreateBuildingPropertyValue($buildingId, 7, $legacyLocation->Wireless);
-        $this->findOrCreateBuildingPropertyValue($buildingId, 8, $legacyLocation->Speeds);
-        $this->findOrCreateBuildingPropertyValue($buildingId, 9, $legacyLocation->Billing);
-        $this->findOrCreateBuildingPropertyValue($buildingId, 10, $legacyLocation->EmailService);
-        $this->findOrCreateBuildingPropertyValue($buildingId, 11, $legacyLocation->IP);
-        $this->findOrCreateBuildingPropertyValue($buildingId, 12, $legacyLocation->DNS);
-        $this->findOrCreateBuildingPropertyValue($buildingId, 13, $legacyLocation->Gateway);
-        $this->findOrCreateBuildingPropertyValue($buildingId, 14, $legacyLocation->HowToConnect);
-        $this->findOrCreateBuildingPropertyValue($buildingId, 15, $legacyLocation->Description);
-        $this->findOrCreateBuildingPropertyValue($buildingId, 16, $legacyLocation->SupportNumber);
-        $this->findOrCreateBuildingPropertyValue($buildingId, 17, $legacyLocation->fnImage);
+        $this->findOrCreateBuildingPropertyValue($buildingId, config('const.building_property.type'), $legacyLocation->Type);
+        $this->findOrCreateBuildingPropertyValue($buildingId, config('const.building_property.units'), $legacyLocation->Units);
+        $this->findOrCreateBuildingPropertyValue($buildingId, config('const.building_property.service_type'), $legacyLocation->ServiceType);
+        $this->findOrCreateBuildingPropertyValue($buildingId, config('const.building_property.contract_expires'), $legacyLocation->ContractExpire);
+        $this->findOrCreateBuildingPropertyValue($buildingId, config('const.building_property.mgmt_company'), $legacyLocation->MgrCompany);
+        $this->findOrCreateBuildingPropertyValue($buildingId, config('const.building_property.ethernet'), $legacyLocation->Ethernet);
+        $this->findOrCreateBuildingPropertyValue($buildingId, config('const.building_property.wireless'), $legacyLocation->Wireless);
+        $this->findOrCreateBuildingPropertyValue($buildingId, config('const.building_property.speeds'), $legacyLocation->Speeds);
+        $this->findOrCreateBuildingPropertyValue($buildingId, config('const.building_property.billing'), $legacyLocation->Billing);
+        $this->findOrCreateBuildingPropertyValue($buildingId, config('const.building_property.email_service'), $legacyLocation->EmailService);
+        $this->findOrCreateBuildingPropertyValue($buildingId, config('const.building_property.ip'), $legacyLocation->IP);
+        $this->findOrCreateBuildingPropertyValue($buildingId, config('const.building_property.dns'), $legacyLocation->DNS);
+        $this->findOrCreateBuildingPropertyValue($buildingId, config('const.building_property.gateway'), $legacyLocation->Gateway);
+        $this->findOrCreateBuildingPropertyValue($buildingId, config('const.building_property.how_to_connect'), $legacyLocation->HowToConnect);
+        $this->findOrCreateBuildingPropertyValue($buildingId, config('const.building_property.description'), $legacyLocation->Description);
+        $this->findOrCreateBuildingPropertyValue($buildingId, config('const.building_property.support_number'), $legacyLocation->SupportNumber);
+        $this->findOrCreateBuildingPropertyValue($buildingId, config('const.building_property.image'), $legacyLocation->fnImage);
         return true;
     }
 
@@ -1417,28 +1435,28 @@ class DataMigrationUtils {
         switch ($legacyProduct->ProdType) {
 
             case 'Internet':
-                $product->id_types = 1;
+                $product->id_types = config('const.type.internet');
                 break;
             case 'Phone':
-                $product->id_types = 2;
+                $product->id_types = config('const.type.phone');
                 break;
             case 'Phone-Option':
-                $product->id_types = 3;
+                $product->id_types = config('const.type.phone_option');
                 break;
             case 'Router':
-                $product->id_types = 4;
+                $product->id_types = config('const.type.customer_router');
                 break;
             case 'Ethernet Jack':
-                $product->id_types = 5;
+                $product->id_types = config('const.type.ethernet_jack');
                 break;
             case 'Other':
-                $product->id_types = 6;
+                $product->id_types = config('const.type.other');
                 break;
             case 'Cable Run':
-                $product->id_types = 11;
+                $product->id_types = config('const.type.cable_run');
                 break;
             case 'Activation Fee':
-                $product->id_types = 12;
+                $product->id_types = config('const.type.activation_fee');
                 break;
             default:
                 break;
@@ -1520,16 +1538,16 @@ class DataMigrationUtils {
         switch ($legacyCustomerProduct->Status) {
 
             case 'active':
-                $customerProduct->id_status = 1;
+                $customerProduct->id_status = config('const.status.active');
                 break;
             case 'disabled':
-                $customerProduct->id_status = 2;
+                $customerProduct->id_status = config('const.status.disabled');
                 break;
             case 'new':
-                $customerProduct->id_status = 3;
+                $customerProduct->id_status = config('const.status.new');
                 break;
             case 'decommissioned':
-                $customerProduct->id_status = 4;
+                $customerProduct->id_status = config('const.status.decommissioned');
                 break;
             default:
                 break;
@@ -1590,10 +1608,10 @@ class DataMigrationUtils {
         switch ($legacyNetworkNode->Type) {
 
             case 'Router':
-                $networkNode->id_types = 7;
+                $networkNode->id_types = config('const.type.router');
                 break;
             case 'Switch':
-                $networkNode->id_types = 8;
+                $networkNode->id_types = config('const.type.switch');
                 break;
             default:
                 break;
@@ -1660,16 +1678,16 @@ class DataMigrationUtils {
         switch ($legacyReason->ReasonCategory) {
 
             case 'INT':
-                $reason->id_categories = 1;
+                $reason->id_categories = config('const.reason_category.internet');
                 break;
             case 'PH':
-                $reason->id_categories = 2;
+                $reason->id_categories = config('const.reason_category.phone');
                 break;
             case 'MISC':
-                $reason->id_categories = 3;
+                $reason->id_categories = config('const.reason_category.misc');
                 break;
             case 'TV';
-                $reason->id_categories = 4;
+                $reason->id_categories = config('const.reason_category.tv');
                 break;
             default:
                 break;
@@ -1697,7 +1715,8 @@ class DataMigrationUtils {
         $ticket->id_customers = $legacyTicket->CID;
         $ticket->ticket_number = $legacyTicket->TicketNumber;
         $ticket->vendor_ticket = $legacyTicket->VendorTID;
-        $ticket->id_reasons = $legacyTicket->RID;
+        $legacyTicketReason = trim($legacyTicket->RID);
+        $ticket->id_reasons = ($legacyTicketReason == null || $legacyTicketReason == '') ? config('const.reason.unknown') :  $legacyTicketReason;
         $ticket->comment = $legacyTicket->Comment;
         $ticket->status = $legacyTicket->Status;
         $ticket->id_users = ($legacyTicket->StaffID == '') ? 0 : $legacyTicket->StaffID;
@@ -1705,11 +1724,11 @@ class DataMigrationUtils {
         $ticket = $this->copyTimestamps($legacyTicket, $ticket);
 
         if($legacyTicket->RID == 1) {
-            $ticket->id_reasons = 29;
+            $ticket->id_reasons = config('const.reason.internal_billing');
         }
 
         if($legacyTicket->RID == 0) {
-            $ticket->id_reasons = 1;
+            $ticket->id_reasons = config('const.reason.unknown');
         }
         $ticket->save();
         return true;
@@ -1730,18 +1749,19 @@ class DataMigrationUtils {
         if($ticketHistory == null) { $ticketHistory = new TicketHistory; }
         $ticketHistory->id = $legacyTicketHistory->THID;
         $ticketHistory->id_tickets = $legacyTicketHistory->TID;
-        $ticketHistory->id_reasons = $legacyTicketHistory->RID;
+        $legacyTicketHistoryReason = trim($legacyTicketHistory->RID);
+        $ticketHistory->id_reasons = ($legacyTicketHistoryReason == null || $legacyTicketHistoryReason == '') ? config('const.reason.unknown') :  $legacyTicketHistoryReason;
         $ticketHistory->comment = $legacyTicketHistory->Comment;
         $ticketHistory->status = $legacyTicketHistory->Status;
         $ticketHistory->id_users = ($legacyTicketHistory->StaffID == '') ? 0 : $legacyTicketHistory->StaffID;
         $ticketHistory->id_users_assigned = ($legacyTicketHistory->AssignedToID == '') ? 0 : $legacyTicketHistory->AssignedToID;
 
         if($legacyTicketHistory->RID == 1) {
-            $ticketHistory->id_reasons = 29;
+            $ticketHistory->id_reasons = config('const.reason.internal_billing');
         }
 
         if($legacyTicketHistory->RID == 0) {
-            $ticketHistory->id_reasons = 1;
+            $ticketHistory->id_reasons = config('const.reason.unknown');
         }
         $ticketHistory = $this->copyTimestamps($legacyTicketHistory, $ticketHistory);
         $ticketHistory->save();
@@ -1805,7 +1825,7 @@ class DataMigrationUtils {
         $networkTab->dist = $legacyNetworkTab->dist;
         $networkTab->primary = $legacyNetworkTab->primary;
         $networkTab->backup = $legacyNetworkTab->backup;
-        $networkTab->mgmt_net = $legacyNetworkTab->mgmt_net;
+        $networkTab->mgmt_net = $legacyNetworkTab->mgmtnet;
         $networkTab = $this->copyTimestamps($legacyNetworkTab, $networkTab);
         $networkTab->save();
         return true;

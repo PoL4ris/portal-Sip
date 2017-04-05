@@ -32,6 +32,28 @@ class BillingHelper {
         return ($this->testMode) ? 'development' : 'production';
     }
 
+    public function generateResidentialChargeRecords() {
+
+        // Get residential buildings
+        $buildings = Building::with(['properties' => function ($query) {
+            $query->where('id_building_properties', config('const.3')
+                ->where('value','Retail')
+                ->orWhere('value','Bulk');
+        }])
+            ->where('id', 28)->get();
+
+        $count = 0;
+
+        foreach($buildings as $building){
+            $invoiceDataTable = $this->generateBuildingInvoiceDataTable($building->id);
+            $count = $this->addInvoicesToDatabase($invoiceDataTable);
+            error_log('BillingHelper::generateInvoiceRecords(): Added invoices for '.$building->nickname.' to DB');
+        }
+
+        return 'Generated '.$count.' invoices and added them to the DB.';
+
+    }
+
     public function generateResidentialInvoiceRecords() {
 
         // Get residential buildings

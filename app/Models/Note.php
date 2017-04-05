@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Note extends Model
 {
+
+    protected $fillable = ['id_customers', 'comment', 'created_by'];
+
     /**
      * 
      * @return type

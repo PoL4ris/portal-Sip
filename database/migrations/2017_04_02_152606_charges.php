@@ -12,22 +12,22 @@ class Charges extends Migration
      */
     public function up()
     {
-        $table->increments('id');
-        $table->string('name')->nullable();
-        $table->string('address')->nullable();
-        $table->string('description')->nullable();
-        $table->text('details')->nullable();
-        $table->string('amount')->nullable();  
-        $table->integer('id_customers')->nullable();
-        $table->integer('id_address')->nullable();
-        $table->string('status')->nullable();
-        $table->integer('failed_charges_count')->comment('Failed Charges Count');
-        $table->text('comment')->nullable();
-        $table->integer('bill_cycle_day')->nullable();
-        $table->integer('processing_type')->nullable();
-        $table->timestamp('due_date')->nullable();    
-        $table->timestamps(); 
-      });
+        Schema::create('charges', function(Blueprint $table) {
+            $table->increments('id');
+            $table->string('name')->nullable();
+            $table->string('address')->nullable();
+            $table->string('description')->nullable();
+            $table->text('details')->nullable();
+            $table->string('amount')->nullable();
+            $table->integer('id_customers')->nullable();
+            $table->integer('id_address')->nullable();
+            $table->string('status')->nullable();
+            $table->text('comment')->nullable();
+            $table->integer('bill_cycle_day')->nullable();
+            $table->integer('processing_type')->nullable();
+            $table->timestamp('due_date')->nullable();
+            $table->timestamps();
+        });
     }
 
     /**
@@ -37,6 +37,6 @@ class Charges extends Migration
      */
     public function down()
     {
-      Schema::drop('charges');
+        Schema::drop('charges');
     }
 }
