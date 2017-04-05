@@ -551,17 +551,25 @@ table.dataTable tbody tr {
 }
 .ticket-search-table {
   float: right;
-  width: 25%;
+  width: 30%;
 }
 .ticket-search-table label {
   width: 100%;
+  position: relative;
 }
 .ticket-search-table label input {
   border: 1px solid #ddd;
   border-radius: 2px;
   height: 33px;
   padding: 0 5px;
-  width: 70%;
+  width: 100%;
+}
+.ticket-search-table label i{
+  color: #ddd;
+  font-size: 20px;
+  position: absolute;
+  right: 7px;
+  top: 5px;
 }
 .ticket-timing-results {
   margin-left: 100px;
@@ -656,4 +664,15 @@ table.dataTable tbody tr {
   text-align: center;
   vertical-align: middle;
   display: block;
+}
+.easy-links{}
+
+.easy-links p {
+  border-right: 1px solid #ddd;
+  padding: 0 10px;
+  text-align: center;
+  width: auto;
+}
+.easy-links a {
+  font-weight: inherit;
 }

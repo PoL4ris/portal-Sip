@@ -348,6 +348,7 @@ app.controller('networkController',                 function ($scope, $http, cus
 
     if (stance.attr('stance') == '1')
     {
+      console.log('Stance = 2');
       stance.attr('stance', 2);
       stance.removeClass(mas);
       stance.addClass(menos);
@@ -355,6 +356,7 @@ app.controller('networkController',                 function ($scope, $http, cus
     }
     else
     {
+      console.log('Stance = 1');
       stance.attr('stance', 1);
       stance.removeClass(menos);
       stance.addClass(mas);
@@ -378,7 +380,7 @@ app.controller('networkControllerTSort',            function (DTOptionsBuilder, 
 
   var vm = this;
   vm.persons = [];
-  vm.dtOptions = DTOptionsBuilder.newOptions().withPaginationType('full_numbers').withDisplayLength(25).withOption('order', [1, 'desc']);
+  vm.dtOptions = DTOptionsBuilder.newOptions().withPaginationType('full_numbers').withDisplayLength(25).withOption('order', [1, 'asc']);
 //   vm.dtColumnDefs = [
 //     DTColumnDefBuilder.newColumnDef(0),
 //     DTColumnDefBuilder.newColumnDef(1).withClass('WWWWWWW'),
@@ -1322,27 +1324,27 @@ app.controller('customerNotesController',           function($scope, $http){
 
 //Support Controllers
 app.controller('supportController',                 function ($scope, $http, DTOptionsBuilder, customerService){
+  console.log('supportController');
 
-  $scope.getAllOpenTickets = function (){
+  $scope.getAllOpenTickets      = function (){
     $http.get("getAllOpenTickets")
       .then(function (response) {
         $scope.supportData = response.data;
-        console.log(supportData);
       });
   };
-  $scope.getNoneBillingTickets = function (){
+  $scope.getNoneBillingTickets  = function (){
     $http.get("getNoneBillingTickets")
       .then(function (response) {
         $scope.supportData = response.data;
       });
   };
-  $scope.getBillingTickets = function (){
+  $scope.getBillingTickets      = function (){
     $http.get("getBillingTickets")
       .then(function (response) {
         $scope.supportData = response.data;
       });
   };
-  $scope.getMyTickets = function (){
+  $scope.getMyTickets           = function (){
     $http.get("getMyTickets")
       .then(function (response) {
         $scope.supportData = response.data;
@@ -1398,9 +1400,6 @@ app.controller('supportController',                 function ($scope, $http, DTO
     $scope.stcFlag = false;
     callMidView('Customer');
   };//NO se usará mas
-
-
-
   //MODAL DATA
   $scope.displayTicketResume  = function (id, idCustomer){
     $scope.midTicketId = id;
