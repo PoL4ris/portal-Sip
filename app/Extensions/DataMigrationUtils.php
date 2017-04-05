@@ -883,30 +883,35 @@ class DataMigrationUtils {
         }
 
         $lastUpdateTimestamp = $dataMigration->max_updated_at;
-        $updateQueryBuilder = function($legacyDataModelName, $lastUpdateTimestamp){
+        $updateQueryBuilder = function($legacyDataModelName, $legacyModelId, $startingId, $lastUpdateTimestamp){
             if($lastUpdateTimestamp == null){
                 return $legacyDataModelName::where('updated_at', '!=', $lastUpdateTimestamp);
             }
-            return $legacyDataModelName::where('updated_at', '>', $lastUpdateTimestamp);
+            return $legacyDataModelName::where('updated_at', '>', $lastUpdateTimestamp)
+                                        ->where($legacyModelId, '>', $startingId)
+                                        ->orderBy($legacyModelId, 'asc');
         };
         $totalUpdateRecords = $updateQueryBuilder($legacyDataModelName, $lastUpdateTimestamp)->count();
 
         $lastCreateTimestamp = $dataMigration->max_created_at;
-        $createQueryBuilder = function($legacyDataModelName, $lastCreateTimestamp){
+        $createQueryBuilder = function($legacyDataModelName, $legacyModelId, $startingId, $lastCreateTimestamp){
             if($lastCreateTimestamp == null){
                 return $legacyDataModelName::where('created_at', '!=', $lastCreateTimestamp);
             }
-            return $legacyDataModelName::where('created_at', '>', $lastCreateTimestamp);
+            return $legacyDataModelName::where('created_at', '>', $lastCreateTimestamp)
+                                            ->where($legacyModelId, '>', $startingId)
+                                            ->orderBy($legacyModelId, 'asc');
         };
         $totalCreateRecords = $createQueryBuilder($legacyDataModelName, $lastCreateTimestamp)->count();
 
         $updateCount = 0;
         $createCount = 0;
+        $startingId = -1;
         if($totalUpdateRecords > 0){
             $this->startProgressBar($totalUpdateRecords, $legacyTableName.' updating');
             while (true) {
 
-                $legacyRecords = $updateQueryBuilder($legacyDataModelName, $lastUpdateTimestamp)
+                $legacyRecords = $updateQueryBuilder($legacyDataModelName, $legacyModelId, $startingId, $lastUpdateTimestamp)
                     ->take($recordsPerCycle)
                     ->get();
 
@@ -926,6 +931,7 @@ class DataMigrationUtils {
                     }
 
                     // Do some accounting
+                    $startingId = $legacyRecord->$legacyModelId;
                     if($dataMigration->max_updated_at == null){
                         $dataMigration->max_updated_at = $legacyRecord->updated_at;
                     } else {
@@ -941,12 +947,12 @@ class DataMigrationUtils {
             $this->stopProgressBar();
         }
 
-
+        $startingId = -1;
         if($totalCreateRecords > 0){
             $this->startProgressBar($totalCreateRecords, $legacyTableName.' adding');
             while (true) {
 
-                $legacyRecords = $createQueryBuilder($legacyDataModelName, $lastCreateTimestamp)
+                $legacyRecords = $createQueryBuilder($legacyDataModelName, $legacyModelId, $startingId, $lastCreateTimestamp)
                     ->take($recordsPerCycle)
                     ->get();
 
