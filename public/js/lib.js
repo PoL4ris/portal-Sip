@@ -679,13 +679,27 @@ app.controller('customerController',                function ($scope, $http, $st
   $scope.setModeType                = function (modeType){
     $scope.customerData.servicesMode = modeType;
     $scope.customerData.serviceTmpId = this.service ? this.service.id : false;
+    $scope.currentServiceDisplay = null;
+    $scope.showingCurrent = null;
   };
+
+
+
   $scope.serviceDataDisplay         = function (option) {
     if(option)
+    {
+      $scope.serviceFlag = true;
       $scope.currentServiceDisplay = this.customerProduct.product;
+      $scope.showingCurrent = this.service;
+    }
     else
+    {
+      $scope.serviceFlag = false;
       $scope.currentServiceDisplay = this.selectedItem;
+    }
   };
+
+
   $scope.availableServices          = function (){
     $http.get("getCustomerServices", {params:{'id':$scope.idCustomer}})
       .then(function (response) {
@@ -717,6 +731,29 @@ app.controller('customerController',                function ($scope, $http, $st
     }
   };
   //ResetPassword
+  $scope.showConfirmPassword      = function (idProduct, status) {
+
+    $.SmartMessageBox({
+      title: "Please Confirm Your Action!",
+      content: 'Would you like to Reset this Customers password?',
+      buttons: '[No][Yes]'
+    }, function (ButtonPressed) {
+      if (ButtonPressed === "Yes") {
+          $scope.resetPassword();
+      }
+      if (ButtonPressed === "No") {
+
+        $.smallBox({
+          title: "Callback function",
+          content: "<i class='fa fa-clock-o'></i> <i>You pressed No...</i>",
+          color: "#C46A69",
+          iconSmall: "fa fa-times fa-2x fadeInRight animated",
+          timeout: 4000
+        });
+      }
+
+    });
+  };
   $scope.resetPassword              = function (){
 
     $http.get("resetCustomerPassword", {params:{'id':$scope.idCustomer}})

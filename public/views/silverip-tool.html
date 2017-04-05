@@ -16,8 +16,8 @@
         <div class="log-content">
 
           <div class="al-lg-header">
-            <label class="al-lg-timestamp">{{logEntry.timestamp}}</label>
-            <label class="lg-type"><span>{{logEntry.type}}</span></label>
+            <label class="al-lg-timestamp" ng-init="logEntryDate = convertDate(logEntry.timestamp)">{{logEntryDate | date : "MMM d, y h:mm a"}}</label>
+            <!--<label class="lg-type"><span>{{logEntry.type}}</span></label>-->
             <label class="lg-user"><span>{{logEntry.user.first_name + ' ' + logEntry.user.alias}}</span></label>
           </div>
 
