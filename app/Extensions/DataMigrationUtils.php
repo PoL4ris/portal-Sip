@@ -906,7 +906,7 @@ class DataMigrationUtils {
             $this->startProgressBar($totalUpdateRecords, $legacyTableName.' updating');
             while (true) {
 
-                $legacyRecords = $updateQueryBuilder($legacyDataModelName, $dataMigration->max_updated_at)
+                $legacyRecords = $updateQueryBuilder($legacyDataModelName, $lastUpdateTimestamp)
                     ->take($recordsPerCycle)
                     ->get();
 
@@ -946,7 +946,7 @@ class DataMigrationUtils {
             $this->startProgressBar($totalCreateRecords, $legacyTableName.' adding');
             while (true) {
 
-                $legacyRecords = $createQueryBuilder($legacyDataModelName, $dataMigration->max_created_at)
+                $legacyRecords = $createQueryBuilder($legacyDataModelName, $lastCreateTimestamp)
                     ->take($recordsPerCycle)
                     ->get();
 
