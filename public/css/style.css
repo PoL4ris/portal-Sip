@@ -647,3 +647,13 @@ table.dataTable tbody tr {
 }
 .notes-list p {
 }
+.dc-show-menos:before{
+  color: #a90329;
+  content:"\f056";
+  font-family: FontAwesome;
+  font-size: 1.4em;
+  cursor: pointer;
+  text-align: center;
+  vertical-align: middle;
+  display: block;
+}

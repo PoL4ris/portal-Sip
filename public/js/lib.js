@@ -296,7 +296,13 @@ app.controller('buildingCtl',                       function($scope, $http, cust
 
 
 //Network Controllers
-app.controller('networkController',                 function ($scope, $http){
+app.controller('networkController',                 function ($scope, $http, customerService){
+
+
+  if(customerService.sideBarFlag) {
+    $scope.sipTool(2);
+    customerService.sideBarFlag = false;
+  }
 
   $http.get("networkdash")
     .then(function (response) {
@@ -329,33 +335,50 @@ app.controller('networkController',                 function ($scope, $http){
 //     });
 
 
-  };
-  $scope.addTR = function addTR(id) {
-    var stance = warpol('#net-btn-' + id).attr('stance');
-    var iconoA = '<i class="fa fa-plus-circle txt-green sign-network"></i>';
-    var iconoB = '<i class="fa fa-minus-circle txt-red sign-network"></i>';
+  };//????
 
-    if (stance == '1')
+
+
+  $scope.addTR = function addTR(id) {
+
+    var stance   = $('#net-btn-' + id);
+    var mas      = 'details-control';
+    var menos    = 'dc-show-menos';
+    var idString = 'nt-tmp-data-' + id;
+
+    if (stance.attr('stance') == '1')
     {
-      warpol('#net-btn-' + id).attr('stance', '2');
-      warpol('#net-btn-' + id).html(iconoB);
-      warpol(getNetworkResult(id)).insertAfter('#det-net-' + id).hide().slideDown('slow');
+      stance.attr('stance', 2);
+      stance.removeClass(mas);
+      stance.addClass(menos);
+      $(' <tr id="' + idString + '"><td colspan="11">info</td></tr>').insertAfter('#det-net-' + id).hide().slideDown('slow');
     }
     else
     {
-      warpol('#net-btn-' + id).attr('stance', '1');
-      warpol('#net-btn-' + id).html(iconoA);
-      warpol('#nt-tmp-data-' + id).remove();
+      stance.attr('stance', 1);
+      stance.removeClass(menos);
+      stance.addClass(mas);
+      $('#nt-tmp-data-' + id).remove();
     }
-    //getNetworkResult();
-
   };
 
+  $scope.cleanHrefField        = function (valor){
+    var spaceClean = valor.split(' ')[0];
+    var httpClean = spaceClean.match('https*');
+
+    return httpClean ? httpClean['input'] : 'http://' + spaceClean;
+  }
+  $scope.cleanNetField         = function (valor){
+    var httpClean = valor.match('https*');
+    return httpClean ? httpClean['input'].split('https://')[1] : valor;
+  }
+
 });
-app.controller('networkControllerTSort',            function (DTOptionsBuilder, DTColumnDefBuilder, $scope){
+app.controller('networkControllerTSort',            function (DTOptionsBuilder, DTColumnDefBuilder, $scope ){
+
   var vm = this;
   vm.persons = [];
-  vm.dtOptions = DTOptionsBuilder.newOptions().withPaginationType('full_numbers').withDisplayLength(25).withOption('order', [0, 'desc']);
+  vm.dtOptions = DTOptionsBuilder.newOptions().withPaginationType('full_numbers').withDisplayLength(25).withOption('order', [1, 'desc']);
 //   vm.dtColumnDefs = [
 //     DTColumnDefBuilder.newColumnDef(0),
 //     DTColumnDefBuilder.newColumnDef(1).withClass('WWWWWWW'),
@@ -1346,7 +1369,7 @@ app.controller('supportController',                 function ($scope, $http, DTO
 
 
 
-  $scope.dtOptions = DTOptionsBuilder.newOptions().withPaginationType('full_numbers').withDisplayLength(50);
+  $scope.dtOptions = DTOptionsBuilder.newOptions().withPaginationType('full_numbers').withDisplayLength(50).withOption('order', [9, 'asc']);
   $scope.letterLimit = 40;
 
 
