@@ -6,7 +6,7 @@
 
   <div class="widget-body-toolbar">
     <div class="row">
-      <div class="bold-type col-lg-4 no-padding-sides text-center b-r-ddd">Port and Network Info</div>
+      <div class="bold-type col-lg-4 no-padding-sides text-center b-r-ddd">Switch &amp; Port Info</div>
       <div class="bold-type col-lg-4 no-padding-sides text-center b-r-ddd">Basic Information</div>
       <div class="bold-type col-lg-4 no-padding-sides text-center">Advanced Information</div>
     </div>
@@ -14,12 +14,12 @@
   <div ng-controller="customerNetworkController">
     <div class="col-lg-12 display-content-main-box no-padding-sides subseccion-network">
       <div class="col-lg-4 no-padding-sides b-r-ddd">
-        <div class="field-data  col-lg-12 padding-5"><div class="bold-type col-lg-4">Name:</div>   <div class="col-lg-8 b-b-ddd">{{ customerNetwork.host_name?customerNetwork.host_name:'No Data' }}</div></div>
-        <div class="field-data  col-lg-12 padding-5"><div class="bold-type col-lg-4">IP:</div>     <div class="col-lg-8 b-b-ddd">{{ customerNetwork.ip_address?customerNetwork.ip_address:'No Data' }}</div></div>
-        <div class="field-data  col-lg-12 padding-5"><div class="bold-type col-lg-4">Port:</div>   <div class="col-lg-8 b-b-ddd">{{ customerNetwork.port_number?customerNetwork.port_number:'No Data' }}</div></div>
-        <div class="field-data  col-lg-12 padding-5"><div class="bold-type col-lg-4">Access:</div> <div class="col-lg-8 b-b-ddd" id="acces-network-id">{{ customerNetwork.access_level?customerNetwork.access_level:'No Data' }}</div></div>
-        <div class="field-data  col-lg-12 padding-5"><div class="bold-type col-lg-4">Vendor:</div> <div class="col-lg-8 b-b-ddd">{{ customerNetwork.vendor?customerNetwork.vendor:'No Data' }}</div></div>
-        <div class="field-data  col-lg-12 padding-5"><div class="bold-type col-lg-4">Model:</div>  <div class="col-lg-8 b-b-ddd">{{ customerNetwork.model?customerNetwork.model:'No Data' }}</div></div>
+        <div class="field-data  col-lg-12 padding-5"><div class="bold-type col-lg-4">Name:</div>   <div class="col-lg-8 amin">{{ customerNetwork.host_name?customerNetwork.host_name:'' }}</div></div>
+        <div class="field-data  col-lg-12 padding-5"><div class="bold-type col-lg-4">IP:</div>     <div class="col-lg-8 anim">{{ customerNetwork.ip_address?customerNetwork.ip_address:'' }}</div></div>
+        <div class="field-data  col-lg-12 padding-5"><div class="bold-type col-lg-4">Port:</div>   <div class="col-lg-8 anim">{{ customerNetwork.port_number?customerNetwork.port_number:'' }}</div></div>
+        <div class="field-data  col-lg-12 padding-5"><div class="bold-type col-lg-4">Access:</div> <div class="col-lg-8 anim" id="acces-network-id">{{ customerNetwork.access_level?customerNetwork.access_level:'' }}</div></div>
+        <div class="field-data  col-lg-12 padding-5"><div class="bold-type col-lg-4">Vendor:</div> <div class="col-lg-8 anim">{{ customerNetwork.vendor?customerNetwork.vendor:'' }}</div></div>
+        <div class="field-data  col-lg-12 padding-5"><div class="bold-type col-lg-4">Model:</div>  <div class="col-lg-8 anim">{{ customerNetwork.model?customerNetwork.model:'' }}</div></div>
       </div>
       <div class="col-lg-4 no-padding-sides b-r-ddd">
         <div class="field-data  col-lg-12 padding-5"><div class="bold-type col-lg-6">Switch Uptime:</div>      <div class="col-lg-6 anim " id="switch-uptime"></div></div>
@@ -43,12 +43,12 @@
 
     </div>
 
-    <div class="col-lg-12 padding-bottom-10 padding-top-10 no-padding-sides b-t-ddd">
-      <div class="btn btn-dark network-functions action-confirm m-r-sm"   type="3" portid="{{customerNetwork.port_number}}" ng-click="smartModEg1()">Recycle Port</div>
-      <!--<div class="col-lg-2 text-center">-->
-        <!--<p class="btn btn-success network-functions m-r-sm"  type="4" portid="{{customerNetwork.port_number}}">Check IP's</p>-->
-      <!--</div>-->
-      <div class="btn btn-info network-functions action-confirm access-type-net"
+    <div ng-if="customerNetwork.port_number" class="col-lg-12 padding-bottom-10 padding-top-10 no-padding-sides b-t-ddd">
+      <div class="btn btn-success network-functions r m-r-sm" ng-click="networkServices(0)" type="0" portid="{{customerNetwork.port_number}}">Check Status</div>
+
+        <div class="btn btn-dark network-functions action-confirm m-r-sm"   type="3" portid="{{customerNetwork.port_number}}" ng-click="smartModEg1()">Recycle Port</div>
+
+        <div class="btn btn-info network-functions action-confirm access-type-net"
            ng-if="customerNetwork.access_level == 'signup'"
            type="6"
            id="rport"
@@ -62,7 +62,7 @@
            portid="{{customerNetwork.port_number}}"
            ng-click="smartModEg1()">Send to Signup
       </div>
-      <div class="btn btn-success network-functions r m-r-sm" ng-click="networkServices(0)" type="0" portid="{{customerNetwork.port_number}}">Check Status</div>
+
       <!--<div class="col-lg-2 text-center">-->
         <!--<p class="btn btn-success network-functions"  type="" portid="{{customerNetwork.port_number}}">Building IP Stats</p>-->
       <!--</div>-->

@@ -13,6 +13,7 @@ use App\Extensions\MtikRouter;
 use \Carbon\Carbon;
 use \Schema;
 use DB;
+use Log;
 
 class NetworkController extends Controller
 {
@@ -46,11 +47,10 @@ class NetworkController extends Controller
                            'password' => $this->mtikpassword]);
   }
 
-  public function getCustomerConnectionInfo($portID)
-  {
+  public function getCustomerConnectionInfo($portID) {
     $servicePort = DataServicePort::with('networkNode')->where('id',$portID)->first();
 
-    print_r($servicePort);die();
+    Log::info('port info: ', print_r($servicePort, true));
 
     $netNode = $servicePort->getRelationValue('networkNode');
       return ['Name'    => $netNode->host_name,
@@ -62,8 +62,8 @@ class NetworkController extends Controller
               ];
   }
 
-  public function getSwitchPortStatus(Request $request)
-{
+  public function getSwitchPortStatus(Request $request) {
+
   $input = $request->all();
   $portID = $input['portid'];
 

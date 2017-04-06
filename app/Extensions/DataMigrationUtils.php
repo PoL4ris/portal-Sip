@@ -883,26 +883,24 @@ class DataMigrationUtils {
         }
 
         $lastUpdateTimestamp = $dataMigration->max_updated_at;
-        $updateQueryBuilder = function($legacyDataModelName, $legacyModelId, $startingId, $lastUpdateTimestamp){
+        $updateQueryBuilder = function($legacyDataModelName, $lastUpdateTimestamp, $legacyModelId, $startingId = -1){
             if($lastUpdateTimestamp == null){
                 return $legacyDataModelName::where('updated_at', '!=', $lastUpdateTimestamp);
             }
             return $legacyDataModelName::where('updated_at', '>', $lastUpdateTimestamp)
-                                        ->where($legacyModelId, '>', $startingId)
-                                        ->orderBy($legacyModelId, 'asc');
+                ->where($legacyModelId, '>', $startingId);
         };
-        $totalUpdateRecords = $updateQueryBuilder($legacyDataModelName, $lastUpdateTimestamp)->count();
+        $totalUpdateRecords = $updateQueryBuilder($legacyDataModelName, $lastUpdateTimestamp, $legacyModelId)->count();
 
         $lastCreateTimestamp = $dataMigration->max_created_at;
-        $createQueryBuilder = function($legacyDataModelName, $legacyModelId, $startingId, $lastCreateTimestamp){
+        $createQueryBuilder = function($legacyDataModelName, $lastCreateTimestamp, $legacyModelId, $startingId = -1){
             if($lastCreateTimestamp == null){
                 return $legacyDataModelName::where('created_at', '!=', $lastCreateTimestamp);
             }
             return $legacyDataModelName::where('created_at', '>', $lastCreateTimestamp)
-                                            ->where($legacyModelId, '>', $startingId)
-                                            ->orderBy($legacyModelId, 'asc');
+                ->where($legacyModelId, '>', $startingId);
         };
-        $totalCreateRecords = $createQueryBuilder($legacyDataModelName, $lastCreateTimestamp)->count();
+        $totalCreateRecords = $createQueryBuilder($legacyDataModelName, $lastCreateTimestamp, $legacyModelId)->count();
 
         $updateCount = 0;
         $createCount = 0;
@@ -911,7 +909,8 @@ class DataMigrationUtils {
             $this->startProgressBar($totalUpdateRecords, $legacyTableName.' updating');
             while (true) {
 
-                $legacyRecords = $updateQueryBuilder($legacyDataModelName, $legacyModelId, $startingId, $lastUpdateTimestamp)
+                $legacyRecords = $updateQueryBuilder($legacyDataModelName, $lastUpdateTimestamp, $legacyModelId, $startingId)
+                    ->orderBy($legacyModelId, 'asc')
                     ->take($recordsPerCycle)
                     ->get();
 
@@ -952,7 +951,8 @@ class DataMigrationUtils {
             $this->startProgressBar($totalCreateRecords, $legacyTableName.' adding');
             while (true) {
 
-                $legacyRecords = $createQueryBuilder($legacyDataModelName, $legacyModelId, $startingId, $lastCreateTimestamp)
+                $legacyRecords = $createQueryBuilder($legacyDataModelName, $lastCreateTimestamp, $legacyModelId, $startingId)
+                    ->orderBy($legacyModelId, 'asc')
                     ->take($recordsPerCycle)
                     ->get();
 
@@ -1152,6 +1152,9 @@ class DataMigrationUtils {
 
     protected function findOrCreateCustomer(CustomerOld $legacyCustomer) {
 
+        if($legacyCustomer->CID == 0) {
+            $legacyCustomer->CID = 1;
+        }
         $customer = Customer::find($legacyCustomer->CID);
 
         if($customer == null) {
@@ -1607,6 +1610,7 @@ class DataMigrationUtils {
         $networkNode->host_name = $legacyNetworkNode->HostName;
         $networkNode->id_address = $legacyNetworkNode->LocID;
         $networkNode->vendor = $legacyNetworkNode->Vendor;
+        $networkNode->model = $legacyNetworkNode->Model;
         $networkNode->role = $legacyNetworkNode->Role;
         $networkNode->properties = $legacyNetworkNode->Properties;
         $networkNode->comments = $legacyNetworkNode->Comments;
@@ -1718,7 +1722,7 @@ class DataMigrationUtils {
     protected function updateTicket(SupportTicket $legacyTicket, Ticket $ticket) {
 
         $ticket->id = $legacyTicket->TID;
-        $ticket->id_customers = $legacyTicket->CID;
+        $ticket->id_customers = ($legacyTicket->CID == 0) ? 1 : $legacyTicket->CID;
         $ticket->ticket_number = $legacyTicket->TicketNumber;
         $ticket->vendor_ticket = $legacyTicket->VendorTID;
         $legacyTicketReason = trim($legacyTicket->RID);

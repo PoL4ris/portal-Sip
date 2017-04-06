@@ -344,4 +344,11 @@ class TestController extends Controller
         dd('done');
     }
 
+    public function generalTest(){
+
+        $customer = Customer::find(1928);
+        dd($customer->getNetworkNodes());
+
+    }
+
 }
