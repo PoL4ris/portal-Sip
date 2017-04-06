@@ -1037,21 +1037,18 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http){
 // return;
 // app.controller('customerPaymentMethodsController',  function ($scope, $http,$uibModal, $log){
 // return;
+
   $http.get("getCustomerPayment", {params:{'id':$scope.stcid ? $scope.stcid : $scope.idCustomer}})
     .then(function (response) {
       $scope.paymentData = response.data[0];
       $scope.customerData.defaultPayment = $scope.paymentData;
-//       console.log(response.data);
     });
-
-
   $http.get("getPaymentMethods", {params:{'id':$scope.idCustomer}})
     .then(function (response) {
       $scope.paymentMethods = response.data;
-//       console.log(response.data);
     });
 
-  $scope.setDefault = function (id) {
+  $scope.setDefault         = function (id) {
     $http.get("updatePaymentMethods", {params:{'id' : id, 'customerID' : $scope.idCustomer}})
       .then(function (response) {
         $scope.paymentMethods = response.data;
@@ -1062,13 +1059,13 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http){
           });
       });
   };
-  $scope.getPaymentMethods = function (customerId){
+  $scope.getPaymentMethods  = function (customerId){
     $http.get("getPaymentMethods", {params:{'id':customerId}})
       .then(function (response) {
         $scope.paymentMethods = response.data;
       });
   };
-  $scope.refundFunct = function (){
+  $scope.refundFunct        = function (){
     var cid = $scope.customerData.id;
     var amount = $('#mf-input-am').val();
     var desc = $('#mf-input-de').val();
@@ -1084,7 +1081,7 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http){
           $scope.closeTransparentBGManual();
       });
   };
-  $scope.chargeFunct = function (){
+  $scope.chargeFunct        = function (){
     var cid = $scope.customerData.id;
     var amount = $('#mc-input-am').val();
     var desc = $('#mc-input-de').val();
@@ -1100,7 +1097,22 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http){
           $scope.closeTransparentBGManual();
       });
   };
+  $scope.editPaymentMethod  = function (flag){
 
+
+
+    if(flag){
+      $scope.editPaymentFlag = false;
+      $scope.editPaymentValues = null;
+    }
+    else{
+      $scope.editPaymentFlag = true;
+      $scope.editPaymentValues = this.payment;
+    }
+
+    $('#paymentMethodModal').trigger("reset");
+  };
+  //OLD THING
   $scope.open = function (){
     $scope.customerId = $scope.customerData.id;
 
@@ -1137,67 +1149,57 @@ app.controller('addPaymentMethodController',        function ($scope, $http){
 * */
 // console.log('this is addPaymentMethodController ');
   $scope.addNewPaymentMethod = function (){
-    var objects = $('#paymentmethodform').serializeArray();
 
-    if(!objects[0].value || !objects[1].value || !objects[2].value || !objects[3].value || !objects[4].value || !objects[5].value || !objects[6].value)
+    var objects = getFormValues('paymentmethodform');
+
+    for(var obj in objects ) {
+      if(!objects[obj])
       return;
+    }
 
-    var regexCC = /\b(?:3[47]\d{2}([\ \-]?)\d{6}\1\d|(?:(?:4\d|5[1-5]|65)\d{2}|6011)([\ \-]?)\d{4}\2\d{4}\2)\d{4}\b/g;
+    var regexCC = /(\d{4}[-. ]?){4}|\d{4}[-. ]?\d{6}[-. ]?\d{5}/g;
 
-//     console.log(objects);
-//     console.log(regexCC.test(objects[1].value));
-    var boolResult = regexCC.test(objects[1].value);
+    var boolResult = regexCC.test(objects['account_number']);
 
-
-
+    //CONSOLE MSG
     if (boolResult == true)
       console.log('this is true ===> ' + boolResult);
     else
       console.log('this is false ===> ' + boolResult);
 
-
-      return;
-
-
-
-
-
-
-
-
-    if (!regexCC.test(objects[1].value)) {
-//       notify({ message: 'Verify your Account Number', templateUrl:'/views/notify.html'} );
+    if (!boolResult) {
+    //Mensaje alerta numero de cuenta malo
       console.log('Verify your Account Number');
-//       return;
-    }
-    else{
-      console.log('this is false');
+      return;
     }
 
-    return;
-
-
-
-    if(objects[6].value.length < 3 || objects[6].value.length > 4) {
-//       notify({ message: 'Verify your CCV Number', templateUrl:'/views/notify.html'} );
+    if(objects['CCV'].length < 3 || objects['CCV'].length > 4) {
+    //Mensaje alerta ccv malo
       console.log('Verify your CCV Number');
       return;
     }
 
-    var infoData = {};
-    for(var obj in objects )
-      infoData[objects[obj]['name']] = objects[obj]['value'];
+    if($scope.editPaymentFlag)
+      objects['id'] = $scope.editPaymentValues.id;
 
-    infoData['id_customers'] = customerId;
+    objects['id_customers'] = $scope.idCustomer;
 
-    $http.get("insertPaymentMethod", {params:infoData})
+    $http.get("insertPaymentMethod", {params : objects})
       .then(function (response) {
         if(response.data == 'OK')
         {
-          $uibModalInstance.dismiss('cancel');
-//           notify({ message: 'Account ' + infoData['account_number'] + ' ready to use.', templateUrl:'/views/notify.html'} );
-          console.log('Account ' + infoData['account_number'] + ' ready to use.');
-          angular.element('#tom').scope().getPaymentMethods(customerId);
+          $('#paymentMethodModal').modal('toggle');
+
+          $.smallBox({
+            title: $scope.editPaymentFlag ? "Card Updated." : "New Card added to this customer.",
+            content: "<i class='fa fa-clock-o'></i> <i>2 seconds ago...</i>",
+            color: "#739E73",
+            iconSmall: "fa fa-thumbs-up bounce animated",
+            timeout: 6000
+          });
+
+          $scope.getPaymentMethods($scope.idCustomer);
+          $('#paymentMethodModal').trigger("reset");
         }
         else
         {
@@ -1206,7 +1208,12 @@ app.controller('addPaymentMethodController',        function ($scope, $http){
         }
       });
   }
+
+
 });
+
+
+
 app.controller('customerServicesController',        function ($scope, $http){
 
   $http.get("getCustomerServices", {params:{'id':$scope.idCustomer}})

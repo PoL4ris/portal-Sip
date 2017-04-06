@@ -48,24 +48,78 @@ class BillingController extends Controller
     public function insertPaymentMethod(Request $request)
     {
 
-      $input = $request->all();
 
-      $pm = new PaymentMethod;
-      $pm->id_customers = $input['id_customers'];
-      $pm->id_address = '33';
-      $pm->types = 'Credit Card';
-      $pm->card_type = $input['card_type'];
-      $pm->account_number = $input['account_number'];
-      $pm->CCscode = $input['CCscode'];
-      $pm->exp_month = $input['exp_month'];
-      $pm->exp_year = $input['exp_year'];
-      $pm->billing_phone = $input['billing_phone'];
-      $pm->save();
+//    CC VALIDATE IMPORTANT!!!
+//      $cardResult = $this->validateCard($request->account_number);
+//
+//      if(!$cardResult)
+//        return 'ERROR: CARD INVALID';
 
-      if($pm->account_number == 'ERROR')
-        return 'ERROR';
-      else
-        return 'OK';
+
+      if($request->id) {
+        $pm = PaymentMethod::find($request->id);
+        $pm->exp_month = $request->exp_month;
+        $pm->exp_year  = $request->exp_year;
+        $pm->save();
+      }
+      else{
+        $pm = new PaymentMethod;
+        $pm->account_number = $request->account_number;
+        $pm->exp_month      = $request->exp_month;
+        $pm->exp_year       = $request->exp_year;
+        $pm->types          = 'Credit Card';
+        $pm->billing_phone  = $request->billing_phone;
+        $pm->priority       = 1; // MEANS DEFAULT
+        $pm->card_type      = $request->card_type;
+        $pm->id_address     = '33';//?????? CUSTOMER ADDRESS...
+        $pm->id_customers   = $request->id_customers;
+        $pm->save();
+      }
+
+      //ACTIVITY LOG HERE
+
+      return 'OK';
+    }
+
+
+  public function validateCard($number)
+  {
+    global $type;
+
+
+
+
+    $cardtype = array(
+      "visa"       => "/^4[0-9]{12}(?:[0-9]{3})?$/",
+      "mastercard" => "/^5[1-5][0-9]{14}$/",
+      "amex"       => "/^3[47][0-9]{13}$/",
+      "discover"   => "/^6(?:011|5[0-9]{2})[0-9]{12}$/",
+    );
+
+    if (preg_match($cardtype['visa'],$number))
+    {
+      $type = "visa";
+      return 'visa';
+    }
+    else if (preg_match($cardtype['mastercard'],$number))
+    {
+      $type = "mastercard";
+      return 'mastercard';
+    }
+    else if (preg_match($cardtype['amex'],$number))
+    {
+      $type = "amex";
+      return 'amex';
 
     }
+    else if (preg_match($cardtype['discover'],$number))
+    {
+      $type = "discover";
+      return 'discover';
+    }
+    else
+    {
+      return false;
+    }
+  }
 }
