@@ -402,7 +402,6 @@ app.controller('customerControllerList',            function ($scope, $http){
 
 app.controller('customerController',                function ($scope, $http, $stateParams, customerService){
 
-
   if(!customerService.rightView) {
     customerService.rightView = true;
 //     console.log('right');
@@ -463,9 +462,6 @@ app.controller('customerController',                function ($scope, $http, $st
 
 
   }
-
-
-
 
   //Reloads Data
   $scope.getCustomerStatus          = function (id){
@@ -759,23 +755,23 @@ app.controller('customerController',                function ($scope, $http, $st
   $scope.showConfirmPassword      = function (idProduct, status) {
 
     $.SmartMessageBox({
-      title: "Please Confirm Your Action!",
-      content: 'Would you like to Reset this Customers password?',
+      title: "Please Confirm",
+      content: 'Should I reset this customer’s password?',
       buttons: '[No][Yes]'
     }, function (ButtonPressed) {
       if (ButtonPressed === "Yes") {
           $scope.resetPassword();
       }
-      if (ButtonPressed === "No") {
-
-        $.smallBox({
-          title: "Callback function",
-          content: "<i class='fa fa-clock-o'></i> <i>You pressed No...</i>",
-          color: "#C46A69",
-          iconSmall: "fa fa-times fa-2x fadeInRight animated",
-          timeout: 4000
-        });
-      }
+//       if (ButtonPressed === "No") {
+//
+//         $.smallBox({
+//           title: "Callback function",
+//           content: "<i class='fa fa-clock-o'></i> <i>You pressed No...</i>",
+//           color: "#C46A69",
+//           iconSmall: "fa fa-times fa-2x fadeInRight animated",
+//           timeout: 4000
+//         });
+//       }
 
     });
   };
@@ -787,7 +783,7 @@ app.controller('customerController',                function ($scope, $http, $st
         if (response.data['response'] == 'OK')
         {
           $.smallBox({
-            title: "Password Updated to " + response.data['password'],
+            title: "Password updated to " + response.data['password'],
             content: "<i class='fa fa-clock-o'></i> <i>3 seconds ago...</i>",
             color: "#739E73",
             iconSmall: "fa fa-thumbs-up bounce animated",
@@ -856,8 +852,14 @@ app.controller('customerNetworkController',         function ($scope, $http){
 
     var service = service;
     var portID = $scope.customerNetwork.port_number;
-    var customerID = $scope.customerData.id;
+    var customerID = $scope.idCustomer;
     var dataSend = {'portid':portID, 'id':customerID};
+
+    console.log(service);
+    console.log(portID);
+    console.log(customerID);
+    console.log(dataSend);
+
 
     //AJAX request
     $.ajax(
@@ -866,17 +868,18 @@ app.controller('customerNetworkController',         function ($scope, $http){
         data:dataSend,
         success: function(data)
         {
-//           console.log(data);
+
           $scope.customerData.networkServices = data;
+
           if (data == 'ERROR')
             alert(data);
 
           $.each(data,function(i, item) {
             $('#' + i).html(item);
           });
-//           $('#basic-info-net').notify('OK');
 
           service = 1;
+
           $.ajax(
             {type:"GET",
               url:"/" + routes[service],
@@ -921,7 +924,7 @@ app.controller('customerNetworkController',         function ($scope, $http){
               }
             }
           );
-
+          $('.network-functions').removeClass('disabled');
         }
       }
     );
@@ -983,6 +986,7 @@ app.controller('customerNetworkController',         function ($scope, $http){
     );
   };
   $scope.smartModEg1        = function () {
+//     console.log($(this).attr('type'));
 
     var service       = $('#rport').attr('type');
     var portID        = $('#rport').attr('portid');
@@ -992,32 +996,25 @@ app.controller('customerNetworkController',         function ($scope, $http){
 
 
 
+    if(service == 5 || service == 6)
+      var txtMsg = 'Are you sure you want to send this customer to the signup page?';
+    if (serviceID)
+      var txtMsg = 'Should I recycle this customer’s port?';
+
+
     $.SmartMessageBox({
-      title: "Please Confirm Your Action!",
-      content: "Once you click Yes, you need to wait the process to finish.",
+      title: "Please Confirm",
+      content: txtMsg,
       buttons: '[No][Yes]'
     }, function (ButtonPressed) {
       if (ButtonPressed === "Yes") {
 
         if (portID)
-          networkServices(service);
+          networkServices(service);//SEND TO SIGNUP
         else if(serviceID)
-          servicesInfoUpdate(serviceID, serviceStatus, routeID);
+          servicesInfoUpdate(serviceID, serviceStatus, routeID);//Recycle port
 
       }
-      if (ButtonPressed === "No") {
-
-        console.log('dijo que no');
-
-        $.smallBox({
-          title: "Callback function",
-          content: "<i class='fa fa-clock-o'></i> <i>You pressed No...</i>",
-          color: "#C46A69",
-          iconSmall: "fa fa-times fa-2x fadeInRight animated",
-          timeout: 4000
-        });
-      }
-
     });
   };
 
@@ -1231,7 +1228,7 @@ app.controller('customerServicesController',        function ($scope, $http){
   $scope.showConfirm      = function (idProduct, status) {
 
     $.SmartMessageBox({
-      title: "Please Confirm Your Action!",
+      title: "Please Confirm",
       content: 'Would you like to ' + (status == 'disable' ? 'cancel' : 'activate') + ' this service?',
       buttons: '[No][Yes]'
     }, function (ButtonPressed) {
