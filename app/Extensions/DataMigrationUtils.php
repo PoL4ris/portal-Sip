@@ -508,22 +508,25 @@ class DataMigrationUtils {
 
     public function seedDataMigrationsTable(){
 
-        if($this->output != null){
-            $this->output->writeln('<info> Seeding data_migrations table</info>');
-        }
+        $this->writeLog('<info> Seeding data_migrations table</info>');
 
+        if(DataMigration::count() == 0){
+            $this->writeLog('<info> data_migrations table is not empty. Skipping.</info>');
+            return;
+        }
+        
         foreach($this->tableMap as $tableName => $tableModelMap){
             DataMigration::firstOrCreate(['table_name' => $tableName]);
         }
-
-        //        DataMigration::firstOrCreate(['table_name' => 'categories']);
-        //        DataMigration::firstOrCreate(['table_name' => 'contacts']);
-
     }
 
     public function seedCategoriesTable() {
         if($this->output != null){
             $this->output->writeln('<info> Seeding categories table</info>');
+        }
+        if(Category::count() == 0){
+            $this->writeLog('<info> categories table is not empty. Skipping.</info>');
+            return;
         }
         Category::firstOrCreate(['id' => 1, 'name' => 'INT']);
         Category::firstOrCreate(['id' => 2, 'name' => 'PH']);
@@ -535,7 +538,10 @@ class DataMigrationUtils {
         if($this->output != null){
             $this->output->writeln('<info> Seeding apps table</info>');
         }
-
+        if(App::count() == 0){
+            $this->writeLog('<info> apps table is not empty. Skipping.</info>');
+            return;
+        }
         App::firstOrCreate(['id' => 1, 'id_apps' => 0, 'name' => 'Support', 'icon' => 'fa-wrench', 'url' => 'support']);
         App::firstOrCreate(['id' => 2, 'id_apps' => 0, 'name' => 'Customers', 'icon' => 'fa-user ', 'url' => 'customers']);
         App::firstOrCreate(['id' => 3, 'id_apps' => 0, 'name' => 'Building', 'icon' => 'fa-building-o', 'url' => 'buildings']);
@@ -553,7 +559,10 @@ class DataMigrationUtils {
         if($this->output != null){
             $this->output->writeln('<info> Seeding users table</info>');
         }
-
+        if(User::count() == 0){
+            $this->writeLog('<info> users table is not empty. Skipping.</info>');
+            return;
+        }
         User::firstOrCreate(['id' => 1, 'first_name' => 'Pablo', 'last_name' => 'Laris', 'email' => 'pablo@silverip.com', 'password' => '$2y$10$u.sqr/WkAQaJL7FCCQVmGue8efy3wAdF1E/OKGr5XQgxS8vDPCJ.2', 'remember_token' => 'Jonk6hBM0kmkQipY2WTTmrfFN2YZrZDQzzj37GqwTObdij5LOOUnjFeLF8Qb', 'social_token' => 'ya29.Gl0WBAIa60ypaAaSdSo-rfT08I_1X4poFF9TM3MgF2Bs3E83GYaYoTiTP2ljuN_n4dP6sf6ZDhNBzYp9zo2I-Vl7D-VWkmk', 'social_access' => 1, 'avatar' => 'https://lh4.googleusercontent.com/-MY1G9QEJ8M4/AAAAAAAAAAI/AAAAAAAAABM/wLAg7FpkX5E/photo.jpg?sz=50', 'alias' => 'PL', 'id_status' => 3, 'id_profiles' => 1]);
         User::firstOrCreate(['id' => 2, 'first_name' => 'Farzad', 'last_name' => 'Farzad', 'email' => 'farzad@silverip.com', 'password' => '$2a$08$UdmCQyKxZlWEfbl94yB4e.M4zS9lg88Osea8lQ8Ay0NQ9KxD05Rkq', 'remember_token' => 'DN5OipGB4aH2dU233R3hAKnCQ1qoeqSN1VnQHnxJPHyKLnvg5ldpYdPU8Qov', 'social_token' => '', 'social_access' => 1, 'avatar' => 'https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg?sz=50', 'alias' => 'FM', 'id_status' => 3, 'id_profiles' => 1]);
         User::firstOrCreate(['id' => 3, 'first_name' => 'Peyman', 'last_name' => 'Pourkermani', 'email' => 'peyman@silverip.com', 'password' => '$2y$10$12q8f3L/WXUiwRpQdYjOX.7HzTx/7akNIfqItbJncfYCr5z5egEjO', 'remember_token' => 'MA1xsnRUhbTRteuxmziO9Pe1eBp74nzBifwRhC2cmkSyu45ZA7TvYOKK2Khq', 'social_token' => 'ya29.CjNrA0b1vBMPk49P_gZ9TOSlV7ajVYFVixiKE6py_eBOcgL7isD2bFuIrxzO-CiSlre8r7g', 'social_access' => 1, 'avatar' => 'https://lh6.googleusercontent.com/-2JxSuRyHszI/AAAAAAAAAAI/AAAAAAAAABA/FXimdQSdkwQ/photo.jpg?sz=50', 'alias' => 'PP', 'id_status' => 3, 'id_profiles' => 1]);
@@ -563,6 +572,10 @@ class DataMigrationUtils {
     public function seedStatusTable() {
         if($this->output != null){
             $this->output->writeln('<info> Seeding status table</info>');
+        }
+        if(Status::count() == 0){
+            $this->writeLog('<info> status table is not empty. Skipping.</info>');
+            return;
         }
         //        Status::firstOrCreate(['id' => 1, 'name' => 'DISABLED']);
         //        Status::firstOrCreate(['id' => 2, 'name' => 'ACTIVE']);
@@ -575,6 +588,10 @@ class DataMigrationUtils {
     public function seedTypesTable() {
         if($this->output != null){
             $this->output->writeln('<info> Seeding types table</info>');
+        }
+        if(Type::count() == 0){
+            $this->writeLog('<info> types table is not empty. Skipping.</info>');
+            return;
         }
         Type::firstOrCreate(['id' => 1, 'name' => 'Internet']);
         Type::firstOrCreate(['id' => 2, 'name' => 'Phone']);
@@ -596,6 +613,10 @@ class DataMigrationUtils {
         if($this->output != null){
             $this->output->writeln('<info> Seeding contacts table</info>');
         }
+        if(ContactType::count() == 0){
+            $this->writeLog('<info> contacts table is not empty. Skipping.</info>');
+            return;
+        }        
         ContactType::firstOrCreate(['id' => 1, 'name' => 'Mobile Phone']);
         ContactType::firstOrCreate(['id' => 2, 'name' => 'Home Phone']);
         ContactType::firstOrCreate(['id' => 3, 'name' => 'Fax']);
@@ -607,6 +628,10 @@ class DataMigrationUtils {
         if($this->output != null){
             $this->output->writeln('<info> Seeding building_properties table</info>');
         }
+        if(BuildingProperty::count() == 0){
+            $this->writeLog('<info> building_properties table is not empty. Skipping.</info>');
+            return;
+        }         
         BuildingProperty::firstOrCreate(['id' => '1', 'name' => 'Type', 'description' => 'Type']);
         BuildingProperty::firstOrCreate(['id' => '2', 'name' => 'Units', 'description' => 'Units']);
         BuildingProperty::firstOrCreate(['id' => '3', 'name' => 'Service Type', 'description' => 'Service type']);
@@ -630,6 +655,10 @@ class DataMigrationUtils {
         if($this->output != null){
             $this->output->writeln('<info> Seeding neighborhoods table</info>');
         }
+        if(Neighborhood::count() == 0){
+            $this->writeLog('<info> neighborhoods table is not empty. Skipping.</info>');
+            return;
+        }        
         Neighborhood::firstOrCreate(['id' => 1, 'name' => 'Gold Coast']);
         Neighborhood::firstOrCreate(['id' => 2, 'name' => 'River North']);
         Neighborhood::firstOrCreate(['id' => 3, 'name' => 'South Loop']);
@@ -654,7 +683,7 @@ class DataMigrationUtils {
 
         if($this->output != null){
             $this->output->writeln('<info> Updating building table data.</info>');
-        }
+        }       
         Building::where('code', '1400MP')->update(['floors' => 34, 'id_neighborhoods' => 3]);
         Building::where('code', 'UC2')->update(['floors' => 4, 'id_neighborhoods' => 4]);
         Building::where('code', 'UC3')->update(['floors' => 4, 'id_neighborhoods' => 4]);
@@ -917,7 +946,8 @@ class DataMigrationUtils {
                 if($legacyRecords->count() == 0){
                     break;
                 }
-
+                
+                $updateCount = 0;
                 foreach ($legacyRecords as $legacyRecord) {
 
                     // Call the custom function to process the migration from legacy to new
@@ -960,6 +990,7 @@ class DataMigrationUtils {
                     break;
                 }
 
+                $createCount = 0;
                 foreach ($legacyRecords as $legacyRecord) {
 
                     // Call the custom function to process the migration from legacy to new
@@ -1144,6 +1175,14 @@ class DataMigrationUtils {
 
         $job = ScheduledJob::where('command', $this->jobNames[$jobNameKey])->first();
         return $job->getProperty($propName);
+    }
+     
+    protected function writeLog($message){
+        if($this->output != null){
+            $this->output->writeln($message);
+        } else {
+            Log::info($message);
+        }
     }
 
     ########################################

@@ -306,31 +306,23 @@ class NetworkController extends Controller
   public function authenticatePort(Request $request)
   {
 
-    $input = $request->all();
-    $portID = $input['portid'];
-
 
     $customer = new Customer;
     $customerNetData = $customer->getNetworkNodes($request->id)[0];
 
-    print '<pre>';
-    print_r($customerNetData);
-    return 'OK';
-    die();
-
     $servicePort = dataServicePort::with('networkNode')
-                                  ->where('PortID',$portID)
+                                  ->where('PortID',$request->portid)
                                   ->first();
 
     $servicePort->Access = 'signup';//access_level
-    $servicePort->LastUpdated = Carbon::now()->toDateTimeString();//no need with save(), makes this Auto
+//    $servicePort->LastUpdated = Carbon::now()->toDateTimeString();//no need with save(), makes this Auto
     $servicePort->save();
 
     $netNode = $servicePort->getRelationValue('networkNode');
     $switchIP = ($this->devMode) ? $this->devModeSwitchIP : $netNode->IPAddress;//ip_address
     $switchPort = $servicePort->PortNumber;//port_number
     $switchVendor = $netNode->Vendor;//vendor
-    $routerNode = $this->getRouterByPortID($portID);
+    $routerNode = $this->getRouterByPortID($request->portid);
     $routerIP = ($this->devMode) ? $this->devModeRouterIP : $routerNode->IPAddress;//ip_address
     $noAccessVlan = $routerNode->NoAccessVLAN;
 

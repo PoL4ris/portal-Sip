@@ -12,6 +12,7 @@ use DB;
 use App\Models\Customer;
 use App\Models\Ticket;
 use App\Models\CustomerProduct;
+use App\Models\DataMigration;
 use App\Models\Address;
 use App\Models\BillingTransactionLog;
 use App\Models\Building\Building;
@@ -334,6 +335,8 @@ class TestController extends Controller
 
         $dbMigrationUtil = new DataMigrationUtils();
 
+        dd(DataMigration::count());
+        
         dd(config('const.status.disabled'));
 //        $dbMigrationUtil->updateFromCustomersTable();
 //        dd($dbMigrationUtil->maxMysqlTimestamp('2017-03-26 12:32:12', '2017-03-27 12:32:12'));

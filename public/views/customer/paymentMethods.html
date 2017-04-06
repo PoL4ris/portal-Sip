@@ -1,12 +1,12 @@
 <div  ng-controller="customerPaymentMethodsController" class="p-b-lg">
 
   <!--LADO UNO-->
-  <div class="col-lg-4 no-padding-sides">
+  <div class="col-lg-4 no-padding-sides"  ng-if="paymentData">
     <h2 class="float-left m-b-lg">Default Credit Card</h2>
 
 
     <label class="col-lg-8 no-padding-sides"><strong>Card Type:               </strong>   </label>
-    <label class="col-lg-4 block-b-label no-padding-sides" id="b-CCtype">     {{ paymentData.card_type ? paymentData.card_type  : '( ERROR )'}}</label>
+    <label class="col-lg-4 block-b-label no-padding-sides" id="b-CCtype" ng-init="pproperties = parJson(paymentData.properties)[0]" ng-if="paymentData">     {{ pproperties['card type'] }}</label>
 
     <!--<label class="col-lg-8 no-padding-sides"><strong>Token (Acct Number):    </strong>   </label>-->
     <!--<label class="col-lg-4 block-b-label no-padding-sides" id="b-CCnumber">  {{ paymentData.account_number ? paymentData.account_number : '( ERROR )' }}</label>-->
@@ -34,7 +34,7 @@
 
   </div>
   <!--LADO DOS-->
-  <div class="col-lg-8" id="customer-view-0" >
+  <div class="{{paymentData ? 'col-lg-8' : 'col-lg-12'}}" id="customer-view-0" >
 
     <div class="panel panel-default table-container">
       <table id="myTable" class="tablesorter table" >
@@ -59,7 +59,7 @@
         <tbody>
         <tr ng-repeat="payment in paymentMethods"  class="default-priority-{{payment.priority}}">
           <!--<td>{{ payment.id }}</td>-->
-          <td>{{ payment.card_type }}</td>
+          <td ng-init="pproperties = parJson(payment.properties)[0]">{{ pproperties['card type'] }}</td>
           <td ng-init="pproperties = parJson(payment.properties)[0]">{{ pproperties['last four'] | limitTo : 4 : 15 }}</td>
           <!--<td>{{ payment.account_number }}</td>-->
           <td>{{ payment.exp_month }} / {{ payment.exp_year | limitTo : 2 : 2 }}</td>

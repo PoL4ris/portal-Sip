@@ -361,7 +361,7 @@ Osk .new-form-blocks {
   overflow: auto;
 }
 table.dataTable tbody tr.customer-new-updated {
-  background: white none repeat scroll 0 0;
+  /*background: white none repeat scroll 0 0;*/
   font-weight: bold;
 }
 table.dataTable tbody tr.customer-new-updated td:first-child {
@@ -550,11 +550,9 @@ table.dataTable tbody tr {
   vertical-align: middle;
 }
 .ticket-search-table {
-  float: right;
-  width: 30%;
 }
 .ticket-search-table label {
-  width: 100%;
+  width: 30%;
   position: relative;
 }
 .ticket-search-table label input {
