@@ -66,6 +66,16 @@ class Customer extends Model
             ->select('*')
             ->get();
     }
+    public function getNetworkInfo($id = null) {
+        if($id == null){
+            $id = $this->attributes['id'];
+        }
+        return $this->ports()->with('networkNodes')->get();
+    }
+    
+    public function ports(){
+        return $this->hasMany('App\Models\Port', 'id_customers', 'id');
+    }
 
     public function getTickets($id = null) {
         if($id == null){

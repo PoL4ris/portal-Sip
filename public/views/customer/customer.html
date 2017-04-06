@@ -39,7 +39,9 @@
               class="editable editable-click">  {{customerData.customer.last_name?customerData.customer.last_name:'...'}}
           </a>
         </p>
-
+          <p class="float-left p-l-md">
+            ({{ customerData.customer.id }})
+          </p>
         <!--<div ng-if="customerData.customer.vip" class="float-left m-l-md vip-class" title="VIP : {{customerData.customer.vip}}"><i class="fa fa-star"></i></div>-->
         <div ng-if="customerData.customer.vip" class="float-left m-l-md vip-class" title="VIP : {{customerData.customer.vip}}"><label>{{customerData.customer.vip}}</label></div>
 

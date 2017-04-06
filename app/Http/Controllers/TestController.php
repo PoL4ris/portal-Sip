@@ -17,6 +17,7 @@ use App\Models\Address;
 use App\Models\BillingTransactionLog;
 use App\Models\Building\Building;
 use App\Models\Product;
+use App\Models\Port;
 use App\Models\NetworkNode;
 use App\Models\ContactType;
 use App\Models\PaymentMethod;
@@ -349,8 +350,14 @@ class TestController extends Controller
 
     public function generalTest(){
 
-        $customer = Customer::find(1928);
-        dd($customer->getNetworkNodes());
+        $port = Port::find(1419);
+        $networkNode = $port->networkNodes;
+        dd($networkNode);
+        
+        
+        $customer = Customer::find(1928); // David Ellis - 41E8  #1305
+//        dd($customer);
+        dd($customer->getNetworkInfo()->toArray());
 
     }
 

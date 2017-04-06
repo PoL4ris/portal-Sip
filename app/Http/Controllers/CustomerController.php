@@ -26,6 +26,7 @@ use App\Models\Support\Ticketreasons;
 use App\Models\ActivityLog;
 use App\Http\Controllers\NetworkController;
 use DB;
+use Log;
 use Schema;
 use Auth;
 use ActivityLogs;
@@ -287,7 +288,11 @@ class CustomerController extends Controller
   {
 
     $customer = new Customer;
-    return $customer->getNetworkNodes($request->id);
+    $customer = Customer::find($request->id);
+//    return $customer->getNetworkNodes($request->id);
+      $netInfo = $customer->getNetworkInfo();
+//      Log::info($netInfo);
+    return $netInfo;
 //
 //    return NetworkNode::join('ports', 'ports.id_network_nodes', '=', 'network_nodes.id')
 //                      ->join('customers', 'ports.id_customers', '=', 'customers.id')

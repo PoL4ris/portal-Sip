@@ -831,6 +831,8 @@ app.controller('customerNetworkController',         function ($scope, $http){
   $http.get("getCustomerNetwork", {params:{'id':$scope.idCustomer}})
     .then(function (response) {
       $scope.customerNetwork = response.data[0];
+//      console.log(response.data);
+
       //to get network data rdy for dash MAYBE
 //       networkServices(0, true);
     });
@@ -838,6 +840,8 @@ app.controller('customerNetworkController',         function ($scope, $http){
   $scope.networkServices    = function (service) {
     networkServices(service);
   }
+  
+  
   function networkServices (service, flagService) {
 
     var routes = ['networkCheckStatus',
@@ -851,7 +855,7 @@ app.controller('customerNetworkController',         function ($scope, $http){
     $('.network-functions').addClass('disabled');
 
     var service = service;
-    var portID = $scope.customerNetwork.port_number;
+    var portID = $scope.customerNetwork.id;
     var customerID = $scope.idCustomer;
     var dataSend = {'portid':portID, 'id':customerID};
 
@@ -878,52 +882,52 @@ app.controller('customerNetworkController',         function ($scope, $http){
             $('#' + i).html(item);
           });
 
-          service = 1;
-
-          $.ajax(
-            {type:"GET",
-              url:"/" + routes[service],
-              data:dataSend,
-              success: function(data)
-              {
-                $.each(data,function(i, item)
-                {
-                  $('#' + i).html(item);
-                });
-              }
-            }
-          );
-
-          service = 2;
-          $.ajax(
-            {type:"GET",
-              url:"/" + routes[service],
-              data:dataSend,
-              success: function(data)
-              {
-
-//                 $('#IPs').notify('IPs Array.');
-                if(!flagService)
-                {
-                  $.smallBox({
-                    title: "IPs Array.",
-                    content: "<i class='fa fa-clock-o'></i> <i>2 seconds ago...</i>",
-                    color: "#739E73",
-                    iconSmall: "fa fa-thumbs-up bounce animated",
-                    timeout: 6000
-                  });
-                }
-
-                $('.network-functions').removeClass('disabled');
-
-//                   $.each(data,function(i, item)
-//                   {
-//                     $('#' + i).html(item);
-//                   });
-
-              }
-            }
-          );
+//          service = 1;
+//
+//          $.ajax(
+//            {type:"GET",
+//              url:"/" + routes[service],
+//              data:dataSend,
+//              success: function(data)
+//              {
+//                $.each(data,function(i, item)
+//                {
+//                  $('#' + i).html(item);
+//                });
+//              }
+//            }
+//          );
+//
+//          service = 2;
+//          $.ajax(
+//            {type:"GET",
+//              url:"/" + routes[service],
+//              data:dataSend,
+//              success: function(data)
+//              {
+//
+////                 $('#IPs').notify('IPs Array.');
+//                if(!flagService)
+//                {
+//                  $.smallBox({
+//                    title: "IPs Array.",
+//                    content: "<i class='fa fa-clock-o'></i> <i>2 seconds ago...</i>",
+//                    color: "#739E73",
+//                    iconSmall: "fa fa-thumbs-up bounce animated",
+//                    timeout: 6000
+//                  });
+//                }
+//
+//                $('.network-functions').removeClass('disabled');
+//
+////                   $.each(data,function(i, item)
+////                   {
+////                     $('#' + i).html(item);
+////                   });
+//
+//              }
+//            }
+//          );
           $('.network-functions').removeClass('disabled');
         }
       }
