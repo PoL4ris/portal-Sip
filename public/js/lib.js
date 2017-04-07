@@ -296,7 +296,13 @@ app.controller('buildingCtl',                       function($scope, $http, cust
 
 
 //Network Controllers
-app.controller('networkController',                 function ($scope, $http){
+app.controller('networkController',                 function ($scope, $http, customerService){
+
+
+  if(customerService.sideBarFlag) {
+    $scope.sipTool(2);
+    customerService.sideBarFlag = false;
+  }
 
   $http.get("networkdash")
     .then(function (response) {
@@ -329,33 +335,52 @@ app.controller('networkController',                 function ($scope, $http){
 //     });
 
 
-  };
-  $scope.addTR = function addTR(id) {
-    var stance = warpol('#net-btn-' + id).attr('stance');
-    var iconoA = '<i class="fa fa-plus-circle txt-green sign-network"></i>';
-    var iconoB = '<i class="fa fa-minus-circle txt-red sign-network"></i>';
+  };//????
 
-    if (stance == '1')
+
+
+  $scope.addTR = function addTR(id) {
+
+    var stance   = $('#net-btn-' + id);
+    var mas      = 'details-control';
+    var menos    = 'dc-show-menos';
+    var idString = 'nt-tmp-data-' + id;
+
+    if (stance.attr('stance') == '1')
     {
-      warpol('#net-btn-' + id).attr('stance', '2');
-      warpol('#net-btn-' + id).html(iconoB);
-      warpol(getNetworkResult(id)).insertAfter('#det-net-' + id).hide().slideDown('slow');
+      console.log('Stance = 2');
+      stance.attr('stance', 2);
+      stance.removeClass(mas);
+      stance.addClass(menos);
+      $(' <tr id="' + idString + '"><td colspan="11">info</td></tr>').insertAfter('#det-net-' + id).hide().slideDown('slow');
     }
     else
     {
-      warpol('#net-btn-' + id).attr('stance', '1');
-      warpol('#net-btn-' + id).html(iconoA);
-      warpol('#nt-tmp-data-' + id).remove();
+      console.log('Stance = 1');
+      stance.attr('stance', 1);
+      stance.removeClass(menos);
+      stance.addClass(mas);
+      $('#nt-tmp-data-' + id).remove();
     }
-    //getNetworkResult();
-
   };
 
+  $scope.cleanHrefField        = function (valor){
+    var spaceClean = valor.split(' ')[0];
+    var httpClean = spaceClean.match('https*');
+
+    return httpClean ? httpClean['input'] : 'http://' + spaceClean;
+  }
+  $scope.cleanNetField         = function (valor){
+    var httpClean = valor.match('https*');
+    return httpClean ? httpClean['input'].split('https://')[1] : valor;
+  }
+
 });
-app.controller('networkControllerTSort',            function (DTOptionsBuilder, DTColumnDefBuilder, $scope){
+app.controller('networkControllerTSort',            function (DTOptionsBuilder, DTColumnDefBuilder, $scope ){
+
   var vm = this;
   vm.persons = [];
-  vm.dtOptions = DTOptionsBuilder.newOptions().withPaginationType('full_numbers').withDisplayLength(25).withOption('order', [0, 'desc']);
+  vm.dtOptions = DTOptionsBuilder.newOptions().withPaginationType('full_numbers').withDisplayLength(25).withOption('order', [1, 'asc']);
 //   vm.dtColumnDefs = [
 //     DTColumnDefBuilder.newColumnDef(0),
 //     DTColumnDefBuilder.newColumnDef(1).withClass('WWWWWWW'),
@@ -377,7 +402,6 @@ app.controller('customerControllerList',            function ($scope, $http){
 
 app.controller('customerController',                function ($scope, $http, $stateParams, customerService){
 
-
   if(!customerService.rightView) {
     customerService.rightView = true;
 //     console.log('right');
@@ -392,15 +416,15 @@ app.controller('customerController',                function ($scope, $http, $st
 
     customerService.leftView = true;
     $scope.customerFlag      = true;
-    $scope.idCustomer        = 501;
+    $scope.idCustomer        = Math.floor((Math.random() * (11656 - 11155 + 1) ) + 11155);
 
     if ($scope.stcid || $stateParams.id)
       $scope.idCustomer = $scope.stcid ? $scope.stcid : $stateParams.id;
 
-    if (($(location).attr('href').split('http://silverip-portal.com/#/')[1]) == 'customers') {
-      $scope.idCustomer = 501;
-      $scope.buscadorFlag = true;
-    }
+//     if (($(location).attr('href').split('http://silverip-portal.com/#/')[1]) == 'customers') {
+//       $scope.idCustomer = 501;
+//       $scope.buscadorFlag = true;
+//     }
 
     //SET INPUT VALUE
     $('#customerIdScope').val($scope.idCustomer);
@@ -438,9 +462,6 @@ app.controller('customerController',                function ($scope, $http, $st
 
 
   }
-
-
-
 
   //Reloads Data
   $scope.getCustomerStatus          = function (id){
@@ -734,23 +755,23 @@ app.controller('customerController',                function ($scope, $http, $st
   $scope.showConfirmPassword      = function (idProduct, status) {
 
     $.SmartMessageBox({
-      title: "Please Confirm Your Action!",
-      content: 'Would you like to Reset this Customers password?',
+      title: "Please Confirm",
+      content: 'Should I reset this customer’s password?',
       buttons: '[No][Yes]'
     }, function (ButtonPressed) {
       if (ButtonPressed === "Yes") {
           $scope.resetPassword();
       }
-      if (ButtonPressed === "No") {
-
-        $.smallBox({
-          title: "Callback function",
-          content: "<i class='fa fa-clock-o'></i> <i>You pressed No...</i>",
-          color: "#C46A69",
-          iconSmall: "fa fa-times fa-2x fadeInRight animated",
-          timeout: 4000
-        });
-      }
+//       if (ButtonPressed === "No") {
+//
+//         $.smallBox({
+//           title: "Callback function",
+//           content: "<i class='fa fa-clock-o'></i> <i>You pressed No...</i>",
+//           color: "#C46A69",
+//           iconSmall: "fa fa-times fa-2x fadeInRight animated",
+//           timeout: 4000
+//         });
+//       }
 
     });
   };
@@ -762,7 +783,7 @@ app.controller('customerController',                function ($scope, $http, $st
         if (response.data['response'] == 'OK')
         {
           $.smallBox({
-            title: "Password Updated to " + response.data['password'],
+            title: "Password updated to " + response.data['password'],
             content: "<i class='fa fa-clock-o'></i> <i>3 seconds ago...</i>",
             color: "#739E73",
             iconSmall: "fa fa-thumbs-up bounce animated",
@@ -831,8 +852,14 @@ app.controller('customerNetworkController',         function ($scope, $http){
 
     var service = service;
     var portID = $scope.customerNetwork.port_number;
-    var customerID = $scope.customerData.id;
+    var customerID = $scope.idCustomer;
     var dataSend = {'portid':portID, 'id':customerID};
+
+    console.log(service);
+    console.log(portID);
+    console.log(customerID);
+    console.log(dataSend);
+
 
     //AJAX request
     $.ajax(
@@ -841,17 +868,18 @@ app.controller('customerNetworkController',         function ($scope, $http){
         data:dataSend,
         success: function(data)
         {
-//           console.log(data);
+
           $scope.customerData.networkServices = data;
+
           if (data == 'ERROR')
             alert(data);
 
           $.each(data,function(i, item) {
             $('#' + i).html(item);
           });
-//           $('#basic-info-net').notify('OK');
 
           service = 1;
+
           $.ajax(
             {type:"GET",
               url:"/" + routes[service],
@@ -896,7 +924,7 @@ app.controller('customerNetworkController',         function ($scope, $http){
               }
             }
           );
-
+          $('.network-functions').removeClass('disabled');
         }
       }
     );
@@ -958,6 +986,7 @@ app.controller('customerNetworkController',         function ($scope, $http){
     );
   };
   $scope.smartModEg1        = function () {
+//     console.log($(this).attr('type'));
 
     var service       = $('#rport').attr('type');
     var portID        = $('#rport').attr('portid');
@@ -967,32 +996,25 @@ app.controller('customerNetworkController',         function ($scope, $http){
 
 
 
+    if(service == 5 || service == 6)
+      var txtMsg = 'Are you sure you want to send this customer to the signup page?';
+    if (serviceID)
+      var txtMsg = 'Should I recycle this customer’s port?';
+
+
     $.SmartMessageBox({
-      title: "Please Confirm Your Action!",
-      content: "Once you click Yes, you need to wait the process to finish.",
+      title: "Please Confirm",
+      content: txtMsg,
       buttons: '[No][Yes]'
     }, function (ButtonPressed) {
       if (ButtonPressed === "Yes") {
 
         if (portID)
-          networkServices(service);
+          networkServices(service);//SEND TO SIGNUP
         else if(serviceID)
-          servicesInfoUpdate(serviceID, serviceStatus, routeID);
+          servicesInfoUpdate(serviceID, serviceStatus, routeID);//Recycle port
 
       }
-      if (ButtonPressed === "No") {
-
-        console.log('dijo que no');
-
-        $.smallBox({
-          title: "Callback function",
-          content: "<i class='fa fa-clock-o'></i> <i>You pressed No...</i>",
-          color: "#C46A69",
-          iconSmall: "fa fa-times fa-2x fadeInRight animated",
-          timeout: 4000
-        });
-      }
-
     });
   };
 
@@ -1015,21 +1037,18 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http){
 // return;
 // app.controller('customerPaymentMethodsController',  function ($scope, $http,$uibModal, $log){
 // return;
+
   $http.get("getCustomerPayment", {params:{'id':$scope.stcid ? $scope.stcid : $scope.idCustomer}})
     .then(function (response) {
       $scope.paymentData = response.data[0];
       $scope.customerData.defaultPayment = $scope.paymentData;
-//       console.log(response.data);
     });
-
-
   $http.get("getPaymentMethods", {params:{'id':$scope.idCustomer}})
     .then(function (response) {
       $scope.paymentMethods = response.data;
-//       console.log(response.data);
     });
 
-  $scope.setDefault = function (id) {
+  $scope.setDefault         = function (id) {
     $http.get("updatePaymentMethods", {params:{'id' : id, 'customerID' : $scope.idCustomer}})
       .then(function (response) {
         $scope.paymentMethods = response.data;
@@ -1040,13 +1059,13 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http){
           });
       });
   };
-  $scope.getPaymentMethods = function (customerId){
+  $scope.getPaymentMethods  = function (customerId){
     $http.get("getPaymentMethods", {params:{'id':customerId}})
       .then(function (response) {
         $scope.paymentMethods = response.data;
       });
   };
-  $scope.refundFunct = function (){
+  $scope.refundFunct        = function (){
     var cid = $scope.customerData.id;
     var amount = $('#mf-input-am').val();
     var desc = $('#mf-input-de').val();
@@ -1062,7 +1081,7 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http){
           $scope.closeTransparentBGManual();
       });
   };
-  $scope.chargeFunct = function (){
+  $scope.chargeFunct        = function (){
     var cid = $scope.customerData.id;
     var amount = $('#mc-input-am').val();
     var desc = $('#mc-input-de').val();
@@ -1078,7 +1097,22 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http){
           $scope.closeTransparentBGManual();
       });
   };
+  $scope.editPaymentMethod  = function (flag){
 
+
+
+    if(flag){
+      $scope.editPaymentFlag = false;
+      $scope.editPaymentValues = null;
+    }
+    else{
+      $scope.editPaymentFlag = true;
+      $scope.editPaymentValues = this.payment;
+    }
+
+    $('#paymentMethodModal').trigger("reset");
+  };
+  //OLD THING
   $scope.open = function (){
     $scope.customerId = $scope.customerData.id;
 
@@ -1115,67 +1149,57 @@ app.controller('addPaymentMethodController',        function ($scope, $http){
 * */
 // console.log('this is addPaymentMethodController ');
   $scope.addNewPaymentMethod = function (){
-    var objects = $('#paymentmethodform').serializeArray();
 
-    if(!objects[0].value || !objects[1].value || !objects[2].value || !objects[3].value || !objects[4].value || !objects[5].value || !objects[6].value)
+    var objects = getFormValues('paymentmethodform');
+
+    for(var obj in objects ) {
+      if(!objects[obj])
       return;
+    }
 
-    var regexCC = /\b(?:3[47]\d{2}([\ \-]?)\d{6}\1\d|(?:(?:4\d|5[1-5]|65)\d{2}|6011)([\ \-]?)\d{4}\2\d{4}\2)\d{4}\b/g;
+    var regexCC = /(\d{4}[-. ]?){4}|\d{4}[-. ]?\d{6}[-. ]?\d{5}/g;
 
-//     console.log(objects);
-//     console.log(regexCC.test(objects[1].value));
-    var boolResult = regexCC.test(objects[1].value);
+    var boolResult = regexCC.test(objects['account_number']);
 
-
-
+    //CONSOLE MSG
     if (boolResult == true)
       console.log('this is true ===> ' + boolResult);
     else
       console.log('this is false ===> ' + boolResult);
 
-
-      return;
-
-
-
-
-
-
-
-
-    if (!regexCC.test(objects[1].value)) {
-//       notify({ message: 'Verify your Account Number', templateUrl:'/views/notify.html'} );
+    if (!boolResult) {
+    //Mensaje alerta numero de cuenta malo
       console.log('Verify your Account Number');
-//       return;
-    }
-    else{
-      console.log('this is false');
+      return;
     }
 
-    return;
-
-
-
-    if(objects[6].value.length < 3 || objects[6].value.length > 4) {
-//       notify({ message: 'Verify your CCV Number', templateUrl:'/views/notify.html'} );
+    if(objects['CCV'].length < 3 || objects['CCV'].length > 4) {
+    //Mensaje alerta ccv malo
       console.log('Verify your CCV Number');
       return;
     }
 
-    var infoData = {};
-    for(var obj in objects )
-      infoData[objects[obj]['name']] = objects[obj]['value'];
+    if($scope.editPaymentFlag)
+      objects['id'] = $scope.editPaymentValues.id;
 
-    infoData['id_customers'] = customerId;
+    objects['id_customers'] = $scope.idCustomer;
 
-    $http.get("insertPaymentMethod", {params:infoData})
+    $http.get("insertPaymentMethod", {params : objects})
       .then(function (response) {
         if(response.data == 'OK')
         {
-          $uibModalInstance.dismiss('cancel');
-//           notify({ message: 'Account ' + infoData['account_number'] + ' ready to use.', templateUrl:'/views/notify.html'} );
-          console.log('Account ' + infoData['account_number'] + ' ready to use.');
-          angular.element('#tom').scope().getPaymentMethods(customerId);
+          $('#paymentMethodModal').modal('toggle');
+
+          $.smallBox({
+            title: $scope.editPaymentFlag ? "Card Updated." : "New Card added to this customer.",
+            content: "<i class='fa fa-clock-o'></i> <i>2 seconds ago...</i>",
+            color: "#739E73",
+            iconSmall: "fa fa-thumbs-up bounce animated",
+            timeout: 6000
+          });
+
+          $scope.getPaymentMethods($scope.idCustomer);
+          $('#paymentMethodModal').trigger("reset");
         }
         else
         {
@@ -1184,7 +1208,12 @@ app.controller('addPaymentMethodController',        function ($scope, $http){
         }
       });
   }
+
+
 });
+
+
+
 app.controller('customerServicesController',        function ($scope, $http){
 
   $http.get("getCustomerServices", {params:{'id':$scope.idCustomer}})
@@ -1206,7 +1235,7 @@ app.controller('customerServicesController',        function ($scope, $http){
   $scope.showConfirm      = function (idProduct, status) {
 
     $.SmartMessageBox({
-      title: "Please Confirm Your Action!",
+      title: "Please Confirm",
       content: 'Would you like to ' + (status == 'disable' ? 'cancel' : 'activate') + ' this service?',
       buttons: '[No][Yes]'
     }, function (ButtonPressed) {
@@ -1300,26 +1329,28 @@ app.controller('customerNotesController',           function($scope, $http){
 //Support Controllers
 app.controller('supportController',                 function ($scope, $http, DTOptionsBuilder, customerService){
 
-  $scope.getAllOpenTickets = function (){
+
+
+
+  $scope.getAllOpenTickets      = function (){
     $http.get("getAllOpenTickets")
       .then(function (response) {
         $scope.supportData = response.data;
-        console.log(supportData);
       });
   };
-  $scope.getNoneBillingTickets = function (){
+  $scope.getNoneBillingTickets  = function (){
     $http.get("getNoneBillingTickets")
       .then(function (response) {
         $scope.supportData = response.data;
       });
   };
-  $scope.getBillingTickets = function (){
+  $scope.getBillingTickets      = function (){
     $http.get("getBillingTickets")
       .then(function (response) {
         $scope.supportData = response.data;
       });
   };
-  $scope.getMyTickets = function (){
+  $scope.getMyTickets           = function (){
     $http.get("getMyTickets")
       .then(function (response) {
         $scope.supportData = response.data;
@@ -1346,7 +1377,7 @@ app.controller('supportController',                 function ($scope, $http, DTO
 
 
 
-  $scope.dtOptions = DTOptionsBuilder.newOptions().withPaginationType('full_numbers').withDisplayLength(50);
+  $scope.dtOptions = DTOptionsBuilder.newOptions().withPaginationType('full_numbers').withDisplayLength(50).withOption('order', [9, 'asc']);
   $scope.letterLimit = 40;
 
 
@@ -1375,9 +1406,6 @@ app.controller('supportController',                 function ($scope, $http, DTO
     $scope.stcFlag = false;
     callMidView('Customer');
   };//NO se usará mas
-
-
-
   //MODAL DATA
   $scope.displayTicketResume  = function (id, idCustomer){
     $scope.midTicketId = id;
@@ -1627,8 +1655,8 @@ app.controller('userProfileController',             function ($scope, $http){
 // Global Tools //
 app.controller('globalToolsCtl',      function ($scope, $http, $compile, $sce, $stateParams, customerService){
 
-  console.log('globalToolsCtl & service - - - >');
-  console.log(customerService);
+//   console.log('globalToolsCtl & service - - - >');
+//   console.log(customerService);
 
 
   $scope.customerData   = {};
@@ -1919,3 +1947,12 @@ app.controller('userAuthController',   function ($scope){
 
 
 
+app.controller('dummuyController', function ($scope, $http){
+  console.log('this is oossoomm');
+  $scope.dummyControllerData = 'this is the end';
+
+  $http.get("dummyRouteController")
+    .then(function (response){
+      console.log(response.data);
+    });
+});

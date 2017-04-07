@@ -214,5 +214,10 @@ class MainController extends Controller
   public function getBuildingLocations(){
     return Address::groupBy('id_buildings')->get();
   }
+
+  public function dummyRouteController(){
+    dd(Auth());
+  }
+
 }
 

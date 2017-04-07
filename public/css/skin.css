@@ -17,6 +17,9 @@ h2 {
   border: medium none;
   box-shadow: 0 -1px 4px 2px rgba(0, 0, 0, 0.7);
 }
+.fixed-navigation nav{
+  padding-top: 30px;
+}
 .fixed-navigation nav > ul {
   overflow: hidden;
   width: 100%;
@@ -80,7 +83,7 @@ h2 {
   margin-left: 0;
 }
 .hidden-menu #hide-menu.btn-header {
-  background: #1a3047 none repeat scroll 0 0;
+  /*background: #1a3047 none repeat scroll 0 0;*/
 }
 #hide-menu.btn-header {
   transition: all 0.7s ease 0s;
@@ -93,7 +96,7 @@ h2 {
   width: 70px;
 }
 .hidden-menu #hide-menu.btn-header {
-  margin: 0;
+  /*margin: 0;*/
 }
 #hide-menu.btn-header::after {
   bottom: 6px;
@@ -181,8 +184,8 @@ h2 {
   width: 100%;
 }
 #left-panel {
-  padding-top: 0;
-  z-index: 905;
+  /*padding-top: 0;*/
+  /*z-index: 905;*/
 }
 .minifyme p {
   font-family: Helvetica;
@@ -221,7 +224,7 @@ body.smart-style-7 {
   background: #f8f8f8 none repeat scroll 0 0 !important;
 }
 .smart-style-7 #header {
-  background-color: #15273c;
+  background-color: #0f94f6;
   background-image: none;
   box-shadow: 0 -1px 4px 2px rgba(0, 0, 0, 0.7);
 }
@@ -326,7 +329,7 @@ body.smart-style-7 {
   background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
 }
 .smart-style-7 nav ul li a:hover {
-  color: #94bddf;
+  color: #0F94F6;
 }
 .smart-style-7 nav ul li a {
   padding: 12px 17px 12px 16px;
@@ -354,20 +357,43 @@ body.smart-style-7 {
   text-decoration: none;
 }
 .smart-style-7 .login-info {
-  height: auto;
+  background: rgba(0, 0, 0, 0) url("/img/cover.png") no-repeat scroll center center / cover ;
+  border: 0 none;
+  height: 100px;
+  margin-top: -1px !important;
 }
 .smart-style-7 .login-info > span {
-  padding: 5px 10px;
+  border: 0 none;
+  height: 100px;
+  padding: 0;
 }
 .smart-style-7 .login-info img {
+  border: 3px solid rgba(0, 0, 0, 0.14);
   border-radius: 50%;
-  width: 35px;
+  box-sizing: content-box;
+  width: 40px;
 }
 .smart-style-7 .login-info a {
-  margin-top: 2px;
+  display: block;
+  margin: 0;
+  padding: 10px;
 }
 .smart-style-7 .login-info a span {
-  max-width: 136px;
+  background: rgba(0, 0, 0, 0.2) none repeat scroll 0 0;
+  color: #fff;
+  display: block;
+  margin-left: -10px;
+  margin-top: 13px;
+  max-width: 100%;
+  padding: 5px 10px;
+  width: 100%;
+}
+.login-info a span + i{
+  font-size: 26px;
+  position: relative;
+  text-align: right;
+  top: -29px;
+  width: 90%;
 }
 .smart-style-7 .login-info a:hover {
   color: #fff;
@@ -432,11 +458,13 @@ body.smart-style-7 {
   margin: 3px 0;
 }
 .smart-style-7 .page-footer, .smart-style-7 .superbox-show, .smart-style-7 aside {
-  background: #15273c none repeat scroll 0 0;
+  background: #f2f2f2 none repeat scroll 0 0;
   width: 150px;
 }
 .smart-style-7 .page-footer {
+  background: #578294;
   width: 100%;
+  padding-top: 20px;
 }
 .smart-style-7 .login-info, .smart-style-7 .login-info span {
   border-bottom: medium none;
@@ -445,10 +473,10 @@ body.smart-style-7 {
   border: medium none !important;
 }
 .smart-style-7 .login-info a, .smart-style-7 .login-info strong, .smart-style-7 nav ul li a {
-  color: #7190aa;
+  color: #333;
 }
 .smart-style-7 nav ul li.active a {
-  color: #ffffff !important;
+  color: #578294 !important;
 }
 .smart-style-7 nav ul li.active > a::before {
   color: #ffffff;
@@ -605,9 +633,9 @@ body.smart-style-7 {
   color: #fff !important;
 }
 #logo-group.logo-ui-uno {
-  bottom: 40px;
+  left: 0;
   position: fixed;
-  width: 100%;
+  width: 150px;
 }
 .smart-style-7 #header .user-ui-uno {
   width: 150px;
@@ -696,15 +724,18 @@ nav ul li a {
 .btn-primary:focus , .btn-primary.active, .btn-primary:active, .btn-primary:hover, .open > .dropdown-toggle.btn-primary{
   background-color: #3e6cc9;
   background-image: -moz-linear-gradient(center top , #3e6cc9, #2e51b6);
+  background-image: linear-gradient( #3e6cc9, #2e51b6);
 }
 .btn-primary {
   background-color: #3e6cc9;
   background-image: -moz-linear-gradient(center top , #3e6cc9, #2e51b6);
+  background-image: linear-gradient(#3e6cc9, #2e51b6);
   color: #3e6cc9;
   color: white;
 }
 .btn-danger {
   background: #d14836 -moz-linear-gradient(center top , #dd4b39, #d14836) repeat scroll 0 0;
+  background: #d14836 linear-gradient(#dd4b39, #d14836) repeat scroll 0 0;
   color: #d14836;
   color: white;
 }
@@ -717,16 +748,19 @@ nav ul li a {
 .btn-dark {
   background-color: #afafaf;
   background-image: -moz-linear-gradient(center top , #afafaf, #a8a8a8);
+  background-image: linear-gradient( #afafaf, #a8a8a8);
   color: #afafaf;
   color: white;
 }
 .btn-warning {
   background: #ffc107 -moz-linear-gradient(center top , #ffc107, #c29306) repeat scroll 0 0;
+  background: #ffc107 linear-gradient(#ffc107, #c29306) repeat scroll 0 0;
   color: #ffc107;
   color: white;
 }
 .btn-success {
   background: #4caf50 -moz-linear-gradient(center top , #4caf50, #66bb6a) repeat scroll 0 0;
+  background: #4caf50 linear-gradient(#4caf50, #66bb6a) repeat scroll 0 0;
   color: #4caf50;
   color: white;
 }
