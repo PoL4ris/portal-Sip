@@ -416,15 +416,15 @@ app.controller('customerController',                function ($scope, $http, $st
 
     customerService.leftView = true;
     $scope.customerFlag      = true;
-    $scope.idCustomer        = 501;
+    $scope.idCustomer        = Math.floor((Math.random() * (11656 - 11155 + 1) ) + 11155);
 
     if ($scope.stcid || $stateParams.id)
       $scope.idCustomer = $scope.stcid ? $scope.stcid : $stateParams.id;
 
-    if (($(location).attr('href').split('http://silverip-portal.com/#/')[1]) == 'customers') {
-      $scope.idCustomer = 501;
-      $scope.buscadorFlag = true;
-    }
+//     if (($(location).attr('href').split('http://silverip-portal.com/#/')[1]) == 'customers') {
+//       $scope.idCustomer = 501;
+//       $scope.buscadorFlag = true;
+//     }
 
     //SET INPUT VALUE
     $('#customerIdScope').val($scope.idCustomer);
@@ -1328,7 +1328,9 @@ app.controller('customerNotesController',           function($scope, $http){
 
 //Support Controllers
 app.controller('supportController',                 function ($scope, $http, DTOptionsBuilder, customerService){
-  console.log('supportController');
+
+
+
 
   $scope.getAllOpenTickets      = function (){
     $http.get("getAllOpenTickets")
@@ -1653,8 +1655,8 @@ app.controller('userProfileController',             function ($scope, $http){
 // Global Tools //
 app.controller('globalToolsCtl',      function ($scope, $http, $compile, $sce, $stateParams, customerService){
 
-  console.log('globalToolsCtl & service - - - >');
-  console.log(customerService);
+//   console.log('globalToolsCtl & service - - - >');
+//   console.log(customerService);
 
 
   $scope.customerData   = {};
@@ -1945,3 +1947,12 @@ app.controller('userAuthController',   function ($scope){
 
 
 
+app.controller('dummuyController', function ($scope, $http){
+  console.log('this is oossoomm');
+  $scope.dummyControllerData = 'this is the end';
+
+  $http.get("dummyRouteController")
+    .then(function (response){
+      console.log(response.data);
+    });
+});

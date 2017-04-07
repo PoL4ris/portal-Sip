@@ -155,7 +155,6 @@ app.factory('customerService', function() {
 });
 
 
-
 //
 //Stronger Service Dif Solution.
 // app.factory('myFactory', function() {
@@ -170,7 +169,3 @@ app.factory('customerService', function() {
 //     }
 //   }
 // });
-
-
-
-

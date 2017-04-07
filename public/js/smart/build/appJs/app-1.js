@@ -121,7 +121,7 @@ appConfig.skins = [
 ];
 
 
-appConfig.voice_command_lang = 'en-US';
+
 
 
 appConfig.apiRootUrl = 'api';
@@ -192,44 +192,7 @@ var app = angular.module('app', [
 
 
     // Intercept http calls.
-    $provide.factory('ErrorHttpInterceptor', function ($q) {
-      var errorCounter = 0;
-      function notifyError(rejection){
-        console.log(rejection);
-        $.bigBox({
-          title: rejection.status + ' ' + rejection.statusText,
-          content: rejection.data,
-          color: "#C46A69",
-          icon: "fa fa-warning shake animated",
-          number: ++errorCounter,
-          timeout: 6000
-        });
-      }
 
-      return {
-        // On request failure
-        requestError: function (rejection) {
-          // show notification
-          notifyError(rejection);
-
-          // Return the promise rejection.
-          return $q.reject(rejection);
-        },
-
-        // On response failure
-        responseError: function (rejection) {
-          // show notification
-          notifyError(rejection);
-          // Return the promise rejection.
-          return $q.reject(rejection);
-        }
-      };
-    });
-
-    // Add the interceptor to the $httpProvider.
-    $httpProvider.interceptors.push('ErrorHttpInterceptor');
-
-    RestangularProvider.setBaseUrl(location.pathname.replace(/[^\/]+?$/, ''));
 
   })
   .constant('APP_CONFIG', window.appConfig)
@@ -393,98 +356,7 @@ angular.module('app.auth', [
 //        ,
 //        'ezfb',
 //        'googleplus'
-]).config(function ($stateProvider
-                    //        , ezfbProvider
-                    //        , GooglePlusProvider
-) {
-//        GooglePlusProvider.init({
-//            clientId: authKeys.googleClientId
-//        });
-//
-//        ezfbProvider.setInitParams({
-//            appId: authKeys.facebookAppId
-//        });
-  $stateProvider.state('realLogin', {
-    url: '/real-login',
-
-    views: {
-      root: {
-        templateUrl: "app/auth/login/login.html",
-        controller: 'LoginCtrl'
-      }
-    },
-    data: {
-      title: 'Login',
-      rootId: 'extra-page'
-    }
-
-  })
-
-    .state('login', {
-      url: '/login',
-      views: {
-        root: {
-          templateUrl: 'app/auth/views/login.html'
-        }
-      },
-      data: {
-        title: 'Login',
-        htmlId: 'extr-page'
-      },
-      resolve: {
-        srcipts: function(lazyScript){
-          return lazyScript.register([
-            '/js/smart/build/vendor.ui.js'
-          ])
-
-        }
-      }
-    })
-
-    .state('register', {
-      url: '/register',
-      views: {
-        root: {
-          templateUrl: 'app/auth/views/register.html'
-        }
-      },
-      data: {
-        title: 'Register',
-        htmlId: 'extr-page'
-      }
-    })
-
-    .state('forgotPassword', {
-      url: '/forgot-password',
-      views: {
-        root: {
-          templateUrl: 'app/auth/views/forgot-password.html'
-        }
-      },
-      data: {
-        title: 'Forgot Password',
-        htmlId: 'extr-page'
-      }
-    })
-
-    .state('lock', {
-      url: '/lock',
-      views: {
-        root: {
-          templateUrl: 'app/auth/views/lock.html'
-        }
-      },
-      data: {
-        title: 'Locked Screen',
-        htmlId: 'lock-page'
-      }
-    })
-
-
-}).constant('authKeys', {
-  googleClientId: '',
-  facebookAppId: ''
-});
+]);
 
 
 
