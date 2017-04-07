@@ -17,6 +17,9 @@ h2 {
   border: medium none;
   box-shadow: 0 -1px 4px 2px rgba(0, 0, 0, 0.7);
 }
+.fixed-navigation nav{
+  padding-top: 30px;
+}
 .fixed-navigation nav > ul {
   overflow: hidden;
   width: 100%;
@@ -80,20 +83,20 @@ h2 {
   margin-left: 0;
 }
 .hidden-menu #hide-menu.btn-header {
-  background: #1a3047 none repeat scroll 0 0;
+  /*background: #1a3047 none repeat scroll 0 0;*/
 }
 #hide-menu.btn-header {
   transition: all 0.7s ease 0s;
 }
 #hide-menu.btn-header {
-  box-shadow: 8px 0 7px -10px #aaaaaa inset;
+/*  box-shadow: 8px 0 7px -10px #aaaaaa inset;*/
   margin-left: 150px;
   position: relative;
   text-align: center;
   width: 70px;
 }
 .hidden-menu #hide-menu.btn-header {
-  margin: 0;
+  /*margin: 0;*/
 }
 #hide-menu.btn-header::after {
   bottom: 6px;
@@ -181,8 +184,8 @@ h2 {
   width: 100%;
 }
 #left-panel {
-  padding-top: 0;
-  z-index: 905;
+  /*padding-top: 0;*/
+  /*z-index: 905;*/
 }
 .minifyme p {
   font-family: Helvetica;
@@ -354,20 +357,43 @@ body.smart-style-7 {
   text-decoration: none;
 }
 .smart-style-7 .login-info {
-  height: auto;
+  background: rgba(0, 0, 0, 0) url("/img/cover.png") no-repeat scroll center center / cover ;
+  border: 0 none;
+  height: 100px;
+  margin-top: -1px !important;
 }
 .smart-style-7 .login-info > span {
-  padding: 5px 10px;
+  border: 0 none;
+  height: 100px;
+  padding: 0;
 }
 .smart-style-7 .login-info img {
+  border: 3px solid rgba(0, 0, 0, 0.14);
   border-radius: 50%;
-  width: 35px;
+  box-sizing: content-box;
+  width: 40px;
 }
 .smart-style-7 .login-info a {
-  margin-top: 2px;
+  display: block;
+  margin: 0;
+  padding: 10px;
 }
 .smart-style-7 .login-info a span {
-  max-width: 136px;
+  background: rgba(0, 0, 0, 0.2) none repeat scroll 0 0;
+  color: #fff;
+  display: block;
+  margin-left: -10px;
+  margin-top: 13px;
+  max-width: 100%;
+  padding: 5px 10px;
+  width: 100%;
+}
+.login-info a span + i{
+  font-size: 26px;
+  position: relative;
+  text-align: right;
+  top: -29px;
+  width: 90%;
 }
 .smart-style-7 .login-info a:hover {
   color: #fff;
@@ -438,6 +464,7 @@ body.smart-style-7 {
 .smart-style-7 .page-footer {
   background: #578294;
   width: 100%;
+  padding-top: 20px;
 }
 .smart-style-7 .login-info, .smart-style-7 .login-info span {
   border-bottom: medium none;
@@ -606,9 +633,9 @@ body.smart-style-7 {
   color: #fff !important;
 }
 #logo-group.logo-ui-uno {
-  bottom: 40px;
+  left: 0;
   position: fixed;
-  width: 100%;
+  width: 150px;
 }
 .smart-style-7 #header .user-ui-uno {
   width: 150px;
@@ -1052,4 +1079,7 @@ nav ul li a {
   width: 5%;
 }
 
+.customer-info-container {
+    max-width: 280px;
+}
 

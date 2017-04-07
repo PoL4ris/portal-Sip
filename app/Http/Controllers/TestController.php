@@ -336,6 +336,8 @@ class TestController extends Controller
 
         $dbMigrationUtil = new DataMigrationUtils();
 
+//        $dbMigrationUtil->seedAppsTable();
+//        dd('done');
         dd(DataMigration::count());
         
         dd(config('const.status.disabled'));
@@ -352,7 +354,7 @@ class TestController extends Controller
 
         $port = Port::find(1419);
         $networkNode = $port->networkNodes;
-        dd($networkNode);
+        dd($networkNode->masterRouter);
         
         
         $customer = Customer::find(1928); // David Ellis - 41E8  #1305

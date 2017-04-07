@@ -538,14 +538,16 @@ class DataMigrationUtils {
         if($this->output != null){
             $this->output->writeln('<info> Seeding apps table</info>');
         }
-        if(App::count() == 0){
+        if(App::count() != 0){
             $this->writeLog('<info> apps table is not empty. Skipping.</info>');
             return;
         }
-        App::firstOrCreate(['id' => 1, 'id_apps' => 0, 'name' => 'Support', 'icon' => 'fa-wrench', 'url' => 'support']);
-        App::firstOrCreate(['id' => 2, 'id_apps' => 0, 'name' => 'Customers', 'icon' => 'fa-user ', 'url' => 'customers']);
-        App::firstOrCreate(['id' => 3, 'id_apps' => 0, 'name' => 'Building', 'icon' => 'fa-building-o', 'url' => 'buildings']);
-        App::firstOrCreate(['id' => 4, 'id_apps' => 0, 'name' => 'Network', 'icon' => 'fa-signal', 'url' => 'network']);
+        App::firstOrCreate(['id' => 1, 'id_apps' => 0, 'name' => 'Dashboard', 'icon' => 'fa-dashboard', 'url' => 'dashboard']);
+        App::firstOrCreate(['id' => 2, 'id_apps' => 0, 'name' => 'Support', 'icon' => 'fa-wrench', 'url' => 'support']);
+        App::firstOrCreate(['id' => 3, 'id_apps' => 0, 'name' => 'Customers', 'icon' => 'fa-user ', 'url' => 'customers']);
+        App::firstOrCreate(['id' => 4, 'id_apps' => 0, 'name' => 'Building', 'icon' => 'fa-building-o', 'url' => 'buildings']);
+        App::firstOrCreate(['id' => 5, 'id_apps' => 0, 'name' => 'Network', 'icon' => 'fa-signal', 'url' => 'network']);
+        
 
         // FOR FUTURE USE
         //        App::firstOrCreate(['id' => 1, 'id_apps' => 0, 'name' => 'Home', 'icon' => 'icon-home', 'url' => '#/']);
@@ -559,7 +561,7 @@ class DataMigrationUtils {
         if($this->output != null){
             $this->output->writeln('<info> Seeding users table</info>');
         }
-        if(User::count() == 0){
+        if(User::count() != 0){
             $this->writeLog('<info> users table is not empty. Skipping.</info>');
             return;
         }
@@ -573,7 +575,7 @@ class DataMigrationUtils {
         if($this->output != null){
             $this->output->writeln('<info> Seeding status table</info>');
         }
-        if(Status::count() == 0){
+        if(Status::count() != 0){
             $this->writeLog('<info> status table is not empty. Skipping.</info>');
             return;
         }
@@ -589,7 +591,7 @@ class DataMigrationUtils {
         if($this->output != null){
             $this->output->writeln('<info> Seeding types table</info>');
         }
-        if(Type::count() == 0){
+        if(Type::count() != 0){
             $this->writeLog('<info> types table is not empty. Skipping.</info>');
             return;
         }
@@ -613,7 +615,7 @@ class DataMigrationUtils {
         if($this->output != null){
             $this->output->writeln('<info> Seeding contacts table</info>');
         }
-        if(ContactType::count() == 0){
+        if(ContactType::count() != 0){
             $this->writeLog('<info> contacts table is not empty. Skipping.</info>');
             return;
         }        
@@ -628,7 +630,7 @@ class DataMigrationUtils {
         if($this->output != null){
             $this->output->writeln('<info> Seeding building_properties table</info>');
         }
-        if(BuildingProperty::count() == 0){
+        if(BuildingProperty::count() != 0){
             $this->writeLog('<info> building_properties table is not empty. Skipping.</info>');
             return;
         }         
@@ -655,7 +657,7 @@ class DataMigrationUtils {
         if($this->output != null){
             $this->output->writeln('<info> Seeding neighborhoods table</info>');
         }
-        if(Neighborhood::count() == 0){
+        if(Neighborhood::count() != 0){
             $this->writeLog('<info> neighborhoods table is not empty. Skipping.</info>');
             return;
         }        
