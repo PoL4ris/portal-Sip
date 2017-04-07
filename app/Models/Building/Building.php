@@ -22,9 +22,21 @@ class Building extends Model
         return $this->hasMany('App\Models\BuildingContact', 'id_buildings', 'id');
     }
     public function products() {
-        return $this->hasMany('App\Models\BuildingProduct', 'id_buildings');
+        return $this->hasMany('App\Models\BuildingProduct', 'id_buildings', 'id')->with('product');
+//        return $this->hasOne('App\Models\BuildingProduct', 'id', 'id_buildings');
     }
 
+    public function activeProducts() {
+         $products = $this->products;
+        return $products->whereLoose('id_status', config('const.status.active'));
+    }
+    
+    public function activeParentProducts() {
+        $products = $this->products;
+        return $products->whereLoose('id_status', config('const.status.active'))
+                    ->whereLoose('product.id_products', 0);
+    }
+    
     public function properties() {
         return $this->hasMany('App\Models\Building\BuildingPropertyValue', 'id_buildings');
     }
