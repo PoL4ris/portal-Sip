@@ -128,10 +128,25 @@ class TestController extends Controller
     {
 
 
-      $warpol = Customer::with('contact')->find(501);
+    print '<pre>';
+    dd(Auth());
+    die();
+
+
+      $warpol = Customer::with(
+        'addresses',
+        'contacts',
+        'type',
+        'address.buildings',
+        'address.buildings.neighborhood',
+        'status',
+        'status.type',
+        'openTickets',
+        'log',
+        'log.user')->find(1598);
 
       print '<pre>';
-      print_r($warpol->toArray());
+      dd($warpol->toArray());
       die();
 
 

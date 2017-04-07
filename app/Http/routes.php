@@ -156,6 +156,10 @@ Route::group(['middleware' => 'web'], function () {
   //LOGS
   Route::get('getCustomerLog',          'CustomerController@getCustomerLog');//new
 
+
+
+  Route::get('dummyRouteController',    'MainController@dummyRouteController');//new
+
   //SUPPORT
   Route::get('updateTicketDetails',     'SupportController@updateTicketData');
   Route::get('updateTicketHistory',     'SupportController@updateTicketHistory');

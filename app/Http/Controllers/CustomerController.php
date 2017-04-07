@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Note;
+use Illuminate\Contracts\Auth\Access\Authorizable;
 use Illuminate\Http\Request;
 //use App\Http\Requests;
 use App\Models\Product;
@@ -150,6 +151,7 @@ class CustomerController extends Controller
 
   public function customersData(Request $request)
   {
+
     return Customer::with('addresses',
                           'contacts',
                           'type',

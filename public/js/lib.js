@@ -1,4 +1,4 @@
-app.controller('menuController',                    function($scope, $http){
+app.controller('menuController',          function($scope, $http){
     $http.get('/menumaker').then(function (data){
         $scope.SiteMenu = data.data;
     }), function (error){
@@ -16,7 +16,7 @@ app.controller('buildingSideController', function ($scope, $http){
     });
 
 });
-app.controller('buildingCtl',                       function($scope, $http, customerService) {
+app.controller('buildingCtl',             function($scope, $http, customerService) {
 
     if(!customerService.sideBarFlag) {
         $scope.sipTool(2);
@@ -222,13 +222,13 @@ app.controller('buildingCtl',                       function($scope, $http, cust
 
     };
 })
-    .directive('getBuildingPropValues',                 function (){
+    .directive('getBuildingPropValues',       function (){
     return function (scope){
         scope.getBuildingPropertyValues();
     }
 
 })
-    .directive('buildingContactForm',                   function(){
+    .directive('buildingContactForm',         function(){
 
 
     return {
@@ -296,7 +296,7 @@ app.controller('buildingCtl',                       function($scope, $http, cust
 
 
 //Network Controllers
-app.controller('networkController',                 function ($scope, $http, customerService){
+app.controller('networkController',       function ($scope, $http, customerService){
 
 
     if(customerService.sideBarFlag) {
@@ -376,7 +376,7 @@ app.controller('networkController',                 function ($scope, $http, cus
     }
 
 });
-app.controller('networkControllerTSort',            function (DTOptionsBuilder, DTColumnDefBuilder, $scope ){
+app.controller('networkControllerTSort',  function (DTOptionsBuilder, DTColumnDefBuilder, $scope ){
 
     var vm = this;
     vm.persons = [];
@@ -392,7 +392,7 @@ app.controller('networkControllerTSort',            function (DTOptionsBuilder, 
 
 
 //Customer Controllers
-app.controller('customerControllerList',            function ($scope, $http){
+app.controller('customerControllerList',  function ($scope, $http){
     $http.get("getCustomerList")
         .then(function (response) {
         $scope.supportDataCustomer = response.data;
@@ -400,7 +400,7 @@ app.controller('customerControllerList',            function ($scope, $http){
 });
 
 
-app.controller('customerController',                function ($scope, $http, $stateParams, customerService){
+app.controller('customerController',      function ($scope, $http, $stateParams, customerService){
 
     if(!customerService.rightView) {
         customerService.rightView = true;
@@ -416,7 +416,7 @@ app.controller('customerController',                function ($scope, $http, $st
 
         customerService.leftView = true;
         $scope.customerFlag      = true;
-        $scope.idCustomer        = 501;
+        $scope.idCustomer        = Math.floor((Math.random() * (11656 - 11155 + 1) ) + 11155);
 
         if ($scope.stcid || $stateParams.id)
             $scope.idCustomer = $scope.stcid ? $scope.stcid : $stateParams.id;
@@ -457,10 +457,6 @@ app.controller('customerController',                function ($scope, $http, $st
         $scope.checkboxModelA        = true;
         $scope.animationsEnabled     = false;
         $scope.currentServiceDisplay = '';
-
-
-
-
     }
 
     //Reloads Data
@@ -642,9 +638,6 @@ app.controller('customerController',                function ($scope, $http, $st
 
             $log.info('Modal dismissed at: ' + new Date());
         });
-
-
-
     };
     $scope.insertCustomerContact      = function (){
         alert('disabled action.');
@@ -899,34 +892,34 @@ app.controller('customerNetworkController',         function ($scope, $http){
                      }
                  );
 
-                 service = 2;
-                 $.ajax(
-                     {type:"GET",
-                      url:"/" + routes[service],
-                      data:dataSend,
-                      success: function(data)
-                      {
-                          //                 $('#IPs').notify('IPs Array.');
-                          
-//                          if(!flagService)
-//                          {
-//                              $.smallBox({
-//                                  title: "IPs Array.",
-//                                  content: "<i class='fa fa-clock-o'></i> <i>2 seconds ago...</i>",
-//                                  color: "#739E73",
-//                                  iconSmall: "fa fa-thumbs-up bounce animated",
-//                                  timeout: 6000
-//                              });
-//                          }
-
-                          $('.network-functions').removeClass('disabled');
-                          //                   $.each(data,function(i, item)
-                          //                   {
-                          //                     $('#' + i).html(item);
-                          //                   });
-                      }
-                     }
-                 );
+                 //                 service = 2;
+                 //                 $.ajax(
+                 //                     {type:"GET",
+                 //                      url:"/" + routes[service],
+                 //                      data:dataSend,
+                 //                      success: function(data)
+                 //                      {
+                 //                          //                 $('#IPs').notify('IPs Array.');
+                 //                          
+                 ////                          if(!flagService)
+                 ////                          {
+                 ////                              $.smallBox({
+                 ////                                  title: "IPs Array.",
+                 ////                                  content: "<i class='fa fa-clock-o'></i> <i>2 seconds ago...</i>",
+                 ////                                  color: "#739E73",
+                 ////                                  iconSmall: "fa fa-thumbs-up bounce animated",
+                 ////                                  timeout: 6000
+                 ////                              });
+                 ////                          }
+                 //
+                 $('.network-functions').removeClass('disabled');
+                 //                          //                   $.each(data,function(i, item)
+                 //                          //                   {
+                 //                          //                     $('#' + i).html(item);
+                 //                          //                   });
+                 //                      }
+                 //                     }
+                 //                 );
                  $('.network-functions').removeClass('disabled');
              }
             }
@@ -1299,7 +1292,7 @@ app.controller('serviceProductController',          function ($scope, $http){
 
 
 
-app.controller('customerNotesController',           function($scope, $http){
+app.controller('customerNotesController', function($scope, $http){
 
     $http.get("getCustomerNotes", {params:{'id':$scope.idCustomer}})
         .then(function (response) {
@@ -1321,17 +1314,8 @@ app.controller('customerNotesController',           function($scope, $http){
     }
 });
 
-
-
-
-
-
-
-
-
 //Support Controllers
-app.controller('supportController',                 function ($scope, $http, DTOptionsBuilder, customerService){
-    console.log('supportController');
+app.controller('supportController', function ($scope, $http, DTOptionsBuilder, customerService){
 
     $scope.getAllOpenTickets      = function (){
         $http.get("getAllOpenTickets")
@@ -1358,8 +1342,6 @@ app.controller('supportController',                 function ($scope, $http, DTO
         });
     };
 
-
-
     if(customerService.stateRoute == 'support'){
 
         if(customerService.sideBarFlag) {
@@ -1375,13 +1357,8 @@ app.controller('supportController',                 function ($scope, $http, DTO
         });
     }
 
-
-
-
     $scope.dtOptions = DTOptionsBuilder.newOptions().withPaginationType('full_numbers').withDisplayLength(50).withOption('order', [9, 'asc']);
     $scope.letterLimit = 40;
-
-
 
     $scope.showFullComment = function(id) {
         $('#ticket-' + id).fadeIn('slow');
@@ -1498,7 +1475,7 @@ app.controller('supportController',                 function ($scope, $http, DTO
         $('.thistory-form-2').val('');
     }
 });
-app.controller('supportTicketHistory',              function ($scope, $http){
+app.controller('supportTicketHistory',    function ($scope, $http){
     $http.get("supportTicketHistory", {params:{'id':$scope.history.id}})
         .then(function (response) {
         $scope.historyData = response.data;
@@ -1507,7 +1484,7 @@ app.controller('supportTicketHistory',              function ($scope, $http){
 
 
 //En espera de edicion de usuario data
-app.controller('supportControllerTools',            function ($scope, $http) {
+app.controller('supportControllerTools',  function ($scope, $http) {
     console.log('supportControllerTools');
     $scope.buscador = function(side) {
         var query = {};
@@ -1586,7 +1563,7 @@ app.controller('supportControllerTools',            function ($scope, $http) {
 
 
 //User Profile Controllers
-app.controller('userProfileController',             function ($scope, $http){
+app.controller('userProfileController',   function ($scope, $http){
 
     $scope.checkboxModel = false;
 
@@ -1655,10 +1632,6 @@ app.controller('userProfileController',             function ($scope, $http){
 
 // Global Tools //
 app.controller('globalToolsCtl',      function ($scope, $http, $compile, $sce, $stateParams, customerService){
-
-    console.log('globalToolsCtl & service - - - >');
-    console.log(customerService);
-
 
     $scope.customerData   = {};
     $scope.globalScopeVar = true;
@@ -1948,3 +1921,12 @@ app.controller('userAuthController',   function ($scope){
 
 
 
+app.controller('dummuyController', function ($scope, $http){
+    console.log('this is oossoomm');
+    $scope.dummyControllerData = 'this is the end';
+
+    $http.get("dummyRouteController")
+        .then(function (response){
+        console.log(response.data);
+    });
+});
