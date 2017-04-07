@@ -825,7 +825,8 @@ app.controller('customerNetworkController',         function ($scope, $http){
         .then(function (response) {
         $scope.customerNetwork = response.data[0];
 
-
+//console.log($scope.customerNetwork);
+        
         if(response.data.length > 0){
             console.log(response.data);
             networkServices(0, true);   
@@ -865,8 +866,7 @@ app.controller('customerNetworkController',         function ($scope, $http){
             {type:"GET",
              url:"/" + routes[service],
              data:dataSend,
-             success: function(data)
-             {
+             success: function(data) {
 
                  $scope.customerData.networkServices = data;
 

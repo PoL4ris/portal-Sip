@@ -160,8 +160,9 @@ class NetworkController extends Controller
             $portStatus['port-speed'] = 'error';
         }
         
-        $portStatus['port-status'] = $portStatus['oper-status'].'/'.$portStatus['admin-status'].'  ('.$portStatus['port-speed'].')';
-        $portStatus['dashboard-port-status'] = $portStatus['oper-status'].' at '.$portStatus['port-speed'];
+        $portStatus['port-status'] = ($portStatus['port-speed'] == 'N/A') ? $portStatus['oper-status'].' (admin: '.$portStatus['admin-status'].')' : 
+                                        $portStatus['oper-status'].' (admin: '.$portStatus['admin-status'].', speed: '.$portStatus['port-speed'].')';
+        $portStatus['dashboard-port-status'] = ($portStatus['port-speed'] == 'N/A') ? $portStatus['oper-status'] : $portStatus['oper-status'].' at '.$portStatus['port-speed'];
         
         $portStatus['last-change'] = $switch->getSnmpPortLastChangeFormatted($switchIP, $switchPort);
         $portStatus['switch-uptime'] = $switch->getSnmpSysUptimeFormatted($switchIP, $switchPort);

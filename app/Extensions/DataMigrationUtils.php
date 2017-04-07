@@ -30,6 +30,7 @@ use App\Models\Contact;
 use App\Models\ContactType;
 use App\Models\Customer;
 use App\Models\CustomerProduct;
+use App\Models\CustomerPort;
 use App\Models\DataMigration;
 use App\Models\DhcpLease;
 use App\Models\Element;
@@ -1700,13 +1701,22 @@ class DataMigrationUtils {
         $port->access_level = $legacyPort->Access;
         $port->id_network_nodes = $legacyPort->NodeID;
 
-        $legacyCustomer = CustomerOld::where('PortID', $legacyPort->PortID)->first();
-        if($legacyCustomer != null){
+        $legacyCustomers = CustomerOld::where('PortID', $legacyPort->PortID)
+                                    ->orderBy('AccountStatus', 'asc')
+                                    ->get();
+        
+        if($legacyCustomers->count() > 0){
+            $legacyCustomer = $legacyCustomers->first();
             $port->id_customers = $legacyCustomer->CID;
         }
 
         $port = $this->copyTimestamps($legacyPort, $port);
         $port->save();
+        
+        foreach($legacyCustomers as $legacyCustomer) {
+            CustomerPort::firstOrCreate(['customer_id' => $legacyCustomer->CID, 'port_id' => $port->id]);
+        }
+
         return true;
     }
 

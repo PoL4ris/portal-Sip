@@ -378,9 +378,13 @@ class TestController extends Controller
 
     public function generalTest(){
 
-        $port = Port::find(1419);
-        $networkNode = $port->networkNodes;
-        dd($networkNode->masterRouter);
+//        $port = Port::find(8734);
+//        $networkNode = $port->networkNodes;
+//        dd($networkNode);
+//        dd($networkNode->masterRouter);
+        
+        $customer = Customer::find(11379);
+        dd($customer->getNetworkInfo());
         
         
         $customer = Customer::find(1928); // David Ellis - 41E8  #1305
