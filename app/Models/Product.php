@@ -11,7 +11,10 @@ class Product extends Model
      * @return type
      */
     public function type() {
-
         return $this->hasOne('App\Models\Type', 'id_types');
+    }
+    
+    public function parentProduct() {
+        return $this->hasOne('App\Models\Product', 'id', 'id_products');
     }
 }

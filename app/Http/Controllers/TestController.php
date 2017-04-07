@@ -346,6 +346,17 @@ class TestController extends Controller
     public function testActivityLog(){
         ActivityLog::test();
     }
+    
+    public function genericTest(){
+        
+//        $childProduct = Product::find(104);
+//        dd($childProduct->parentProduct);
+        
+        
+//        $building = Building::with('products.test')->find(6);
+        $building = Building::find(6);
+        dd($building->activeParentProducts());
+    }
 
     public function testDataMigration() {
 

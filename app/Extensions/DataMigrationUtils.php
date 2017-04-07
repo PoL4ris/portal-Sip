@@ -510,7 +510,7 @@ class DataMigrationUtils {
 
         $this->writeLog('<info> Seeding data_migrations table</info>');
 
-        if(DataMigration::count() == 0){
+        if(DataMigration::count() != 0){
             $this->writeLog('<info> data_migrations table is not empty. Skipping.</info>');
             return;
         }
@@ -524,7 +524,7 @@ class DataMigrationUtils {
         if($this->output != null){
             $this->output->writeln('<info> Seeding categories table</info>');
         }
-        if(Category::count() == 0){
+        if(Category::count() != 0){
             $this->writeLog('<info> categories table is not empty. Skipping.</info>');
             return;
         }
@@ -916,7 +916,8 @@ class DataMigrationUtils {
         $lastUpdateTimestamp = $dataMigration->max_updated_at;
         $updateQueryBuilder = function($legacyDataModelName, $lastUpdateTimestamp, $legacyModelId, $startingId = -1){
             if($lastUpdateTimestamp == null){
-                return $legacyDataModelName::where('updated_at', '!=', $lastUpdateTimestamp);
+                return $legacyDataModelName::where('updated_at', '!=', $lastUpdateTimestamp)
+                    ->where($legacyModelId, '>', $startingId);
             }
             return $legacyDataModelName::where('updated_at', '>', $lastUpdateTimestamp)
                 ->where($legacyModelId, '>', $startingId);
@@ -926,7 +927,8 @@ class DataMigrationUtils {
         $lastCreateTimestamp = $dataMigration->max_created_at;
         $createQueryBuilder = function($legacyDataModelName, $lastCreateTimestamp, $legacyModelId, $startingId = -1){
             if($lastCreateTimestamp == null){
-                return $legacyDataModelName::where('created_at', '!=', $lastCreateTimestamp);
+                return $legacyDataModelName::where('created_at', '!=', $lastCreateTimestamp)
+                    ->where($legacyModelId, '>', $startingId);
             }
             return $legacyDataModelName::where('created_at', '>', $lastCreateTimestamp)
                 ->where($legacyModelId, '>', $startingId);
@@ -944,7 +946,7 @@ class DataMigrationUtils {
                     ->orderBy($legacyModelId, 'asc')
                     ->take($recordsPerCycle)
                     ->get();
-
+                
                 if($legacyRecords->count() == 0){
                     break;
                 }
@@ -954,7 +956,6 @@ class DataMigrationUtils {
 
                     // Call the custom function to process the migration from legacy to new
                     $result = $updateFunction($legacyRecord);
-
                     if($result == false){
                         Log::info('Call to customFunc() returned false. Skipping record.');
                         $startingId = $legacyRecord->$legacyModelId;
@@ -1628,6 +1629,13 @@ class DataMigrationUtils {
         $buildingProduct->id = $legacyBuildingProduct->SLPID;
         $buildingProduct->id_buildings = $legacyBuildingProduct->LocID;
         $buildingProduct->id_products = $legacyBuildingProduct->ProdID;
+        
+        if($legacyBuildingProduct->Status == 'active') {
+           $buildingProduct->id_status = config('const.status.active');
+        } else {
+            $buildingProduct->id_status = config('const.status.disabled');
+        } 
+        
         $buildingProduct = $this->copyTimestamps($legacyBuildingProduct, $buildingProduct);
         $buildingProduct->save();
         return true;

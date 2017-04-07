@@ -188,12 +188,12 @@ class NetworkController extends Controller
         $errorResponse = false;
         
         if($port == null){
-            return $errorResponse;
+            return 'ERROR';
         }
 
         $networkNode = $port->networkNodes;
         if($networkNode == null){
-            return $errorResponse;
+            return 'ERROR';
         }
         
         $switchIP = ($this->devMode) ? $this->devModeSwitchIP : $networkNode->ip_address;
@@ -248,7 +248,7 @@ class NetworkController extends Controller
 
             return $portStatus;
         } else {
-            return false;
+            return 'ERROR';
         }
     }
 

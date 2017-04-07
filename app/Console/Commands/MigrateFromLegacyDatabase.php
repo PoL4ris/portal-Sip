@@ -41,15 +41,15 @@ class MigrateFromLegacyDatabase extends Command
         $this->info('Starting data migration');
         $dbMigrationUtil = new DataMigrationUtils(true);
 
-//        $dbMigrationUtil->seedDataMigrationsTable();
-//        $dbMigrationUtil->seedUsersTable();
-//        $dbMigrationUtil->seedAppsTable();
-//        $dbMigrationUtil->seedCategoriesTable();
-//        $dbMigrationUtil->seedStatusTable();
-//        $dbMigrationUtil->seedTypesTable();
-//        $dbMigrationUtil->seedContactTypesTable();
-//        $dbMigrationUtil->seedBuildingPropertiesTable();
-//        $dbMigrationUtil->seedNeighborhoodTable();
+        $dbMigrationUtil->seedDataMigrationsTable();
+        $dbMigrationUtil->seedUsersTable();
+        $dbMigrationUtil->seedAppsTable();
+        $dbMigrationUtil->seedCategoriesTable();
+        $dbMigrationUtil->seedStatusTable();
+        $dbMigrationUtil->seedTypesTable();
+        $dbMigrationUtil->seedContactTypesTable();
+        $dbMigrationUtil->seedBuildingPropertiesTable();
+        $dbMigrationUtil->seedNeighborhoodTable();
 
         $dbMigrationUtil->migrateCustomersTable();
         $dbMigrationUtil->migrateServiceLocationsTable();
