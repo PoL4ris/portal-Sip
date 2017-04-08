@@ -702,11 +702,22 @@ app.controller('customerController',                function ($scope, $http, $st
     $scope.customerData.serviceTmpId = this.service ? this.service.id : false;
     $scope.currentServiceDisplay = null;
     $scope.showingCurrent = null;
+
+    $scope.getBldProducts();
+  };
+  $scope.getBldProducts   = function (){
+
+    $http.get("getAvailableServices", {params:{'id':$scope.customerData.customer.address.id_buildings}})
+      .then(function (response) {
+        $scope.customerData.availableServices = response.data;
+      });
+
   };
 
 
 
   $scope.serviceDataDisplay         = function (option) {
+
     if(option)
     {
       $scope.serviceFlag = true;
@@ -715,8 +726,10 @@ app.controller('customerController',                function ($scope, $http, $st
     }
     else
     {
+//       if(!this.selectedItem)
+//         return;
       $scope.serviceFlag = false;
-      $scope.currentServiceDisplay = this.selectedItem;
+      $scope.currentServiceDisplay = this.selectedItem.product;
     }
   };
 
@@ -1221,10 +1234,6 @@ app.controller('customerServicesController',        function ($scope, $http){
       $scope.customerData.customerServices = response.data;
     });
 
-  $http.get("getAvailableServices", {params:{'id':$scope.idCustomer}})
-    .then(function (response) {
-      $scope.customerData.availableServices = response.data;
-    });
 
   $scope.cSrvCrlFun       = function (){
     $http.get("getCustomerServices", {params:{'id':$scope.customerData.id}})
@@ -1933,26 +1942,37 @@ app.controller('userAuthController',   function ($scope){
 
 
 
+app.controller('tempTicketSearchController', function($scope, $http){
+console.log('Hola');
 
+  $scope.getTicketsSearch = function (){
 
+    if(!this.ticketSearch)
+    {
+      $scope.customerSearchResult = false;
+      return;
+    }
 
+    var query = {'querySearch' : this.ticketSearch};
 
+    $http.get("getTicketsSearchTEMP", {params:query})
+      .then(function (response) {
+        $scope.ticketSearchResult = response.data;
+      });
 
-
-
-
-
-
-
-
-
-
-app.controller('dummuyController', function ($scope, $http){
-  console.log('this is oossoomm');
-  $scope.dummyControllerData = 'this is the end';
-
-  $http.get("dummyRouteController")
-    .then(function (response){
-      console.log(response.data);
-    });
+    return;
+  }
 });
+
+
+
+
+
+
+
+
+
+
+
+
+

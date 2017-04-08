@@ -122,6 +122,21 @@ class TestController extends Controller
     public function supportTest()
     {
 
+      $idList = array();
+      $bldID = Customer::with('address')->find($request->id)->address->id_buildings;
+      $products = Building::with('products')->find($bldID)->products->toArray();
+
+      foreach($products as $x => $idS)
+        $idList[$x] = $idS['id_products'];
+
+
+
+      return Product::whereIn('id', $idList)->get();
+
+
+
+
+
 
     print '<pre>';
     dd(Auth());
@@ -349,8 +364,8 @@ class TestController extends Controller
         
         
 //        $building = Building::with('products.test')->find(6);
-        $building = Building::find(6);
-        dd($building->activeParentProducts());
+        $building = Building::find(71);
+        dd($building->activeParentProducts()->toArray());
     }
 
 }
