@@ -1,6 +1,19 @@
 HOLA
 
-<div ng-controller="dummuyController">
-  {{dummyControllerData}}
-</div>
 
+
+
+<div class="ticket-search-table size-100 m-t-lg" ng-controller="tempTicketSearchController">
+  <form>
+    <label>
+      <input type="text" placeholder="Search for Open / Closed Tickets..." ng-keyup="getTicketsSearch()" ng-model="ticketSearch">
+      <i class="fa fa-search pull-right"></i>
+    </label>
+  </form>
+
+  <div class="" ng-if="ticketSearchResult">
+    <div class="search-result anim" >
+      {{ticketSearchResult}}
+    </div>
+  </div>
+</div>

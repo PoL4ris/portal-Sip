@@ -38,21 +38,21 @@ Route::group(['middleware' => 'web'], function () {
   Route::get('home',                    'HomeController@index');
   Route::get('test',                    'MainController@test');
   //ADMIN
-  Route::get('admin',                   'AdminController@admin');
-  Route::get('adminStatus',             'AdminController@adminStatus');
-  Route::get('adminElements',           'AdminController@adminElements');
-  Route::get('adminApps',               'AdminController@adminApps');
-  Route::get('adminProfiles',           'AdminController@adminProfiles');
-  Route::get('adminTypes',              'AdminController@adminTypes');
-  Route::get('adminCustomers',          'AdminController@adminCustomers');
-  Route::get('adminAddress',            'AdminController@adminAddress');
-  Route::get('adminContacts',           'AdminController@adminContacts');
-  Route::get('adminPayments',           'AdminController@adminPayments');
-  Route::get('adminNotes',              'AdminController@adminNotes');
-  Route::get('adminAccessApps',         'AdminController@adminAccessApps');
-  Route::get('adminAccessAppElements',  'AdminController@adminAccessAppElements');
-  Route::get('getAdminForm',            'AdminController@getAdminForm');
-  Route::get('insertAdminForm',         'AdminController@insertAdminForm');
+//  Route::get('admin',                   'AdminController@admin');
+//  Route::get('adminStatus',             'AdminController@adminStatus');
+//  Route::get('adminElements',           'AdminController@adminElements');
+//  Route::get('adminApps',               'AdminController@adminApps');
+//  Route::get('adminProfiles',           'AdminController@adminProfiles');
+//  Route::get('adminTypes',              'AdminController@adminTypes');
+//  Route::get('adminCustomers',          'AdminController@adminCustomers');
+//  Route::get('adminAddress',            'AdminController@adminAddress');
+//  Route::get('adminContacts',           'AdminController@adminContacts');
+//  Route::get('adminPayments',           'AdminController@adminPayments');
+//  Route::get('adminNotes',              'AdminController@adminNotes');
+//  Route::get('adminAccessApps',         'AdminController@adminAccessApps');
+//  Route::get('adminAccessAppElements',  'AdminController@adminAccessAppElements');
+//  Route::get('getAdminForm',            'AdminController@getAdminForm');
+//  Route::get('insertAdminForm',         'AdminController@insertAdminForm');
   Route::get('getProfileInfo',          'AdminController@getProfileInfo');
   Route::get('updateProfileInfo',       'AdminController@updateProfileInfo');
   //MENU
@@ -77,6 +77,7 @@ Route::group(['middleware' => 'web'], function () {
   Route::get('buildingsSearch',         'BuildingController@getBuildingsSearchSimple');
   Route::get('customersSearch',         'CustomerController@getCustomersSearch');
   Route::get('getCustomersPreview',     'MainController@getCustomersPreview');
+  Route::get('getTicketsSearchTEMP',    'SupportController@getTicketsSearchTEMP');//new
   //GLOBAL SEARCH
   Route::get('getCustomerCodeSearch',   'MainController@getCustomerCodeSearch');
   Route::get('getCustomersSearch',      'MainController@getCustomersSearch');

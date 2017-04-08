@@ -151,6 +151,14 @@ class SupportController extends Controller
 
   public function getAvailableServices(Request $request){
 
+    $building = Building::find($request->id);
+    return $building->activeParentProducts();
+  print '<pre>';
+  print_r($building);
+  die();
+
+
+
     $idList = array();
     $bldID = Customer::with('address')->find($request->id)->address->id_buildings;
     $products = Building::with('products')->find($bldID)->products->toArray();
@@ -393,5 +401,10 @@ class SupportController extends Controller
 
 
 
+  }
+
+  public function getTicketsSearchTEMP(Request $request){
+    //$request->querySearch Contains the String.
+    return 'SilverIP Blazing Fast';
   }
 }

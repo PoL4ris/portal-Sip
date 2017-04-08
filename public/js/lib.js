@@ -668,8 +668,6 @@ app.controller('customerController',      function ($scope, $http, $stateParams,
 
         var mode = $scope.customerData.servicesMode;
 
-        //Mode updateService customerId = oldIdProduct
-
         if (mode == 'updateService')
         {
             $http.get("updateCustomerServices", {params:{'id' : $scope.idCustomer,'newId' : $scope.currentServiceDisplay.id, 'oldId' : $scope.customerData.serviceTmpId}})
@@ -688,8 +686,26 @@ app.controller('customerController',      function ($scope, $http, $stateParams,
             });
             $('#myModalService').modal('toggle');
         }
-
     };
+
+  $scope.setModeType                = function (modeType){
+    $scope.customerData.servicesMode = modeType;
+    $scope.customerData.serviceTmpId = this.service ? this.service.id : false;
+    $scope.currentServiceDisplay = null;
+    $scope.showingCurrent = null;
+
+    $scope.getBldProducts();
+  };
+
+  $scope.getBldProducts   = function (){
+
+    $http.get("getAvailableServices", {params:{'id':$scope.customerData.customer.address.id_buildings}})
+      .then(function (response) {
+        $scope.customerData.availableServices = response.data;
+      });
+
+  };
+
     $scope.setModeType                = function (modeType){
         $scope.customerData.servicesMode = modeType;
         $scope.customerData.serviceTmpId = this.service ? this.service.id : false;
@@ -698,6 +714,22 @@ app.controller('customerController',      function ($scope, $http, $stateParams,
     };
 
 
+  $scope.serviceDataDisplay         = function (option) {
+
+    if(option)
+    {
+      $scope.serviceFlag = true;
+      $scope.currentServiceDisplay = this.customerProduct.product;
+      $scope.showingCurrent = this.service;
+    }
+    else
+    {
+//       if(!this.selectedItem)
+//         return;
+      $scope.serviceFlag = false;
+      $scope.currentServiceDisplay = this.selectedItem.product;
+    }
+  };
 
     $scope.serviceDataDisplay         = function (option) {
         if(option)
@@ -1215,11 +1247,6 @@ app.controller('customerServicesController',        function ($scope, $http){
     $http.get("getCustomerServices", {params:{'id':$scope.idCustomer}})
         .then(function (response) {
         $scope.customerData.customerServices = response.data;
-    });
-
-    $http.get("getAvailableServices", {params:{'id':$scope.idCustomer}})
-        .then(function (response) {
-        $scope.customerData.availableServices = response.data;
     });
 
     $scope.cSrvCrlFun       = function (){
@@ -1879,54 +1906,26 @@ app.controller('userAuthController',   function ($scope){
 
 
 
+app.controller('tempTicketSearchController', function($scope, $http){
+console.log('Hola');
 
+  $scope.getTicketsSearch = function (){
 
+    if(!this.ticketSearch)
+    {
+      $scope.customerSearchResult = false;
+      return;
+    }
 
+    var query = {'querySearch' : this.ticketSearch};
 
+    $http.get("getTicketsSearchTEMP", {params:query})
+      .then(function (response) {
+        $scope.ticketSearchResult = response.data;
+      });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-app.controller('dummuyController', function ($scope, $http){
-    console.log('this is oossoomm');
-    $scope.dummyControllerData = 'this is the end';
-
-    $http.get("dummyRouteController")
-        .then(function (response){
-        console.log(response.data);
-    });
+    return;
+  }
 });
+
+

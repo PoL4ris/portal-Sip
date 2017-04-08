@@ -79,7 +79,7 @@
 
               <select ng-if="!currentServiceDisplay"
                       class="col-lg-5 block-a-label add-prod-select-color"
-                      ng-options="servicio.name for servicio in customerData.availableServices track by servicio.id"
+                      ng-options="servicio.product.name for servicio in customerData.availableServices track by servicio.product.id"
                       ng-model="selectedItem"
                       ng-change="serviceDataDisplay()" required>
                 <option value="" >Select Item</option>
@@ -87,7 +87,7 @@
 
               <select ng-if="currentServiceDisplay"
                       class="col-lg-5 block-a-label add-prod-select-color"
-                      ng-options="servicio.name for servicio in customerData.availableServices track by servicio.id"
+                      ng-options="servicio.product.name for servicio in customerData.availableServices track by servicio.product.id"
                       ng-model="selectedItem"
                       ng-change="serviceDataDisplay()" required>
                 <option value="">{{currentServiceDisplay.name}}</option>
