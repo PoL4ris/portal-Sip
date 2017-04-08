@@ -16,7 +16,8 @@ class SIPBilling {
     private $passcode = '$2y$10$igbvfItrwUkvitqONf4FkebPyD0hhInH.Be4ztTaAUlxGQ4yaJd1K';
 
     public function __construct() {
-        DB::connection()->enableQueryLog();
+        // DO NOT ENABLE QUERY LOGGING IN PRODUCTION
+//        DB::connection()->enableQueryLog();
         $configPasscode = config('billing.ippay.passcode');    
         $this->testMode = (Hash::check($configPasscode, $this->passcode)) ? false : true;
     }
@@ -70,10 +71,10 @@ class SIPBilling {
 
     public function updatePaymentMethod(PaymentMethod $pm){
         if (is_numeric($pm->account_number) && strlen($pm->account_number) >= 14) {
-            error_log('SIPBilling::updatePaymentMethod(): calling tokenize');
+            //            error_log('SIPBilling::updatePaymentMethod(): calling tokenize');
             return $this->tokenize($pm);
         }
-        error_log('SIPBilling::updatePaymentMethod(): no cc number detected');
+        //        error_log('SIPBilling::updatePaymentMethod(): no cc number detected');
         return $pm;
     }
 

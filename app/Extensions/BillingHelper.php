@@ -22,13 +22,36 @@ class BillingHelper {
     private $passcode = '$2y$10$igbvfItrwUkvitqONf4FkebPyD0hhInH.Be4ztTaAUlxGQ4yaJd1K';
 
     public function __construct() {
-        DB::connection()->enableQueryLog();
+        // DO NOT ENABLE QUERY LOGGING IN PRODUCTION
+        //        DB::connection()->enableQueryLog();
         $configPasscode = config('billing.ippay.passcode');    
         $this->testMode = (Hash::check($configPasscode, $this->passcode)) ? false : true;
     }
 
     public function getMode(){
         return ($this->testMode) ? 'development' : 'production';
+    }
+
+    public function generateResidentialChargeRecords() {
+
+        // Get residential buildings
+        $buildings = Building::with(['properties' => function ($query) {
+            $query->where('id_building_properties', config('const.3')
+                ->where('value','Retail')
+                ->orWhere('value','Bulk');
+        }])
+            ->where('id', 28)->get();
+
+        $count = 0;
+
+        foreach($buildings as $building){
+            $invoiceDataTable = $this->generateBuildingInvoiceDataTable($building->id);
+            $count = $this->addInvoicesToDatabase($invoiceDataTable);
+            error_log('BillingHelper::generateInvoiceRecords(): Added invoices for '.$building->nickname.' to DB');
+        }
+
+        return 'Generated '.$count.' invoices and added them to the DB.';
+
     }
 
     public function generateResidentialInvoiceRecords() {

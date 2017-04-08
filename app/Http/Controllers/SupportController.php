@@ -51,13 +51,13 @@ class SupportController extends Controller
 
   public function getAllOpenTickets()
   {
-    $record = Ticket::with('customer', 'reason', 'ticketNote','ticketHistory', 'user', 'userAssigned', 'address', 'contacts')
-                      ->where('id_reasons','!=', 11)
+    $records = Ticket::with('customer', 'reason', 'ticketNote','lastTicketHistory', 'user', 'userAssigned', 'address', 'contacts')
+//                      ->where('id_reasons','!=', 11)
                       ->where('status','!=', 'closed')
-                      ->orderBy('updated_at', 'desc')
+//                      ->orderBy('updated_at', 'desc')
                       ->get();
 
-    $result = $this->getOldTimeTicket($record);
+    $result = $this->getOldTimeTicket($records);
     return $result;
 
   }//MAIN
@@ -78,6 +78,10 @@ class SupportController extends Controller
         $record[$k]['old'] = 'old-green';
       else
         $record[$k]['old'] = 'old';
+        
+        if($record[$k]['updated_at'] == null){
+            $record[$k]['updated_at'] = $record[$k]['created_at'];
+        }
     }
 
     return $record;

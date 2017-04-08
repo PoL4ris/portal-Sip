@@ -89,7 +89,7 @@ h2 {
   transition: all 0.7s ease 0s;
 }
 #hide-menu.btn-header {
-  box-shadow: 8px 0 7px -10px #aaaaaa inset;
+/*  box-shadow: 8px 0 7px -10px #aaaaaa inset;*/
   margin-left: 150px;
   position: relative;
   text-align: center;
@@ -1079,4 +1079,7 @@ nav ul li a {
   width: 5%;
 }
 
+.customer-info-container {
+    max-width: 280px;
+}
 

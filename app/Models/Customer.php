@@ -55,8 +55,7 @@ class Customer extends Model
     public function building() {
         return $this->belongsTo('App\Models\Address', 'id');
     }
-    public function getNetworkNodes($id = null)
-    {
+    public function getNetworkNodes($id = null) {
         if($id == null){
             $id = $this->attributes['id'];
         }
@@ -66,7 +65,23 @@ class Customer extends Model
             ->select('*')
             ->get();
     }
+    
+    public function getNetworkInfo($id = null) {
+        if($id == null){
+            $id = $this->attributes['id'];
+        }
+//        return $this->ports()->with('networkNodes')->get();
+        return $this->port()->with('networkNodes')->get();
+    }
+    
+    public function port(){
+        return $this->hasMany('App\Models\Port', 'id_customers', 'id');
+    }
 
+    public function ports() {
+        return $this->belongsToMany('App\Models\Port');
+    }
+    
     public function getTickets($id = null) {
         if($id == null){
             $id = $this->attributes['id'];

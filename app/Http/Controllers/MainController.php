@@ -33,7 +33,7 @@ class MainController extends Controller
 
   public function homeView()
   {
-    return view('dummy');
+    return view('index');
 
   }
   public function test()

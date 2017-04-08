@@ -6,5 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class BuildingProperty extends Model
 {
-    //
+    protected $fillable = ['id', 'name', 'description'];
+
 }

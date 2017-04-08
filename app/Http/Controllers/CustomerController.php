@@ -27,6 +27,7 @@ use App\Models\Support\Ticketreasons;
 use App\Models\ActivityLog;
 use App\Http\Controllers\NetworkController;
 use DB;
+use Log;
 use Schema;
 use Auth;
 use ActivityLogs;
@@ -289,13 +290,17 @@ class CustomerController extends Controller
   {
 
     $customer = new Customer;
-    return $customer->getNetworkNodes($request->id);
-
-    return NetworkNode::join('ports', 'ports.id_network_nodes', '=', 'network_nodes.id')
-                      ->join('customers', 'ports.id_customers', '=', 'customers.id')
-                      ->where('ports.id_customers', '=', $request->id)
-                      ->select('*')
-                      ->get();
+    $customer = Customer::find($request->id);
+//    return $customer->getNetworkNodes($request->id);
+      $netInfo = $customer->getNetworkInfo();
+//      Log::info($netInfo);
+    return $netInfo;
+//
+//    return NetworkNode::join('ports', 'ports.id_network_nodes', '=', 'network_nodes.id')
+//                      ->join('customers', 'ports.id_customers', '=', 'customers.id')
+//                      ->where('ports.id_customers', '=', $request->id)
+//                      ->select('*')
+//                      ->get();
 
 //
 //    print_r($warp);die();
@@ -561,69 +566,69 @@ class CustomerController extends Controller
     return Customer::with('contacts')->find($request->customerId);
   }
 
-  public function customers(Request $request)//NO
-  {
-    if ($request->id)
-      $customer = $this->getCustomerData($request->id);
-    else
-      $customer = Customers::orderBy('CID', 'desc')->get();
-
-    return view('customer.customers', ['customer' => $customer]);
-  }
-  public function getCustomerData($id)//NO
-  {
-    $networkControllerInfo = new NetworkController();
-    $customer['customer']           = Customers::where('CID', $id)->first();
-    $customer['building']           = Servicelocation::where('LocID', $customer['customer']->LocID)->first();
-    $customer['billing']            = billingTransactionLog::where('CID', $customer['customer']->CID)->get();
-    $customer['network']            = $networkControllerInfo->getCustomerConnectionInfo($customer['customer']->PortID);
-    $customer['ticketreasone']      = Ticketreasons::get();
-    $customer['tickethistory']      = DB::select('SELECT st.CID, st.RID, st.TicketNumber, str.ReasonShortDesc, st.DateCreated, st.Comment, st.Status, st.LastUpdate 
-                                                    FROM supportTickets st 
-                                                      INNER JOIN supportTicketReasons str 
-                                                        ON st.RID = str.RID 
-                                                        WHERE  st.CID = ' . $id);
-
-    $customer['services']           = DB::select('SELECT p.ProdName, p.Amount, p.ChargeFrequency, cp.Status , p.ProdType, p.ProdID, cp.CSID
-                                                    FROM customerProducts cp 
-                                                      INNER JOIN products p 
-                                                        ON cp.ProdID = p.ProdID 
-                                                        WHERE cp.CID = ' . $id);
-
-    $customer['addservices']        = DB::select('SELECT pr.ProdID, pr.ProdName, pr.Amount, pr.ChargeFrequency, cu.DateSignup, cu.DateRenewed, slp.Status, cu.DateExpires, pr.ProdComments
-                                                    FROM serviceLocationProducts slp
-                                                      INNER JOIN customers cu 
-                                                        ON cu.LocID = slp.LocID
-                                                      INNER JOIN products pr 
-                                                        ON pr.ProdID = slp.ProdID
-                                                        WHERE  cu.CID = ' . $id . ' 
-                                                          AND pr.ParentProdID = 0');
-
-    if(sizeof($customer['services']) != 0 )
-    {
-      foreach ($customer['services'] as $servicess)
-      {
-        $valuetemp[$servicess->ProdType] = DB::select('SELECT pr.ProdID, pr.ProdType, pr.ProdName, pr.Amount, pr.ChargeFrequency, cu.DateSignup, cu.DateRenewed, slp.Status, cu.DateExpires, pr.ProdComments,cp.CProdDateExpires,cp.CProdDateUpdated, cp.CSID
-                                                        FROM serviceLocationProducts slp
-                                                          INNER JOIN customers cu 
-                                                            ON cu.LocID = slp.LocID
-                                                          INNER JOIN products pr 
-                                                            ON pr.ProdID = slp.ProdID
-                                                          INNER JOIN customerProducts cp 
-                                                            ON cp.ProdID = pr.ProdID
-                                                            WHERE  cu.CID = '. $id .'
-                                                              AND pr.ParentProdID = 0
-                                                                AND pr.ProdType = "' .$servicess->ProdType .'"
-                                                                  GROUP BY pr.ProdID');
-      }
-      $customer['servicesactiveinfo'] = $valuetemp;
-    }
-    else
-      $customer['servicesactiveinfo'] = null;
-
-    return $customer;
-
-  }
+//  public function customers(Request $request)//NO
+//  {
+//    if ($request->id)
+//      $customer = $this->getCustomerData($request->id);
+//    else
+//      $customer = Customers::orderBy('CID', 'desc')->get();
+//
+//    return view('customer.customers', ['customer' => $customer]);
+//  }
+//  public function getCustomerData($id)//NO
+//  {
+//    $networkControllerInfo = new NetworkController();
+//    $customer['customer']           = Customers::where('CID', $id)->first();
+//    $customer['building']           = Servicelocation::where('LocID', $customer['customer']->LocID)->first();
+//    $customer['billing']            = billingTransactionLog::where('CID', $customer['customer']->CID)->get();
+//    $customer['network']            = $networkControllerInfo->getCustomerConnectionInfo($customer['customer']->PortID);
+//    $customer['ticketreasone']      = Ticketreasons::get();
+//    $customer['tickethistory']      = DB::select('SELECT st.CID, st.RID, st.TicketNumber, str.ReasonShortDesc, st.DateCreated, st.Comment, st.Status, st.LastUpdate
+//                                                    FROM supportTickets st
+//                                                      INNER JOIN supportTicketReasons str
+//                                                        ON st.RID = str.RID
+//                                                        WHERE  st.CID = ' . $id);
+//
+//    $customer['services']           = DB::select('SELECT p.ProdName, p.Amount, p.ChargeFrequency, cp.Status , p.ProdType, p.ProdID, cp.CSID
+//                                                    FROM customerProducts cp
+//                                                      INNER JOIN products p
+//                                                        ON cp.ProdID = p.ProdID
+//                                                        WHERE cp.CID = ' . $id);
+//
+//    $customer['addservices']        = DB::select('SELECT pr.ProdID, pr.ProdName, pr.Amount, pr.ChargeFrequency, cu.DateSignup, cu.DateRenewed, slp.Status, cu.DateExpires, pr.ProdComments
+//                                                    FROM serviceLocationProducts slp
+//                                                      INNER JOIN customers cu
+//                                                        ON cu.LocID = slp.LocID
+//                                                      INNER JOIN products pr
+//                                                        ON pr.ProdID = slp.ProdID
+//                                                        WHERE  cu.CID = ' . $id . '
+//                                                          AND pr.ParentProdID = 0');
+//
+//    if(sizeof($customer['services']) != 0 )
+//    {
+//      foreach ($customer['services'] as $servicess)
+//      {
+//        $valuetemp[$servicess->ProdType] = DB::select('SELECT pr.ProdID, pr.ProdType, pr.ProdName, pr.Amount, pr.ChargeFrequency, cu.DateSignup, cu.DateRenewed, slp.Status, cu.DateExpires, pr.ProdComments,cp.CProdDateExpires,cp.CProdDateUpdated, cp.CSID
+//                                                        FROM serviceLocationProducts slp
+//                                                          INNER JOIN customers cu
+//                                                            ON cu.LocID = slp.LocID
+//                                                          INNER JOIN products pr
+//                                                            ON pr.ProdID = slp.ProdID
+//                                                          INNER JOIN customerProducts cp
+//                                                            ON cp.ProdID = pr.ProdID
+//                                                            WHERE  cu.CID = '. $id .'
+//                                                              AND pr.ParentProdID = 0
+//                                                                AND pr.ProdType = "' .$servicess->ProdType .'"
+//                                                                  GROUP BY pr.ProdID');
+//      }
+//      $customer['servicesactiveinfo'] = $valuetemp;
+//    }
+//    else
+//      $customer['servicesactiveinfo'] = null;
+//
+//    return $customer;
+//
+//  }
   public function updateCustomerData(Request $request)//NO
   {
     $idsChart = ['customers' => 'CID', 'supportTicketHistory' => 'TID'];
