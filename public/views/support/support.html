@@ -52,7 +52,7 @@
         </tr>
         </thead>
         <tbody>
-          <tr ng-repeat="data in supportData" class="{{(data.ticket_history.id_users == 0) ? 'customer-new-updated' : '' }}">
+          <tr ng-repeat="data in supportData" class="{{(data.last_ticket_history.id_users == 0 || data.last_ticket_history == null) ? 'customer-new-updated' : '' }}">
             <td class="first-td" ng-click="displayTicketResume(data.id, data.id_customers)" data-toggle="modal" data-target="#ticketModal">{{data.ticket_number}}</td>
             <td>{{data.status}}</a></td>
             <td><a href="#/customers?id={{data.customer.id}}">{{data.customer.first_name}} {{data.customer.last_name}}</a></td>

@@ -25,7 +25,7 @@ class Ticket extends Model
     return $this->hasOne('App\Models\TicketNote', 'id', 'id_ticket_notes');
   }
 
-  public function ticketHistory() {
+  public function lastTicketHistory() {
     return $this->hasOne('App\Models\TicketHistory', 'id_tickets')->orderBy('id','desc');
   }
 

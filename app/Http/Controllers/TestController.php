@@ -205,7 +205,7 @@ class TestController extends Controller
         $supController = new SupportController();
 
 
-        $record = Ticket::with('customer', 'reason', 'ticketNote','ticketHistory', 'user', 'userAssigned', 'address', 'contacts')
+        $record = Ticket::with('customer', 'reason', 'ticketNote','lastTicketHistory', 'user', 'userAssigned', 'address', 'contacts')
             ->where('id_reasons','!=', 11)
             ->where('status','!=', 'closed')
             ->orderBy('updated_at', 'desc')

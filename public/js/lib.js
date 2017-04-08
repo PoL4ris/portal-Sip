@@ -1357,7 +1357,7 @@ app.controller('supportController', function ($scope, $http, DTOptionsBuilder, c
         });
     }
 
-    $scope.dtOptions = DTOptionsBuilder.newOptions().withPaginationType('full_numbers').withDisplayLength(50).withOption('order', [9, 'asc']);
+    $scope.dtOptions = DTOptionsBuilder.newOptions().withPaginationType('full_numbers').withDisplayLength(50).withOption('order', [8, 'desc']);
     $scope.letterLimit = 40;
 
     $scope.showFullComment = function(id) {
