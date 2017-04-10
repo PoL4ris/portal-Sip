@@ -1,25 +1,30 @@
-<div id="shortcut">
+<div id="shortcut" ng-controller="userAuthController">
+<div class="col-lg-12 no-padding-sides">
+  <div class="short-profile-img">
+    <img ng-src="{{userDataAuth.avatar ? userDataAuth.avatar : '/img/male.png'}}"
+         alt="{{userDataAuth.first_name}}"
+         class="online"
+         title="{{userDataAuth.first_name}}" />
+  </div>
+  <div class="short-profile-name">
+    <label>{{userDataAuth.first_name}} {{userDataAuth.last_name}}</label>
+  </div>
+</div>
+
   <ul>
-
-    <!--<li>-->
-      <!--<a href="#/inbox/" class="jarvismetro-tile big-cubes bg-color-blue"> <span class="iconbox"> <i class="fa fa-envelope fa-4x"></i> <span>Mail <span class="label pull-right bg-color-darken">14</span></span> </span> </a>-->
-    <!--</li>-->
-    <!--<li>-->
-      <!--<a href="#/maps" class="jarvismetro-tile big-cubes bg-color-purple"> <span class="iconbox"> <i class="fa fa-map-marker fa-4x"></i> <span>Maps</span> </span> </a>-->
-    <!--</li>-->
-    <!--<li>-->
-      <!--<a href="#/invoice" class="jarvismetro-tile big-cubes bg-color-blueDark"> <span class="iconbox"> <i class="fa fa-book fa-4x"></i> <span>Invoice <span class="label pull-right bg-color-darken">99</span></span> </span> </a>-->
-    <!--</li>-->
-    <!--<li>-->
-      <!--<a href="#/gallery" class="jarvismetro-tile big-cubes bg-color-greenLight"> <span class="iconbox"> <i class="fa fa-picture-o fa-4x"></i> <span>Gallery </span> </span> </a>-->
-    <!--</li>-->
-
+    <li><a href="#/profile">Profile & account</a></li>
+    <li><a href="">Preferences</a></li>
     <li>
       <a href="#/calendar" class="jarvismetro-tile big-cubes bg-color-orangeDark"> <span class="iconbox"> <i class="fa fa-calendar fa-4x"></i> <span>Calendar</span> </span> </a>
     </li>
-    <li>
-      <a href="#/profile" class="jarvismetro-tile big-cubes selected bg-color-pinkDark"> <span class="iconbox"> <i class="fa fa-user fa-4x"></i> <span>My Profile </span> </span> </a>
-    </li>
+    <!--<li>-->
+      <!--<a href="#/profile" class="jarvismetro-tile big-cubes selected bg-color-pinkDark"> <span class="iconbox"> <i class="fa fa-user fa-4x"></i> <span>My Profile </span> </span> </a>-->
+    <!--</li>-->
+    <hr>
+    <li><a href="/logout" title="Sign Out" >Sign out of <b>SilverIP</b></a></li>
+
+
+
 
   </ul>
 </div>

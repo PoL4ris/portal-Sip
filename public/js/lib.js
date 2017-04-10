@@ -1,14 +1,12 @@
-app.controller('menuController',          function($scope, $http){
+app.controller('menuController',                    function($scope, $http){
     $http.get('/menumaker').then(function (data){
         $scope.SiteMenu = data.data;
     }), function (error){
         alert('Error');
     }
 });
-
-
 //Building Controllers
-app.controller('buildingSideController', function ($scope, $http){
+app.controller('buildingSideController',            function ($scope, $http){
 
     $http.get("getBuildingsListTMP")
         .then(function (response) {
@@ -16,7 +14,7 @@ app.controller('buildingSideController', function ($scope, $http){
     });
 
 });
-app.controller('buildingCtl',             function($scope, $http, customerService) {
+app.controller('buildingCtl',                       function($scope, $http, customerService) {
 
     if(!customerService.sideBarFlag) {
         $scope.sipTool(2);
@@ -222,13 +220,13 @@ app.controller('buildingCtl',             function($scope, $http, customerServic
 
     };
 })
-    .directive('getBuildingPropValues',       function (){
+    .directive('getBuildingPropValues',             function (){
     return function (scope){
         scope.getBuildingPropertyValues();
     }
 
 })
-    .directive('buildingContactForm',         function(){
+    .directive('buildingContactForm',               function(){
 
 
     return {
@@ -293,10 +291,8 @@ app.controller('buildingCtl',             function($scope, $http, customerServic
         }
     }
 })
-
-
 //Network Controllers
-app.controller('networkController',       function ($scope, $http, customerService){
+app.controller('networkController',                 function ($scope, $http, customerService){
 
 
     if(customerService.sideBarFlag) {
@@ -376,7 +372,7 @@ app.controller('networkController',       function ($scope, $http, customerServi
     }
 
 });
-app.controller('networkControllerTSort',  function (DTOptionsBuilder, DTColumnDefBuilder, $scope ){
+app.controller('networkControllerTSort',            function (DTOptionsBuilder, DTColumnDefBuilder, $scope ){
 
     var vm = this;
     vm.persons = [];
@@ -389,18 +385,14 @@ app.controller('networkControllerTSort',  function (DTOptionsBuilder, DTColumnDe
 
     vm.persons = $scope.networkData;
 });
-
-
 //Customer Controllers
-app.controller('customerControllerList',  function ($scope, $http){
+app.controller('customerControllerList',            function ($scope, $http){
     $http.get("getCustomerList")
         .then(function (response) {
         $scope.supportDataCustomer = response.data;
     });
 });
-
-
-app.controller('customerController',      function ($scope, $http, $stateParams, customerService){
+app.controller('customerController',                function ($scope, $http, $stateParams, customerService){
 
     if(!customerService.rightView) {
         customerService.rightView = true;
@@ -421,10 +413,10 @@ app.controller('customerController',      function ($scope, $http, $stateParams,
         if ($scope.stcid || $stateParams.id)
             $scope.idCustomer = $scope.stcid ? $scope.stcid : $stateParams.id;
 
-        if (($(location).attr('href').split('http://silverip-portal.com/#/')[1]) == 'customers') {
-            $scope.idCustomer = 501;
-            $scope.buscadorFlag = true;
-        }
+//         if (($(location).attr('href').split('http://silverip-portal.com/#/')[1]) == 'customers') {
+//             $scope.idCustomer = 501;
+//             $scope.buscadorFlag = true;
+//         }
 
         //SET INPUT VALUE
         $('#customerIdScope').val($scope.idCustomer);
@@ -466,29 +458,28 @@ app.controller('customerController',      function ($scope, $http, $stateParams,
             $scope.customerData.customer.status = response.data;
         });
     };
-    //----------
-    $scope.clearSearch                = function (){
-        this.searchCustomer = '';
-        $scope.buscador();
-    }
-    $scope.buscador                   = function () {
-
-        if(!this.searchCustomer)
-        {
-            $scope.customerSearchResult = false;
-            return;
-        }
-
-        var query = {'querySearch' : this.searchCustomer};
-
-        $http.get("customersSearch", {params:query})
-            .then(function (response) {
-            $scope.customerSearchResult = response.data;
-        });
-
-        return;
-
-    }
+    //----------TEMP DISABLED
+//     $scope.clearSearch                = function (){
+//         this.searchCustomer = '';
+//         $scope.buscador();
+//     }
+//     $scope.buscador                   = function () {
+//         if(!this.searchCustomer)
+//         {
+//             $scope.customerSearchResult = false;
+//             return;
+//         }
+//
+//         var query = {'querySearch' : this.searchCustomer};
+//
+//         $http.get("customersSearch", {params:query})
+//             .then(function (response) {
+//             $scope.customerSearchResult = response.data;
+//         });
+//
+//         return;
+//
+//     }
     $scope.getAddressItems            = function (){
         $http.get("getAddress")
             .then(function (response) {
@@ -687,17 +678,15 @@ app.controller('customerController',      function ($scope, $http, $stateParams,
             $('#myModalService').modal('toggle');
         }
     };
+    $scope.setModeType                = function (modeType){
+      $scope.customerData.servicesMode = modeType;
+      $scope.customerData.serviceTmpId = this.service ? this.service.id : false;
+      $scope.currentServiceDisplay = null;
+      $scope.showingCurrent = null;
 
-  $scope.setModeType                = function (modeType){
-    $scope.customerData.servicesMode = modeType;
-    $scope.customerData.serviceTmpId = this.service ? this.service.id : false;
-    $scope.currentServiceDisplay = null;
-    $scope.showingCurrent = null;
-
-    $scope.getBldProducts();
-  };
-
-  $scope.getBldProducts   = function (){
+      $scope.getBldProducts();
+    };
+    $scope.getBldProducts             = function (){
 
     $http.get("getAvailableServices", {params:{'id':$scope.customerData.customer.address.id_buildings}})
       .then(function (response) {
@@ -705,44 +694,18 @@ app.controller('customerController',      function ($scope, $http, $stateParams,
       });
 
   };
-
-    $scope.setModeType                = function (modeType){
-        $scope.customerData.servicesMode = modeType;
-        $scope.customerData.serviceTmpId = this.service ? this.service.id : false;
-        $scope.currentServiceDisplay = null;
-        $scope.showingCurrent = null;
-    };
-
-
-  $scope.serviceDataDisplay         = function (option) {
-
-    if(option)
-    {
-      $scope.serviceFlag = true;
-      $scope.currentServiceDisplay = this.customerProduct.product;
-      $scope.showingCurrent = this.service;
-    }
-    else
-    {
-//       if(!this.selectedItem)
-//         return;
-      $scope.serviceFlag = false;
-      $scope.currentServiceDisplay = this.selectedItem.product;
-    }
-  };
-
     $scope.serviceDataDisplay         = function (option) {
-        if(option)
-        {
-            $scope.serviceFlag = true;
-            $scope.currentServiceDisplay = this.customerProduct.product;
-            $scope.showingCurrent = this.service;
-        }
-        else
-        {
-            $scope.serviceFlag = false;
-            $scope.currentServiceDisplay = this.selectedItem;
-        }
+      if(option)
+      {
+          $scope.serviceFlag = true;
+          $scope.currentServiceDisplay = this.customerProduct.product;
+          $scope.showingCurrent = this.service.product;
+      }
+      else
+      {
+          $scope.serviceFlag = false;
+          $scope.currentServiceDisplay = this.selectedItem.product;
+      }
     };
 
 
@@ -777,7 +740,7 @@ app.controller('customerController',      function ($scope, $http, $stateParams,
         }
     };
     //ResetPassword
-    $scope.showConfirmPassword      = function (idProduct, status) {
+    $scope.showConfirmPassword        = function (idProduct, status) {
 
         $.SmartMessageBox({
             title: "Please Confirm",
@@ -819,8 +782,6 @@ app.controller('customerController',      function ($scope, $http, $stateParams,
         });
     };
 });
-
-
 app.controller('customerTicketHistoryController',   function ($scope, $http){
     $http.get("getTicketHistory", {params:{'id':$scope.idCustomer}})
         .then(function (response) {
@@ -860,7 +821,7 @@ app.controller('customerNetworkController',         function ($scope, $http){
 //console.log($scope.customerNetwork);
         
         if(response.data.length > 0){
-            console.log(response.data);
+//             console.log(response.data);
             networkServices(0, true);   
         }
     });
@@ -887,10 +848,10 @@ app.controller('customerNetworkController',         function ($scope, $http){
         var customerID = $scope.idCustomer;
         var dataSend = {'portid':portID, 'id':customerID};
 
-        console.log(service);
-        console.log(portID);
-        console.log(customerID);
-        console.log(dataSend);
+//         console.log(service);
+//         console.log(portID);
+//         console.log(customerID);
+//         console.log(dataSend);
 
 
         //AJAX request
@@ -1239,9 +1200,6 @@ app.controller('addPaymentMethodController',        function ($scope, $http){
 
 
 });
-
-
-
 app.controller('customerServicesController',        function ($scope, $http){
 
     $http.get("getCustomerServices", {params:{'id':$scope.idCustomer}})
@@ -1315,11 +1273,7 @@ app.controller('serviceProductController',          function ($scope, $http){
     });
 
 });
-
-
-
-
-app.controller('customerNotesController', function($scope, $http){
+app.controller('customerNotesController',           function($scope, $http){
 
     $http.get("getCustomerNotes", {params:{'id':$scope.idCustomer}})
         .then(function (response) {
@@ -1340,9 +1294,8 @@ app.controller('customerNotesController', function($scope, $http){
             return;
     }
 });
-
 //Support Controllers
-app.controller('supportController', function ($scope, $http, DTOptionsBuilder, customerService){
+app.controller('supportController',                 function ($scope, $http, DTOptionsBuilder, customerService){
 
     $scope.getAllOpenTickets      = function (){
         $http.get("getAllOpenTickets")
@@ -1502,16 +1455,14 @@ app.controller('supportController', function ($scope, $http, DTOptionsBuilder, c
         $('.thistory-form-2').val('');
     }
 });
-app.controller('supportTicketHistory',    function ($scope, $http){
+app.controller('supportTicketHistory',              function ($scope, $http){
     $http.get("supportTicketHistory", {params:{'id':$scope.history.id}})
         .then(function (response) {
         $scope.historyData = response.data;
     });
 });
-
-
 //En espera de edicion de usuario data
-app.controller('supportControllerTools',  function ($scope, $http) {
+app.controller('supportControllerTools',            function ($scope, $http) {
     console.log('supportControllerTools');
     $scope.buscador = function(side) {
         var query = {};
@@ -1587,10 +1538,8 @@ app.controller('supportControllerTools',  function ($scope, $http) {
 
     }
 });
-
-
 //User Profile Controllers
-app.controller('userProfileController',   function ($scope, $http){
+app.controller('userProfileController',             function ($scope, $http){
 
     $scope.checkboxModel = false;
 
@@ -1658,12 +1607,16 @@ app.controller('userProfileController',   function ($scope, $http){
 
 
 // Global Tools //
-app.controller('globalToolsCtl',      function ($scope, $http, $compile, $sce, $stateParams, customerService){
+app.controller('globalToolsCtl',                    function ($scope, $http, $compile, $sce, $stateParams, customerService){
 
     $scope.customerData   = {};
     $scope.globalScopeVar = true;
     $scope.sipToolLeft    = false;
     $scope.sipToolRight   = true;
+    $scope.focusIndex     = 0;
+
+
+
 
     $scope.leftColumnOpenClose  = function (){
         if($('#content').hasClass("ccr-small"))
@@ -1810,26 +1763,101 @@ app.controller('globalToolsCtl',      function ($scope, $http, $compile, $sce, $
     }
     $scope.buscador             = function () {
 
-        if(!this.searchCustomer)
-        {
-            $scope.customerSearchResult = false;
-            return;
-        }
-
-        var query = {'querySearch' : this.searchCustomer};
-
-        $http.get("customersSearch", {params:query})
-            .then(function (response) {
-            $scope.customerSearchResult = response.data;
-        });
-
+      if($scope.keyboardBtn){
+        $scope.keyboardBtn = !$scope.keyboardBtn;
         return;
+      }
+
+      var string = $('.stringSearch').val();
+
+      if(!this.searchCustomer || string.length == 0)
+      {
+        $scope.customerSearchResult = false;
+        $scope.focusIndex = 0;
+        return;
+      }
+
+      var query = {'querySearch' : this.searchCustomer};
+
+      $http.get("customersSearch", {params:query})
+          .then(function (response) {
+          $scope.customerSearchResult = response.data;
+      });
+
+      return;
 
     }
     $scope.clearSearch          = function (){
-        this.searchCustomer = '';
+
+      if($scope.keyboardBtn)
+        return;
+
+        this.searchCustomer   = null;
+        $scope.searchCustomer = null;
+        $scope.focusIndex = 0;
         $scope.buscador();
     }
+
+    //  KEYBOARD ACTIONS
+    $(document).keydown(function(e) {
+
+      switch(e.which) {
+        case 13: // ENTER
+          if($scope.keyboardBtn)
+            return;
+
+          if($scope.customerSearchResult)
+          {
+            $scope.keyboardBtn = true;
+            $('.focus-index-focus').children().trigger( "click" );
+            $scope.searchCustomer = null;
+            $scope.focusIndex = 0;
+            $('#customer-global-search-id').trigger("reset");
+            $scope.customerSearchResult = false;
+
+          }
+          e.stopPropagation();
+        break;
+        case 38: // ARROW UP
+          if($scope.customerSearchResult)
+          {
+            $scope.keyboardBtn = true;
+            $scope.focusIndex--;
+          }
+          e.stopPropagation();
+        break;
+        case 40: // ARROW DOWN
+          if($scope.customerSearchResult)
+          {
+            $scope.keyboardBtn = true;
+            $scope.focusIndex++;
+          }
+          e.stopPropagation();
+        break;
+        case 27: // ESCAPE
+          if($scope.keyboardBtn)
+            return;
+
+          $scope.keyboardBtn = true;
+
+          if($scope.customerSearchResult) {
+            $scope.searchCustomer = null;
+            $scope.focusIndex = 0;
+            $('#customer-global-search-id').trigger("reset");
+            $scope.customerSearchResult = false;
+            $scope.clearSearch();
+            e.stopPropagation();
+          }
+        break;
+        default: return; // exit this handler for other keys
+      }
+      e.stopPropagation();
+      e.preventDefault(); // prevent the default actions
+    });
+
+
+
+
     $scope.alertDummy           = function (){
         $.smallBox({
             title: "Password Updated!",
@@ -1877,7 +1905,7 @@ app.controller('globalToolsCtl',      function ($scope, $http, $compile, $sce, $
         }
     }
     $scope.convertDate          = function(valor){
-        return new Date(valor);
+      return new Date(valor);
     }
     $scope.warpol = function (warp){
         console.log('Esto entro en Warpol y mando :');
@@ -1900,13 +1928,10 @@ function getFormValues(id){
     return infoData;
 }
 /* User Authenticated Data */
-app.controller('userAuthController',   function ($scope){
+app.controller('userAuthController',                function ($scope){
     $scope.userDataAuth = JSON.parse($('#auth-user').val());
 })
-
-
-
-app.controller('tempTicketSearchController', function($scope, $http){
+app.controller('tempTicketSearchController',        function($scope, $http){
 console.log('Hola');
 
   $scope.getTicketsSearch = function (){

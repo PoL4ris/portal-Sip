@@ -38,7 +38,7 @@ Route::group(['middleware' => 'web'], function () {
   Route::get('home',                    'HomeController@index');
   Route::get('test',                    'MainController@test');
   //ADMIN
-//  Route::get('admin',                   'AdminController@admin');
+  Route::get('admin',                   'AdminController@admin');
 //  Route::get('adminStatus',             'AdminController@adminStatus');
 //  Route::get('adminElements',           'AdminController@adminElements');
 //  Route::get('adminApps',               'AdminController@adminApps');

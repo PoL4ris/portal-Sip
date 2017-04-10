@@ -139,6 +139,9 @@
 .capital-first::first-letter {
   text-transform: uppercase;
 }
+.caps{
+  text-transform: uppercase;
+}
 .no-b-tbl {
   border-bottom: medium none;
   border-left: medium none;
@@ -417,6 +420,7 @@ table.dataTable tbody tr {
 }
 .profile-css h2 {
   text-align: center;
+  margin-bottom: 25px;
 }
 .profile-css .img {
   padding-top: 15px;
@@ -674,4 +678,11 @@ table.dataTable tbody tr {
 }
 .easy-links a {
   font-weight: inherit;
+}
+.focus-index-focus{
+  background: #0f94f6;
+
+}
+.focus-index-focus a {
+  color: white;
 }

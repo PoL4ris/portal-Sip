@@ -22,7 +22,7 @@
           </div>
 
           <div class="al-lg-description" ng-init="arrayData = parJson(logEntry.log_data)">
-            <span ng-if="arrayData.type == 'update-id_status'"><b>Status</b> updated to <b>{{customerData.statusList[arrayData.new['id_status']].name}}</b></span>
+            <span ng-if="arrayData.type == 'update-id_status'"><b>Status</b> updated to <b>{{customerData.statusList[(arrayData.new['id_status'])-1].name}}</b></span>
             <span ng-if="arrayData.type == 'update-first_name'"><b>First name</b>  updated to <b>{{arrayData.new['first_name']}}</b></span>
             <span ng-if="arrayData.type == 'update-last_name'"><b>Last name</b> updated to <b>{{arrayData.new['last_name']}}</b></span>
             <span ng-if="arrayData.type == 'update-email'"><b>Username</b> updated to <b>{{arrayData.new['email']}}</b></span>

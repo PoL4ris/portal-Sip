@@ -650,6 +650,49 @@ body.smart-style-7 {
   border-color: red;
 }
 
+.smart-style-7 #shortcut {
+  background: white none repeat scroll 0 0;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  color: #333;
+  left: 15px;
+  padding: 10px 10px 10px 15px;
+  top: 100px;
+  width: 15%;
+}
+.smart-style-7 #shortcut .short-profile-img {
+  border-radius: 5px;
+  float: left;
+}
+.smart-style-7 #shortcut .short-profile-img img {
+  border-radius: 50%;
+}
+.smart-style-7 #shortcut .short-profile-name {
+  float: left;
+  font-size: 18px;
+  font-weight: bold;
+  margin-left: 15px;
+  padding-top: 16px;
+}
+.smart-style-7 #shortcut ul {
+  border: medium none;
+  box-shadow: none;
+  float: left;
+  margin: 10px 0 0;
+  padding: 0;
+}
+.smart-style-7 #shortcut li {
+  font-size: 14px;
+}
+.smart-style-7 #shortcut li a{}
+.smart-style-7 #shortcut a span{}
+.smart-style-7 #shortcut span i{}
+.smart-style-7 #shortcut span span{}
+
+
+
+
+
 @media (max-width: 979px) and (min-width: 768px) {
   .smart-style-7 #hide-menu i {
     color: #fff !important;
@@ -1064,21 +1107,16 @@ nav ul li a {
   padding-top: 0;
   width: 100%;
 }
-
-
-
 #paymentmethodform{}
 #paymentmethodform span{}
 #paymentmethodform label{}
 #paymentmethodform input{}
-
 .bld-search .search-content{
   width: 95%;
 }
 .bld-search .bld-close-search{
   width: 5%;
 }
-
 .customer-info-container {
     max-width: 280px;
 }

@@ -152,3 +152,123 @@
     <!--</div>-->
   <!--</div>-->
 <!--</div>-->
+
+
+
+
+
+
+
+
+
+<div class="">
+
+  <div class="search-content">
+    <input type="text" class="input-search id-search" placeholder="Customer Search..." ng-keyup="buscador()" ng-model="searchCustomer"><i class="is-lupa fa fa-search"></i>
+  </div>
+
+  <div class="search-content-close" ng-click="clearSearch()">
+    <i class="fa fa-plus plus-cross"></i>
+  </div>
+
+</div>
+
+
+
+<div class="" ng-if="customerSearchResult">
+  <div class="search-result anim" >
+    <div ng-repeat="resultSearch in customerSearchResult" ng-click="clearSearch()" class="main-search-result-container tmp-container-search">
+
+      <a href="#/customers?id={{resultSearch.id}}">
+
+        <div class="col-lg-12 no-padding-sides">
+
+          <!--<div class="col-lg-12"><i class="fa fa-flag m-r-sm"></i>Status : {{resultSearch.id_status == 1?'ACTIVE':'DISABLED'}}</div>-->
+
+          <!--<div class="col-lg-12"><i class="fa fa-user m-r-sm"></i> {{resultSearch.first_name}} {{resultSearch.last_name}}</div>-->
+
+          <!--<div class="col-lg-6"><i class="fa fa-home m-r-sm"></i>Unit : #{{resultSearch.unit}} </div>-->
+          <!--<div class="col-lg-6 labe"><i class="fa fa-code m-r-sm"></i>Code : {{resultSearch.code}}</div>-->
+
+          <!--<div class="col-lg-12"><strong class=" m-r-sm">@</strong>Email : {{resultSearch.email}}</div>-->
+
+
+
+          <!--new tmp-->
+          <div class="col-lg-12"><i class="fa fa-user m-r-sm status-type-{{resultSearch.id_status}}"></i> {{resultSearch.first_name}} {{resultSearch.last_name}} | {{resultSearch.code}} | #{{resultSearch.unit}}</div>
+
+
+
+
+
+
+
+          <!--<div class="col-lg-4 labe">Status</div>       <div class="col-lg-8 valu color-text ct-status">{{resultSearch.id_status == 1?'ACTIVE':'DISABLED'}}</div>-->
+          <!--<div class="col-lg-4 labe">First Name</div>   <div class="col-lg-8 valu">{{resultSearch.first_name}}</div>-->
+          <!--<div class="col-lg-4 labe">Last Name</div>    <div class="col-lg-8 valu color-text">{{resultSearch.last_name}}</div>-->
+
+          <!--<div class="col-lg-4 labe">Email</div>        <div class="col-lg-8 valu color-text">{{resultSearch.email}}</div>-->
+          <!--<div class="col-lg-4 labe">Address</div>      <div class="col-lg-8 valu">{{resultSearch.address}}</div>-->
+          <!--<div class="col-lg-4 labe">Code</div>         <div class="col-lg-8 valu color-text ct-code">{{resultSearch.code}}</div>-->
+
+          <!--<div class="col-lg-4 labe">Unit</div>         <div class="col-lg-8 valu color-text">{{resultSearch.unit}}</div>-->
+          <!--<div class="col-lg-4 labe">Zip</div>          <div class="col-lg-8 valu">{{resultSearch.zip}}</div>-->
+
+        </div>
+
+      </a>
+
+    </div>
+  </div>
+</div>
+
+
+
+<!--SEARCH-->
+<!--<form ng-submit="search()">-->
+<!--<input type="text" placeholder="Search..." ng-model="globalSearch"  ng-keyup="valLength()">-->
+<!--<i class="is-lupa fa fa-search" id="lupa-global"></i>-->
+<!--<i class="is-tache fa fa-times" id="tache-global" ng-click="closeSearch()" style="display: none;"></i>-->
+<!--<input type="submit" class="display-none">-->
+<!--</form>-->
+
+<!--<div class="search-gb-result anim" id="globalSearch">-->
+
+<!--<div ng-if="globalCustomerCodeSearch" class="anim gsrdiv animate-if b-r">-->
+<!--<h5>Customer Code Result</h5>-->
+<!--<p ng-if="globalCustomerCodeSearch.length === 0">No results.</p>-->
+<!--<div ng-if="loadingCl" class="loading-default animate-if"><img src="/img/default.gif" alt=""></div>-->
+<!--<p ng-repeat="gcs in globalCustomerCodeSearch" class="animate-if" ng-click="displayCustomerResume(gcs.customer.id); closeSearch()">-{{gcs.customer.first_name}} {{gcs.customer.last_name}}</p>-->
+<!--</div>-->
+
+<!--<div ng-if="globalCustomersSearch" class="anim gsrdiv animate-if b-r">-->
+<!--<h5>Customers Result</h5>-->
+<!--<p ng-if="globalCustomersSearch.length === 0">No results.</p>-->
+<!--<div ng-if="loadingCu" class="loading-default animate-if"><img src="/img/default.gif" alt=""></div>-->
+<!--<p ng-repeat="gcus in globalCustomersSearch" class="animate-if" ng-click="displayCustomerResume(gcus.id); closeSearch()">-{{gcus.first_name}} {{gcus.last_name}}</p>-->
+<!--</div>-->
+
+<!--<div ng-if="globalTicketsSearch" class="anim gsrdiv animate-if b-r">-->
+<!--<h5>Tickets Result</h5>-->
+<!--<p ng-if="globalTicketsSearch.length === 0">No results.</p>-->
+<!--<div ng-if="loadingS" class="loading-default animate-if"><img src="/img/default.gif" alt=""></div>-->
+<!--<p ng-repeat="gts in globalTicketsSearch" class="animate-if" ng-click="displayTicketResume(gts.id, gts.id_customers); closeSearch()">-{{gts.ticket_number}} {{gts.status}}</p>-->
+<!--</div>-->
+
+<!--<div ng-if="globalBuildingsSearch" class="anim gsrdiv animate-if b-r">-->
+<!--<h5>Buildings Result</h5>-->
+<!--<p ng-if="globalBuildingsSearch.length === 0">No results.</p>-->
+<!--<div ng-if="loadingB" class="loading-default animate-if"><img src="/img/default.gif" alt=""></div>-->
+<!--<p ng-repeat="gbs in globalBuildingsSearch" class="animate-if" ng-click="displayBuildingResume(gbs.id); closeSearch()">-{{gbs.name}} {{gbs.code}}</p>-->
+<!--</div>-->
+
+<!--<div ng-if="globalCustomerPoundSearch" class="anim gsrdiv animate-if">-->
+<!--<h5>Code + Pound Sign</h5>-->
+<!--<p ng-if="globalCustomerPoundSearch.length === 0">No results.</p>-->
+<!--<div ng-if="loadingCP" class="loading-default animate-if"><img src="/img/default.gif" alt=""></div>-->
+<!--<p ng-repeat="gcps in globalCustomerPoundSearch" class="animate-if" ng-click="displayBuildingResume(gcps.customer.id); closeSearch()">-{{gcps.customer.first_name}} {{gcps.customer.last_name}}</p>-->
+<!--</div>-->
+
+<!--</div>-->
+
+
