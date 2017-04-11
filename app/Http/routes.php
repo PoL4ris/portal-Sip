@@ -39,10 +39,13 @@ Route::group(['middleware' => 'web'], function () {
   Route::get('test',                    'MainController@test');
   //ADMIN
   Route::get('admin',                   'AdminController@admin');
+  //POST ADMIN
+  Route::post('getAdminUsers',          'AdminController@getAdminUsers');
+  Route::post('getAdminProfiles',       'AdminController@getAdminProfiles');
+  Route::post('updateAdminUser',        'AdminController@updateAdminUser');
 //  Route::get('adminStatus',             'AdminController@adminStatus');
 //  Route::get('adminElements',           'AdminController@adminElements');
 //  Route::get('adminApps',               'AdminController@adminApps');
-//  Route::get('adminProfiles',           'AdminController@adminProfiles');
 //  Route::get('adminTypes',              'AdminController@adminTypes');
 //  Route::get('adminCustomers',          'AdminController@adminCustomers');
 //  Route::get('adminAddress',            'AdminController@adminAddress');
@@ -57,7 +60,7 @@ Route::group(['middleware' => 'web'], function () {
   Route::get('updateProfileInfo',       'AdminController@updateProfileInfo');
   //MENU
   Route::get('menumaker',               'MainController@menuMaker');
-  Route::get('adminusers',              'MainController@adminusers');
+
   Route::get('getUserData',             'MainController@getUserData');
   //Dashboards
   Route::get('buildingsdash',           'BuildingController@dashboard');

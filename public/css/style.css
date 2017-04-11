@@ -686,3 +686,22 @@ table.dataTable tbody tr {
 .focus-index-focus a {
   color: white;
 }
+.editing{}
+.admin-edit-container{}
+.admin-edit-container select {
+  padding: 2px 3px;
+}
+.admin-edit-container select option {
+  margin-bottom: 4px;
+}
+.admin-edit-container input{
+  background: rgba(0, 0, 0, 0) linear-gradient(#f0f0f0, #f5f5f5) repeat scroll 0 0;
+  border: 1px solid #d6d3ce;
+  border-radius: 3px;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.12) inset;
+  box-sizing: border-box;
+  color: #333;
+  font-size: 14px;
+  padding: 7px;
+  width: 100%;
+}

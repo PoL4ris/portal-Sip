@@ -1604,6 +1604,71 @@ app.controller('userProfileController',             function ($scope, $http){
     }
 
 });
+//ADMIN
+app.controller('adminController',                   function($scope, $http, customerService, adminService){
+  console.log('This is the adminController');
+  if(customerService.sideBarFlag) {
+    $scope.sipTool(2);
+    customerService.sideBarFlag = false;
+  }
+
+  //Sufix
+  //admin fot variables to keeep safe structure on Admin
+
+  $http.post("getAdminUsers", {params:{'token':adminService.existeToken}})
+    .then(function (response) {
+      $scope.adminUsers = response.data;
+    });
+
+  $http.post("getAdminProfiles", {params:{'token':adminService.existeToken}})
+    .then(function (response) {
+      $scope.adminProfiles = response.data;
+    });
+
+  $scope.editUser = function (){
+    $scope.adminEditingUser = this.data;
+  }
+  $scope.generatePsw = function (){
+    $scope.createdPsw = Math.random().toString(36).slice(-8);
+  }
+  $scope.resetPsw = function (){
+    $scope.createdPsw = null;
+  }
+  $scope.updateUser = function(){
+
+    var objetos = getFormValues('admin-edit-form');
+    var flag = true;
+
+    if(objetos['password'].length === 0)
+      objetos['password'] = null;
+    else{
+      flag = false;
+      var tmp1 = objetos['password'].split(' ').length;
+      var tmp2 = objetos['password'].length;
+
+      if(tmp1 == 1 && tmp2 == 8)
+        flag = true;
+    }
+
+    if(flag)
+    {
+      objetos['id'] = $scope.adminEditingUser.id;
+      console.log(objetos);
+      $http.post("updateAdminUser", {params:{'token':adminService.existeToken, 'objetos': objetos}})
+        .then(function (response) {
+          $scope.adminUsers = response.data;
+          $('#adminModal').modal('toggle');
+        });
+    }
+    else
+    {
+      $('#pswRegen').css('border-color', 'crimson');
+      $('#psw-alert').css('display', 'block');
+      return;
+    }
+
+  }
+});
 
 
 // Global Tools //

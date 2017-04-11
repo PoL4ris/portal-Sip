@@ -127,11 +127,8 @@ angular.module('app.admin'  , ['ui.router']).config(function ($stateProvider) {
       },
       views: {
         "content@app": {
-          templateUrl: '/views/dummy.html',
-        },
-        'silveriptool':{
-//           templateUrl: '/views/test.html',
-//           controller: 'sidebarController',
+          templateUrl: '/views/admin/admin.html',
+          controller : 'adminController'
         }
       },
       resolve: {
@@ -151,6 +148,12 @@ app.factory('customerService', function() {
     exist : true,
     sideBarFlag : true,
     rightView : false
+  };
+});
+
+app.factory('adminService', function() {
+  return {
+    existeToken : $('#auth-user').attr('tmpTokenTest')
   };
 });
 

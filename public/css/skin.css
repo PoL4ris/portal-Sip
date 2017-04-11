@@ -683,6 +683,7 @@ body.smart-style-7 {
 }
 .smart-style-7 #shortcut li {
   font-size: 14px;
+  width: 100%;
 }
 .smart-style-7 #shortcut li a{}
 .smart-style-7 #shortcut a span{}

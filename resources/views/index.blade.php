@@ -110,7 +110,7 @@ Possible attributes
       class="fixed-navigation fixed-header smart-style-7">
 
 <!-- ui-view container -->
-<input type="hidden" value="{{Auth::user()}}" id="auth-user"/>
+<input type="hidden" value="{{Auth::user()}}" id="auth-user" tmpTokenTest="{{ csrf_token() }}"/>
 
 <div data-ui-view="root"  data-autoscroll="false"></div>
 
