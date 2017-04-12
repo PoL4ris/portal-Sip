@@ -1,46 +1,56 @@
-<div class="row">
-  <div class="col-lg-12">
-    <table id="myTable" class="tablesorter table table-striped " datatable="ng" dt-options="dtOptions" ng-if="adminUsers">
-      <thead>
-      <tr>
-        <!--<th>id</th>-->
-        <th>First Name</th>
-        <th>Last Name</th>
-        <th>Email</th>
-        <th>Password</th>
-        <!--<th>Social Token</th>-->
-        <th>Social Access</th>
-        <th>Avatar</th>
-        <th>Alias</th>
-        <th>Status</th>
-        <th>Profile/Rol</th>
-        <th>Created At</th>
-        <th>Updated At</th>
-        <th>Edit</th>
-
-      </tr>
-      </thead>
-      <tbody>
-    <tr ng-repeat="data in adminUsers">
-      <!--<td>{{data.id}}</td>-->
-      <td>{{data.first_name}}</td>
-      <td>{{data.last_name}}</td>
-      <td>{{data.email}}</td>
-      <td>********</td>
-      <!--<td>{{data.social_token}}</td>-->
-      <td>{{data.social_access == 1 ? 'Yes' : 'No'}}</td>
-      <td><img src="{{data.avatar?data.avatar:'/img/male.png'}}" alt="{{data.alias}}" title="{{data.alias}}"></td>
-      <td>{{data.alias}}</td>
-      <td>{{data.id_status == 1 ? 'Active' : 'Disabled'}}</td>
-      <td>{{data.id_profiles == 1 ? 'Admin' : 'Other'}}</td>
-      <td ng-init="cAtData = convertDate(data.created_at)" >{{cAtData | date : "MMM d, y h:mm a" }}</td>
-      <td ng-init="uAtData = convertDate(data.updated_at)" >{{uAtData | date : "MMM d, y h:mm a" }}</td>
-      <td><i class="btn btn-primary fa fa-pencil" ng-click="editUser()" data-toggle="modal" data-target="#adminModal"></i></td>
-    </tr>
-    </tbody>
-    </table>
+<article class="col-sm-12 col-md-12 col-lg-12 p-b-lg bg-white white-shadow null-article p-t-lg admin-app">
+  <div class="row">
+  <div class="col-lg-12 m-b-lg">
+    <p class="btn btn-primary fa fa-plus pull-left" data-toggle="modal" data-target="#adminModal" ng-click="addNewUser()">  Add user</p>
   </div>
-</div>
+
+    <div class="col-lg-12">
+      <table id="myTable" class="tablesorter table table-striped " datatable="ng" dt-options="dtOptions" ng-if="adminUsers">
+        <thead>
+        <tr>
+          <!--<th>id</th>-->
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>Email</th>
+          <th>Password</th>
+          <!--<th>Social Token</th>-->
+          <th>Social Access</th>
+          <th>Avatar</th>
+          <th>Alias</th>
+          <th>Status</th>
+          <th>Profile/Rol</th>
+          <th>Created At</th>
+          <th>Updated At</th>
+          <th>Edit</th>
+
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="data in adminUsers">
+          <!--<td>{{data.id}}</td>-->
+          <td>{{data.first_name}}</td>
+          <td>{{data.last_name}}</td>
+          <td>{{data.email}}</td>
+          <td>********</td>
+          <!--<td>{{data.social_token}}</td>-->
+          <td>{{data.social_access == 1 ? 'Yes' : 'No'}}</td>
+          <td><img src="{{data.avatar?data.avatar:'/img/male.png'}}" alt="{{data.alias}}" title="{{data.alias}}"></td>
+          <td>{{data.alias}}</td>
+          <td>{{data.id_status == 1 ? 'Active' : 'Disabled'}}</td>
+          <td>{{data.id_profiles == 1 ? 'Admin' : 'Other'}}</td>
+          <td ng-init="cAtData = convertDate(data.created_at)" >{{cAtData | date : "MMM d, y h:mm a" }}</td>
+          <td ng-init="uAtData = convertDate(data.updated_at)" >{{uAtData | date : "MMM d, y h:mm a" }}</td>
+          <td><i class="btn btn-primary fa fa-pencil" ng-click="editUser()" data-toggle="modal" data-target="#adminModal"></i></td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</article>
+
+
+
+
 
 
 
@@ -53,7 +63,8 @@
       <form id="admin-edit-form">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-          <span>Edit User Info</span>
+          <span ng-if="adminEditingUser">Edit User Info</span>
+          <span ng-if="!adminEditingUser">New User Info</span>
         </div>
         <div class="modal-body">
           <div class="wrapper-sm">
@@ -64,30 +75,44 @@
                 <!--CONTENT-->
                 <div class="col-lg-12">
                   <div class="col-lg-6 m-b-lg">
-                    <label>First Name</label><br><input type="text" value="{{adminEditingUser.first_name}}" name="first_name">
+                    <label>First Name</label><br>
+                    <input type="text" value="{{adminEditingUser.first_name}}" name="first_name" >
+                    <!--<input type="text" placeholder="First Name" name="first_name" ng-if="newUserRequired" required>-->
                   </div>
                   <div class="col-lg-6 m-b-lg">
-                    <label >Last Name</label><br><input type="text" value="{{adminEditingUser.last_name}}" name="last_name">
+                    <label >Last Name</label><br>
+                    <input type="text" value="{{adminEditingUser.last_name}}" name="last_name" >
+                    <!--<input type="text" placeholder="Last Name"  name="last_name" ng-if="newUserRequired" required>-->
                   </div>
 
                   <div class="col-lg-6 m-b-lg">
-                    <label >Email/Username</label><br><input type="text" value="{{adminEditingUser.email}}" name="email">
+                    <label >Email/Username</label><br>
+                    <input type="text" value="{{adminEditingUser.email}}" name="email" >
+                    <!--<input type="text" placeholder="Email" name="email" ng-if="newUserRequired" required>-->
                   </div>
                   <div class="col-lg-6 m-b-lg">
-                    <label >Alias</label><br><input type="text" value="{{adminEditingUser.alias}}" name="alias">
+                    <label >Alias</label><br>
+                    <input type="text" value="{{adminEditingUser.alias}}" name="alias" >
+                    <!--<input type="text" placeholder="Alias"  name="alias" ng-if="newUserRequired" required>-->
                   </div>
 
                   <div class="col-lg-12 m-b-lg">
                     <label >Reset Password</label><br>
-                    <input id="pswRegen" readonly type="text" placeholder="Set Password" class="m-b-lg" value="{{createdPsw?createdPsw:null}}" name="password">
-                    <span id="psw-alert" class="pull-right">Verify this field</span>
+                    <input id="pswRegen"
+                           readonly
+                           type="text"
+                           placeholder="Set Password"
+                           class="m-b-lg"
+                           value="{{createdPsw ? createdPsw : null}}"
+                           name="password">
                     <button class="btn btn-success" ng-click="generatePsw()">Generate Password</button>
+                    <span id="psw-alert" class="pull-right no-display" ng-if="newUserRequired">Verify fields</span>
                   </div>
 
                   <div class="col-lg-4">
                     <label>Social Access</label><br>
                     <select name="social_access" id="1">
-                      <option value="{{adminEditingUser.social_access}}">{{adminEditingUser.social_access == 1 ? 'Yes' : 'No'}}</option>
+                      <option value="{{adminEditingUser?adminEditingUser.social_access:0}}">{{adminEditingUser.social_access == 1 ? 'Yes' : 'No'}}</option>
                       <option value="1">Yes</option>
                       <option value="0">No</option>
                     </select>
@@ -95,7 +120,7 @@
                   <div class="col-lg-4">
                     <label>Status</label><br>
                     <select name="id_status" id="2">
-                      <option value="{{adminEditingUser.id_status}}">{{adminEditingUser.id_status == 1 ? 'Active' : 'Disabled'}}</option>
+                      <option value="{{adminEditingUser?adminEditingUser.id_status:2}}">{{adminEditingUser.id_status == 1 ? 'Active' : 'Disabled'}}</option>
                       <option value="1">Active</option>
                       <option value="2">Disabled</option>
                     </select>
@@ -103,12 +128,13 @@
                   <div class="col-lg-4">
                     <label for="">Profile/Rol</label><br>
                     <select name="id_profiles" id="3">
-                      <option value="{{adminEditingUser.id_profiles}}">{{adminEditingUser.id_profiles == 1 ? 'Admin' : 'Other'}}</option>
+                      <option value="{{adminEditingUser?adminEditingUser.id_profiles:2}}">{{adminEditingUser.id_profiles == 1 ? 'Admin' : 'Other'}}</option>
                       <!--<option value="{{profile.id}}" ng-repeat="profile in adminProfiles">{{profile.name}}</option>-->
                       <option value="1">Admin</option>
                       <option value="2">Other</option>
                     </select>
                   </div>
+
                 </div>
               </div>
               <!--SOMETHING HERE-->
@@ -116,12 +142,9 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-success pull-left" ng-click="updateUser()">
-            Update
-          </button>
-          <button type="button" class="btn btn-primary" data-dismiss="modal">
-            Cancel
-          </button>
+          <button type="button" class="btn btn-success pull-left" ng-click="updateUser()" ng-if="adminEditingUser">Update</button>
+          <button type="button" class="btn btn-success pull-left" ng-click="insertNewUser()" ng-if="!adminEditingUser">Add</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
         </div>
       </form>
     </div>

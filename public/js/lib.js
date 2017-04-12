@@ -6,26 +6,47 @@ app.controller('menuController',                    function($scope, $http){
     }
 });
 //Building Controllers
-app.controller('buildingSideController',            function ($scope, $http){
+app.controller('buildingCtl',                       function($scope, $http, $stateParams, customerService) {
 
-    $http.get("getBuildingsListTMP")
-        .then(function (response) {
-        $scope.buildingResultSide = response.data;
-    });
 
-});
-app.controller('buildingCtl',                       function($scope, $http, customerService) {
-
+  console.log(customerService);
+  if(customerService.stateRoute == 'buildings' )
+  {
     if(!customerService.sideBarFlag) {
         $scope.sipTool(2);
         customerService.sideBarFlag = true;
     }
+  }
+
+  $scope.idBuilding = null;
+
+  if($stateParams.id)
+    $scope.idBuilding = $stateParams.id;
+
+    $http.get("buildingData", {params:{'id' : $scope.idBuilding}})
+      .then(function (response) {
+        $scope.buildingData = response.data;
+      });
 
 
 
-    if (!$scope.sbid) {
+
+
+
+
+
+
+
+
+
+
+
+//verifyUse
+    return;
+    if (!$scope.sbid || !$stateParams.id) {
         $scope.SiteMenu = [];
-        $http.get('buildings').then(function (data){
+        $http.get('buildings')
+          .then(function (data){
             $scope.bldData = data.data;
             $scope.bld = $scope.bldData.building;
             //       $scope.offsetLimitFunction($scope.bldData.offset, $scope.bldData.limit);
@@ -34,12 +55,14 @@ app.controller('buildingCtl',                       function($scope, $http, cust
         }
     }
     else {
-        $http.get("buildings/" + $scope.sbid)
+      console.log($stateParams.id);
+        $http.get("buildings", params + $scope.sbid ? $scope.sbid : $stateParams.id)
             .then(function (response) {
             $scope.bld = response.data;
         });
     }
     $scope.displayBldData = function (idBld) {
+    console.log(idBld);
         $http.get("buildings/" + idBld)
             .then(function (response) {
             $scope.bld = response.data.building;
@@ -290,6 +313,22 @@ app.controller('buildingCtl',                       function($scope, $http, cust
             });
         }
     }
+})
+//Building Side Bar
+app.controller('sideBldController',                 function($scope, $http, buildingService, $stateParams){
+
+  $scope.sipTool(0,'silverip-left');
+
+  $http.get("getBuildingsList")
+    .then(function (response) {
+      $scope.bldListResult = response.data;
+    });
+
+
+  $scope.displayBldDataS = function (idBld) {
+  console.log(idBld);
+    $scope.displayBldData(idBld);
+  }
 })
 //Network Controllers
 app.controller('networkController',                 function ($scope, $http, customerService){
@@ -1625,16 +1664,16 @@ app.controller('adminController',                   function($scope, $http, cust
       $scope.adminProfiles = response.data;
     });
 
-  $scope.editUser = function (){
+  $scope.editUser       = function(){
     $scope.adminEditingUser = this.data;
   }
-  $scope.generatePsw = function (){
+  $scope.generatePsw    = function(){
     $scope.createdPsw = Math.random().toString(36).slice(-8);
   }
-  $scope.resetPsw = function (){
+  $scope.resetPsw       = function(){
     $scope.createdPsw = null;
   }
-  $scope.updateUser = function(){
+  $scope.updateUser     = function(){
 
     var objetos = getFormValues('admin-edit-form');
     var flag = true;
@@ -1653,7 +1692,7 @@ app.controller('adminController',                   function($scope, $http, cust
     if(flag)
     {
       objetos['id'] = $scope.adminEditingUser.id;
-      console.log(objetos);
+//       console.log(objetos);
       $http.post("updateAdminUser", {params:{'token':adminService.existeToken, 'objetos': objetos}})
         .then(function (response) {
           $scope.adminUsers = response.data;
@@ -1666,6 +1705,31 @@ app.controller('adminController',                   function($scope, $http, cust
       $('#psw-alert').css('display', 'block');
       return;
     }
+
+  }
+  $scope.addNewUser     = function(){
+    $scope.newUserRequired = true;
+    $scope.adminEditingUser = null;
+    $scope.createdPsw = null;
+
+  }
+  $scope.insertNewUser  = function(){
+    var objects = getFormValues('admin-edit-form');
+
+    for(var obj in objects ) {
+      if(!objects[obj]){
+        $('#psw-alert').css('display', 'block').css('color', 'crimson');
+        return;
+      }
+    }
+
+    $http.post("insertAdminUser", {params:{'token':adminService.existeToken, 'objetos': objects}})
+      .then(function (response) {
+        $scope.adminUsers = response.data;
+        $('#adminModal').modal('toggle');
+        $('#admin-edit-form').trigger("reset");
+        $scope.createdPsw = null;
+      });
 
   }
 });

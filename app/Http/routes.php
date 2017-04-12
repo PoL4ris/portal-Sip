@@ -43,6 +43,7 @@ Route::group(['middleware' => 'web'], function () {
   Route::post('getAdminUsers',          'AdminController@getAdminUsers');
   Route::post('getAdminProfiles',       'AdminController@getAdminProfiles');
   Route::post('updateAdminUser',        'AdminController@updateAdminUser');
+  Route::post('insertAdminUser',        'AdminController@insertAdminUser');
 //  Route::get('adminStatus',             'AdminController@adminStatus');
 //  Route::get('adminElements',           'AdminController@adminElements');
 //  Route::get('adminApps',               'AdminController@adminApps');
@@ -90,8 +91,8 @@ Route::group(['middleware' => 'web'], function () {
 
   //Buildings & List
   Route::get('buildings/{id?}',         'BuildingController@buildings');
-  Route::get('buildingsList',           'BuildingController@getBuildingsList');
-  Route::get('getBuildingsListTMP',     'BuildingController@getBuildingsListTMP');//new
+  Route::get('buildingData',            'BuildingController@buildingData');
+  Route::get('getBuildingsList',        'BuildingController@getBuildingsList');//new
   //Building Form
   Route::get('newbuildingform',         'BuildingController@newbuildingform');
   //Insert Building

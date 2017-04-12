@@ -1,7 +1,7 @@
 angular.module('app.buildings', ['ui.router']).config(function ($stateProvider) {
   $stateProvider
     .state('app.buildings', {
-      url: '/buildings',
+      url: '/buildings?{id:int}',
       data: {
         title: 'Buildings'
       },
@@ -11,12 +11,13 @@ angular.module('app.buildings', ['ui.router']).config(function ($stateProvider) 
           controller: 'buildingCtl'
         },
         "silveriptool": {
-          templateUrl: '/views/test.html',
-          controller: 'buildingSideController'
+          templateUrl: '/views/sidebar/buildingsList.html',
+          controller: 'sideBldController'
         }
       },
       resolve: {
-        scripts: function(lazyScript){
+        scripts: function(lazyScript, customerService){
+          customerService.stateRoute = 'buildings';
           return lazyScript.register([
             '/js/smart/build/vendor.ui.js'
           ]);
@@ -148,6 +149,11 @@ app.factory('customerService', function() {
     exist : true,
     sideBarFlag : true,
     rightView : false
+  };
+});
+app.factory('buildingService', function() {
+  return {
+    exist : true
   };
 });
 

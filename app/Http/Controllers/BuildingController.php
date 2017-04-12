@@ -30,8 +30,14 @@ class BuildingController extends Controller
     return view('buildings.dashboard', ['offset' => $offset, 'limit' => $limit]);
   }
 
-  public function buildings(Request $request)
+  public function buildingData(Request $request)
   {
+
+    return Building::with('neighborhood', 'contacts', 'properties')->find($request->id?$request->id:rand(2,84));
+
+
+
+
     $offset = 0;
     $limit = 50;
     $building = $buildingList = '';
@@ -41,14 +47,15 @@ class BuildingController extends Controller
     else
       $buildingList = Building::orderBy('id', 'desc')->skip($offset)->take($limit)->get();
 
-    $data = ['building'     => $building ? $building : $this->getBuilding(28),
-//    $data = ['building'     => $building ? $building : $this->getBuilding(rand(2,84)),
+//    $data = ['building'     => $building ? $building : $this->getBuilding(28),
+    $data = ['building'     => $building ? $building : $this->getBuilding(rand(2,84)),
              'buildingList' => $buildingList ? $buildingList : '',
              'offset'       => $offset,
              'limit'        => $limit
     ];
     return $data;
   }
+
   public function getBuilding($id){
     $data = Building::with('address', 'neighborhood', 'contacts')->find($id);
     $data->properties = BuildingPropertyValue::join('building_properties', 'building_property_values.id_building_properties', '=', 'building_properties.id')
@@ -66,12 +73,10 @@ class BuildingController extends Controller
     return view('buildings.newbuildingform',['form' => $data]);
   }
 
-  public function getBuildingsListTMP(){
+  //Building GET's
+  public function getBuildingsList(){
     return Building::orderBy('id', 'desc')->get();
   }//new
-
-
-  //Building GET's
   public function getNeighborhoodList()
   {
     return Neighborhood::all();
@@ -118,18 +123,7 @@ class BuildingController extends Controller
 
     return $data;
   }
-  public function getBuildingsList(Request $request)
-  {
 
-      $offset = $request['offset'];
-      $limit = 20;
-
-      $buildingList = DB::table('buildings')->skip($offset)->take($limit)->get();
-
-      if(!empty($buildingList))
-        return json_encode($buildingList);
-
-  }
   public function getBuildingProperties(){
     return BuildingProperty::get();
   }

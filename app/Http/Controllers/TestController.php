@@ -127,6 +127,13 @@ class TestController extends Controller
     public function supportTest()
     {
 
+      $warp = Building::with('neighborhood', 'contacts', 'properties')->find(28);
+
+      print '<pre>';
+      dd($warp->toArray());
+      die();
+    return;
+
       $idList = array();
       $bldID = Customer::with('address')->find($request->id)->address->id_buildings;
       $products = Building::with('products')->find($bldID)->products->toArray();

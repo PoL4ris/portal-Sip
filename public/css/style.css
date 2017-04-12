@@ -705,3 +705,26 @@ table.dataTable tbody tr {
   padding: 7px;
   width: 100%;
 }
+#admin-app-id{
+  margin-bottom: 25px;
+  border-bottom: 1px solid #ddd;
+}
+.admin-app .dataTables_length{
+
+}
+.admin-app .dataTables_filter{
+  width: 50%;
+}
+
+
+
+.building-list-side{  }
+.building-list-side .bld-list-side{
+  border-bottom: 1px solid #ddd;
+  line-height: 150%;
+  padding: 10px 15px;
+ }
+.building-list-side .bld-list-side:hover{
+  background: #F3F8FE;
+  cursor: pointer;
+}

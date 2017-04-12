@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Customer;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -23,13 +24,14 @@ class AdminController extends Controller
 
   public function getAdminUsers(Request $request){
 
-    if ($request->params['token'] == csrf_token())
+//    if ($request->params['token'] == csrf_token())
+//dd($request);
       return User::get();
-    else
-    {
-      print 'ERROR';
-      return;//with error or something...
-    }
+//    else
+//    {
+//      print 'ERROR';
+//      return;//with error or something...
+//    }
   }
   public function getAdminProfiles(Request $request){
     if ($request->params['token'] == csrf_token())
@@ -62,6 +64,32 @@ class AdminController extends Controller
       print 'ERROR';
       return;//with error or something...
     }
+  }
+  public function insertAdminUser(Request $request)
+  {
+    if ($request->params['token'] == csrf_token()){
+      $data = $request->params['objetos'];
+      $user = new User;
+      $user->first_name = $data['first_name'];
+      $user->last_name = $data['last_name'];
+      $user->email = $data['email'];
+      $user->alias = $data['alias'];
+      $user->password = bcrypt($data['password']);
+      $user->social_access = $data['social_access'];
+      $user->id_status = $data['id_status'];
+      $user->id_profiles = $data['id_profiles'];
+      $user->save();
+      return $this->getAdminUsers($request);//arreglar illuminate request
+    }
+    else
+    {
+      print 'ERROR';
+      return;//with error or something...
+    }
+
+
+
+
   }
 
 
