@@ -1112,35 +1112,62 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http){
         });
     };
     $scope.refundFunct        = function (){
-        var cid = $scope.customerData.id;
-        var amount = $('#mf-input-am').val();
-        var desc = $('#mf-input-de').val();
 
-        if(!cid || !amount || !desc)
-            return;
+      var objects = getFormValues('manual-refund-form');
+      objects['cid'] = $scope.idCustomer;
 
-        $http.get("refundAmount", {params:{'cid':cid, 'amount':amount, 'desc':desc}})
-            .then(function (response) {
-            //         $scope.paymentMethods = response.data;
-            console.log(response.data);
-            if(response.data.RESPONSETEXT == 'RETURN ACCEPTED')
-                $scope.closeTransparentBGManual();
+
+      if(!objects.cid || !objects.amount || !objects.desc)
+          return;
+
+      processing(1);
+
+      $http.get("refundAmount", {params:objects})
+        .then(function (response)
+        {
+          //$scope.paymentMethods = response.data;
+          console.log(response.data);
+
+          if(response.data.RESPONSETEXT == 'RETURN ACCEPTED')
+          {
+            alert('RETURN ACCEPTED');
+            //$scope.closeTransparentBGManual();
+          }
+          else
+            alert('ERROR');
+
+          processing(0);
+          $('#paymentManualRefound').modal('toggle');
+          $('#manual-refund-form').trigger("reset");
         });
     };
     $scope.chargeFunct        = function (){
-        var cid = $scope.customerData.id;
-        var amount = $('#mc-input-am').val();
-        var desc = $('#mc-input-de').val();
 
-        if(!cid || !amount || !desc)
-            return;
+      var objects = getFormValues('manual-charge-form');
+      objects['cid'] = $scope.idCustomer;
 
-        $http.get("chargeAmount", {params:{'cid':cid, 'amount':amount, 'desc':desc}})
-            .then(function (response) {
-            //         $scope.paymentMethods = response.data;
-                     console.log(response.data);
-            if(response.data.RESPONSETEXT == 'APPROVED')
-                $scope.closeTransparentBGManual();
+
+      if(!objects.cid || !objects.amount || !objects.desc)
+        return;
+
+      processing(1);
+
+      $http.get("chargeAmount", {params:objects})
+        .then(function (response)
+        {
+          //$scope.paymentMethods = response.data;
+          console.log(response.data);
+          if(response.data.RESPONSETEXT == 'APPROVED')
+          {
+            alert('APPROVED');
+            //$scope.closeTransparentBGManual();
+          }
+          else
+            alert('ERROR');
+
+          processing(0);
+          $('#paymentManualCharge').modal('toggle');
+          $('#manual-charge-form').trigger("reset");
         });
     };
     $scope.editPaymentMethod  = function (flag){
@@ -1158,6 +1185,12 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http){
 
         $('#paymentMethodModal').trigger("reset");
     };
+    function processing(status){
+      if(status == 1)
+        $scope.something = true;
+      else
+        $scope.something = false;
+    }
     //OLD THING
     $scope.open = function (){
         $scope.customerId = $scope.customerData.id;
@@ -1354,150 +1387,151 @@ app.controller('customerNotesController',           function($scope, $http){
 //Support Controllers
 app.controller('supportController',                 function ($scope, $http, DTOptionsBuilder, customerService){
 
-    $scope.getAllOpenTickets      = function (){
-        $http.get("getAllOpenTickets")
-            .then(function (response) {
-            $scope.supportData = response.data;
-        });
-    };
-    $scope.getNoneBillingTickets  = function (){
-        $http.get("getNoneBillingTickets")
-            .then(function (response) {
-            $scope.supportData = response.data;
-        });
-    };
-    $scope.getBillingTickets      = function (){
-        $http.get("getBillingTickets")
-            .then(function (response) {
-            $scope.supportData = response.data;
-        });
-    };
-    $scope.getMyTickets           = function (){
-        $http.get("getMyTickets")
-            .then(function (response) {
-            $scope.supportData = response.data;
-        });
-    };
-
-    if(customerService.stateRoute == 'support'){
-
-        if(customerService.sideBarFlag) {
-            $scope.sipTool(2);
-            customerService.sideBarFlag = false;
-        }
-
-        $scope.getAllOpenTickets();
-
-        $http.get("getTicketOpenTime")
-            .then(function (response) {
-            $scope.ticketOpenTime = response.data;
-        });
+  $scope.getAllOpenTickets     = function (event){
+    setActiveBtn(event.target);
+    setLoading(1);
+    $http.get("getAllOpenTickets")
+        .then(function (response) {
+        $scope.supportData = response.data;
+        setLoading(0);
+    });
+  };
+  $scope.getNoneBillingTickets = function (event){
+    if(event){
+      setActiveBtn(event.target);
+      setLoading(1);
     }
+    $http.get("getNoneBillingTickets")
+        .then(function (response) {
+        $scope.supportData = response.data;
+        setLoading(0);
+    });
+  };
+  $scope.getBillingTickets     = function (event){
+    setActiveBtn(event.target);
+    setLoading(1);
+    $http.get("getBillingTickets")
+        .then(function (response) {
+        $scope.supportData = response.data;
+        setLoading(0);
+    });
+  };
+  $scope.getMyTickets          = function (event){
+    setActiveBtn(event.target);
+    setLoading(1);
+    $http.get("getMyTickets")
+        .then(function (response) {
+        $scope.supportData = response.data;
+        setLoading(0);
+    });
+  };
 
-    $scope.dtOptions = DTOptionsBuilder.newOptions().withPaginationType('full_numbers').withDisplayLength(50).withOption('order', [8, 'desc']);
-    $scope.letterLimit = 40;
+  if(customerService.stateRoute == 'support'){
 
-    $scope.showFullComment = function(id) {
-        $('#ticket-' + id).fadeIn('slow');
-    }
-    $scope.hideFullComment = function(id) {
-        $('#ticket-' + id).fadeOut('fast');
-    }
+      if(customerService.sideBarFlag) {
+          $scope.sipTool(2);
+          customerService.sideBarFlag = false;
+      }
 
-    function callMidView (view) {
-        $scope.globalViewON = view;
-        var compiledeHTML = $compile("<div my-View-"+view+"></div>")($scope);
-        //       warpol("#mid-content-tickets").html(compiledeHTML);
-        warpol("#viewMidContent").html(compiledeHTML);
-    };//NO se usara mas
-    function setActiveBtn (activeView) {
-        $scope.activeViewFull     = 'no-style';
-        $scope.activeViewBilling  = 'no-style';
-        $scope.activeViewAll      = 'no-style';
-    };//NO se usara mas
+      $scope.getNoneBillingTickets();
 
-    $scope.displayCustomerResume = function (id){
-        $scope.stcid = id;
-        $scope.stcFlag = false;
-        callMidView('Customer');
-    };//NO se usará mas
-    //MODAL DATA
-    $scope.displayTicketResume  = function (id, idCustomer){
-        $scope.midTicketId = id;
-        $scope.stcid       = idCustomer;
-        $scope.stcFlag     = true;
+      $http.get("getTicketOpenTime")
+          .then(function (response) {
+          $scope.ticketOpenTime = response.data;
+      });
+  }
 
-        $scope.getTicketInfo();
-        $scope.getReasons();
-        $scope.getUsers();
-    };
-    $scope.getTicketInfo        = function () {
-        $http.get("getTicketInfo", {params:{'ticketId':$scope.midTicketId}})
-            .then(function (response) {
-            $scope.selectedTicket = response.data;
-        });
+  $scope.dtOptions = DTOptionsBuilder.newOptions().withPaginationType('full_numbers').withDisplayLength(50).withOption('order', [8, 'desc']);
+  $scope.letterLimit = 40;
 
-    }
-    $scope.getReasons           = function () {
-        $http.get("getReasonsData")
-            .then(function (response) {
-            $scope.dataReasons = response.data;
-        });
-    }
-    $scope.getUsers             = function () {
-        $http.get("admin")
-            .then(function (response) {
-            $scope.dataUsersAssigned = response.data;
-        });
-    }
-    $scope.editFormByType       = function (id) {
+  $scope.showFullComment       = function(id) {
+      $('#ticket-' + id).fadeIn('slow');
+  };
+  $scope.hideFullComment       = function(id) {
+      $('#ticket-' + id).fadeOut('fast');
+  };
+  $scope.displayCustomerResume = function (id){
+      $scope.stcid = id;
+      $scope.stcFlag = false;
+      callMidView('Customer');
+  };//NO se usará mas
+  //MODAL DATA
+  $scope.displayTicketResume   = function (id, idCustomer){
+      $scope.midTicketId = id;
+      $scope.stcid       = idCustomer;
+      $scope.stcFlag     = true;
 
-        tempTicketID = id;
+      $scope.getTicketInfo();
+      $scope.getReasons();
+      $scope.getUsers();
+  };
+  $scope.getTicketInfo         = function () {
+      $http.get("getTicketInfo", {params:{'ticketId':$scope.midTicketId}})
+          .then(function (response) {
+          $scope.selectedTicket = response.data;
+      });
 
-        if ($('#' + id).attr('stand') == '1')
-        {
-            $('.' + id + '-label').css('display','table-cell');
-            $('.' + id + '-edit').css('display','none');
-            $('#save-' + id).fadeOut( "slow" );
-            $('#' + id).html('Edit');
-            $('#' + id).switchClass('btn-danger', 'btn-info');
-            $('#' + id).attr('stand', '2');
-            if(path == '/supportdash')
-            {
-                $('.resultadosComplex').html('');
-                $('.dis-input').val('');
-            }
+  };
+  $scope.getReasons            = function () {
+      $http.get("getReasonsData")
+          .then(function (response) {
+          $scope.dataReasons = response.data;
+      });
+  };
+  $scope.getUsers              = function () {
+      $http.get("admin")
+          .then(function (response) {
+          $scope.dataUsersAssigned = response.data;
+      });
+  };
+  $scope.editFormByType        = function (id) {
 
-        }
-        else
-        {
-            $('.' + id + '-label').css('display','none');
-            $('.' + id + '-edit').fadeIn( "slow" );
-            $('#save-' + id).fadeIn( "slow" );
-            $('#' + id).html('Cancel');
-            $('#' + id).switchClass('btn-success', 'btn-danger');
-            $('#' + id).attr('stand', '1');
-        }
+      tempTicketID = id;
 
-        //     if (id == 'block-a')
-        //     {
-        //       $scope.getReasons();
-        //       $scope.getUsers();
-        //     }
+      if ($('#' + id).attr('stand') == '1')
+      {
+          $('.' + id + '-label').css('display','table-cell');
+          $('.' + id + '-edit').css('display','none');
+          $('#save-' + id).fadeOut( "slow" );
+          $('#' + id).html('Edit');
+          $('#' + id).switchClass('btn-danger', 'btn-info');
+          $('#' + id).attr('stand', '2');
+          if(path == '/supportdash')
+          {
+              $('.resultadosComplex').html('');
+              $('.dis-input').val('');
+          }
 
-    }
-    $scope.submitForm           = function (idForm) {
+      }
+      else
+      {
+          $('.' + id + '-label').css('display','none');
+          $('.' + id + '-edit').fadeIn( "slow" );
+          $('#save-' + id).fadeIn( "slow" );
+          $('#' + id).html('Cancel');
+          $('#' + id).switchClass('btn-success', 'btn-danger');
+          $('#' + id).attr('stand', '1');
+      }
 
-        var infoData = getFormValues(idForm);
+      //     if (id == 'block-a')
+      //     {
+      //       $scope.getReasons();
+      //       $scope.getUsers();
+      //     }
 
-        infoData['id'] = $scope.selectedTicket.id;
+  };
+  $scope.submitForm            = function (idForm) {
 
-        $http.get("updateTicketDetails", {params:infoData})
-            .then(function (response) {
-            $scope.selectedTicket = response.data;
-        });
-    }
-    $scope.submitFormUpdate     = function (idForm) {
+      var infoData = getFormValues(idForm);
+
+      infoData['id'] = $scope.selectedTicket.id;
+
+      $http.get("updateTicketDetails", {params:infoData})
+          .then(function (response) {
+          $scope.selectedTicket = response.data;
+      });
+  };
+  $scope.submitFormUpdate      = function (idForm) {
 
         var infoData = getFormValues(idForm);
         if (infoData.comment == '')
@@ -1510,7 +1544,17 @@ app.controller('supportController',                 function ($scope, $http, DTO
             $scope.selectedTicket = response.data;
         });
         $('.thistory-form-2').val('');
-    }
+    };
+  function setLoading (status) {
+    if(status == 1)
+      $('.loading-gif-support').css('display', 'inline-block');
+    else
+      $('.loading-gif-support').css('display', 'none');
+  };
+  function setActiveBtn (element) {
+    $('.support-status').removeClass('support-active');
+    $(element).addClass('support-active');
+  };
 });
 app.controller('supportTicketHistory',              function ($scope, $http){
     $http.get("supportTicketHistory", {params:{'id':$scope.history.id}})
@@ -2078,26 +2122,25 @@ function getFormValues(id){
 app.controller('userAuthController',                function ($scope){
     $scope.userDataAuth = JSON.parse($('#auth-user').val());
 })
-app.controller('tempTicketSearchController',        function($scope, $http){
+app.controller('warpolController',        function($scope, $http){
+
 console.log('Hola');
 
-  $scope.getTicketsSearch = function (){
+  $scope.getGenericSearch = function (){
 
-    if(!this.ticketSearch)
-    {
-      $scope.customerSearchResult = false;
-      return;
-    }
+    console.log(this.genericSearch);
 
-    var query = {'querySearch' : this.ticketSearch};
+    var query = {'querySearch' : this.genericSearch};
 
-    $http.get("getTicketsSearchTEMP", {params:query})
+    $http.get("getGenericSearch", {params:query})
       .then(function (response) {
-        $scope.ticketSearchResult = response.data;
+        $scope.genericSearchResult = response.data;
       });
 
     return;
   }
+
+
 });
 
 

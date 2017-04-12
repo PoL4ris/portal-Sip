@@ -119,7 +119,7 @@ angular.module('app.calendar' , ['ui.router']).config(function ($stateProvider) 
       }
     })
 });
-angular.module('app.admin'  , ['ui.router']).config(function ($stateProvider) {
+angular.module('app.admin'    , ['ui.router']).config(function ($stateProvider) {
   $stateProvider
     .state('app.admin', {
       url: '/admin',
@@ -130,6 +130,30 @@ angular.module('app.admin'  , ['ui.router']).config(function ($stateProvider) {
         "content@app": {
           templateUrl: '/views/admin/admin.html',
           controller : 'adminController'
+        }
+      },
+      resolve: {
+        scripts: function(lazyScript){
+          return lazyScript.register([
+            '/js/smart/build/vendor.ui.js'
+          ]);
+        }
+      }
+    })
+});
+
+
+angular.module('app.warpol'    , ['ui.router']).config(function ($stateProvider) {
+  $stateProvider
+    .state('app.warpol', {
+      url: '/warpol',
+      data: {
+        title: 'Warpol'
+      },
+      views: {
+        "content@app": {
+          templateUrl: '/views/warpol.html',
+          controller : 'warpolController'
         }
       },
       resolve: {
