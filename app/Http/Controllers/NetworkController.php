@@ -49,26 +49,6 @@ class NetworkController extends Controller
                                 'writeCommunity' => $this->writeCommunity]);
     }
 
-    protected function getRouterInstance(){
-        return new MtikRouter(['username' => $this->mtikusername,
-                               'password' => $this->mtikpassword]);
-    }
-
-    public function getCustomerConnectionInfo($portID) {
-        $servicePort = DataServicePort::with('networkNode')->where('id',$portID)->first();
-
-        Log::info('port info: ', print_r($servicePort, true));
-
-        $netNode = $servicePort->getRelationValue('networkNode');
-        return ['Name'    => $netNode->host_name,
-                'IP'      => $netNode->ip_address,
-                'Port'    => $servicePort->port_number,
-                'Access'  => $servicePort->access_level,
-                'Vendor'  => $netNode->vendor,
-                'Model'   => $netNode->model
-               ];
-    }
-
     public function getSwitchPortStatus(Request $request) {
 
         $input = $request->all();
@@ -83,7 +63,7 @@ class NetworkController extends Controller
             return $portStatus;
         }
 
-        $networkNode = $port->networkNodes;
+        $networkNode = $port->networkNode;
         if($networkNode == null){
             return $portStatus;
         }
@@ -91,29 +71,36 @@ class NetworkController extends Controller
         $switchIP = ($this->devMode) ? $this->devModeSwitchIP : $networkNode->ip_address;
         $switchPort = $port->port_number;
         $switch = $this->getSwitchInstance();
-        
-        $portOperStatus = $switch->getSnmpPortOperStatus($switchIP, $switchPort);
-        if ($portOperStatus) {
-            $portOperStatus = $this->formatSnmpResponse($portOperStatus);
+
+        $portOperStatusResponse = $switch->getSnmpPortOperStatus($switchIP, $switchPort);
+        if (!isset($portOperStatusResponse['error'])) {
+            $portOperStatus = $portOperStatusResponse['response'];
             switch ($portOperStatus) {
+                case '1':
                 case 'up(1)':
                     $portOperStatus = 'up';
                     break;
+                case '2':
                 case 'down(2)':
                     $portOperStatus = 'down';
                     break;
+                case '3':
                 case 'testing(3)':
                     $portOperStatus = 'testing';
                     break;
+                case '4':
                 case 'unknown(4)':
                     $portOperStatus = 'unknown';
                     break;
+                case '5':
                 case 'dormant(5)':
                     $portOperStatus = 'dormant';
                     break;
+                case '6':
                 case 'notPresent(6)':
                     $portOperStatus = 'not present';
                     break;
+                case '7':
                 case 'lowerLayerDown(7)':
                     $portOperStatus = 'lower layer down';
                     break;
@@ -126,16 +113,19 @@ class NetworkController extends Controller
             $portStatus['oper-status'] = 'error';
         }
 
-        $portAdminStatus = $switch->getSnmpPortAdminStatus($switchIP, $switchPort);
-        if ($portAdminStatus) {
-            $portAdminStatus = $this->formatSnmpResponse($portAdminStatus);
+        $portAdminStatusResponse = $switch->getSnmpPortAdminStatus($switchIP, $switchPort);
+        if (!isset($portAdminStatusResponse['error'])) {
+            $portAdminStatus = $portAdminStatusResponse['response'];
             switch ($portAdminStatus) {
+                case '1':
                 case 'up(1)':
                     $portAdminStatus = 'up';
                     break;
+                case '2':
                 case 'down(2)':
                     $portAdminStatus = 'down';
                     break;
+                case '3':
                 case 'testing(3)':
                     $portAdminStatus = 'testing';
                     break;
@@ -148,9 +138,10 @@ class NetworkController extends Controller
             $portStatus['admin-status'] = 'error';
         }
 
-        $portSpeed = $switch->getSnmpPortSpeed($switchIP, $switchPort);
-        if ($portSpeed) {
-            $portSpeedInt = intval($this->formatSnmpResponse($portSpeed)) / 1000000;
+        $portSpeedResponse = $switch->getSnmpPortSpeed($switchIP, $switchPort);
+        if (!isset($portSpeedResponse['error'])) {
+            $portSpeedInt = intval($portSpeedResponse['response']) / 1000000;
+
             if ($portStatus['oper-status'] == 'up') {
                 $portStatus['port-speed'] = $portSpeedInt . 'M';
             } else {
@@ -159,20 +150,29 @@ class NetworkController extends Controller
         } else {
             $portStatus['port-speed'] = 'error';
         }
-        
+
         $portStatus['port-status'] = ($portStatus['port-speed'] == 'N/A') ? $portStatus['oper-status'].' (admin: '.$portStatus['admin-status'].')' : 
-                                        $portStatus['oper-status'].' (admin: '.$portStatus['admin-status'].', speed: '.$portStatus['port-speed'].')';
+        $portStatus['oper-status'].' (admin: '.$portStatus['admin-status'].', speed: '.$portStatus['port-speed'].')';
         $portStatus['dashboard-port-status'] = ($portStatus['port-speed'] == 'N/A') ? $portStatus['oper-status'] : $portStatus['oper-status'].' at '.$portStatus['port-speed'];
-        
-        $portStatus['last-change'] = $switch->getSnmpPortLastChangeFormatted($switchIP, $switchPort);
-        $portStatus['switch-uptime'] = $switch->getSnmpSysUptimeFormatted($switchIP, $switchPort);
 
-        $switchPortMode = $switch->getSnmpSwitchportMode($switchIP, $switchPort);
+        $lastChangeResponse = $switch->getSnmpPortLastChangeFormatted($switchIP, $switchPort);
+        $portStatus['last-change'] = isset($lastChangeResponse['error']) ? 'error' : $lastChangeResponse['response'];
+
+        $sysUptimeResponse = $switch->getSnmpSysUptime($switchIP, $switchPort, true);
+        $portStatus['switch-uptime'] = isset($sysUptimeResponse['error']) ? 'error' : $sysUptimeResponse['response'];
+
+        $switchPortModeResponse = $switch->getSnmpSwitchportMode($switchIP, $switchPort);
+        $switchPortMode = isset($switchPortModeResponse['error']) ? 'error' : $switchPortModeResponse['response'];
+
         $portVlanString = '';
-        $portVlansArr = $switch->getSnmpPortVlanAssignment($switchIP, $switchPort);
+        $portVlanResponse = $switch->getSnmpPortVlanAssignment($switchIP, $switchPort);
+        $portVlansArr = isset($portVlanResponse['error']) ? [] : $portVlanResponse['response'];
 
-        if (count($portVlansArr) > 0) {
+        $numOfVlans = count($portVlansArr);
+        if ($numOfVlans > 0 && $numOfVlans < 6) {
             $portVlanString = implode(', ', $portVlansArr);
+        } else {
+            $portVlanString = 'More than 5';
         }
         $portVlan = $portVlanString . (($switchPortMode == 1) ? ' (Trunk)' : ' (Access)');
         $portStatus['vlan'] = $portVlan;
@@ -181,22 +181,22 @@ class NetworkController extends Controller
     }
 
     public function getAdvSwitchPortStatus(Request $request) {
-        
+
         $input = $request->all();
         $portId = $input['portid'];
         $port = Port::find($portId);
-        
+
         $errorResponse = false;
-        
+
         if($port == null){
             return 'ERROR';
         }
 
-        $networkNode = $port->networkNodes;
+        $networkNode = $port->networkNode;
         if($networkNode == null){
             return 'ERROR';
         }
-        
+
         $switchIP = ($this->devMode) ? $this->devModeSwitchIP : $networkNode->ip_address;
         $switchPort = $port->port_number;
         $switchVendor = $networkNode->vendor;
@@ -205,14 +205,20 @@ class NetworkController extends Controller
             $switch = $this->getSwitchInstance();
             $portStatus = array();
 
-            $portfastStatus = $switch->getSnmpPortfastStatus($switchIP, $switchPort);
+            $portfastResponse = $switch->getSnmpPortfastStatus($switchIP, $switchPort);
+            $portfastStatus = isset($portfastResponse['error']) ? 'error' : $portfastResponse['response'];
+
             if ($portfastStatus == '1' || $portfastStatus == 'true(1)') {
                 $portStatus['portfast'] = 'Yes';
-            } else {
+            } else if($portfastStatus != 'error') {
                 $portStatus['portfast'] = 'No';
+            } else {
+                $portStatus['portfast'] = $portfastStatus;
             }
 
-            $portfastMode = $switch->getSnmpPortfastMode($switchIP, $switchPort);
+            $portfastModeResponse = $switch->getSnmpPortfastMode($switchIP, $switchPort);
+            $portfastMode = isset($portfastModeResponse['error']) ? 'error' : $portfastModeResponse['response'];
+
             if ($portfastMode == '1' || $portfastMode == 'enable(1)') {
                 $portStatus['portfast-mode'] = 'Enabled';
             } else if ($portfastMode == '2' || $portfastMode == 'disable(2)') {
@@ -225,7 +231,9 @@ class NetworkController extends Controller
                 $portStatus['portfast-mode'] = $portfastMode;
             }
 
-            $bpduGuardStatus = $switch->getSnmpBpduGuardStatus($switchIP, $switchPort);
+            $bpduGuardResponse = $switch->getSnmpBpduGuardStatus($switchIP, $switchPort);
+            $bpduGuardStatus = isset($bpduGuardResponse['error']) ? 'error' : $bpduGuardResponse['response'];
+
             if ($bpduGuardStatus == '1' || $bpduGuardStatus == 'enable(1)') {
                 $portStatus['bpdu-guard'] = 'Enabled';
             } else if ($bpduGuardStatus == '2' || $bpduGuardStatus == 'disable(2)') {
@@ -236,7 +244,9 @@ class NetworkController extends Controller
                 $portStatus['bpdu-guard'] = $bpduGuardStatus;
             }
 
-            $bpduFilterStatus = $switch->getSnmpBpduFilterStatus($switchIP, $switchPort);
+            $bpduFilterResponse = $switch->getSnmpBpduFilterStatus($switchIP, $switchPort);
+            $bpduFilterStatus = isset($bpduFilterResponse['error']) ? 'error' : $bpduFilterResponse['response'];
+
             if ($bpduFilterStatus == '1' || $bpduFilterStatus == 'enable(1)') {
                 $portStatus['bpdu-filter'] = 'Enabled';
             } else if ($bpduFilterStatus == '2' || $bpduFilterStatus == 'disable(2)') {
@@ -254,7 +264,7 @@ class NetworkController extends Controller
     }
 
     public function recycleSwitchPort(Request $request) {
-        
+
         $input = $request->all();
         $portId = $input['portid'];
 
@@ -263,58 +273,33 @@ class NetworkController extends Controller
             return 'ERROR';
         }
 
-        $networkNode = $port->networkNodes;
+        $networkNode = $port->networkNode;
         if($networkNode == null){
             return 'ERROR';
         }
-        
+
         $switchIP = ($this->devMode) ? $this->devModeSwitchIP : $networkNode->ip_address;
         $switchPort = $port->port_number;
         $switchVendor = $networkNode->vendor;
-        
-        $portOperStatus = false;
+
+        $portRecyleStatus = false;
 
         if ($switchVendor == 'Cisco') {
             $switch = $this->getSwitchInstance();
-            $portOperStatus = $switch->snmpPortRecycle($switchIP, $switchPort);
+            $portRecycleResponse = $switch->snmpPortRecycle($switchIP, $switchPort);
+            if(!isset($portRecycleResponse['error'])){
+                $portRecyleStatus = $portRecycleResponse['response'];
+            }
         }
 
-        if ($portOperStatus == true) {
+        if ($portRecyleStatus == true) {
             return $this->getSwitchPortStatus($request);
         }
         return 'ERROR';
     }
 
-//    public function getPortActiveIPs(Request $request)
-//    {
-//        $input = $request->all();
-//        $portID = $input['portid'];
-//        return $this->getActiveLeasesOnPort($portID, null, $input['id']);
-//    }
-//
-//    public function getPortAllIPs(Request $request)
-//    {
-//        $input = $request->all();
-//        $portID = $input['portid'];
-//
-//        //$servicePort = dataServicePort::with('networkNode')
-//        //->where('PortID',$portID)
-//        //->first();
-//        //$netNode = $servicePort->getRelationValue('networkNode');
-//
-//        $customer = new Customer;
-//        $customerNetData = $customer->getNetworkNodes($request->id)[0];
-//
-//
-//        $switchIP = ($this->devMode) ? $this->devModeSwitchIP : $customerNetData->ip_address;
-//        $switchPort = $customerNetData->port_number;
-//        $routerNode = $this->getRouterByPortID($portID);
-//        $routerIP = ($this->devMode) ? $this->devModeRouterIP : $routerNode->IPAddress;
-//        return $this->getAllLeasesOnPort($routerIP, $switchIP, $switchPort);
-//    }
-
     public function authenticatePort(Request $request) {
-        
+
         $input = $request->all();
         $portId = $input['portid'];
 
@@ -323,49 +308,51 @@ class NetworkController extends Controller
             return 'ERROR';
         }
 
-        $port->access_level = 'signup';
-        $port->save();
-        
-        $networkNode = $port->networkNodes;
+        $networkNode = $port->networkNode;
         if($networkNode == null){
             return 'ERROR';
         }
-        
+
         $switchIP = ($this->devMode) ? $this->devModeSwitchIP : $networkNode->ip_address;
         $switchPort = $port->port_number;
         $switchVendor = $networkNode->vendor;
         $noAccessVlan = 6;
-        
-//        $routerNode = $this->getRouterByPortID($request->portid);
-//        $routerIP = ($this->devMode) ? $this->devModeRouterIP : $routerNode->IPAddress;//ip_address
-//        $noAccessVlan = $routerNode->NoAccessVLAN;
 
-        
+        //        $routerNode = $this->getRouterByPortID($request->portid);
+        //        $routerIP = ($this->devMode) ? $this->devModeRouterIP : $routerNode->IPAddress;//ip_address
+        //        $noAccessVlan = $routerNode->NoAccessVLAN;
 
-//        if (!isset($noAccessVlan) || $noAccessVlan == '') {
-//            $ipInfoArr = $this->getActiveLeasesOnPort($routerIP);
-//            if ($ipInfoArr != false) {
-//                $router = $this->getRouterInstance();
-//                foreach ($ipInfoArr as $leaseInfo) {
-//                    $router->disableUserDHCPLeaseByID($leaseInfo['.id'], $routerIP);
-//                }
-//            }
-//        }
-        
-        $portOperStatus = false;
+
+
+        //        if (!isset($noAccessVlan) || $noAccessVlan == '') {
+        //            $ipInfoArr = $this->getActiveLeasesOnPort($routerIP);
+        //            if ($ipInfoArr != false) {
+        //                $router = $this->getRouterInstance();
+        //                foreach ($ipInfoArr as $leaseInfo) {
+        //                    $router->disableUserDHCPLeaseByID($leaseInfo['.id'], $routerIP);
+        //                }
+        //            }
+        //        }
+
+        $portAuthStatus = false;
         if ($switchVendor == 'Cisco') {
             $switch = $this->getSwitchInstance();
-            $portOperStatus = $switch->setSnmpPortVlanAssignment($switchIP, $switchPort, $noAccessVlan);
+            $portAuthResponse = $switch->setSnmpPortVlanAssignment($switchIP, $switchPort, $noAccessVlan);
+            if(!isset($portAuthResponse['error'])){
+                $portAuthStatus = $portAuthResponse['response'];
+                $port->access_level = 'signup';
+                $port->save();
+            }
         }
 
-        if ($portOperStatus == true) {
+        if ($portAuthStatus == true) {
             return $this->getSwitchPortStatus($request);
         }
         return 'ERROR';
     }
 
     public function activatePort(Request $request) {
-        
+
         $input = $request->all();
         $portId = $input['portid'];
 
@@ -374,123 +361,160 @@ class NetworkController extends Controller
             return 'ERROR';
         }
 
-        $port->access_level = 'yes';
-        $port->save();
-        
-        $networkNode = $port->networkNodes;
+        $networkNode = $port->networkNode;
         if($networkNode == null){
             return 'ERROR';
         }
-        
+
         $switchIP = ($this->devMode) ? $this->devModeSwitchIP : $networkNode->ip_address;
         $switchPort = $port->port_number;
         $switchVendor = $networkNode->vendor;
         $privateVlan = 6;
-        $portOperStatus = false;
-        
-//        $input = $request->all();
-//        $portID = $input['portid'];
-//        $servicePort = dataServicePort::with('networkNode')
-//            ->where('PortID',$portID)
-//            ->first();
-//        $servicePort->Access = 'yes';
-//        $servicePort->LastUpdated = Carbon::now()->toDateTimeString();
-//        $servicePort->save();
+        $portActivateStatus = false;
 
-//        $netNode = $servicePort->getRelationValue('networkNode');
-//        $switchIP = ($this->devMode) ? $this->devModeSwitchIP : $netNode->IPAddress;
-//        $switchPort = $servicePort->PortNumber;
-//        $switchVendor = $netNode->Vendor;
-//        $routerNode = $this->getRouterByPortID($portID);
-//        $routerIP = ($this->devMode) ? $this->devModeRouterIP : $routerNode->IPAddress;
-//        $privateVlan = $routerNode->NoAccessVLAN;
-//        $portOperStatus = false;
+        //        $input = $request->all();
+        //        $portID = $input['portid'];
+        //        $servicePort = dataServicePort::with('networkNode')
+        //            ->where('PortID',$portID)
+        //            ->first();
+        //        $servicePort->Access = 'yes';
+        //        $servicePort->LastUpdated = Carbon::now()->toDateTimeString();
+        //        $servicePort->save();
+
+        //        $netNode = $servicePort->getRelationValue('networkNode');
+        //        $switchIP = ($this->devMode) ? $this->devModeSwitchIP : $netNode->IPAddress;
+        //        $switchPort = $servicePort->PortNumber;
+        //        $switchVendor = $netNode->Vendor;
+        //        $routerNode = $this->getRouterByPortID($portID);
+        //        $routerIP = ($this->devMode) ? $this->devModeRouterIP : $routerNode->IPAddress;
+        //        $privateVlan = $routerNode->NoAccessVLAN;
+        //        $portOperStatus = false;
 
         if ($switchVendor == 'Cisco') {
+            
             $switch = $this->getSwitchInstance();
-            $privateVlan = $this->getPortPrivateVlanBySwitchIP($switchIP, $switchPort);
-            if (isset($privateVlan) && $privateVlan != '') {
-                $portOperStatus = $switch->setSnmpPortVlanAssignment($switchIP, $switchPort, $privateVlan);
+//            $privateVlan = $this->getPortPrivateVlanBySwitchIP($switchIP, $switchPort);
+            $privateVlan = $this->getPrivateVlanByPort($port);
+            if ($privateVlan != '') {
+//            if (isset($privateVlan) && $privateVlan != '') {
+                $portActivateResponse = $switch->setSnmpPortVlanAssignment($switchIP, $switchPort, $privateVlan);
+                if(!isset($portActivateResponse['error'])){
+                    $portActivateStatus = $portActivateResponse['response'];
+                    $port->access_level = 'yes';
+                    $port->save();
+                }
             } else {
-                $portOperStatus = $switch->setSnmpPortVlanAssignment($switchIP, $switchPort, $routerNode->AccessVLAN);
-            }
-        }
-
-        $ipInfoArr = $this->getAllLeasesOnPort($routerIP, $switchIP, $switchPort);
-        if ($ipInfoArr != false) {
-            $router = $this->getRouterInstance();
-            foreach ($ipInfoArr as $leaseInfo) {
-                if (isset($leaseInfo['comment'])) {
-                    $router->enableUserDHCPLeaseByID($leaseInfo['.id'], $routerIP);
-                } else {
-                    $router->removeUserDHCPLeaseByID($leaseInfo['.id'], $routerIP);
+                $accessVlan = 52;
+                $portActivateResponse = $switch->setSnmpPortVlanAssignment($switchIP, $switchPort, $accessVlan);
+                if(!isset($portActivateResponse['error'])){
+                    $portActivateStatus = $portActivateResponse['response'];
+                    $port->access_level = 'yes';
+                    $port->save();
                 }
             }
         }
 
-        if ($portOperStatus == true)
+        //        $ipInfoArr = $this->getAllLeasesOnPort($routerIP, $switchIP, $switchPort);
+        //        if ($ipInfoArr != false) {
+        //            $router = $this->getRouterInstance();
+        //            foreach ($ipInfoArr as $leaseInfo) {
+        //                if (isset($leaseInfo['comment'])) {
+        //                    $router->enableUserDHCPLeaseByID($leaseInfo['.id'], $routerIP);
+        //                } else {
+        //                    $router->removeUserDHCPLeaseByID($leaseInfo['.id'], $routerIP);
+        //                }
+        //            }
+        //        }
+
+        if ($portActivateStatus == true){
             return $this->getSwitchPortStatus($request);
-        else
-            return 'ERROR';
+        }
+        return 'ERROR';
     }
 
-//    public function removeLease(Request $request) {
-//        $input = $request->all();
-//        $portID = $input['portid'];
-//        $leaseID = $input['leaseID'];
-//
-//        $routerNode = $this->getRouterByPortID($portID);
-//        $routerIP = ($this->devMode) ? $this->devModeRouterIP : $routerNode->IPAddress;
-//        $router = $this->getRouterInstance();
-//        $routerActionResult = $router->removeUserDHCPLeaseByID($leaseID, $routerIP);
-//        return array('Status' => 'Removed');
-//    }
-//
-//    public function reserveLease(Request $request) {
-//        $input = $request->all();
-//        $leaseID = $input['leaseID'];
-//        $portID = $input['portid'];
-//        $CID = $input['CID'];
-//
-//        $servicePort = dataServicePort::with('networkNode')
-//            ->where('PortID',$portID)
-//            ->first();
-//
-//        $netNode = $servicePort->getRelationValue('networkNode');
-//        $switchIP = ($this->devMode) ? $this->devModeSwitchIP : $netNode->IPAddress;
-//        $routerNode = $this->getRouterByPortID($portID);
-//        $routerIP = ($this->devMode) ? $this->devModeRouterIP : $routerNode->IPAddress;
-//
-//        $customer = Customers::where('CID',$CID)
-//            ->first();
-//        $LocCode = $customer->LocCode;
-//        $UnitNumber = $customer->UnitNumber;
-//        $portOperStatus = false;
-//
-//        $router = $this->getRouterInstance();
-//        $routerActionResult = $router->reserveUserDHCPLeaseByID($leaseID, $LocCode, $UnitNumber, $routerIP);
-//
-//        return array('Status' => 'Reserved');
-//    }
+    public function getPrivateVlanByPort(Port $port){
+        
+        $netNode = $port->networkNode;
+        $vlanRangeStr = $netNode->getProperty('private vlan range');
+        if($vlanRangeStr == null){
+            return '';
+        }
+        $switch = $this->getSwitchInstance();
+        $portPosition = $switch->getPortPositionByPortNumber($netNode->ip_address, $port->port_number);
+        return $this->calculatePrivateVlanFromRange($vlanRangeStr, $portPosition);
+    }
+    
+    protected function calculatePrivateVlanFromRange($vlanRangeStr, $portPosition) {
+        $privateVlan = '';
+        if (isset($vlanRangeStr) && $vlanRangeStr != '') {
+            $vlanArray = array();
+            $vlanRangeChunks = explode(',', $vlanRangeStr);
+
+            foreach($vlanRangeChunks as $range){
+                $range = trim($range);
+                $vlanRangeArr = explode('-', $range);
+                if(empty($vlanArray)) {
+                    $vlanArray = range(trim($vlanRangeArr[0]), trim($vlanRangeArr[count($vlanRangeArr) - 1]));
+                } else {
+                    $vlanArray = array_merge($vlanArray, range(trim($vlanRangeArr[0]), trim($vlanRangeArr[count($vlanRangeArr) - 1])));
+                }
+            }
+            $privateVlan = $vlanArray[$portPosition];
+        }
+        return $privateVlan;
+    }
+    
+    
+    
+    public function getPortPrivateVlanByPortID(Request $request) {
+
+        $input = $request->all();
+        $portID = $input['portid'];
+        $port = Port::find($portID);
+        $netNode = $port->networkNode;
+        $switchIP = ($this->devMode) ? $this->devModeSwitchIP : $netNode->ip_address;
+        return $this->getPortPrivateVlanBySwitchIP($switchIP, $port->port_number);
+    }
+
+    protected function getPortPrivateVlanBySwitchIP($switchIP, $switchPort) {
+
+//        $netNode
+        $vlanRangeStr = $this->getNetworkNodePropertyByIPAddress($switchIP, 'private vlan range');
+        $switch = $this->getSwitchInstance();
+        $portPosition = $switch->getPortPositionByPortNumber($switchIP, $switchPort);
+
+        return $this->calculatePrivateVlanFromRange($vlanRangeStr, $portPosition);
+    }
+
+    
+
+    protected function getNetworkNodePropertyByIPAddress($ipAddress, $propertyName) {
+
+        $netNode = networkNodes::where('IPAddress',$ipAddress)
+            ->first();
+        $nodePropertyValue = '';
+        $nodeProps = $netNode->Properties;
+        if ($nodeProps != NULL && $nodeProps != '') {
+            $nodePropsArr = json_decode($nodeProps, true);
+            if (isset($nodePropsArr[0]) && isset($nodePropsArr[0][$propertyName])) {
+                $nodePropertyValue = $nodePropsArr[0][$propertyName];
+            }
+        }
+        return $nodePropertyValue;
+    }
+
+
+
+
+
+    ######################################
+    # Old function - need to be updated
+    ######################################
 
     public function getRouterInfoByPortID(Request $request) {
         $input = $request->all();
         $portID = $input['portid'];
         return $this->getRouterByPortID($portID);
-    }
-
-    public function getPortPrivateVlanByPortID(Request $request) {
-        $input = $request->all();
-        $portID = $input['portid'];
-        $servicePort = dataServicePort::with('networkNode')
-            ->where('PortID',$portID)
-            ->first();
-
-        $netNode = $servicePort->getRelationValue('networkNode');
-        $switchIP = ($this->devMode) ? $this->devModeSwitchIP : $netNode->IPAddress;
-        $switchPort = $servicePort->PortNumber;
-
-        return $this->getPortPrivateVlanBySwitchIP($switchIP, $switchPort);
     }
 
     protected function getRouterByPortID($portID, $idCustomer) {
@@ -553,55 +577,100 @@ class NetworkController extends Controller
         return $userIPInfoArr;
     }
 
-    protected function getPortPrivateVlanBySwitchIP($switchIP, $switchPort) {
-        $vlanRangeStr = $this->getNetworkNodePropertyByIPAddress($switchIP, 'private vlan range');
-        $switch = $this->getSwitchInstance();
-        $portPosition = $switch->getPortPositionByPortNumber($switchIP, $switchPort);
+    //    protected function getRouterInstance(){
+    //        return new MtikRouter(['username' => $this->mtikusername,
+    //                               'password' => $this->mtikpassword]);
+    //    }
+    //
+    //    public function getCustomerConnectionInfo($portID) {
+    //        $servicePort = DataServicePort::with('networkNode')->where('id',$portID)->first();
+    //
+    //        Log::info('port info: ', print_r($servicePort, true));
+    //
+    //        $netNode = $servicePort->getRelationValue('networkNode');
+    //        return ['Name'    => $netNode->host_name,
+    //                'IP'      => $netNode->ip_address,
+    //                'Port'    => $servicePort->port_number,
+    //                'Access'  => $servicePort->access_level,
+    //                'Vendor'  => $netNode->vendor,
+    //                'Model'   => $netNode->model
+    //               ];
+    //    }
 
-        return $this->getSwitchPrivateVlanByRange($vlanRangeStr, $portPosition);
-    }
+    //    public function getPortActiveIPs(Request $request)
+    //    {
+    //        $input = $request->all();
+    //        $portID = $input['portid'];
+    //        return $this->getActiveLeasesOnPort($portID, null, $input['id']);
+    //    }
+    //
+    //    public function getPortAllIPs(Request $request)
+    //    {
+    //        $input = $request->all();
+    //        $portID = $input['portid'];
+    //
+    //        //$servicePort = dataServicePort::with('networkNode')
+    //        //->where('PortID',$portID)
+    //        //->first();
+    //        //$netNode = $servicePort->getRelationValue('networkNode');
+    //
+    //        $customer = new Customer;
+    //        $customerNetData = $customer->getNetworkNodes($request->id)[0];
+    //
+    //
+    //        $switchIP = ($this->devMode) ? $this->devModeSwitchIP : $customerNetData->ip_address;
+    //        $switchPort = $customerNetData->port_number;
+    //        $routerNode = $this->getRouterByPortID($portID);
+    //        $routerIP = ($this->devMode) ? $this->devModeRouterIP : $routerNode->IPAddress;
+    //        return $this->getAllLeasesOnPort($routerIP, $switchIP, $switchPort);
+    //    }
 
-    protected function getNetworkNodePropertyByIPAddress($ipAddress, $propertyName) {
+    //    public function removeLease(Request $request) {
+    //        $input = $request->all();
+    //        $portID = $input['portid'];
+    //        $leaseID = $input['leaseID'];
+    //
+    //        $routerNode = $this->getRouterByPortID($portID);
+    //        $routerIP = ($this->devMode) ? $this->devModeRouterIP : $routerNode->IPAddress;
+    //        $router = $this->getRouterInstance();
+    //        $routerActionResult = $router->removeUserDHCPLeaseByID($leaseID, $routerIP);
+    //        return array('Status' => 'Removed');
+    //    }
+    //
+    //    public function reserveLease(Request $request) {
+    //        $input = $request->all();
+    //        $leaseID = $input['leaseID'];
+    //        $portID = $input['portid'];
+    //        $CID = $input['CID'];
+    //
+    //        $servicePort = dataServicePort::with('networkNode')
+    //            ->where('PortID',$portID)
+    //            ->first();
+    //
+    //        $netNode = $servicePort->getRelationValue('networkNode');
+    //        $switchIP = ($this->devMode) ? $this->devModeSwitchIP : $netNode->IPAddress;
+    //        $routerNode = $this->getRouterByPortID($portID);
+    //        $routerIP = ($this->devMode) ? $this->devModeRouterIP : $routerNode->IPAddress;
+    //
+    //        $customer = Customers::where('CID',$CID)
+    //            ->first();
+    //        $LocCode = $customer->LocCode;
+    //        $UnitNumber = $customer->UnitNumber;
+    //        $portOperStatus = false;
+    //
+    //        $router = $this->getRouterInstance();
+    //        $routerActionResult = $router->reserveUserDHCPLeaseByID($leaseID, $LocCode, $UnitNumber, $routerIP);
+    //
+    //        return array('Status' => 'Reserved');
+    //    }
 
-        $netNode = networkNodes::where('IPAddress',$ipAddress)
-            ->first();
-        $nodePropertyValue = '';
-        $nodeProps = $netNode->Properties;
-        if ($nodeProps != NULL && $nodeProps != '') {
-            $nodePropsArr = json_decode($nodeProps, true);
-            if (isset($nodePropsArr[0]) && isset($nodePropsArr[0][$propertyName])) {
-                $nodePropertyValue = $nodePropsArr[0][$propertyName];
-            }
-        }
-        return $nodePropertyValue;
-    }
 
-    protected function getSwitchPrivateVlanByRange($vlanRangeStr, $portPosition) {
-        $privateVlan = '';
-        if (isset($vlanRangeStr) && $vlanRangeStr != '') {
-            $vlanArray = array();
-            $vlanRangeChunks = explode(',', $vlanRangeStr);
-
-            foreach($vlanRangeChunks as $range){
-                $range = trim($range);
-                $vlanRangeArr = explode('-', $range);
-                if(empty($vlanArray)) {
-                    $vlanArray = range(trim($vlanRangeArr[0]), trim($vlanRangeArr[count($vlanRangeArr) - 1]));
-                } else {
-                    $vlanArray = array_merge($vlanArray, range(trim($vlanRangeArr[0]), trim($vlanRangeArr[count($vlanRangeArr) - 1])));
-                }
-            }
-            $privateVlan = $vlanArray[$portPosition];
-        }
-        return $privateVlan;
-    }
-
-    public function formatSnmpResponse($snmpResponse) {
-        if ($snmpResponse != '') {
-            $snmpRespStr = preg_replace('/.+:/', '', $snmpResponse);
-            return trim($snmpRespStr);
-        }
-        return false;
-    }
+    //    public function formatSnmpResponse($snmpResponse) {
+    //        if ($snmpResponse != '') {
+    //            $snmpRespStr = preg_replace('/.+:/', '', $snmpResponse);
+    //            return trim($snmpRespStr);
+    //        }
+    //        return false;
+    //    }
 
 }

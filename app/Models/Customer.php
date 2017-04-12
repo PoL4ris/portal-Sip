@@ -71,7 +71,7 @@ class Customer extends Model
             $id = $this->attributes['id'];
         }
 //        return $this->ports()->with('networkNodes')->get();
-        return $this->port()->with('networkNodes')->get();
+        return $this->port()->with('networkNode')->get();
     }
     
     public function port(){

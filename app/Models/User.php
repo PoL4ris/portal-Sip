@@ -37,12 +37,12 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
    */
     protected $hidden = ['password', 'remember_token'];
 
-    public function isAnAdmin() {
-        return ($this->role == 'admin') ? true : false;
-    }
+//    public function isAnAdmin() {
+//        return ($this->role == 'admin') ? true : false;
+//    }
 
     public function isActive() {
-        return ($this->access == 'yes') ? true : false;
+        return ($this->id_status == config('const.status.active')) ? true : false;
     }
 
     /**
