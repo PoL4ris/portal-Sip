@@ -137,12 +137,15 @@ class NetworkController extends Controller
         if (!isset($portAdminStatusResponse['error'])) {
             $portAdminStatus = $portAdminStatusResponse['response'];
             switch ($portAdminStatus) {
+                case '1':
                 case 'up(1)':
                     $portAdminStatus = 'up';
                     break;
+                case '2':
                 case 'down(2)':
                     $portAdminStatus = 'down';
                     break;
+                case '3':
                 case 'testing(3)':
                     $portAdminStatus = 'testing';
                     break;
