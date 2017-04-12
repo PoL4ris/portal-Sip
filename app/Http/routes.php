@@ -22,13 +22,19 @@ Route::get('supportTest',        'TestController@supportTest');
 Route::get('logFunction',        'TestController@logFunction');
 Route::get('testView',           'TestController@cleanView');
 Route::get('testTickets',        'TestController@testCustomerTickets');
-Route::get('getSignupProducts',  'SignupController@getSignupProducts');
 Route::get('process-lease',      'DhcpController@processLease');
 Route::get('invoiceTest',        'TestController@invoiceTest');
 Route::get('mail',               'TestController@mail');
 Route::get('migrate',            'TestController@testDataMigration');
 Route::get('gTest',               'TestController@generalTest');
 Route::get('netTest',               'NetworkController@getPrivateVlanByPort');
+
+//Route::get('getSignupProducts',  'SignupController@getSignupProducts');
+Route::get('signup',  function() {
+    dd('There is nothing here.');
+});
+Route::post('signup',  'SignupController@processRouterData');
+Route::get('splash',  'SignupController@getSplashPage');
 
 
 Route::group(['middleware' => 'web'], function () {
