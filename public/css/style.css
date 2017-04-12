@@ -622,6 +622,12 @@ table.dataTable tbody tr {
 .bg-status-disabled {
   color: rgba(0, 0, 0, 0.4);
 }
+.bg-payment-debt{
+  border:3px solid crimson;
+  /*background: rgba(220,20,60,.7);*/
+}
+.bg-payment-no-debt{
+}
 .display-service-status-active{}
 .display-service-status-disabled{
   position: relative;
@@ -718,7 +724,10 @@ table.dataTable tbody tr {
 
 
 
-.building-list-side{  }
+.support-active{
+  /*background: rgba(0, 0, 0, 0) linear-gradient(rgba(62, 108, 201, 0.7), rgba(46, 81, 182, 0.7)) repeat scroll 0 0;*/
+  background: linear-gradient(#afafaf, #a8a8a8);
+}
 .building-list-side .bld-list-side{
   border-bottom: 1px solid #ddd;
   line-height: 150%;

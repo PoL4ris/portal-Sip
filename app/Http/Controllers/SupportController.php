@@ -88,9 +88,10 @@ class SupportController extends Controller
   }//Works with main
 
   public function getNoneBillingTickets(){
-    $record = Ticket::with('customer', 'reason', 'ticketNote','ticketHistory', 'user', 'userAssigned', 'address', 'contacts')
+    $record = Ticket::with('customer', 'reason', 'ticketNote','lastTicketHistory', 'user', 'userAssigned', 'address', 'contacts')
       ->where('id_reasons','!=', 11)
       ->where('id_reasons','!=', 18)
+      ->where('id_reasons','!=', 29)
       ->where('status','!=', 'closed')
       ->orderBy('updated_at', 'desc')
       ->get();
@@ -100,9 +101,10 @@ class SupportController extends Controller
 
   }
   public function getBillingTickets(){
-    $record = Ticket::with('customer', 'reason', 'ticketNote','ticketHistory', 'user', 'userAssigned', 'address', 'contacts')
+    $record = Ticket::with('customer', 'reason', 'ticketNote','lastTicketHistory', 'user', 'userAssigned', 'address', 'contacts')
       ->where('id_reasons','!=', 11)
       ->where('id_reasons', 18)
+      ->where('id_reasons', 29)
       ->where('status','!=', 'closed')
       ->orderBy('updated_at', 'desc')
       ->get();
@@ -112,7 +114,7 @@ class SupportController extends Controller
 
   }
   public function getMyTickets(){
-    $record = Ticket::with('customer', 'reason', 'ticketNote','ticketHistory', 'user', 'userAssigned', 'address', 'contacts')
+    $record = Ticket::with('customer', 'reason', 'ticketNote','lastTicketHistory', 'user', 'userAssigned', 'address', 'contacts')
       ->where('id_reasons','!=', 11)
       ->where('id_users', Auth::user()->id)
       ->where('status','!=', 'closed')
