@@ -515,7 +515,7 @@ class DataMigrationUtils {
             $this->writeLog('<info> data_migrations table is not empty. Skipping.</info>');
             return;
         }
-        
+
         foreach($this->tableMap as $tableName => $tableModelMap){
             DataMigration::firstOrCreate(['table_name' => $tableName]);
         }
@@ -548,7 +548,7 @@ class DataMigrationUtils {
         App::firstOrCreate(['id' => 3, 'id_apps' => 0, 'name' => 'Customers', 'icon' => 'fa-user ', 'url' => 'customers']);
         App::firstOrCreate(['id' => 4, 'id_apps' => 0, 'name' => 'Building', 'icon' => 'fa-building-o', 'url' => 'buildings']);
         App::firstOrCreate(['id' => 5, 'id_apps' => 0, 'name' => 'Network', 'icon' => 'fa-signal', 'url' => 'network']);
-        
+
 
         // FOR FUTURE USE
         //        App::firstOrCreate(['id' => 1, 'id_apps' => 0, 'name' => 'Home', 'icon' => 'icon-home', 'url' => '#/']);
@@ -566,10 +566,30 @@ class DataMigrationUtils {
             $this->writeLog('<info> users table is not empty. Skipping.</info>');
             return;
         }
-        User::firstOrCreate(['id' => 1, 'first_name' => 'Pablo', 'last_name' => 'Laris', 'email' => 'pablo@silverip.com', 'password' => '$2y$10$u.sqr/WkAQaJL7FCCQVmGue8efy3wAdF1E/OKGr5XQgxS8vDPCJ.2', 'remember_token' => 'Jonk6hBM0kmkQipY2WTTmrfFN2YZrZDQzzj37GqwTObdij5LOOUnjFeLF8Qb', 'social_token' => 'ya29.Gl0WBAIa60ypaAaSdSo-rfT08I_1X4poFF9TM3MgF2Bs3E83GYaYoTiTP2ljuN_n4dP6sf6ZDhNBzYp9zo2I-Vl7D-VWkmk', 'social_access' => 1, 'avatar' => 'https://lh4.googleusercontent.com/-MY1G9QEJ8M4/AAAAAAAAAAI/AAAAAAAAABM/wLAg7FpkX5E/photo.jpg?sz=50', 'alias' => 'PL', 'id_status' => 3, 'id_profiles' => 1]);
-        User::firstOrCreate(['id' => 2, 'first_name' => 'Farzad', 'last_name' => 'Farzad', 'email' => 'farzad@silverip.com', 'password' => '$2a$08$UdmCQyKxZlWEfbl94yB4e.M4zS9lg88Osea8lQ8Ay0NQ9KxD05Rkq', 'remember_token' => 'DN5OipGB4aH2dU233R3hAKnCQ1qoeqSN1VnQHnxJPHyKLnvg5ldpYdPU8Qov', 'social_token' => '', 'social_access' => 1, 'avatar' => 'https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg?sz=50', 'alias' => 'FM', 'id_status' => 3, 'id_profiles' => 1]);
-        User::firstOrCreate(['id' => 3, 'first_name' => 'Peyman', 'last_name' => 'Pourkermani', 'email' => 'peyman@silverip.com', 'password' => '$2y$10$12q8f3L/WXUiwRpQdYjOX.7HzTx/7akNIfqItbJncfYCr5z5egEjO', 'remember_token' => 'MA1xsnRUhbTRteuxmziO9Pe1eBp74nzBifwRhC2cmkSyu45ZA7TvYOKK2Khq', 'social_token' => 'ya29.CjNrA0b1vBMPk49P_gZ9TOSlV7ajVYFVixiKE6py_eBOcgL7isD2bFuIrxzO-CiSlre8r7g', 'social_access' => 1, 'avatar' => 'https://lh6.googleusercontent.com/-2JxSuRyHszI/AAAAAAAAAAI/AAAAAAAAABA/FXimdQSdkwQ/photo.jpg?sz=50', 'alias' => 'PP', 'id_status' => 3, 'id_profiles' => 1]);
-        User::firstOrCreate(['id' => 4, 'first_name' => 'admin', 'last_name' => 'admin', 'email' => 'admin@admin.com', 'password' => '$2a$06$lRhl6zzwSxCKUrGPKAWM0OL6MgYECwjB6Hv02zPOGsGThmmKjINl2', 'remember_token' => '', 'social_token' => '', 'social_access' => 1, 'avatar' => '', 'alias' => 'A', 'id_status' => 3, 'id_profiles' => 1]);
+        User::firstOrCreate(['id' => 1, 'first_name' => 'Farzad', 'last_name' => 'Moeinzadeh', 'email' => 'farzad@silverip.com', 'social_access' => 1, 'alias' => 'FM', 'id_status' => 1, 'id_profiles' => 1]);
+        User::firstOrCreate(['id' => 2, 'first_name' => 'Peyman', 'last_name' => 'Pourkermani', 'email' => 'peyman@silverip.com', 'social_access' => 1, 'alias' => 'PP', 'id_status' => 1, 'id_profiles' => 1]);
+        User::firstOrCreate(['id' => 3, 'first_name' => 'Jon', 'last_name' => 'Nierstheimer', 'email' => 'jon@silverip.com', 'social_access' => 1, 'alias' => 'JN', 'id_status' => 1, 'id_profiles' => 1]);
+        User::firstOrCreate(['id' => 5, 'first_name' => 'James', 'last_name' => 'Manrique', 'email' => 'james@silverip.com', 'social_access' => 1, 'alias' => 'JM', 'id_status' => 1, 'id_profiles' => 1]);
+        User::firstOrCreate(['id' => 7, 'first_name' => 'Todd', 'last_name' => 'Hammersmith', 'email' => 'todd@silverip.com', 'social_access' => 1, 'alias' => 'TH', 'id_status' => 1, 'id_profiles' => 1]);
+        User::firstOrCreate(['id' => 8, 'first_name' => 'Andrew', 'last_name' => 'Perez', 'email' => 'andrew@silverip.com', 'social_access' => 1, 'alias' => 'AP', 'id_status' => 1, 'id_profiles' => 1]);
+        User::firstOrCreate(['id' => 9, 'first_name' => 'Abraham', 'last_name' => 'Ramirez', 'email' => 'abe@silverip.com', 'social_access' => 1, 'alias' => 'Abe', 'id_status' => 1, 'id_profiles' => 1]);
+        User::firstOrCreate(['id' => 12, 'first_name' => 'Eliazar', 'last_name' => 'Padilla', 'email' => 'eli@silverip.com', 'social_access' => 1, 'alias' => 'EP', 'id_status' => 1, 'id_profiles' => 1]);
+        User::firstOrCreate(['id' => 11, 'first_name' => 'Rob', 'last_name' => 'Czajewski', 'email' => 'rob@silverip.com', 'social_access' => 1, 'alias' => 'Rob', 'id_status' => 2, 'id_profiles' => 1]);
+        User::firstOrCreate(['id' => 14, 'first_name' => 'Juan', 'last_name' => 'Quintanilla', 'email' => 'juan@silverip.com', 'social_access' => 1, 'alias' => 'JQ', 'id_status' => 1, 'id_profiles' => 1]);
+        User::firstOrCreate(['id' => 15, 'first_name' => 'Sergiu', 'last_name' => 'Rudenco', 'email' => 'sergiu@silverip.com', 'social_access' => 1, 'alias' => 'SR', 'id_status' => 1, 'id_profiles' => 1]);
+        User::firstOrCreate(['id' => 16, 'first_name' => 'Vanessa', 'last_name' => 'Phillips', 'email' => 'vanessa@silverip.com', 'social_access' => 1, 'alias' => 'VP', 'id_status' => 1, 'id_profiles' => 1]);
+        User::firstOrCreate(['id' => 17, 'first_name' => 'Marline', 'last_name' => 'Sanders', 'email' => 'marline@silverip.com', 'social_access' => 1, 'alias' => 'MS', 'id_status' => 1, 'id_profiles' => 1]);
+        User::firstOrCreate(['id' => 18, 'first_name' => 'SIP', 'last_name' => 'Support', 'email' => 'help@silverip.com', 'social_access' => 1, 'alias' => 'Support', 'id_status' => 2, 'id_profiles' => 1]);
+        User::firstOrCreate(['id' => 19, 'first_name' => 'Brian', 'last_name' => 'Collazo', 'email' => 'brian.c@silverip.com', 'social_access' => 1, 'alias' => 'BC', 'id_status' => 1, 'id_profiles' => 1]);
+        User::firstOrCreate(['id' => 20, 'first_name' => 'Brian', 'last_name' => 'Craddock', 'email' => 'brian@silverip.com', 'social_access' => 1, 'alias' => 'BCR', 'id_status' => 1, 'id_profiles' => 1]);
+        User::firstOrCreate(['id' => 21, 'first_name' => 'Melvin', 'last_name' => 'Mendoza', 'email' => 'melvin@silverip.com', 'social_access' => 1, 'alias' => 'MM', 'id_status' => 1, 'id_profiles' => 1]);
+        User::firstOrCreate(['id' => 22, 'first_name' => 'Israel', 'last_name' => 'Perez', 'email' => 'izzy@silverip.com', 'social_access' => 1, 'alias' => 'IP', 'id_status' => 1, 'id_profiles' => 1]);
+        User::firstOrCreate(['id' => 23, 'first_name' => 'Pablo', 'last_name' => 'Laris', 'email' => 'pablo@silverip.com', 'social_access' => 1, 'alias' => 'PL', 'id_status' => 1, 'id_profiles' => 1]);
+
+        //        User::firstOrCreate(['id' => 1, 'first_name' => 'Pablo', 'last_name' => 'Laris', 'email' => 'pablo@silverip.com', 'password' => '$2y$10$u.sqr/WkAQaJL7FCCQVmGue8efy3wAdF1E/OKGr5XQgxS8vDPCJ.2', 'remember_token' => 'Jonk6hBM0kmkQipY2WTTmrfFN2YZrZDQzzj37GqwTObdij5LOOUnjFeLF8Qb', 'social_token' => 'ya29.Gl0WBAIa60ypaAaSdSo-rfT08I_1X4poFF9TM3MgF2Bs3E83GYaYoTiTP2ljuN_n4dP6sf6ZDhNBzYp9zo2I-Vl7D-VWkmk', 'social_access' => 1, 'avatar' => 'https://lh4.googleusercontent.com/-MY1G9QEJ8M4/AAAAAAAAAAI/AAAAAAAAABM/wLAg7FpkX5E/photo.jpg?sz=50', 'alias' => 'PL', 'id_status' => 3, 'id_profiles' => 1]);
+        //        User::firstOrCreate(['id' => 2, 'first_name' => 'Farzad', 'last_name' => 'Farzad', 'email' => 'farzad@silverip.com', 'password' => '$2a$08$UdmCQyKxZlWEfbl94yB4e.M4zS9lg88Osea8lQ8Ay0NQ9KxD05Rkq', 'remember_token' => 'DN5OipGB4aH2dU233R3hAKnCQ1qoeqSN1VnQHnxJPHyKLnvg5ldpYdPU8Qov', 'social_token' => '', 'social_access' => 1, 'avatar' => 'https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg?sz=50', 'alias' => 'FM', 'id_status' => 3, 'id_profiles' => 1]);
+        //        User::firstOrCreate(['id' => 3, 'first_name' => 'Peyman', 'last_name' => 'Pourkermani', 'email' => 'peyman@silverip.com', 'password' => '$2y$10$12q8f3L/WXUiwRpQdYjOX.7HzTx/7akNIfqItbJncfYCr5z5egEjO', 'remember_token' => 'MA1xsnRUhbTRteuxmziO9Pe1eBp74nzBifwRhC2cmkSyu45ZA7TvYOKK2Khq', 'social_token' => 'ya29.CjNrA0b1vBMPk49P_gZ9TOSlV7ajVYFVixiKE6py_eBOcgL7isD2bFuIrxzO-CiSlre8r7g', 'social_access' => 1, 'avatar' => 'https://lh6.googleusercontent.com/-2JxSuRyHszI/AAAAAAAAAAI/AAAAAAAAABA/FXimdQSdkwQ/photo.jpg?sz=50', 'alias' => 'PP', 'id_status' => 3, 'id_profiles' => 1]);
+        User::firstOrCreate(['id' => 24, 'first_name' => 'admin', 'last_name' => 'admin', 'email' => 'admin@admin.com', 'password' => '$2a$06$lRhl6zzwSxCKUrGPKAWM0OL6MgYECwjB6Hv02zPOGsGThmmKjINl2', 'remember_token' => '', 'social_token' => '', 'social_access' => 1, 'avatar' => '', 'alias' => 'A', 'id_status' => 3, 'id_profiles' => 1]);
     }
 
     public function seedStatusTable() {
@@ -947,11 +967,11 @@ class DataMigrationUtils {
                     ->orderBy($legacyModelId, 'asc')
                     ->take($recordsPerCycle)
                     ->get();
-                
+
                 if($legacyRecords->count() == 0){
                     break;
                 }
-                
+
                 $updateCount = 0;
                 foreach ($legacyRecords as $legacyRecord) {
 
@@ -1180,7 +1200,7 @@ class DataMigrationUtils {
         $job = ScheduledJob::where('command', $this->jobNames[$jobNameKey])->first();
         return $job->getProperty($propName);
     }
-     
+
     protected function writeLog($message){
         if($this->output != null){
             $this->output->writeln($message);
@@ -1630,13 +1650,13 @@ class DataMigrationUtils {
         $buildingProduct->id = $legacyBuildingProduct->SLPID;
         $buildingProduct->id_buildings = $legacyBuildingProduct->LocID;
         $buildingProduct->id_products = $legacyBuildingProduct->ProdID;
-        
+
         if($legacyBuildingProduct->Status == 'active') {
-           $buildingProduct->id_status = config('const.status.active');
+            $buildingProduct->id_status = config('const.status.active');
         } else {
             $buildingProduct->id_status = config('const.status.disabled');
         } 
-        
+
         $buildingProduct = $this->copyTimestamps($legacyBuildingProduct, $buildingProduct);
         $buildingProduct->save();
         return true;
@@ -1702,9 +1722,9 @@ class DataMigrationUtils {
         $port->id_network_nodes = $legacyPort->NodeID;
 
         $legacyCustomers = CustomerOld::where('PortID', $legacyPort->PortID)
-                                    ->orderBy('AccountStatus', 'asc')
-                                    ->get();
-        
+            ->orderBy('AccountStatus', 'asc')
+            ->get();
+
         if($legacyCustomers->count() > 0){
             $legacyCustomer = $legacyCustomers->first();
             $port->id_customers = $legacyCustomer->CID;
@@ -1712,7 +1732,7 @@ class DataMigrationUtils {
 
         $port = $this->copyTimestamps($legacyPort, $port);
         $port->save();
-        
+
         foreach($legacyCustomers as $legacyCustomer) {
             CustomerPort::firstOrCreate(['customer_id' => $legacyCustomer->CID, 'port_id' => $port->id]);
         }

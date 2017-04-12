@@ -96,24 +96,31 @@ class NetworkController extends Controller
         if (!isset($portOperStatusResponse['error'])) {
             $portOperStatus = $portOperStatusResponse['response'];
             switch ($portOperStatus) {
+                case '1':
                 case 'up(1)':
                     $portOperStatus = 'up';
                     break;
+                case '2':
                 case 'down(2)':
                     $portOperStatus = 'down';
                     break;
+                case '3':
                 case 'testing(3)':
                     $portOperStatus = 'testing';
                     break;
+                case '4':
                 case 'unknown(4)':
                     $portOperStatus = 'unknown';
                     break;
+                case '5':
                 case 'dormant(5)':
                     $portOperStatus = 'dormant';
                     break;
+                case '6':
                 case 'notPresent(6)':
                     $portOperStatus = 'not present';
                     break;
+                case '7':
                 case 'lowerLayerDown(7)':
                     $portOperStatus = 'lower layer down';
                     break;
