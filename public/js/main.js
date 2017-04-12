@@ -163,7 +163,6 @@ app.factory('adminService', function() {
   };
 });
 
-
 //
 //Stronger Service Dif Solution.
 // app.factory('myFactory', function() {

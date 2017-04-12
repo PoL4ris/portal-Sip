@@ -8,16 +8,13 @@ app.controller('menuController',                    function($scope, $http){
 //Building Controllers
 app.controller('buildingCtl',                       function($scope, $http, $stateParams, customerService) {
 
+// console.log('uno');
+//   if(customerService.stateRoute == 'buildings')
+//   {
+//     $scope.sipTool(0,'silverip-left');
+//   }
 
-  console.log(customerService);
-  if(customerService.stateRoute == 'buildings' )
-  {
-    if(!customerService.sideBarFlag) {
-        $scope.sipTool(2);
-        customerService.sideBarFlag = true;
-    }
-  }
-
+//   return;
   $scope.idBuilding = null;
 
   if($stateParams.id)
@@ -315,9 +312,25 @@ app.controller('buildingCtl',                       function($scope, $http, $sta
     }
 })
 //Building Side Bar
-app.controller('sideBldController',                 function($scope, $http, buildingService, $stateParams){
+app.controller('sideBldController',                 function($scope, $http, buildingService, $stateParams, customerService){
 
-  $scope.sipTool(0,'silverip-left');
+//   console.log('dos');
+//   $scope.globalServiceLocationSide = 'left';
+
+
+//   console.log(customerService);
+//   $scope.sipTool(0,'silverip-left');
+
+//   if(customerService.stateRoute == 'buildings' && customerService.sideBarFlag)
+//   {
+//     console.log('es bldSide');
+//     if(!customerService.sideBarFlag) {
+//       $scope.sipTool(2);
+//       customerService.sideBarFlag = true;
+//     }
+//   }
+
+
 
   $http.get("getBuildingsList")
     .then(function (response) {
@@ -326,7 +339,7 @@ app.controller('sideBldController',                 function($scope, $http, buil
 
 
   $scope.displayBldDataS = function (idBld) {
-  console.log(idBld);
+    console.log(idBld);
     $scope.displayBldData(idBld);
   }
 })
@@ -433,6 +446,7 @@ app.controller('customerControllerList',            function ($scope, $http){
 });
 app.controller('customerController',                function ($scope, $http, $stateParams, customerService){
 
+//   $scope.globalServiceLocationSide = null;
     if(!customerService.rightView) {
         customerService.rightView = true;
         //     console.log('right');
