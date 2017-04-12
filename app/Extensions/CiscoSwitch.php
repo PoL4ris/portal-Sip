@@ -14,8 +14,8 @@ class CiscoSwitch {
     //    private static $instance;
 
     private $switch = null;
-    //    private $ipAddress;
-    //    private $model;
+    private $ip = null;
+    private $model = null;
     private $portIndexList;
     private $bridgePortIndexList;
 
@@ -38,11 +38,20 @@ class CiscoSwitch {
     const ifbpduFilter = '1.3.6.1.4.1.9.9.82.1.9.3.1.5'; // 1: enabled, 2: disabled, 3: default
     const ifModeOper = '1.3.6.1.4.1.9.9.151.1.1.1.1.2'; // 1: routed, 2: switchport 
     //    const ifswitchportMode = '1.3.6.1.4.1.9.5.1.9.3.1.8.1'; // 1: trunk, 2: not trunk (use bridge index not ifindex)
-    const ifswitchportMode = '1.3.6.1.4.1.9.9.46.1.6.1.1.14'; // 1: trunk, 2: not trunk (use ifIndex)
+    const ifswitchportMode = '1.3.6.1.4.1.9.9.46.1.6.1.1.13'; // 1 or 5: trunk, 2: not trunk (use ifIndex)
     const trunk = 1;
+    const trunk_noneg = 5;
     const access = 2;
     const dot1dBasePortIfIndex = '1.3.6.1.2.1.17.1.4.1.2';
-    const vlanTrunkPortVlansEnabled = '1.3.6.1.4.1.9.9.46.1.6.1.1.4';
+
+    // vtpVlanState - 1.3.6.1.4.1.9.9.46.1.3.1.1.2
+    // vlanPortIslVlansAllowed  1.3.6.1.4.1.9.5.1.9.3.1.5
+
+
+    const vlanTrunkPortVlansEnabled = '1.3.6.1.4.1.9.9.46.1.6.1.1.4';  // starts from 0
+    const vlanTrunkPortVlansEnabled2k = '1.3.6.1.4.1.9.9.46.1.6.1.1.17'; // starts from 1024
+    const vlanTrunkPortVlansEnabled3k = '1.3.6.1.4.1.9.9.46.1.6.1.1.18'; // starts from 2048
+    const vlanTrunkPortVlansEnabled4k = '1.3.6.1.4.1.9.9.46.1.6.1.1.19'; // starts from 3072
     const vlanTrunkPortEncapsulationType = '1.3.6.1.4.1.9.9.46.1.6.1.1.3';   // 1: isl, 2: dot10, 3: lane ,4: dot1Q, 5: negotiate
     const vlanTrunkPortNativeVlan = '1.3.6.1.4.1.9.9.46.1.6.1.1.5';   // Native vlan on a trunk port
     const ifLastChange = '1.3.6.1.2.1.2.2.1.9';
@@ -107,6 +116,10 @@ class CiscoSwitch {
         }
     }
 
+    #########################
+    #  Misc functions
+    #########################
+
     public function isRegistered($ip = NULL, $mac = NULL, $hostName = NULL) {
         $switchInDB = $this->loadFromDB($ip, $mac, $hostName);
         if ($switchInDB) {
@@ -120,7 +133,7 @@ class CiscoSwitch {
             return false;
         }
         foreach ($ipAddressList as $ip) {
-//            $hostName = str_replace('.silverip.net', '', $this->formatSnmpResponse($this->getSnmpSysName($ip)));
+            //            $hostName = str_replace('.silverip.net', '', $this->formatSnmpResponse($this->getSnmpSysName($ip)));
             $hostName = $this->formatSnmpResponse($this->getSnmpSysName($ip));
             $mac = $this->getSnmpMacAddress($ip);
             $model = str_replace('"', '', $this->getSnmpModelNumber($ip));
@@ -134,7 +147,7 @@ class CiscoSwitch {
             $netNode->id_types = 8;
             $netNode->vendor = 'Cisco';
             $netNode->model = $model;
-            
+
             $netNode->save();
         }
         return true;
@@ -179,522 +192,334 @@ class CiscoSwitch {
         return $this->switch;
     }
 
+    #########################
+    #  Snmp functions
+    #########################
+
     public function getSnmpSysName($ip) {
-        if (isset($ip) && $ip != NULL) {
-            //            $snmpReults = snmp2_real_walk($ip, $this->readCommunity, 'sysName');
-            $snmpReults = snmp2_real_walk($ip, $this->readCommunity, self::sysName);
-            $sysName = array_shift($snmpReults);
-            return $sysName;
+
+        // $snmpReults = snmp2_real_walk($ip, $this->readCommunity, 'sysName');
+        $response = $this->snmp2_real_walk($ip, $this->readCommunity, self::sysName);
+        if(!isset($response['error'])) {
+            $response['response'] = array_shift($response['response']);
         }
-        return '';
+        return $response;
     }
 
     public function getSnmpModelNumber($ip) {
-        if (isset($ip) && $ip != NULL) {
-            $getModel = false;
-            if (!isset($this->ipAddress) || $ip != $this->ipAddress) {
-                $this->ipAddress = $ip;
-                $getModel = true;
-            } elseif (isset($this->model)) {
-                return $this->model;
-            } else {
-                $getModel = true;
-            }
+
+        if($this->ip == $ip && $this->model != null){
+            return $this->model;
         }
 
-        if ($getModel == false) {
-            return $getModel;
+        $this->ip = $ip;
+        $response = $this->snmp2_real_walk($this->ip, $this->readCommunity, self::entPhysicalDescr);
+
+        if(isset($response['error'])) {
+            return $response;
         }
 
-        $entPhysicalDescrArr = snmp2_real_walk($this->ipAddress, $this->readCommunity, self::entPhysicalDescr);
-        //        error_log(print_r($entPhysicalDescrArr,true));
+        $entPhysicalDescrArr = $response['response'];
 
-        if (isset($entPhysicalDescrArr) && $entPhysicalDescrArr != false && count($entPhysicalDescrArr) > 0) {
+        //        if (isset($entPhysicalDescrArr) && $entPhysicalDescrArr != false && count($entPhysicalDescrArr) > 0) {
+        if (count($entPhysicalDescrArr) > 0) {    
             foreach ($entPhysicalDescrArr as $oid => $entPhysicalDescr) {
                 if ($entPhysicalDescr != '""') {
-                    $this->model = $this->formatSnmpResponse($entPhysicalDescr);
-                    return $this->model;
+                    $response['response'] = $this->formatSnmpResponse($entPhysicalDescr);
+                    break;
                 }
             }
         }
-        return $this->model;
+        return $response;
     }
 
     public function getSnmpSoftwareVersion($ip) {
-        if (isset($ip) && $ip != NULL) {
-            //            $modelNumber = snmp2_get($ip, $this->readCommunity, 'mib-2.47.1.1.1.1.9.1001');
-            $entPhysicalFirmwareRevArr = snmp2_real_walk($ip, $this->readCommunity, self::entPhysicalFirmwareRev);
-            if (isset($entPhysicalFirmwareRevArr) && count($entPhysicalFirmwareRevArr) > 0) {
-                return array_shift($entPhysicalFirmwareRevArr);
-            }
+
+        // $modelNumber = snmp2_get($ip, $this->readCommunity, 'mib-2.47.1.1.1.1.9.1001');
+        $response = $this->snmp2_real_walk($ip, $this->readCommunity, self::entPhysicalFirmwareRev);
+        if(!isset($response['error'])) {
+            $response['response'] = array_shift($response['response']);
         }
-        return false;
+        return $response;
     }
 
-    public function getSnmpSysUptime($ip) {
-        if (isset($ip) && $ip != NULL) {
-            //           $sysUptime = snmp2_get($ip, $this->readCommunity, 'system.sysUpTime.0');
-            $sysUptime = snmp2_get($ip, $this->readCommunity, self::sysUpTime . '.0');
-            $sysUptimeStr = $lastChangeStr = preg_replace('/^.*Timeticks:\s+\((.*)\).*/', '$1', $sysUptime);
-            return $sysUptimeStr;
-        }
-        return false;
-    }
+    public function getSnmpSysUptime($ip, $formatted = false) {
 
-    public function getSnmpSysUptimeFormatted($ip, $portNum, $isIdx = false) {
-        if (isset($ip) && $ip != NULL && isset($portNum) && $portNum != NULL) {
-            $sysUptime = self::getSnmpSysUptime($ip, $portNum, $isIdx);
-            $sysUptimeTimeString = self::getTimeString($sysUptime);
-            return $sysUptimeTimeString;
+        // $sysUptime = snmp2_get($ip, $this->readCommunity, 'system.sysUpTime.0');
+        $response = $this->snmp2_real_walk($ip, $this->readCommunity, self::sysUpTime . '.0', true);
+        if(isset($response['error'])) {
+            return $response;
         }
-        return false;
+
+        $response['response'] = preg_replace('/^.*Timeticks:\s+\((.*)\).*/', '$1', $response['response']);
+
+        if($formatted){
+            $response['response'] = $this->getTimeString($response['response']);
+        }
+        return $response;
     }
 
     public function getSnmpSysLocation($ip) {
-        if (isset($ip) && $ip != NULL) {
-            $snmpReults = snmp2_real_walk($ip, $this->readCommunity, self::sysLocation . '.0');
-            $sysLocation = $this->formatSnmpResponse(array_shift($snmpReults));
-            return $sysLocation;
+
+        $response = $this->snmp2_real_walk($ip, $this->readCommunity, self::sysLocation . '.0');
+        if(!isset($response['error'])) {
+            $response['response'] = $this->formatSnmpResponse(array_shift($response['response']));           
         }
-        return false;
-    }
-
-    public function setSnmpSysLocation($ip, $sysLocation) {
-        if (isset($ip) && $ip != NULL && isset($sysLocation) && $sysLocation != NULL) {
-            if (snmp2_set($ip, $this->writeCommunity, self::sysLocation . '.0', 's', '"' . $sysLocation . '"', '1000000', '5')) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public function setSnmpPortLabel($ip, $portNum, $label, $isIdx = false) {
-
-        if (isset($ip) && $ip != NULL && isset($portNum) && $portNum != NULL && isset($label) && $label != NULL) {
-            $portIndex = '';
-            if (isset($isIdx) && $isIdx == false) {
-                $portIndex = self::getPortIndex($ip, $portNum, $isIdx);
-            } else {
-                $portIndex = $portNum;
-            }
-
-            if (snmp2_set($ip, $this->writeCommunity, self::ifAlias . '.' . $portIndex, 's', $label, '1000000', '5')) {
-
-                return true;
-            }
-        }
-        return false;
+        return $response;
     }
 
     public function getSnmpMacAddress($ip) {
-        if (isset($ip) && $ip != NULL) {
-            //            snmp_set_valueretrieval(SNMP_VALUE_LIBRARY);
-            $sysMacAddress = snmp2_get($ip, $this->readCommunity, self::dot1dBaseBridgeAddress . '.0');
 
-            $sysMacAddress = trim(preg_replace('/^.*STRING:\s+/', '', $sysMacAddress));
+        $response = $this->snmp2_real_walk($ip, $this->readCommunity, self::sysLocation . '.0', true);
+        if(!isset($response['error'])) {
+
+            $sysMacAddress = trim(preg_replace('/^.*STRING:\s+/', '', $response['response']));
             $sysMacAddress = preg_replace('/\s+/', ':', $sysMacAddress);
-
-            //            $sysMacAddressOctets = explode(':',$sysMacAddress);
-            //            foreach($sysMacAddressOctets as $key=>$oct){
-            //                if(strlen($oct) == 1){ 
-            //                    $sysMacAddressOctets[$key] = '0'.$sysMacAddressOctets[$key];
-            //                }
-            //            }
-            //            $sysMacAddress = implode(':',$sysMacAddressOctets);
             $sysMacAddress = strtoupper($sysMacAddress);
-            //            snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
-            return $sysMacAddress;
+            $response['response'] = $sysMacAddress;        
         }
-        return false;
+        return $response;
     }
 
     public function getSnmpPortLabel($ip, $portNum, $isIdx = false) {
-        if (isset($ip) && $ip != NULL && isset($portNum) && $portNum != NULL) {
-            $portIndex = self::getPortIndex($ip, $portNum, $isIdx);
-            if ($portIndex != false) {
-                $portLabel = snmp2_get($ip, $this->readCommunity, self::ifAlias . '.' . $portIndex);
-                return $this->formatSnmpResponse($portLabel);
-            }
-        }
-        return false;
+
+        // getSnmpIndexValueByPort($ip, $portNum, $isIdx = false, $oid, $useBridgeIndex = false, $useSnmpGet = false, $formatResponse = false)
+        return $this->getSnmpIndexValueByPort($ip, $portNum, $isIdx, self::ifAlias, false, true, true);
     }
 
     public function getSnmpAllPortLabel($ip, $keyRegEx = '') {
-        return self::getSnmpAllPortsQuery($ip, self::ifAlias, $keyRegEx);
-    }
-
-    public function getSnmpAllPortDesc($ip, $keyRegEx = '') {
-        if (isset($ip) && $ip != NULL) {
-            $portArray = snmp2_real_walk($ip, $this->readCommunity, self::portIndexQueryStr);
-            $formattedPortArray = $this->formatSnmpResponse($portArray);
-            return self::getMatchingValueEntries($formattedPortArray, $keyRegEx);
-        }
-        return false;
-    }
-
-    public function getSnmpAllPortsQuery($ip, $oid, $keyRegEx = '') {
-        if (isset($ip) && $ip != NULL) {
-            $filteredPortIndexArr = self::getSnmpAllPortDesc($ip, $keyRegEx);
-            $portArr = snmp2_real_walk($ip, $this->readCommunity, $oid);
-            $formattedPortArray = $this->formatSnmpResponse($portArr);
-            if ($keyRegEx != '') {
-                foreach (array_keys($formattedPortArray) as $key) {
-                    if (array_key_exists($key, $filteredPortIndexArr) == false) {
-                        unset($formattedPortArray[$key]);
-                    }
-                }
-            }
-            return $formattedPortArray;
-        }
-        return false;
+        return $this->getSnmpAllPortsQuery($ip, self::ifAlias, $keyRegEx);
     }
 
     public function getSnmpPortSpeed($ip, $portNum, $isIdx = false) {
-        if (isset($ip) && $ip != NULL && isset($portNum) && $portNum != NULL) {
-            $portIndex = self::getPortIndex($ip, $portNum, $isIdx);
-            if ($portIndex != false) {
-                $portSpeed = snmp2_get($ip, $this->readCommunity, self::ifSpeed . '.' . $portIndex);
-                return $this->formatSnmpResponse($portSpeed);
-            }
-        }
-        return false;
+
+        return $this->getSnmpIndexValueByPort($ip, $portNum, $isIdx, self::ifSpeed, false, true, true);
     }
 
     public function getSnmpAllPortSpeed($ip, $keyRegEx = '') {
-        return self::getSnmpAllPortsQuery($ip, self::ifSpeed, $keyRegEx);
+        return $this->getSnmpAllPortsQuery($ip, self::ifSpeed, $keyRegEx);
     }
 
     public function getSnmpPortAdminStatus($ip, $portNum, $isIdx = false) {
-        if (isset($ip) && $ip != NULL && isset($portNum) && $portNum != NULL) {
-            $portIndex = self::getPortIndex($ip, $portNum, $isIdx);
-            if ($portIndex != false) {
-                $portAdminStatus = snmp2_get($ip, $this->readCommunity, self::ifAdminStatus . '.' . $portIndex);
-                return $this->formatSnmpResponse($portAdminStatus);
-            }
-        }
-        return false;
+
+        return $this->getSnmpIndexValueByPort($ip, $portNum, $isIdx, self::ifAdminStatus, false, true, true);
     }
 
     public function getSnmpAllPortAdminStatus($ip, $keyRegEx = '') {
-        $portAdmintatusArr = self::getSnmpAllPortsQuery($ip, self::ifAdminStatus, $keyRegEx);
-        foreach ($portAdmintatusArr as $key => $adminStatusEntry) {
-            $adminStatusStr = preg_replace('/^(.*)\(.*/', '$1', $adminStatusEntry);
-            $portAdmintatusArr[$key] = $adminStatusStr;
-        }
-        return $portAdmintatusArr;
+
+        $response = $this->getSnmpAllPortsQuery($ip, self::ifAdminStatus, $keyRegEx);        
+        return $this->filterResponses($response, '/^(.*)\(.*/', '$1');
     }
 
     public function getSnmpPortOperStatus($ip, $portNum, $isIdx = false) {
-        if (isset($ip) && $ip != NULL && isset($portNum) && $portNum != NULL) {
-            $portIndex = self::getPortIndex($ip, $portNum, $isIdx);
-            if ($portIndex != false) {
-                $portOperStatus = snmp2_get($ip, $this->readCommunity, self::ifOperStatus . '.' . $portIndex);
-                //                error_log('getSnmpPortOperStatus(): $portIndex = '.$portIndex."\n".'$portOperStatus = '.print_r($portOperStatus,true));
-                return $this->formatSnmpResponse($portOperStatus);
-            }
-        }
-        return false;
+
+        return $this->getSnmpIndexValueByPort($ip, $portNum, $isIdx, self::ifOperStatus, false, true, true);
     }
 
     public function getSnmpAllPortOperStatus($ip, $keyRegEx = '') {
-        $portOperStatusArr = self::getSnmpAllPortsQuery($ip, self::ifOperStatus, $keyRegEx);
-        foreach ($portOperStatusArr as $key => $operStatusEntry) {
-            $operStatusStr = preg_replace('/^(.*)\(.*/', '$1', $operStatusEntry);
-            $portOperStatusArr[$key] = $operStatusStr;
-        }
-        return $portOperStatusArr;
+
+        $response = $this->getSnmpAllPortsQuery($ip, self::ifOperStatus, $keyRegEx);        
+        return $this->filterResponses($response, '/^(.*)\(.*/', '$1');
     }
 
     public function getSnmpPortfastStatus($ip, $portNum, $isIdx = false) {
-        if (isset($ip) && $ip != NULL && isset($portNum) && $portNum != NULL) {
-            $bridgePortIndex = self::getBridgePortIndex($ip, $portNum, $isIdx);
-            if ($bridgePortIndex != false) {
-                $portfastStatus = snmp2_get($ip, $this->readCommunity, self::ifPortFast . '.' . $bridgePortIndex);
-                return $this->formatSnmpResponse($portfastStatus);
-            }
-        }
-        return false;
+
+        return $this->getSnmpIndexValueByPort($ip, $portNum, $isIdx, self::ifPortFast, true, true, true);
     }
 
     public function getSnmpPortfastMode($ip, $portNum, $isIdx = false) {
-        if (isset($ip) && $ip != NULL && isset($portNum) && $portNum != NULL) {
-            $bridgePortIndex = self::getBridgePortIndex($ip, $portNum, $isIdx);
-            if ($bridgePortIndex != false) {
-                $portfastStatus = snmp2_get($ip, $this->readCommunity, self::ifPortFastMode . '.' . $bridgePortIndex);
-                return $this->formatSnmpResponse($portfastStatus);
-            }
-        }
-        return false;
+
+        return $this->getSnmpIndexValueByPort($ip, $portNum, $isIdx, self::ifPortFastMode, true, true, true);
     }
 
     public function getSnmpBpduGuardStatus($ip, $portNum, $isIdx = false) {
-        if (isset($ip) && $ip != NULL && isset($portNum) && $portNum != NULL) {
-            $bridgePortIndex = self::getBridgePortIndex($ip, $portNum, $isIdx);
-            if ($bridgePortIndex != false) {
-                $portfastStatus = snmp2_get($ip, $this->readCommunity, self::ifbpduGuard . '.' . $bridgePortIndex);
-                return $this->formatSnmpResponse($portfastStatus);
-            }
-        }
-        return false;
+
+        return $this->getSnmpIndexValueByPort($ip, $portNum, $isIdx, self::ifbpduGuard, true, true, true);
     }
 
     public function getSnmpBpduFilterStatus($ip, $portNum, $isIdx = false) {
-        if (isset($ip) && $ip != NULL && isset($portNum) && $portNum != NULL) {
-            $bridgePortIndex = self::getBridgePortIndex($ip, $portNum, $isIdx);
-            if ($bridgePortIndex != false) {
-                $portfastStatus = snmp2_get($ip, $this->readCommunity, self::ifbpduFilter . '.' . $bridgePortIndex);
-                return $this->formatSnmpResponse($portfastStatus);
-            }
-        }
-        return false;
+
+        return $this->getSnmpIndexValueByPort($ip, $portNum, $isIdx, self::ifbpduFilter, true, true, true);
     }
 
     public function getSnmpPortLastChange($ip, $portNum, $isIdx = false) {
-        if (isset($ip) && $ip != NULL && isset($portNum) && $portNum != NULL) {
-            $portIndex = self::getPortIndex($ip, $portNum, $isIdx);
-            if ($portIndex != false) {
-                $portLastChange = snmp2_get($ip, $this->readCommunity, self::ifLastChange . '.' . $portIndex);
-                $lastChangeStr = preg_replace('/^.*Timeticks:\s+\((.*)\).*/', '$1', $portLastChange);
-                $sysUptime = self::getSnmpSysUptime($ip);
-                $lastPortChangeInt = intval($sysUptime) - intval($lastChangeStr);
-                return $lastPortChangeInt;
-            }
+
+        // $useBridgeIndex = false, $useSnmpGet = false, $formatResponse = false
+        $response = $this->getSnmpIndexValueByPort($ip, $portNum, $isIdx, self::ifLastChange, false, true, false);
+
+        if(isset($response['error'])){
+            return $response;
         }
-        return false;
+
+        $portLastChange = $response['response'];
+        $lastChangeStr = preg_replace('/^.*Timeticks:\s+\((.*)\).*/', '$1', $portLastChange);
+        $sysUptimeResponse = $this->getSnmpSysUptime($ip);
+        if(isset($sysUptimeResponse['error'])){
+            return $sysUptimeResponse;
+        }
+        $sysUptime = $sysUptimeResponse['response'];
+        $lastPortChangeInt = intval($sysUptime) - intval($lastChangeStr);
+        return ['response' => $lastPortChangeInt];
     }
 
     public function getSnmpAllPortLastChange($ip, $keyRegEx = '') {
-        $lastChangeArr = self::getSnmpAllPortsQuery($ip, self::ifLastChange, $keyRegEx);
-        $sysUptime = self::getSnmpSysUptime($ip);
+
+        $lastChangeResponse = $this->getSnmpAllPortsQuery($ip, self::ifLastChange, $keyRegEx);
+        if(isset($lastChangeResponse['error'])){
+            return $lastChangeResponse;
+        }
+        $lastChangeArr = $lastChangeResponse['response'];
+
+        $sysUptimeResponse = $this->getSnmpSysUptime($ip);
+        if(isset($sysUptimeResponse['error'])){
+            return $sysUptimeResponse;
+        }
+        $sysUptime = $sysUptimeResponse['response'];
+
         foreach ($lastChangeArr as $key => $lastChangeEntry) {
             $lastChangeStr = preg_replace('/^.*Timeticks:\s+\((.*)\).*/', '$1', $lastChangeEntry);
             $lastPortChangeInt = intval($sysUptime) - intval($lastChangeStr);
             $lastChangeArr[$key] = $lastPortChangeInt;
         }
-        return $lastChangeArr;
+        return ['response' => $lastChangeArr];
     }
 
     public function getSnmpPortLastChangeFormatted($ip, $portNum, $isIdx = false) {
-        if (isset($ip) && $ip != NULL && isset($portNum) && $portNum != NULL) {
-            $portLastChange = self::getSnmpPortLastChange($ip, $portNum, $isIdx);
-            if ($portLastChange != false) {
-                $portLastChangeTimeString = self::getTimeString($portLastChange);
-                return $portLastChangeTimeString;
-            }
+
+        $portLastChangeResponse = $this->getSnmpPortLastChange($ip, $portNum, $isIdx);
+        if(isset($portLastChangeResponse['error'])){
+            return $portLastChangeResponse;
         }
-        return false;
+        $portLastChangeTimeString = $this->getTimeString($portLastChangeResponse['response']);
+        return ['response'=> $portLastChangeTimeString];
     }
 
     public function getSnmpAllPortLastChangeFormatted($ip, $keyRegEx = '') {
-        $lastChangeArr = self::getSnmpAllPortLastChange($ip, $keyRegEx);
+
+        $portLastChangeResponse = $this->getSnmpAllPortLastChange($ip, $portNum, $isIdx);
+        if(isset($portLastChangeResponse['error'])){
+            return $portLastChangeResponse;
+        }
+
+        $lastChangeArr = $portLastChangeResponse['response'];        
         foreach ($lastChangeArr as $key => $lastChangeEntry) {
-            $lastChangeArr[$key] = self::getTimeString($lastChangeEntry);
+            $lastChangeArr[$key] = $this->getTimeString($lastChangeEntry);
         }
-        return $lastChangeArr;
-    }
-
-    public function getSnmpPortInDataOct($ip, $portNum, $isIdx = false) {
-        if (isset($ip) && $ip != NULL && isset($portNum) && $portNum != NULL) {
-            $portIndex = self::getPortIndex($ip, $portNum, $isIdx);
-            if ($portIndex != false) {
-                $portInDataOct = snmp2_get($ip, $this->readCommunity, self::ifInOctets . '.' . $portIndex);
-                return $this->formatSnmpResponse($portInDataOct);
-            }
-        }
-        return false;
-    }
-
-    public function getSnmpPortOutDataOct($ip, $portNum, $isIdx = false) {
-        if (isset($ip) && $ip != NULL && isset($portNum) && $portNum != NULL) {
-            $portIndex = self::getPortIndex($ip, $portNum, $isIdx);
-            if ($portIndex != false) {
-                $portOutDataOct = snmp2_get($ip, $this->readCommunity, self::ifOutOctets . '.' . $portIndex);
-                return $this->formatSnmpResponse($portOutDataOct);
-            }
-        }
-        return false;
-    }
-
-    public function getSnmpPortInDiscards($ip, $portNum, $isIdx = false) {
-        if (isset($ip) && $ip != NULL && isset($portNum) && $portNum != NULL) {
-            $portIndex = self::getPortIndex($ip, $portNum, $isIdx);
-            if ($portIndex != false) {
-                $portInDiscards = snmp2_get($ip, $this->readCommunity, self::ifInDiscards . '.' . $portIndex);
-                return $this->formatSnmpResponse($portInDiscards);
-            }
-        }
-        return false;
-    }
-
-    public function getSnmpPortOutDiscards($ip, $portNum, $isIdx = false) {
-        if (isset($ip) && $ip != NULL && isset($portNum) && $portNum != NULL) {
-            $portIndex = self::getPortIndex($ip, $portNum, $isIdx);
-            //            $portOutDiscards = snmp2_get($ip, $this->readCommunity, 'ifOutDiscards.'. $portIndex);
-            $portOutDiscards = snmp2_get($ip, $this->readCommunity, self::ifOutDiscards . '.' . $portIndex);
-            return $this->formatSnmpResponse($portOutDiscards);
-        }
-        return false;
-    }
-
-    public function getSnmpPortInErrors($ip, $portNum, $isIdx = false) {
-        if (isset($ip) && $ip != NULL && isset($portNum) && $portNum != NULL) {
-            $portIndex = self::getPortIndex($ip, $portNum, $isIdx);
-            if ($portIndex != false) {
-                $portInErrors = snmp2_get($ip, $this->readCommunity, self::ifInErrors . '.' . $portIndex);
-                return $this->formatSnmpResponse($portInErrors);
-            }
-        }
-        return false;
-    }
-
-    public function getSnmpPortOutErrors($ip, $portNum, $isIdx = false) {
-        if (isset($ip) && $ip != NULL && isset($portNum) && $portNum != NULL) {
-            $portIndex = self::getPortIndex($ip, $portNum, $isIdx);
-            if ($portIndex != false) {
-                $portOutErrors = snmp2_get($ip, $this->readCommunity, self::ifOutErrors . '.' . $portIndex);
-                return $this->formatSnmpResponse($portOutErrors);
-            }
-        }
-        return false;
-    }
-
-    public function getSnmpPortInBroadcastPkts($ip, $portNum, $isIdx = false) {
-        if (isset($ip) && $ip != NULL && isset($portNum) && $portNum != NULL) {
-            $portIndex = self::getPortIndex($ip, $portNum, $isIdx);
-            if ($portIndex != false) {
-                $portInBroadcastPkts = snmp2_get($ip, $this->readCommunity, self::ifInBroadcastPkts . '.' . $portIndex);
-                return $this->formatSnmpResponse($portInBroadcastPkts);
-            }
-        }
-        return false;
-    }
-
-    public function getSnmpPortOutBroadcastPkts($ip, $portNum, $isIdx = false) {
-        if (isset($ip) && $ip != NULL && isset($portNum) && $portNum != NULL) {
-            $portIndex = self::getPortIndex($ip, $portNum, $isIdx);
-            if ($portIndex != false) {
-                $portOutBroadcastPkts = snmp2_get($ip, $this->readCommunity, self::ifOutBroadcastPkts . '.' . $portIndex);
-                return $this->formatSnmpResponse($portOutBroadcastPkts);
-            }
-        }
-        return false;
-    }
-
-    public function getSnmpPortStats($ip, $portNum, $isIdx = false) {
-        if (isset($ip) && $ip != NULL && isset($portNum) && $portNum != NULL) {
-            $portIndex = self::getPortIndex($ip, $portNum, $isIdx);
-            if ($portIndex != false) {
-                $inOct = self::getSnmpPortInDataOct($ip, $portIndex, true);
-                $outOct = self::getSnmpPortOutDataOct($ip, $portIndex, true);
-                $inErrors = self::getSnmpPortInErrors($ip, $portIndex, true);
-                $outErros = self::getSnmpPortOutErrors($ip, $portIndex, true);
-                $inDiscards = self::getSnmpPortInDiscards($ip, $portIndex, true);
-                $outDiscards = self::getSnmpPortOutDiscards($ip, $portIndex, true);
-                $portStats = array('inOctets' => $inOct,
-                                   'outOctets' => $outOct,
-                                   'inErrors' => $inErrors,
-                                   'outErrors' => $outErros,
-                                   'inDiscards' => $inDiscards,
-                                   'outDiscards' => $outDiscards);
-                return $portStats;
-            }
-        }
-        return false;
+        return ['response' => $lastChangeArr];
     }
 
     public function getSnmpPortMode($ip, $portNum, $isIdx = false) {
-        if (isset($ip) && $ip != NULL && isset($portNum) && $portNum != NULL) {
-            $portIndex = self::getPortIndex($ip, $portNum, $isIdx);
-            if ($portIndex != false) {
-                $portMode = snmp2_get($ip, $this->readCommunity, self::ifModeOper . '.' . $portIndex);
-                return $this->formatSnmpResponse($portMode);
-            }
-        }
-        return false;
+
+        return $this->getSnmpIndexValueByPort($ip, $portNum, $isIdx, self::ifswitchportMode, false, true, true);
     }
 
     public function getSnmpSwitchportMode($ip, $portNum, $isIdx = false) {
-        if (isset($ip) && $ip != NULL && isset($portNum) && $portNum != NULL) {
-            $portIndex = self::getPortIndex($ip, $portNum, $isIdx);
-            if ($portIndex != false) {
-                $switchportMode = snmp2_get($ip, $this->readCommunity, self::ifswitchportMode . '.' . $portIndex);
-                return $this->formatSnmpResponse($switchportMode);
-            }
-        }
-        return false;
+
+        // $useBridgeIndex = false, $useSnmpGet = false, $formatResponse = false
+        return $this->getSnmpIndexValueByPort($ip, $portNum, $isIdx, self::ifswitchportMode, false, true, true);
     }
 
     public function getSnmpPortVlanAssignment($ip, $port, $isIdx = false) {
-        $portVlans = array();
-        if (isset($ip) && $ip != NULL && isset($port) && $port != NULL) {
-            $portMode = self::getSnmpSwitchportMode($ip, $port, $isIdx);
-            if ($portMode == self::trunk) {
-                $portIndex = self::getPortIndex($ip, $port, $isIdx);
-                $vlanList = snmp2_get($ip, $this->readCommunity, self::vlanTrunkPortVlansEnabled . '.' . $portIndex);
 
-                if ($vlanList != false) {
-                    $vlanList = str_replace('Hex-STRING:', '', $vlanList);
-                }
-
-                $vlanListTrimmed = preg_replace('/\s+/', '', $vlanList);
-                $vlanListTrimmed = trim($vlanListTrimmed);
-                $vlanListArr = str_split($vlanListTrimmed);
-                $vlanListBinary = '';
-                foreach ($vlanListArr as $octet) {
-                    $hex2Bin = base_convert($octet, 16, 2);
-                    if ($hex2Bin == 0) {
-                        $vlanListBinary .= '0000';
-                    } else {
-                        if (strlen($hex2Bin) < 4) {
-                            $vlanListBinary .= '0' . $hex2Bin;
-                        } else {
-                            $vlanListBinary .= $hex2Bin;
-                        }
-                    }
-                }
-
-                $portVlans = self::strpos_all($vlanListBinary, '1');
-            } else {
-                $portVlans[] = self::getAccessPortVlan($ip, $port, $isIdx);
-            }
+        $switchportModeResponse = $this->getSnmpSwitchportMode($ip, $port, $isIdx);
+        if(isset($switchportModeResponse['error'])){
+            return $switchportModeResponse;
         }
-        return $portVlans;
+
+        $portMode = $switchportModeResponse['response'];
+        $response = ['response' => array()];
+        if ($portMode != self::trunk && $portMode != self::trunk_noneg) {
+
+            return $this->getAccessPortVlan($ip, $port, $isIdx);
+        }
+
+        $vlanHexStringResponse = $this->getSnmpIndexValueByPort($ip, $port, $isIdx, self::vlanTrunkPortVlansEnabled, false, true, true);
+        $vlanHexStringResponse2k = $this->getSnmpIndexValueByPort($ip, $port, $isIdx, self::vlanTrunkPortVlansEnabled2k, false, true, true);
+        $vlanHexStringResponse3k = $this->getSnmpIndexValueByPort($ip, $port, $isIdx, self::vlanTrunkPortVlansEnabled3k, false, true, true);
+        $vlanHexStringResponse4k = $this->getSnmpIndexValueByPort($ip, $port, $isIdx, self::vlanTrunkPortVlansEnabled4k, false, true, true);
+
+        if(isset($vlanHexStringResponse['error'])){
+            return $vlanHexStringResponse;
+        }
+
+        $vlanHexString = $vlanHexStringResponse['response'];
+        $vlanHexString2k = $vlanHexStringResponse2k['response'];
+        $vlanHexString3k = $vlanHexStringResponse3k['response'];
+        $vlanHexString4k = $vlanHexStringResponse4k['response'];
+
+        $responseArray = array();
+        if($vlanHexString != ''){
+            $vlanListBinary = $this->hexString2Bin($vlanHexString);
+            $responseArray = $this->strpos_all($vlanListBinary, '1');
+        }
+
+        if($vlanHexString2k != ''){
+            $vlanListBinary2k = $this->hexString2Bin($vlanHexString2k);
+            $responseArray = array_merge($responseArray, $this->strpos_all($vlanListBinary2k, '1', 1024));
+        }
+
+        if($vlanHexString3k != ''){
+            $vlanListBinary3k = $this->hexString2Bin($vlanHexString3k);
+            $responseArray = array_merge($responseArray, $this->strpos_all($vlanListBinary3k, '1', 2048));
+        }
+
+        if($vlanHexString4k != ''){
+            $vlanListBinary4k = $this->hexString2Bin($vlanHexString4k);
+            $responseArray = array_merge($responseArray, $this->strpos_all($vlanListBinary4k, '1', 3072));
+        }
+
+        return ['response' => $responseArray];
     }
 
-    private function getAccessPortVlan($ip, $portNum, $isIdx = false) {
-        if (isset($ip) && $ip != NULL && isset($portNum) && $portNum != NULL) {
-            $portIndex = self::getPortIndex($ip, $portNum, $isIdx);
-            if ($portIndex != false) {
-                //                error_log("getAccessPortVlan(): snmp2_get($ip, $this->readCommunity, self::vmVlan . '.' . $portIndex)");
-                $portVlanID = snmp2_get($ip, $this->readCommunity, self::vmVlan . '.' . $portIndex);
-                //                error_log('getAccessPortVlan(): $portVlanID = '.$portVlanID);
-                return $this->formatSnmpResponse($portVlanID);
+    protected function hexString2Bin($vlanHexString){
+
+        $vlanListTrimmed = preg_replace('/\s+/', '', $vlanHexString);
+        $vlanListTrimmed = trim($vlanListTrimmed);
+        $vlanListArr = str_split($vlanListTrimmed);
+        $vlanListBinary = '';
+        foreach ($vlanListArr as $octet) {
+            $hex2Bin = base_convert($octet, 16, 2);
+            if ($hex2Bin == 0) {
+                $vlanListBinary .= '0000';
+            } else {
+                if (strlen($hex2Bin) < 4) {
+                    $vlanListBinary .= str_pad($hex2Bin, 4, '0', STR_PAD_LEFT);
+                } else {
+                    $vlanListBinary .= $hex2Bin;
+                }
             }
         }
-        return false;
+        return $vlanListBinary;
+    }
+
+    protected function getAccessPortVlan($ip, $portNum, $isIdx = false) {
+
+        // $useBridgeIndex = false, $useSnmpGet = false, $formatResponse = false
+        $response = $this->getSnmpIndexValueByPort($ip, $portNum, $isIdx, self::vmVlan, false, true, true);
+        if(isset($response['error'])){
+            return $response;
+        }
+        return ['response' => array($response['response'])];
     }
 
     /**
      * 
-     * @param type $ip
-     * @param type $portNum
+     * @param string $ip
+     * @param string $portNum
      * @return 0 based position of $portNum on the switch (e.g. port 1 = 0, port 2 = 1, port 3/5 = 99 and so on)
+     *          This is used by the private vlan calculator function                                                                                             
      */
     public function getPortPositionByPortNumber($ip, $portNum) {
-        if (isset($ip) && $ip != NULL && isset($portNum) && $portNum != NULL) {
-            $rawPortIndexList = self::getSnmpPortIndexList($ip);
-            $portIndexList = self::filterValidUserPorts($ip, $rawPortIndexList);
-            $portDescArray = array_keys($portIndexList);
-            $portPositionArray = array_flip($portDescArray);
-            $portNamePrefix = self::getPortNamePrefix($ip);
-            //            error_log('getPortPositionByPortNumber(): $rawPortIndexList = '.print_r($rawPortIndexList,true));
-            //            error_log('getPortPositionByPortNumber(): $portIndexList = '.print_r($portIndexList,true));
-            //            error_log('getPortPositionByPortNumber(): $portDescArray = '.print_r($portDescArray,true));
-            //            error_log('getPortPositionByPortNumber(): $portPositionArray = '.print_r($portPositionArray,true));
-            //            error_log('getPortPositionByPortNumber(): $portNamePrefix = '.$portNamePrefix);
-            return $portPositionArray[$portNamePrefix . $portNum];
+
+        $response = $this->getSnmpPortIndexList($ip);
+        if(isset($response['error'])){
+            return false;
         }
-        return false;
+        $portIndexList =  $this->filterValidUserPorts($ip, $response['response']);
+        $portDescArray = array_keys($portIndexList);
+        $portPositionArray = array_flip($portDescArray);
+        $portNamePrefix = $this->getPortNamePrefix($ip);
+        return $portPositionArray[$portNamePrefix . $portNum];
     }
 
     /**
@@ -703,7 +528,12 @@ class CiscoSwitch {
      * @return array port index list without the non-user ports
      */
     public function filterValidUserPorts($ip, $portIndexList) {
-        $switchModel = self::getSnmpModelNumber($ip);
+
+        $response = $this->getSnmpModelNumber($ip);
+        if($response['error']){
+            return $portIndexList;
+        }
+        $switchModel = $response['response'];
         if ($switchModel != false) {
             if (strstr($switchModel, 'WS-C6509')) {
                 foreach ($portIndexList as $key => $value) {
@@ -728,10 +558,10 @@ class CiscoSwitch {
         return $portIndexList;
     }
 
-    public function getPortNamePrefix($ip, $switchModel = false) {
+    protected function getPortNamePrefix($ip, $switchModel = false) {
         if (isset($ip) && $ip != NULL) {
             if ($switchModel == '') {
-                $switchModel = self::getSnmpModelNumber($ip);
+                $switchModel = $this->getSnmpModelNumber($ip);
             }
 
             if ($switchModel != false) {
@@ -761,224 +591,427 @@ class CiscoSwitch {
     }
 
     public function getSnmpTrunkPortNativeVlanAssignment($ip, $portNum, $isIdx = false) {
-        if (isset($ip) && $ip != NULL && isset($portNum) && $portNum != NULL) {
-            $portIndex = self::getPortIndex($ip, $portNum, $isIdx);
-            if ($portIndex != false) {
-                $portVlanID = snmp2_get($ip, $this->readCommunity, self::vlanTrunkPortNativeVlan . '.' . $portIndex);
-                return $this->formatSnmpResponse($portVlanID);
-            }
-        }
-        return false;
+
+        // $useBridgeIndex = false, $useSnmpGet = false, $formatResponse = false
+        return $this->getSnmpIndexValueByPort($ip, $portNum, $isIdx, self::vlanTrunkPortNativeVlan, false, true, true);
     }
 
     public function getSnmpTrunkPortEncapsulation($ip, $portNum, $isIdx = false) {
-        if (isset($ip) && $ip != NULL && isset($portNum) && $portNum != NULL) {
-            $portIndex = self::getPortIndex($ip, $portNum, $isIdx);
-            if ($portIndex != false) {
-                $trunkPortEncapsulation = snmp2_get($ip, $this->readCommunity, self::vlanTrunkPortEncapsulationType . '.' . $portIndex);
-                return $this->formatSnmpResponse($trunkPortEncapsulation);
-            }
-        }
-        return false;
-    }
 
-    public function setSnmpPortVlanAssignment($ip, $portNum, $vlanID, $isIdx = false) {
-        //	1.3.6.1.4.1.9.9.68.1.2.2.1.2
-
-        if (isset($ip) && $ip != NULL && isset($portNum) && $portNum != NULL && isset($vlanID) && $vlanID != NULL) {
-            $portIndex = '';
-            if (isset($isIdx) && $isIdx == false) {
-                //                $portIndex = getSnmpPortIndex($ip, $portNum);
-                $portIndex = self::getPortIndex($ip, $portNum, $isIdx);
-            } else {
-                $portIndex = $portNum;
-            }
-
-            if (snmp2_set($ip, $this->writeCommunity, self::vmVlan . '.' . $portIndex, 'i', $vlanID, '1000000', '5')) {
-                return true;
-            }
-        }
-        return false;
+        // $useBridgeIndex = false, $useSnmpGet = false, $formatResponse = false
+        return $this->getSnmpIndexValueByPort($ip, $portNum, $isIdx, self::vlanTrunkPortEncapsulationType, false, true, true);
     }
 
     public function getSnmpCdpCacheDeviceId($ip) {
-        if (isset($ip) && $ip != NULL) {
-            $cdpCacheDeviceIdSnmpResponse = snmp2_real_walk($ip, $this->readCommunity, self::cdpCacheDeviceId);
-            //            error_log('getSnmpCdpCacheDeviceId(): '.print_r($cdpCacheDeviceIdSnmpResponse,true));
-            return $this->formatSnmpResponse($cdpCacheDeviceIdSnmpResponse, 2);
+
+        $response = $this->snmp2_real_walk($ip, $this->readCommunity, self::cdpCacheDeviceId);
+        if(isset($response['error'])){
+            return $response;
         }
-        return false;
+
+        $cdpCacheDeviceIdSnmpResponse = $response['response'];
+        return $this->formatSnmpResponse($cdpCacheDeviceIdSnmpResponse, 2);
     }
 
     public function getSnmpCdpCachePlatform($ip) {
-        if (isset($ip) && $ip != NULL) {
-            $cdpCachePlatformSnmpResponse = snmp2_real_walk($ip, $this->readCommunity, self::cdpCachePlatform);
-            return $this->formatSnmpResponse($cdpCachePlatformSnmpResponse, 2);
-        }
-        return false;
-    }
 
-    public function snmpPortOn($ip, $portNum, $isIdx = false) {
-        //	1.3.6.1.4.1.9.9.68.1.2.2.1.2
-        if (isset($ip) && $ip != NULL && isset($portNum) && $portNum != NULL) {
-            $portIndex = '';
-            if (isset($isIdx) && $isIdx == false) {
-                $portIndex = self::getPortIndex($ip, $portNum, $isIdx);
-            } else {
-                $portIndex = $portNum;
-            }
-            //            error_log('$portNum = '.$portNum.', $portIndex = '.$portIndex.', $isIdx = '.$isIdx);
-            if ($portIndex != false) {
-                //                error_log('Calling: snmp2_set('.$ip.', '.$this->writeCommunity.', '.self::ifAdminStatus.'.'.$portIndex.', \'i\', 1, \'1000000\', \'5\')');
-                if (snmp2_set($ip, $this->writeCommunity, self::ifAdminStatus . '.' . $portIndex, 'i', 1, '1000000', '5')) {
-                    return true;
-                }
-            }
+        $response = $this->snmp2_real_walk($ip, $this->readCommunity, self::cdpCachePlatform);
+        if(isset($response['error'])){
+            return $response;
         }
-        return false;
-    }
 
-    public function snmpPortOff($ip, $portNum, $isIdx = false) {
-        //	1.3.6.1.2.1.2.2.1.7
-        if (isset($ip) && $ip != NULL && isset($portNum) && $portNum != NULL) {
-            $portIndex = '';
-            if (isset($isIdx) && $isIdx == false) {
-                $portIndex = self::getPortIndex($ip, $portNum, $isIdx);
-            } else {
-                $portIndex = $portNum;
-            }
-            //            error_log('$portNum = '.$portNum.', $portIndex = '.$portIndex.', $isIdx = '.$isIdx);
-            if ($portIndex != false) {
-                //                error_log('Calling: snmp2_set('.$ip.', '.$this->writeCommunity.', '.self::ifAdminStatus.'.'.$portIndex.', \'i\', 2, \'1000000\', \'5\')');
-                if (snmp2_set($ip, $this->writeCommunity, self::ifAdminStatus . '.' . $portIndex, 'i', 2, '1000000', '5')) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    public function snmpPortRecycle($ip, $portNum, $isIdx = false) {
-        if (isset($ip) && $ip != NULL && isset($portNum) && $portNum != NULL) {
-            $portIndex = self::getPortIndex($ip, $portNum, $isIdx);
-            if ($portIndex != false) {
-                $snmpStatus = self::snmpPortOff($ip, $portIndex, true);
-                sleep(3);
-                $snmpStatus = self::snmpPortOn($ip, $portIndex, true);
-                sleep(3);
-                return $snmpStatus;
-            }
-        }
-        return false;
-    }
-
-    private function getPortIndex($ip, $portNum, $isIdx = false) {
-        if (isset($isIdx)) {
-            if ($isIdx) {
-                if ($portNum > 100) {
-                    $switchModel = self::getSnmpModelNumber($ip);
-                    //                error_log('inside getSnmpPortIndex(): $switchModel = '.$switchModel);
-                    if ($switchModel != false) {
-                        if (strstr($switchModel, 'WS-C2960-24')) {
-                            $portNum = $portNum - 100 + 24;
-                        } elseif (strstr($switchModel, 'WS-C2960-48')) {
-                            $portNum = $portNum - 100 + 48;
-                        }
-                    }
-                }
-                return $portNum;
-            }
-            //            error_log('Calling getSnmpPortIndex('.$ip.', '.$portNum.')');
-            $portIndex = self::getSnmpPortIndex($ip, $portNum);
-            return $portIndex;
-        }
-        return false;
+        $cdpCachePlatformSnmpResponse = $response['response'];
+        return $this->formatSnmpResponse($cdpCachePlatformSnmpResponse, 2);
     }
 
     public function getSnmpPortIndex($ip, $portNum) {
-        //      1.3.6.1.4.1.9.9.68.1.2.2.1.2
-        $portIndex = null;
 
-        if (isset($ip) && $ip != NULL) {
-            $switchModel = self::getSnmpModelNumber($ip);
-            if ($switchModel != false) {
-                $portNamePrefix = self::getPortNamePrefix($ip, $switchModel);
-                if ($portNamePrefix != false) {
-                    $portIndexList = self::getSnmpPortIndexList($ip);
-                    if (is_numeric($portNum)) {
-                        $portIndex = $portIndexList[$portNamePrefix . $portNum];
-                    } else {
-                        if (strstr($switchModel, 'WS-C6509')) {
-                            $portIndex = $portIndexList[$portNamePrefix . $portNum];
-                        } else {
-                            $portIndex = $portIndexList[$portNum];
-                        }
-                    }
-                    return $portIndex;
-                }
-            }
+        // 1.3.6.1.4.1.9.9.68.1.2.2.1.2
+        $response = $this->getSnmpModelNumber($ip);
+        if(isset($response['error'])){
+            return $response;
+        }
+        $switchModel = $response['response'];
+
+        $portNamePrefix = $this->getPortNamePrefix($ip, $response['response']);
+        if ($portNamePrefix == false) {
+            return ['error' => 'port name prefix not found. Check getPortNamePrefix()'];
         }
 
-        return false;
+        $portIndexListResponse = $this->getSnmpPortIndexList($ip);
+        if(isset($portIndexListRsponse['error'])){
+            return $portIndexListResponse;
+        }
+
+        $portIndexList = $portIndexListResponse['response'];
+        $portIndex = null;
+        if (is_numeric($portNum)) {
+            $portIndex = $portIndexList[$portNamePrefix . $portNum];
+        } else {
+            if (strstr($switchModel, 'WS-C6509')) {
+                $portIndex = $portIndexList[$portNamePrefix . $portNum];
+            } else {
+                $portIndex = $portIndexList[$portNum];
+            }
+        }
+        return ['response' => $portIndex];
     }
 
     public function getSnmpPortIndexList($ip) {
+
         //	1.3.6.1.4.1.9.9.68.1.2.2.1.2
-
-        if (isset($ip) && $ip != NULL) {
-
-            $getPortIndexList = false;
-            if (!isset($this->ipAddress) || $ip != $this->ipAddress) {
-                $this->ipAddress = $ip;
-                $getPortIndexList = true;
-            } else {
-                if (isset($this->portIndexList)) {
-                    return $this->portIndexList;
-                } else {
-                    $getPortIndexList = true;
-                }
-            }
-
-            if ($getPortIndexList) {
-                $this->portIndexList = snmp2_real_walk($this->ipAddress, $this->readCommunity, self::portIndexQueryStr);
-                if ($this->portIndexList != false) {
-                    $this->portIndexList = str_replace('STRING:', '', $this->portIndexList);
-                    $this->portIndexList = str_replace('"', '', $this->portIndexList);
-                    foreach ($this->portIndexList as $key => $ifName) {
-                        $this->portIndexList[$key] = trim($ifName);
-                    }
-                    $this->portIndexList = array_flip($this->portIndexList);
-                    $this->portIndexList = preg_replace('/^.+\./', '', $this->portIndexList);
-                    //                error_log('in getSnmpPortIndexList(): '. print_r($this->portIndexList, true));
-                    return $this->portIndexList;
-                }
-            }
+        if (isset($this->ipAddress) && $ip == $this->ipAddress && isset($this->portIndexList)) {
+            return ['response' => $this->portIndexList];
         }
-        return false;
+
+        $response = $this->snmp2_real_walk($ip, $this->readCommunity, self::portIndexQueryStr);
+        if(isset($response['error'])){
+            return $response;
+        }
+        $this->ipAddress = $ip;
+        $this->portIndexList = str_replace('STRING:', '', $response['response']);
+        $this->portIndexList = str_replace('"', '', $this->portIndexList);
+        foreach ($this->portIndexList as $key => $ifName) {
+            $this->portIndexList[$key] = trim($ifName);
+        }
+        $this->portIndexList = array_flip($this->portIndexList);
+        $this->portIndexList = preg_replace('/^.+\./', '', $this->portIndexList);
+        $response['response'] = $this->portIndexList;
+        return $response;
+    }
+
+    protected function getPortIndex($ip, $portNum, $isIdx = false) {
+
+        if ($isIdx) {
+            if ($portNum > 100) {
+                $response = $this->getSnmpModelNumber($ip);
+                if(isset($response['error'])){
+                    return $response;
+                }
+                $switchModel = $response['response'];
+                if (strstr($switchModel, 'WS-C2960-24')) {
+                    $portNum = $portNum - 100 + 24;
+                } elseif (strstr($switchModel, 'WS-C2960-48')) {
+                    $portNum = $portNum - 100 + 48;
+                }
+            }
+            return ['response' => $portNum];
+        }
+        return $this->getSnmpPortIndex($ip, $portNum);
     }
 
     public function getBridgePortIndex($ip, $port, $isIdx = false) {
-        $portVlans = self::getSnmpPortVlanAssignment($ip, $port, $isIdx);
-        if (count($portVlans) > 0) {
-            $ifIndex = self::getPortIndex($ip, $port, $isIdx);
-            $firstVlan = $portVlans[0];
-            $this->bridgePortIndexList = snmp2_real_walk($ip, $this->readCommunity . '@' . $firstVlan, self::dot1dBasePortIfIndex);
 
-            if ($this->bridgePortIndexList != false) {
-                $this->bridgePortIndexList = str_replace('INTEGER:', '', $this->bridgePortIndexList);
-                foreach ($this->bridgePortIndexList as $key => $value) {
-                    $this->bridgePortIndexList[$key] = trim($value);
-                }
-                $this->bridgePortIndexList = array_flip($this->bridgePortIndexList);
-                $this->bridgePortIndexList = preg_replace('/^.+\./', '', $this->bridgePortIndexList);
-                //                error_log('in getSnmpPortIndexList(): '. print_r($this->portIndexList, true));
-                return $this->bridgePortIndexList[$ifIndex];
-            }
+        $portVlanResponse = $this->getSnmpPortVlanAssignment($ip, $port, $isIdx);
+        if(isset($portVlanResponse['error'])){
+            return $portVlanResponse;
         }
-        return false;
+        $portVlans = $portVlanResponse['response'];
+
+        if (count($portVlans) > 0) {
+
+            $ifIndexResponse = $this->getPortIndex($ip, $port, $isIdx);
+            if(isset($ifIndexResponse['error'])){
+                return $ifIndexResponse;
+            }
+            $ifIndex = $ifIndexResponse['response'];
+            $firstVlan = $portVlans[0];
+            $bridgePortIndexResponse = $this->snmp2_real_walk($ip, $this->readCommunity . '@' . $firstVlan, self::dot1dBasePortIfIndex);
+            if(isset($bridgePortIndexResponse['error'])){
+                return $bridgePortIndexResponse;
+            }
+
+            $this->bridgePortIndexList = str_replace('INTEGER:', '', $bridgePortIndexResponse['response']);
+            foreach ($this->bridgePortIndexList as $key => $value) {
+                $this->bridgePortIndexList[$key] = trim($value);
+            }
+            $this->bridgePortIndexList = array_flip($this->bridgePortIndexList);
+            $this->bridgePortIndexList = preg_replace('/^.+\./', '', $this->bridgePortIndexList);
+            return ['response' => $this->bridgePortIndexList[$ifIndex]];
+        }
+        return ['error' => 'no vlans found on port'];
     }
 
-    public function ticksToTimeArray($inputTimeTicks) {
+    public function setSnmpSysLocation($ip, $sysLocation) {
+
+        return $this->setSnmpIndexValue($ip, self::sysLocation.'.0', 's', '"'.$sysLocation.'"');
+    }
+
+    public function setSnmpPortLabel($ip, $portNum, $label, $isIdx = false) {
+
+        return $this->setSnmpIndexValueByPort($ip, $portNum, $isIdx, false, self::ifAlias, 's', $label);
+    }
+
+    public function setSnmpPortVlanAssignment($ip, $portNum, $vlanID, $isIdx = false) {
+
+        //	1.3.6.1.4.1.9.9.68.1.2.2.1.2
+        return $this->setSnmpIndexValueByPort($ip, $portNum, $isIdx, false, self::vmVlan, 'i', $vlanID);
+    }
+
+    public function snmpPortOn($ip, $portNum, $isIdx = false) {
+
+        //	1.3.6.1.4.1.9.9.68.1.2.2.1.2
+        return $this->setSnmpIndexValueByPort($ip, $portNum, $isIdx, false, self::ifAdminStatus, 'i', 1);
+    }
+
+    public function snmpPortOff($ip, $portNum, $isIdx = false) {
+
+        //	1.3.6.1.2.1.2.2.1.7
+        return $this->setSnmpIndexValueByPort($ip, $portNum, $isIdx, false, self::ifAdminStatus, 'i', 2);
+    }
+
+    public function snmpPortRecycle($ip, $portNum, $isIdx = false) {
+
+        $snmpStatus = $this->snmpPortOff($ip, $portNum, $isIdx);
+        sleep(3);
+        $snmpStatus = $this->snmpPortOn($ip, $portNum, $isIdx);
+        return $snmpStatus;
+    }
+
+    public function getSnmpPortInDataOct($ip, $portNum, $isIdx = false) {
+
+        // $useBridgeIndex = false, $useSnmpGet = false, $formatResponse = false
+        return $this->getSnmpIndexValueByPort($ip, $portNum, $isIdx, self::ifInOctets, false, true, true);
+    }
+
+    public function getSnmpPortOutDataOct($ip, $portNum, $isIdx = false) {
+
+        return $this->getSnmpIndexValueByPort($ip, $portNum, $isIdx, self::ifOutOctets, false, true, true);
+    }
+
+    public function getSnmpPortInDiscards($ip, $portNum, $isIdx = false) {
+
+        return $this->getSnmpIndexValueByPort($ip, $portNum, $isIdx, self::ifInDiscards, false, true, true);
+    }
+
+    public function getSnmpPortOutDiscards($ip, $portNum, $isIdx = false) {
+
+        return $this->getSnmpIndexValueByPort($ip, $portNum, $isIdx, self::ifOutDiscards, false, true, true);
+    }
+
+    public function getSnmpPortInErrors($ip, $portNum, $isIdx = false) {
+
+        return $this->getSnmpIndexValueByPort($ip, $portNum, $isIdx, self::ifInErrors, false, true, true);
+    }
+
+    public function getSnmpPortOutErrors($ip, $portNum, $isIdx = false) {
+
+        return $this->getSnmpIndexValueByPort($ip, $portNum, $isIdx, self::ifOutErrors, false, true, true);
+    }
+
+    public function getSnmpPortInBroadcastPkts($ip, $portNum, $isIdx = false) {
+
+        return $this->getSnmpIndexValueByPort($ip, $portNum, $isIdx, self::ifInBroadcastPkts, false, true, true);
+    }
+
+    public function getSnmpPortOutBroadcastPkts($ip, $portNum, $isIdx = false) {
+
+        return $this->getSnmpIndexValueByPort($ip, $portNum, $isIdx, self::ifOutBroadcastPkts, false, true, true);
+    }
+
+    public function getSnmpPortStats($ip, $portNum, $isIdx = false) {
+
+        $portIndexResponse = $this->getPortIndex($ip, $portNum, $isIdx);
+        if(isset($portIndexResponse['error'])){
+            return $portIndexResponse;
+        }
+        $portIndex = $portIndexResponse['response'];
+
+        $inOct = $this->getSnmpPortInDataOct($ip, $portIndex, true);
+        $outOct = $this->getSnmpPortOutDataOct($ip, $portIndex, true);
+        $inErrors = $this->getSnmpPortInErrors($ip, $portIndex, true);
+        $outErros = $this->getSnmpPortOutErrors($ip, $portIndex, true);
+        $inDiscards = $this->getSnmpPortInDiscards($ip, $portIndex, true);
+        $outDiscards = $this->getSnmpPortOutDiscards($ip, $portIndex, true);
+        $portStats = array('inOctets' => $inOct['response'],
+                           'outOctets' => $outOct['response'],
+                           'inErrors' => $inErrors['response'],
+                           'outErrors' => $outErros['response'],
+                           'inDiscards' => $inDiscards['response'],
+                           'outDiscards' => $outDiscards['response']);
+        return ['response' => $portStats];
+    }
+
+
+    #########################
+    #  Supporting functions
+    #########################
+
+    public function getSnmpAllPortDesc($ip, $keyRegEx = '') {
+
+        $response = $this->snmp2_real_walk($ip, $this->readCommunity, self::portIndexQueryStr);
+        if(!isset($response['error'])){
+            $response['response'] = $this->formatSnmpResponse($response['response']);
+            $response['response'] = $this->getMatchingValueEntries($response['response'], $keyRegEx);
+        }
+        return $response;
+    }
+
+    /**
+     * This function will SNMP walk all ports and snmp format the results based on the specified regex filter
+     * @param  string $ip              IP address of the switch
+     * @param  string $oid             SNMP OID to run the SNMP walk on
+     * @param  string [$keyRegEx = ''] This will be used to fomat the snmp responses from the walk
+     * @return array An array containing a 'response' element which will be the SNMP response or an 'error' element which will be the error message returned
+     */
+    public function getSnmpAllPortsQuery($ip, $oid, $keyRegEx = '') {
+
+        $response = $this->getSnmpAllPortDesc($ip, $keyRegEx);
+        if(isset($response['error'])){
+            return $response;
+        }
+
+        $filteredPortIndexArr =  $response['response'];
+        $response = $this->snmp2_real_walk($ip, $this->readCommunity, $oid);
+        if(isset($response['error'])){
+            return $response;
+        }
+
+        $formattedPortArray = $this->formatSnmpResponse($response['response']);
+        if ($keyRegEx != '') {
+            foreach (array_keys($formattedPortArray) as $key) {
+                if (array_key_exists($key, $filteredPortIndexArr) == false) {
+                    unset($formattedPortArray[$key]);
+                }
+            }
+        }
+        $response['response'] = $formattedPortArray;
+        return $response;
+    }
+
+    /**
+     * [[Description]]
+     * @param  string $ip                       IP address of the switch
+     * @param  string $portNum                  Port number on the switch
+     * @param  boolean [$isIdx = false]          is the specified port an interface index?
+     * @param  string $oid                      SNMP OID to run the SNMP walk on
+     * @param  boolean [$useBridgeIndex = false] Should we use the bridge port index?
+     * @param  boolean [$useSnmpGet = false]     Should we use SNMP get or walk ?
+     * @param  boolean [$formatResponse = false] Should we format the SNMP response or return the raw response?
+     * @return [[Type]] [[Description]]
+     */
+    protected function getSnmpIndexValueByPort($ip, $portNum, $isIdx = false, $oid, $useBridgeIndex = false, $useSnmpGet = false, $formatResponse = false){
+
+        $portIndexResponse = array();
+        $portIndex = $portNum;
+        
+        if($isIdx == false){
+            if($useBridgeIndex){
+                $portIndexResponse = $this->getBridgePortIndex($ip, $portNum, $isIdx);
+            } else {
+                $portIndexResponse = $this->getPortIndex($ip, $portNum, $isIdx); 
+            }
+            
+            if(isset($portIndexResponse['error'])){
+                return $portIndexResponse;
+            }
+            $portIndex = $portIndexResponse['response'];
+        }
+        $response = array();
+        if($useSnmpGet){
+            $response = $this->snmp2_real_walk($ip, $this->readCommunity, $oid . '.' . $portIndex, true);
+        } else {
+            $response = $this->snmp2_real_walk($ip, $this->readCommunity, $oid . '.' . $portIndex);
+        }
+        if(!isset($response['error']) && $formatResponse){
+            $response['response'] = $this->formatSnmpResponse($response['response']);
+        }
+        return $response;
+    }
+
+    protected function getSnmpIndexValue($ip, $oid, $useSnmpGet = false, $formatResponse = false){
+
+        $response = array();
+        if($useSnmpGet){
+            $response = $this->snmp2_real_walk($ip, $this->readCommunity, $oid, true);
+        } else {
+            $response = $this->snmp2_real_walk($ip, $this->readCommunity, $oid);
+        }
+
+        if(!isset($response['error']) && $formatResponse){
+            $response['response'] = $this->formatSnmpResponse($response['response']);
+        }
+        return $response;
+    }
+
+    protected function setSnmpIndexValueByPort($ip, $portNum, $isIdx = false, $useBridgeIndex = false, $oid, $type, $value, $timeout = '1000000', $retries = '5'){
+
+        $portIndexResponse = array();
+        if($useBridgeIndex){
+            $portIndexResponse = $this->getBridgePortIndex($ip, $portNum, $isIdx);
+        } else {
+            $portIndexResponse = $this->getPortIndex($ip, $portNum, $isIdx); 
+        }
+
+        if(isset($portIndexResponse['error'])){
+            return $portIndexResponse;
+        }
+
+        return $this->snmp2_set($ip, $this->writeCommunity, $oid . '.' . $portIndexResponse['response'], $type, $value, $timeout, $retries);
+    }
+
+    protected function setSnmpIndexValue($ip, $oid, $type, $value, $timeout = '1000000', $retries = '5'){
+
+        return $this->snmp2_set($ip, $this->writeCommunity, $oid, $type, $value, $timeout, $retries);
+    }
+
+    protected function snmp2_real_walk($ipAddress, $snmpCommunity, $oid, $callSnmp2Get = false){
+
+        $responseArray = ['response' => false];        
+
+        if (!isset($ipAddress) || $ipAddress == NULL) {
+            $responseArray['error'] = 'ip is missing';
+            return $responseArray;
+        }
+
+        try {
+            $snmpResponse = false;
+
+            if($callSnmp2Get){
+                $snmpResponse = snmp2_get($ipAddress, $snmpCommunity, $oid);
+            } else {
+                $snmpResponse = snmp2_real_walk($ipAddress, $snmpCommunity, $oid);    
+            }
+            $responseArray['response'] = $snmpResponse;
+        } 
+        catch (\Exception $e){
+            $responseArray['error'] = preg_replace('/snmp2_[^\s]+:\s+/i', '', $e->getMessage());
+        }
+        return $responseArray;
+    }
+
+    protected function snmp2_set($ipAddress, $snmpCommunity, $oid, $type, $value, $timeout = '1000000', $retries = '5'){
+
+        $responseArray = ['response' => false];        
+
+        if (!isset($ipAddress) || $ipAddress == NULL) {
+            $responseArray['error'] = 'ip is missing';
+            return $responseArray;
+        }
+
+        try {
+            $snmpResponse = false;
+            $snmpResponse = snmp2_set($ipAddress, $snmpCommunity, $oid, $type, $value, $timeout, $retries);
+            $responseArray['response'] = $snmpResponse;
+        } 
+        catch (\Exception $e){
+            $responseArray['error'] = preg_replace('/snmp2_[^\s]+:\s+/i', '', $e->getMessage());
+        }
+        return $responseArray;
+    }
+
+    protected function filterResponses($responseArray, $regexSearch, $regexReplace){
+
+        if(!isset($responseArray['error'])) {        
+            foreach ($responseArray as $key => $value) {
+                $filteredValue = preg_replace($regexSearch, $regexReplace, $value);
+                $responseArray[$key] = $filteredValue;
+            }
+        }
+        return $responseArray;
+    }
+
+    protected function ticksToTimeArray($inputTimeTicks) {
 
         $inputTimeTicksInt = intval($inputTimeTicks);
         $inputTimeSecs = $inputTimeTicksInt / 100;
@@ -1012,9 +1045,9 @@ class CiscoSwitch {
         return $obj;
     }
 
-    public function getTimeString($inputTimeTicks) {
+    protected function getTimeString($inputTimeTicks) {
         if (isset($inputTimeTicks) && $inputTimeTicks != NULL) {
-            $timeArray = self::ticksToTimeArray($inputTimeTicks);
+            $timeArray = $this->ticksToTimeArray($inputTimeTicks);
             if (strlen($timeArray['h']) == 1) {
                 $timeArray['h'] = '0' . $timeArray['h'];
             }
@@ -1030,23 +1063,7 @@ class CiscoSwitch {
         return '';
     }
 
-    //     public function getTimeString($inputTimeTicks) {
-    //        if(isset($inputTimeTicks) && $inputTimeTicks != NULL) {
-    //            $inputTimeSecs = $inputTimeTicks/100;
-    //            $newTime = mktime(0,0,$inputTimeSecs);
-    //            
-    //            $days = date()
-    //            $timeArray = self::ticksToTimeArray($inputTimeTicks);
-    //            if(strlen($timeArray['h']) == 1){ $timeArray['h'] = '0'.$timeArray['h']; }
-    //            if(strlen($timeArray['m']) == 1){ $timeArray['m'] = '0'.$timeArray['m']; }
-    //            if(strlen($timeArray['s']) == 1){ $timeArray['s'] = '0'.$timeArray['s']; }
-    //    
-    //            return $timeArray['d'] . " days, " . $timeArray['h'] . ":" . $timeArray['m'] . ":" . $timeArray['s'];
-    //        }
-    //        return '';
-    //    }
-
-    public function formatSnmpResponse($snmpResponse, $numOfOidSectionsToKeep = 1) {
+    protected function formatSnmpResponse($snmpResponse, $numOfOidSectionsToKeep = 1) {
         if (is_array($snmpResponse)) {
             $keyPattern = '';
             $keyReplace = '';
@@ -1081,7 +1098,7 @@ class CiscoSwitch {
         return false;
     }
 
-    public function getMatchingValueEntries($snmpArray, $keyRegEx = '') {
+    protected function getMatchingValueEntries($snmpArray, $keyRegEx = '') {
         if ($keyRegEx != '') {
             foreach ($snmpArray as $key => $val) {
                 if (preg_match($keyRegEx, $val) === 0) {
@@ -1092,24 +1109,16 @@ class CiscoSwitch {
         return $snmpArray;
     }
 
-    protected function strpos_all($haystack, $needle) {
+    protected function strpos_all($haystack, $needle, $addValueToEachElement = 0) {
+
         $offset = 0;
         $allpos = array();
         while (($pos = strpos($haystack, $needle, $offset)) !== FALSE) {
             $offset = $pos + 1;
-            $allpos[] = $pos;
+            $allpos[] = $pos + $addValueToEachElement;
         }
         return $allpos;
     }
-
-    //    public function formatSnmpResponse($snmpResponse) {
-    //        if ($snmpResponse != '') {
-    //            $snmpRespStr = preg_replace('/.+:/', '', $snmpResponse);
-    //            $snmpRespStr = preg_replace('/"/', '', $snmpRespStr);
-    //            return trim($snmpRespStr);
-    //        }
-    //        return false;
-    //    }
 
     /**
      *    Stores data in the session.

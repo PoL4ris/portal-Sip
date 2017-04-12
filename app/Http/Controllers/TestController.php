@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Extensions\SIPBilling;
 use App\Extensions\BillingHelper;
+use App\Extensions\CiscoSwitch;
 use App\Extensions\DataMigrationUtils;
 use DB;
 use App\Models\Customer;
@@ -393,6 +394,53 @@ class TestController extends Controller
 
     public function generalTest(){
 
+        $switch = new CiscoSwitch(['readCommunity' => config('netmgmt.cisco.read'),
+                                'writeCommunity' => config('netmgmt.cisco.write')]);
+        
+//        error_reporting(0);
+//        track_errors(true);
+        
+//        dd($switch->getSnmpModelNumber('10.10.35.6'));
+//        $response = $switch->getSnmpPortOperStatus('10.10.35.6', 11);
+//        $response = $switch->getSnmpAllPortLabel('10.10.35.6', '/Ethernet/');
+//        $response = $switch->getSnmpSysName('10.10.35.6');
+//        $response = $switch->getSnmpAllPortAdminStatus()'10.10.35.6');
+//        $response = $switch->getSnmpAllPortDesc('10.10.35.6', '/Ethernet/');
+//        $response = $switch->getSnmpAllPortAdminStatus('10.10.35.6', '/Ethernet/');
+
+//        dd($switch->getSnmpPortOperStatus('10.10.35.6', 2));
+//        dd($switch->getSnmpPortSpeed('10.10.35.6', 47));
+//        $response = $switch->getSnmpPortIndex('10.10.35.6', 2);
+//        echo 'Round 1 ... <br>';
+//        $response = $switch->getSnmpPortIndexList('10.10.35.6');
+//        echo 'Round 2 ... <br>';
+//        dd($switch->getSnmpPortIndexList('10.10.35.6'));
+//        $response = $switch->getSnmpPortLastChange('10.10.35.6', '47');
+//        $response = $switch->getSnmpPortfastStatus('10.10.35.6', '48');
+        
+        
+        dd($switch->getSnmpPortfastMode('10.10.35.6', '6'));
+        
+//        dd($switch->getSnmpSwitchportMode('10.10.35.6', '48'));
+
+//        $str = "1";
+//        dd(str_pad($str,4,"0",STR_PAD_LEFT));
+//        dd(base_convert('7', 16, 2));
+//        dd($switch->getSnmpPortVlanAssignment('10.10.35.6', '48'));
+//        dd($switch->getBridgePortIndex('10.10.35.6', '26'));
+        
+//        dd($switch->getSnmpTrunkPortNativeVlanAssignment('10.10.35.6', '47'));
+//        dd($switch->getSnmpTrunkPortEncapsulation('10.10.35.6', '47'));
+//        dd($switch->getSnmpBpduGuardStatus('10.10.35.6', '47'));
+        
+//        dd($switch->snmp2_set('10.10.35.6', 'BigSeem', '1.3.6.1.4.1.9.9.68.1.2.2.1.2.10115', 'i', 1));
+//        dd($switch->setSnmpIndexValueByPort('10.10.35.6', '15', false, false, '1.3.6.1.4.1.9.9.68.1.2.2.1.2', 'i', 1));
+        
+//        dd($switch->getSnmpPortInDataOct('10.10.35.6', '10136', true));
+        dd($switch->getSnmpPortStats('10.10.35.6', '47'));
+           
+        dd($response);
+        
 //        $port = Port::find(8734);
 //        $networkNode = $port->networkNodes;
 //        dd($networkNode);

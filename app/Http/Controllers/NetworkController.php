@@ -92,9 +92,9 @@ class NetworkController extends Controller
         $switchPort = $port->port_number;
         $switch = $this->getSwitchInstance();
         
-        $portOperStatus = $switch->getSnmpPortOperStatus($switchIP, $switchPort);
-        if ($portOperStatus) {
-            $portOperStatus = $this->formatSnmpResponse($portOperStatus);
+        $portOperStatusResponse = $switch->getSnmpPortOperStatus($switchIP, $switchPort);
+        if (!isset($portOperStatusResponse['error'])) {
+            $portOperStatus = $portOperStatusResponse['response'];
             switch ($portOperStatus) {
                 case 'up(1)':
                     $portOperStatus = 'up';
@@ -126,9 +126,9 @@ class NetworkController extends Controller
             $portStatus['oper-status'] = 'error';
         }
 
-        $portAdminStatus = $switch->getSnmpPortAdminStatus($switchIP, $switchPort);
-        if ($portAdminStatus) {
-            $portAdminStatus = $this->formatSnmpResponse($portAdminStatus);
+        $portAdminStatusResponse = $switch->getSnmpPortAdminStatus($switchIP, $switchPort);
+        if (!isset($portAdminStatusResponse['error'])) {
+            $portAdminStatus = $portAdminStatusResponse['response'];
             switch ($portAdminStatus) {
                 case 'up(1)':
                     $portAdminStatus = 'up';
@@ -148,9 +148,10 @@ class NetworkController extends Controller
             $portStatus['admin-status'] = 'error';
         }
 
-        $portSpeed = $switch->getSnmpPortSpeed($switchIP, $switchPort);
-        if ($portSpeed) {
-            $portSpeedInt = intval($this->formatSnmpResponse($portSpeed)) / 1000000;
+        $portSpeedResponse = $switch->getSnmpPortSpeed($switchIP, $switchPort);
+        if (!isset($portSpeedResponse['error'])) {
+            $portSpeedInt = intval($portSpeedResponse['response']) / 1000000;
+            
             if ($portStatus['oper-status'] == 'up') {
                 $portStatus['port-speed'] = $portSpeedInt . 'M';
             } else {
@@ -164,15 +165,24 @@ class NetworkController extends Controller
                                         $portStatus['oper-status'].' (admin: '.$portStatus['admin-status'].', speed: '.$portStatus['port-speed'].')';
         $portStatus['dashboard-port-status'] = ($portStatus['port-speed'] == 'N/A') ? $portStatus['oper-status'] : $portStatus['oper-status'].' at '.$portStatus['port-speed'];
         
-        $portStatus['last-change'] = $switch->getSnmpPortLastChangeFormatted($switchIP, $switchPort);
-        $portStatus['switch-uptime'] = $switch->getSnmpSysUptimeFormatted($switchIP, $switchPort);
+        $lastChangeResponse = $switch->getSnmpPortLastChangeFormatted($switchIP, $switchPort);
+        $portStatus['last-change'] = isset($lastChangeResponse['error']) ? 'error' : $lastChangeResponse['response'];
+            
+        $sysUptimeResponse = $switch->getSnmpSysUptime($switchIP, $switchPort, true);
+        $portStatus['switch-uptime'] = isset($sysUptimeResponse['error']) ? 'error' : $sysUptimeResponse['response'];
 
-        $switchPortMode = $switch->getSnmpSwitchportMode($switchIP, $switchPort);
+        $switchPortModeResponse = $switch->getSnmpSwitchportMode($switchIP, $switchPort);
+        $switchPortMode = isset($switchPortModeResponse['error']) ? 'error' : $switchPortModeResponse['response'];
+        
         $portVlanString = '';
-        $portVlansArr = $switch->getSnmpPortVlanAssignment($switchIP, $switchPort);
+        $portVlanResponse = $switch->getSnmpPortVlanAssignment($switchIP, $switchPort);
+        $portVlansArr = isset($portVlanResponse['error']) ? [] : $portVlanResponse['response'];
 
-        if (count($portVlansArr) > 0) {
+        $numOfVlans = count($portVlansArr);
+        if ($numOfVlans > 0 && $numOfVlans < 6) {
             $portVlanString = implode(', ', $portVlansArr);
+        } else {
+            $portVlanString = 'More than 5';
         }
         $portVlan = $portVlanString . (($switchPortMode == 1) ? ' (Trunk)' : ' (Access)');
         $portStatus['vlan'] = $portVlan;
@@ -205,14 +215,20 @@ class NetworkController extends Controller
             $switch = $this->getSwitchInstance();
             $portStatus = array();
 
-            $portfastStatus = $switch->getSnmpPortfastStatus($switchIP, $switchPort);
+            $portfastResponse = $switch->getSnmpPortfastStatus($switchIP, $switchPort);
+            $portfastStatus = isset($portfastResponse['error']) ? 'error' : $portfastResponse['response'];
+
             if ($portfastStatus == '1' || $portfastStatus == 'true(1)') {
                 $portStatus['portfast'] = 'Yes';
-            } else {
+            } else if($portfastStatus != 'error') {
                 $portStatus['portfast'] = 'No';
+            } else {
+                $portStatus['portfast'] = $portfastStatus;
             }
-
-            $portfastMode = $switch->getSnmpPortfastMode($switchIP, $switchPort);
+                
+            $portfastModeResponse = $switch->getSnmpPortfastMode($switchIP, $switchPort);
+            $portfastMode = isset($portfastModeResponse['error']) ? 'error' : $portfastModeResponse['response'];
+                
             if ($portfastMode == '1' || $portfastMode == 'enable(1)') {
                 $portStatus['portfast-mode'] = 'Enabled';
             } else if ($portfastMode == '2' || $portfastMode == 'disable(2)') {
@@ -225,7 +241,9 @@ class NetworkController extends Controller
                 $portStatus['portfast-mode'] = $portfastMode;
             }
 
-            $bpduGuardStatus = $switch->getSnmpBpduGuardStatus($switchIP, $switchPort);
+            $bpduGuardResponse = $switch->getSnmpBpduGuardStatus($switchIP, $switchPort);
+            $bpduGuardStatus = isset($bpduGuardResponse['error']) ? 'error' : $bpduGuardResponse['response'];
+                
             if ($bpduGuardStatus == '1' || $bpduGuardStatus == 'enable(1)') {
                 $portStatus['bpdu-guard'] = 'Enabled';
             } else if ($bpduGuardStatus == '2' || $bpduGuardStatus == 'disable(2)') {
@@ -236,7 +254,9 @@ class NetworkController extends Controller
                 $portStatus['bpdu-guard'] = $bpduGuardStatus;
             }
 
-            $bpduFilterStatus = $switch->getSnmpBpduFilterStatus($switchIP, $switchPort);
+            $bpduFilterResponse = $switch->getSnmpBpduFilterStatus($switchIP, $switchPort);
+            $bpduFilterStatus = isset($bpduFilterResponse['error']) ? 'error' : $bpduFilterResponse['response'];
+                
             if ($bpduFilterStatus == '1' || $bpduFilterStatus == 'enable(1)') {
                 $portStatus['bpdu-filter'] = 'Enabled';
             } else if ($bpduFilterStatus == '2' || $bpduFilterStatus == 'disable(2)') {
@@ -596,12 +616,12 @@ class NetworkController extends Controller
         return $privateVlan;
     }
 
-    public function formatSnmpResponse($snmpResponse) {
-        if ($snmpResponse != '') {
-            $snmpRespStr = preg_replace('/.+:/', '', $snmpResponse);
-            return trim($snmpRespStr);
-        }
-        return false;
-    }
+//    public function formatSnmpResponse($snmpResponse) {
+//        if ($snmpResponse != '') {
+//            $snmpRespStr = preg_replace('/.+:/', '', $snmpResponse);
+//            return trim($snmpRespStr);
+//        }
+//        return false;
+//    }
 
 }
