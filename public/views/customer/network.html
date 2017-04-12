@@ -15,19 +15,19 @@
         <div class="col-lg-12 display-content-main-box no-padding-sides subseccion-network">
             <div class="col-lg-4 no-padding-sides b-r-ddd">
                 <div class="field-data  col-lg-12 padding-5"><div class="bold-type col-lg-4">Name:</div>
-                    <div class="col-lg-8 amin">{{ customerNetwork.network_nodes.host_name?customerNetwork.network_nodes.host_name:'' }}</div>
+                    <div class="col-lg-8 amin">{{ customerNetwork.network_node.host_name?customerNetwork.network_node.host_name:'' }}</div>
                 </div>
                 <div class="field-data  col-lg-12 padding-5"><div class="bold-type col-lg-4">Address:</div>
-                    <div class="col-lg-8 anim">{{ customerNetwork.network_nodes.ip_address?customerNetwork.network_nodes.ip_address:'' }}</div>
+                    <div class="col-lg-8 anim">{{ customerNetwork.network_node.ip_address?customerNetwork.network_node.ip_address:'' }}</div>
                 </div>
                 <div class="field-data  col-lg-12 padding-5"><div class="bold-type col-lg-4">Access:</div>
                     <div class="col-lg-8 anim" id="acces-network-id">{{ customerNetwork.access_level?customerNetwork.access_level:'' }}</div>
                 </div>
                 <div class="field-data  col-lg-12 padding-5"><div class="bold-type col-lg-4">Vendor:</div> 
-                    <div class="col-lg-8 anim">{{ customerNetwork.network_nodes.vendor?customerNetwork.network_nodes.vendor:'' }}</div>
+                    <div class="col-lg-8 anim">{{ customerNetwork.network_node.vendor?customerNetwork.network_node.vendor:'' }}</div>
                 </div>
                 <div class="field-data  col-lg-12 padding-5"><div class="bold-type col-lg-4">Model:</div>
-                    <div class="col-lg-8 anim">{{ customerNetwork.network_nodes.model?customerNetwork.network_nodes.model:'' }}</div>
+                    <div class="col-lg-8 anim">{{ customerNetwork.network_node.model?customerNetwork.network_node.model:'' }}</div>
                 </div>
                 <div class="field-data  col-lg-12 padding-5"><div class="bold-type col-lg-4">Uptime:</div>
                     <div class="col-lg-8 anim " id="switch-uptime"></div>
@@ -72,29 +72,28 @@
         </div>
 
         <div class="col-lg-12 padding-bottom-10 padding-top-10 no-padding-sides b-t-ddd" 
-             ng-if="customerNetwork.network_nodes.ip_address && customerNetwork.port_number">
+             ng-if="customerNetwork.network_node.ip_address && customerNetwork.port_number">
 
-            <div class="btn btn-success network-functions r m-r-sm" ng-click="networkServices(0)" type="0" portid="{{customerNetwork.id}}">Check status</div>
+            <div class="btn btn-success network-functions m-r-sm" ng-click="networkServices(0)" type="0" portid="{{customerNetwork.id}}">Check status</div>
 
-            <div class="btn btn-dark network-functions action-confirm m-r-sm" type="3" portid="{{customerNetwork.id}}" ng-click="smartModEg1()">Recycle port</div>
+            <div class="btn btn-dark network-functions action-confirm m-r-sm" id="recycleButton" ng-click="smartModEg1($event)" type="3" portid="{{customerNetwork.id}}">Recycle port</div>
             <!--<div class="col-lg-2 text-center">-->
             <!--<p class="btn btn-success network-functions m-r-sm"  type="4" portid="{{customerNetwork.port_number}}">Check IP's</p>-->
             <!--</div>-->
-            <div class="btn btn-info network-functions action-confirm access-type-net"
-                 ng-if="customerNetwork.access_level == 'signup'"
-                 type="6"
-                 id="rport"
-                 portid="{{customerNetwork.id}}"
-                 ng-click="smartModEg1()">Activate
-            </div>
             <div class="btn btn-danger network-functions action-confirm access-type-net m-r-sm"
                  ng-if="customerNetwork.access_level != 'signup'"
                  type="5"
-                 id="rport"
+                 id="signupButton"
                  portid="{{customerNetwork.id}}"
-                 ng-click="smartModEg1()">Send to signup
+                 ng-click="smartModEg1($event)">Send to signup
             </div>
-
+            <div class="btn btn-info network-functions action-confirm access-type-net"
+                 ng-if="customerNetwork.access_level == 'signup'"
+                 type="6"
+                 id="activateButton"
+                 portid="{{customerNetwork.id}}"
+                 ng-click="smartModEg1($event)">Activate
+            </div>
             <!--<div class="col-lg-2 text-center">-->
             <!--<p class="btn btn-success network-functions"  type="" portid="{{customerNetwork.port_number}}">Building IP Stats</p>-->
             <!--</div>-->

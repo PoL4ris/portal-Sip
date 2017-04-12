@@ -6,8 +6,9 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Extensions\SIPBilling;
 use App\Models\Customer;
+use App\Models\Address;
 use App\Models\PaymentMethod;
-
+use Log;
 
 class BillingController extends Controller
 {
@@ -22,11 +23,13 @@ class BillingController extends Controller
       $amountToCharge = $input['amount'];
       $chargeDesc = $input['desc'];
 
-
+Log::notice('BillingController::charge(): creating new SIPBilling ...');
       $sipBilling = new SIPBilling;
       $result = $sipBilling->chargeCC($cid, $amountToCharge, $chargeDesc);
       if (isset($result['RESPONSETEXT']) == false || $result['RESPONSETEXT'] != 'APPROVED') {
-          error_log('billing_hanlder.php: action[charge] Failed: ' . print_r($result, true));
+          Log::notice('BillingController::charge(): action[charge] Failed: ' . print_r($result, true));
+      } else {
+          Log::notice('BillingController::charge(): charge was successful');
       }
       return $result;
     }
@@ -63,6 +66,12 @@ class BillingController extends Controller
         $pm->save();
       }
       else{
+          
+        $address = Address::where('id_customers', $request->id_customers)->first();
+        if($address == null){
+            return 'ERROR';
+        }
+          
         $pm = new PaymentMethod;
         $pm->account_number = $request->account_number;
         $pm->exp_month      = $request->exp_month;
@@ -71,7 +80,7 @@ class BillingController extends Controller
         $pm->billing_phone  = $request->billing_phone;
         $pm->priority       = 1; // MEANS DEFAULT
         $pm->card_type      = $request->card_type;
-        $pm->id_address     = '33';//?????? CUSTOMER ADDRESS...
+        $pm->id_address     = $address->id;
         $pm->id_customers   = $request->id_customers;
         $pm->save();
       }

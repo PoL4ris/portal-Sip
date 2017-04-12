@@ -974,34 +974,38 @@ app.controller('customerNetworkController',         function ($scope, $http){
             }
         );
     };
-    $scope.smartModEg1        = function () {
+    $scope.smartModEg1        = function (event) {
         //     console.log($(this).attr('type'));
+        var elementId = event.target.id;
+        var service       = $('#'+elementId).attr('type');
+        var portID        = $('#'+elementId).attr('portid');
+        var serviceID     = $('#'+elementId).attr('serviceid');
+        var serviceStatus = $('#'+elementId).attr('displaystatus');
+        var routeID       = $('#'+elementId).attr('route');
 
-        var service       = $('#rport').attr('type');
-        var portID        = $('#rport').attr('portid');
-        var serviceID     = $('#rport').attr('serviceid');
-        var serviceStatus = $('#rport').attr('displaystatus');
-        var routeID       = $('#rport').attr('route');
-
-
-
-        if(service == 5 || service == 6)
-            var txtMsg = 'Are you sure you want to send this customer to the signup page?';
-        if (serviceID)
+        if(service == 3)
             var txtMsg = 'Should I recycle this customer’s port?';
+        if(service == 5)
+            var txtMsg = 'Are you sure you want to send this customer to the signup page?';
+        if(service == 6)
+            var txtMsg = 'Are you sure you want to active this customer?';
 
-
+console.log('Inside smartModEg1(): ');
+console.log('service='+service);
+console.log('portID='+portID);
+console.log('serviceID='+serviceID);
+console.log('serviceStatus='+serviceStatus);
+            
         $.SmartMessageBox({
             title: "Please Confirm",
             content: txtMsg,
             buttons: '[No][Yes]'
         }, function (ButtonPressed) {
             if (ButtonPressed === "Yes") {
-
-                if (portID)
-                    networkServices(service);//SEND TO SIGNUP
+                if(portID)
+                    networkServices(service); // Recycle port, send to signup, activate, etc
                 else if(serviceID)
-                    servicesInfoUpdate(serviceID, serviceStatus, routeID);//Recycle port
+                    servicesInfoUpdate(serviceID, serviceStatus, routeID); // ??
 
             }
         });
@@ -1081,7 +1085,7 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http){
         $http.get("chargeAmount", {params:{'cid':cid, 'amount':amount, 'desc':desc}})
             .then(function (response) {
             //         $scope.paymentMethods = response.data;
-            //         console.log(response.data);
+                     console.log(response.data);
             if(response.data.RESPONSETEXT == 'APPROVED')
                 $scope.closeTransparentBGManual();
         });

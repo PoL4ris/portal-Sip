@@ -530,7 +530,7 @@ class CiscoSwitch {
     public function filterValidUserPorts($ip, $portIndexList) {
 
         $response = $this->getSnmpModelNumber($ip);
-        if($response['error']){
+        if(isset($response['error'])){
             return $portIndexList;
         }
         $switchModel = $response['response'];
@@ -560,8 +560,12 @@ class CiscoSwitch {
 
     protected function getPortNamePrefix($ip, $switchModel = false) {
         if (isset($ip) && $ip != NULL) {
-            if ($switchModel == '') {
-                $switchModel = $this->getSnmpModelNumber($ip);
+            if ($switchModel == false || $switchModel == '') {
+                $switchModelResponse = $this->getSnmpModelNumber($ip);
+                if(isset($switchModelResponse['error'])){
+                    return false;
+                }
+                $switchModel = $switchModelResponse['response'];
             }
 
             if ($switchModel != false) {

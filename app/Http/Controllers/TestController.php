@@ -419,7 +419,7 @@ class TestController extends Controller
 //        $response = $switch->getSnmpPortfastStatus('10.10.35.6', '48');
         
         
-        dd($switch->getSnmpPortfastMode('10.10.35.6', '6'));
+//        dd($switch->getSnmpPortfastMode('10.10.35.6', '6'));
         
 //        dd($switch->getSnmpSwitchportMode('10.10.35.6', '48'));
 
@@ -437,16 +437,21 @@ class TestController extends Controller
 //        dd($switch->setSnmpIndexValueByPort('10.10.35.6', '15', false, false, '1.3.6.1.4.1.9.9.68.1.2.2.1.2', 'i', 1));
         
 //        dd($switch->getSnmpPortInDataOct('10.10.35.6', '10136', true));
-        dd($switch->getSnmpPortStats('10.10.35.6', '47'));
-           
-        dd($response);
+//        dd($switch->getSnmpPortStats('10.10.35.6', '47'));
+//           
+//        dd($response);
+        
         
 //        $port = Port::find(8734);
-//        $networkNode = $port->networkNodes;
+//        dd([$port, $port->customer, $port->networkNode]);
+//        
+//        $networkNode = $port->networkNode;
 //        dd($networkNode);
 //        dd($networkNode->masterRouter);
         
-        $customer = Customer::find(11379);
+        $customer = Customer::find(5380);
+        dd($customer->port);
+        
         dd($customer->getNetworkInfo());
         
         

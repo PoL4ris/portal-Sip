@@ -548,7 +548,7 @@ class DataMigrationUtils {
         App::firstOrCreate(['id' => 3, 'id_apps' => 0, 'name' => 'Customers', 'icon' => 'fa-user ', 'url' => 'customers']);
         App::firstOrCreate(['id' => 4, 'id_apps' => 0, 'name' => 'Building', 'icon' => 'fa-building-o', 'url' => 'buildings']);
         App::firstOrCreate(['id' => 5, 'id_apps' => 0, 'name' => 'Network', 'icon' => 'fa-signal', 'url' => 'network']);
-
+        App::firstOrCreate(['id' => 6, 'id_apps' => 0, 'name' => 'Admin', 'icon' => 'icon-lock', 'url' => 'admin']);
 
         // FOR FUTURE USE
         //        App::firstOrCreate(['id' => 1, 'id_apps' => 0, 'name' => 'Home', 'icon' => 'icon-home', 'url' => '#/']);
