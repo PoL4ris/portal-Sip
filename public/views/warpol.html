@@ -1,0 +1,18 @@
+Warpol
+<hr>
+<div class="ticket-search-table size-100 m-t-lg">
+  <form>
+    <label>
+      <input type="text" placeholder="Search for Something..." ng-keyup="getGenericSearch()" ng-model="genericSearch">
+      <i class="fa fa-search pull-right"></i>
+    </label>
+  </form>
+
+  <div class="" ng-if="genericSearchResult">
+    <div class="search-result anim" >
+      <pre>
+      {{genericSearchResult | json}}
+      </pre>
+    </div>
+  </div>
+</div>

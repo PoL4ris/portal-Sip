@@ -1112,35 +1112,62 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http){
         });
     };
     $scope.refundFunct        = function (){
-        var cid = $scope.customerData.id;
-        var amount = $('#mf-input-am').val();
-        var desc = $('#mf-input-de').val();
 
-        if(!cid || !amount || !desc)
-            return;
+      var objects = getFormValues('manual-refund-form');
+      objects['cid'] = $scope.idCustomer;
 
-        $http.get("refundAmount", {params:{'cid':cid, 'amount':amount, 'desc':desc}})
-            .then(function (response) {
-            //         $scope.paymentMethods = response.data;
-            console.log(response.data);
-            if(response.data.RESPONSETEXT == 'RETURN ACCEPTED')
-                $scope.closeTransparentBGManual();
+
+      if(!objects.cid || !objects.amount || !objects.desc)
+          return;
+
+      processing(1);
+
+      $http.get("refundAmount", {params:objects})
+        .then(function (response)
+        {
+          //$scope.paymentMethods = response.data;
+          console.log(response.data);
+
+          if(response.data.RESPONSETEXT == 'RETURN ACCEPTED')
+          {
+            alert('RETURN ACCEPTED');
+            //$scope.closeTransparentBGManual();
+          }
+          else
+            alert('ERROR');
+
+          processing(0);
+          $('#paymentManualRefound').modal('toggle');
+          $('#manual-refund-form').trigger("reset");
         });
     };
     $scope.chargeFunct        = function (){
-        var cid = $scope.customerData.id;
-        var amount = $('#mc-input-am').val();
-        var desc = $('#mc-input-de').val();
 
-        if(!cid || !amount || !desc)
-            return;
+      var objects = getFormValues('manual-charge-form');
+      objects['cid'] = $scope.idCustomer;
 
-        $http.get("chargeAmount", {params:{'cid':cid, 'amount':amount, 'desc':desc}})
-            .then(function (response) {
-            //         $scope.paymentMethods = response.data;
-                     console.log(response.data);
-            if(response.data.RESPONSETEXT == 'APPROVED')
-                $scope.closeTransparentBGManual();
+
+      if(!objects.cid || !objects.amount || !objects.desc)
+        return;
+
+      processing(1);
+
+      $http.get("chargeAmount", {params:objects})
+        .then(function (response)
+        {
+          //$scope.paymentMethods = response.data;
+          console.log(response.data);
+          if(response.data.RESPONSETEXT == 'APPROVED')
+          {
+            alert('APPROVED');
+            //$scope.closeTransparentBGManual();
+          }
+          else
+            alert('ERROR');
+
+          processing(0);
+          $('#paymentManualCharge').modal('toggle');
+          $('#manual-charge-form').trigger("reset");
         });
     };
     $scope.editPaymentMethod  = function (flag){
@@ -1158,6 +1185,12 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http){
 
         $('#paymentMethodModal').trigger("reset");
     };
+    function processing(status){
+      if(status == 1)
+        $scope.something = true;
+      else
+        $scope.something = false;
+    }
     //OLD THING
     $scope.open = function (){
         $scope.customerId = $scope.customerData.id;
@@ -2089,26 +2122,25 @@ function getFormValues(id){
 app.controller('userAuthController',                function ($scope){
     $scope.userDataAuth = JSON.parse($('#auth-user').val());
 })
-app.controller('tempTicketSearchController',        function($scope, $http){
+app.controller('warpolController',        function($scope, $http){
+
 console.log('Hola');
 
-  $scope.getTicketsSearch = function (){
+  $scope.getGenericSearch = function (){
 
-    if(!this.ticketSearch)
-    {
-      $scope.customerSearchResult = false;
-      return;
-    }
+    console.log(this.genericSearch);
 
-    var query = {'querySearch' : this.ticketSearch};
+    var query = {'querySearch' : this.genericSearch};
 
-    $http.get("getTicketsSearchTEMP", {params:query})
+    $http.get("getGenericSearch", {params:query})
       .then(function (response) {
-        $scope.ticketSearchResult = response.data;
+        $scope.genericSearchResult = response.data;
       });
 
     return;
   }
+
+
 });
 
 

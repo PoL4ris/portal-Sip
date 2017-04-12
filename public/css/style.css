@@ -623,7 +623,7 @@ table.dataTable tbody tr {
   color: rgba(0, 0, 0, 0.4);
 }
 .bg-payment-debt{
-  border:3px solid crimson;
+  border:2px solid crimson;
   /*background: rgba(220,20,60,.7);*/
 }
 .bg-payment-no-debt{
@@ -714,6 +714,10 @@ table.dataTable tbody tr {
 #admin-app-id{
   margin-bottom: 25px;
   border-bottom: 1px solid #ddd;
+}
+#warpol-app-id{
+  margin-top: 25px;
+  border-top: 1px solid #ddd;
 }
 .admin-app .dataTables_length{
 

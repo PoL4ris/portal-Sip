@@ -40,7 +40,22 @@ class CustomerController extends Controller
     $this->middleware('auth');
       $this->logType = 'customer';
   }
+  public function getGenericSearch(Request $request){
+    //Contains the String.
+    $string = $request->querySearch;
 
+    $customer = Address::with(['customers' => function($query){
+      $query->where('customers.id', 501);
+    }])
+//    , 'buildings', 'customers.contacts'
+                ->take(1)
+                ->get();
+//    $result = $customer->where('customers.id',501)->first();
+
+    return $customer;
+    return $result;
+    return 'SilverIP Blazing Fast';
+  }
   public function getCustomersSearch(Request $request)
   {
     $string = $request->querySearch;
@@ -79,17 +94,8 @@ class CustomerController extends Controller
     $arrY .= $whereFlag?$tmpWhere:'';
 
     foreach($arrX as $idx => $or)
-    {
-//      if ($idx == 0 )
-//      {
-//        $arrY .= ' AND( ' . $or;
-//      }
-//      else
-//        $arrY .= ' or ' . $or;
         $arrY .= $or;
-    }
 
-//    print $select . $arrY . $limit;
     return DB::select($select . $arrY . $limit);
   }//MAIN SEARCH NEEDS TO RENAME
 

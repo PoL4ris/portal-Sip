@@ -20,6 +20,12 @@ class Address extends Model
 
     public function buildings() {
 
-        return $this->belongsTo('App\Models\Building\Building', 'id_buildings');
-      }
+      return $this->belongsTo('App\Models\Building\Building', 'id_buildings');
+    }
+    public function customers() {
+      return $this->belongsTo('App\Models\Customer', 'id_customers');
+    }
+    public function contacts() {
+      return $this->hasMany('App\Models\Contact', 'id_customers');
+    }
 }
