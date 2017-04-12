@@ -549,6 +549,14 @@ class DataMigrationUtils {
         App::firstOrCreate(['id' => 4, 'id_apps' => 0, 'name' => 'Building', 'icon' => 'fa-building-o', 'url' => 'buildings']);
         App::firstOrCreate(['id' => 5, 'id_apps' => 0, 'name' => 'Network', 'icon' => 'fa-signal', 'url' => 'network']);
         App::firstOrCreate(['id' => 6, 'id_apps' => 0, 'name' => 'Admin', 'icon' => 'icon-lock', 'url' => 'admin']);
+        App::firstOrCreate(['id' => 7, 'id_apps' => 0, 'name' => 'Partners', 'icon' => 'fa-exchange ', 'url' => 'partners']);
+        App::firstOrCreate(['id' => 8, 'id_apps' => 0, 'name' => 'Sales', 'icon' => 'fa-cubes', 'url' => 'sales']);
+        App::firstOrCreate(['id' => 9, 'id_apps' => 0, 'name' => 'Reports', 'icon' => 'fa-bar-chart-o', 'url' => 'reports']);
+        App::firstOrCreate(['id' => 10, 'id_apps' => 0, 'name' => 'Billing', 'icon' => 'fa-shopping-cart', 'url' => 'billing']);
+        App::firstOrCreate(['id' => 11, 'id_apps' => 0, 'name' => 'Partners', 'icon' => 'fa-exchange', 'url' => 'partners']);
+        App::firstOrCreate(['id' => 12, 'id_apps' => 0, 'name' => 'Contracts', 'icon' => 'fa-book', 'url' => 'contracts']);
+        App::firstOrCreate(['id' => 13, 'id_apps' => 0, 'name' => 'Field Ops', 'icon' => 'fa-tree', 'url' => 'fieldops']);
+        App::firstOrCreate(['id' => 14, 'id_apps' => 0, 'name' => 'Survery', 'icon' => 'fa-space-shuttle', 'url' => 'survery']);
 
         // FOR FUTURE USE
         //        App::firstOrCreate(['id' => 1, 'id_apps' => 0, 'name' => 'Home', 'icon' => 'icon-home', 'url' => '#/']);
