@@ -25,6 +25,10 @@ class Address extends Model
     public function customers() {
       return $this->belongsTo('App\Models\Customer', 'id_customers');
     }
+    public function customerWhere($id){
+      $where = $this->customers;
+      return $where->where('id', $id);
+    }
     public function contacts() {
       return $this->hasMany('App\Models\Contact', 'id_customers');
     }

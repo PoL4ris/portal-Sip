@@ -44,15 +44,14 @@ class CustomerController extends Controller
     //Contains the String.
     $string = $request->querySearch;
 
-    $customer = Address::with(['customers' => function($query){
-      $query->where('customers.id', 501);
-    }])
-//    , 'buildings', 'customers.contacts'
-                ->take(1)
-                ->get();
-//    $result = $customer->where('customers.id',501)->first();
+    $customer = Address::with('customers', 'buildings', 'customers.contacts')
+      ->take(5)
+      ->get();
 
-    return $customer;
+
+    $result = $customer->customerWhere(501);
+
+//    return $customer;
     return $result;
     return 'SilverIP Blazing Fast';
   }
