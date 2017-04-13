@@ -6,6 +6,7 @@ return [
         'disabled' => env('STATUS_DISABLED', 2),
         'new' => env('STATUS_NEW', 3),
         'decommissioned' => env('STATUS_DECOMMISSIONED', 4),
+        'closed' => 'closed'
     ],
     'type' => [
         'internet' => 1,
@@ -65,7 +66,7 @@ return [
         'static_ip' => '13',
         'voip' => '14',
         'other' => '17',
-        'billing' => '19',
+        'billing' => '18',
         'registration_page' => '21',
         'dtv' => '22',
         'add_move_jack' => '23',
