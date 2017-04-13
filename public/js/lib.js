@@ -1112,6 +1112,9 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http){
         });
     };
     $scope.refundFunct        = function (){
+      $scope.errorMsgPaymentMethods = null;
+
+      var regex = /[^\w]/g
 
       var objects = getFormValues('manual-refund-form');
       objects['cid'] = $scope.idCustomer;
@@ -1119,6 +1122,11 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http){
 
       if(!objects.cid || !objects.amount || !objects.desc)
           return;
+
+      if(regex.test(objects.amount)){
+        $scope.errorMsgPaymentMethods = 'Verify the amount.';
+        return;
+      }
 
       processing(1);
 
@@ -1130,11 +1138,19 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http){
 
           if(response.data.RESPONSETEXT == 'RETURN ACCEPTED')
           {
-            alert('RETURN ACCEPTED');
-            //$scope.closeTransparentBGManual();
+            $.smallBox({
+              title: "Return Accepted!",
+              content: "<i class='fa fa-clock-o'></i> <i>3 seconds ago...</i>",
+              color: "transparent",
+              iconSmall: "fa fa-thumbs-up bounce animated",
+              timeout: 6000
+            });
           }
-          else
-            alert('ERROR');
+          else{
+            processing(0);
+            $scope.errorMsgPaymentMethods = response.data.ERRMSG;
+            return;
+          }
 
           processing(0);
           $('#paymentManualRefound').modal('toggle');
@@ -1142,13 +1158,20 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http){
         });
     };
     $scope.chargeFunct        = function (){
+      $scope.errorMsgPaymentMethods = null;
+
+      var regex = /[^\w]/g
 
       var objects = getFormValues('manual-charge-form');
       objects['cid'] = $scope.idCustomer;
 
-
       if(!objects.cid || !objects.amount || !objects.desc)
         return;
+
+      if(regex.test(objects.amount)){
+        $scope.errorMsgPaymentMethods = 'Verify the amount.';
+        return;
+      }
 
       processing(1);
 
@@ -1159,20 +1182,32 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http){
           console.log(response.data);
           if(response.data.RESPONSETEXT == 'APPROVED')
           {
-            alert('APPROVED');
+            $.smallBox({
+              title: "Transaction Approved!",
+              content: "<i class='fa fa-clock-o'></i> <i>3 seconds ago...</i>",
+              color: "transparent",
+              iconSmall: "fa fa-thumbs-up bounce animated",
+              timeout: 6000
+            });
             //$scope.closeTransparentBGManual();
           }
-          else
-            alert('ERROR');
+          else{
+            processing(0);
+            $scope.errorMsgPaymentMethods = response.data.ERRMSG;
+            return;
+          }
 
           processing(0);
           $('#paymentManualCharge').modal('toggle');
           $('#manual-charge-form').trigger("reset");
         });
     };
+    $scope.prepareFields = function(){
+      $('#manual-refund-form').trigger("reset");
+      $('#manual-charge-form').trigger("reset");
+      $scope.errorMsgPaymentMethods = null;
+    };
     $scope.editPaymentMethod  = function (flag){
-
-
 
         if(flag){
             $scope.editPaymentFlag = false;
@@ -1554,6 +1589,8 @@ app.controller('supportController',                 function ($scope, $http, DTO
   function setActiveBtn (element) {
     $('.support-status').removeClass('support-active');
     $(element).addClass('support-active');
+  };
+  $scope.changeCustomerTicket  = function (){
   };
 });
 app.controller('supportTicketHistory',              function ($scope, $http){

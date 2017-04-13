@@ -726,6 +726,12 @@ body.smart-style-7 {
   color: #1da3fc;
   font-weight: inherit;
 }
+#divSmallBoxes .miniIcono{
+  display: none;
+}
+.SmallBox .textoFull{
+  width: 100%;
+}
 nav ul li a {
   font-size: 13px;
 }

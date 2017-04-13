@@ -33,7 +33,7 @@ class BuildingController extends Controller
   public function buildingData(Request $request)
   {
 
-    return Building::with('neighborhood', 'contacts', 'properties')->find($request->id?$request->id:rand(2,84));
+    return Building::with('neighborhood', 'contacts', 'properties')->find($request->id ? $request->id : rand(2,84));
 
 
 
