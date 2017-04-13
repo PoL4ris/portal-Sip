@@ -19,8 +19,8 @@
     <label class="col-lg-4 block-b-label no-padding-sides" id="b-Expyr">      {{ paymentData.exp_year ? paymentData.exp_year : '( ERROR )'}}</label>
 
     <div class="col-lg-12 no-padding-sides m-t-md">
-      <button class="btn btn-danger"  data-toggle="modal" data-target="#paymentManualCharge">Manual Charge</button>
-      <button class="btn btn-warning m-r-lg pull-right" data-toggle="modal" data-target="#paymentManualRefound" >Manual Refund</button>
+      <button class="btn btn-danger"  data-toggle="modal" data-target="#paymentManualCharge" ng-click="prepareFields();">Manual Charge</button>
+      <button class="btn btn-warning m-r-lg pull-right" data-toggle="modal" data-target="#paymentManualRefound"  ng-click="prepareFields();">Manual Refund</button>
     </div>
 
   </div>
@@ -96,6 +96,7 @@
                       <div class="cboxc-bottom">
                         <label>Description</label><input type="text" placeholder="Describe the reason" name="desc" required>
                       </div>
+                      <span class="errormsg-payment" ng-if="errorMsgPaymentMethods">{{errorMsgPaymentMethods | limitTo : 40}}</span>
                       <button class="btn btn-primary float-right m-t-lg" ng-click="refundFunct()"  ng-if="!something">Refund</button>
                       <div class="pull-right m-t-lg" ng-if="something">
                         Processing.
@@ -141,7 +142,12 @@
                       <div class="cboxc-bottom">
                         <label>Description</label><input type="text" placeholder="Describe the reason" name="desc" required>
                       </div>
-                      <button class="btn btn-primary float-right m-t-lg" ng-click="chargeFunct()">Charge</button>
+                      <span class="errormsg-payment" ng-if="errorMsgPaymentMethods">{{errorMsgPaymentMethods | limitTo : 40}}</span>
+                      <button class="btn btn-primary float-right m-t-lg" ng-click="chargeFunct()" ng-if="!something">Charge</button>
+                      <div class="pull-right m-t-lg" ng-if="something">
+                        Processing.
+                        <img src="/img/loading.gif" alt="">
+                      </div>
                     </form>
                   </div>
                 </div>

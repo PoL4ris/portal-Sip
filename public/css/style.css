@@ -726,7 +726,13 @@ table.dataTable tbody tr {
   width: 50%;
 }
 
-
+.stc-search{
+  border: 1px solid #ddd;
+  float: left;
+  margin-top: 10px;
+  padding: 0;
+  width: 100%;
+}
 
 .support-active{
   /*background: rgba(0, 0, 0, 0) linear-gradient(rgba(62, 108, 201, 0.7), rgba(46, 81, 182, 0.7)) repeat scroll 0 0;*/
@@ -741,3 +747,19 @@ table.dataTable tbody tr {
   background: #F3F8FE;
   cursor: pointer;
 }
+.errormsg-payment{
+  color: crimson;
+  font-size: 14px;
+  float: left;
+  margin-top: 21px;
+  max-width: 70%;
+}
+#buildingContacts-gTools .new-contact-form{
+  width: 100%;
+  float: left;
+}
+#buildingContacts-gTools .form-actions{
+  background: none;
+  margin-left: 0;
+  margin-right: 0;
+  }
