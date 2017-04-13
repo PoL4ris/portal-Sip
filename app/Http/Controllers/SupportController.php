@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use DB;
+use Log;
 use Schema;
 use Auth;
 //use App\Models\Support\Tickethistory;
@@ -24,7 +25,7 @@ class SupportController extends Controller
 {
   public function __construct() {
     $this->middleware('auth');
-    DB::connection()->enableQueryLog();
+//    DB::connection()->enableQueryLog();
 
   }
   public function updateTicketCustomerName(Request $request)
@@ -52,9 +53,7 @@ class SupportController extends Controller
   public function getAllOpenTickets()
   {
     $records = Ticket::with('customer', 'reason', 'ticketNote','lastTicketHistory', 'user', 'userAssigned', 'address', 'contacts')
-//                      ->where('id_reasons','!=', 11)
-                      ->where('status','!=', 'closed')
-//                      ->orderBy('updated_at', 'desc')
+                      ->where('status','!=', config('const.status.closed'))
                       ->get();
 
     $result = $this->getOldTimeTicket($records);
@@ -89,10 +88,9 @@ class SupportController extends Controller
 
   public function getNoneBillingTickets(){
     $record = Ticket::with('customer', 'reason', 'ticketNote','lastTicketHistory', 'user', 'userAssigned', 'address', 'contacts')
-      ->where('id_reasons','!=', 11)
-      ->where('id_reasons','!=', 18)
-      ->where('id_reasons','!=', 29)
-      ->where('status','!=', 'closed')
+      ->where('id_reasons', '!=', config('const.reason.billing'))
+      ->where('id_reasons', '!=', config('const.reason.internal_billing'))
+      ->where('status', '!=', config('const.status.closed'))
       ->orderBy('updated_at', 'desc')
       ->get();
 
@@ -102,10 +100,12 @@ class SupportController extends Controller
   }
   public function getBillingTickets(){
     $record = Ticket::with('customer', 'reason', 'ticketNote','lastTicketHistory', 'user', 'userAssigned', 'address', 'contacts')
-      ->where('id_reasons','!=', 11)
-      ->where('id_reasons', 18)
-      ->where('id_reasons', 29)
-      ->where('status','!=', 'closed')
+      ->where('status','!=', config('const.status.closed'))
+      ->where(function($query){
+
+          $query->where('id_reasons', config('const.reason.billing'))
+                ->orWhere('id_reasons', config('const.reason.internal_billing'));
+      })
       ->orderBy('updated_at', 'desc')
       ->get();
 
@@ -115,9 +115,8 @@ class SupportController extends Controller
   }
   public function getMyTickets(){
     $record = Ticket::with('customer', 'reason', 'ticketNote','lastTicketHistory', 'user', 'userAssigned', 'address', 'contacts')
-      ->where('id_reasons','!=', 11)
       ->where('id_users', Auth::user()->id)
-      ->where('status','!=', 'closed')
+      ->where('status','!=', config('const.status.closed'))
       ->orderBy('updated_at', 'desc')
       ->get();
 

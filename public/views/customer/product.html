@@ -14,7 +14,7 @@
         <tbody>
         <tr ng-repeat="service in customerData.customerServices.services"
             ng-controller="serviceProductController"
-            class="bg-status-{{customerProductStatus.status.name}} bg-payment-{{service.amount_owed ? 'debt' : 'no-debt'}}">
+            class="bg-status-{{customerProductStatus.status.name}} bg-payment-{{ (service.amount_owed > 0) ? 'debt' : 'no-debt'}}">
 
           <td>{{ customerProduct.product.name }}</td>
           <!--<td ng-init="resultDate = convertDate(service.signed_up)">{{resultDate | date : "M/d/yy h:mm a" }}</td>-->
@@ -43,7 +43,7 @@
             </button>
             <button ng-if="service.amount_owed != 0"
                     class="btn fa fa-usd action-confirm btn-danger"
-                    title="PAY">
+                    title="Charge">
             </button>
           </td>
         </tr>

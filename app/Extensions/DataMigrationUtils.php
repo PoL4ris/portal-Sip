@@ -1821,7 +1821,7 @@ class DataMigrationUtils {
         $ticket = $this->copyTimestamps($legacyTicket, $ticket);
 
         if($legacyTicket->RID == 1) {
-            $ticket->id_reasons = config('const.reason.internal_billing');
+            $ticket->id_reasons = config('const.reason.move_in_howto_connect');
         }
 
         if($legacyTicket->RID == 0) {
