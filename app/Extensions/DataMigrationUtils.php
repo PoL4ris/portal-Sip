@@ -1338,6 +1338,8 @@ class DataMigrationUtils {
     protected function findOrCreateAddressByBuilding(ServiceLocation $legacyLocation) {
 
         $address = Address::where('id_buildings', $legacyLocation->LocID)
+            ->whereNull('unit')
+            ->whereNull('id_customers')
             ->first();
 
         if($address == null) {
@@ -1350,6 +1352,7 @@ class DataMigrationUtils {
 
         // id should already exist or be auto generated. Do not set it
         $address->address = $legacyLocation->Address;
+        $address->code = $legacyLocation->ShortName;
         $address->city = $legacyLocation->City;
         $address->zip = $legacyLocation->Zip;
         $address->state = $legacyLocation->State;
@@ -1686,12 +1689,20 @@ class DataMigrationUtils {
         $networkNode->ip_address = $legacyNetworkNode->IPAddress;
         $networkNode->mac_address = $legacyNetworkNode->MacAddress;
         $networkNode->host_name = $legacyNetworkNode->HostName;
-        $networkNode->id_address = $legacyNetworkNode->LocID;
         $networkNode->vendor = $legacyNetworkNode->Vendor;
         $networkNode->model = $legacyNetworkNode->Model;
         $networkNode->role = $legacyNetworkNode->Role;
         $networkNode->properties = $legacyNetworkNode->Properties;
         $networkNode->comments = $legacyNetworkNode->Comments;
+
+        $address = Address::where('id_buildings', $legacyNetworkNode->LocID)
+            ->whereNull('unit')
+            ->whereNull('id_customers')
+            ->first();
+
+        if($address != null) {
+            $networkNode->id_address = $address->id;
+        }
 
         switch ($legacyNetworkNode->Type) {
 
