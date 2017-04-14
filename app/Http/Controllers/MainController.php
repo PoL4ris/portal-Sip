@@ -131,14 +131,6 @@ class MainController extends Controller
 
     die();
   }
-  public function getTicketsSearch(Request $request){
-    $stringA = explode("#", $request->string)[0];
-    $string = explode(" ", $stringA)[0];
-    return Ticket::where('ticket_number', 'LIKE','%'.$string.'%')
-                    ->where('status','!=', 'closed')
-                    ->take(20)
-                    ->get();
-  }
   public function getBuildingsSearch(Request $request){
     $stringA = explode("#", $request->string)[0];
     $string = explode(" ", $stringA)[0];

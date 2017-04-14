@@ -25,13 +25,15 @@ class SupportController extends Controller
 {
   public function __construct() {
     $this->middleware('auth');
-//    DB::connection()->enableQueryLog();
+    DB::connection()->enableQueryLog();
 
   }
-  public function updateTicketCustomerName(Request $request)
+  public function updateCustomerOnTicket(Request $request)
   {
-    Ticket::where('id', $request->id)->update(['id_customers'=>$request->id_customers]);
-    $request['ticketId'] = $request->id;
+    $ticket = Ticket::find($request->id_ticket);
+    $ticket->id_customers = $request->id_customers;
+    $ticket->save();
+    $request['ticketId'] = $request->id_ticket;
     return $this->getTicketInfo($request);
   }
   public function getTicketCustomerList(Request $request)
@@ -404,8 +406,45 @@ class SupportController extends Controller
 
   }
 
-  public function getTicketsSearchTEMP(Request $request){
-    //$request->querySearch Contains the String.
-    return 'SilverIP Blazing Fast';
+  public function getTicketsSearch(Request $request){
+
+    $query = Ticket::join('customers', 'customers.id', '=', 'tickets.id_customers')
+                      ->join('address', 'address.id_customers', '=', 'customers.id')
+                      ->select('*', 'customers.id as idCustomer', 'tickets.id as idTicket', 'address.id as idAddress');
+//                      ->select('customers.first_name', 'customers.last_name', 'tickets.ticket_number', 'tickets.comment');
+
+    $string = $request->querySearch;
+
+    $patternUno = '/([S-T,s-t]+-+[0-9])\w+/';
+    $patternDos = '/([0-9])\w+/';
+
+    preg_match($patternUno, $string, $stType);
+    preg_match($patternDos, $string, $noType);
+
+    if($stType)
+      $resultFilter = $query->where('tickets.ticket_number','like', '%' . $request->querySearch . '%')->get();
+    if($noType)
+      $resultFilter = $query->where('tickets.ticket_number','like', '%' . $request->querySearch . '%')->get();
+
+    if(!$stType && !$noType){
+      $stringArray = explode(' ', $string);
+      foreach($stringArray as $word)
+      {
+        $resultFilter = $query->where('customers.first_name','like', '%' . $word . '%')->orWhere('customers.last_name','like', '%' . $word . '%');
+      }
+    }
+
+    $result = $resultFilter->take(20)->get();
+
+    if(count($result) === 0)
+      $result = $query->orWhere('tickets.comment','like', '%' . $request->querySearch . '%')->take(20)->get();
+
+//    $queries = DB::getQueryLog();
+//    $last_query = end($queries);
+//    dd($last_query);
+
+    return $result;
+
   }
+
 }

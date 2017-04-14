@@ -40,21 +40,6 @@ class CustomerController extends Controller
     $this->middleware('auth');
       $this->logType = 'customer';
   }
-  public function getGenericSearch(Request $request){
-    //Contains the String.
-    $string = $request->querySearch;
-
-    $customer = Address::with('customers', 'buildings', 'customers.contacts')
-      ->take(5)
-      ->get();
-
-
-    $result = $customer->customerWhere(501);
-
-//    return $customer;
-    return $result;
-    return 'SilverIP Blazing Fast';
-  }
   public function getCustomersSearch(Request $request)
   {
     $string = $request->querySearch;
