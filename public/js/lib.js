@@ -386,7 +386,6 @@ app.controller('networkController',                 function ($scope, $http, cus
     };//????
 
 
-
     $scope.addTR = function addTR(id) {
 
         var stance   = $('#net-btn-' + id);
