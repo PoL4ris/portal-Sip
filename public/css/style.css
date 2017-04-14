@@ -733,6 +733,13 @@ table.dataTable tbody tr {
   padding: 0;
   width: 100%;
 }
+.stcu-p{
+  float: left;
+  width: 100%;
+  margin-top: 5px;
+  background: rgba(0,0,0,.04);
+  padding: 3px;
+}
 
 .support-active{
   /*background: rgba(0, 0, 0, 0) linear-gradient(rgba(62, 108, 201, 0.7), rgba(46, 81, 182, 0.7)) repeat scroll 0 0;*/

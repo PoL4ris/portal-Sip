@@ -180,6 +180,11 @@ app.factory('buildingService', function() {
     exist : true
   };
 });
+app.factory('supportService', function() {
+  return {
+    exist : true
+  };
+});
 
 app.factory('adminService', function() {
   return {

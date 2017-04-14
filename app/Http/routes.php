@@ -87,7 +87,7 @@ Route::group(['middleware' => 'web'], function () {
   //GLOBAL SEARCH
   Route::get('getCustomerCodeSearch',   'MainController@getCustomerCodeSearch');
   Route::get('getCustomersSearch',      'MainController@getCustomersSearch');
-  Route::get('getTicketsSearch',        'MainController@getTicketsSearch');
+  Route::get('getTicketsSearch',        'SupportController@getTicketsSearch');
   Route::get('getBuildingsSearch',      'MainController@getBuildingsSearch');
   Route::get('getCustomerPoundSearch',  'MainController@getCustomerPoundSearch');
 
@@ -172,7 +172,7 @@ Route::group(['middleware' => 'web'], function () {
   Route::get('updateTicketHistory',     'SupportController@updateTicketHistory');
   Route::get('getTicketInfo',           'SupportController@getTicketInfo');
   Route::get('getTicketCustomerList',   'SupportController@getTicketCustomerList');
-  Route::get('updateTicketCustomerName','SupportController@updateTicketCustomerName');
+  Route::get('updateCustomerOnTicket',  'SupportController@updateCustomerOnTicket');
 
   //Network functions
   Route::get('networkCheckStatus',      'NetworkController@getSwitchPortStatus');

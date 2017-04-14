@@ -92,7 +92,7 @@
 
 
 <!-- MODAL DE TICKET -->
-<div class="modal fade" id="ticketModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="ticketModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" ng-controller="ticketModalController">
   <div class="modal-dialog modal-ticket-size">
     <div class="modal-content">
       <div class="modal-header">
@@ -106,17 +106,17 @@
           <div class="row">
             <div class="field-data col-lg-12" >
               <!--Name-->
-              <div class="col-lg-12 no-padding-sides">
+              <div class="col-lg-12 no-padding-sides m-b-lg">
                 <label><strong> {{selectedTicket.customer.first_name + ' ' + selectedTicket.customer.last_name}}</strong></label>
                 <button class="btn btn-primary pull-right"
                         ng-click="editFormByType('block-b')"
                         id="block-b">
                         Change Customer
                 </button>
-                <button class="btn btn-primary pull-right no-display"
-                        ng-click="editFormByType('block-b')"
+                <button class="btn btn-success pull-right no-display m-r-lg"
+                        ng-click="editFormByType('block-b'); updateCustomerOnTicket();"
                         id="save-block-b">
-                        Change Customer
+                        Update
                 </button>
               </div>
               <!--Default Info-->
@@ -137,7 +137,17 @@
                 <small class="text-muted">{{selectedTicket.status}}</small>
               </div>
               <!--Change Customer Search-->
-              <div ng-include="'/views/search.html'" class="header-search main-search stc-search"></div>
+
+              <p ng-if="selectedCustomerTicket" class="stcu-p">
+                {{selectedCustomerTicket.first_name}} {{selectedCustomerTicket.last_name}} | {{selectedCustomerTicket.code}} | #{{resultSearch.unit}}
+              </p>
+              <form id="customer-update-ticket-form">
+                <input type="hidden" readonly value="{{selectedCustomerTicket.id}}" name="id_customers">
+                <input type="hidden" readonly value="{{selectedTicket.id}}" name="id_ticket">
+              </form>
+              <div ng-include="'/views/genericSearch.html'"
+                   class="header-search main-search stc-search no-display"
+                   id="block-b-search"></div>
               <!--Details Info-->
               <div class="col-lg-12 no-padding-sides m-t-lg m-b-sm bg-gray p-b-lg">
                 <form id="form-1-ticket">
@@ -222,7 +232,7 @@
                     </div>
                   </div>
                   <div class="display-content-main-box update-btn-ticket">
-                    <button class="btn m-b-xs w-xs btn-primary save-btn display-inline"  ng-click="submitFormUpdate('form-2-ticket')">UPDATE</button>
+                    <button class="btn m-b-xs w-xs btn-primary save-btn display-inline"  ng-click="submitFormUpdate('form-2-ticket')">Update</button>
                   </div>
                 </form>
               </div>
@@ -255,7 +265,7 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">
           Cancel
         </button>
       </div>

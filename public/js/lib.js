@@ -1420,9 +1420,10 @@ app.controller('customerNotesController',           function($scope, $http){
     }
 });
 //Support Controllers
-app.controller('supportController',                 function ($scope, $http, DTOptionsBuilder, customerService){
+app.controller('supportController',                 function ($scope, $http, DTOptionsBuilder, customerService, supportService){
 
   $scope.getAllOpenTickets     = function (event){
+    supportService.refreshRoute = 'getAllOpenTickets';
     setActiveBtn(event.target);
     setLoading(1);
     $http.get("getAllOpenTickets")
@@ -1432,6 +1433,7 @@ app.controller('supportController',                 function ($scope, $http, DTO
     });
   };
   $scope.getNoneBillingTickets = function (event){
+    supportService.refreshRoute = 'getNoneBillingTickets';
     if(event){
       setActiveBtn(event.target);
       setLoading(1);
@@ -1443,6 +1445,7 @@ app.controller('supportController',                 function ($scope, $http, DTO
     });
   };
   $scope.getBillingTickets     = function (event){
+    supportService.refreshRoute = 'getBillingTickets';
     setActiveBtn(event.target);
     setLoading(1);
     $http.get("getBillingTickets")
@@ -1452,6 +1455,7 @@ app.controller('supportController',                 function ($scope, $http, DTO
     });
   };
   $scope.getMyTickets          = function (event){
+    supportService.refreshRoute = 'getMyTickets';
     setActiveBtn(event.target);
     setLoading(1);
     $http.get("getMyTickets")
@@ -1492,6 +1496,8 @@ app.controller('supportController',                 function ($scope, $http, DTO
   };//NO se usará mas
   //MODAL DATA
   $scope.displayTicketResume   = function (id, idCustomer){
+      supportService.searchFlag = true;
+      $scope.selectedCustomerTicket = null;
       $scope.midTicketId = id;
       $scope.stcid       = idCustomer;
       $scope.stcFlag     = true;
@@ -1523,36 +1529,38 @@ app.controller('supportController',                 function ($scope, $http, DTO
 
       tempTicketID = id;
 
-      if ($('#' + id).attr('stand') == '1')
-      {
+      if ($('#' + id).attr('stand') == '1') {
           $('.' + id + '-label').css('display','table-cell');
           $('.' + id + '-edit').css('display','none');
           $('#save-' + id).fadeOut( "slow" );
           $('#' + id).html('Edit');
           $('#' + id).switchClass('btn-danger', 'btn-info');
           $('#' + id).attr('stand', '2');
-          if(path == '/supportdash')
-          {
-              $('.resultadosComplex').html('');
-              $('.dis-input').val('');
-          }
+//           if(path == '/supportdash')
+//           {
+//               $('.resultadosComplex').html('');
+//               $('.dis-input').val('');
+//           }
+
+          if (id == 'block-b')
+            $('#block-b-search').fadeOut();
 
       }
-      else
-      {
+      else {
           $('.' + id + '-label').css('display','none');
           $('.' + id + '-edit').fadeIn( "slow" );
           $('#save-' + id).fadeIn( "slow" );
           $('#' + id).html('Cancel');
           $('#' + id).switchClass('btn-success', 'btn-danger');
           $('#' + id).attr('stand', '1');
-      }
 
-      //     if (id == 'block-a')
-      //     {
-      //       $scope.getReasons();
-      //       $scope.getUsers();
-      //     }
+        if (id == 'block-b')
+          $('#block-b-search').fadeIn();
+
+      }
+//
+//       if (id == 'block-b')
+//         $('#block-b-search').fadeIn();
 
   };
   $scope.submitForm            = function (idForm) {
@@ -1590,8 +1598,56 @@ app.controller('supportController',                 function ($scope, $http, DTO
     $('.support-status').removeClass('support-active');
     $(element).addClass('support-active');
   };
-  $scope.changeCustomerTicket  = function (){
+
+  //MODAL
+  $scope.buscadorTicketModal             = function (){
+
+    if(!this.genericSearch)
+    {
+      $scope.genericSearchResult = false;
+      $scope.focusIndex = 0;
+      return;
+    }
+    var query = {'querySearch' : this.genericSearch};
+
+    $http.get("customersSearch", {params:query})
+      .then(function (response) {
+        $scope.genericSearchResult  = response.data;
+      });
+
   };
+  $scope.clearSearchTicketModal          = function (){
+
+    this.genericSearch   = null;
+    $scope.genericSearch = null;
+    $scope.focusIndex = 0;
+    $scope.buscadorTicketModal();
+  };
+  $scope.setCustomerTicket               = function (){
+
+    $scope.selectedCustomerTicket = this.resultSearch;
+    $scope.clearSearchTicketModal();
+
+  };
+  $scope.updateCustomerOnTicket          = function (){
+    var objects = getFormValues('customer-update-ticket-form');
+
+    $http.get("updateCustomerOnTicket", {params : objects})
+      .then(function (response) {
+        $scope.selectedTicket = response.data;
+
+        $http.get(supportService.refreshRoute)
+          .then(function (response) {
+            $scope.supportData = response.data;
+          });
+
+      });
+
+
+
+
+  };
+
 });
 app.controller('supportTicketHistory',              function ($scope, $http){
     $http.get("supportTicketHistory", {params:{'id':$scope.history.id}})
@@ -1832,10 +1888,8 @@ app.controller('adminController',                   function($scope, $http, cust
 
   }
 });
-
-
 // Global Tools //
-app.controller('globalToolsCtl',                    function ($scope, $http, $compile, $sce, $stateParams, customerService){
+app.controller('globalToolsCtl',                    function ($scope, $http, $compile, $sce, $stateParams, customerService, supportService){
 
     $scope.customerData   = {};
     $scope.globalScopeVar = true;
@@ -1990,15 +2044,14 @@ app.controller('globalToolsCtl',                    function ($scope, $http, $co
         $('#main').addClass(id + '-location');
     }
     $scope.buscador             = function () {
-
       if($scope.keyboardBtn){
         $scope.keyboardBtn = !$scope.keyboardBtn;
         return;
       }
+//       var string = $('.stringSearch').val();
 
-      var string = $('.stringSearch').val();
-
-      if(!this.searchCustomer || string.length == 0)
+      if(!this.searchCustomer)
+//       if(!this.searchCustomer || string.length == 0)
       {
         $scope.customerSearchResult = false;
         $scope.focusIndex = 0;
@@ -2007,14 +2060,20 @@ app.controller('globalToolsCtl',                    function ($scope, $http, $co
 
       var query = {'querySearch' : this.searchCustomer};
 
+//       console.log(query);
+
       $http.get("customersSearch", {params:query})
           .then(function (response) {
-          $scope.customerSearchResult = response.data;
+//             if(supportService.searchFlag){
+//                 $scope.genericSearchResult  = response.data;
+//             }
+//             else
+              $scope.customerSearchResult = response.data;
       });
 
       return;
 
-    }
+    };
     $scope.clearSearch          = function (){
 
       if($scope.keyboardBtn)
@@ -2159,9 +2218,10 @@ function getFormValues(id){
 app.controller('userAuthController',                function ($scope){
     $scope.userDataAuth = JSON.parse($('#auth-user').val());
 })
-app.controller('warpolController',        function($scope, $http){
 
-console.log('Hola');
+app.controller('warpolController',                  function($scope, $http){
+
+  console.log('WarpolController con la  Santa Muerte');
 
   $scope.getGenericSearch = function (){
 
@@ -2169,7 +2229,7 @@ console.log('Hola');
 
     var query = {'querySearch' : this.genericSearch};
 
-    $http.get("getGenericSearch", {params:query})
+    $http.get("getTicketsSearch", {params:query})
       .then(function (response) {
         $scope.genericSearchResult = response.data;
       });
