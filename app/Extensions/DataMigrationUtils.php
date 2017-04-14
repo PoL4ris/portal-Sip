@@ -1403,6 +1403,9 @@ class DataMigrationUtils {
 
     protected function findOrCreateBuilding(ServiceLocation $legacyLocation) {
 
+        if($legacyLocation->LocID == 0){
+            $legacyLocation->LocID = 1;
+        }
         $building = Building::find($legacyLocation->LocID);
 
         if($building == null) {
@@ -1414,7 +1417,7 @@ class DataMigrationUtils {
 
     protected function updateBuilding(ServiceLocation $legacyLocation, Building $building){
 
-        if($legacyLocation->LocID == 1){
+        if($legacyLocation->LocID == 1 && $legacyLocation->ShortName == '474L'){
             return false;
         }
         $building->id = ($legacyLocation->LocID == 0) ? 1 : $legacyLocation->LocID;
