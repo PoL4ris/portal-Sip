@@ -18,7 +18,6 @@ class SignupController extends Controller
         //    DB::connection()->enableQueryLog();
     }
 
-
     public function getSplashPage(){
         return view('signup.splash');
     }
@@ -168,15 +167,15 @@ class SignupController extends Controller
         } else if (strstr($this->serviceSwitch['Model'], 'WS-C6509')) {
             $this->userPortInfo['Switch Port Number'] = $this->userPortInfo['Switch Instance ID'] . '/' . $this->userPortInfo['Switch Port Number'];
         }
-        $serviceLocationInfo = getServiceLocationByLocID($userSession->serviceSwitch['LocID']);
-        $userSession->ShortName = $serviceLocationInfo['ShortName'];
-        //        error_log('SignupService::processRouterData(): serviceSwitch: '. print_r($this->serviceSwitch, true));
-        $userSession->PrivateVlan = $this->getPrivateVlan($this->serviceSwitch['NodeID'], $this->userPortInfo['Switch Port Number']);
-        //        error_log('SignupService::processRouterData(): $userSession->PrivateVlan = '. $userSession->PrivateVlan);
-        $userSession->serviceRouter = $this->serviceRouter->getRouterObject();
-        $userSession->serviceRouterName = $_POST['ServiceRouter'];
-        $userSession->userPortInfo = $this->userPortInfo;
-        return true;
+//        $serviceLocationInfo = getServiceLocationByLocID($userSession->serviceSwitch['LocID']);
+//        $userSession->ShortName = $serviceLocationInfo['ShortName'];
+//        //        error_log('SignupService::processRouterData(): serviceSwitch: '. print_r($this->serviceSwitch, true));
+//        $userSession->PrivateVlan = $this->getPrivateVlan($this->serviceSwitch['NodeID'], $this->userPortInfo['Switch Port Number']);
+//        //        error_log('SignupService::processRouterData(): $userSession->PrivateVlan = '. $userSession->PrivateVlan);
+//        $userSession->serviceRouter = $this->serviceRouter->getRouterObject();
+//        $userSession->serviceRouterName = $_POST['ServiceRouter'];
+//        $userSession->userPortInfo = $this->userPortInfo;
+//        return true;
 
 
 
