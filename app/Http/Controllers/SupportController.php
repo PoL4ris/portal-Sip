@@ -414,6 +414,7 @@ class SupportController extends Controller
 //                      ->select('customers.first_name', 'customers.last_name', 'tickets.ticket_number', 'tickets.comment');
 
     $string = $request->querySearch;
+    $limit = 20;
 
     $patternUno = '/([S-T,s-t]+-+[0-9])\w+/';
     $patternDos = '/([0-9])\w+/';
@@ -421,10 +422,12 @@ class SupportController extends Controller
     preg_match($patternUno, $string, $stType);
     preg_match($patternDos, $string, $noType);
 
+
     if($stType)
-      $resultFilter = $query->where('tickets.ticket_number','like', '%' . $request->querySearch . '%')->get();
+      return $query->where('tickets.ticket_number','like', '%' . $request->querySearch . '%')->take($limit)->get();
     if($noType)
-      $resultFilter = $query->where('tickets.ticket_number','like', '%' . $request->querySearch . '%')->get();
+      return $query->where('tickets.ticket_number','like', '%' . $request->querySearch . '%')->take($limit)->get();
+
 
     if(!$stType && !$noType){
       $stringArray = explode(' ', $string);
@@ -434,16 +437,17 @@ class SupportController extends Controller
       }
     }
 
-    $result = $resultFilter->take(20)->get();
+    $result = $resultFilter->take($limit)->get();
 
     if(count($result) === 0)
-      $result = $query->orWhere('tickets.comment','like', '%' . $request->querySearch . '%')->take(20)->get();
+      return $query->orWhere('tickets.comment','like', '%' . $request->querySearch . '%')->take($limit)->get();
+    else
+      return $result;
+
 
 //    $queries = DB::getQueryLog();
 //    $last_query = end($queries);
 //    dd($last_query);
-
-    return $result;
 
   }
 
