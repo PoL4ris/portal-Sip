@@ -9,10 +9,6 @@ angular.module('app.buildings', ['ui.router']).config(function ($stateProvider) 
         "content@app": {
           templateUrl: '/views/building/building.html',
           controller: 'buildingCtl'
-        },
-        "silveriptool": {
-          templateUrl: '/views/sidebar/buildingsList.html',
-          controller: 'sideBldController'
         }
       },
       resolve: {

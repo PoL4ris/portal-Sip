@@ -8,13 +8,14 @@ app.controller('menuController',                    function($scope, $http){
 //Building Controllers
 app.controller('buildingCtl',                       function($scope, $http, $stateParams, customerService) {
 
-// console.log('uno');
-//   if(customerService.stateRoute == 'buildings')
-//   {
-//     $scope.sipTool(0,'silverip-left');
-//   }
+  if(customerService.sideBarFlag) {
+    $scope.sipTool(2);
+    customerService.sideBarFlag = false;
+  }
 
-//   return;
+
+
+
   $scope.idBuilding = null;
 
   if($stateParams.id)
@@ -27,7 +28,10 @@ app.controller('buildingCtl',                       function($scope, $http, $sta
 
 
 
-
+  $http.get("getBuildingsList")
+    .then(function (response) {
+      $scope.bldListResult = response.data;
+    });
 
 
 
@@ -314,21 +318,6 @@ app.controller('buildingCtl',                       function($scope, $http, $sta
 //Building Side Bar
 app.controller('sideBldController',                 function($scope, $http, buildingService, $stateParams, customerService){
 
-//   console.log('dos');
-//   $scope.globalServiceLocationSide = 'left';
-
-
-//   console.log(customerService);
-//   $scope.sipTool(0,'silverip-left');
-
-//   if(customerService.stateRoute == 'buildings' && customerService.sideBarFlag)
-//   {
-//     console.log('es bldSide');
-//     if(!customerService.sideBarFlag) {
-//       $scope.sipTool(2);
-//       customerService.sideBarFlag = true;
-//     }
-//   }
 
 
 
