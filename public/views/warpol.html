@@ -11,7 +11,9 @@ Warpol
   <div class="" ng-if="genericSearchResult">
     <div class="search-result anim" >
       <p ng-repeat="result in genericSearchResult">
-        {{result.ticket_number}} | {{result.first_name}} | {{result.last_name}} | {{result.code}} | {{result.unit}} | {{result.address}}
+          {{result.ticket_number}}
+        | {{result.first_name}} | {{result.last_name}}
+        | {{result.address.code}} | {{result.address.unit}} | {{result.address.address}}
       </p>
       <pre>
       {{genericSearchResult | json}}

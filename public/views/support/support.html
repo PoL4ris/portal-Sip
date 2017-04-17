@@ -12,6 +12,7 @@
       <div class="btn btn-primary m-r-lg support-status support-active" ng-click="getNoneBillingTickets($event)">Non-Billing Tickets</div>
       <div class="btn btn-primary m-r-lg support-status" ng-click="getBillingTickets($event)">Billing Tickets</div>
       <div class="btn btn-primary m-r-lg support-status" ng-click="getMyTickets($event)">My Tickets</div>
+      <div class="btn btn-success m-r-lg"><i class="fa fa-refresh"></i></div>
 
       <img src="/img/loading.gif" alt="" class="loading-gif-support no-display">
 
@@ -25,12 +26,7 @@
       </div>
 
       <div class="ticket-search-table size-100 m-t-lg">
-        <form >
-          <label>
-            <input type="text" placeholder="Search for Open / Closed Tickets...">
-            <i class="fa fa-search pull-right"></i>
-          </label>
-        </form>
+        <article ng-include="'/views/support/supportTicketSearch.html'" class="null-article"></article>
       </div>
 
     </div>

@@ -230,7 +230,7 @@
   margin-bottom: 15px;
   max-height: 650px;
   overflow: auto;
-  padding-bottom: 10px;
+  /*padding-bottom: 10px;*/
   padding-top: 10px;
   width: 100%;
   border:1px solid #ddd;
@@ -555,6 +555,7 @@ table.dataTable tbody tr {
   vertical-align: middle;
 }
 .ticket-search-table {
+  position: relative;
 }
 .ticket-search-table label {
   width: 30%;
@@ -769,4 +770,22 @@ table.dataTable tbody tr {
   background: none;
   margin-left: 0;
   margin-right: 0;
-  }
+}
+.ticket-search-table-results{
+  width: 30%;
+  position: absolute;
+  z-index: 10;
+}
+.ticket-search-table-results div{
+}
+.ticket-search-table-results div p{
+  padding:3px 10px;
+  border-bottom:1px solid #ddd;
+  cursor: pointer;
+}
+.ticket-search-table-results div p:hover{
+  background: #f4f4f4;
+}
+.ticket-search-table-results div p:last-child{
+  border: none;
+}

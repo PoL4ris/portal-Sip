@@ -1646,6 +1646,27 @@ app.controller('supportController',                 function ($scope, $http, DTO
 
 
   };
+  //SEARCH
+  $scope.getTicketSearch                 = function (){
+
+    if(!this.genericSearch || this.genericSearch == ''){
+      $scope.genericSearchResult = null;
+      return;
+    }
+
+    var query = {'querySearch' : this.genericSearch};
+
+    $http.get("getTicketsSearch", {params:query})
+      .then(function (response) {
+        $scope.genericSearchResult = response.data;
+      });
+
+    return;
+  };
+  $scope.cleanTicketSearch               = function(){
+    $('#support-ticket-search-form').trigger('reset');
+    $scope.genericSearchResult = null;
+  };
 
 });
 app.controller('supportTicketHistory',              function ($scope, $http){

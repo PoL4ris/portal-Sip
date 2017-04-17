@@ -407,48 +407,31 @@ class SupportController extends Controller
     }
 
     public function getTicketsSearch(Request $request){
+      $query = Ticket::join('customers', 'customers.id', '=', 'tickets.id_customers')
+                     ->select('*', 'customers.id as idCustomer', 'tickets.id as idTicket');
 
-        $query = Ticket::join('customers', 'customers.id', '=', 'tickets.id_customers')
-            //                      ->join('address', 'address.id_customers', '=', 'customers.id')
-            ->select('*', 'customers.id as idCustomer', 'tickets.id as idTicket'); //, 'address.id as idAddress');
-        //                      ->select('customers.first_name', 'customers.last_name', 'tickets.ticket_number', 'tickets.comment');
+      $string = $request->querySearch;
+      $limit = 20;
 
-        $string = $request->querySearch;
-        $limit = 20;
+      $patternUno = '/^([Ss][tT]\-[0-9]+).*/';
+      $patternDos = '/^([0-9]+).*/';
 
-        $patternUno = '/^([Ss][tT]\-[0-9]+).*/';
-        $patternDos = '/^([0-9]+).*/';
+      preg_match($patternUno, $string, $stType);
+      preg_match($patternDos, $string, $noType);
 
-        preg_match($patternUno, $string, $stType);
-        preg_match($patternDos, $string, $noType);
+      if($stType|| $noType)
+        return $query->where('tickets.ticket_number','like', '%'. $request->querySearch . '%')->take($limit)->get()->load('address');
 
+      $stringArray = explode(' ', $string);
+      foreach($stringArray as $word)
+        $resultFilter = $query->where('customers.first_name','like', '%' . $word . '%')->orWhere('customers.last_name','like', '%' . $word . '%');
 
-        if($stType|| $noType){
-//                    return 'Ticket match';
-            $results = $query->where('tickets.ticket_number','like', '%'. $request->querySearch . '%')->take($limit)->get();
-            return $results->load('address');
-        }
+      $result = $resultFilter->take($limit)->get();
 
-//          return 'Name match';
-
-        $stringArray = explode(' ', $string);
-        foreach($stringArray as $word)
-        {
-            $resultFilter = $query->where('customers.first_name','like', '%' . $word . '%')->orWhere('customers.last_name','like', '%' . $word . '%');
-        }
-
-        $result = $resultFilter->take($limit)->get();
-
-        if(count($result) === 0)
-            return $query->orWhere('tickets.comment','like', '%' . $request->querySearch . '%')->take($limit)->get();
-        else
-            return $result;
-
-
-        //    $queries = DB::getQueryLog();
-        //    $last_query = end($queries);
-        //    dd($last_query);
-
+      if(count($result) === 0)
+        return $query->orWhere('tickets.comment','like', '%' . $request->querySearch . '%')->take($limit)->get()->load('address');
+      else
+        return $result->load('address');
     }
 
 }

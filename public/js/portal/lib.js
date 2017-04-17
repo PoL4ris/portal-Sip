@@ -1797,7 +1797,7 @@ app.controller('directiveController',               function ($scope, $http, $co
 })
 .directive('myViewResume',                          function() {
   return {
-    templateUrl: '/views/supportTicketResume.html',
+    templateUrl: '/views/supportTicketSearch.html',
     controller: 'singleTicketInfo'
   };
 })
