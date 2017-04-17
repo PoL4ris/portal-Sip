@@ -8,29 +8,31 @@ app.controller('menuController',                    function($scope, $http){
 //Building Controllers
 app.controller('buildingCtl',                       function($scope, $http, $stateParams, customerService) {
 
+
+console.log('bldContrl');
   if(customerService.sideBarFlag) {
     $scope.sipTool(2);
     customerService.sideBarFlag = false;
   }
-
-
-
 
   $scope.idBuilding = null;
 
   if($stateParams.id)
     $scope.idBuilding = $stateParams.id;
 
-    $http.get("buildingData", {params:{'id' : $scope.idBuilding}})
-      .then(function (response) {
-        $scope.buildingData = response.data;
-      });
-
-
+  $http.get("buildingData", {params:{'id' : $scope.idBuilding}})
+    .then(function (response) {
+      $scope.buildingData = response.data;
+    });
 
   $http.get("getBuildingsList")
     .then(function (response) {
       $scope.bldListResult = response.data;
+    });
+
+  $http.get("getBuildingProperties")
+    .then(function (response) {
+      $scope.propValuesList = response.data;
     });
 
 
@@ -43,33 +45,43 @@ app.controller('buildingCtl',                       function($scope, $http, $sta
 
 
 //verifyUse
-    return;
-    if (!$scope.sbid || !$stateParams.id) {
-        $scope.SiteMenu = [];
-        $http.get('buildings')
-          .then(function (data){
-            $scope.bldData = data.data;
-            $scope.bld = $scope.bldData.building;
-            //       $scope.offsetLimitFunction($scope.bldData.offset, $scope.bldData.limit);
-        }), function (error){
-            alert('Error');
-        }
-    }
-    else {
-      console.log($stateParams.id);
-        $http.get("buildings", params + $scope.sbid ? $scope.sbid : $stateParams.id)
-            .then(function (response) {
-            $scope.bld = response.data;
-        });
-    }
-    $scope.displayBldData = function (idBld) {
-    console.log(idBld);
-        $http.get("buildings/" + idBld)
-            .then(function (response) {
-            $scope.bld = response.data.building;
-        });
+//     if (!$scope.sbid || !$stateParams.id) {
+//         $scope.SiteMenu = [];
+//         $http.get('buildings')
+//           .then(function (data){
+//             $scope.bldData = data.data;
+//             $scope.bld = $scope.bldData.building;
+//             //       $scope.offsetLimitFunction($scope.bldData.offset, $scope.bldData.limit);
+//         }), function (error){
+//             alert('Error');
+//         }
+//     }
+//     else {
+//       console.log($stateParams.id);
+//         $http.get("buildings", params + $scope.sbid ? $scope.sbid : $stateParams.id)
+//             .then(function (response) {
+//             $scope.bld = response.data;
+//         });
+//     }
 
-    }
+
+
+
+
+  $scope.displayBldData = function (idBld) {
+    $http.get("buildings/" + idBld)
+      .then(function (response) {
+        $scope.buildingData = response.data;
+      });
+  }
+  $scope.filterBldList = function(){
+    $http.get("getFilterBld", {params: {'query' : this.filterBldListModel}})
+      .then(function (response) {
+        $scope.bldListResult = response.data;
+      });
+  }
+
+
     $scope.displayBldForm = function () {
         if ($scope.show == false) {
             $scope.show = true;

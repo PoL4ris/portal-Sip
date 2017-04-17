@@ -84,6 +84,7 @@ Route::group(['middleware' => 'web'], function () {
   Route::get('customersSearch',         'CustomerController@getCustomersSearch');
   Route::get('getCustomersPreview',     'MainController@getCustomersPreview');
   Route::get('getGenericSearch',        'CustomerController@getGenericSearch');//new
+  Route::get('getFilterBld',            'BuildingController@getFilterBld');//new
   //GLOBAL SEARCH
   Route::get('getCustomerCodeSearch',   'MainController@getCustomerCodeSearch');
   Route::get('getCustomersSearch',      'MainController@getCustomersSearch');

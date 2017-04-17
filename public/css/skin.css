@@ -909,7 +909,7 @@ nav ul li a {
 .address-bld-img-hover:hover + div img {
   width: 100%;
 }
-#activity-log, .building-list-side {
+#activity-log{
   background: #f6f6f6 none repeat scroll 0 0;
   border-radius: 7px;
   box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
@@ -917,27 +917,27 @@ nav ul li a {
   width: 100%;
   overflow: hidden;
 }
-#activity-log .log-entry, .building-list-side .log-entry{
+#activity-log .log-entry{
   background: red none repeat scroll 0 0 !important;
   float: left;
   width: 100%;
 }
-#activity-log .al-box, .building-list-side  .al-box{
+#activity-log .al-box{
   padding-top: 10px;
 }
-#activity-log .al-box .al-title, .building-list-side .al-box .al-title {
+#activity-log .al-box .al-title {
   border-bottom: 1px solid #ddd;
   font-size: 14px;
   padding: 0 10px 10px;
 }
-#activity-log .al-box .al-title i, .building-list-side .al-box .al-title i {
+#activity-log .al-box .al-title i{
   width: 15px;
 }
-#activity-log .al-box .al-box-container, .building-list-side .al-box .al-box-container {
+#activity-log .al-box .al-box-container{
   background: #f3f3f3 none repeat scroll 0 0;
   padding: 0;
 }
-#activity-log .al-box .al-type-title, .building-list-side .al-box .al-type-title {
+#activity-log .al-box .al-type-title{
   background: #e8e8e8 none repeat scroll 0 0;
   color: #3e3f3e;
   font-size: 13px;
@@ -946,48 +946,48 @@ nav ul li a {
   padding-top: 5px;
   text-align: center;
 }
-#activity-log .log-content, .building-list-side .log-content {
+#activity-log .log-content{
   padding: 10px;
 }
-#activity-log .log-content .al-lg-timestamp, .building-list-side .log-content .al-lg-timestamp {
+#activity-log .log-content .al-lg-timestamp{
   float: left;
   font-weight: bold;
   letter-spacing: 0.7px;
   width: 50%;
 }
-#activity-log .log-content .al-lg-header, .building-list-side .log-content .al-lg-header {
+#activity-log .log-content .al-lg-header{
   clear: both;
   float: left;
   width: 100%;
 }
-#activity-log .al-lg-header .lg-type, .building-list-side .al-lg-header .lg-type {
+#activity-log .al-lg-header .lg-type{
   float: left;
   margin: 0;
   width: 25%;
 }
-#activity-log .al-lg-header .lg-type span, .building-list-side .al-lg-header .lg-type span {
+#activity-log .al-lg-header .lg-type span{
   background: #1ae6e6 none repeat scroll 0 0;
   border-radius: 3px;
   color: white;
   padding: 2px 5px;
   text-shadow: 2px 0 1px rgba(0, 0, 0, 0.2);
 }
-#activity-log .al-lg-header .lg-type::first-letter, .building-list-side .al-lg-header .lg-type::first-letter {
+#activity-log .al-lg-header .lg-type::first-letter{
   text-transform: uppercase;
 }
-#activity-log .al-lg-header .lg-user, .building-list-side .al-lg-header .lg-user {
+#activity-log .al-lg-header .lg-user{
   float: left;
   margin: 0;
   width: 25%;
 }
-#activity-log .al-lg-header .lg-user span, .building-list-side .al-lg-header .lg-user span {
+#activity-log .al-lg-header .lg-user span{
   background: #ffce54 none repeat scroll 0 0;
   border-radius: 3px;
   color: white;
   padding: 2px 5px;
   text-shadow: 2px 0 1px rgba(0, 0, 0, 0.2);
 }
-#activity-log .log-content .al-lg-description, .building-list-side .log-content .al-lg-description {
+#activity-log .log-content .al-lg-description{
   border-bottom: 1px solid #dad8da;
   clear: both;
   max-height: 150px;
@@ -995,16 +995,16 @@ nav ul li a {
   padding: 0;
   text-align: left;
 }
-#activity-log .log-content .al-lg-actions, .building-list-side .log-content .al-lg-actions {
+#activity-log .log-content .al-lg-actions{
   border-bottom: 1px solid #dad8da;
   padding: 5px 0 10px;
 }
-#activity-log .log-content .al-lg-actions span, .building-list-side .log-content .al-lg-actions span {
+#activity-log .log-content .al-lg-actions span{
   float: left;
   width: 100%;
 }
-#activity-log .log-content .al-lg-actions button, .al-lg-actions button,
-.building-list-side .log-content .al-lg-actions button, .building-list-side .al-lg-actions button{
+#activity-log .log-content .al-lg-actions button,
+ .al-lg-actions button{
   border: medium none;
   margin: 0 2%;
   padding: 0;

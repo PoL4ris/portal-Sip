@@ -24,11 +24,11 @@
 
           </div>
 
-        <div class="col-lg-12 m-t-lg m-b-lg p-b-lg">
-          <table id="user"  class="table table-bordered table-striped bld-prop-table bpv-container" style="clear: both">
+        <div class="col-lg-4 m-t-lg m-b-lg p-b-lg">
+          <table id="user" class="table table-bordered table-striped bld-prop-table bpv-container" style="clear: both">
             <tbody>
-              <tr ng-repeat="properData in buildingData.properties">
-                <td>{{properData.name}}</td>
+              <tr ng-repeat="properData in buildingData.properties" >
+                <td>{{propValuesList[properData.id_building_properties].name}}</td>
                 <td ng-if="properData.name == 'Unit'">
                   <p>
                     <a href="form-x-editable.html#"
@@ -64,7 +64,6 @@
                 </td>
               </tr>
             </tbody>
-
           </table>
         </div>
 
