@@ -1,0 +1,2600 @@
+*{
+	margin:0;
+	padding:0;
+}
+
+html{
+	/*background:url('../img/bg.jpg') repeat-x #ffffff;*/
+
+}
+
+body{
+	/*font:13px/1.5 normal Calibri,Arial,sans-serif;*/
+        font:13px/1.5 Lucida Grande, Lucida Sans Unicode, 'Pontano Sans', Avenir,Calibri,Arial,sans-serif;
+        font-size-adjust: none;
+        font-stretch: normal;
+        font-style: normal;
+        font-variant: normal;
+
+	color:#666;
+	border: 1px solid transparent;
+	overflow:auto;
+
+        background-attachment: scroll;
+        background-clip: border-box;
+        background-image:   url('../img/body-bg.jpg');
+        background-origin: padding-box;
+        background-position: 50% 0px;
+        background-repeat: no-repeat;
+        background-size: auto auto;
+        background-color: rgb(228, 228, 228);
+}
+
+h1{
+	/*font:46px/1 'QuicksandLight', Arial, sans-serif;*/
+        font:46px/1 Lucida Grande, Lucida Sans Unicode, 'Pontano Sans', Avenir,'QuicksandLight', Arial, sans-serif;
+        font-size-adjust: none;
+        font-stretch: normal;
+        font-style: normal;
+        font-variant: normal;
+	text-rendering: optimizelegibility;
+	color:#7f7e7e;
+	margin: 0 0 20px;
+	text-align: center;
+}
+
+.logoImage{
+    text-align:center;
+    margin-top:0px;
+	margin-right:0px;
+    margin-bottom:0px;
+    padding:0px;
+    }
+
+.centerLogoImage{
+    display: block;
+	margin: 4px auto 0px auto;
+    padding:0px;
+/* Peyman's Border Test
+	border: 2px solid;
+	border-radius:15px;
+*/
+    }
+
+h2{
+/*	font:26px/1 'QuicksandLight', Arial, sans-serif;*/
+        font:26px/1 Lucida Grande, Lucida Sans Unicode, 'Pontano Sans', Avenir,'QuicksandLight', Arial, sans-serif;
+        font-size-adjust: none;
+        font-stretch: normal;
+        font-style: normal;
+        font-variant: normal;
+	text-rendering: optimizelegibility;
+	/*color:#7f7e7e;*/
+	color:#153E7E;
+	margin: 0 0 20px;
+	text-align: center;
+/*
+	font-size: 11px;
+	font-weight: normal;
+	text-align: center;
+	color:#999;
+*/
+}
+
+a, a:visited{
+	/*color:#1c95ea;*/
+        color: #326DDC;
+	text-decoration:underline;
+}
+
+a:hover{
+	text-decoration:none;
+}
+
+#errorMessage{
+	/*font:26px/1 'QuicksandLight', Arial, sans-serif;*/
+        font:26px/1 Lucida Grande, Lucida Sans Unicode, 'Pontano Sans', Avenir,'QuicksandLight', Arial, sans-serif;
+        font-size-adjust: none;
+        font-stretch: normal;
+        font-style: normal;
+        font-variant: normal;
+	text-rendering: optimizelegibility;
+	color:#f5f5f5;
+	margin: 0 0 40px;
+	text-align: center;
+}
+
+#thankYou{
+/*	display: none;*/
+	margin:15px auto 1px auto;
+/*	position: fixed;*/
+	width: 800px;
+/*	z-index: 10000;*/
+/* Peyman's Border Test
+	border: 2px solid;
+	border-radius:15px;
+*/
+}
+
+#thankYou h1{
+	margin-bottom:20px;
+}
+
+#thankYou h2{
+	font-size: 19px;
+	font-weight: normal;
+	text-align: center;
+/*	color:#999;*/
+	color:#153E7E;
+}
+
+#thankYou .title{
+	font-size: 19px;
+	font-weight: normal;
+	text-align: center;
+/*	color:#999;*/
+	color:#153E7E;
+}
+
+#thankYou h3{
+	font-size: 16px;
+	font-weight: bold;
+	text-align: center;
+	color:#153E7E;
+}
+
+#thankYou h4{
+	font-size: 13px;
+	font-weight: normal;
+	text-align: justify;
+	color:#150517;
+}
+
+#processingContainer{
+	display: none;
+	left: 50%;
+	margin: -30px 0 0 -200px;
+	position: fixed;
+	top: 50%;
+	width: 400px;
+	z-index: 10000;
+}
+
+#processingContainer h1{
+	margin-bottom:20px;
+}
+
+#messageContainer{
+	display: none;
+	width: 900px;
+	margin:15px auto 40px auto;
+/* Peyman's Border Test */
+	/*border: 2px solid;*/
+	/*border-radius:15px;*/
+	/*border-color: #cccccc*/
+}
+
+#messageContainer h1{
+	margin-bottom:20px;
+}
+
+#messageContainer h2{
+	font-size: 19px;
+	font-weight: normal;
+	text-align: center;
+/*	color:#999;*/
+	color:#153E7E;
+}
+
+#messageContainer .title{
+	font-size: 19px;
+	font-weight: normal;
+	text-align: center;
+/*	color:#999;*/
+	color:#153E7E;
+}
+
+#messageContainer h3{
+	font-size: 16px;
+	font-weight: bold;
+	text-align: center;
+	color:#153E7E;
+}
+
+#messageContainer h4{
+	font-size: 13px;
+	font-weight: normal;
+	text-align: justify;
+	color:#150517;
+}
+
+.msgRow{
+	padding: 7px 0;
+}
+
+.divRow{
+	padding: 7px 0;
+}
+
+.welcomeTitle{
+/*	font:26px  Calibri, Arial, sans-serif;*/
+/*	font-weight: bold;*/
+
+	/*font:24px/27px 'SansationRegular', Arial, sans-serif;*/
+        font:24px/27px Lucida Grande, Lucida Sans Unicode, 'Pontano Sans', Avenir, Arial, sans-serif;
+        font-size-adjust: none;
+        font-stretch: normal;
+        font-style: normal;
+        font-variant: normal;
+	letter-spacing: 0;
+/*	font-variant: small-caps;*/
+	font-weight: bold;
+/*	line-height: 0.2em;*/
+	word-spacing: normal;
+	letter-spacing: normal;
+	text-decoration: none;
+	text-transform: none;
+	text-align: center;
+/*	text-indent: 1ex;*/
+
+
+	text-rendering: optimizelegibility;
+	color:#7f7e7e;
+	margin: 0 0 15px;
+	text-align: center;
+}
+
+.welcomeBody{
+/*	font:21px/1 Calibri,Arial,sans-serif;*/
+
+	/*font:22px/27px 'SansationRegular', Arial, sans-serif;*/
+/*        font:22px/27px Lucida Grande, Lucida Sans Unicode, 'Pontano Sans', Avenir, Arial, sans-serif;
+        font-size-adjust: none;
+        font-stretch: normal;
+        font-style: normal;
+        font-variant: normal;
+	letter-spacing: 0;
+	font-variant: normal;
+	font-weight: normal;
+	line-height: 0.2em;
+	word-spacing: normal;
+	letter-spacing: normal;
+	text-decoration: none;
+	text-transform: none;
+	text-align: left;*/
+/*	text-indent: 1ex;*/
+
+
+        font:20px/1 Lucida Grande, Lucida Sans Unicode, 'Pontano Sans', Avenir,'SansationRegular',Arial, sans-serif;
+        font-size-adjust: none;
+        font-stretch: normal;
+        font-style: normal;
+        font-variant: normal;
+	font-weight: normal;
+        text-align: left;
+        color: #000000;
+
+
+	text-rendering: optimizelegibility;
+	/*color:#7f7e7e;*/
+	margin: 0px auto -1px auto;
+	width: 80%;
+	padding-left: 15px;
+/*	text-align: left; */
+}
+
+
+.errorMessage{
+/*	font:21px/1 Calibri,Arial,sans-serif;*/
+
+	/*font:22px/27px 'SansationRegular', Arial, sans-serif;*/
+        font:22px/27px Lucida Grande, Lucida Sans Unicode, 'Pontano Sans', Avenir,'SansationRegular', Arial, sans-serif;
+        font-size-adjust: none;
+        font-stretch: normal;
+        font-style: normal;
+        font-variant: normal;
+	letter-spacing: 0;
+	font-variant: normal;
+	font-weight: normal;
+/*	line-height: 0.2em;*/
+	word-spacing: normal;
+	letter-spacing: normal;
+	text-decoration: none;
+	text-transform: none;
+	text-align: left;
+/*	text-indent: 1ex;*/
+
+	text-rendering: optimizelegibility;
+/*        font:24px/1 'QuicksandLight', Arial, sans-serif;*/
+        font-weight: bold;
+	color: #E20000;
+	margin: 0px auto -1px auto;
+	width: 70%;
+	padding-left: 15px;
+/*	text-align: left; */
+}
+
+#buildingSticker{
+	padding: 15px 0;
+        background-color:#ffffff;
+
+        border: 1px solid;
+	border-radius:11px;
+	-moz-border-radius:11px;
+        border-color: #a3a3a3;
+        -moz-box-shadow:    3px 3px 5px 3px #ccc;
+        -webkit-box-shadow: 3px 3px 5px 3px #ccc;
+        box-shadow:         3px 3px 5px 3px #ccc;
+
+/*        border: 2px solid;
+	border-radius:15px;
+	-moz-border-radius:15px;
+	background-color:#ffffff;
+	border-color: #ffffff; */
+
+
+/*	font:24px/1 'QuicksandLight', Arial, sans-serif;*/
+        font:24px/1 Lucida Grande, Lucida Sans Unicode, 'Pontano Sans', Avenir, Arial, sans-serif;
+        font-size-adjust: none;
+        font-stretch: normal;
+        font-style: normal;
+        font-variant: normal;
+	width: 85%;
+	margin: 0px auto -1px auto;
+
+ /*Peyman's Border Test*/
+/*	border: 2px solid;
+	border-radius:15px;*/
+
+
+}
+
+#buildingSticker h1{
+/*	padding: 15px 0;*/
+	/*font:36px/1 'SansationBold', Arial, sans-serif;*/
+        font:34px/1 Lucida Grande, Lucida Sans Unicode, 'Pontano Sans', Avenir, Arial, sans-serif;
+        font-size-adjust: none;
+        font-stretch: normal;
+        font-style: normal;
+        font-variant: normal;
+
+/*	font-variant: small-caps;*/
+	font-weight: bold;
+/*	font-size: medium;*/
+	line-height: 0.2em;
+	word-spacing: normal;
+	letter-spacing: normal;
+	text-decoration: none;
+	text-transform: none;
+	text-align: left;
+	text-indent: 1ex;
+}
+
+#buildingSticker h2{
+/*	padding: 15px 0;*/
+/*	font:28px/1 'QuicksandLight', Arial, sans-serif;	*/
+        font:28px/1 Avenir , Arial, sans-serif;
+        font-size-adjust: none;
+        font-stretch: normal;
+        font-style: normal;
+
+	font-variant: small-caps;
+	font-weight: normal;
+/*	font-size: medium;*/
+	line-height: 1em;
+	word-spacing: normal;
+	letter-spacing: normal;
+	text-decoration: none;
+	text-transform: none;
+	text-align: left;
+	text-indent: 1.5ex;
+}
+
+#buildingSticker h3{
+/*	padding: 15px 0;*/
+
+	/*font:18px/27px 'SansationRegular', Arial, sans-serif;*/
+        font:18px/27px Lucida Grande, Lucida Sans Unicode, 'Pontano Sans', Avenir, Arial, sans-serif;
+        font-size-adjust: none;
+        font-stretch: normal;
+        font-style: normal;
+        font-variant: normal;
+	letter-spacing: 0;
+/*	font-family: Tahoma, Verdana, Segoe, sans-serif;*/
+/*	font-family: "Century Gothic", CenturyGothic, "AppleGothic", sans-serif;*/
+/*	font-family: Verdana, Geneva, sans-serif;*/
+/*	font-family: "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu Sans", "Helvetica Neue", Arial, sans-serif;*/
+
+	font-style: normal;
+	font-variant: small-caps;
+	font-weight: bold;
+/*	font-size: medium;*/
+	line-height: 1.5em;
+	word-spacing: normal;
+	letter-spacing: normal;
+	text-decoration: none;
+	text-transform: none;
+	text-align: left;
+	text-indent: 2ex;
+
+
+/*	font-size: 18px;*/
+/*	font-weight: 300;*/
+
+/* Peyman's Border Test
+	border: 2px solid;
+	border-radius:15px;
+*/
+
+}
+
+/*#messageSticker{
+	padding: 15px 20px;
+	border: 2px solid;
+	border-radius:15px;
+	-moz-border-radius:15px;
+	background-color:#ffffff;
+	border-color: #999999;
+	font:16px/1 'QuicksandLight', Arial, sans-serif;
+	font-size: 16px;
+	font-weight: normal;
+
+	width: 85%;
+	margin: 0px auto -1px auto;
+
+ Peyman's Border Test
+	border: 2px solid;
+	border-radius:15px;
+
+
+}*/
+
+#messageSticker{
+	padding: 15px 20px;
+	border: 1px solid;
+	border-radius:11px;
+	-moz-border-radius:11px;
+
+        border-color: #a3a3a3;
+
+/*        border-top: 1px solid #666;
+        border-left: 1px solid #666;
+        border-bottom: 1px solid #ccc;
+        border-right: 1px solid #ccc;*/
+
+        -moz-box-shadow:    3px 3px 5px 3px #ccc;
+        -webkit-box-shadow: 3px 3px 5px 3px #ccc;
+        box-shadow:         3px 3px 5px 3px #ccc;
+
+/*        box-shadow: 0px 0px 15px rgba(33,62,83,0.7) inset;
+        -moz-box-shadow: 0px 0px 15px rgba(33,62,83,0.7) inset;
+        -webkit-box-shadow: 0px 0px 15px rgba(33,62,83,0.7) inset;        */
+
+	/*background-color:#ffffff;*/
+	/*border-color: #999999;*/
+/*	font:16px/1 'QuicksandLight', Arial, sans-serif;*/
+	/*font-size: 16px;*/
+	/*font-weight: normal;*/
+
+	width: 700px;
+	/*margin: 0px auto -1px auto;*/
+
+/* Peyman's Border Test
+	border: 2px solid;
+	border-radius:15px;
+*/
+
+}
+
+.contactInfoTitle{
+	padding: 5px 0;
+        border: none;
+	width: 850px;
+        /*font: 22px/2 'SansationRegular',Arial, sans-serif;*/
+        font: 22px/2 Lucida Grande, Lucida Sans Unicode, 'Pontano Sans', Avenir,'SansationRegular',Arial, sans-serif;
+        font-size-adjust: none;
+        font-stretch: normal;
+        font-style: normal;
+        font-variant: normal;
+
+        font-weight: 700;
+        text-align: left
+}
+
+.sectionTitle{
+	padding: 5px 0;
+        border: none;
+	width: 850px;
+        /*font: 22px/2 'SansationRegular',Arial, sans-serif;*/
+        font: 22px/2 Lucida Grande, Lucida Sans Unicode, 'Pontano Sans', Avenir,'SansationRegular',Arial, sans-serif;
+        font-size-adjust: none;
+        font-stretch: normal;
+        font-style: normal;
+        font-variant: normal;
+
+        font-weight: 700;
+        text-align: left
+}
+
+.titleCaption {
+        padding: 0px 0;
+        border: none;
+	width: 850px;
+        font: 15px/1 Lucida Grande, Lucida Sans Unicode, 'Pontano Sans', Avenir,'SansationRegular',Arial, sans-serif;
+        font-size-adjust: none;
+        font-stretch: normal;
+        font-style: normal;
+        font-variant: normal;
+
+        font-weight: 100;
+        text-align: left
+}
+
+.contactInfoCol{
+	padding: 25px 0px 15px 0px;
+	border: 1px solid;
+	/*border-radius:12px;*/
+	/*-moz-border-radius:12px;*/
+	background-color:#ffffff;
+	border-color: #cccccc;
+	width: 850px;
+	padding-bottom: 25px;
+/*	padding-bottom: 9px;*/
+
+        -moz-box-shadow:    3px 3px 5px 3px #ccc;
+        -webkit-box-shadow: 3px 3px 5px 3px #ccc;
+        box-shadow:         3px 3px 5px 3px #ccc;
+}
+
+.servicePlanTitle{
+	padding: 5px 0;
+        border: none;
+	width: 850px;
+}
+
+.servicePlanCol{
+	padding: 25px 0px 45px 0px;
+	border: 1px solid;
+	/*border-radius:12px;*/
+	/*-moz-border-radius:12px;*/
+	background-color:#ffffff;
+	border-color: #cccccc;
+	width: 850px;
+        padding-bottom: 25px;
+        height: 280px;
+
+        -moz-box-shadow:    3px 3px 5px 3px #ccc;
+        -webkit-box-shadow: 3px 3px 5px 3px #ccc;
+        box-shadow:         3px 3px 5px 3px #ccc;
+}
+
+.redAlert{
+	padding: 5px 0px 10px 0px;
+/*	border: 2px solid;*/
+	border-radius:12px;
+	-moz-border-radius:12px;
+/*	background-color:#999999;*/
+	border-color:#999999;
+/*	color: #cc3300;	*/
+	/*background-color:#cc3300;
+	border-color: #cc3300; */
+	color: #e20000;
+	/*font:14px/1 Arial, sans-serif;*/
+        font:14px/1 Lucida Grande, Lucida Sans Unicode, 'Pontano Sans', Avenir,Arial, sans-serif;
+        font-size-adjust: none;
+        font-stretch: normal;
+        font-style: normal;
+        font-variant: normal;
+
+	font-weight: 900;
+/*	text-rendering: optimizelegibility;	*/
+	display: inline-block;
+	/* margin-left: -15px; */
+	/* padding-right: 8px; */
+	text-align: center;
+	width: 600px;
+}
+
+
+#paymentInfoTitle {
+        display: none;
+        padding: 5px 0;
+        border: none;
+	width: 850px;
+}
+
+#paymentInfoCaption {
+        display: none;
+}
+
+.paymentInfoCol{
+
+        display: none;
+    	padding: 30px 0px 10px 0px;
+	border: 1px solid;
+	background-color:#ffffff;
+	border-color: #cccccc;
+	width: 850px;
+        height: 250px;
+
+        -moz-box-shadow:    3px 3px 5px 3px #ccc;
+        -webkit-box-shadow: 3px 3px 5px 3px #ccc;
+        box-shadow:         3px 3px 5px 3px #ccc;
+}
+
+.planContainer{
+	padding: 3px 3px 3px 3px;
+	width: 170px;
+        height: 195px;
+        color: #000000;
+        cursor: pointer;
+        margin-bottom: 10px;
+
+        background-color: #f9f9f9;
+        border: 1px solid;
+	border-color: #cccccc;
+	border-radius:12px;
+	-moz-border-radius:12px;
+        -moz-box-shadow: -3px -3px 3px #d6d6d6 inset;
+	-webkit-box-shadow: -3px -3px 3px #d6d6d6 inset;
+	box-shadow: -3px -3px 3px #d6d6d6 inset;
+}
+
+.planContainer:hover
+{
+        border-color: #326DDC;
+        -moz-box-shadow: -3px -3px 3px #d6d6d6 inset, 0 0 8px 2px #467CE0;
+	-webkit-box-shadow: -3px -3px 3px #d6d6d6 inset, 0 0 8px 2px #467CE0;
+	box-shadow: -3px -3px 3px #d6d6d6 inset, 0 0 8px 2px #467CE0;
+}
+
+.planContainer.active{
+        /*border: none;*/
+        background-color: #eeeeee;
+        border-color: #c5c5c5;
+        -moz-box-shadow: 5px 5px 3px #c5c5c5 inset;
+	-webkit-box-shadow: 5px 5px 3px #c5c5c5 inset;
+	box-shadow: 5px 5px 3px #c5c5c5 inset;
+        -webkit-background-clip: padding-box;
+}
+
+.includedPlanContainer{
+	padding: 3px 3px 3px 3px;
+	width: 170px;
+        height: 195px;
+        color: #000000;
+        cursor: pointer;
+        margin-bottom: 10px;
+
+        background-color: #f9f9f9;
+        border: 1px solid;
+	border-color: #cccccc;
+	border-radius:12px;
+	-moz-border-radius:12px;
+        -moz-box-shadow: -3px -3px 3px #d6d6d6 inset;
+	-webkit-box-shadow: -3px -3px 3px #d6d6d6 inset;
+	box-shadow: -3px -3px 3px #d6d6d6 inset;
+}
+
+.includedPlanContainer:hover
+{
+        border-color: #326DDC;
+        -moz-box-shadow: -3px -3px 3px #d6d6d6 inset, 0 0 8px 2px #467CE0;
+	-webkit-box-shadow: -3px -3px 3px #d6d6d6 inset, 0 0 8px 2px #467CE0;
+	box-shadow: -3px -3px 3px #d6d6d6 inset, 0 0 8px 2px #467CE0;
+}
+
+.includedPlanContainer.active{
+
+        /*border: none;*/
+        background-color: #eeeeee;
+        border-color: #c5c5c5;
+        -moz-box-shadow: 5px 5px 3px #c5c5c5 inset;
+	-webkit-box-shadow: 5px 5px 3px #c5c5c5 inset;
+	box-shadow: 5px 5px 3px #c5c5c5 inset;
+        -webkit-background-clip: padding-box;
+}
+
+.planIncluded{
+	padding: 5px 0px 3px 0px;
+	/*border: 1px solid;*/
+	border-radius:12px;
+	-moz-border-radius:12px;
+/*	background-color:#999999;*/
+/*	border-color: #cccccc;*/
+	width: 140;
+        height: 24px;
+	/*font:20px/2 Arial, sans-serif;*/
+        font:16px/1 Lucida Grande, Lucida Sans Unicode, 'Pontano Sans', Avenir, 'SansationRegular',Arial, sans-serif;
+        font-size-adjust: none;
+        font-stretch: normal;
+        font-style: normal;
+        font-variant: normal;
+
+	font-weight: bolder;
+        text-align: center;
+        display: table-cell;
+        vertical-align: middle;
+/*        color: #ffffff;*/
+/*        cursor: pointer;*/
+}
+
+.verticalLine {
+    border-right: 1px solid;
+    border-right-color: black;
+    height: 160px;
+}
+.planSpeed{
+	padding: 10px 0px 0px 0px;
+	/*border: 1px solid;*/
+	border-radius:12px;
+	-moz-border-radius:12px;
+	/*background-color:#ff9999;*/
+	border-color: #cccccc;
+        text-align: center;
+        /*font:20px/1 Arial, sans-serif;*/
+        font:20px/1 Lucida Grande, Lucida Sans Unicode, 'Pontano Sans', Avenir, 'SansationRegular',Arial, sans-serif;
+        font-size-adjust: none;
+        font-stretch: normal;
+        font-style: normal;
+        font-variant: normal;
+
+	font-weight: bolder;
+	width: 140px;
+        height: 24px;
+        /*color: #0000ff;*/
+        /*color: #0000CC;*/
+        color: #326DDC;
+        /*color: #3399FF;*/
+}
+
+.planFeatures{
+	padding: 15px 0px 0px 20px;
+	/*border: 1px solid;*/
+/*	background-color:#ffcccc;*/
+	border-color: #cccccc;
+        font:13px/2 Lucida Grande, Lucida Sans Unicode, 'Pontano Sans', Avenir,Arial, sans-serif;
+        font-size-adjust: none;
+        font-stretch: normal;
+        font-style: normal;
+        font-variant: normal;
+
+	font-weight: bold;
+	width: 140px;
+        height: 80px;
+	text-align:left;
+}
+
+.planFeatures ul {
+    	padding: 0px 0px 0px 10px;
+        list-style-type: circle;
+}
+
+.planPrice{
+	padding: 5px 1px 0px 1px;
+	/*border: 1px solid;*/
+
+/*	background-color:#999999;*/
+/*	border-color: #cccccc;*/
+	width: 35px;
+        height: 30px;
+	font:16px/2 Lucida Grande, Lucida Sans Unicode, 'Pontano Sans', Avenir,Arial, sans-serif;
+        font-size-adjust: none;
+        font-stretch: normal;
+        font-style: normal;
+        font-variant: normal;
+
+	font-weight: bolder;
+        text-align: right;
+/*        color: #ffffff;*/
+/*        cursor: pointer;*/
+}
+
+.planCycle{
+	padding: 13px 11px 0px 0px;
+/*	border: 1px solid;*/
+/*	background-color:#999999;*/
+/*	border-color: #cccccc;*/
+	width: 59px;
+        height: 20px;
+	font:11px/1 Lucida Grande, Lucida Sans Unicode, 'Pontano Sans', Avenir,Arial, sans-serif;
+        font-size-adjust: none;
+        font-stretch: normal;
+        font-style: normal;
+        font-variant: normal;
+
+	font-weight: bolder;
+        text-align: left;
+/*        color: #ffffff;*/
+/*        cursor: pointer;*/
+}
+
+/**
+*
+*  Wireless Router Section
+*
+**/
+
+.wirelessRouterTitle{
+	padding: 5px 0;
+        border: none;
+	width: 850px;
+}
+
+.wirelessRouterCol{
+	padding: 35px 0px 30px 0px;
+	border: 1px solid;
+	background-color:#ffffff;
+	border-color: #cccccc;
+	width: 850px;
+        height: 330px;
+
+        -moz-box-shadow:    3px 3px 5px 3px #ccc;
+        -webkit-box-shadow: 3px 3px 5px 3px #ccc;
+        box-shadow:         3px 3px 5px 3px #ccc;
+}
+
+.routerContainer{
+	padding: 9px 9px 9px 9px;
+	width: 250px;
+        height: 295px;
+        color: #000000;
+        cursor: pointer;
+
+        background-color:#ffffff;
+        background-color: #f9f9f9;
+        border: 1px solid;
+        border-color: #cccccc;
+        border-radius:12px;
+        -moz-border-radius:12px;
+        -moz-box-shadow: -3px -3px 3px #d6d6d6 inset;
+        -webkit-box-shadow: -3px -3px 3px #d6d6d6 inset;
+        box-shadow: -3px -3px 3px #d6d6d6 inset;
+}
+
+.routerContainer:hover
+{
+	/*background-color:#ffffff;*/
+
+        border-color: #326DDC;
+        -moz-box-shadow: -3px -3px 3px #d6d6d6 inset, 0 0 8px 2px #467CE0;
+        -webkit-box-shadow: -3px -3px 3px #d6d6d6 inset, 0 0 8px 2px #467CE0;
+        box-shadow: -3px -3px 3px #d6d6d6 inset, 0 0 8px 2px #467CE0;
+}
+
+.routerContainer.active{
+
+        /*background-color: #eeeeee;*/
+        /*border: none;*/
+        border-radius:12px;
+        border-color: #c5c5c5;
+        -moz-border-radius:12px;
+        -moz-box-shadow: 5px 5px 3px #c5c5c5 inset;
+        -webkit-box-shadow: 5px 5px 3px #c5c5c5 inset;
+        box-shadow: 5px 5px 3px #c5c5c5 inset;
+        -webkit-background-clip: padding-box;
+}
+
+.noRouterContainer{
+	padding: 9px 9px 9px 9px;
+        margin-left: 48px;
+	/*width: 120px;*/
+        width: 230px;
+        height: 295px;
+        color: #000000;
+        cursor: pointer;
+
+        background-color: #f9f9f9;
+        border: 1px solid;
+        border-color: #cccccc;
+        border-radius:12px;
+        -moz-border-radius:12px;
+        -moz-box-shadow: -3px -3px 3px #d6d6d6 inset;
+        -webkit-box-shadow: -3px -3px 3px #d6d6d6 inset;
+        box-shadow: -3px -3px 3px #d6d6d6 inset;
+}
+
+.noRouterContainer:hover
+{
+    border-color: #326DDC;
+    -moz-box-shadow: -3px -3px 3px #d6d6d6 inset, 0 0 8px 2px #467CE0;
+    -webkit-box-shadow: -3px -3px 3px #d6d6d6 inset, 0 0 8px 2px #467CE0;
+    box-shadow: -3px -3px 3px #d6d6d6 inset, 0 0 8px 2px #467CE0;
+}
+.noRouterContainer.active{
+    background-color: #eeeeee;
+    /*border: none;*/
+    border-radius:12px;
+    border-color: #c5c5c5;
+    -moz-border-radius:12px;
+    -moz-box-shadow: 5px 5px 3px #c5c5c5 inset;
+    -webkit-box-shadow: 5px 5px 3px #c5c5c5 inset;
+    box-shadow: 5px 5px 3px #c5c5c5 inset;
+    -webkit-background-clip: padding-box;
+}
+
+.noRouter{
+	padding: 0px 0px 0px 0px;
+	border-radius:12px;
+	-moz-border-radius:12px;
+	/*width: 110px;*/
+        width: 100%;
+        height: 100%;
+        /*height: 276px;*/
+
+        font:18px/2 Lucida Grande, Lucida Sans Unicode, 'Pontano Sans', Avenir,'SansationRegular',Arial, sans-serif;
+        font-size-adjust: none;
+        font-stretch: normal;
+        font-style: normal;
+        font-variant: normal;
+	font-weight: bolder;
+        text-align: center;
+        padding-top: 45%;
+/*        display: table-cell;
+        vertical-align: middle;*/
+
+}
+
+.routerFeatureBox{
+    	padding: 0px 0px 0px 0px;
+	/*border: 1px solid;*/
+	/*background-color: #153E7E;*/
+        background-color: #326DDC;
+        border-radius:12px;
+	-moz-border-radius:12px;
+/*	border-color: #cccccc;*/
+	width: 120px;
+        height: 50px;
+	font:12px/2 Lucida Grande, Lucida Sans Unicode, 'Pontano Sans', Avenir,Arial, sans-serif;
+        font-size-adjust: none;
+        font-stretch: normal;
+        font-style: normal;
+        font-variant: normal;
+
+	font-weight: bolder;
+        text-align: center;
+        color: #ffffff;
+}
+
+.routerFeatureKey{
+    	padding: 4px 2px 2px 2px;
+	/*border: 1px solid;*/
+	border-color: white;
+        /*background-color: #153E7E;*/
+        background-color: #326DDC;
+        border-radius:12px;
+	-moz-border-radius:12px;
+
+	width: 115px;
+        height: 18px;
+	/*font:20px/1 Arial, sans-serif;*/
+        font:20px/1 Lucida Grande, Lucida Sans Unicode, 'Pontano Sans', Avenir,'SansationRegular',Arial, sans-serif;
+        font-size-adjust: none;
+        font-stretch: normal;
+        font-style: normal;
+        font-variant: normal;
+
+	font-weight: bold;
+        text-align: center;
+        color: #ffffff;
+}
+
+.routerFeatureVal{
+    	padding: 2px 2px 2px 2px;
+	/*border: 1px solid;*/
+        border-color: white;
+	/*background-color: #153E7E;*/
+        background-color: #326DDC;
+        border-radius:12px;
+	-moz-border-radius:12px;
+	width: 115px;
+        height: 18px;
+	font:18px/1 Lucida Grande, Lucida Sans Unicode, 'Pontano Sans', Avenir,Arial, sans-serif;
+        font-size-adjust: none;
+        font-stretch: normal;
+        font-style: normal;
+        font-variant: normal;
+
+	font-weight: bolder;
+        text-align: center;
+        color:#aaa;
+}
+
+.routerLearnMore{
+       	padding: 3px 0px 3px 0px;
+	/*border: 1px solid;*/
+	/*border-color: white;*/
+        /*background-color: #153E7E;*/
+        /*border-radius:12px;*/
+	/*-moz-border-radius:12px;*/
+	width: 115px;
+        height: 18px;
+	/*font:20px/1 Arial, sans-serif;*/
+        font:14px/1 Lucida Grande, Lucida Sans Unicode, 'Pontano Sans', Avenir,'SansationRegular',Arial, sans-serif;
+        font-size-adjust: none;
+        font-stretch: normal;
+        font-style: normal;
+        font-variant: normal;
+
+	font-weight: normal;
+        text-align: center;
+        color:#0000CC;
+}
+
+.routerPrice{
+	padding: 0px 0px 0px 0px;
+	/*border: 1px solid;*/
+	/*border-color: black;*/
+	width: 60px;
+        height: 26px;
+	/*font:20px/1 Arial, sans-serif;*/
+        font:26px/1 Lucida Grande, Lucida Sans Unicode, 'Pontano Sans', Avenir,'SansationRegular',Arial, sans-serif;
+        font-size-adjust: none;
+        font-stretch: normal;
+        font-style: normal;
+        font-variant: normal;
+
+	font-weight: bolder;
+        text-align: center;
+        vertical-align: text-top;
+        /*color: #0000CC;*/
+        color: #326DDC;
+/*        color: #ffffff;*/
+/*        cursor: pointer;*/
+}
+
+.routerMSRP{
+	padding: 0px 0px 0px 0px;
+	/*border: 1px solid;*/
+/*	border-color: black;*/
+	width: 60px;
+        height: 20px;
+	font:20px/1 Lucida Grande, Lucida Sans Unicode, 'Pontano Sans', Avenir,Arial, sans-serif;
+        font-size-adjust: none;
+        font-stretch: normal;
+        font-style: normal;
+        font-variant: normal;
+
+        /*font:20px/1 'SansationRegular',Arial, sans-serif;*/
+	font-weight: bold;
+        text-align: center;
+        vertical-align: text-top;
+        color: black;
+        text-decoration: line-through;
+/*        color: #ffffff;*/
+/*        cursor: pointer;*/
+}
+
+.routerPriceInfo{
+	padding: 0px 0px 0px 0px;
+	/*border: 1px solid;*/
+	/*border-color: black;*/
+	width: 51px;
+        height: 15px;
+        font:14px/1 Lucida Grande, Lucida Sans Unicode, 'Pontano Sans', Avenir,Arial, sans-serif;
+        font-size-adjust: none;
+        font-stretch: normal;
+        font-style: normal;
+        font-variant: normal;
+
+	/*font:14px/1 'SansationRegular',Arial, sans-serif;*/
+	font-weight: bolder;
+        text-align: right;
+        vertical-align: text-top;
+/*        color: #ffffff;*/
+/*        cursor: pointer;*/
+}
+
+
+/**
+*
+*  VOIP Section
+*
+**/
+
+
+.voipTitle{
+	padding: 5px 0;
+        border: none;
+	width: 850px;
+}
+
+.voipCol{
+	padding: 30px 0px 40px 0px;
+	border: 1px solid;
+	background-color:#ffffff;
+	border-color: #cccccc;
+	width: 850px;
+        /*height: 173px;*/
+        height: auto;
+
+        -moz-box-shadow:    3px 3px 5px 3px #ccc;
+        -webkit-box-shadow: 3px 3px 5px 3px #ccc;
+        box-shadow:         3px 3px 5px 3px #ccc;
+}
+
+.voipContainer{
+	padding: 3px 3px 3px 3px;
+	width: 515px;
+        height: 127px;
+        color: #000000;
+        cursor: pointer;
+
+        background-color: #f9f9f9;
+        border: 1px solid;
+        border-color: #cccccc;
+        border-radius:12px;
+        -moz-border-radius:12px;
+        -moz-box-shadow: -3px -3px 3px #d6d6d6 inset;
+        -webkit-box-shadow: -3px -3px 3px #d6d6d6 inset;
+        box-shadow: -3px -3px 3px #d6d6d6 inset;
+}
+
+.voipContainer:hover
+{
+        border-color: #326DDC;
+        -moz-box-shadow: -3px -3px 3px #d6d6d6 inset, 0 0 8px 2px #467CE0;
+        -webkit-box-shadow: -3px -3px 3px #d6d6d6 inset, 0 0 8px 2px #467CE0;
+        box-shadow: -3px -3px 3px #d6d6d6 inset, 0 0 8px 2px #467CE0;
+}
+
+.voipContainer.active{
+        background-color: #eeeeee;
+        /*border: none;*/
+        /*border-radius:12px;*/
+        border-color: #c5c5c5;
+        /*-moz-border-radius:12px;*/
+        -moz-box-shadow: 5px 5px 3px #c5c5c5 inset;
+        -webkit-box-shadow: 5px 5px 3px #c5c5c5 inset;
+        box-shadow: 5px 5px 3px #c5c5c5 inset;
+        -webkit-background-clip: padding-box;
+}
+
+.voipPlanName{
+	padding: 0px 0px 0px 0px;
+	/*border: 4px solid;*/
+	border-radius:12px;
+	-moz-border-radius:12px;
+        /*background-color: #eee;*/
+	/*border-color: #cccccc;*/
+	width: 300px;
+	height: 30px;
+        font:20px/2 Lucida Grande, Lucida Sans Unicode, 'Pontano Sans', Avenir,'SansationRegular',Arial, sans-serif;
+        font-size-adjust: none;
+        font-stretch: normal;
+        font-style: normal;
+        font-variant: normal;
+
+	font-weight: bolder;
+        text-align: center;
+        color: #000000;
+}
+
+.voipPlanFeatures{
+	padding: 5px 0px 0px 0px;
+	/*border: 4px solid;*/
+	border-radius:12px;
+	-moz-border-radius:12px;
+        /*background-color: #eee;*/
+	/*border-color: #cccccc;*/
+	width: 300px;
+        height: 30px;
+	font:13px/1 Lucida Grande, Lucida Sans Unicode, 'Pontano Sans', Avenir,Arial, sans-serif;
+        font-size-adjust: none;
+        font-stretch: normal;
+        font-style: normal;
+        font-variant: normal;
+
+	font-weight: normal;
+        text-align: center;
+        color: #000000;
+}
+
+.noVoipContainer{
+	padding: 3px 3px 3px 3px;
+	width: 120px;
+        height: 129;
+        color: #000000;
+        cursor: pointer;
+
+        background-color: #f9f9f9;
+        border: 1px solid;
+        border-color: #cccccc;
+        border-radius:12px;
+        -moz-border-radius:12px;
+        -moz-box-shadow: -3px -3px 3px #d6d6d6 inset;
+        -webkit-box-shadow: -3px -3px 3px #d6d6d6 inset;
+        box-shadow: -3px -3px 3px #d6d6d6 inset;
+}
+
+.noVoipContainer:hover
+{
+        cursor: pointer;
+        border-color: #326DDC;
+        -moz-box-shadow: -3px -3px 3px #d6d6d6 inset, 0 0 8px 2px #467CE0;
+        -webkit-box-shadow: -3px -3px 3px #d6d6d6 inset, 0 0 8px 2px #467CE0;
+        box-shadow: -3px -3px 3px #d6d6d6 inset, 0 0 8px 2px #467CE0;
+}
+
+.noVoipContainer.active{
+        background-color: #eeeeee;
+        /*border: none;*/
+        border-radius:12px;
+        border-color: #c5c5c5;
+        -moz-border-radius:12px;
+        -moz-box-shadow: 5px 5px 3px #c5c5c5 inset;
+        -webkit-box-shadow: 5px 5px 3px #c5c5c5 inset;
+        box-shadow: 5px 5px 3px #c5c5c5 inset;
+        -webkit-background-clip: padding-box;
+}
+
+.noVoip{
+	padding: 0px 0px 0px 0px;
+	/*border: 1px solid;*/
+	border-radius:12px;
+	-moz-border-radius:12px;
+/*	background-color:#999999;*/
+/*	border-color: #cccccc;*/
+	width: 120px;
+        height: 120px;
+	/*font:20px/2 Arial, sans-serif;*/
+        font:18px/2 Lucida Grande, Lucida Sans Unicode, 'Pontano Sans', Avenir,'SansationRegular',Arial, sans-serif;
+        font-size-adjust: none;
+        font-stretch: normal;
+        font-style: normal;
+        font-variant: normal;
+
+	font-weight: bolder;
+        text-align: center;
+        display: table-cell;
+        vertical-align: middle;
+/*        color: #ffffff;*/
+/*        cursor: pointer;*/
+}
+
+.voipFeatureList{
+    display: none;
+}
+
+.voipFeatureBox{
+        /*display: none;*/
+    	padding: 0px 0px 0px 0px;
+	width: 90px;
+        height: 90px;
+	font:12px/2 Lucida Grande, Lucida Sans Unicode, 'Pontano Sans', Avenir,Arial, sans-serif;
+        font-size-adjust: none;
+        font-stretch: normal;
+        font-style: normal;
+        font-variant: normal;
+	font-weight: bolder;
+        text-align: center;
+        cursor: pointer;
+
+        background-color: #f9f9f9;
+        border: 1px solid;
+        border-color: #cccccc;
+        border-radius:12px;
+        -moz-border-radius:12px;
+        -moz-box-shadow: -3px -3px 3px #d6d6d6 inset;
+        -webkit-box-shadow: -3px -3px 3px #d6d6d6 inset;
+        box-shadow: -3px -3px 3px #d6d6d6 inset;
+}
+
+.voipFeatureBox:hover{
+        border-color: #326DDC;
+        -moz-box-shadow: -3px -3px 3px #d6d6d6 inset, 0 0 8px 2px #467CE0;
+        -webkit-box-shadow: -3px -3px 3px #d6d6d6 inset, 0 0 8px 2px #467CE0;
+        box-shadow: -3px -3px 3px #d6d6d6 inset, 0 0 8px 2px #467CE0;
+}
+
+.voipFeatureBox.active{
+        background-color: #eeeeee;
+        /*border: none;*/
+        border-radius:12px;
+        border-color: #c5c5c5;
+        -moz-border-radius:12px;
+        -moz-box-shadow: 5px 5px 3px #c5c5c5 inset;
+        -webkit-box-shadow: 5px 5px 3px #c5c5c5 inset;
+        box-shadow: 5px 5px 3px #c5c5c5 inset;
+        -webkit-background-clip: padding-box;
+}
+
+.voipFeatureKey{
+    	padding: 2px 2px 2px 2px;
+	/*border: 1px solid;*/
+	/*background-color: #153E7E;*/
+        border-radius:12px;
+	-moz-border-radius:12px;
+/*	border-color: #cccccc;*/
+	width: 85px;
+        height: 48px;
+	/*font:13px/1 Arial, sans-serif;*/
+        font:15px/2 Lucida Grande, Lucida Sans Unicode, 'Pontano Sans', Avenir,'SansationRegular',Arial, sans-serif;
+        font-size-adjust: none;
+        font-stretch: normal;
+        font-style: normal;
+        font-variant: normal;
+
+	font-weight: bold;
+        text-align: center;
+        /*color: #ffffff;*/
+
+}
+
+.voipFeatureVal{
+    	padding: 0px 0px 0px 0px;
+	/*border: 1px solid;*/
+	background-color: #153E7E;
+        /*border-radius:12px;*/
+	/*-moz-border-radius:12px;*/
+        border-bottom-right-radius:12px;
+	-moz-border-bottom-right-radius:12px;
+        border-bottom-left-radius:12px;
+	-moz-border-bottom-left-radius:12px;
+/*	border-color: #cccccc;*/
+	width: 90px;
+        height: 39px;
+	/*font:13px/1 Arial, sans-serif;*/
+        font:13px/2 Lucida Grande, Lucida Sans Unicode, 'Pontano Sans', Avenir,'SansationRegular',Arial, sans-serif;
+        font-size-adjust: none;
+        font-stretch: normal;
+        font-style: normal;
+        font-variant: normal;
+
+	font-weight: bolder;
+        text-align: center;
+        color: #ffffff;
+
+}
+
+.voipFeatureDesc{
+        display: none;
+    	padding: 4px 0px 0px 0px;
+        width: 520px;
+        height: 50px;
+        /*border: 1px solid;*/
+	border-color: #cccccc;
+	/*font:13px/1 Arial, sans-serif;*/
+        font:13px/2 Lucida Grande, Lucida Sans Unicode, 'Pontano Sans', Avenir,'SansationRegular',Arial, sans-serif;
+        font-size-adjust: none;
+        font-stretch: normal;
+        font-style: normal;
+        font-variant: normal;
+
+	font-weight: normal;
+        text-align: center;
+        vertical-align: middle;
+        color: black;
+}
+
+.voipNumberNotes{
+        display: none;
+    	padding: 4px 8px 4px 8px;
+        width: 678px;
+        /*height: 85px;*/
+        height: auto;
+        border: 1px solid;
+	border-color: #cccccc;
+	/*font:13px/1 Arial, sans-serif;*/
+        font:13px/2 Lucida Grande, Lucida Sans Unicode, 'Pontano Sans', Avenir,'SansationRegular',Arial, sans-serif;
+        font-size-adjust: none;
+        font-stretch: normal;
+        font-style: normal;
+        font-variant: normal;
+
+	font-weight: normal;
+        /*text-align: left;*/
+        /*vertical-align: middle;*/
+        color: black;
+}
+
+.voipPrice{
+	padding: 0px 1px 0px 1px;
+	/*border: 1px solid;*/
+	border-color: black;
+	width: 60px;
+        height: 30px;
+	/*font:26px/1 Arial, sans-serif;*/
+        font:28px/1 Lucida Grande, Lucida Sans Unicode, 'Pontano Sans', Avenir,'SansationRegular',Arial, sans-serif;
+        font-size-adjust: none;
+        font-stretch: normal;
+        font-style: normal;
+        font-variant: normal;
+
+	font-weight: bolder;
+        text-align: center;
+        vertical-align: text-top;
+/*        color: #ffffff;*/
+/*        cursor: pointer;*/
+}
+
+.voipPlanHorLine{
+        border-bottom: 1px solid;
+        border-bottom-color: black;
+        width: 250px;
+}
+
+.voipPriceInfo{
+	padding: 5px 0px 0px 0px;
+	/*border: 1px solid;*/
+	border-color: black;
+	width: 170px;
+        height: 30px;
+	font:13px/1 Lucida Grande, Lucida Sans Unicode, 'Pontano Sans', Avenir,Arial, sans-serif;
+        font-size-adjust: none;
+        font-stretch: normal;
+        font-style: normal;
+        font-variant: normal;
+
+	font-weight: normal;
+        text-align: left;
+        vertical-align: text-top;
+/*        color: #ffffff;*/
+/*        cursor: pointer;*/
+}
+
+.defaultPlanContainer{
+	padding: 3px 3px 3px 3px;
+	border: 4px solid;
+	border-radius:12px;
+	-moz-border-radius:12px;
+	/*background-color: lightgreen;*/
+        /*background-color: #eee;*/
+	background-color:#ffffff;
+	/*border-color: #cccccc;*/
+        border-color: #0066CC;
+
+	width: 642px;
+        height: 127px;
+        color: #000000;
+        /*cursor: pointer;*/
+}
+
+.defaultPlanName{
+	padding: 0px 0px 0px 0px;
+	/*border: 4px solid;*/
+	border-radius:12px;
+	-moz-border-radius:12px;
+        /*background-color: #eee;*/
+	/*border-color: #cccccc;*/
+	width: 300px;
+	height: 30px;
+        font:20px/2 'SansationRegular',Arial, sans-serif;
+	font-weight: bolder;
+        text-align: center;
+        /*color: #000000;*/
+        color: #153E7E;
+}
+
+.defaultPlanFeatures{
+	padding: 10px 0px 0px 0px;
+	/*border: 4px solid;*/
+	border-radius:12px;
+	-moz-border-radius:12px;
+        /*background-color: #eee;*/
+	/*border-color: #cccccc;*/
+	width: 400px;
+        height: 30px;
+	font:13px/1 Arial, sans-serif;
+	font-weight: normal;
+        text-align: center;
+        color: #000000;
+}
+
+.defaultPlanHorLine{
+        border-bottom: 1px solid;
+        border-bottom-color: black;
+        width: 383px;
+}
+
+.defaultPlanPrice{
+	padding: 0px 1px 0px 1px;
+	/*border: 1px solid;*/
+	border-color: black;
+	width: 140px;
+        height: 30px;
+	/*font:26px/1 Arial, sans-serif;*/
+        font:28px/1 'SansationRegular',Arial, sans-serif;
+	font-weight: bolder;
+        text-align: center;
+        vertical-align: text-top;
+/*        color: #ffffff;*/
+/*        cursor: pointer;*/
+}
+
+.defaultPlanPriceInfo{
+	padding: 5px 0px 0px 0px;
+	/*border: 1px solid;*/
+	border-color: black;
+	width: 140px;
+        height: 30px;
+	font:13px/1 Arial, sans-serif;
+	font-weight: normal;
+        text-align: left;
+        vertical-align: text-top;
+/*        color: #ffffff;*/
+/*        cursor: pointer;*/
+}
+
+
+#orderDetailsTitle{
+        display: none;
+        padding: 5px 0;
+        border: none;
+	width: 850px;
+}
+
+#orderDetailsCaption {
+    display: none;
+}
+
+.orderDetailsCol{
+        display: none;
+    	padding: 11px 0px 10px 0px;
+	border: 1px solid;
+	background-color:#ffffff;
+	border-color: #cccccc;
+	width: 850px;
+        height: 120px;
+
+        -moz-box-shadow:    3px 3px 5px 3px #ccc;
+        -webkit-box-shadow: 3px 3px 5px 3px #ccc;
+        box-shadow:         3px 3px 5px 3px #ccc;
+}
+
+
+.paymentOptionBox{
+    	padding: 5px 0px 0px 0px;
+/*        border: 1px solid;*/
+        width: 590px;
+        height: 105px;
+}
+
+#paymentOptionMessage{
+        display: none;
+	padding: 16px 0px 10px 0px;
+/*	border: 1px solid;*/
+/*	border-radius:12px;*/
+/*	-moz-border-radius:12px;*/
+/*	background-color:#999999;*/
+	border-color: #cccccc;
+	width: 590px;
+        /*height: 87px;*/
+        font:18px/1 Lucida Grande, Lucida Sans Unicode, 'Pontano Sans', Avenir,Arial, sans-serif;
+        font-size-adjust: none;
+        font-stretch: normal;
+        font-style: normal;
+        font-variant: normal;
+
+/*	font-weight: bold;*/
+        text-align: center;
+        color: #000000;
+/*        cursor: pointer;*/
+}
+
+.payMonthlyButton{
+        display: none;
+	padding: 0px 0px 0px 0px;
+	width: 225px;
+        height: 34px;
+        font:16px/2 Lucida Grande, Lucida Sans Unicode, 'Pontano Sans', Avenir,Arial, sans-serif;
+        font-size-adjust: none;
+        font-stretch: normal;
+        font-style: normal;
+        font-variant: normal;
+
+        background-color: #f9f9f9;
+	border: 1px solid;
+	border-color: #cccccc;
+        border-radius:12px;
+	-moz-border-radius:12px;
+        -moz-box-shadow: -3px -3px 3px #d6d6d6 inset;
+        -webkit-box-shadow: -3px -3px 3px #d6d6d6 inset;
+        box-shadow: -3px -3px 3px #d6d6d6 inset;
+
+/*	font-weight: bold;*/
+        text-align: center;
+        color: #000000;
+        cursor: pointer;
+}
+
+.payMonthlyButton:hover{
+        border-color: #326DDC;
+        -moz-box-shadow: -3px -3px 3px #d6d6d6 inset, 0 0 8px 2px #467CE0;
+        -webkit-box-shadow: -3px -3px 3px #d6d6d6 inset, 0 0 8px 2px #467CE0;
+        box-shadow: -3px -3px 3px #d6d6d6 inset, 0 0 8px 2px #467CE0;
+}
+
+.payMonthlyButton.active{
+	padding: 0px 0px 0px 0px;
+	width: 225px;
+        height: 34px;
+        font:16px/2 Lucida Grande, Lucida Sans Unicode, 'Pontano Sans', Avenir,Arial, sans-serif;
+        font-size-adjust: none;
+        font-stretch: normal;
+        font-style: normal;
+        font-variant: normal;
+
+        background-color: #eeeeee;
+        /*border: none;*/
+	border-radius:12px;
+        border-color: #c5c5c5;
+	-moz-border-radius:12px;
+        -moz-box-shadow: 5px 5px 3px #c5c5c5 inset;
+        -webkit-box-shadow: 5px 5px 3px #c5c5c5 inset;
+        box-shadow: 5px 5px 3px #c5c5c5 inset;
+        -webkit-background-clip: padding-box;
+
+/*	font-weight: bolder;*/
+        text-align: center;
+        cursor: pointer;
+}
+
+.payAnnuallyButton{
+        display: none;
+	padding: 0px 0px 0px 0px;
+	width: 220px;
+        height: 34px;
+        font:16px/2 Lucida Grande, Lucida Sans Unicode, 'Pontano Sans', Avenir,Arial, sans-serif;
+        font-size-adjust: none;
+        font-stretch: normal;
+        font-style: normal;
+        font-variant: normal;
+
+        background-color: #f9f9f9;
+	border: 1px solid;
+	border-color: #cccccc;
+        border-radius:12px;
+	-moz-border-radius:12px;
+        -moz-box-shadow: -3px -3px 3px #d6d6d6 inset;
+        -webkit-box-shadow: -3px -3px 3px #d6d6d6 inset;
+        box-shadow: -3px -3px 3px #d6d6d6 inset;
+
+/*	font-weight: bolder;*/
+        text-align: center;
+        color: #000000;
+        cursor: pointer;
+}
+
+.payAnnuallyButton:hover{
+        border-color: #326DDC;
+        -moz-box-shadow: -3px -3px 3px #d6d6d6 inset, 0 0 8px 2px #467CE0;
+        -webkit-box-shadow: -3px -3px 3px #d6d6d6 inset, 0 0 8px 2px #467CE0;
+        box-shadow: -3px -3px 3px #d6d6d6 inset, 0 0 8px 2px #467CE0;
+}
+
+.payAnnuallyButton.active{
+	padding: 0px 0px 0px 0px;
+	width: 220px;
+        height: 34px;
+        font:16px/2 Lucida Grande, Lucida Sans Unicode, 'Pontano Sans', Avenir,Arial, sans-serif;
+        font-size-adjust: none;
+        font-stretch: normal;
+        font-style: normal;
+        font-variant: normal;
+
+        background-color: #eeeeee;
+        /*border: none;*/
+	border-radius:12px;
+        border-color: #c5c5c5;
+	-moz-border-radius:12px;
+        -moz-box-shadow: 5px 5px 3px #c5c5c5 inset;
+        -webkit-box-shadow: 5px 5px 3px #c5c5c5 inset;
+        box-shadow: 5px 5px 3px #c5c5c5 inset;
+        -webkit-background-clip: padding-box;
+
+/*	font-weight: bolder;*/
+        text-align: center;
+        cursor: pointer;
+}
+
+.planButton{
+	padding: 0px 0px 0px 0px;
+	border: 1px solid;
+	border-radius:12px;
+	-moz-border-radius:12px;
+	background-color:#999999;
+	border-color: #cccccc;
+	width: 110px;
+        height: 34px;
+        font:16px/2 Lucida Grande, Lucida Sans Unicode, 'Pontano Sans', Avenir,Arial, sans-serif;
+        font-size-adjust: none;
+        font-stretch: normal;
+        font-style: normal;
+        font-variant: normal;
+
+	font-weight: bolder;
+        text-align: center;
+        color: #ffffff;
+        cursor: pointer;
+}
+
+.planButton.active{
+	padding: 0px 0px 0px 0px;
+	border: 2px solid;
+	border-radius:12px;
+	-moz-border-radius:12px;
+	background-color:#999999;
+	border-color: #ff0000;
+        font:16px/2 Lucida Grande, Lucida Sans Unicode, 'Pontano Sans', Avenir,Arial, sans-serif;
+        font-size-adjust: none;
+        font-stretch: normal;
+        font-style: normal;
+        font-variant: normal;
+
+	font-weight: bolder;
+        color: #ffffff;
+        text-align: center;
+	width: 108px;
+        height: 34px;
+        cursor: pointer;
+}
+
+.selectPlanButton{
+	padding: 1px 0px 0px 0px;
+	border: 1px solid;
+	border-radius:4px;
+	-moz-border-radius:4px;
+	background-color: #ffff66;
+	border-color: #0066CC;
+        font:10px/1 Lucida Grande, Lucida Sans Unicode, 'Pontano Sans', Avenir,sans-serif;
+        font-size-adjust: none;
+        font-stretch: normal;
+        font-style: normal;
+        font-variant: normal;
+
+	font-weight: bold;
+        color: #000000;
+        text-align: center;
+        display: table-cell;
+        vertical-align: middle;
+	width: 88px;
+        height: 12px;
+/*        cursor: pointer;    */
+}
+
+.totalCharges{
+	padding: 10px 10px 10px 0px;
+/*	border: 1px solid;*/
+/*	border-radius:12px;*/
+/*	-moz-border-radius:12px;*/
+/*	background-color:#999999;*/
+	border-color: #cccccc;
+	width: 590px;
+        height: 87px;
+        font:18px/2 Lucida Grande, Lucida Sans Unicode, 'Pontano Sans', Avenir,Arial, sans-serif;
+        font-size-adjust: none;
+        font-stretch: normal;
+        font-style: normal;
+        font-variant: normal;
+
+/*	font-weight: bold;*/
+        text-align: left;
+        color: #000000;
+/*        cursor: pointer;*/
+}
+
+/*.totalCharges .lineItemHeader{*/
+.lineItemHeader{
+        display: none;
+	padding: 0px 0px;
+/*	border: 1px solid;*/
+/*	border-radius:12px;*/
+/*	-moz-border-radius:12px;*/
+/*	background-color:#999999;*/
+	border-color: #cccccc;
+	/*width: 300px;*/
+        width: auto;
+        height: 20px;
+        font:16px/1 Lucida Grande, Lucida Sans Unicode, 'Pontano Sans', Avenir,Arial, sans-serif;
+        font-size-adjust: none;
+        font-stretch: normal;
+        font-style: normal;
+        font-variant: normal;
+
+/*	font-weight: bold;*/
+        text-align: left;
+        color: #000000;
+/*        cursor: pointer;*/
+}
+
+/*.totalCharges .lineItemAmount{*/
+.lineItemAmount{
+        display: none;
+	padding: 0px 0px;
+/*	border: 1px solid;*/
+/*	border-radius:12px;*/
+/*	-moz-border-radius:12px;*/
+/*	background-color:#999999;*/
+	border-color: #cccccc;
+	/*width: 270px;*/
+        width: auto;
+        height: 20px;
+        font:16px/1 Lucida Grande, Lucida Sans Unicode, 'Pontano Sans', Avenir,Arial, sans-serif;
+        font-size-adjust: none;
+        font-stretch: normal;
+        font-style: normal;
+        font-variant: normal;
+
+/*	font-weight: bold;*/
+        text-align: right;
+        color: #000000;
+/*        cursor: pointer;*/
+}
+
+.lineItemPromoHeader{
+        display: none;
+	padding: 0px 0px;
+/*	border: 1px solid;*/
+/*	border-radius:12px;*/
+/*	-moz-border-radius:12px;*/
+/*	background-color:#999999;*/
+	border-color: #cccccc;
+	width: auto;
+        height: 20px;
+        font:16px/1 Lucida Grande, Lucida Sans Unicode, 'Pontano Sans', Avenir,Arial, sans-serif;
+        font-size-adjust: none;
+        font-stretch: normal;
+        font-style: normal;
+        font-variant: normal;
+
+	font-weight: bold;
+        text-align: left;
+        color: #e20000;
+/*        cursor: pointer;*/
+}
+
+.lineItemPromoAmount{
+        display: none;
+	padding: 0px 0px;
+/*	border: 1px solid;*/
+/*	border-radius:12px;*/
+/*	-moz-border-radius:12px;*/
+/*	background-color:#999999;*/
+	border-color: #cccccc;
+	width: auto;
+        height: 20px;
+        font:16px/1 Lucida Grande, Lucida Sans Unicode, 'Pontano Sans', Avenir,Arial, sans-serif;
+        font-size-adjust: none;
+        font-stretch: normal;
+        font-style: normal;
+        font-variant: normal;
+
+	font-weight: bold;
+        text-align: right;
+        color: #e20000;
+/*        cursor: pointer;*/
+}
+
+/*.totalCharges .lineItemTotalHeader{*/
+.lineItemTotalHeader{
+        display: none;
+        /*display: table-cell;*/
+        /*vertical-align: top;*/
+	padding: 0px 0px;
+/*	border: 1px solid;*/
+/*	border-radius:12px;*/
+/*	-moz-border-radius:12px;*/
+/*	background-color:#999999;*/
+	border-color: #cccccc;
+	/*width: 270px;*/
+        width: auto;
+        height: 20px;
+        font:16px/1 Lucida Grande, Lucida Sans Unicode, 'Pontano Sans', Avenir,Arial, sans-serif;
+        font-size-adjust: none;
+        font-stretch: normal;
+        font-style: normal;
+        font-variant: normal;
+
+	font-weight: bold;
+        text-align: left;
+        color: #000000;
+/*        cursor: pointer;*/
+}
+
+/*.totalCharges .lineItemTotalAmount{*/
+.lineItemTotalAmount{
+        display: none;
+        /*display: table-cell;*/
+        /*vertical-align: top;*/
+	padding: 0px 0px;
+/*	border: 1px solid;*/
+/*	border-radius:12px;*/
+/*	-moz-border-radius:12px;*/
+/*	background-color:#999999;*/
+	border-color: #cccccc;
+	/*width: 270px;*/
+        width: auto;
+        height: 20px;
+        font:16px/1 Lucida Grande, Lucida Sans Unicode, 'Pontano Sans', Avenir,Arial, sans-serif;
+        font-size-adjust: none;
+        font-stretch: normal;
+        font-style: normal;
+        font-variant: normal;
+
+	font-weight: bold;
+        text-align: right;
+        color: #000000;
+/*        cursor: pointer;*/
+}
+
+.totalVoipCharges{
+	padding: 10px 10px 10px 0px;
+/*	border: 1px solid;*/
+/*	border-radius:12px;*/
+/*	-moz-border-radius:12px;*/
+/*	background-color:#999999;*/
+	border-color: #cccccc;
+	width: 590px;
+        height: 87px;
+        font:18px/2 Lucida Grande, Lucida Sans Unicode, 'Pontano Sans', Avenir,Arial, sans-serif;
+        font-size-adjust: none;
+        font-stretch: normal;
+        font-style: normal;
+        font-variant: normal;
+
+/*	font-weight: bold;*/
+        text-align: left;
+        color: #000000;
+/*        cursor: pointer;*/
+}
+
+/*.totalVoipCharges .lineItemHeader{
+	padding: 0px 0px;
+	border: 1px solid;
+	border-radius:12px;
+	-moz-border-radius:12px;
+	background-color:#999999;
+	border-color: #cccccc;
+	width: 300px;
+        width: auto;
+        height: 20px;
+        font:16px/1 Lucida Grande, Lucida Sans Unicode, 'Pontano Sans', Avenir,Arial, sans-serif;
+        font-size-adjust: none;
+        font-stretch: normal;
+        font-style: normal;
+        font-variant: normal;
+
+	font-weight: bold;
+        text-align: left;
+        color: #000000;
+        cursor: pointer;
+}
+
+.totalVoipCharges .lineItemAmount{
+	padding: 0px 0px;
+	border: 1px solid;
+	border-radius:12px;
+	-moz-border-radius:12px;
+	background-color:#999999;
+	border-color: #cccccc;
+	width: 270px;
+        height: 20px;
+        font:16px/1 Lucida Grande, Lucida Sans Unicode, 'Pontano Sans', Avenir,Arial, sans-serif;
+        font-size-adjust: none;
+        font-stretch: normal;
+        font-style: normal;
+        font-variant: normal;
+
+	font-weight: bold;
+        text-align: right;
+        color: #000000;
+        cursor: pointer;
+}
+
+.totalVoipCharges .lineItemPromoHeader{
+	padding: 0px 0px;
+	border: 1px solid;
+	border-radius:12px;
+	-moz-border-radius:12px;
+	background-color:#999999;
+	border-color: #cccccc;
+	width: 300px;
+        height: 20px;
+        font:16px/1 Lucida Grande, Lucida Sans Unicode, 'Pontano Sans', Avenir,Arial, sans-serif;
+        font-size-adjust: none;
+        font-stretch: normal;
+        font-style: normal;
+        font-variant: normal;
+
+	font-weight: bold;
+        text-align: left;
+        color: #e20000;
+        cursor: pointer;
+}
+
+.totalVoipCharges .lineItemPromoAmount{
+	padding: 0px 0px;
+	border: 1px solid;
+	border-radius:12px;
+	-moz-border-radius:12px;
+	background-color:#999999;
+	border-color: #cccccc;
+	width: 270px;
+        height: 20px;
+        font:16px/1 Lucida Grande, Lucida Sans Unicode, 'Pontano Sans', Avenir,Arial, sans-serif;
+        font-size-adjust: none;
+        font-stretch: normal;
+        font-style: normal;
+        font-variant: normal;
+
+	font-weight: bold;
+        text-align: right;
+        color: #e20000;
+        cursor: pointer;
+}
+
+.totalVoipCharges .lineItemTotalHeader{
+	padding: 0px 0px;
+	border: 1px solid;
+	border-radius:12px;
+	-moz-border-radius:12px;
+	background-color:#999999;
+	border-color: #cccccc;
+	width: 270px;
+        height: 10px;
+        font:16px/1 Lucida Grande, Lucida Sans Unicode, 'Pontano Sans', Avenir,Arial, sans-serif;
+        font-size-adjust: none;
+        font-stretch: normal;
+        font-style: normal;
+        font-variant: normal;
+
+	font-weight: bold;
+        text-align: left;
+        color: #000000;
+        display: table-cell;
+        vertical-align: top;
+        cursor: pointer;
+}
+
+.totalVoipCharges .lineItemTotalAmount{
+	padding: 0px 0px;
+	border: 1px solid;
+	border-radius:12px;
+	-moz-border-radius:12px;
+	background-color:#999999;
+	border-color: #cccccc;
+	width: 270px;
+        height: 10px;
+        font:16px/1 Lucida Grande, Lucida Sans Unicode, 'Pontano Sans', Avenir,Arial, sans-serif;
+        font-size-adjust: none;
+        font-stretch: normal;
+        font-style: normal;
+        font-variant: normal;
+
+	font-weight: bold;
+        text-align: right;
+        color: #000000;
+        display: table-cell;
+        vertical-align: top;
+        cursor: pointer;
+}*/
+
+/***************************
+*		divRow button
+***************************/
+
+.divRow .button{
+	background: url("../img/sprite.png") no-repeat 0 -70px;
+
+	border: none;
+/*	position:relative;*/
+	display: inline-block;
+	cursor: pointer;
+	display: inline-block;
+	height: 34px;
+	line-height: 34px;
+	padding: 0 30px 0 30px;
+	margin: 30px auto 0 auto;
+	position: relative;
+	/*color:#65717d;*/
+        color: #000;
+	text-shadow: 1px 1px 0 #fff;
+}
+
+.divRow .button span{
+	background:url('../img/sprite.png') no-repeat 100% -70px;
+	height:34px;
+	right: -5px;
+	top:0;
+	position:absolute;
+	width:10px;
+}
+
+.divRow .button:hover{
+	background-position:0 -104px;
+}
+
+.divRow .button:hover span{
+	background-position:100% -104px;
+}
+
+.divRow .button:active{
+	bottom:-1px;
+}
+
+/***************************
+*		message row button
+***************************/
+
+.msgRow .button{
+	background: url("../img/sprite.png") no-repeat 0 -70px;
+	border: none;
+	position:relative;
+	cursor: pointer;
+	display: inline-block;
+	height: 34px;
+	line-height: 34px;
+	padding: 0 10px 0 15px;
+	margin: 30px 0 0 35%;
+	position: relative;
+	color:#65717d;
+	text-shadow: 1px 1px 0 #fff;
+}
+
+.msgRow .button span{
+	background:url('../img/sprite.png') no-repeat 100% -70px;
+	height:34px;
+	right: -5px;
+	top:0;
+	position:absolute;
+	width:10px;
+}
+
+.msgRow .button:hover{
+	background-position:0 -104px;
+}
+
+.msgRow .button:hover span{
+	background-position:100% -104px;
+}
+
+.msgRow .button:active{
+	bottom:-1px;
+}
+
+#formContainer{
+/*	border: 5px red solid; */
+/*	display: none;*/
+	width: 1000px;
+	margin:30px auto;
+	padding: 0px 10px 0px 10px;
+/* Peyman's Border Test
+	border: 2px black solid;
+	border-radius:15px;
+*/
+}
+
+#backgroundBox{
+	padding: 60px 37px 70px 37px;
+	width: 900px;
+        /*background-color: #f4f9fe;*/
+        border:1px solid #0c57a0;
+}
+
+#debugBox{
+        /*display: none;*/
+	padding: 10px 10px 10px 10px;
+	width: 956px;
+        background-color: burlywood;
+        border:1px solid #0c57a0;
+        font:13px/1 Lucida Grande, Lucida Sans Unicode, 'Pontano Sans', Avenir,'SansationRegular',Arial, sans-serif;
+        font-size-adjust: none;
+        font-stretch: normal;
+        font-style: normal;
+        font-variant: normal;
+
+        color: black;
+}
+
+.embed #formContainer{
+	margin-top:20px;
+	margin-bottom:0;
+}
+
+.formRow{
+	padding: 7px 0;
+/* Peyman's Border Test
+	border: 2px solid;
+	border-radius:15px;
+*/
+}
+
+.formRow label{
+	display: inline-block;
+	margin-left: -42px;
+	padding-right: 8px;
+	text-align: right;
+	width: 150px;
+        color: #000000;
+}
+
+.formRow label.checkBoxLabel{
+	width:auto;
+	margin:0 5px 0 0;
+}
+
+.formRow label.radioLabel{
+	width:auto;
+	margin:0 5px 0 0;
+}
+
+.formRow input,
+.formRow textarea{
+	padding: 5px 8px;
+	background-color:#f7f7f7;
+	border:none;
+	/*color:#777;*/
+        color:#000;
+	outline:none;
+	resize:none;
+	font:14px/1.2 Lucida Grande, Lucida Sans Unicode, 'Pontano Sans', Avenir,Calibri,Arial,sans-serif;
+        font-size-adjust: none;
+        font-stretch: normal;
+        font-style: normal;
+        font-variant: normal;
+
+	width: 200px;
+
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	border-radius: 4px;
+
+	-moz-box-shadow: 1px 1px 1px #bbb inset, 0 0 1px #ccc inset;
+	-webkit-box-shadow: 1px 1px 1px #bbb inset, 0 0 1px #ccc inset;
+	box-shadow: 1px 1px 1px #bbb inset, 0 0 1px #ccc inset;
+}
+
+.formRow input:focus,
+.formRow textarea:focus{
+/*	-moz-box-shadow: 1px 1px 1px #aecae9 inset, 0 0 1px #aecae9 inset;
+	-webkit-box-shadow: 1px 1px 1px #aecae9 inset, 0 0 1px #aecae9 inset;
+	box-shadow: 1px 1px 1px #aecae9 inset, 0 0 1px #aecae9 inset;*/
+
+/*        -moz-box-shadow: 1px 1px 1px #153E7E inset, 0 0 1px #153E7E inset;
+	-webkit-box-shadow: 1px 1px 1px #153E7E inset, 0 0 1px #153E7E inset;
+	box-shadow: 1px 1px 1px #153E7E inset, 0 0 1px #153E7E inset;*/
+
+/*        -moz-box-shadow: 1px 1px 1px #326DDC inset, 0 0 1px #326DDC inset;
+	-webkit-box-shadow: 1px 1px 1px #326DDC inset, 0 0 1px #326DDC inset;
+	box-shadow: 1px 1px 1px #326DDC inset, 0 0 1px #326DDC inset;*/
+
+        -moz-box-shadow: 1px 1px 1px #bbb inset, 0 0 1px #ccc inset, 0 0 5px 1px #467CE0;
+	-webkit-box-shadow: 1px 1px 1px #bbb inset, 0 0 1px #ccc inset, 0 0 5px 1px #467CE0;
+	box-shadow: 1px 1px 1px #bbb inset, 0 0 1px #ccc inset, 0 0 5px 1px #467CE0;
+}
+
+.formRow textarea{
+	vertical-align: top;
+	width: 250px;
+	overflow:auto;
+}
+
+.formRow input[type=submit],
+.formRow input[type=button]{
+	width:120px;
+	margin-left: 120px;
+	cursor:pointer;
+}
+
+.star{
+	color:#e20000;
+}
+
+.staticError{
+	color: #E20000;
+	font-size: 11px;
+	padding: 4px 0 0 120px;
+}
+
+.errorIcon{
+	background:url('../img/sprite.png') -100px -150px no-repeat;
+	width:18px;
+	height:19px;
+	display:inline-block;
+	position:relative;
+	margin-left: 6px;
+	vertical-align: middle;
+	cursor:pointer;
+}
+
+.errorIcon .errorTip{
+	background:url('../img/tooltip_bg.png') #c82f32 repeat-x;
+	border:1px solid #a00c0d;
+	border-top-color:#d01113;
+	color:#fff;
+	text-shadow:1px 1px 0 #9a1b1d;
+
+	padding:10px;
+	position:absolute;
+	z-index:1000;
+	font-size:11px;
+	width:160px;
+	text-align:center;
+	top:-10px;
+	line-height:1.2;
+
+	-moz-border-radius:6px;
+	-webkit-border-radius:6px;
+	border-radius:6px;
+
+	-moz-box-shadow:0 1px 0 #aaa;
+	-webkit-box-shadow:0 1px 0 #aaa;
+	box-shadow:0 1px 0 #aaa;
+}
+
+#overlay{
+	width:100%;
+	height:100%;
+	position:fixed;
+	top:0;
+	left:0;
+	background-color:#000;
+	opacity:0;
+	filter:alpha(opacity=0);
+/*        opacity:0.4;
+	filter:alpha(opacity=0.4);*/
+	z-index:100000;
+}
+
+#msg_box{
+	background: url("../img/preloader.gif") no-repeat 12px 10px #000000;
+	font-size: 11px;
+	height: 50px;
+	left: 10%;
+	line-height: 20px;
+	margin: -20px 0 0 -45px;
+	padding: 10px;
+	position: fixed;
+	text-align: left;
+	text-indent: 36px;
+	top: 10%;
+	width: 200px;
+	z-index: 100001;
+
+	opacity:0.8;
+	filter:alpha(opacity=0.8);
+
+	-moz-border-radius: 12px;
+	-webkit-border-radius: 12px;
+	border-radius: 12px;
+}
+
+#preloader{
+	background: url("../img/preloader.gif") no-repeat 12px 10px #000000;
+	font-size: 11px;
+	height: 20px;
+	left: 48%;
+	line-height: 20px;
+	margin: -20px 0 0 -45px;
+	padding: 10px;
+	position: fixed;
+	text-align: left;
+	text-indent: 36px;
+	top: 50%;
+	width: 150px;
+	z-index: 100001;
+	color:#eee;
+
+	opacity:0.8;
+	filter:alpha(opacity=0.8);
+
+	-moz-border-radius: 12px;
+	-webkit-border-radius: 12px;
+	border-radius: 12px;
+}
+
+/***************************
+*		Select Boxes
+***************************/
+
+.selectContainer{
+	background:url('../img/sprite.png') no-repeat;
+	padding: 0 15px 0 10px;
+	min-width: 186px;
+	display: inline-block;
+	position: relative;
+	cursor:pointer;
+	margin-right: 5px;
+}
+
+.selectBox{
+	height: 30px;
+	line-height: 30px;
+	text-shadow: 1px 1px 0 #fff;
+}
+
+.selectContainer:hover{
+	background-position:0 -30px;
+}
+
+.selectContainer:hover span{
+	background-position:100% -30px;
+}
+
+.selectContainer span{
+	background:url('../img/sprite.png') no-repeat top right;
+	height:30px;
+	right: -5px;
+	top:0;
+	position:absolute;
+	width:25px;
+}
+
+.selectContainer ul{
+	left: 1px;
+	list-style: none outside none;
+	position: absolute;
+	right: -5px;
+	top: 32px;
+	z-index:10000;
+	border:1px solid #ccc;
+	border-width:0 1px 1px;
+}
+
+.selectContainer li{
+
+    background: url("../img/sprite.png") repeat -4px 0;
+	height: 28px;
+	line-height: 28px;
+    overflow: hidden;
+    padding: 0 10px;
+    text-shadow: 1px 1px 0 #fff;
+}
+
+.selectContainer li:hover{
+	background: url("../img/sprite.png") repeat -4px -30px;
+}
+
+.select.required{
+    padding: 3px 5px 3px 5px;
+/*    -webkit-appearance: button;*/
+/*    -webkit-border-radius: 2px;*/
+/*    -webkit-box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);*/
+/*    -webkit-padding-end: 20px;*/
+/*    -webkit-padding-start: 2px;*/
+/*    -webkit-user-select: none;*/
+/*    background-image: url(../images/select-arrow.png), */
+/*    -webkit-linear-gradient(#FAFAFA, #F4F4F4 40%, #E5E5E5);*/
+/*    background-position: center right;*/
+/*    background-repeat: no-repeat;*/
+/*    border: 1px solid #AAA;*/
+/*    color: #555;*/
+    font-size: inherit;
+    margin: 0;
+    overflow: hidden;
+/*    padding-top: 2px;*/
+/*    padding-bottom: 2px;*/
+/*    text-overflow: ellipsis;*/
+    white-space: nowrap;
+    width: 216px;
+}
+
+/***************************
+*		Checkboxes
+***************************/
+
+
+.formRow .checkBox{
+	background: url("../img/sprite.png") repeat 0 -150px;
+	display:inline-block;
+	width:16px;
+	height:16px;
+	line-height: 16px;
+	vertical-align: middle;
+	cursor:pointer;
+}
+
+.formRow .checkBox:hover{
+	background-position:0 -170px;
+
+        border-color: #326DDC;
+        -moz-box-shadow: -3px -3px 3px #d6d6d6 inset, 0 0 8px 2px #467CE0;
+        -webkit-box-shadow: -3px -3px 3px #d6d6d6 inset, 0 0 8px 2px #467CE0;
+        box-shadow: -3px -3px 3px #d6d6d6 inset, 0 0 8px 2px #467CE0;
+}
+
+.formRow .checkBox.checked{
+	background-position:-20px -150px;
+}
+
+.formRow .checkBox.checked:hover{
+	background-position:-20px -170px;
+}
+
+/***************************
+*		Radios
+***************************/
+
+.formRow .radio{
+	background: url("../img/sprite.png") repeat -40px -150px;
+	display:inline-block;
+	width:16px;
+	height:16px;
+	line-height: 16px;
+	vertical-align: middle;
+	cursor:pointer;
+}
+
+.formRow .radio:hover{
+	background-position:-40px -170px;
+}
+
+.formRow .radio.checked{
+	background-position:-60px -150px;
+}
+
+.formRow .radio.checked:hover{
+	background-position:-60px -170px;
+}
+
+
+/***************************
+*		Submit button
+***************************/
+
+
+.formRow .button{
+	background: url("../img/sprite.png") no-repeat 0 -70px;
+	border: none;
+	position:relative;
+	cursor: pointer;
+	display: inline-block;
+	height: 34px;
+	line-height: 34px;
+	padding: 0 30px 0 30px;
+	margin: 10px 0 0 0;
+	position: relative;
+	/*color:#65717d;*/
+        color:#000;
+	text-shadow: 1px 1px 0 #fff;
+}
+
+.formRow .button span{
+	background:url('../img/sprite.png') no-repeat 100% -70px;
+	height:34px;
+	right: -5px;
+	top:0;
+	position:absolute;
+	width:10px;
+}
+
+.formRow .button:hover{
+	background-position:0 -104px;
+}
+
+.formRow .button:hover span{
+	background-position:100% -104px;
+}
+
+.formRow .button:active{
+	bottom:-1px;
+}
+
+.splashNotice{
+        font:16px/20px Lucida Grande, Lucida Sans Unicode, 'Pontano Sans', Avenir, Arial, sans-serif;
+        font-size-adjust: none;
+        font-stretch: normal;
+        font-style: normal;
+        font-variant: normal;
+	letter-spacing: 0;
+	font-variant: normal;
+	font-weight: normal;
+	word-spacing: normal;
+	letter-spacing: normal;
+	text-decoration: none;
+	text-transform: none;
+	text-align: left;
+
+	text-rendering: optimizelegibility;
+
+        border: 2px solid;
+	border-radius:15px;
+	-moz-border-radius:15px;
+        border-color: lemonchiffon;
+	color:#000000;
+        background-color: lemonchiffon;
+	padding: 15px 15px 15px 25px;
+	width: 90%;
+        height: auto;
+}
