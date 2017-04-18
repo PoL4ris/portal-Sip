@@ -10,11 +10,13 @@ use Auth;
 use App\Models\Network\networkTab;
 use App\Models\Reason;
 use App\Models\App;
+use App\Models\AccessApp;
 use App\Models\Customer;
 use App\Models\Ticket;
 use App\Models\Address;
 use App\Models\Building\Building;
 use App\Models\Status;
+use App\Models\User as Users;
 
 
 class MainController extends Controller
@@ -34,7 +36,6 @@ class MainController extends Controller
   public function homeView()
   {
     return view('index');
-
   }
   public function test()
   {
@@ -68,6 +69,11 @@ class MainController extends Controller
 //                        ');
 
 //if (Auth::user()->id != x)
+
+//    return Auth::user()->id;
+    return Users::with('profile')
+                ->find(Auth::user()->id);
+
     return App::all();
   }
   public function getUserData()

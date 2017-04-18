@@ -721,6 +721,9 @@ table.dataTable tbody tr {
 .admin-app .dataTables_filter {
   width: 50%;
 }
+.admin-app img{
+  max-height: 50px;
+}
 .stc-search {
   border: 1px solid #ddd;
   float: left;
@@ -846,4 +849,34 @@ table.dataTable tbody tr {
 }
 .product-image img{
   max-width: 100%;
+}
+
+.sub-nav {
+  height: 100%;
+  min-height: 100%;
+  position: fixed;
+  width: 200px;
+}
+.sub-nav .admin-sub-nav {
+  padding: 10px;
+}
+.sub-nav .admin-sub-nav p {
+  border-bottom: 1px solid #ddd;
+  color: #3276b1;
+  cursor: pointer;
+  padding: 10px;
+}
+.sub-nav .admin-sub-nav p:hover {
+  background: #f3f8fe;
+}
+.workspace {
+  height: auto;
+  padding-bottom: 50px;
+  position: fixed;
+  right: 0;
+  width: calc(100% - 350px);
+}
+
+#profile-table_length, #profile-table_filter{
+  display: none ;
 }

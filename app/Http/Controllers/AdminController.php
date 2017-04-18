@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AccessApp;
 use App\Models\Customer;
 use Illuminate\Http\Request;
 
@@ -12,6 +13,7 @@ use App\Http\Controllers\Lib\FormsController;
 use App\Models\Profile;
 use App\Models\Status;
 use App\Models\User;
+use App\Models\App;
 
 
 class AdminController extends Controller
@@ -34,13 +36,9 @@ class AdminController extends Controller
 //    }
   }
   public function getAdminProfiles(Request $request){
-    if ($request->params['token'] == csrf_token())
-      return Profile::get();
-    else
-    {
-      print 'ERROR';
-      return;//with error or something...
-    }
+
+      return Profile::with('accessApps')->get();
+
   }
   public function updateAdminUser(Request $request){
     if ($request->params['token'] == csrf_token()){
@@ -90,6 +88,66 @@ class AdminController extends Controller
 
 
 
+  }
+  public function getAdminApps(Request $request){
+    return App::get();
+  }
+  public function insertNewProfile(Request $request){
+
+    $data = $request->params['objects'];
+
+    $profile = new Profile;
+    $profile->name = $data['profile_name'];
+    $profile->save();
+
+    unset($data['profile_name']);
+
+    $aApps = new AccessApp;
+
+    foreach($data as $index => $item)
+    {
+      $aApps = new AccessApp;
+      $aApps->id_apps = $index;
+      $aApps->id_profiles = $profile->id;
+      $aApps->save();
+    }
+
+    return Profile::with('accessApps')->get();
+  }
+  public function updateAdminProfile(Request $request){
+    $data = $request->params['objects'];
+
+    $profile = Profile::find($data['id_profiles']);
+    $profile->name = $data['profile_name'];
+    $profile->save();
+
+    unset($data['profile_name']);
+
+    AccessApp::where('id_profiles', $data['id_profiles'])->delete();
+
+    $aApps = new AccessApp;
+
+    foreach($data as $index => $item)
+    {
+      $aApps = new AccessApp;
+      $aApps->id_apps = $index;
+      $aApps->id_profiles = $data['id_profiles'];
+      $aApps->save();
+    }
+
+    return Profile::with('accessApps')->get();
+
+  }
+  public function getAppAccess(Request $request){
+    $data = $request->params;
+    return AccessApp::where('id_profiles', $data['id_profiles'])
+                    ->where('id_apps', $data['id_apps'])
+                    ->first();
+
+    if($resultAccess)
+      return 'OK';
+    else
+      return 'ERROR';
   }
 
 

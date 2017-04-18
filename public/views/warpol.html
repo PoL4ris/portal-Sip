@@ -1,23 +1,11 @@
 Warpol
 <hr>
-<div class="ticket-search-table size-100 m-t-lg">
-  <form>
-    <label>
-      <input type="text" placeholder="Search for Something..." ng-keyup="getGenericSearch()" ng-model="genericSearch">
-      <i class="fa fa-search pull-right"></i>
-    </label>
-  </form>
 
-  <div class="" ng-if="genericSearchResult">
-    <div class="search-result anim" >
-      <p ng-repeat="result in genericSearchResult">
-          {{result.ticket_number}}
-        | {{result.first_name}} | {{result.last_name}}
-        | {{result.address.code}} | {{result.address.unit}} | {{result.address.address}}
-      </p>
-      <pre>
-      {{genericSearchResult | json}}
-      </pre>
-    </div>
-  </div>
+
+<div ng-controller="menuController">
+
+  <pre>
+    {{SiteMenu | json}}
+  </pre>
+
 </div>

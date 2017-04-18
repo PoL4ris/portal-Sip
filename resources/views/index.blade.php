@@ -130,7 +130,14 @@ Possible attributes
 <script src="/js/smart/build/appJs/app-11.js"></script>
 
 <script src="/js/main.js"></script>
+<script src="/js/silveripJs/menuController.js"></script>
+<script src="/js/silveripJs/buildingController.js"></script>
+<script src="/js/silveripJs/networkController.js"></script>
+<script src="/js/silveripJs/customerController.js"></script>
+<script src="/js/silveripJs/supportController.js"></script>
+<script src="/js/silveripJs/profileController.js"></script>
 <script src="/js/lib.js"></script>
+<script src="/js/silveripJs/globalTools.js"></script>
 <script src="/js/calendar.js"></script>
 <script src="/js/sidebar.js"></script>
 {{--<script src="/js/portal/cluster.js"></script>--}}

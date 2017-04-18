@@ -2,6 +2,8 @@
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: PUT, GET, POST");
 header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
+
+
 /*
 |--------------------------------------------------------------------------
 | Routes File
@@ -46,6 +48,10 @@ Route::group(['middleware' => 'web'], function () {
   Route::post('getAdminProfiles',       'AdminController@getAdminProfiles');
   Route::post('updateAdminUser',        'AdminController@updateAdminUser');
   Route::post('insertAdminUser',        'AdminController@insertAdminUser');
+  Route::post('getAdminApps',           'AdminController@getAdminApps');
+  Route::post('insertNewProfile',       'AdminController@insertNewProfile');
+  Route::post('getAppAccess',           'AdminController@getAppAccess');
+  Route::post('updateAdminProfile',     'AdminController@updateAdminProfile');
 //  Route::get('adminStatus',             'AdminController@adminStatus');
 //  Route::get('adminElements',           'AdminController@adminElements');
 //  Route::get('adminApps',               'AdminController@adminApps');

@@ -1,52 +1,20 @@
-<article class="col-sm-12 col-md-12 col-lg-12 p-b-lg bg-white white-shadow null-article p-t-lg admin-app">
-  <div class="row">
-  <div class="col-lg-12 m-b-lg">
-    <p class="btn btn-primary fa fa-plus pull-left" data-toggle="modal" data-target="#adminModal" ng-click="addNewUser()">  Add user</p>
-  </div>
+<div class="row">
 
-    <div class="col-lg-12">
-      <table id="myTable" class="tablesorter table table-striped " datatable="ng" dt-options="dtOptions" ng-if="adminUsers">
-        <thead>
-        <tr>
-          <!--<th>id</th>-->
-          <th>First Name</th>
-          <th>Last Name</th>
-          <th>Email</th>
-          <th>Password</th>
-          <!--<th>Social Token</th>-->
-          <th>Social Access</th>
-          <th>Avatar</th>
-          <th>Alias</th>
-          <th>Status</th>
-          <th>Profile/Rol</th>
-          <th>Created At</th>
-          <th>Updated At</th>
-          <th>Edit</th>
-
-        </tr>
-        </thead>
-        <tbody>
-        <tr ng-repeat="data in adminUsers">
-          <!--<td>{{data.id}}</td>-->
-          <td>{{data.first_name}}</td>
-          <td>{{data.last_name}}</td>
-          <td>{{data.email}}</td>
-          <td>********</td>
-          <!--<td>{{data.social_token}}</td>-->
-          <td>{{data.social_access == 1 ? 'Yes' : 'No'}}</td>
-          <td><img src="{{data.avatar?data.avatar:'/img/male.png'}}" alt="{{data.alias}}" title="{{data.alias}}"></td>
-          <td>{{data.alias}}</td>
-          <td>{{data.id_status == 1 ? 'Active' : 'Disabled'}}</td>
-          <td>{{data.id_profiles == 1 ? 'Admin' : 'Other'}}</td>
-          <td ng-init="cAtData = convertDate(data.created_at)" >{{cAtData | date : "MMM d, y h:mm a" }}</td>
-          <td ng-init="uAtData = convertDate(data.updated_at)" >{{uAtData | date : "MMM d, y h:mm a" }}</td>
-          <td><i class="btn btn-primary fa fa-pencil" ng-click="editUser()" data-toggle="modal" data-target="#adminModal"></i></td>
-        </tr>
-        </tbody>
-      </table>
+  <div class="sub-nav pull-left bg-white">
+    <div class="admin-sub-nav">
+      <p ng-click="setView(0)">Users</p>
+      <p ng-click="setView(1)">Profiles</p>
+      <p ng-click="setView(2)">Apps</p>
+      <!--<p ng-click="setView(3)">Access Apps</p>-->
     </div>
   </div>
-</article>
+
+  <article class="workspace white-shadow null-article admin-app pull-left p-t-lg bg-white">
+    <div ng-include="'/views/admin/users.html'" id="admin-users-include" ng-if="displayView == 'users'"></div>
+    <div ng-include="'/views/admin/profiles.html'" id="admin-profiles-include" ng-if="displayView == 'profiles'"></div>
+    <div ng-include="'/views/admin/apps.html'" id="admin-apps-include" ng-if="displayView == 'apps'"></div>
+  </article>
+</div>
 
 
 
@@ -56,7 +24,7 @@
 
 
 
-<!-- MODAL DE TICKET -->
+<!-- MODAL USERS-->
 <div class="modal fade" id="adminModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-ticket-size">
     <div class="modal-content">
@@ -150,7 +118,7 @@
     </div>
   </div>
 </div>
-<!-- END MODAL DE TICKET -->
+<!-- END MODAL USERS -->
 
 
 

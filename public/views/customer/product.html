@@ -41,10 +41,11 @@
                     ng-click="showConfirm(customerProduct.id, 'active')"
                     title="Active Service">
             </button>
-            <button ng-if="service.amount_owed != 0"
+            <a ng-if="service.amount_owed != 0"
                     class="btn fa fa-usd action-confirm btn-danger"
-                    title="Charge">
-            </button>
+                    title="Charge"
+                    ng-click="setInvoiceTab()">
+            </a>
           </td>
         </tr>
         </tbody>

@@ -1853,19 +1853,19 @@ app.controller('directiveController',               function ($scope, $http, $co
 })
 .directive('myViewUsers',                           function() {
   return {
-    templateUrl: '/views/admin/user.html',
+    templateUrl: '/views/admin/users.html',
     controller:'admin'
   };
 })
 .directive('myViewProfiles',                        function() {
   return {
-    templateUrl: '/views/admin/profile.html',
+    templateUrl: '/views/admin/profiles.html',
     controller: 'adminViewProfiles'
   };
 })
 .directive('myViewApps',                            function() {
   return {
-    templateUrl: '/views/admin/app.html',
+    templateUrl: '/views/admin/apps.html',
     controller: 'adminViewApps'
   };
 })
