@@ -10,7 +10,7 @@ use App\Extensions\BillingHelper;
 use App\Extensions\CiscoSwitch;
 use App\Extensions\DataMigrationUtils;
 use DB;
-use App\User;
+//use App\User;
 use App\Models\Customer;
 use App\Models\Ticket;
 use App\Models\CustomerProduct;
@@ -19,7 +19,7 @@ use App\Models\Address;
 use App\Models\BillingTransactionLog;
 use App\Models\Building\Building;
 use App\Models\Product;
-use App\Models\User as Users;
+use App\Models\User; // as Users;
 use App\Models\Port;
 use App\Models\NetworkNode;
 use App\Models\ContactType;
@@ -444,6 +444,13 @@ class TestController extends Controller
 
     public function generalTest(){
 
+        $user = User::find(2);
+        
+        
+        dd($user->accessApps);
+        
+        
+        
         $building = Building::find(19);
 
         $data = $building->load('customerAddresses.customer.openTickets')
