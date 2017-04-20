@@ -14,8 +14,6 @@ app.controller('adminController',                   function($scope, $http, cust
       $scope.adminUsers = response.data;
     });
 
-
-
   $scope.editUser             = function(){
     $scope.adminEditingUser = this.data;
   }
@@ -194,7 +192,6 @@ app.controller('adminController',                   function($scope, $http, cust
 
 
 
-
   $scope.setView              = function(id){
     //Views:
     //0 = Users
@@ -231,7 +228,7 @@ app.controller('adminAProfileACont',                function ($scope, $http){
 app.controller('warpolController',                  function($scope, $http){
 
 
-  $scope.warpolString = 'WarpolController con la  Santa Muerte';
+  $scope.warpolString = 'warpolController';
 
   var options = {
                   useEasing : true,
@@ -242,14 +239,14 @@ app.controller('warpolController',                  function($scope, $http){
                   suffix : ''
                 };
 
-  var demo = new CountUp("testCount", //Target
-                          0,          //Start Val
-                          3562,       //End Val
-                          0,          //Decimals -> optional
-                          2.5,        //Duration -> optional
-                          options     //Options  -> optional
-                         );
-  demo.start();
+//   var demo = new CountUp("testCount", //Target
+//                           0,          //Start Val
+//                           3562,       //End Val
+//                           0,          //Decimals -> optional
+//                           2.5,        //Duration -> optional
+//                           options     //Options  -> optional
+//                          );
+//   demo.start();
 
 
 
