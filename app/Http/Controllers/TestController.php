@@ -130,7 +130,7 @@ class TestController extends Controller
     public function supportTest()
     {
 
-        $warp = Building::with('neighborhood', 'contacts', 'properties')->find(28);
+//        $warp = Building::with('neighborhood', 'contacts', 'properties')->find(28);
 
 
       $data = Ticket
