@@ -4,7 +4,7 @@
     <div class="admin-sub-nav">
       <p ng-click="setView(0)">Users</p>
       <p ng-click="setView(1)">Profiles</p>
-      <p ng-click="setView(2)">Apps</p>
+      <!--<p ng-click="setView(2)">Apps</p>-->
       <!--<p ng-click="setView(3)">Access Apps</p>-->
     </div>
   </div>
@@ -12,7 +12,7 @@
   <article class="workspace white-shadow null-article admin-app pull-left p-t-lg bg-white">
     <div ng-include="'/views/admin/users.html'" id="admin-users-include" ng-if="displayView == 'users'"></div>
     <div ng-include="'/views/admin/profiles.html'" id="admin-profiles-include" ng-if="displayView == 'profiles'"></div>
-    <div ng-include="'/views/admin/apps.html'" id="admin-apps-include" ng-if="displayView == 'apps'"></div>
+    <!--<div ng-include="'/views/admin/apps.html'" id="admin-apps-include" ng-if="displayView == 'apps'"></div>-->
   </article>
 </div>
 

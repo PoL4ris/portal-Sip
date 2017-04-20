@@ -871,12 +871,13 @@ table.dataTable tbody tr {
 }
 .workspace {
   height: auto;
+  left: 200px;
   padding-bottom: 50px;
-  position: fixed;
-  right: 0;
-  width: calc(100% - 350px);
+  position: relative;
+  width: calc(100% - 200px);
 }
 
 #profile-table_length, #profile-table_filter{
   display: none ;
 }
+.admin-workspace{}
