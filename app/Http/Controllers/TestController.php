@@ -130,6 +130,43 @@ class TestController extends Controller
     public function supportTest()
     {
 
+
+
+      $data = Ticket
+//                    ::with('address', 'customer')->where('status', '!=', 'closed')
+                    ::join('address', 'address.id_customers', '=', 'tickets.id_customers')
+                    ->join('buildings', 'buildings.id', '=', 'address.id_buildings')
+//                    ->where('status', '!=', 'closed')
+                    ->where('status', '!=', 'closed')
+//                    ->groupBy('buildings.id')
+//                    ->count();
+//                      ->whereIn('id', [9,11,15,5,33,16,19,8,7,26,2,43,25,12,61,23,70,68,21])
+//                      ->where('id_buildings',28)
+//                      ->select('*')
+//                      ->select('*', 'customers.id as idCustomer', 'tickets.id as idTicket')
+//                      ->take(10)
+                      ->get();
+//                    ->select('tickets.address')
+//                    ->get(array('tickets.id', 'address.id'));
+//      $data = Building::with('address')->take(10)->get();
+
+
+
+
+
+//      $data->load('address');
+
+//      $queries = DB::getQueryLog();
+//      $last_query = end($queries);
+//      print '<pre>';
+//      print_r($queries);
+
+
+//      print($last_query['query']);
+//      dd($data->toArray());
+        dd($data);
+      die();
+
       dd(Auth::user());
 
       $warp = Building::with('neighborhood', 'contacts', 'properties')->find(28);

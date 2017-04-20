@@ -70,9 +70,15 @@ class MainController extends Controller
 
 //if (Auth::user()->id != x)
 
-//    return Auth::user()->id;
-    return Users::with('profile')
-                ->find(Auth::user()->id);
+  $result = Users::with('accessApps', 'accessApps.apps')->find(Auth::user()->id);
+  return $result;
+
+  print '<pre>';
+  dd($result->toArray());
+//  print_r($menuMaker->toArray());
+  die();
+
+    return Users::with('accessApps', 'accessApps.apps')->find(Auth::user()->id);
 
     return App::all();
   }
@@ -214,7 +220,9 @@ class MainController extends Controller
   }
 
   public function dummyRouteController(){
-    dd(Auth());
+    $data = array();
+    $data['open_tickets'] = Ticket::where('status','!=','closed')->count();
+    return $data;
   }
 
 }

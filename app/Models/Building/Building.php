@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Building extends Model
 {
     public function customer() {
-        return $this->hasMany('App\Models\Customer', 'id_buildings', 'id');
+        return $this->hasMany('App\Models\Customer', 'id', 'id_buildings');
     }
 
     public function address() {
@@ -39,5 +39,12 @@ class Building extends Model
     
     public function properties() {
         return $this->hasMany('App\Models\Building\BuildingPropertyValue', 'id_buildings');
+    }
+    public function openTickets() {//NOT WORKING
+//      return $this->hasManyThrough('App\Models\Ticket', 'id_customers', 'id', 'App\Models\Customer');
+      return $this->hasManyThrough('App\Models\Ticket','App\Models\Address',
+                                        'id_buildings', 'id_customers', 'BID')
+        ->where('tickets.status', '!=', 'closed');
+//        ->where('address.id_buildings', intval($this->attributes));
     }
 }

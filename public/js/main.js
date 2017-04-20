@@ -181,7 +181,6 @@ app.factory('supportService', function() {
     exist : true
   };
 });
-
 app.factory('adminService', function() {
   return {
     existeToken : $('#auth-user').attr('tmpTokenTest')

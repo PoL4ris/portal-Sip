@@ -4,8 +4,10 @@ Warpol
 
 <div ng-controller="menuController">
 
-  <pre>
-    {{SiteMenu | json}}
-  </pre>
+
+    <div ng-repeat=" item in SiteMenu.access_apps">
+      {{item.apps.name}}
+    </div>
+
 
 </div>

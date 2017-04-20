@@ -5,9 +5,9 @@
   </label>
 </form>
 
-<div class="ticket-search-table-results" ng-if="genericSearchResult">
+<div class="ticket-search-table-results" ng-if="genericTicketSearchResult">
   <div class="search-result anim" >
-    <p ng-repeat="result in genericSearchResult"
+    <p ng-repeat="result in genericTicketSearchResult"
        ng-click="displayTicketResume(result.idTicket, result.idCustomer); cleanTicketSearch()"
        data-toggle="modal"
        data-target="#ticketModal">

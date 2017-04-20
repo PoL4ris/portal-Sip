@@ -18,8 +18,11 @@ class Address extends Model
       return $this->belongsTo('App\Models\Ticket', 'id_customers', 'id_customers', 'App\Models\Customer');
     }
 
-    public function buildings() {
+    public function tickets() {
+      return $this->hasMany('App\Models\Ticket', 'id_customers', 'id_buildings')->where('status', '!=', 'closed');
+    }
 
+    public function buildings() {
       return $this->belongsTo('App\Models\Building\Building', 'id_buildings');
     }
     public function customers() {

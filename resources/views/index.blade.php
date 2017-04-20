@@ -129,6 +129,8 @@ Possible attributes
 <script src="/js/smart/build/appJs/app-10.js"></script>
 <script src="/js/smart/build/appJs/app-11.js"></script>
 
+<script src="/js/countUp.js"></script>
+
 <script src="/js/main.js"></script>
 <script src="/js/silveripJs/menuController.js"></script>
 <script src="/js/silveripJs/buildingController.js"></script>

@@ -1,19 +1,21 @@
+<!--TABLE LOAD-->
 <div class="container text-center" ng-if="!supportData">
   <i class="fa fa-gear loading-anim f-size-25 p-t-lg"></i>
 </div>
+<!--END TABLE LOAD-->
 
 <!--TICKET LIST-->
 <section ng-if="supportData" class="col-sm-12 col-md-12 col-lg-12 bg-white white-shadow m-t-lg p-b-lg support-table-grid">
   <div class="row">
 
+    <!--SUPPORT ACTIONS-->
     <div class="col-lg-12 m-t-lg ">
 
       <div class="btn btn-primary m-r-lg support-status" ng-click="getAllOpenTickets($event)">All Open Tickets</div>
       <div class="btn btn-primary m-r-lg support-status support-active" ng-click="getNoneBillingTickets($event)">Non-Billing Tickets</div>
       <div class="btn btn-primary m-r-lg support-status" ng-click="getBillingTickets($event)">Billing Tickets</div>
       <div class="btn btn-primary m-r-lg support-status" ng-click="getMyTickets($event)">My Tickets</div>
-      <div class="btn btn-success m-r-lg"><i class="fa fa-refresh"></i></div>
-
+      <div class="btn btn-success m-r-lg" ng-click="refreshSupportContent()"><i class="fa fa-refresh"></i></div>
       <img src="/img/loading.gif" alt="" class="loading-gif-support no-display">
 
       <div class="ticket-timing-results block-table-inline pull-right">
@@ -31,6 +33,7 @@
 
     </div>
 
+    <!--SUPPORT TABLE-->
     <article class="col-lg-12 tickets-history-table m-t-lg table-container">
       <table id="myTable" class="tablesorter table table-striped" datatable="ng" dt-options="dtOptions">
         <thead>
@@ -85,7 +88,6 @@
   </div>
 </section>
 <!--END TICKET LIST-->
-
 
 <!-- MODAL DE TICKET -->
 <div class="modal fade" id="ticketModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">

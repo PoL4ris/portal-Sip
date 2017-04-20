@@ -163,7 +163,7 @@ app.controller('adminController',                   function($scope, $http, cust
   };
   $scope.getAdminProfiles();
 });
-app.controller('adminPAppACont', function ($scope, $http){
+app.controller('adminPAppACont',                    function ($scope, $http){
 
   $http.post("getAppAccess", {params : {'id_profiles' : $scope.editProfileData.id, 'id_apps' : $scope.data.id}})
     .then(function (response) {
@@ -175,21 +175,36 @@ app.controller('adminPAppACont', function ($scope, $http){
 
 app.controller('warpolController',                  function($scope, $http){
 
-  console.log('WarpolController con la  Santa Muerte');
 
-  $scope.getGenericSearch = function (){
+  $scope.warpolString = 'WarpolController con la  Santa Muerte';
 
-    console.log(this.genericSearch);
+  var options = {
+                  useEasing : true,
+                  useGrouping : true,
+                  separator : ',',
+                  decimal : '.',
+                  prefix : '',
+                  suffix : ''
+                };
 
-    var query = {'querySearch' : this.genericSearch};
+  var demo = new CountUp("testCount", //Target
+                          0,          //Start Val
+                          3562,       //End Val
+                          0,          //Decimals -> optional
+                          2.5,        //Duration -> optional
+                          options     //Options  -> optional
+                         );
+  demo.start();
 
-    $http.get("getTicketsSearch", {params:query})
-      .then(function (response) {
-        $scope.genericSearchResult = response.data;
-      });
 
-    return;
-  }
+
+  $http.get("dummyRouteController")
+    .then(function (response) {
+      console.log(response.data);
+      var data = response.data;
+      new CountUp('testCountdos', 0, data.open_tickets, 0, 3).start();
+
+    });
 
 
 });
