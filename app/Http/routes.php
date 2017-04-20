@@ -52,6 +52,8 @@ Route::group(['middleware' => 'web'], function () {
   Route::post('insertNewProfile',       'AdminController@insertNewProfile');
   Route::post('getAppAccess',           'AdminController@getAppAccess');
   Route::post('updateAdminProfile',     'AdminController@updateAdminProfile');
+  Route::post('insertNewApp',           'AdminController@insertNewApp');
+  Route::post('updateAdminApp',         'AdminController@updateAdminApp');
 //  Route::get('adminStatus',             'AdminController@adminStatus');
 //  Route::get('adminElements',           'AdminController@adminElements');
 //  Route::get('adminApps',               'AdminController@adminApps');

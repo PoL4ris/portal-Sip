@@ -23,22 +23,23 @@ class AdminController extends Controller
   }
 
   //FUNCTIONS
+  public function getProfileInfo()
+  {
+    return User::find(Auth::user()->id);
+  }
+  public function updateProfileInfo(Request $request)
+  {
+    $user = User::find(Auth::user()->id);
+    $user->password = bcrypt($request->password);
+    $user->save();
+    return 'OK';
+  }
 
   public function getAdminUsers(Request $request){
-
-//    if ($request->params['token'] == csrf_token())
-//dd($request);
-      return User::get();
-//    else
-//    {
-//      print 'ERROR';
-//      return;//with error or something...
-//    }
+    return User::get();
   }
   public function getAdminProfiles(Request $request){
-
       return Profile::with('accessApps')->get();
-
   }
   public function updateAdminUser(Request $request){
     if ($request->params['token'] == csrf_token()){
@@ -149,8 +150,57 @@ class AdminController extends Controller
     else
       return 'ERROR';
   }
+  public function insertNewApp(Request $request){
+
+    $data = $request->params['objects'];
+
+    $app = new App;
+    $app->name = $data['app_name'];
+    $app->icon = $data['icon'];
+    $app->url  = $data['url'];
+    $app->save();
+
+    unset($data['app_name'], $data['icon'], $data['url']);
+
+    $aApps = new AccessApp;
+
+    foreach($data as $index => $item)
+    {
+      $aApps = new AccessApp;
+      $aApps->id_apps = $app->id;
+      $aApps->id_profiles = $index;
+      $aApps->save();
+    }
+
+    return App::get();
+  }
+  public function updateAdminApp(Request $request){
+    $data = $request->params['objects'];
+
+    $app = App::find($data['id_apps']);
+    $app->name = $data['app_name'];
+    $app->name = $data['icon'];
+    $app->name = $data['url'];
+    $app->save();
+
+    unset($data['app_name'], $data['icon'], $data['url']);
+
+    AccessApp::where('id_apps', $data['id_apps'])->delete();
+
+    $aApps = new AccessApp;
+
+    foreach($data as $index => $item)
+    {
+      $aApps = new AccessApp;
+      $aApps->id_apps = $data['id_apps'];
+      $aApps->id_profiles = $index ;
+      $aApps->save();
+    }
+    return App::get();
+  }
 
 
+  // Verify use of the next functions... Maybe old.
   public function admin()
   {
     return DB::select('select * from users limit 10');
@@ -204,17 +254,8 @@ class AdminController extends Controller
     return DB::select('select * from access_app_elements');
   }
 
-  public function getProfileInfo()
-  {
-    return User::find(Auth::user()->id);
-  }
-  public function updateProfileInfo(Request $request)
-  {
-    $user = User::find(Auth::user()->id);
-    $user->password = bcrypt($request->password);
-    $user->save();
-    return 'OK';
-  }
+
+
 
 
 

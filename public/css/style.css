@@ -881,3 +881,9 @@ table.dataTable tbody tr {
   display: none ;
 }
 .admin-workspace{}
+.icon-preview{
+  color: #333;
+  font-size: 20px;
+  position: relative;
+  top: -6px;
+}

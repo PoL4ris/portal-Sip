@@ -91,12 +91,6 @@ app.controller('adminController',                   function($scope, $http, cust
         $scope.adminProfiles = response.data;
       });
   }
-  $scope.getAdminApps         = function (){
-    $http.post("getAdminApps", {params:{'token':adminService.existeToken}})
-      .then(function (response) {
-        $scope.adminApps = response.data;
-      });
-  }
   $scope.addNewProfile        = function(){
     $scope.getAdminApps();
     $scope.editProfileData = null;
@@ -123,7 +117,7 @@ app.controller('adminController',                   function($scope, $http, cust
         $scope.profileCancel();
       });
   }
-  $scope.getAppAccess         = function (profileId, appId) {
+  $scope.getAppAccess         = function(profileId, appId) {
     $http.post("getAppAccess", {params : {'id_profiles' : profileId, 'id_apps' : appId}})
       .then(function (response) {
         $scope.dataCheck = response.data;
@@ -145,23 +139,79 @@ app.controller('adminController',                   function($scope, $http, cust
         $scope.profileCancel();
       });
   }
+  //Apps
+  $scope.getAdminApps         = function(){
+    $http.post("getAdminApps", {params:{'token':adminService.existeToken}})
+      .then(function (response) {
+        $scope.adminApps = response.data;
+      });
+  }
+  $scope.addNewApp            = function(){
+    $scope.getAdminProfiles();
+    $scope.editAppData = null;
+    $scope.newApp = true;
+  };
+  $scope.appCancel            = function(){
+    $scope.newApp = false;
+    $scope.editAppData = false;
+  };
+  $scope.setIconApp           = function(){
+    $scope.selectedIcon = this.selectedIcon;
+  };
+  $scope.editApp              = function(){
+    $scope.getAdminProfiles();
+    $scope.newApp = null;
+    $scope.editAppData = this.data;
+  };
+  $scope.submitNewApp         = function(){
+    var objects = getFormValues('admin-app-form');
+
+    if(objects.app_name.length === 0 || objects.icon.length === 0 || objects.url.length === 0)
+      return;
+
+    $http.post("insertNewApp", {params:{'objects' : objects}})
+      .then(function (response) {
+        $scope.adminApps = response.data;
+        $scope.appCancel();
+      });
+  };
+  $scope.updateAdminApp       = function(){
+
+    var objects = getFormValues('admin-app-form');
+
+    if(objects.app_name.length === 0 || objects.url.length === 0)
+      return;
+
+    objects.id_apps = $scope.editAppData.id
+
+    $http.post("updateAdminApp", {params:{'objects' : objects}})
+      .then(function (response) {
+
+        $scope.adminApps = response.data;
+        $scope.appCancel();
+      });
+  }
 
 
 
-  $scope.setView          = function(id){
-  //Views:
-  //0 = Users
-  //1 = Profiles
-  //2 = Apps
-  //3 = Access Apps
-  var views = {'0' : 'users',
-               '1' : 'profiles',
-               '2' : 'apps',
-               '3' : 'acces_apps',
-              }
-  $scope.displayView = views[id];
+
+  $scope.setView              = function(id){
+    //Views:
+    //0 = Users
+    //1 = Profiles
+    //2 = Apps
+    //3 = Access Apps
+    var views = {'0' : 'users',
+                 '1' : 'profiles',
+                 '2' : 'apps',
+                 '3' : 'acces_apps',
+                }
+    $scope.displayView = views[id];
   };
   $scope.getAdminProfiles();
+  $scope.getAdminApps();
+  $scope.fontAwesomeArray = fontAwesomeArray;
+
 });
 app.controller('adminPAppACont',                    function ($scope, $http){
 
@@ -169,7 +219,12 @@ app.controller('adminPAppACont',                    function ($scope, $http){
     .then(function (response) {
       $scope.dataCheck = response.data;
     });
-
+});
+app.controller('adminAProfileACont',                function ($scope, $http){
+  $http.post("getAppAccess", {params : {'id_profiles' : $scope.data.id, 'id_apps' : $scope.editAppData.id}})
+    .then(function (response) {
+      $scope.dataCheck = response.data;
+    });
 });
 
 
