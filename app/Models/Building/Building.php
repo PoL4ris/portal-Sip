@@ -7,17 +7,24 @@ use Illuminate\Database\Eloquent\Model;
 
 class Building extends Model
 {
-    public function customer() {
-        return $this->hasMany('App\Models\Customer', 'id', 'id_buildings');
+    public function customers() {
+        return $this->hasMany('App\Models\Customer', 'id_buildings', 'id');
     }
 
     public function address() {
         return $this->hasMany('App\Models\Address', 'id_buildings', 'id')
             ->whereNull('id_customers');
     }
+
+    public function customerAddresses() {
+        return $this->hasMany('App\Models\Address', 'id_buildings', 'id')
+            ->whereNotNull('id_customers');
+    }
+
     public function neighborhood() {
         return $this->hasOne('App\Models\Neighborhood', 'id', 'id_neighborhoods');
     }
+
     public function contacts() {
         return $this->hasMany('App\Models\BuildingContact', 'id_buildings', 'id');
     }
@@ -39,12 +46,5 @@ class Building extends Model
     
     public function properties() {
         return $this->hasMany('App\Models\Building\BuildingPropertyValue', 'id_buildings');
-    }
-    public function openTickets() {//NOT WORKING
-//      return $this->hasManyThrough('App\Models\Ticket', 'id_customers', 'id', 'App\Models\Customer');
-      return $this->hasManyThrough('App\Models\Ticket','App\Models\Address',
-                                        'id_buildings', 'id_customers', 'BID')
-        ->where('tickets.status', '!=', 'closed');
-//        ->where('address.id_buildings', intval($this->attributes));
     }
 }
