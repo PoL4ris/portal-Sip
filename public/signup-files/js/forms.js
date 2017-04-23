@@ -117,8 +117,14 @@ jQuery(function ($) {
                     alert('Error.\nParsing JSON Request failed:\nstatus: ' + x.status + '\nerror: ' + e + '\nresponseText: ' + x.responseText);
                 } else if (e == 'timeout') {
                     alert('Request Time out.');
+                } else if (x.status == 422) {
+
+//                    dump(x.responseText);
+                    displayValidationErrors(x.responseText)
+
                 } else {
-                    alert('Unknow Error.\n' + x.responseText);
+                    displayValidationErrors(x.responseText)
+//                    alert('Unknow Error.\n' + x.responseText);
                 }
             }
         });
@@ -159,7 +165,7 @@ jQuery(function ($) {
 
         $('.noRouterContainer').click(function () {
             var self = $(this);
-            var routerInputBox = $('input#wirelessrouter');
+            var routerInputBox = $('input#wireless_router');
             var WirelessRouterIH = $('#WirelessRouterIH');
             var WirelessRouterIA = $('#WirelessRouterIA');
 
@@ -435,14 +441,14 @@ jQuery(function ($) {
 
         function updatePaymentView() {
 
-            var servicePlanInputBox = $('input#serviceplan');
-            var routerInputBox = $('input#wirelessrouter');
+            var servicePlanInputBox = $('input#service_plan');
+            var routerInputBox = $('input#wireless_router');
             var voipInputBox = $('input#voip');
             var voipNumSelectBox = $('select#voipnumber option:selected');
             var voipFeatInputBox = $('input#voipfeatures');
-            var totalChargesInputBox = $('input#totalcharges');
-            var recurringChargeInputBox = $('input#recurringcharges');
-            var delayedChargeInputBox = $('input#delayedcharges');
+            var totalChargesInputBox = $('input#total_charges');
+            var recurringChargeInputBox = $('input#recurring_charges');
+            var delayedChargeInputBox = $('input#delayed_charges');
             var inetServiceCharge = 0;
             var annualInetServiceCharge = 0;
             var recurringInetServiceCharge = 0;
@@ -463,7 +469,7 @@ jQuery(function ($) {
             var voipCredit = 0;
             var voipFeatCharge = 0;
             var totalRecurringCharges = 0;
-            var totalRecurringInputBox = $('#totalRecurringChargeBox');
+            var totalRecurringInputBox = $('#total_recurring_charge_box');
 
             var selectedPlan = '';
 
@@ -687,7 +693,7 @@ jQuery(function ($) {
             var payMonthlyButton = $('#monthly-pay');
             var payAnnuallyButton = $('#annual-pay');
             var payOptMessage = $('#paymentOptionMessage');
-            var servicePlanInputBox = $('input#serviceplan');
+            var servicePlanInputBox = $('input#service_plan');
             //                    var servicePlanCycleInputBox = $('servicePlan-cycle');
             //                    var servicePlanSpeedInputBox = $('servicePlan-speed');
             var inetServiceReceiptIH = $('#serviceChargeUpgradeIH');
@@ -730,7 +736,7 @@ jQuery(function ($) {
             var payMonthlyButton = $('#monthly-pay');
             var payAnnuallyButton = $('#annual-pay');
             var payOptMessage = $('#paymentOptionMessage');
-            var servicePlanInputBox = $('input#serviceplan');
+            var servicePlanInputBox = $('input#service_plan');
             var servicePlanCycleInputBox = $('servicePlan-cycle');
             var servicePlanSpeedInputBox = $('servicePlan-speed');
             var inetServiceReceiptIH = $('#serviceChargeUpgradeIH');
@@ -772,7 +778,7 @@ jQuery(function ($) {
             var self = $(this);
             //                    var payMonthlyButton = $('#monthly-pay');
             var payAnnuallyButton = $('#annual-pay');
-            var servicePlanInputBox = $('input#serviceplan');
+            var servicePlanInputBox = $('input#service_plan');
             //                    var servicePlanCycleInputBox = $('servicePlan-cycle');
             //                    var servicePlanSpeedInputBox = $('servicePlan-speed');
             //                    var totChargesBox = $('.totalCharges');
@@ -792,7 +798,7 @@ jQuery(function ($) {
             var self = $(this);
             var payMonthlyButton = $('#monthly-pay');
             //                    var payAnnuallyButton = $('#annual-pay');
-            var servicePlanInputBox = $('input#serviceplan');
+            var servicePlanInputBox = $('input#service_plan');
             //                    var servicePlanCycleInputBox = $('servicePlan-cycle');
             //                    var totChargesBox = $('.totalCharges');
 
@@ -817,7 +823,7 @@ jQuery(function ($) {
         // $('#formContainer').fadeIn();
 
         // For unformatted Address select fields
-        var locAddress = $('#streetaddress');
+        var locAddress = $('#street_address');
         //locAddress.hide();
         locAddress.change(function () {
             var locAddressVal = locAddress.val();
@@ -858,7 +864,7 @@ jQuery(function ($) {
 
         var serializedForm = registrationForm.serialize();
 
-        $.post('./index.php', serializedForm, function (msg) {
+        $.post('/register', serializedForm, function (msg) {
             submitFlag = false;
             overlay.hide();
             $('span.errorIcon').remove();
@@ -922,8 +928,11 @@ jQuery(function ($) {
                 });
             }
             else {
-                //                            dump(msg);
-                alert("Error: We encountered a browser error.\n\nPlease try a different browser (i.e. Firefox).\n\nIf you continue to experience issues please contact us at 312-780-0813.");
+
+//                dump(msg);
+
+                $('body').html(msg);
+//                alert("Error: We encountered a browser error.\n\nPlease try a different browser (i.e. Firefox).\n\nIf you continue to experience issues please contact us at 312-600-3800.");
                 //                          alert ('Error: Bad response received: '+dump(msg));
                 //                          alert ('Error: Bad response received');
             }
@@ -933,10 +942,48 @@ jQuery(function ($) {
         return false;
     }
 
+    function displayValidationErrors(errorInJson){
+
+        overlay.hide();
+        msg = JSON.parse(errorInJson);
+        $.each(msg, function (k, v) {
+
+            var errorIcon = $('<span></span>')
+                    .addClass('errorIcon');
+            //                                                        ,{className:'errorIcon'});
+            var errorTip = $('<span></span>')
+                    .addClass('errorTip')
+                    //                                                        .attr({ text : v })
+                    .html(v[0])
+                    .hide()
+                    .appendTo(errorIcon);
+            //                                                        ,{className:'errorTip',text:v}).hide().appendTo(errorIcon);
+
+            errorIcon.hover(function () {
+                errorTip.stop().fadeIn(function () {
+                    errorTip.css('opacity', 1);
+                });
+            }, function () {
+                errorTip.stop().fadeOut('slow', function () {
+                    errorTip.hide().css('opacity', 1);
+                });
+            });
+
+            registrationForm.find('[name=' + k + ']').closest('.formRow').append(errorIcon);
+
+            if ($(window).width() - errorIcon.offset().left > 240) {
+                errorTip.css('left', 30);
+            }
+            else {
+                errorTip.css('right', 30);
+            }
+        });
+    }
+
     function updateUnitList(address) {
         $unitDropDown = $('#unit');
         $unitDropDown.hide();
-        $.get('/getUnitNumbers', {
+        $.get('/getUnitNumbersAjax', {
             'address': address
         }, function (output) {
             $unitDropDown.html(output);

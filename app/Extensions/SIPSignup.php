@@ -272,9 +272,20 @@ class SIPSignup {
 
         // sort the info table by its key (speed)
         ksort($servicePlanInfo);
-
         return $servicePlanInfo;
-//        return $products;
+    }
+
+     public function getBuildingActivationFees($addressId){
+
+        $address = Address::find($addressId);
+        $building = $address->building;
+
+        // Get all the building products
+        $buildingProducts = $building->load('buildingProducts.product')->buildingProducts;
+
+         // Find activation fees if any
+        $activationFees = $buildingProducts->pluck('product')->where('id_types', config('const.type.activation_fee'));
+        return $activationFees;
     }
 
 

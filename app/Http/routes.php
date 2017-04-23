@@ -169,10 +169,12 @@ Route::group(['middleware' => 'web'], function () {
         dd('There is nothing here.');
     });
 
-    Route::get('splash',  'SignupController@getSplashPage');
-    Route::post('signup', 'SignupController@getWelcomePage');
-    Route::get('form', 'SignupController@getSignupForm');
-    Route::get('getUnitNumbers', 'SignupController@getUnitNumbers');
+    Route::get('splash',                   'SignupController@getSplashPage');
+    Route::post('signup',                  'SignupController@getWelcomePage');
+    Route::get('form',                     'SignupController@getSignupForm');
+    Route::get('getUnitNumbersAjax',       'SignupController@getUnitNumbersAjax');
+    Route::post('register',                'SignupController@validateSignupForm');
+
 
 
     Route::get('dummyRouteController',    'MainController@dummyRouteController');//new
