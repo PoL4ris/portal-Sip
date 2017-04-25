@@ -172,9 +172,12 @@ Route::group(['middleware' => 'web'], function () {
   //LOGS
   Route::get('getCustomerLog',          'CustomerController@getCustomerLog');//new
 
-
-
+  //DUMMYCONTROLLER
   Route::get('dummyRouteController',    'MainController@dummyRouteController');//new
+  Route::get('email/template_support_new_ticket',    'TestController@supportTest');//new
+
+  //MAILS
+  Route::get('sendCustomerMail',        'MailController@sendCustomerMail');//new
 
   //SUPPORT
   Route::get('updateTicketDetails',     'SupportController@updateTicketData');

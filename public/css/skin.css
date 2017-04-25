@@ -84,6 +84,7 @@ h2 {
 }
 #content{
   width: 100%;
+  padding: 0 14px 10px;
 }
 .hidden-menu #main {
   margin-left: 0;

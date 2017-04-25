@@ -146,17 +146,25 @@ app.controller('customerController',                function ($scope, $http, $st
 
   };
   $scope.submitNewTicketForm        = function (){
+    $('#create-customer-ticket').attr('disabled', true);
+
 
     var infoData = getFormValues('new-ct-form');
 
-    if(infoData.id_reasons == '' || infoData.status == '' || infoData.comment == '')
+    if(infoData.id_reasons == '' || infoData.status == '' || infoData.comment == ''){
+      $('#create-customer-ticket').removeAttr('disabled');
       return;
+    }
 
-    infoData['id_customers'] = $scope.customerData.id;
+    $scope.loadingGif = true;
+
+    infoData['id_customers'] = $scope.idCustomer;
 
     $http.get("insertCustomerTicket", {params:infoData})
       .then(function (response) {
         if(response.data == 'OK'){
+          $('#create-customer-ticket').removeAttr('disabled');
+          $scope.loadingGif = false;
           $.smallBox({
             title: "New Ticket Created!",
             content: "<i class='fa fa-clock-o'></i> <i>2 seconds ago...</i>",
@@ -171,7 +179,7 @@ app.controller('customerController',                function ($scope, $http, $st
   $scope.validate                   = function (value, table, field) {
     var data = {};
     data[field] = value;
-    data['id_customers'] = $scope.customerData.id;
+    data['id_customers'] = $scope.idCustomer;
 
     $http.get("update" + table + "Table", {params:data})
       .then(function (response) {
@@ -248,7 +256,7 @@ app.controller('customerController',                function ($scope, $http, $st
     alert('disabled action.');
 
     var infoData = getFormValues('new-cct-form');
-    infoData['id_customers'] = $scope.customerData.id;
+    infoData['id_customers'] = $scope.idCustomer;
 
     console.log(infoData);
     return;
@@ -792,7 +800,7 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http){
   }
   //OLD THING
   $scope.open = function (){
-    $scope.customerId = $scope.customerData.id;
+    $scope.customerId = $scope.idCustomer;
 
     var modalInstance = $uibModal.open(
       {
@@ -897,7 +905,7 @@ app.controller('customerServicesController',        function ($scope, $http){
     });
 
   $scope.cSrvCrlFun       = function (){
-    $http.get("getCustomerServices", {params:{'id':$scope.customerData.id}})
+    $http.get("getCustomerServices", {params:{'id':$scope.idCustomer}})
       .then(function (response) {
         $scope.customerServices = response.data;
       });

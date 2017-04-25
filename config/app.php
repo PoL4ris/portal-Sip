@@ -167,6 +167,8 @@ return [
     
         // Custom activity logger
         App\Providers\ActivityLogsServiceProvider::class,
+        // Mail Sender
+        App\Providers\SendMailProvider::class,
 
         //CSS inline
         Fedeisas\LaravelMailCssInliner\LaravelMailCssInlinerServiceProvider::class,
@@ -221,6 +223,7 @@ return [
         //Social thing
         'Socialite' => Laravel\Socialite\Facades\Socialite::class,
         'ActivityLogs' => App\Extensions\Facades\ActivityLogs::class,
+        'SendMail' => App\Extensions\Facades\SendMail::class,
 
     ],
 

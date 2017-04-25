@@ -815,15 +815,14 @@ table.dataTable tbody tr {
   background: white none repeat scroll 0 0;
   margin-bottom: 0;
   margin-left: -14px;
-  margin-right: -15px;
-  padding-top: 0;
+  margin-right: -30px;
   width: 200px;
 }
 .bld-workspace article {
 }
 .bld-filters-sub-nav {
   background: #f8f8f8 none repeat scroll 0 0;
-  padding: 0 5px 5px;
+  padding: 20px 5px 5px;
 }
 .search-subnav-bld {
   margin-bottom: 15px;

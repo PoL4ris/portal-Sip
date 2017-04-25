@@ -129,13 +129,37 @@ class TestController extends Controller
 
     public function supportTest()
     {
+      $ticketData = Ticket::with('customer', 'address', 'reason', 'contacts', 'user')->find(28709);
+    return view('email.template_support_new_ticket', ['data'=>$ticketData]);
+
+    print '<pre>';
+    dd($ticketData = Ticket::with('customer', 'address', 'reason', 'contacts', 'user')->find(28707)->toArray());
+    die();
+
+
+/* Dashboadr tests
+
+
 //    ticket->Customers->address->Building
-      $tickets = Ticket::find(25292);
-      $data = $tickets->load('customer');
-//              ->customer;
-//              ->pluck('customer');
+      $tickets = Ticket::
+                         where('status', '!=', 'closed')
+                         ->
+                         get();
+//                         find(25292);
+      $data = $tickets->load('customer.address.buildings')
+//              ->buildings;
+              ->pluck('customer', 'id_customers')
+              ->pluck('address', 'id');
+//              ->pluck('buildings');
+//              ->groupBy('id_buildings');
+//              ->count();
+//              ->filter(function ($value, $key) {
+//                return count($value) > 0;
+//                return count($value) > 0;
+//              });
       dd($data);
 
+      $building = Building::find(19);
       $data = $building->load('customerAddresses.customer.openTickets')
         ->customerAddresses
         ->pluck('customer')
@@ -164,6 +188,9 @@ class TestController extends Controller
 
 
         dd($data);
+
+
+        */
 
 
 //MAIL
