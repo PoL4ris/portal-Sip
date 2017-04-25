@@ -33,8 +33,8 @@ class NetworkController extends Controller
     private $devModeRouterIP;
 
     public function __construct(){
-        $this->theme = 'luna';
-        DB::connection()->enableQueryLog();
+//        $this->theme = 'luna';
+//        DB::connection()->enableQueryLog();
         $this->readCommunity = config('netmgmt.cisco.read');
         $this->writeCommunity = config('netmgmt.cisco.write');
         $this->mtikusername = config('netmgmt.mikrotik.username');

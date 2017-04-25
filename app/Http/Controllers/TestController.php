@@ -6,6 +6,7 @@ use App\Models\TicketHistory;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Extensions\SIPBilling;
+use App\Extensions\SIPSignup;
 use App\Extensions\BillingHelper;
 use App\Extensions\CiscoSwitch;
 use App\Extensions\DataMigrationUtils;
@@ -170,22 +171,19 @@ class TestController extends Controller
         ->flatten();
 
 
+        $warp = Building::with('neighborhood', 'contacts', 'properties')->find(28);
 
-      dd($data);
+        print '<pre>';
+        dd($warp->toArray());
+        die();
+        return;
 
+        $idList = array();
+        $bldID = Customer::with('address')->find($request->id)->address->id_buildings;
+        $products = Building::with('products')->find($bldID)->products->toArray();
 
-      $building = Building::find(19);
-
-      $data = $building->load('customerAddresses.customer.openTickets')
-        ->customerAddresses
-        ->pluck('customer')
-        ->pluck('openTickets', 'id')
-        ->filter(function ($value, $key) {
-          return count($value) > 0;
-        })
-        ->flatten();
-
-
+        foreach($products as $x => $idS)
+            $idList[$x] = $idS['id_products'];
 
         dd($data);
 
@@ -194,6 +192,32 @@ class TestController extends Controller
 
 
 //MAIL
+
+
+        print '<pre>';
+        dd(Auth());
+        die();
+
+
+        $warpol = Customer::with(
+            'addresses',
+            'contacts',
+            'type',
+            'address.buildings',
+            'address.buildings.neighborhood',
+            'status',
+            'status.type',
+            'openTickets',
+            'log',
+            'log.user')->find(1598);
+
+        print '<pre>';
+        dd($warpol->toArray());
+        die();
+
+
+
+
 
         $customer  = Customer::with('address')->find(501);
         $address   = $customer->address;
@@ -421,30 +445,56 @@ class TestController extends Controller
     }
 
     public function generalTest(){
+        
+        
+        $port = Port::find(5237);
+        dd($port->customers);
 
-        $user = User::find(2);
-        
-        
-        dd($user->accessApps);
-        
-        
-        
-        $building = Building::find(19);
 
-        $data = $building->load('customerAddresses.customer.openTickets')
-            ->customerAddresses
-            ->pluck('customer')
-            //            ->take(4);
-            ->pluck('openTickets', 'id')
-            ->filter(function ($value, $key) {
-                return count($value) > 0;
-            })
-            ->flatten();
 
-        dd($data);
 
-        //        $switch = new CiscoSwitch(['readCommunity' => config('netmgmt.cisco.read'),
-        //                                'writeCommunity' => config('netmgmt.cisco.write')]);
+
+        $customer = Customer::find(13897);
+        dd($customer->ports);
+
+
+        
+        
+
+
+        $building = Building::find(81);
+
+        $address = $building->address->first();
+
+        $singupUtil = new SIPSignup();
+        $data = $singupUtil->getBuildingActivationFees($address->id);
+
+dd($data);
+
+
+        $myProductPropertyValues = $building->load('buildingProducts.product.propertyValues');
+
+        dd($myProductPropertyValues->buildingProducts->pluck('product')); //->pluck('propertyValues'));
+
+        $products;
+        $building->load(['buildingProducts.product' => function ($q) use ( &$products ) {
+            $products = $q->with('propertyValues')->get(); //->unique();
+        }]);
+
+        dd($products);
+
+//
+//
+//        $testArray = array(
+//            '13253' => ['101','102','103','104','105','106','107','108','114','115','116','117','118','119','120','121','122','123','124','201','202','203','204','205','206','207','209','210','214','215','216','217','218','219','220','221','222','223','224','225','226','301','302','303','304','305','306','311','312','313','314','315','316','317','318','319','320','321','322','323','324','325','326','401','402','403','404','405','406','414','415','416','417','418','419','420','421','422','423','424','425','426','501','502','503','504','505','506','514','515','516','517','518','519','520','521','522','523','524','525','526','614','615','616','617','618','619','620','621','622','623','624','625','626','627','714','715','720','721','722','727'],
+//            '13420' => ['101','102','103','104','105','106','107','108','114','115','116','117','118','119','120','121','122','123','124','201','202','203','204','205','206','207','209','210','214','215','216','217','218','219','220','221','222','223','224','225','226','301','302','303','304','305','306','311','312','313','314','315','316','317','318','319','320','321','322','323','324','325','326','401','402','403','404','405','406','414','415','416','417','418','419','420','421','422','423','424','425','426','501','502','503','504','505','506','514','515','516','517','518','519','520','521','522','523','524','525','526','614','615','616','617','618','619','620','621','622','623','624','625','626','627','714','715','720','721','722','727']);
+//
+//        dd(json_encode($testArray));
+//
+//
+//        $switch = new CiscoSwitch(['readCommunity' => config('netmgmt.cisco.read'),
+//                                   'writeCommunity' => config('netmgmt.cisco.write')]);
+
 
         //        error_reporting(0);
         //        track_errors(true);

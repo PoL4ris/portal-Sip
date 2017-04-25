@@ -28,8 +28,8 @@ class Building extends Model
     public function contacts() {
         return $this->hasMany('App\Models\BuildingContact', 'id_buildings', 'id');
     }
-    public function products() {
-        return $this->hasMany('App\Models\BuildingProduct', 'id_buildings', 'id')->with('product');
+    public function buildingProducts() {
+        return $this->hasMany('App\Models\BuildingProduct', 'id_buildings', 'id'); //->with('product');
 //        return $this->hasOne('App\Models\BuildingProduct', 'id', 'id_buildings');
     }
 
@@ -43,8 +43,24 @@ class Building extends Model
         return $products->whereLoose('id_status', config('const.status.active'))
                     ->whereLoose('product.id_products', 0);
     }
-    
+
     public function properties() {
         return $this->hasMany('App\Models\Building\BuildingPropertyValue', 'id_buildings');
+    }
+
+    public function getProperties(){
+        $properties = $this->properties;
+        return $properties->pluck('value', 'id_building_properties');
+    }
+
+    public function getProperty($propertyId){
+        $properties = $this->getProperties();
+        return isset($properties[$propertyId]) ? $properties[$propertyId] : null;
+    }
+
+    public function getUnitNumbers() {
+
+        $unitsInJson = $this->getProperty(config('const.building_property.unit_numbers'));
+        return json_decode($unitsInJson);
     }
 }

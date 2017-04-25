@@ -60,6 +60,13 @@ return [
         'building_setup' => '27',
         'front_desk' => '28',
     ],
+    'product_property' => [
+        'data-service-download' => '1',
+        'data-service-upload' => '2',
+        'service-title' => '3',
+        'service-slogans' => '4',
+        'data-service-delivery' => '5',
+    ],
     'reason_category' => [
         'internet' => '1',
         'phone' => '2',

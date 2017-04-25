@@ -38,7 +38,8 @@ class Customer extends Model
         return $this->hasMany('App\Models\Address', 'id_customers');
     }
     public function payment() {
-        return $this->hasOne('App\Models\PaymentMethod', 'id_customers');
+        return $this->hasOne('App\Models\PaymentMethod', 'id_customers')
+                ->where('priority', 1);
     }
     public function ticketHistory()
     {

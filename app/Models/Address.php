@@ -13,7 +13,7 @@ class Address extends Model
     }
 
     public function building() {
-        return $this->hasOne('App\Models\Building\Building', 'id_buildings');
+        return $this->hasOne('App\Models\Building\Building', 'id', 'id_buildings');
     }
 
     public function ticket() {
@@ -25,15 +25,18 @@ class Address extends Model
     }
 
     public function buildings() {
-      return $this->belongsTo('App\Models\Building\Building', 'id_buildings');
+        return $this->belongsTo('App\Models\Building\Building', 'id_buildings');
     }
+
     public function customers() {
         return $this->belongsTo('App\Models\Customer', 'id_customers');
     }
+
     public function customerWhere($id){
         $where = $this->customers;
         return $where->where('id', $id);
     }
+
     public function contacts() {
         return $this->hasMany('App\Models\Contact', 'id_customers');
     }

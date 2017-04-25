@@ -34,4 +34,8 @@ class NetworkNode extends Model {
 
         $this->properties = json_encode($properties);
     }
+
+    public function address(){
+        return $this->hasOne('App\Models\Address', 'id', 'id_address');
+    }
 }
