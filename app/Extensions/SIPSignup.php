@@ -211,11 +211,14 @@ class SIPSignup {
 
     public function getUnitFromPort(Port $port){
 
-        $customer = $port->customer;
-        if($customer == null){
+        $customers = $port->customers;
+        
+        if($customers == null){
             return null;
         }
-        $address = $customer->address;
+        
+        $firstCustomer = $customers->first();
+        $address = $firstCustomer->address;
         if($address == null){
             return null;
         }

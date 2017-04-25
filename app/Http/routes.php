@@ -174,6 +174,7 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('form',                     'SignupController@getSignupForm');
     Route::get('getUnitNumbersAjax',       'SignupController@getUnitNumbersAjax');
     Route::post('register',                'SignupController@validateSignupForm');
+    Route::post('activate',                'SignupController@activate');
 
 
 

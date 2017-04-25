@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <title>HEADER TEXT</title>
+        <title>{{ $locName }} Account Activation</title>
 
         <link href='http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,300italic,700|Pontano+Sans' rel='stylesheet' type='text/css'/>
         <link rel="stylesheet" type="text/css" href="signup-files/css/quicksand.css" />
@@ -38,11 +38,12 @@
                 <div class="divRow" id="button-row" style="width: 700px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button id="activate" value=" Activate Now "></button></div>
             </center>
             <form id="activationForm" method="post" action="">
-                <input type="hidden" name="ActivationCode" value=""/>
+                <input type="hidden" name="_token" value="{{ csrf_token() }}" id="token">
+                <input type="hidden" name="ActivationCode" value="{{ $activationCode }}"/>
                 <input type="hidden" name="PostType" value="Activation"/>
-                <input type="hidden" name="Universal" value="90000"/>
-                <input type="hidden" name="returnURL" value="http://cnn.com" />
-                <input type="hidden" name="PortID" value=""/>
+                <input type="hidden" name="Universal" value="{{ $timer }}"/>
+                <input type="hidden" name="returnURL" value="{{ $returnURL }}" />
+                <input type="hidden" name="PortID" value="{{ $portId }}"/>
             </form>
         </div>
     </body>

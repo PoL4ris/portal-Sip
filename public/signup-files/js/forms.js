@@ -75,12 +75,13 @@ jQuery(function ($) {
         var pageRedirTimer = actForm.find('input[name=Universal]').val();
         var returnURL = actForm.find('input[name=returnURL]').val();
         var portID = actForm.find('input[name=PortID]').val();
+        var token = actForm.find('input[name=_token]').val();
 
-        //            alert(' activation timer: '+pageRedirTimer+"\n");
         actForm.find('#button-row').hide();
         act_overlay.show(pageRedirTimer / 1000, returnURL);
 
-        $(this).load('index.php', {
+        $(this).load('/activate', {
+            '_token': token, 
             'PostType': 'Activation',
             'ActivationCode': activationCode,
             'Universal': pageRedirTimer,
@@ -186,7 +187,7 @@ jQuery(function ($) {
 
         $('.routerContainer').click(function () {
             var self = $(this);
-            var routerInputBox = $('input#wirelessrouter');
+            var routerInputBox = $('input#wireless_router');
             var WirelessRouterIH = $('#WirelessRouterIH');
             var WirelessRouterIA = $('#WirelessRouterIA');
 
@@ -869,31 +870,32 @@ jQuery(function ($) {
             overlay.hide();
             $('span.errorIcon').remove();
 
-            if (msg.success) {
-                //                                alert('activation code: '+msg.activationCode+"\n"+'timer: '+msg.universal+"\n");
-                var actForm = $('#thankYou form');
-                actForm.find('input[name=ActivationCode]').val(msg.activationCode);
-                actForm.find('input[name=Universal]').val(msg.universal);
-                actForm.find('input[name=PortID]').val(msg.portID);
-
-                $('#formContainer').fadeOut(function () {
-                    registrationForm.get(0).reset();
-                    $('#thankYou').fadeIn();
-                });
-            }
-            //			else if(msg.validation_success){
-            //				$('#formContainer').fadeOut(function(){
-            //					registrationForm.get(0).reset();
-            //					$('#processingContainer').fadeIn();
-            //				});
-            //			}
-            else if (msg.debug) {
-                $('body').append('<div id="overlay"></div><div id="preloader">' + msg.debug_message + '</div>');
-                $('#overlay').click(function () {
-                    $('#overlay,#preloader').remove();
-                });
-            }
-            else if (msg.error) {
+//            if (msg.success) {
+//                //                                alert('activation code: '+msg.activationCode+"\n"+'timer: '+msg.universal+"\n");
+//                var actForm = $('#thankYou form');
+//                actForm.find('input[name=ActivationCode]').val(msg.activationCode);
+//                actForm.find('input[name=Universal]').val(msg.universal);
+//                actForm.find('input[name=PortID]').val(msg.portID);
+//
+//                $('#formContainer').fadeOut(function () {
+//                    registrationForm.get(0).reset();
+//                    $('#thankYou').fadeIn();
+//                });
+//            }
+//            //			else if(msg.validation_success){
+//            //				$('#formContainer').fadeOut(function(){
+//            //					registrationForm.get(0).reset();
+//            //					$('#processingContainer').fadeIn();
+//            //				});
+//            //			}
+//            else if (msg.debug) {
+//                $('body').append('<div id="overlay"></div><div id="preloader">' + msg.debug_message + '</div>');
+//                $('#overlay').click(function () {
+//                    $('#overlay,#preloader').remove();
+//                });
+//            }
+//            else 
+            if (msg.error) {
                 $.each(msg, function (k, v) {
 
                     var errorIcon = $('<span></span>')

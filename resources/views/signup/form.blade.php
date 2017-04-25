@@ -488,11 +488,11 @@ $annualAmount = (strpos($annualAmount, '.') === true) ? $annualAmount : $annualA
                                             <div class="formRow" id="fr_cctype" >
                                                 <label for="cc_type">Credit Card Type:</label>
                                                 <select name="cc_type" id="cc_type" class="select required">
-                                                    <option  value="">Select a card type</option>
-                                                    <option  value="VS">Visa</option>
-                                                    <option  value="MC">MasterCard</option>
-                                                    <option  value="AX">American Express</option>
-                                                    <option  value="DS">Discover</option>
+                                                    <option value="">Select a card type</option>
+                                                    <option value="VS">Visa</option>
+                                                    <option value="MC">MasterCard</option>
+                                                    <option value="AX">American Express</option>
+                                                    <option value="DS">Discover</option>
                                                 </select>
                                             </div>
                                             <div class="formRow" id="fr_ccnumber" >

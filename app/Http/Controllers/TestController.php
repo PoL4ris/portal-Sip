@@ -401,6 +401,22 @@ class TestController extends Controller
     }
 
     public function generalTest(){
+        
+        
+        $port = Port::find(5237);
+        dd($port->customers);
+        
+        
+        
+        
+        
+        $customer = Customer::find(13897);
+        dd($customer->ports);
+        
+        
+        
+        
+        
 
         $building = Building::find(81);
 
