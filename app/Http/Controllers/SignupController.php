@@ -305,7 +305,7 @@ class SignupController extends Controller
             $response = 'approved';
         }
 
-        Log::info('SignupController: Charge '.$response.': ' . "\n" . print_r($chargeResult,true));
+//        Log::info('SignupController: Charge '.$response.': ' . "\n" . print_r($chargeResult,true));
         return $response;
     }
 
