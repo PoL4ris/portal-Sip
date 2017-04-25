@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Note;
 use Illuminate\Contracts\Auth\Access\Authorizable;
 use Illuminate\Http\Request;
-//use App\Http\Requests;
+//Models
+use App\Models\Note;
 use App\Models\Product;
 use App\Models\Support\Adminaccess;
 use App\Models\PaymentMethod;
@@ -25,12 +25,15 @@ use App\Models\NetworkNode;
 use App\Models\ContactType;
 use App\Models\Support\Ticketreasons;
 use App\Models\ActivityLog;
+
 use App\Http\Controllers\NetworkController;
+
 use DB;
 use Log;
 use Schema;
 use Auth;
 use ActivityLogs;
+use SendMail;
 
 class CustomerController extends Controller
 {
@@ -682,24 +685,36 @@ class CustomerController extends Controller
     }
 
   }
-  public function insertCustomerTicket(Request $request)//???
+  public function insertCustomerTicket(Request $request)//SI
   {
-    $data = $request->all();
+    //Default User = 0 /10
 
     $lastTicketNumber = Ticket::all()->last()->ticket_number;
-    $ticketNumber = explode('ST-',$lastTicketNumber);
+    $ticketNumber     = explode('ST-',$lastTicketNumber);
     $ticketNumberCast = (int)$ticketNumber[1] + 1;
+    $defaultUserId    = 10;
 
-    $data['ticket_number'] = 'ST-' . $ticketNumberCast;
-    $data['id_users'] = Auth::user()->id;
+    $newTicket = new Ticket;
 
-    //Default User
-    $data['id_users_assigned'] = 10;
-    $data['created_at'] = date("Y-m-d H:i:s");
-    $data['updated_at'] = date("Y-m-d H:i:s");
+    $newTicket->id_customers      = $request->id_customers;
+    $newTicket->ticket_number     = 'ST-' . $ticketNumberCast;
+    $newTicket->id_reasons        = $request->id_reasons;
+    $newTicket->comment           = $request->comment;
+    $newTicket->status            = $request->status;
+    $newTicket->id_users          = Auth::user()->id;
+    $newTicket->id_users_assigned = $defaultUserId;
+    $newTicket->save();
 
-    DB::table('tickets')->insert($data);
 
+    $data = array();
+    $data['uno']  = '111';
+    $data['dos']  = '222';
+    $data['tres'] = '333';
+
+    $warp = SendMail::newTicketMail($newTicket);
+//    print '<pre>';
+//    print_r($warp);
+//    die();
     return 'OK';
   }
   public function updateCustomerServiceInfo(Request $request)//NO

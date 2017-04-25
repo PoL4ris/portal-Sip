@@ -3,35 +3,39 @@
   <i class="fa fa-gear loading-anim f-size-25 p-t-lg"></i>
 </div>
 <!--END TABLE LOAD-->
+<section ng-if="supportData" class="col-sm-12 col-md-12 col-lg-12 no-padding-sides support-table-grid null-section">
+<div class="row">
+  <div class="col-lg-12 m-t-lg ">
 
+    <div class="btn btn-primary m-r-lg support-status" ng-click="getAllOpenTickets($event)">All Open Tickets</div>
+    <div class="btn btn-primary m-r-lg support-status support-active" ng-click="getNoneBillingTickets($event)">Non-Billing Tickets</div>
+    <div class="btn btn-primary m-r-lg support-status" ng-click="getBillingTickets($event)">Billing Tickets</div>
+    <div class="btn btn-primary m-r-lg support-status" ng-click="getMyTickets($event)">My Tickets</div>
+    <button class="btn btn-success m-r-lg" ng-click="refreshSupportContent()"><i class="fa fa-refresh"></i></button>
+    <img src="/img/loading.gif" alt="" class="loading-gif-support no-display">
+
+    <div class="ticket-timing-results block-table-inline pull-right">
+      <div class="ttr-container">
+        <div class="old-gray   float-left time-data"><label>Total:</label>   {{ticketOpenTime.old}}</div>
+        <div class="old-green  float-left time-data"><label><b>></b> 12Hrs.</label> {{ticketOpenTime.old12}}</div>
+        <div class="old-yellow float-left time-data"><label><b>></b> 24Hrs.</label> {{ticketOpenTime.old24}}</div>
+        <div class="old-red    float-left time-data"><label><b>></b> 48Hrs.</label> {{ticketOpenTime.old48}}</div>
+      </div>
+    </div>
+
+    <div class="ticket-search-table size-100 m-t-lg">
+      <article ng-include="'/views/support/supportTicketSearch.html'" class="null-article"></article>
+    </div>
+
+  </div>
+</div>
+</section>
 <!--TICKET LIST-->
 <section ng-if="supportData" class="col-sm-12 col-md-12 col-lg-12 bg-white white-shadow m-t-lg p-b-lg support-table-grid">
   <div class="row">
 
     <!--SUPPORT ACTIONS-->
-    <div class="col-lg-12 m-t-lg ">
 
-      <div class="btn btn-primary m-r-lg support-status" ng-click="getAllOpenTickets($event)">All Open Tickets</div>
-      <div class="btn btn-primary m-r-lg support-status support-active" ng-click="getNoneBillingTickets($event)">Non-Billing Tickets</div>
-      <div class="btn btn-primary m-r-lg support-status" ng-click="getBillingTickets($event)">Billing Tickets</div>
-      <div class="btn btn-primary m-r-lg support-status" ng-click="getMyTickets($event)">My Tickets</div>
-      <div class="btn btn-success m-r-lg" ng-click="refreshSupportContent()"><i class="fa fa-refresh"></i></div>
-      <img src="/img/loading.gif" alt="" class="loading-gif-support no-display">
-
-      <div class="ticket-timing-results block-table-inline pull-right">
-        <div class="ttr-container">
-          <div class="old-gray   float-left time-data"><label>Total:</label>   {{ticketOpenTime.old}}</div>
-          <div class="old-green  float-left time-data"><label><b>></b> 12Hrs.</label> {{ticketOpenTime.old12}}</div>
-          <div class="old-yellow float-left time-data"><label><b>></b> 24Hrs.</label> {{ticketOpenTime.old24}}</div>
-          <div class="old-red    float-left time-data"><label><b>></b> 48Hrs.</label> {{ticketOpenTime.old48}}</div>
-        </div>
-      </div>
-
-      <div class="ticket-search-table size-100 m-t-lg">
-        <article ng-include="'/views/support/supportTicketSearch.html'" class="null-article"></article>
-      </div>
-
-    </div>
 
     <!--SUPPORT TABLE-->
     <article class="col-lg-12 tickets-history-table m-t-lg table-container">

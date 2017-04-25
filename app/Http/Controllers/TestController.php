@@ -129,93 +129,71 @@ class TestController extends Controller
 
     public function supportTest()
     {
+      $ticketData = Ticket::with('customer', 'address', 'reason', 'contacts', 'user')->find(28709);
+    return view('email.template_support_new_ticket', ['data'=>$ticketData]);
 
-//        $warp = Building::with('neighborhood', 'contacts', 'properties')->find(28);
-
-
-      $data = Ticket
-//                    ::with('address', 'customer')->where('status', '!=', 'closed')
-                    ::join('address', 'address.id_customers', '=', 'tickets.id_customers')
-                    ->join('buildings', 'buildings.id', '=', 'address.id_buildings')
-//                    ->where('status', '!=', 'closed')
-                    ->where('status', '!=', 'closed')
-//                    ->groupBy('buildings.id')
-//                    ->count();
-//                      ->whereIn('id', [9,11,15,5,33,16,19,8,7,26,2,43,25,12,61,23,70,68,21])
-//                      ->where('id_buildings',28)
-//                      ->select('*')
-//                      ->select('*', 'customers.id as idCustomer', 'tickets.id as idTicket')
-//                      ->take(10)
-                      ->get();
-//                    ->select('tickets.address')
-//                    ->get(array('tickets.id', 'address.id'));
-//      $data = Building::with('address')->take(10)->get();
+    print '<pre>';
+    dd($ticketData = Ticket::with('customer', 'address', 'reason', 'contacts', 'user')->find(28707)->toArray());
+    die();
 
 
+/* Dashboadr tests
+
+
+//    ticket->Customers->address->Building
+      $tickets = Ticket::
+                         where('status', '!=', 'closed')
+                         ->
+                         get();
+//                         find(25292);
+      $data = $tickets->load('customer.address.buildings')
+//              ->buildings;
+              ->pluck('customer', 'id_customers')
+              ->pluck('address', 'id');
+//              ->pluck('buildings');
+//              ->groupBy('id_buildings');
+//              ->count();
+//              ->filter(function ($value, $key) {
+//                return count($value) > 0;
+//                return count($value) > 0;
+//              });
+      dd($data);
+
+      $building = Building::find(19);
+      $data = $building->load('customerAddresses.customer.openTickets')
+        ->customerAddresses
+        ->pluck('customer')
+        ->pluck('openTickets', 'id')
+        ->filter(function ($value, $key) {
+          return count($value) > 0;
+        })
+        ->flatten();
 
 
 
-//      $data->load('address');
-
-//      $queries = DB::getQueryLog();
-//      $last_query = end($queries);
-//      print '<pre>';
-//      print_r($queries);
+      dd($data);
 
 
-//      print($last_query['query']);
-//      dd($data->toArray());
+      $building = Building::find(19);
+
+      $data = $building->load('customerAddresses.customer.openTickets')
+        ->customerAddresses
+        ->pluck('customer')
+        ->pluck('openTickets', 'id')
+        ->filter(function ($value, $key) {
+          return count($value) > 0;
+        })
+        ->flatten();
+
+
+
         dd($data);
-      die();
-
-      dd(Auth::user());
-
-      $warp = Building::with('neighborhood', 'contacts', 'properties')->find(28);
-
-        print '<pre>';
-        dd($warp->toArray());
-        die();
-        return;
-
-        $idList = array();
-        $bldID = Customer::with('address')->find($request->id)->address->id_buildings;
-        $products = Building::with('products')->find($bldID)->products->toArray();
-
-        foreach($products as $x => $idS)
-            $idList[$x] = $idS['id_products'];
 
 
-
-        return Product::whereIn('id', $idList)->get();
-
+        */
 
 
-
-
-
-        print '<pre>';
-        dd(Auth());
-        die();
-
-
-        $warpol = Customer::with(
-            'addresses',
-            'contacts',
-            'type',
-            'address.buildings',
-            'address.buildings.neighborhood',
-            'status',
-            'status.type',
-            'openTickets',
-            'log',
-            'log.user')->find(1598);
-
-        print '<pre>';
-        dd($warpol->toArray());
-        die();
-
-
-
+//MAIL
 
         $customer  = Customer::with('address')->find(501);
         $address   = $customer->address;

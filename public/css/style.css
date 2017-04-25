@@ -722,7 +722,7 @@ table.dataTable tbody tr {
   width: 50%;
 }
 .admin-app img{
-  max-height: 50px;
+  max-height: 220px;
 }
 .stc-search {
   border: 1px solid #ddd;
@@ -816,14 +816,13 @@ table.dataTable tbody tr {
   margin-bottom: 0;
   margin-left: -14px;
   margin-right: -30px;
-  padding-top: 0;
   width: 200px;
 }
 .bld-workspace article {
 }
 .bld-filters-sub-nav {
   background: #f8f8f8 none repeat scroll 0 0;
-  padding: 0 5px 5px;
+  padding: 20px 5px 5px;
 }
 .search-subnav-bld {
   margin-bottom: 15px;

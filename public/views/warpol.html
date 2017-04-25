@@ -1,13 +1,16 @@
+<hr>
 Warpol
 <hr>
-
-
-<div ng-controller="menuController">
-
-
-    <div ng-repeat=" item in SiteMenu.access_apps">
-      {{item.apps.name}}
-    </div>
-
-
+{{warpolString}}
+<br>
+<br>
+<br>
+<button class="btn btn-warning" ng-click="sendCustomerMail()">Send Mail</button>
+<br>
+<br>
+<br>
+<div class="col-lg-6 border3">
+  {{sendCMail}}
 </div>
+
+
