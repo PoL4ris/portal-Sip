@@ -15,6 +15,7 @@ use App\Models\Customer;
 use App\Models\NetworkNode;
 use App\Models\Port;
 
+use App\Extensions\SIPNetwork;
 use App\Extensions\CiscoSwitch;
 use App\Extensions\MtikRouter;
 use \Carbon\Carbon;
@@ -464,8 +465,6 @@ class NetworkController extends Controller
         return $privateVlan;
     }
 
-
-
     public function getPortPrivateVlanByPortID(Request $request) {
 
         $input = $request->all();
@@ -486,8 +485,6 @@ class NetworkController extends Controller
         return $this->calculatePrivateVlanFromRange($vlanRangeStr, $portPosition);
     }
 
-
-
     protected function getNetworkNodePropertyByIPAddress($ipAddress, $propertyName) {
 
         $netNode = networkNodes::where('IPAddress',$ipAddress)
@@ -503,7 +500,17 @@ class NetworkController extends Controller
         return $nodePropertyValue;
     }
 
+    public function getSwitchPortAndNeighborInfoTable(Request $request){
 
+        $input = $request->all();
+        $switchIp = $input['ip'];
+
+        $sipNetwork = new SIPNetwork();
+        $portInfoTable = $sipNetwork->getSwitchPortInfoTable($switchIp);
+        $neighborInfoTable = $sipNetwork->getSwitchCdpNeighborInfoTable($switchIp);
+
+        return [$portInfoTable, $neighborInfoTable];
+    }
 
 
     ######################################
