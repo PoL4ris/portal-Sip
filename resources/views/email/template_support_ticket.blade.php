@@ -5,7 +5,7 @@
         <div class="border bg-content-white">
 
           <div class="header">
-            <h2 class="text-center t-white">New Support Ticket</h2>
+            <h2 class="text-center t-white">{{$data->mailType}}</h2>
           </div>
 
 
@@ -31,10 +31,10 @@
             <label>Ticket Description</label>
             <p><span class="lef">Ticket:</span>              <span class="rig">{{$data->ticket_number}}</span></p>
             <p><span class="lef">Call Taker:</span>          <span class="rig">Auto System</span></p>
-            <p><span class="lef">Reason:</span>              <span class="rig">{{$data->reason->name}}</span></p>
-            <p><span class="lef">Ticket Status:</span>       <span class="rig">{{$data->status}}</span></p>
-            <p><span class="lef">Timestamp:</span>           <span class="rig">{{$data->created_at}}</span></p>
-            <p><span class="lef">Details:</span>             <span class="rig">{{$data->comment}}</span></p>
+            <p><span class="lef">Reason:</span>              <span class="rig">{{$data->type == 1 ? $data->reason->name : $data->lastTicketHistory->reason->name}}</span></p>
+            <p><span class="lef">Ticket Status:</span>       <span class="rig">{{$data->type == 1 ? $data->status : $data->lastTicketHistory->status}}</span></p>
+            <p><span class="lef">Timestamp:</span>           <span class="rig">{{$data->type == 1 ? $data->created_at : $data->lastTicketHistory->created_at}}</span></p>
+            <p><span class="lef">Details:</span>             <span class="rig">{{$data->type == 1 ? $data->comment : $data->lastTicketHistory->comment}}</span></p>
           </div>
 
         </div>

@@ -46,7 +46,7 @@ class Ticket extends Model
   }
 
   public function ticketHistoryFull() {
-    return $this->hasMany('App\Models\TicketHistory', 'id_tickets', 'id');
+    return $this->hasMany('App\Models\TicketHistory', 'id_tickets', 'id')->orderBy('id','desc');
   }
   public function historyReason() {
 

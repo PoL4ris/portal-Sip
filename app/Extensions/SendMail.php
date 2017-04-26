@@ -15,13 +15,19 @@ class SendMail {
   public function test(){
     return'this is the test of the sendMailProvideer.';
   }
-  public function newTicketMail($request){
+  public function ticketMail($request, $type){
 
-    $ticketData = Ticket::with('customer', 'address', 'reason', 'contacts', 'user')->find($request->id);
+    if($type == 1)
+      $ticketData = Ticket::with('customer', 'address', 'reason', 'contacts', 'user')->find($request->id);
+    else
+      $ticketData = Ticket::with('customer', 'address', 'contacts', 'user', 'lastTicketHistory.reason')->find($request->id_tickets);
+
 
     //$toAddress = ['pablo@silverip.com', 'pol.laris@gmail.com', 'peyman@silverip.com'];
     $toAddress = $ticketData->customer->email;
-    $template  = 'email.template_support_new_ticket';
+    $template  = 'email.template_support_ticket';
+    $ticketData->mailType  = $type == 1 ? 'New Support Ticket' : 'Ticket Update';
+    $ticketData->type      = $type ;
 
     $subject   = $ticketData->address->code .
                  ' #' .

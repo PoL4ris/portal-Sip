@@ -234,7 +234,8 @@
                     </div>
                   </div>
                   <div class="display-content-main-box update-btn-ticket">
-                    <button class="btn m-b-xs w-xs btn-primary save-btn display-inline"  ng-click="submitFormUpdate('form-2-ticket')">Update</button>
+                    <img src="/img/loading.gif" alt="" class="loading-gif-support m-r-lg" ng-if="loadingGif">
+                    <button id="onticket-update-btn" class="btn m-b-xs w-xs btn-primary save-btn display-inline"  ng-click="submitFormUpdate('form-2-ticket')">Update</button>
                   </div>
                 </form>
               </div>

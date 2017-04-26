@@ -705,16 +705,7 @@ class CustomerController extends Controller
     $newTicket->id_users_assigned = $defaultUserId;
     $newTicket->save();
 
-
-    $data = array();
-    $data['uno']  = '111';
-    $data['dos']  = '222';
-    $data['tres'] = '333';
-
-    $warp = SendMail::newTicketMail($newTicket);
-//    print '<pre>';
-//    print_r($warp);
-//    die();
+    SendMail::ticketMail($newTicket, 1);
     return 'OK';
   }
   public function updateCustomerServiceInfo(Request $request)//NO

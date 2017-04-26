@@ -153,17 +153,33 @@ app.controller('supportController',                 function ($scope, $http, DTO
   };
   $scope.submitFormUpdate               = function (idForm) {
 
+    $('#onticket-update-btn').attr('disabled', true);
+
     var infoData = getFormValues(idForm);
-    if (infoData.comment == '')
+    if (infoData.comment == ''){
+      $('#onticket-update-btn').removeAttr('disabled');
       return;
+    }
+
+    $scope.loadingGif = true;
 
     infoData['id'] = $scope.selectedTicket.id;
 
     $http.get("updateTicketHistory", {params:infoData})
       .then(function (response) {
         $scope.selectedTicket = response.data;
+        $('#onticket-update-btn').removeAttr('disabled');
+        $scope.loadingGif = false;
+        $('.thistory-form-2').val('');
+        $.smallBox({
+          title: "Ticket Updated!",
+          content: "<i class='fa fa-clock-o'></i> <i>2 seconds ago...</i>",
+          color: "#739E73",
+          iconSmall: "fa fa-thumbs-up bounce animated",
+          timeout: 6000
+        });
       });
-    $('.thistory-form-2').val('');
+
   };
   $scope.refreshSupportContent          = function (){
     $http.get(supportService.refreshRoute)

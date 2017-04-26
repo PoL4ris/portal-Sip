@@ -1,13 +1,6 @@
-<!--<div jarvis-widget id="wid-id-3" data-widget-deletebutton="false" data-widget-editbutton="false" data-widget-custombutton="false" ng-controller="FormXeditableCtrl">-->
 <div ng-controller="FormXeditableCtrl" class="b-test bg-royal">
 
   <div class="col-lg-12 tickets-history-table" ng-controller="customerTicketHistoryController">
-  <!--<div class="col-lg-12" ng-controller="customerTicketHistoryController" ng-if="!stcFlag">-->
-    <!--<hr>-->
-    <!--{{customerData.customer.open_tickets}}-->
-    <!--<hr>-->
-    <!--{{newTicketData}}-->
-    <!--<hr>-->
       <div ng-if="!customerData.customer.open_tickets">
         <div class="loading-default animate-if"><img src="/img/default.gif" alt=""></div>
       </div>
@@ -24,17 +17,17 @@
             </tr>
           </thead>
           <tbody>
-            <tr ng-repeat="ticket in customerData.customer.open_tickets">
+            <tr ng-repeat="ticket in ticketHistory">
               <td class="first-td" ng-click="displayTicketResume(ticket.id, ticket.id_customers)" data-toggle="modal" data-target="#ticketModal">{{ ticket.ticket_number }}</td>
               <td ng-init="ticketDateA = convertDate(ticket.created_at)">{{ ticketDateA | date : "MMM d, y h:mm a" }}</td>
-              <td>{{ newTicketData[ticket.id_reasons].short_description }}</td>
+              <td>{{ ticket.reason}}</td>
               <td ng-mouseover="showFullComment(ticket.id)"     style="position: relative;"
                   ng-mouseleave="hideFullComment(ticket.id)"    ng-if="ticket.comment">
                   {{ ticket.comment | limitTo : letterLimit }}...
                 <div id='ticket-{{ ticket.id }}' style="display: none;" class="ticket-comment-pop">{{ticket.comment}}</div>
               </td>
               <td ng-if="!ticket.comment"> No Comment </td>
-              <td>{{ ticket.status }}</td>
+              <td class="capital-first">{{ ticket.status }}</td>
               <td ng-init="ticketDateB = convertDate(ticket.updated_at)" >{{ ticketDateB | date : "MMM d, y h:mm a" }}</td>
             </tr>
           </tbody>
@@ -46,16 +39,10 @@
   <!--Go to Customer Info.-->
 <!--</div>-->
 
-
-
-
-
-
 </div>
 
 
-
-<!-- MODAL DE TICKET -->
+<!-- MODAL DE CUSTOMER TICKET -->
 <div class="modal fade" id="ticketModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-ticket-size">
     <div class="modal-content">
@@ -174,7 +161,8 @@
                     </div>
                   </div>
                   <div class="display-content-main-box update-btn-ticket">
-                    <button class="btn m-b-xs w-xs btn-primary save-btn display-inline"  ng-click="submitFormUpdate('form-2-ticket')">UPDATE</button>
+                    <img src="/img/loading.gif" alt="" class="loading-gif-support m-r-lg" ng-if="loadingGif" >
+                    <button class="btn m-b-xs w-xs btn-primary save-btn display-inline"  ng-click="submitFormUpdate('form-2-ticket')" id="onticket-update-btn" >Update</button>
                   </div>
                 </form>
               </div>
@@ -207,11 +195,11 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">
           Cancel
         </button>
       </div>
     </div>
   </div>
 </div>
-<!-- END MODAL DE TICKET -->
+<!-- END MODAL DE CUSTOMER TICKET -->

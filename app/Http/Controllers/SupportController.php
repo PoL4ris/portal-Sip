@@ -20,6 +20,7 @@ use App\Models\TicketHistory;
 use App\Models\Address;
 use App\Models\Product;
 use App\Models\Building\Building;
+use SendMail;
 
 class SupportController extends Controller
 {
@@ -47,7 +48,14 @@ class SupportController extends Controller
     }
     public function getTicketInfo(Request $request)
     {
-        return Ticket::with('customer', 'address', 'contacts', 'userAssigned', 'reason', 'ticketNote', 'ticketHistoryFull')->find($request['ticketId']);
+        return Ticket::with('customer',
+                            'address',
+                            'contacts',
+                            'userAssigned',
+                            'reason',
+                            'ticketNote',
+                            'ticketHistoryFull')
+          ->find($request['ticketId']);
     }
 
 
@@ -283,14 +291,6 @@ class SupportController extends Controller
     public function updateTicketHistory(Request $request)
     {
 
-        $data = $request->all();
-
-        //    $ticketNoteRecord = new TicketNote();
-        //    $ticketNoteRecord->id_tickets = $request->id;
-        //    $ticketNoteRecord->comment = $request->comment;
-        //    $ticketNoteRecord->id_users = Auth::user()->id;
-        //    $ticketNoteRecord->save();
-
         $ticketHistoryRecord = new TicketHistory();
         $ticketHistoryRecord->id_tickets  = $request->id;
         $ticketHistoryRecord->id_reasons  = $request->id_reasons;
@@ -300,13 +300,13 @@ class SupportController extends Controller
         $ticketHistoryRecord->id_users_assigned = $request->id_users_assigned;
         $ticketHistoryRecord->save();
 
-
         $updateTicket = Ticket::find($request->id);
         $updateTicket->updated_at = $ticketHistoryRecord->created_at;
         $updateTicket->save();
 
-
-
+        //1 = new ticket
+        //2 = update ticket
+        SendMail::ticketMail($ticketHistoryRecord, 2);
 
         $request['ticketId'] = $request->id;
         return $this->getTicketInfo($request);
