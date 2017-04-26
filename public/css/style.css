@@ -319,7 +319,7 @@ Osk .new-form-blocks {
 }
 .tickets-history-table {
 }
-.support-table .dataTables_length, .support-table .dataTables_filter, .tickets-history-table .dataTables_length, .tickets-history-table .dataTables_filter, .billing-history-table .dataTables_length, .billing-history-table .dataTables_filter {
+.filters-fixed-size .dataTables_length, .filters-fixed-size .dataTables_filter, .support-table .dataTables_length, .support-table .dataTables_filter, .tickets-history-table .dataTables_length, .tickets-history-table .dataTables_filter, .billing-history-table .dataTables_length, .billing-history-table .dataTables_filter {
   width: 50%;
 }
 .support-table {
@@ -348,19 +348,15 @@ Osk .new-form-blocks {
   color: white;
   text-align: center;
 }
-.modal-ticket-size {
+.modal-cor-stats-size {
+  width: 50%;
 }
 .thistory-container {
   max-height: 350px;
   overflow: auto;
 }
 .thistory-container .th-comment {
-  display: block;
-  font-size: 11px;
-  height: auto;
-  max-height: 150px;
-  max-width: 400px;
-  overflow: auto;
+  max-width: 330px;
 }
 table.dataTable tbody tr.customer-new-updated {
   font-weight: bold;

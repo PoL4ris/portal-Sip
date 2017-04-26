@@ -1,6 +1,6 @@
 
 //Network Controllers
-app.controller('networkController',                 function ($scope, $http, customerService){
+app.controller('networkController',                 function ($scope, $http, customerService, DTOptionsBuilder, DTColumnDefBuilder){
 
 
   if(customerService.sideBarFlag) {
@@ -39,9 +39,20 @@ app.controller('networkController',                 function ($scope, $http, cus
     //     });
 
 
-  };//????
+  };//????PENDING
 
-
+  $scope.getCoreData = function (){
+//     console.log(this.dataNet.core);
+//     return;
+    $scope.pLoad     = true;
+    $scope.pRecord   = this.dataNet;
+    $http.get("getSwitchStats", {params:{'ip':this.dataNet.core}})
+      .then(function (response) {
+        $scope.pLoad    = false;
+        $scope.pStatus  = response.data[0]
+        $scope.pInfo    = response.data[1]
+      });
+  }
   $scope.addTR = function addTR(id) {
 
     var stance   = $('#net-btn-' + id);
@@ -66,7 +77,6 @@ app.controller('networkController',                 function ($scope, $http, cus
       $('#nt-tmp-data-' + id).remove();
     }
   };
-
   $scope.cleanHrefField        = function (valor){
     var spaceClean = valor.split(' ')[0];
     var httpClean = spaceClean.match('https*');
@@ -78,6 +88,7 @@ app.controller('networkController',                 function ($scope, $http, cus
     return httpClean ? httpClean['input'].split('https://')[1] : valor;
   }
 
+  $scope.pStInOptions = DTOptionsBuilder.newOptions().withDisplayLength(50);
 });
 app.controller('networkControllerTSort',            function (DTOptionsBuilder, DTColumnDefBuilder, $scope ){
 

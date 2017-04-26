@@ -17,56 +17,134 @@
         <thead>
           <tr>
             <th>More</th>
-
             <th>Location</th>
             <th>Address</th>
             <th>Core</th>
             <th>Dist</th>
-
-            <!--<th>Queue-set</th>-->
             <th>Primary Link</th>
             <th>Backup Link</th>
             <th>Management</th>
-            <!--<th>Segment</th>-->
-
           </tr>
         </thead>
         <tbody>
           <tr ng-repeat="dataNet in showCase.persons" id="det-net-{{ dataNet.id }}">
-
             <td ng-click="addTR(dataNet.id)"
                 class="details-control"
                 id="net-btn-{{ dataNet.id }}"
                 stance="1">
             </td>
-
             <td>{{dataNet.location}}</td>
             <td>{{dataNet.address}}</td>
-            <td>{{dataNet.core}}</td>
+            <td ng-click="getCoreData()" class="cursor-pointer" data-toggle="modal" data-target="#corStats"><a href="">{{dataNet.core}}</a></td>
             <td>{{dataNet.dist}}</td>
-
-            <!--<td>{{dataNet.access_up_to_date}}</td>-->
-
             <td ng-init="netDataFieldP = cleanNetField(dataNet.primary)">
               <a ng-init="netDataHrefP = cleanHrefField(dataNet.primary)" href="{{netDataHrefP}}" target="_blank">
                 {{netDataFieldP}}
               </a>
             </td>
-
             <td ng-init="netDataFieldB = cleanNetField(dataNet.backup)">
               <a ng-init="netDataHrefB = cleanHrefField(dataNet.backup)" href="{{netDataHrefB}}" target="_blank">
                 {{netDataFieldB}}
               </a>
             </td>
-
             <td>{{dataNet.management}}</td>
-            <!--<td>{{dataNet.segment}}</td>-->
           </tr>
         </tbody>
       </table>
     </div>
   </div>
 </article>
+
+
+
+
+<!-- Core Array Stats -->
+<div class="modal fade" id="corStats" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-cor-stats-size">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="cancelNewEvent()">
+          &times;
+        </button>
+        <h6>Switch Information</h6>
+      </div>
+      <div class="modal-body filters-fixed-size" >
+        <div class="wrapper-sm">
+          <div class="row">
+            <div class="field-data col-lg-12" >
+
+              <div class="text-center" ng-if="pLoad">
+                <i class="fa fa-gear loading-anim f-size-25 p-t-lg"></i>
+              </div>
+
+              <div ng-if="!pLoad" class="col-lg-12 no-padding-sides p-b-lg">
+                <h6 ng-if="pRecord">Port Status (disabled ports are hidden) - IP: {{pRecord.core}} - Location: {{pRecord.location}}</h6>
+                <hr>
+                <div class=" m-t-sm">
+                  <table  class="table table-striped b-b" datatable="ng" dt-options="pStInOptions">
+                    <thead>
+                      <tr>
+                        <th>Port</th>
+                        <th>Label</th>
+                        <th>Status</th>
+                        <th>Speed</th>
+                        <th>Last Change</th>
+                        <th>Admin Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr ng-repeat="portsStatus in pStatus" >
+                        <td>{{portsStatus.Name}}</td>
+                        <td>{{portsStatus.Label}}</td>
+                        <td class="capital-first {{portsStatus.Status == 'up' ? 'up-status' : 'down-status'}}">{{portsStatus.Status}}</td>
+                        <td>{{portsStatus.Speed}}</td>
+                        <td>{{portsStatus.LastChange}}</td>
+                        <td class="capital-first">{{portsStatus.AdminStatus}}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div ng-if="!pLoad" class="col-lg-12 no-padding-sides p-b-lg b-t-ddd">
+                <h6 ng-if="pRecord">Neighbor Information - IP: {{pRecord.core}} - Location: {{pRecord.location}}</h6>
+                <hr>
+                <div class=" m-t-sm">
+                  <table  class="table table-striped b-b" datatable="ng" dt-options="pStInOptions">
+                    <thead>
+                    <tr>
+                      <th>Port</th>
+                      <th>Label</th>
+                      <th>Neighbor</th>
+                      <th>Type</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="portsInfo in pInfo" >
+                      <td>{{portsInfo.Name}}</td>
+                      <td>{{portsInfo.Label}}</td>
+                      <td>{{portsInfo.NeighborDevId}}</td>
+                      <td>{{portsInfo.NeighborPlatform}}</td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- END Core Array Stats -->
 
 
 

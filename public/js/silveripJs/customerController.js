@@ -5,7 +5,7 @@ app.controller('customerControllerList',            function ($scope, $http){
       $scope.supportDataCustomer = response.data;
     });
 });
-app.controller('customerController',                function ($scope, $http, $stateParams, customerService){
+app.controller('customerController',                function ($scope, $http, $stateParams, customerService, DTOptionsBuilder){
 
 //   $scope.globalServiceLocationSide = null;
   if(!customerService.rightView) {
@@ -406,6 +406,18 @@ app.controller('customerController',                function ($scope, $http, $st
 
       });
   };
+  //Network
+  $scope.getCoreData = function (ip){
+    $scope.pLoad     = true;
+    $scope.pRecord   = ip;
+    $http.get("getSwitchStats", {params:{'ip':ip}})
+      .then(function (response) {
+        $scope.pLoad    = false;
+        $scope.pStatus  = response.data[0]
+        $scope.pInfo    = response.data[1]
+      });
+  }
+  $scope.pStInOptions = DTOptionsBuilder.newOptions().withDisplayLength(50);
 });
 app.controller('customerTicketHistoryController',   function ($scope, $http){
   $http.get("getTicketHistory", {params:{'id':$scope.idCustomer}})
