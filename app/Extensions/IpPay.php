@@ -596,7 +596,9 @@ TPL;
                 $this->xactionResult['ERRMSG'] = "TotalAmount required for all non-TOKENIZE transactions.";
                 return $this->xactionResult;
             } else {
-                //              $this->xactionInfo['TotalAmount'] = str_replace(".", "", $this->xactionInfo['TotalAmount']);
+                // IMPORTANT:
+                // Amount should be passed to this class normally (unpadded or with cents .xx)
+                // We will pad it with 00 if the cents are not provided
                 $pos = strpos($this->xactionInfo['TotalAmount'], '.');
                 if ($pos === false) {
                     $this->xactionInfo['TotalAmount'] .= '00';
