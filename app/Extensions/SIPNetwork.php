@@ -425,6 +425,100 @@ class SIPNetwork {
         return $nodePropertyValue;
     }
 
+    public function getSwitchPortInfoTable($ip) {
+
+        $switchPortInfoArray = array();
+        $portTypeRegEx = '/.*ethernet.*/i';
+        $ciscoSwitch = $this->getSwitchInstance();
+
+        $portDescArr = $ciscoSwitch->getSnmpAllPortDesc($ip, $portTypeRegEx);
+        if(isset($portDescArr['error'])){
+            return $switchPortInfoArray;
+        }
+
+        $portLabelArr = $ciscoSwitch->getSnmpAllPortLabel($ip, $portTypeRegEx);
+        if(isset($portLabelArr['error'])){
+            return $switchPortInfoArray;
+        }
+
+        $portOperStatusArr = $ciscoSwitch->getSnmpAllPortOperStatus($ip, $portTypeRegEx);
+        if(isset($portOperStatusArr['error'])){
+            return $switchPortInfoArray;
+        }
+
+        $portAdminStatusArr = $ciscoSwitch->getSnmpAllPortAdminStatus($ip, $portTypeRegEx);
+        if(isset($portAdminStatusArr['error'])){
+            return $switchPortInfoArray;
+        }
+
+        $portSpeedArr = $ciscoSwitch->getSnmpAllPortSpeed($ip, $portTypeRegEx);
+        if(isset($portSpeedArr['error'])){
+            return $switchPortInfoArray;
+        }
+
+        $portLastChangeArr = $ciscoSwitch->getSnmpAllPortLastChangeFormatted($ip, $portTypeRegEx);
+        if(isset($portLastChangeArr['error'])){
+            return $switchPortInfoArray;
+        }
+
+        foreach ($portDescArr['response'] as $key => $desc) {
+            $switchPortInfo = array();
+            $switchPortInfo['Name'] = $desc;
+            $switchPortInfo['Label'] = isset($portLabelArr['response'][$key]) ? $portLabelArr['response'][$key] : '';
+            $switchPortInfo['Status'] = isset($portOperStatusArr['response'][$key]) ? $portOperStatusArr['response'][$key] : '';
+            $switchPortInfo['Speed'] = isset($portSpeedArr['response'][$key]) ?
+                (($portSpeedArr['response'][$key] == '1000000000') ? '1G' :
+                 (($portSpeedArr['response'][$key] == '100000000') ? '100M' : '10M')) : '';
+            $switchPortInfo['LastChange'] = isset($portLastChangeArr['response'][$key]) ? $portLastChangeArr['response'][$key] : '';
+            $switchPortInfo['AdminStatus'] = ($portAdminStatusArr['response'][$key] == 'up') ? 'enabled' : 'disabled';
+            $switchPortInfoArray[] = $switchPortInfo;
+        }
+        return $switchPortInfoArray;
+    }
+
+    public function getSwitchCdpNeighborInfoTable($ip) {
+
+        $switchPortInfoArray = array();
+        $portTypeRegEx = '/.*ethernet.*/i';
+        $ciscoSwitch = $this->getSwitchInstance();
+
+        $portDescArr = $ciscoSwitch->getSnmpAllPortDesc($ip, $portTypeRegEx);
+        if(isset($portDescArr['error'])){
+            return $switchPortInfoArray;
+        }
+
+        $portLabelArr = $ciscoSwitch->getSnmpAllPortLabel($ip, $portTypeRegEx);
+        if(isset($portLabelArr['error'])){
+            return $switchPortInfoArray;
+        }
+
+        $snmpCdpCacheDeviceIdArr = $ciscoSwitch->getSnmpCdpCacheDeviceId($ip);
+        if(isset($snmpCdpCacheDeviceIdArr['error'])){
+            return $switchPortInfoArray;
+        }
+
+        $snmpCdpCachePlatformArr = $ciscoSwitch->getSnmpCdpCachePlatform($ip);
+        if(isset($snmpCdpCachePlatformArr['error'])){
+            return $switchPortInfoArray;
+        }
+
+        if (count($snmpCdpCacheDeviceIdArr) <= 0) {
+            return $switchPortInfoArray;
+        }
+
+        foreach ($snmpCdpCacheDeviceIdArr as $key => $devId) {
+            $keyArr = explode('.', $key);
+            $portIndex = $keyArr[0];
+            $switchPortInfo = array();
+            $switchPortInfo['Name'] = $portDescArr['response'][$portIndex]; //$desc;
+            $switchPortInfo['Label'] = isset($portLabelArr['response'][$portIndex]) ? $portLabelArr['response'][$portIndex] : '';
+            $switchPortInfo['NeighborDevId'] = $devId;
+            $switchPortInfo['NeighborPlatform'] = $snmpCdpCachePlatformArr[$key];
+            $switchPortInfoArray[] = $switchPortInfo;
+        }
+
+        return $switchPortInfoArray;
+    }
 }
 
 ?>

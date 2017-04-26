@@ -313,7 +313,8 @@ class CiscoSwitch {
 
     public function getSnmpAllPortAdminStatus($ip, $keyRegEx = '') {
 
-        $response = $this->getSnmpAllPortsQuery($ip, self::ifAdminStatus, $keyRegEx);        
+        $response = $this->getSnmpAllPortsQuery($ip, self::ifAdminStatus, $keyRegEx);
+//        return $response;
         return $this->filterResponses($response, '/^(.*)\(.*/', '$1');
     }
 
@@ -402,7 +403,7 @@ class CiscoSwitch {
 
     public function getSnmpAllPortLastChangeFormatted($ip, $keyRegEx = '') {
 
-        $portLastChangeResponse = $this->getSnmpAllPortLastChange($ip, $portNum, $isIdx);
+        $portLastChangeResponse = $this->getSnmpAllPortLastChange($ip, $keyRegEx);
         if(isset($portLastChangeResponse['error'])){
             return $portLastChangeResponse;
         }
