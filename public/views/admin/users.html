@@ -30,7 +30,7 @@
             <td><img src="{{data.avatar?data.avatar:'/img/male.png'}}" alt="{{data.alias}}" title="{{data.alias}}"></td>
             <td>{{data.alias}}</td>
             <td>{{data.id_status == 1 ? 'Active' : 'Disabled'}}</td>
-            <td ng-init="getAdminProfiles();">{{adminProfiles[data.id_profiles].name}}</td>
+            <td>{{data.profile.name}}</td>
             <td ng-init="cAtData = convertDate(data.created_at)" >{{cAtData | date : "MMM d, y h:mm a" }}</td>
             <td ng-init="uAtData = convertDate(data.updated_at)" >{{uAtData | date : "MMM d, y h:mm a" }}</td>
             <td><i class="btn btn-primary fa fa-pencil" ng-click="editUser()" data-toggle="modal" data-target="#adminModal"></i></td>

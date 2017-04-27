@@ -5,7 +5,6 @@
       <p ng-click="setView(0)">Users</p>
       <p ng-click="setView(1)">Profiles</p>
       <p ng-click="setView(2)">Apps</p>
-      <!--<p ng-click="setView(3)">Access Apps</p>-->
     </div>
   </div>
 
@@ -96,10 +95,8 @@
                   <div class="col-lg-4">
                     <label for="">Profile/Rol</label><br>
                     <select name="id_profiles" id="3">
-                      <option value="{{adminEditingUser?adminEditingUser.id_profiles:2}}">{{adminEditingUser.id_profiles == 1 ? 'Admin' : 'Other'}}</option>
-                      <!--<option value="{{profile.id}}" ng-repeat="profile in adminProfiles">{{profile.name}}</option>-->
-                      <option value="1">Admin</option>
-                      <option value="2">Other</option>
+                      <option selected value="{{adminEditingUser.id_profiles}}">{{adminEditingUser.profile.name}}</option>
+                      <option value="{{profile.id}}" ng-repeat="profile in adminProfiles">{{profile.name}}</option>
                     </select>
                   </div>
 

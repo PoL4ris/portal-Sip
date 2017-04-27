@@ -8,13 +8,12 @@ app.controller('warpolController',                  function($scope, $http){
   $scope.warpolString = 'warpolController --> This is not the Santa Muerte';
 
 
-  $scope.sendCustomerMail = function(){
 
-    $http.get("sendCustomerMail")
+
+    $http.get("supportTest")
       .then(function (response) {
-        $scope.sendCMail = response.data;
+        $scope.war = response.data;
       });
-  }
 
 
 

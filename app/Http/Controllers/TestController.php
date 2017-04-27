@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BuildingTicket;
 use App\Models\TicketHistory;
 use Illuminate\Http\Request;
 use App\Http\Requests;
@@ -131,8 +132,21 @@ class TestController extends Controller
 
     public function supportTest()
     {
-      $building = Building::find(2);
-      return $building->activeParentProducts();
+
+    dd(User::with('profile')->get()->toArray());
+
+
+      $building = Building::find(9);
+//      dd(BuildingTicket::where('building_id', 9)->get());
+      dd($building->tickets);
+      dd($building);
+
+
+
+      $port = Port::find(5237);
+      dd($port->customers);
+      $customer = Customer::find(13897);
+      dd($customer->ports);
     }
 
     public function mail(){

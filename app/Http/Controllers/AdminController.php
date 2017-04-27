@@ -36,10 +36,13 @@ class AdminController extends Controller
   }
 
   public function getAdminUsers(Request $request){
-    return User::get();
+    return User::with('profile')->get();
   }
   public function getAdminProfiles(Request $request){
       return Profile::with('accessApps')->get();
+  }
+  public function getAdminProfile(Request $request){
+      return Profile::find($request->params['id']);
   }
   public function updateAdminUser(Request $request){
     if ($request->params['token'] == csrf_token()){

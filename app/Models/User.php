@@ -31,7 +31,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         return $this->hasOne('App\Models\Status', 'id_status');
     }
     public function profile() {
-        return $this->hasOne('App\Models\Profile', 'id');
+        return $this->hasOne('App\Models\Profile', 'id', 'id_profiles');
     }
     public function accessApps() {
       return $this->hasMany('App\Models\AccessApp', 'id_profiles', 'id_profiles');

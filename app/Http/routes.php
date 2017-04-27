@@ -47,6 +47,7 @@ Route::group(['middleware' => 'web'], function () {
     //POST ADMIN
     Route::post('getAdminUsers',          'AdminController@getAdminUsers');
     Route::post('getAdminProfiles',       'AdminController@getAdminProfiles');
+    Route::post('getAdminProfile',        'AdminController@getAdminProfile');
     Route::post('updateAdminUser',        'AdminController@updateAdminUser');
     Route::post('insertAdminUser',        'AdminController@insertAdminUser');
     Route::post('getAdminApps',           'AdminController@getAdminApps');
