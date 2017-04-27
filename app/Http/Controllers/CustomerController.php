@@ -693,10 +693,11 @@ class CustomerController extends Controller
   {
     //Default User = 0 /10
 
-    $lastTicketNumber = Ticket::all()->last()->ticket_number;
+    $lastTicketId = Ticket::max('id');
+    $lastTicketNumber = Ticket::find($lastTicketId)->ticket_number;
     $ticketNumber     = explode('ST-',$lastTicketNumber);
     $ticketNumberCast = (int)$ticketNumber[1] + 1;
-    $defaultUserId    = 10;
+//    $defaultUserId    = 10;
 
     $newTicket = new Ticket;
 
@@ -706,7 +707,7 @@ class CustomerController extends Controller
     $newTicket->comment           = $request->comment;
     $newTicket->status            = $request->status;
     $newTicket->id_users          = Auth::user()->id;
-    $newTicket->id_users_assigned = $defaultUserId;
+//    $newTicket->id_users_assigned = $defaultUserId;
     $newTicket->save();
 
     //1 = new ticket

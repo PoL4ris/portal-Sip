@@ -133,20 +133,20 @@ class TestController extends Controller
     public function supportTest()
     {
 
-    dd(User::with('profile')->get()->toArray());
+        dd(User::with('profile')->get()->toArray());
 
 
-      $building = Building::find(9);
-//      dd(BuildingTicket::where('building_id', 9)->get());
-      dd($building->tickets);
-      dd($building);
+        $building = Building::find(9);
+        //      dd(BuildingTicket::where('building_id', 9)->get());
+        dd($building->tickets);
+        dd($building);
 
 
 
-      $port = Port::find(5237);
-      dd($port->customers);
-      $customer = Customer::find(13897);
-      dd($customer->ports);
+        $port = Port::find(5237);
+        dd($port->customers);
+        $customer = Customer::find(13897);
+        dd($customer->ports);
     }
 
     public function mail(){
@@ -340,6 +340,31 @@ class TestController extends Controller
     }
 
     public function generalTest(){
+
+        $lastTicketId = Ticket::max('id');
+        $lastTicketNumber = Ticket::find($lastTicketId)->ticket_number;
+
+        dd($lastTicketNumber);
+
+        $ticketNumber     = explode('ST-',$lastTicketNumber);
+        $ticketNumberCast = (int)$ticketNumber[1] + 1;
+        $defaultUserId    = 10;
+
+        $newTicket = new Ticket;
+
+        // comment=Test+3&id_customers=4667&id_reasons=13&status=escalated
+        $newTicket->id_customers      = 4667;
+        $newTicket->ticket_number     = 'ST-' . $ticketNumberCast;
+        $newTicket->id_reasons        = 13;
+        $newTicket->comment           ='Test 4';
+        $newTicket->status            = 'escalated';
+        $newTicket->id_users          = Auth::user()->id;
+        $newTicket->id_users_assigned = $defaultUserId;
+        $newTicket->save();
+
+        dd($newTicket);
+
+
 
         $sipNetwork = new SIPNetwork();
 
