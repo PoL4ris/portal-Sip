@@ -149,7 +149,7 @@
                       <td>{{portsStatus.Name}}</td>
                       <td>{{portsStatus.Label}}</td>
                       <td class="capital-first {{portsStatus.Status == 'up' ? 'up-status' : 'down-status'}}">{{portsStatus.Status}}</td>
-                      <td>{{portsStatus.Speed}}</td>
+                      <td>{{portsStatus.Status == 'up' ? portsStatus.Speed : ''}}</td>
                       <td>{{portsStatus.LastChange}}</td>
                       <td class="capital-first">{{portsStatus.AdminStatus}}</td>
                     </tr>
