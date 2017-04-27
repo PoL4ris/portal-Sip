@@ -255,6 +255,10 @@ class CustomerController extends Controller
   {
     return Invoice::where('id_customers', $request->id)->get();
   }//SI
+  public function getBillingHistory(Request $request)
+  {
+    return billingTransactionLog::where('id_customers', $request->id)->get();
+  }//SI
   public function getCustomerServices(Request $request)//SI
   {
     return Customer::with('services')->find($request->id?$request->id:$request->idCustomer);
@@ -705,6 +709,8 @@ class CustomerController extends Controller
     $newTicket->id_users_assigned = $defaultUserId;
     $newTicket->save();
 
+    //1 = new ticket
+    //2 = update ticket
     SendMail::ticketMail($newTicket, 1);
     return 'OK';
   }

@@ -32,6 +32,9 @@ class Building extends Model
         return $this->hasMany('App\Models\BuildingProduct', 'id_buildings', 'id'); //->with('product');
 //        return $this->hasOne('App\Models\BuildingProduct', 'id', 'id_buildings');
     }
+    public function products() {
+      return $this->hasMany('App\Models\BuildingProduct', 'id_buildings', 'id')->with('product');
+    }
 
     public function activeProducts() {
          $products = $this->products;

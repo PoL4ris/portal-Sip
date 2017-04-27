@@ -14,12 +14,12 @@
               <th>ActCode</th>
               <th>Trans ID</th>
               <th>Trans Status</th>
-              <th>Invoice</th>
+              <!--<th>Invoice</th>-->
             </tr>
           </thead>
           <tbody>
             <tr ng-repeat="billing in billingHistory" >
-              <td>{{ billing.created_at }}</td>
+              <td ng-init="resultDate = convertDate(billing.created_at)">{{resultDate | date : "MMM d, y h:mm a" }}</td>
               <td>{{ billing.transaction_type }}</td>
               <td>{{ billing.amount }}</td>
               <td>{{ billing.payment_mode }}</td>
@@ -28,129 +28,14 @@
               <td>{{ billing.action_code }}</td>
               <td>{{ billing.transaction_id }}</td>
               <td>{{ billing.response_text }}</td>
-              <td>
-                <p ng-click="setInvoiceData()" data-toggle="modal" data-target="#myModal" class="text-center">
-                  <i class="fa fa-file-pdf-o"></i>
-                </p>
-              </td>
+              <!--<td>-->
+                <!--<p ng-click="setInvoiceData()" data-toggle="modal" data-target="#myModal" class="text-center">-->
+                  <!--<i class="fa fa-file-pdf-o"></i>-->
+                <!--</p>-->
+              <!--</td>-->
             </tr>
           </tbody>
         </table>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!--MODAL-->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-          &times;
-        </button>
-        <h4 class="modal-title" id="myModalLabel">Invoice</h4>
-      </div>
-      <div class="modal-body">
-        <div class="wrapper-sm">
-          <div>
-            <a href class="btn btn-sm btn-info pull-right" onClick="window.print();">Print</a>
-            <div class="invoice-logo"><img src="/img/silverip-logo-100px.png" alt="SilverIp"/></div>
-            <div class="col-lg-12 no-display">{{customerData.prueba}}</div>
-            <div class="row">
-              <div class="col-xs-6">
-                <p>1 Infinite Loop<br>
-                  95014 Cuperino, CA<br>
-                  United States
-                </p>
-                <p>
-                  Telephone:  800-692-7753<br>
-                  Fax:  800-692-7753
-                </p>
-              </div>
-              <div class="col-xs-6 text-right">
-                <p class="h4">#9048392</p>
-                <h5>29th Mar 2013</h5>
-              </div>
-            </div>
-            <div class="well m-t bg-light lt">
-              <div class="row">
-                <div class="col-xs-6">
-                  <strong>TO:</strong>
-                  <h4>John Smith</h4>
-                  <p>
-                    2nd Floor<br>
-                    St John Street, Aberdeenshire 2541<br>
-                    United Kingdom<br>
-                    Phone: 031-432-678<br>
-                    Email: youemail@gmail.com<br>
-                  </p>
-                </div>
-                <div class="col-xs-6">
-                  <strong>SHIP TO:</strong>
-                  <h4>John Smith</h4>
-                  <p>
-                    2nd Floor<br>
-                    St John Street, Aberdeenshire 2541<br>
-                    United Kingdom<br>
-                    Phone: 031-432-678<br>
-                    Email: youemail@gmail.com<br>
-                  </p>
-                </div>
-              </div>
-            </div>
-            <p class="m-t m-b">Order date: <strong>26th Mar 2013</strong><br>
-              Order status: <span class="label bg-success">Shipped</span><br>
-              Order ID: <strong>#9399034</strong>
-            </p>
-            <div class="line"></div>
-            <table class="table table-striped bg-white b-a">
-              <thead>
-              <tr>
-                <th style="width: 60px">QTY</th>
-                <th>DESCRIPTION</th>
-                <th style="width: 140px">UNIT PRICE</th>
-                <th style="width: 90px">TOTAL</th>
-              </tr>
-              </thead>
-              <tbody>
-              <tr>
-                <td>1</td>
-                <td>iPhone 5 32GB White & Silver (GSM) Unlocked</td>
-                <td>$749.00</td>
-                <td>$749.00</td>
-              </tr>
-              <tr>
-                <td>2</td>
-                <td>iPad mini with Wi-Fi 32GB - White & Silver</td>
-                <td>$429.00</td>
-                <td>$858.00</td>
-              </tr>
-              <tr>
-                <td colspan="3" class="text-right-invo"><strong>Subtotal</strong></td>
-                <td>$1607.00</td>
-              </tr>
-              <tr>
-                <td colspan="3" class="text-right-invo no-border"><strong>Shipping</strong></td>
-                <td>$0.00</td>
-              </tr>
-              <tr>
-                <td colspan="3" class="text-right-invo no-border"><strong>VAT Included in Total</strong></td>
-                <td>$0.00</td>
-              </tr>
-              <tr>
-                <td colspan="3" class="text-right-invo no-border"><strong>Total</strong></td>
-                <td><strong>$1607.00</strong></td>
-              </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">
-          Cancel
-        </button>
       </div>
     </div>
   </div>

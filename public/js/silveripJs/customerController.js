@@ -982,7 +982,7 @@ app.controller('serviceProductController',          function ($scope, $http){
     });
 
 });
-app.controller('customerNotesController',           function($scope, $http){
+app.controller('customerNotesController',           function ($scope, $http){
 
   $http.get("getCustomerNotes", {params:{'id':$scope.idCustomer}})
     .then(function (response) {
@@ -1002,4 +1002,33 @@ app.controller('customerNotesController',           function($scope, $http){
     else
       return;
   }
+});
+app.controller('customerBillingHistoryController',  function ($scope, $http, $uibModal, $log){
+
+  $http.get("getBillingHistory", {params:{'id':$scope.idCustomer}})
+    .then(function (response) {
+      $scope.billingHistory = response.data;
+    });
+
+  $scope.open = function (){
+    $scope.customerId = $scope.idCustomer;
+
+    var modalInstance = $uibModal.open(
+      {
+        animation: $scope.animationsEnabled,
+        templateUrl: 'seeInvoiceById.html',
+        controller: 'invoiceController',
+        size: 'md',
+        resolve: {
+          customerId: function () {
+            return $scope.customerId;
+          }
+        }
+      });
+
+    modalInstance.result.then(function () {}, function () {
+      $log.info('Modal dismissed at: ' + new Date());
+    });
+
+  };
 });
