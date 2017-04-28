@@ -80,7 +80,7 @@ h2 {
   margin-left: 150px;
   display: inline-block;
   max-width: calc(100% - 150px);
-  min-width: 70%;
+
   /*background: #f2f2f2 none repeat scroll 0 0;*/
 }
 #content{
