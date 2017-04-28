@@ -15,23 +15,23 @@ use Validator;
 class TechScheduleController extends Controller
 {
 
-public function __construct() {
+	public function __construct() {
 		$this->middleware('auth');
 
 	}
 
-public function GenerateTableSchedule(Request $request) {
-$Calendar = new GoogleCalendar;
-if(isset($request->date)) {
+	public function GenerateTableSchedule(Request $request) {
+		$Calendar = new GoogleCalendar;
+		if(isset($request->date)) {
 	//dd($request->date);
 	//Log::info( print_r( $request->date ) );
-$date = new DateTime($request->date);
-}
-else 
-{
-	$date = new DateTime('now');
-}
-$datenow = new DateTime('now');
+			$date = new DateTime($request->date);
+		}
+		else 
+		{
+			$date = new DateTime('now');
+		}
+		$datenow = new DateTime('now');
 
 $schedulerange = $Calendar->getScheduleRange($date);  //earliest and latest times someone is working
 $scheduledtechs = $Calendar->GetTechSchedule($date);  //exactly who is working and when
@@ -63,12 +63,12 @@ $tablesetup['colums']=$techcount;
 $tablesetup['header']=[];
 $tablesetup['offset']=$tableoffset;
 for($row = 0 ; $row < $tablelength ; $row++) {
-   for($column = 0; $column < $techcount; $column++){
-   	if(!isset($tablesetup[$row])) {
-       $tablesetup[$row] = [];
-   	}
-   	   $tablesetup[$row][$column] = [];
-   }
+	for($column = 0; $column < $techcount; $column++){
+		if(!isset($tablesetup[$row])) {
+			$tablesetup[$row] = [];
+		}
+		$tablesetup[$row][$column] = [];
+	}
 }
 
 //mark table with tech availability.
@@ -78,24 +78,24 @@ unset($column);
 unset($diff);
 
 foreach($scheduledtechs as $key => $value) {
-$end = new DateTime($value['end']);
-$start = new DateTime($value['start']);
-$diff = $end->diff( $start );
-$starth = $start->format('H');
+	$end = new DateTime($value['end']);
+	$start = new DateTime($value['start']);
+	$diff = $end->diff( $start );
+	$starth = $start->format('H');
 
-$startat = $starth - $tableoffset;
-array_push($tablesetup['header'],$value['tech']);
+	$startat = $starth - $tableoffset;
+	array_push($tablesetup['header'],$value['tech']);
 
-for($x = $startat;$x<$startat+$diff->h;$x++) {
+	for($x = $startat;$x<$startat+$diff->h;$x++) {
 	//echo 'row: ' . $x . ' column: ' . $key . '<br>';
-	$provideddate = new DateTime($request->date);
-	$provideddate->setTime($x+$tableoffset,0,0);
-	if($provideddate <= $datenow ) {
-	$tablesetup[$x][$key]=['type' => 'closed', 'tech' => $value['tech'], 'hour' => $x+$tableoffset ];
-	} else {
-	$tablesetup[$x][$key]=['type' => 'free', 'tech' => $value['tech'], 'hour' => $x+$tableoffset ];
+		$provideddate = new DateTime($request->date);
+		$provideddate->setTime($x+$tableoffset,0,0);
+		if($provideddate <= $datenow ) {
+			$tablesetup[$x][$key]=['type' => 'closed', 'tech' => $value['tech'], 'hour' => $x+$tableoffset ];
+		} else {
+			$tablesetup[$x][$key]=['type' => 'free', 'tech' => $value['tech'], 'hour' => $x+$tableoffset ];
+		}
 	}
-}
 
 }
 
@@ -103,76 +103,76 @@ for($x = $startat;$x<$startat+$diff->h;$x++) {
 //parse pending and add to table.
 foreach($pendingAppointments as $appt) {
   //parse pending and add to table.
-$tech=$appt['tech'];
+	$tech=$appt['tech'];
 
 //match tech with table key
-foreach($scheduledtechs as $key => $value) {
-	if($tech == $value['tech']) {
-$hourofappointment = new DateTime($appt['appointment']->getStart()->getDateTime());
-$hourofappointment = $hourofappointment->format('H') - $tableoffset;
-    $tablesetup[$hourofappointment][$key] = ['type' => 'pending', 'appointment' => $appt['appointment'] , 'hour' => $hourofappointment+$tableoffset, 'tech' => $tech ];
-	
+	foreach($scheduledtechs as $key => $value) {
+		if($tech == $value['tech']) {
+			$hourofappointment = new DateTime($appt['appointment']->getStart()->getDateTime());
+			$hourofappointment = $hourofappointment->format('H') - $tableoffset;
+			$tablesetup[$hourofappointment][$key] = ['type' => 'pending', 'appointment' => $appt['appointment'] , 'hour' => $hourofappointment+$tableoffset, 'tech' => $tech ];
+			
 	//sadly we also need to figure the difference between the hour of the start of the appointment and the end.
-	$endhourofappointment = new DateTime($appt['appointment']->getEnd()->getDateTime());
-	$endhourofappointment = $endhourofappointment->format('H') - $tableoffset;
-	if($endhourofappointment > $hourofappointment) {
-		for($z=0;$z<$endhourofappointment-$hourofappointment;++$z) {
-		 $tablesetup[$hourofappointment+$z][$key] = ['type' => 'pending', 'appointment' => $appt['appointment'] , 'hour' => $hourofappointment+$tableoffset+$z, 'tech' => $tech ];		
+			$endhourofappointment = new DateTime($appt['appointment']->getEnd()->getDateTime());
+			$endhourofappointment = $endhourofappointment->format('H') - $tableoffset;
+			if($endhourofappointment > $hourofappointment) {
+				for($z=0;$z<$endhourofappointment-$hourofappointment;++$z) {
+					$tablesetup[$hourofappointment+$z][$key] = ['type' => 'pending', 'appointment' => $appt['appointment'] , 'hour' => $hourofappointment+$tableoffset+$z, 'tech' => $tech ];		
+				}
+			}
+
 		}
 	}
-
-	}
-}
 
 }
 
 foreach($completedAppointments as $appt) {
   //parse pending and add to table.
-$tech=$appt['tech'];
+	$tech=$appt['tech'];
 
 //match tech with table key
-foreach($scheduledtechs as $key => $value) {
-	if($tech == $value['tech']) {
-$hourofappointment = new DateTime($appt['appointment']->getStart()->getDateTime());
-$hourofappointment = $hourofappointment->format('H') - $tableoffset;
-    $tablesetup[$hourofappointment][$key] = ['type' => 'completed', 'appointment' => $appt['appointment'] , 'hour' => $hourofappointment+$tableoffset, 'tech' => $tech ];
-	
+	foreach($scheduledtechs as $key => $value) {
+		if($tech == $value['tech']) {
+			$hourofappointment = new DateTime($appt['appointment']->getStart()->getDateTime());
+			$hourofappointment = $hourofappointment->format('H') - $tableoffset;
+			$tablesetup[$hourofappointment][$key] = ['type' => 'completed', 'appointment' => $appt['appointment'] , 'hour' => $hourofappointment+$tableoffset, 'tech' => $tech ];
+			
 	//sadly we also need to figure the difference between the hour of the start of the appointment and the end.
-	$endhourofappointment = new DateTime($appt['appointment']->getEnd()->getDateTime());
-	$endhourofappointment = $endhourofappointment->format('H') - $tableoffset;
-	if($endhourofappointment > $hourofappointment) {
-		for($z=0;$z<$endhourofappointment-$hourofappointment;++$z) {
-		 $tablesetup[$hourofappointment+$z][$key] = ['type' => 'completed', 'appointment' => $appt['appointment'] , 'hour' => $hourofappointment+$tableoffset+$z, 'tech' => $tech ];		
+			$endhourofappointment = new DateTime($appt['appointment']->getEnd()->getDateTime());
+			$endhourofappointment = $endhourofappointment->format('H') - $tableoffset;
+			if($endhourofappointment > $hourofappointment) {
+				for($z=0;$z<$endhourofappointment-$hourofappointment;++$z) {
+					$tablesetup[$hourofappointment+$z][$key] = ['type' => 'completed', 'appointment' => $appt['appointment'] , 'hour' => $hourofappointment+$tableoffset+$z, 'tech' => $tech ];		
+				}
+			}
+
 		}
 	}
-
-	}
-}
 
 }
 
 foreach($onsiteAppointments as $appt) {
   //parse pending and add to table.
-$tech=$appt['tech'];
+	$tech=$appt['tech'];
 
 //match tech with table key
-foreach($scheduledtechs as $key => $value) {
-	if($tech == $value['tech']) {
-$hourofappointment = new DateTime($appt['appointment']->getStart()->getDateTime());
-$hourofappointment = $hourofappointment->format('H') - $tableoffset;
-    $tablesetup[$hourofappointment][$key] = ['type' => 'onsite', 'appointment' => $appt['appointment'] , 'hour' => $hourofappointment+$tableoffset, 'tech' => $tech ];
-	
+	foreach($scheduledtechs as $key => $value) {
+		if($tech == $value['tech']) {
+			$hourofappointment = new DateTime($appt['appointment']->getStart()->getDateTime());
+			$hourofappointment = $hourofappointment->format('H') - $tableoffset;
+			$tablesetup[$hourofappointment][$key] = ['type' => 'onsite', 'appointment' => $appt['appointment'] , 'hour' => $hourofappointment+$tableoffset, 'tech' => $tech ];
+			
 	//sadly we also need to figure the difference between the hour of the start of the appointment and the end.
-	$endhourofappointment = new DateTime($appt['appointment']->getEnd()->getDateTime());
-	$endhourofappointment = $endhourofappointment->format('H') - $tableoffset;
-	if($endhourofappointment > $hourofappointment) {
-		for($z=0;$z<$endhourofappointment-$hourofappointment;++$z) {
-		 $tablesetup[$hourofappointment+$z][$key] = ['type' => 'onsite', 'appointment' => $appt['appointment'] , 'hour' => $hourofappointment+$tableoffset+$z, 'tech' => $tech ];		
+			$endhourofappointment = new DateTime($appt['appointment']->getEnd()->getDateTime());
+			$endhourofappointment = $endhourofappointment->format('H') - $tableoffset;
+			if($endhourofappointment > $hourofappointment) {
+				for($z=0;$z<$endhourofappointment-$hourofappointment;++$z) {
+					$tablesetup[$hourofappointment+$z][$key] = ['type' => 'onsite', 'appointment' => $appt['appointment'] , 'hour' => $hourofappointment+$tableoffset+$z, 'tech' => $tech ];		
+				}
+			}
+
 		}
 	}
-
-	}
-}
 
 }
 
@@ -202,7 +202,7 @@ public function TechScheduler(Request $request) {
 
 //dd($locations[3]->address[0]->address);
 
-return view('techscheduler.scheduler');
+	return view('techscheduler.scheduler');
 }
 
 public function findBuildingCode(Request $request) {
@@ -210,9 +210,9 @@ public function findBuildingCode(Request $request) {
 	
 	//$locations = Building::with('address')->where('id',"!=",1)->get();
 
-    $locations = Building::where('id',"!=",1)
-    ->where('code','LIKE',"%$search%")->get();
-    
+	$locations = Building::where('id',"!=",1)
+	->where('code','LIKE',"%$search%")->get();
+	
 
 	return $locations;
 }
@@ -222,8 +222,8 @@ public function findBuildingCode(Request $request) {
 
 
 public function GetScheduledTechs(Request $request) {
-		$Calendar = new GoogleCalendar;
-		if(isset($request->date)){
+	$Calendar = new GoogleCalendar;
+	if(isset($request->date)){
  	$techSchedule = $Calendar->GetTechSchedule(new DateTime($request->date));  //returns an array of scheduled techs and their hours
  } else {
 
@@ -277,8 +277,8 @@ public function getScheduleRange(Request $request) {
 }
 
 public function setAppointment(Request $request) {
-$validator = Validator::make($request->all(), [
-        'username' => 'required',
+	$validator = Validator::make($request->all(), [
+		'username' => 'required',
 		'tech' => 'required',
 		'buildingcode' => 'required',
 		'unit' => 'required',
@@ -289,46 +289,46 @@ $validator = Validator::make($request->all(), [
 		'customerphone' => 'required',
 		'appointmentdescription' => 'required',
 		'selected' => 'required',
-        ]);
+		]);
 
-        if ($validator->fails()) {
-            return redirect('tech-schedule')
-                        ->withErrors($validator)
-                        ->withInput();
-        }
+	if ($validator->fails()) {
+		return redirect('tech-schedule')
+		->withErrors($validator)
+		->withInput();
+	}
 
 	$Calendar = new GoogleCalendar;
 //$onset = $Calendar->SetTechAppointment($username,$tech,$buildingcode,$unit,$service,$action,$customername,$customerphone,$appointmentdescription,$startTime,$endTime,$dtvaccount);
 //dtv account number is optional.
 
 	//first we need to figure out which techs for how long.
-$techlist = array();
-foreach($request->selected as $block) {
-	$info=json_decode($block);
+	$techlist = array();
+	foreach($request->selected as $block) {
+		$info=json_decode($block);
 
-if(!isset( $techlist[$info->tech] )) {
-$techlist[$info->tech] = new stdClass;
-$techlist[$info->tech]->start=$info->hour;
-$techlist[$info->tech]->end=$info->hour+1;
-continue;
-}
-	if($techlist[$info->tech]->start > $info->hour) {
-	$techlist[$info->tech]->start=$info->hour;
+		if(!isset( $techlist[$info->tech] )) {
+			$techlist[$info->tech] = new stdClass;
+			$techlist[$info->tech]->start=$info->hour;
+			$techlist[$info->tech]->end=$info->hour+1;
+			continue;
+		}
+		if($techlist[$info->tech]->start > $info->hour) {
+			$techlist[$info->tech]->start=$info->hour;
+		}
+		if($techlist[$info->tech]->end < $info->hour + 1) {
+			$techlist[$info->tech]->end=$info->hour + 1;
+		}
+
 	}
-	if($techlist[$info->tech]->end < $info->hour + 1) {
-	$techlist[$info->tech]->end=$info->hour + 1;
-	}
 
-}
+	foreach($techlist as $key => $value) {
 
-foreach($techlist as $key => $value) {
+		$startTime = new DateTime($request->date);
+		$startTime->setTime($value->start,00,00);
+		$endTime = new DateTime($request->date);
+		$endTime->setTime($value->end,00,00);
 
-$startTime = new DateTime($request->date);
-$startTime->setTime($value->start,00,00);
-$endTime = new DateTime($request->date);
-$endTime->setTime($value->end,00,00);
-
-	$onset = $Calendar->SetTechAppointment(
+		$onset = $Calendar->SetTechAppointment(
 		$request->username, //username
 		$key,  //technician name
 		$request->buildingcode,  //building code
@@ -342,9 +342,9 @@ $endTime->setTime($value->end,00,00);
 		$endTime,  //end time
 		null);  //dtv account number
 //$onset is the newly created calendar appointment.
-}
+	}
 
-    $request->session()->flash('alert-success', 'Scheduled');
+	$request->session()->flash('alert-success', 'Scheduled');
 	return redirect('tech-schedule');
 }
 
