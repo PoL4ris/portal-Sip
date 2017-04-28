@@ -151,8 +151,10 @@ app.controller('adminController',                   function($scope, $http, cust
   $scope.appCancel            = function(){
     $scope.newApp = false;
     $scope.editAppData = false;
+    $scope.selectedIcon = false;
   };
   $scope.setIconApp           = function(){
+    console.log(this.selectedIcon);
     $scope.selectedIcon = this.selectedIcon;
   };
   $scope.editApp              = function(){
