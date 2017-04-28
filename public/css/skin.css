@@ -786,14 +786,14 @@ nav ul li a {
   background-image: -moz-linear-gradient(center top , #3e6cc9, #2e51b6);
   background-image: linear-gradient( #3e6cc9, #2e51b6);
 }
-.btn-primary {
+.btn-primary, .status-dash-btn-5 {
   background-color: #3e6cc9;
   background-image: -moz-linear-gradient(center top , #3e6cc9, #2e51b6);
   background-image: linear-gradient(#3e6cc9, #2e51b6);
   color: #3e6cc9;
   color: white;
 }
-.btn-danger {
+.btn-danger, .status-dash-btn-3 {
   background: #d14836 -moz-linear-gradient(center top , #dd4b39, #d14836) repeat scroll 0 0;
   background: #d14836 linear-gradient(#dd4b39, #d14836) repeat scroll 0 0;
   color: #d14836;
@@ -805,20 +805,20 @@ nav ul li a {
   opacity: 0.8;
   border-color: #ddd;
 }
-.btn-dark {
+.btn-dark, .status-dash-btn-2 {
   background-color: #afafaf;
   background-image: -moz-linear-gradient(center top , #afafaf, #a8a8a8);
   background-image: linear-gradient( #afafaf, #a8a8a8);
   color: #afafaf;
   color: white;
 }
-.btn-warning {
+.btn-warning, .status-dash-btn-4 {
   background: #ffc107 -moz-linear-gradient(center top , #ffc107, #c29306) repeat scroll 0 0;
   background: #ffc107 linear-gradient(#ffc107, #c29306) repeat scroll 0 0;
   color: #ffc107;
   color: white;
 }
-.btn-success {
+.btn-success, .status-dash-btn-1 {
   background: #4caf50 -moz-linear-gradient(center top , #4caf50, #66bb6a) repeat scroll 0 0;
   background: #4caf50 linear-gradient(#4caf50, #66bb6a) repeat scroll 0 0;
   color: #4caf50;

@@ -510,6 +510,21 @@ table.dataTable tbody tr {
 .status-type-5 {
   color: #0086ff;
 }
+.status-dash-type-1{
+  background: #dff0d8 !important;
+}
+.status-dash-type-2{
+  /*background: #E8E8E8 !important;*/
+}
+.status-dash-type-3{
+  background: #f2dede !important;
+}
+.status-dash-type-4{
+  background: #fcf8e3 !important;
+}
+.status-dash-type-5{
+  background: rgba(0, 134, 255, 0.45) !important;
+}
 .vip-class i {
   color: #fcc515;
   font-size: 17px;
