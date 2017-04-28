@@ -251,20 +251,20 @@ text-align: center;
 <div class="form-group">
 <form method="get" action="/tech-schedule/setappointment">
 <table id='sheader'>
- <tr><td><label for="dpick">Date</label></td><td><input id="dpick" type="text" class="datepicker form-control" name="date"></input>
+ <tr><td><label for="dpick">Date</label></td><td><input id="dpick" type="text" class="datepicker form-control" name="date" tabindex="0"></input>
 <input type="hidden" name="username" value="{{Auth::user()->first_name . ' ' . Auth::user()->last_name}}"></input>
 </td><td><label for="adesc">Appointment Description</label></td></tr>
 
-<tr><td><label for="cname">Customer Name</label></td><td><input type="text" id='cname' name="customername" class="form-control" value="{{old('customername')}}"></input></td>
-    <td rowspan="7" style="width: 600px; max-width: 100%; height: 100%"><textarea type="text" id="adesc" name="appointmentdescription" class="form-control">{{old('appointmentdescription')}}</textarea><!--should be textarea--></td></tr>
-<tr><td><label for="cphone">Customer Phone</label></td><td><input type="text" id='cphone' name="customerphone" class="form-control" value="{{old('customerphone')}}"></input></td></tr>
-<tr><td><label for="bcode">Building Code</label></td><td><input type="text" onkeyup="updatesearch()" id="bcode" name="buildingcode" class="form-control" value="{{old('buildingcode')}}"></input></td></tr>
-<tr><td><label for="unit">Unit</label></td><td><input type="text" id="unit" name="unit" class="form-control" value="{{old('unit')}}"></input></td></tr>
-<tr><td><label for="service">Service</label></td><td><select id="service" name="service" value="{{old('service')}}">
+<tr><td><label for="cname">Customer Name</label></td><td><input type="text" id='cname' name="customername" class="form-control" value="{{old('customername')}}" tabindex="1"></input></td>
+    <td rowspan="7" style="width: 600px; max-width: 100%; height: 100%"><textarea type="text" id="adesc" name="appointmentdescription" class="form-control" tabindex="8">{{old('appointmentdescription')}}</textarea><!--should be textarea--></td></tr>
+<tr><td><label for="cphone">Customer Phone</label></td><td><input type="text" id='cphone' name="customerphone" class="form-control" value="{{old('customerphone')}}" tabindex="2"></input></td></tr>
+<tr><td><label for="bcode">Building Code</label></td><td><input type="text" onkeyup="updatesearch()" id="bcode" name="buildingcode" class="form-control" value="{{old('buildingcode')}}" tabindex="3"></input></td></tr>
+<tr><td><label for="unit">Unit</label></td><td><input type="text" id="unit" name="unit" class="form-control" value="{{old('unit')}}" tabindex="4"></input></td></tr>
+<tr><td><label for="service">Service</label></td><td><select id="service" name="service" value="{{old('service')}}" tabindex="5">
     <option disabled selected>Service</option><option>TV</option><option>Int</option></select><!--should be dropdown--></td></tr>
-<tr><td><label for="action">Action</label></td><td><select id="action" name="action" value="{{old('action')}}">
+<tr><td><label for="action">Action</label></td><td><select id="action" name="action" value="{{old('action')}}" tabindex="6">
     <option disabled selected>Action</option><option>Connect</option><option>Repair</option><option>Other</option></select><!--should be dropdown--></td></tr>
-<tr><td><label for="dtvaccount">DTV Account</label></td><td><input type="text" id="dtvaccount" name="dtvaccount" class="form-control" value="{{old('dtvaccount')}}"></input></td></tr>
+<tr><td><label for="dtvaccount">DTV Account</label></td><td><input type="text" id="dtvaccount" name="dtvaccount" class="form-control" value="{{old('dtvaccount')}}" tabindex="7"></input></td></tr>
 
 <!--$username,$tech,$buildingcode,$unit,$service,$action,$customername,$customerphone,$appointmentdescription,$startTime,$endTime,$dtvaccount-->
 <table class='scheduletable table table-hover'><tbody></tbody></table>
