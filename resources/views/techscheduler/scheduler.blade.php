@@ -261,7 +261,7 @@ text-align: center;
 <tr><td><label for="bcode">Building Code</label></td><td><input type="text" onkeyup="updatesearch()" id="bcode" name="buildingcode" class="form-control" value="{{old('buildingcode')}}" tabindex="3"></input></td></tr>
 <tr><td><label for="unit">Unit</label></td><td><input type="text" id="unit" name="unit" class="form-control" value="{{old('unit')}}" tabindex="4"></input></td></tr>
 <tr><td><label for="service">Service</label></td><td><select id="service" name="service" value="{{old('service')}}" tabindex="5">
-    <option disabled selected>Service</option><option>TV</option><option>Int</option></select><!--should be dropdown--></td></tr>
+    <option disabled selected>Service</option><option>TV</option><option>INT</option></select><!--should be dropdown--></td></tr>
 <tr><td><label for="action">Action</label></td><td><select id="action" name="action" value="{{old('action')}}" tabindex="6">
     <option disabled selected>Action</option><option>Connect</option><option>Repair</option><option>Other</option></select><!--should be dropdown--></td></tr>
 <tr><td><label for="dtvaccount">DTV Account</label></td><td><input type="text" id="dtvaccount" name="dtvaccount" class="form-control" value="{{old('dtvaccount')}}" tabindex="7"></input></td></tr>
