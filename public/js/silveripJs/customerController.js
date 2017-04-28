@@ -1032,3 +1032,34 @@ app.controller('customerBillingHistoryController',  function ($scope, $http, $ui
 
   };
 });
+app.controller('customersHomeController',           function ($scope, $http, customerService){
+
+  if(customerService.stateRoute == 'customershome'){
+
+    if(customerService.sideBarFlag) {
+      $scope.sipTool(2);
+      customerService.sideBarFlag = false;
+    }
+  }
+
+
+  //SEARCH CUSTOMER HOME
+  $scope.cDashboardSearch                = function (){
+    if(!this.genericSearch || this.genericSearch == ''){
+      $scope.cDashboardSearchResult = null;
+      return;
+    }
+    var query = {'querySearch' : this.genericSearch};
+
+    $http.get("customersSearch", {params:query})
+      .then(function (response) {
+        $scope.cDashboardSearchResult = response.data;
+      });
+
+    return;
+  };
+
+  $scope.customerGoTo = function (){
+    document.location.href = '#/customers?id=' + this.customerData.id;
+  }
+})

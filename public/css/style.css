@@ -903,3 +903,6 @@ table.dataTable tbody tr {
   position: relative;
   top: -6px;
 }
+.customer-record:hover{
+  font-weight: bold;
+}

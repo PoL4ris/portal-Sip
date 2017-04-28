@@ -8,22 +8,7 @@ app.controller('warpolController',                  function($scope, $http){
   $scope.warpolString = 'warpolController --> This is not the Santa Muerte';
 
 
-  //SEARCH
-  $scope.cDashboardSearch                = function (){
-    if(!this.genericSearch || this.genericSearch == ''){
-      $scope.cDashboardSearchResult = null;
-      return;
-    }
 
-    var query = {'querySearch' : this.genericSearch};
-
-    $http.get("customersSearch", {params:query})
-      .then(function (response) {
-        $scope.cDashboardSearchResult = response.data;
-      });
-
-    return;
-  };
 
 
 

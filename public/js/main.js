@@ -21,6 +21,29 @@ angular.module('app.buildings', ['ui.router']).config(function ($stateProvider) 
       }
     })
 });
+angular.module('app.customershome'  , ['ui.router']).config(function ($stateProvider) {
+  $stateProvider
+    .state('app.customershome', {
+      url: '/customershome',
+      data: {
+        title: 'Customer Home'
+      },
+      views: {
+        "content@app": {
+          templateUrl: '/views/customersHome.html',
+          controller: 'customersHomeController'
+        }
+      },
+      resolve: {
+        scripts: function(lazyScript, customerService){
+          customerService.stateRoute = 'customershome';
+          return lazyScript.register([
+            '/js/smart/build/vendor.ui.js'
+          ]);
+        }
+      }
+    })
+});
 angular.module('app.customers', ['ui.router']).config(function ($stateProvider) {
     $stateProvider
       .state('app.customers', {
@@ -48,6 +71,7 @@ angular.module('app.customers', ['ui.router']).config(function ($stateProvider) 
         }
       })
   });
+
 angular.module('app.network'  , ['ui.router']).config(function ($stateProvider) {
   $stateProvider
     .state('app.network', {
