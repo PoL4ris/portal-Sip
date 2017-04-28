@@ -185,6 +185,17 @@ Route::group(['middleware' => 'web'], function () {
   Route::get('test6',                   'NetworkController@authenticatePort');
   Route::get('test7',                   'NetworkController@activatePort');
 
+
+  //Calendar Routes
+  Route::get('tech-schedule','TechScheduleController@TechScheduler');
+  Route::get('tech-schedule/available-techs','TechScheduleController@GetScheduledTechs');
+  Route::get('tech-schedule/appointments','TechScheduleController@GetPendingAppointments');
+  Route::get('tech-schedule/verifytime','TechScheduleController@VerifyAvailable');
+  Route::get('tech-schedule/getschedulerange','TechScheduleController@getScheduleRange');
+  Route::get('tech-schedule/bcodesearch','TechScheduleController@findBuildingCode');
+  Route::get('tech-schedule/setappointment','TechScheduleController@setAppointment');
+  Route::get('tech-schedule/generatetable','TechScheduleController@GenerateTableSchedule');
+
   //DASHBOARDCHARTS
   Route::get('getTicketsByMonth',                 'ChartController@getTicketsByMonth');
   Route::get('getSignedUpCustomersByYear',        'ChartController@getSignedUpCustomersByYear');
