@@ -133,9 +133,10 @@ class TestController extends Controller
     public function supportTest()
     {
 
+      $result = User::with('accessApps')->find(1);
+      dd($result->toArray());
+
         dd(User::with('profile')->get()->toArray());
-
-
         $building = Building::find(9);
         //      dd(BuildingTicket::where('building_id', 9)->get());
         dd($building->tickets);

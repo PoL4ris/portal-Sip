@@ -182,8 +182,9 @@ class AdminController extends Controller
 
     $app = App::find($data['id_apps']);
     $app->name = $data['app_name'];
-    $app->name = $data['icon'];
-    $app->name = $data['url'];
+    if($data['icon'])
+      $app->icon = $data['icon'];
+    $app->url = $data['url'];
     $app->save();
 
     unset($data['app_name'], $data['icon'], $data['url']);

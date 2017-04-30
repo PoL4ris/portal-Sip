@@ -57,7 +57,8 @@
               <option value="">{{editAppData ? editAppData.icon : null}}</option>
             </select>
             <div class="size-50 pull-left text-center icon-preview">
-              <i class="fa {{editAppData ? editAppData.icon : selectedIcon}}"></i>
+              <i class="fa {{selectedIcon}} " ng-if="selectedIcon"></i>
+              <i class="fa {{editAppData ? editAppData.icon : selectedIcon}} " ng-if="!selectedIcon"></i>
             </div>
             <br>
             <hr>

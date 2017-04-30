@@ -44,31 +44,6 @@ class MainController extends Controller
   }
   public function menuMaker()
   {
-    //PROFILES MENU
-//      return DB::select('SELECT u.first_name, u.last_name, u.email, u.alias, p.name, a.name, a.url, a.icon
-//                          FROM users U
-//                            JOIN profiles P
-//                              ON U.id_profiles = P.id
-//                            JOIN access_apps AA
-//                              ON AA.id_profiles = P.id
-//                            JOIN Apps A
-//                              ON A.id = AA.id_apps
-//                            WHERE U.id = ' . Auth::user()->id . ' ORDER BY A.id ASC;
-//                          ');
-
-//    return DB::select('SELECT u.first_name, u.last_name, u.email, u.alias, p.name, a.name, a.url, a.icon
-//                        FROM users U
-//                          JOIN profiles P
-//                            ON U.id_profiles = P.id
-//                          JOIN access_apps AA
-//                            ON AA.id_profiles = P.id
-//                          JOIN Apps A
-//                            ON A.id = AA.id_apps
-//                              GROUP BY a.url
-//                               ORDER BY A.id ASC;
-//                        ');
-
-//if (Auth::user()->id != x)
 
   $result = Users::with('accessApps', 'accessApps.apps')->find(Auth::user()->id);
   return $result;

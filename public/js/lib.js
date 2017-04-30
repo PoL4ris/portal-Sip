@@ -10,6 +10,9 @@ app.controller('warpolController',                  function($scope, $http){
 
 
 
+
+
+
     $http.get("supportTest")
       .then(function (response) {
         $scope.war = response.data;
