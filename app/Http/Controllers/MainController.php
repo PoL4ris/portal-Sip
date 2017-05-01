@@ -10,11 +10,13 @@ use Auth;
 use App\Models\Network\networkTab;
 use App\Models\Reason;
 use App\Models\App;
+use App\Models\AccessApp;
 use App\Models\Customer;
 use App\Models\Ticket;
 use App\Models\Address;
 use App\Models\Building\Building;
 use App\Models\Status;
+use App\Models\User as Users;
 
 
 class MainController extends Controller
@@ -34,7 +36,6 @@ class MainController extends Controller
   public function homeView()
   {
     return view('index');
-
   }
   public function test()
   {
@@ -43,31 +44,17 @@ class MainController extends Controller
   }
   public function menuMaker()
   {
-    //PROFILES MENU
-//      return DB::select('SELECT u.first_name, u.last_name, u.email, u.alias, p.name, a.name, a.url, a.icon
-//                          FROM users U
-//                            JOIN profiles P
-//                              ON U.id_profiles = P.id
-//                            JOIN access_apps AA
-//                              ON AA.id_profiles = P.id
-//                            JOIN Apps A
-//                              ON A.id = AA.id_apps
-//                            WHERE U.id = ' . Auth::user()->id . ' ORDER BY A.id ASC;
-//                          ');
 
-//    return DB::select('SELECT u.first_name, u.last_name, u.email, u.alias, p.name, a.name, a.url, a.icon
-//                        FROM users U
-//                          JOIN profiles P
-//                            ON U.id_profiles = P.id
-//                          JOIN access_apps AA
-//                            ON AA.id_profiles = P.id
-//                          JOIN Apps A
-//                            ON A.id = AA.id_apps
-//                              GROUP BY a.url
-//                               ORDER BY A.id ASC;
-//                        ');
+  $result = Users::with('accessApps', 'accessApps.apps')->find(Auth::user()->id);
+  return $result;
 
-//if (Auth::user()->id != x)
+  print '<pre>';
+  dd($result->toArray());
+//  print_r($menuMaker->toArray());
+  die();
+
+    return Users::with('accessApps', 'accessApps.apps')->find(Auth::user()->id);
+
     return App::all();
   }
   public function getUserData()
@@ -130,14 +117,6 @@ class MainController extends Controller
 
 
     die();
-  }
-  public function getTicketsSearch(Request $request){
-    $stringA = explode("#", $request->string)[0];
-    $string = explode(" ", $stringA)[0];
-    return Ticket::where('ticket_number', 'LIKE','%'.$string.'%')
-                    ->where('status','!=', 'closed')
-                    ->take(20)
-                    ->get();
   }
   public function getBuildingsSearch(Request $request){
     $stringA = explode("#", $request->string)[0];
@@ -216,7 +195,9 @@ class MainController extends Controller
   }
 
   public function dummyRouteController(){
-    dd(Auth());
+    $data = array();
+    $data['open_tickets'] = Ticket::where('status','!=','closed')->count();
+    return $data;
   }
 
 }

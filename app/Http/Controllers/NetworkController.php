@@ -15,6 +15,7 @@ use App\Models\Customer;
 use App\Models\NetworkNode;
 use App\Models\Port;
 
+use App\Extensions\SIPNetwork;
 use App\Extensions\CiscoSwitch;
 use App\Extensions\MtikRouter;
 use \Carbon\Carbon;
@@ -33,8 +34,8 @@ class NetworkController extends Controller
     private $devModeRouterIP;
 
     public function __construct(){
-        $this->theme = 'luna';
-        DB::connection()->enableQueryLog();
+        //        $this->theme = 'luna';
+        //        DB::connection()->enableQueryLog();
         $this->readCommunity = config('netmgmt.cisco.read');
         $this->writeCommunity = config('netmgmt.cisco.write');
         $this->mtikusername = config('netmgmt.mikrotik.username');
@@ -391,12 +392,12 @@ class NetworkController extends Controller
         //        $portOperStatus = false;
 
         if ($switchVendor == 'Cisco') {
-            
+
             $switch = $this->getSwitchInstance();
-//            $privateVlan = $this->getPortPrivateVlanBySwitchIP($switchIP, $switchPort);
+            //            $privateVlan = $this->getPortPrivateVlanBySwitchIP($switchIP, $switchPort);
             $privateVlan = $this->getPrivateVlanByPort($port);
             if ($privateVlan != '') {
-//            if (isset($privateVlan) && $privateVlan != '') {
+                //            if (isset($privateVlan) && $privateVlan != '') {
                 $portActivateResponse = $switch->setSnmpPortVlanAssignment($switchIP, $switchPort, $privateVlan);
                 if(!isset($portActivateResponse['error'])){
                     $portActivateStatus = $portActivateResponse['response'];
@@ -433,7 +434,7 @@ class NetworkController extends Controller
     }
 
     public function getPrivateVlanByPort(Port $port){
-        
+
         $netNode = $port->networkNode;
         $vlanRangeStr = $netNode->getProperty('private vlan range');
         if($vlanRangeStr == null){
@@ -443,7 +444,7 @@ class NetworkController extends Controller
         $portPosition = $switch->getPortPositionByPortNumber($netNode->ip_address, $port->port_number);
         return $this->calculatePrivateVlanFromRange($vlanRangeStr, $portPosition);
     }
-    
+
     protected function calculatePrivateVlanFromRange($vlanRangeStr, $portPosition) {
         $privateVlan = '';
         if (isset($vlanRangeStr) && $vlanRangeStr != '') {
@@ -463,9 +464,7 @@ class NetworkController extends Controller
         }
         return $privateVlan;
     }
-    
-    
-    
+
     public function getPortPrivateVlanByPortID(Request $request) {
 
         $input = $request->all();
@@ -478,15 +477,13 @@ class NetworkController extends Controller
 
     protected function getPortPrivateVlanBySwitchIP($switchIP, $switchPort) {
 
-//        $netNode
+        //        $netNode
         $vlanRangeStr = $this->getNetworkNodePropertyByIPAddress($switchIP, 'private vlan range');
         $switch = $this->getSwitchInstance();
         $portPosition = $switch->getPortPositionByPortNumber($switchIP, $switchPort);
 
         return $this->calculatePrivateVlanFromRange($vlanRangeStr, $portPosition);
     }
-
-    
 
     protected function getNetworkNodePropertyByIPAddress($ipAddress, $propertyName) {
 
@@ -503,8 +500,17 @@ class NetworkController extends Controller
         return $nodePropertyValue;
     }
 
+    public function getSwitchPortAndNeighborInfoTable(Request $request){
 
+        $input = $request->all();
+        $switchIp = $input['ip'];
 
+        $sipNetwork = new SIPNetwork();
+        $portInfoTable = $sipNetwork->getSwitchPortInfoTable($switchIp);
+        $neighborInfoTable = $sipNetwork->getSwitchCdpNeighborInfoTable($switchIp);
+
+        return [$portInfoTable, $neighborInfoTable];
+    }
 
 
     ######################################

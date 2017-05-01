@@ -30,10 +30,13 @@ class BuildingController extends Controller
     return view('buildings.dashboard', ['offset' => $offset, 'limit' => $limit]);
   }
 
+  public function buildings(Request $request){
+    return $this->buildingData($request);
+  }
   public function buildingData(Request $request)
   {
-
-    return Building::with('neighborhood', 'contacts', 'properties')->find($request->id ? $request->id : rand(2,84));
+    return Building::with('neighborhood', 'contacts', 'properties')->find($request->id ? $request->id : 28);
+//    return Building::with('neighborhood', 'contacts', 'properties')->find($request->id ? $request->id : rand(2,84));
 
 
 
@@ -55,6 +58,13 @@ class BuildingController extends Controller
     ];
     return $data;
   }
+  public function getFilterBld(Request $request){
+    return Building::where('code', 'like', '%' . $request['query'] . '%')
+                   ->orWhere('name', 'like', '%' . $request['query'] . '%')
+                   ->orderBy('id', 'desc')->get();
+  }
+
+
 
   public function getBuilding($id){
     $data = Building::with('address', 'neighborhood', 'contacts')->find($id);

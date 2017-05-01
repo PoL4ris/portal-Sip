@@ -1,336 +1,317 @@
 <div ng-controller="FormXeditableCtrl">
+    <div ng-controller="FormPluginsCtrl">
+        <div class="widget-body" id="customers-gTools">
+            <h2 class="col-lg-12 col-md-12 col-sm-12 no-margin no-padding-sides">
+                <p class="float-left">
+                    <a  href=""
+                       id="b-p-id-cunitd"
+                       record-table="Customers"
+                       data-pk="1"
+                       data-options="editableOptions"
+                       data-original-title="First Name Value"
+                       record-field="first_name"
+                       smart-xeditable
+                       data-ng-model="customerData.customer.first_name"
+                       record-id="{{customerData.customer.id}}"
+                       data-type="text"
+                       record-idContainer="customers"
+                       data-placement="right"
+                       class="editable editable-click"> {{customerData.customer.first_name ? customerData.customer.first_name : '...'}}
+                    </a>
+                </p>
+                <p class="float-left p-l-md">
+                    <a  href=""
+                       id="b-p-id-cunitE"
+                       record-table="Customers"
+                       data-pk="1"
+                       data-options="editableOptions"
+                       data-original-title="Last Name Value"
+                       record-field="last_name"
+                       smart-xeditable
+                       data-ng-model="customerData.customer.last_name"
+                       record-id="{{customerData.customer.id}}"
+                       data-type="text"
+                       record-idContainer="customers"
+                       data-placement="right"
+                       class="editable editable-click">  {{customerData.customer.last_name?customerData.customer.last_name:'...'}}
+                    </a>
+                </p>
+                <p class="float-left p-l-md">
+                    ({{ customerData.customer.id }})
+                </p>
+                <!--<div ng-if="customerData.customer.vip" class="float-left m-l-md vip-class" title="VIP : {{customerData.customer.vip}}"><i class="fa fa-star"></i></div>-->
+                <div ng-if="customerData.customer.vip" class="float-left m-l-md vip-class" title="VIP : {{customerData.customer.vip}}"><label>{{customerData.customer.vip}}</label></div>
 
-  <div ng-controller="FormPluginsCtrl">
-    <div class="widget-body" id="customers-gTools">
+            </h2>
 
-      <h2 class="no-margin">
+            <!--
 
-        <p class="float-left">
-          <a  href=""
-              id="b-p-id-cunitd"
-              record-table="Customers"
-              data-pk="1"
-              data-options="editableOptions"
-              data-original-title="First Name Value"
-              record-field="first_name"
-              smart-xeditable
-              data-ng-model="customerData.customer.first_name"
-              record-id="{{customerData.customer.id}}"
-              data-type="text"
-              record-idContainer="customers"
-              data-placement="right"
-              class="editable editable-click"> {{customerData.customer.first_name ? customerData.customer.first_name : '...'}}
-          </a>
-        </p>
-        <p class="float-left p-l-md">
-          <a  href=""
-              id="b-p-id-cunitE"
-              record-table="Customers"
-              data-pk="1"
-              data-options="editableOptions"
-              data-original-title="Last Name Value"
-              record-field="last_name"
-              smart-xeditable
-              data-ng-model="customerData.customer.last_name"
-              record-id="{{customerData.customer.id}}"
-              data-type="text"
-              record-idContainer="customers"
-              data-placement="right"
-              class="editable editable-click">  {{customerData.customer.last_name?customerData.customer.last_name:'...'}}
-          </a>
-        </p>
-          <p class="float-left p-l-md">
-            ({{ customerData.customer.id }})
-          </p>
-        <!--<div ng-if="customerData.customer.vip" class="float-left m-l-md vip-class" title="VIP : {{customerData.customer.vip}}"><i class="fa fa-star"></i></div>-->
-        <div ng-if="customerData.customer.vip" class="float-left m-l-md vip-class" title="VIP : {{customerData.customer.vip}}"><label>{{customerData.customer.vip}}</label></div>
+<p class="vip-class float-left">
+<a  href="" id="b-p-id-cvip"
+record-table="CustValue"
+data-pk="1"
+smart-xeditable
+data-options="editableOptions"
+data-original-title="Set Value"
+record-field="value"
+record-idContainer="buildingProperties"
+data-ng-model="customerData.customer.vip"
+record-id="{{customerData.customer.vip}}"
+data-type="text"
+data-placement="right"
+class="editable editable-click">
+{{customerData.customer.vip?customerData.customer.vip:'Not Set'}}
+</a>
+</p>
 
-      </h2>
+-->
 
-      <!--
+            <div class="customer-info-card">
+                <div class="col-lg-12 col-md-12 no-padding-sides m-t-lg">
+                    <p class="col-lg-4 col-md-4 no-padding-sides"><strong>Address:</strong></p>
+                    <p class="col-lg-6 col-md-6 no-padding-sides address-bld-img-hover">{{customerData.customer.address.address ? customerData.customer.address.address : 'Not Set'}}</p>
+                    <div class="no-display">
+                        <img src="/img/buildings/{{bld.img_building ? bld.img_building : bld.buildings.img_building}}"
+                             alt="{{customerData.customer.address.address}}"
+                             title="{{customerData.customer.address.address}}">
+                    </div>
+                    <p class="col-lg-2 col-md-2 no-padding-sides ">
+                        <a  href=""
+                           id="b-p-id-cunit"
+                           record-table="Address"
+                           data-pk="1"
+                           data-options="editableOptions"
+                           data-original-title="Set Value"
+                           record-field="unit"
+                           smart-xeditable
+                           data-ng-model="customerData.customer.address.unit"
+                           record-id="{{customerData.customer.address.id}}"
+                           data-type="text"
+                           record-idContainer="customers"
+                           data-placement="right"
+                           class="editable editable-click"># {{customerData.customer.address.unit ? customerData.customer.address.unit : 'Not Set'}}
+                        </a>
+                    </p>
+                </div>
+                <div class="col-lg-12 col-md-12 no-padding-sides">
+                    <p class=" col-lg-4 col-md-4 no-padding-sides"></p>
+                    <p class="col-lg-4 col-md-4 no-padding-sides">
+                        {{customerData.customer.address.city  ? customerData.customer.address.city  : 'Not Set'}},
+                        {{customerData.customer.address.state ? customerData.customer.address.state : 'Not Set'}}
+                        {{customerData.customer.address.zip   ? customerData.customer.address.zip   : 'Not Set'}}
+                    </p>
+                </div>
+                <div class="col-lg-12 col-md-12 no-padding-sides m-t-lg">
+                    <p class="col-lg-4 col-md-4 no-padding-sides"><strong>Username:</strong></p>
+                    <p class="col-lg-4 col-md-4 no-padding-sides">
+                        <a  href=""
+                           id="b-p-id-cemail"
+                           record-table="Customers"
+                           data-pk="1"
+                           data-options="editableOptions"
+                           data-original-title="Set Value"
+                           record-field="email"
+                           smart-xeditable
+                           data-ng-model="customerData.customer.email"
+                           record-id="{{customerData.customer.id}}"
+                           data-type="text"
+                           record-idContainer="customers"
+                           data-placement="right"
+                           class="editable editable-click">{{customerData.customer.email?customerData.customer.email:'Not Set'}}
+                        </a>
+                    </p>
+                </div>
+                <div class="col-lg-12 col-md-12 no-padding-sides">
+                    <p class="col-lg-4 col-md-4 no-padding-sides"><strong>Status:</strong></p>
+                    <p class="col-lg-4 col-md-4 no-padding-sides {{customerData.customer.status.name}} capital-first" ng-if="customerTypes">
+                        <a id="status-select"
+                           record-table="Customers"
+                           class="editable editable-click"
+                           href=""
+                           smart-xeditable=""
+                           data-ng-model="getCustomerData"
+                           data-options="editableOptions"
+                           data-type="select"
+                           data-pk="1"
+                           data-value="{{customerData.customer.status.id}}"
+                           record-field="id_status"
+                           record-idContainer="customers"
+                           data-placement="right"
+                           data-source="{{customerTypes}}"
+                           record-id="{{customerData.customer.id}}"
+                           data-original-title="Select Customer Status">
+                            {{customerData.customer.status.name ? customerData.customer.status.name : 'Pending'}}
+                        </a>
+                    </p>
+                </div>
+                <div class="col-lg-12 col-md-12 no-padding-sides">
+                    <p class="col-lg-4 col-md-4 no-padding-sides"><strong>Location:</strong></p>
+                    <p class="col-lg-8 col-md-8 no-padding-sides">{{bld.name ? bld.name:bld.buildings.name}}  ({{bld.code ? bld.code : bld.buildings.code}})</p>
+                </div>
+                <div ng-repeat="contacto in customerData.customer.contacts">
+                    <div class="col-lg-12 col-md-12 no-padding-sides">
+                        <p class="col-lg-4 col-md-4 no-padding-sides"><strong>{{contactTypes[contacto.id_types - 1].name}}:</strong></p>
+                        <p class="col-lg-4 col-md-4 no-padding-sides">{{contacto.value}}</p>
+                    </div>
+                </div>
+                <div class="col-lg-12 col-md-12 no-padding-sides">
+                    <br>
+                    <p>
+                        <strong>{{bld.type ?bld.type : bld.buildings.type}}</strong>
+                        in  <strong>{{bld.neighborhood.name ? bld.neighborhood.name : bld.buildings.neighborhood.name}}</strong>
+                        with  <strong>{{bld.floors ? bld.floors : bld.buildings.floors}}</strong> floors
+                        and <strong>{{bld.units ? bld.units : bld.buildings.units}}</strong> units
+                    </p>
 
-            <p class="vip-class float-left">
-              <a  href="" id="b-p-id-cvip"
-                  record-table="CustValue"
-                  data-pk="1"
-                  smart-xeditable
-                  data-options="editableOptions"
-                  data-original-title="Set Value"
-                  record-field="value"
-                  record-idContainer="buildingProperties"
-                  data-ng-model="customerData.customer.vip"
-                  record-id="{{customerData.customer.vip}}"
-                  data-type="text"
-                  data-placement="right"
-                  class="editable editable-click">
-                  {{customerData.customer.vip?customerData.customer.vip:'Not Set'}}
-              </a>
-            </p>
+                    <!--<p class="float-left size-50"><strong>Neighborhood:</strong></p>-->
+                    <!--<p>{{bld.neighborhood.name?bld.neighborhood.name:bld.buildings.neighborhood.name}}</p>-->
 
-            -->
+                    <!--<p class="float-left size-50"><strong>Type:</strong></p>-->
+                    <!--<p>{{bld.type?bld.type:bld.buildings.type}}</p>-->
 
-      <div class="customer-info-card">
-        <div class="col-lg-12 no-padding-sides m-t-lg">
+                    <!--<p class="float-left size-50"><strong>Units / Floors:</strong></p>-->
+                    <!--<p>{{bld.units?bld.units:bld.buildings.units}} / {{bld.floors?bld.floors:bld.buildings.floors}}</p>-->
 
-          <p class="col-lg-4 no-padding-sides"><strong>Address:</strong></p>
-          <p class="address-bld-img-hover">{{customerData.customer.address.address ? customerData.customer.address.address : 'Not Set'}}
-            <div class="no-display">
-              <img src="/img/buildings/{{bld.img_building ? bld.img_building : bld.buildings.img_building}}"
-                   alt="{{customerData.customer.address.address}}"
-                   title="{{customerData.customer.address.address}}">
+
+
+
+                    <!--<p class="float-left size-50"><strong>Addresses:</strong></p>-->
+                    <!--<p data-toggle="modal" data-target="#customerAddressesModal" ng-click="clearAddressModal()" class="edit-info-simple-text m-t-md">-->
+                </div>
+                <div class="col-lg-12 col-md-12 no-padding-sides">
+                    <p class=" m-t-md m-b-lg">
+                        <i class="fa fa-map-marker "></i> {{customerData.customer.addresses.length}}
+                        <label ng-if="customerData.customer.addresses.length == 1"> address found on this account</label>
+                        <label ng-if="customerData.customer.addresses.length != 1"> addresses found on this account</label>
+                        <!--<label class="sm-view-action-btn" data-toggle="modal" data-target="#customerAddressesModal" ng-click="clearAddressModal()">...</label>-->
+                        <button class="btn btn-primary m-l-lg" ng-click="clearAddressModal()" data-toggle="modal" data-target="#customerAddressesModal">View</button>
+                    </p>
+
+                </div>
+                <div class="col-lg-12 col-md-12 no-padding-sides">
+                    <div class="col-lg-5 col-md-5 no-padding-sides">
+                        <button id="c-c-i-e" class="float-left btn btn-primary" ng-click="toggleDisabled('c-c-i-e');">
+                            <i class="fa fa-pencil"></i> Edit customer
+                        </button>
+                    </div>
+                    <div class="col-lg-6 col-md-5 ">
+                        <button class=" btn btn-danger" ng-click="showConfirmPassword();">
+                            <i class="fa fa-refresh"></i> Reset password
+                        </button>
+                    </div>
+                </div>
             </div>
-          </p>
-
-          <p class=" col-lg-4"></p>
-          <p class="no-padding-sides col-lg-7">
-            <a  href=""
-                id="b-p-id-cunit"
-                record-table="Address"
-                data-pk="1"
-                data-options="editableOptions"
-                data-original-title="Set Value"
-                record-field="unit"
-                smart-xeditable
-                data-ng-model="customerData.customer.address.unit"
-                record-id="{{customerData.customer.address.id}}"
-                data-type="text"
-                record-idContainer="customers"
-                data-placement="right"
-                class="editable editable-click"># {{customerData.customer.address.unit ? customerData.customer.address.unit : 'Not Set'}}
-            </a>
-          </p>
-
-
-          <p class=" col-lg-4"></p>
-
-          <p class="col-lg-7 no-padding-sides">
-            {{customerData.customer.address.city  ? customerData.customer.address.city  : 'Not Set'}},
-            {{customerData.customer.address.state ? customerData.customer.address.state : 'Not Set'}}
-            {{customerData.customer.address.zip   ? customerData.customer.address.zip   : 'Not Set'}}
-          </p>
-
-
-          <p class="col-lg-4 no-padding-sides"><strong>Username:</strong></p>
-          <p>
-            <a  href=""
-                id="b-p-id-cemail"
-                record-table="Customers"
-                data-pk="1"
-                data-options="editableOptions"
-                data-original-title="Set Value"
-                record-field="email"
-                smart-xeditable
-                data-ng-model="customerData.customer.email"
-                record-id="{{customerData.customer.id}}"
-                data-type="text"
-                record-idContainer="customers"
-                data-placement="right"
-                class="editable editable-click">{{customerData.customer.email?customerData.customer.email:'Not Set'}}
-            </a>
-          </p>
-          <p></p>
-
-
-
-          <p class="col-lg-4 no-padding-sides"><strong>Status:</strong></p>
-          <p class="{{customerData.customer.status.name}} capital-first" ng-if="customerTypes">
-            <a id="status-select"
-               record-table="Customers"
-               class="editable editable-click"
-               href=""
-               smart-xeditable=""
-               data-ng-model="getCustomerData"
-               data-options="editableOptions"
-               data-type="select"
-               data-pk="1"
-               data-value="{{customerData.customer.status.id}}"
-               record-field="id_status"
-               record-idContainer="customers"
-               data-placement="right"
-               data-source="{{customerTypes}}"
-               record-id="{{customerData.customer.id}}"
-               data-original-title="Select Customer Status">
-               {{customerData.customer.status.name ? customerData.customer.status.name : 'Pending'}}
-            </a>
-          </p>
-
-
-          <p class="col-lg-4 no-padding-sides"><strong>Location:</strong></p>
-          <p>{{bld.name ? bld.name:bld.buildings.name}}  ({{bld.code ? bld.code : bld.buildings.code}})</p>
-
-          <div ng-repeat="contacto in customerData.customer.contacts">
-            <p class="col-lg-4 no-padding-sides"><strong>{{contactTypes[contacto.id_types - 1].name}}:</strong></p>
-            <p>{{contacto.value}}</p>
-          </div>
-
-
-
-
-
-
-
-
-          <br>
-          <p>
-            <strong>{{bld.type ?bld.type : bld.buildings.type}}</strong>
-            in  <strong>{{bld.neighborhood.name ? bld.neighborhood.name : bld.buildings.neighborhood.name}}</strong>
-            with  <strong>{{bld.floors ? bld.floors : bld.buildings.floors}}</strong> floors
-            and <strong>{{bld.units ? bld.units : bld.buildings.units}}</strong> units
-          </p>
-
-
-
-
-
-
-
-          <!--<p class="float-left size-50"><strong>Neighborhood:</strong></p>-->
-          <!--<p>{{bld.neighborhood.name?bld.neighborhood.name:bld.buildings.neighborhood.name}}</p>-->
-
-          <!--<p class="float-left size-50"><strong>Type:</strong></p>-->
-          <!--<p>{{bld.type?bld.type:bld.buildings.type}}</p>-->
-
-          <!--<p class="float-left size-50"><strong>Units / Floors:</strong></p>-->
-          <!--<p>{{bld.units?bld.units:bld.buildings.units}} / {{bld.floors?bld.floors:bld.buildings.floors}}</p>-->
-
-
-
-
-          <!--<p class="float-left size-50"><strong>Addresses:</strong></p>-->
-          <!--<p data-toggle="modal" data-target="#customerAddressesModal" ng-click="clearAddressModal()" class="edit-info-simple-text m-t-md">-->
-          <p   class=" m-t-md m-b-lg">
-            <i class="fa fa-map-marker "></i> {{customerData.customer.addresses.length}}
-            <label ng-if="customerData.customer.addresses.length == 1"> address found on this account</label>
-            <label ng-if="customerData.customer.addresses.length != 1"> addresses found on this account</label>
-            <!--<label class="sm-view-action-btn" data-toggle="modal" data-target="#customerAddressesModal" ng-click="clearAddressModal()">...</label>-->
-            <button class="btn btn-primary m-l-lg" ng-click="clearAddressModal()" data-toggle="modal" data-target="#customerAddressesModal">View</button>
-          </p>
-
         </div>
-
-        <div class="col-lg-6 no-padding-sides">
-            <button id="c-c-i-e" class="float-left btn btn-primary" ng-click="toggleDisabled('c-c-i-e');">
-            <i class="fa fa-pencil"></i> Edit customer
-            </button>
-        </div>
-        <div class="col-lg-6 no-padding-sides">
-            <button class="float-left btn btn-danger" ng-click="showConfirmPassword();">
-            <i class="fa fa-lock"></i> Reset password
-            </button>          
-        </div>
-      </div>
     </div>
-  </div>
-
 </div>
 
 
 <!--MODAL-->
 <div class="modal fade cus-add-mod" id="customerAddressesModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
 
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-          &times;
-        </button>
-        <h4 class="modal-title" id="myModalServiceLabel">{{customerData.customer.first_name + ' ' + customerData.customer.last_name}} Addresses</h4>
-      </div>
-      <!--modal-body-customer-addresses-table-->
-      <div class="modal-body" id="mb-ca-table">
-        <div class="wrapper-sm">
-          <div class="row">
-            <div class="field-data col-lg-12" >
-              <!--***********************************************-->
-              <table datatable="ng"  class="row-border hover">
-                <thead>
-                <tr>
-                  <th>ID</th>
-                  <th class="addr-th">Address</th>
-                  <th>Code</th>
-                  <th>Unit</th>
-                  <th>City</th>
-                  <th>Zip</th>
-                  <th>State</th>
-                  <th>Country</th>
-                  <th>Edit</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr ng-repeat="addrs in customerData.customer.addresses">
-                  <td>{{addrs.id}}</td>
-                  <td class="addr-th">{{addrs.address}}</td>
-                  <td>{{addrs.code}}</td>
-                  <td>{{addrs.unit}}</td>
-                  <td>{{addrs.city}}</td>
-                  <td>{{addrs.zip}}</td>
-                  <td>{{addrs.state}}</td>
-                  <td>{{addrs.country}}</td>
-                  <td><span class="btn btn-primary" ng-click="editAddressModal(1)">Edit</span></td>
-                </tr>
-                </tbody>
-              </table>
-              <!--***********************************************-->
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalServiceLabel">{{customerData.customer.first_name + ' ' + customerData.customer.last_name}} Addresses</h4>
             </div>
-          </div>
-        </div>
-      </div>
-      <!--modal-body-customer-addresses-edit-->
-      <div class="modal-body no-display" id="mb-ca-edit">
-        <div class="wrapper-sm">
-          <div class="row">
-            <div class="field-data col-lg-12" >
-              <!--***********************************************-->
-
-              <form action="">
-                <p class="col-lg-5">
-                  <label class="col-lg-4">Address:</label>
-                  <input class="col-lg-8" type="text" placeholder="New Address" value="{{customerData.customer.addresses[indexOfToShow].address}}">
-                </p>
-                <p class="col-lg-3">
-                  <label class="col-lg-4">Code:</label>
-                  <input class="col-lg-8" type="text" placeholder="New Code" value="{{customerData.customer.addresses[indexOfToShow].code}}">
-                </p>
-                <p class="col-lg-4">
-                  <label class="col-lg-4">Unit:</label>
-                  <input class="col-lg-8" type="text" placeholder="New Code" value="{{customerData.customer.addresses[indexOfToShow].unit}}">
-                </p>
-                <p class="col-lg-5">
-                  <label class="col-lg-4">City:</label>
-                  <input class="col-lg-8" type="text" placeholder="New Code" value="{{customerData.customer.addresses[indexOfToShow].city}}">
-                </p>
-                <p class="col-lg-3">
-                  <label class="col-lg-4">ZIP:</label>
-                  <input class="col-lg-8" type="text" placeholder="New Code" value="{{customerData.customer.addresses[indexOfToShow].zip}}">
-                </p>
-                <p class="col-lg-4">
-                  <label class="col-lg-4">State:</label>
-                  <input class="col-lg-8" type="text" placeholder="New Code" value="{{customerData.customer.addresses[indexOfToShow].state}}">
-                </p>
-                <p class="col-lg-5">
-                  <label class="col-lg-4">Country:</label>
-                  <input class="col-lg-8" type="text" placeholder="New Code" value="{{customerData.customer.addresses[indexOfToShow].country}}">
-                </p>
-                <div class="float-right">
-                  <button class="btn btn-primary">Update</button>
+            <!--modal-body-customer-addresses-table-->
+            <div class="modal-body" id="mb-ca-table">
+                <div class="wrapper-sm">
+                    <div class="row">
+                        <div class="field-data col-lg-12" >
+                            <!--***********************************************-->
+                            <table datatable="ng"  class="row-border hover">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th class="addr-th">Address</th>
+                                        <th>Code</th>
+                                        <th>Unit</th>
+                                        <th>City</th>
+                                        <th>Zip</th>
+                                        <th>State</th>
+                                        <th>Country</th>
+                                        <th>Edit</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="addrs in customerData.customer.addresses">
+                                        <td>{{addrs.id}}</td>
+                                        <td class="addr-th">{{addrs.address}}</td>
+                                        <td>{{addrs.code}}</td>
+                                        <td>{{addrs.unit}}</td>
+                                        <td>{{addrs.city}}</td>
+                                        <td>{{addrs.zip}}</td>
+                                        <td>{{addrs.state}}</td>
+                                        <td>{{addrs.country}}</td>
+                                        <td><span class="btn btn-primary" ng-click="editAddressModal(1)">Edit</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <!--***********************************************-->
+                        </div>
+                    </div>
                 </div>
-              </form>
-              <button ng-click="editAddressModal(0)" class="btn btn-default float-right m-r-lg">
-                <i class="fa fa-arrow-left"></i>
-                Back
-              </button>
-              <!--***********************************************-->
             </div>
-          </div>
+            <!--modal-body-customer-addresses-edit-->
+            <div class="modal-body no-display" id="mb-ca-edit">
+                <div class="wrapper-sm">
+                    <div class="row">
+                        <div class="field-data col-lg-12" >
+                            <!--***********************************************-->
+
+                            <form action="">
+                                <p class="col-lg-5">
+                                    <label class="col-lg-4">Address:</label>
+                                    <input class="col-lg-8" type="text" placeholder="New Address" value="{{customerData.customer.addresses[indexOfToShow].address}}">
+                                </p>
+                                <p class="col-lg-3">
+                                    <label class="col-lg-4">Code:</label>
+                                    <input class="col-lg-8" type="text" placeholder="New Code" value="{{customerData.customer.addresses[indexOfToShow].code}}">
+                                </p>
+                                <p class="col-lg-4">
+                                    <label class="col-lg-4">Unit:</label>
+                                    <input class="col-lg-8" type="text" placeholder="New Code" value="{{customerData.customer.addresses[indexOfToShow].unit}}">
+                                </p>
+                                <p class="col-lg-5">
+                                    <label class="col-lg-4">City:</label>
+                                    <input class="col-lg-8" type="text" placeholder="New Code" value="{{customerData.customer.addresses[indexOfToShow].city}}">
+                                </p>
+                                <p class="col-lg-3">
+                                    <label class="col-lg-4">ZIP:</label>
+                                    <input class="col-lg-8" type="text" placeholder="New Code" value="{{customerData.customer.addresses[indexOfToShow].zip}}">
+                                </p>
+                                <p class="col-lg-4">
+                                    <label class="col-lg-4">State:</label>
+                                    <input class="col-lg-8" type="text" placeholder="New Code" value="{{customerData.customer.addresses[indexOfToShow].state}}">
+                                </p>
+                                <p class="col-lg-5">
+                                    <label class="col-lg-4">Country:</label>
+                                    <input class="col-lg-8" type="text" placeholder="New Code" value="{{customerData.customer.addresses[indexOfToShow].country}}">
+                                </p>
+                                <div class="float-right">
+                                    <button class="btn btn-primary">Update</button>
+                                </div>
+                            </form>
+                            <button ng-click="editAddressModal(0)" class="btn btn-default float-right m-r-lg">
+                                <i class="fa fa-arrow-left"></i>
+                                Back
+                            </button>
+                            <!--***********************************************-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">
+                    Cancel
+                </button>
+            </div>
+
         </div>
-      </div>
-
-      <div class="modal-footer">
-        <button type="button" class="btn btn-danger" data-dismiss="modal">
-          Cancel
-        </button>
-      </div>
-
     </div>
-  </div>
 </div>

@@ -9,15 +9,34 @@ angular.module('app.buildings', ['ui.router']).config(function ($stateProvider) 
         "content@app": {
           templateUrl: '/views/building/building.html',
           controller: 'buildingCtl'
-        },
-        "silveriptool": {
-          templateUrl: '/views/sidebar/buildingsList.html',
-          controller: 'sideBldController'
         }
       },
       resolve: {
         scripts: function(lazyScript, customerService){
           customerService.stateRoute = 'buildings';
+          return lazyScript.register([
+            '/js/smart/build/vendor.ui.js'
+          ]);
+        }
+      }
+    })
+});
+angular.module('app.customershome'  , ['ui.router']).config(function ($stateProvider) {
+  $stateProvider
+    .state('app.customershome', {
+      url: '/customershome',
+      data: {
+        title: 'Customer Home'
+      },
+      views: {
+        "content@app": {
+          templateUrl: '/views/customersHome.html',
+          controller: 'customersHomeController'
+        }
+      },
+      resolve: {
+        scripts: function(lazyScript, customerService){
+          customerService.stateRoute = 'customershome';
           return lazyScript.register([
             '/js/smart/build/vendor.ui.js'
           ]);
@@ -52,6 +71,7 @@ angular.module('app.customers', ['ui.router']).config(function ($stateProvider) 
         }
       })
   });
+
 angular.module('app.network'  , ['ui.router']).config(function ($stateProvider) {
   $stateProvider
     .state('app.network', {
@@ -180,7 +200,11 @@ app.factory('buildingService', function() {
     exist : true
   };
 });
-
+app.factory('supportService', function() {
+  return {
+    exist : true
+  };
+});
 app.factory('adminService', function() {
   return {
     existeToken : $('#auth-user').attr('tmpTokenTest')

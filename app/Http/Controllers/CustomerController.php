@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Note;
 use Illuminate\Contracts\Auth\Access\Authorizable;
 use Illuminate\Http\Request;
-//use App\Http\Requests;
+//Models
+use App\Models\Note;
 use App\Models\Product;
 use App\Models\Support\Adminaccess;
 use App\Models\PaymentMethod;
@@ -25,12 +25,15 @@ use App\Models\NetworkNode;
 use App\Models\ContactType;
 use App\Models\Support\Ticketreasons;
 use App\Models\ActivityLog;
+
 use App\Http\Controllers\NetworkController;
+
 use DB;
 use Log;
 use Schema;
 use Auth;
 use ActivityLogs;
+use SendMail;
 
 class CustomerController extends Controller
 {
@@ -39,21 +42,6 @@ class CustomerController extends Controller
   public function __construct() {
     $this->middleware('auth');
       $this->logType = 'customer';
-  }
-  public function getGenericSearch(Request $request){
-    //Contains the String.
-    $string = $request->querySearch;
-
-    $customer = Address::with('customers', 'buildings', 'customers.contacts')
-      ->take(5)
-      ->get();
-
-
-    $result = $customer->customerWhere(501);
-
-//    return $customer;
-    return $result;
-    return 'SilverIP Blazing Fast';
   }
   public function getCustomersSearch(Request $request)
   {
@@ -266,6 +254,10 @@ class CustomerController extends Controller
   public function getInvoiceHistory(Request $request)
   {
     return Invoice::where('id_customers', $request->id)->get();
+  }//SI
+  public function getBillingHistory(Request $request)
+  {
+    return billingTransactionLog::where('id_customers', $request->id)->get();
   }//SI
   public function getCustomerServices(Request $request)//SI
   {
@@ -697,24 +689,30 @@ class CustomerController extends Controller
     }
 
   }
-  public function insertCustomerTicket(Request $request)//???
+  public function insertCustomerTicket(Request $request)//SI
   {
-    $data = $request->all();
+    //Default User = 0 /10
 
-    $lastTicketNumber = Ticket::all()->last()->ticket_number;
-    $ticketNumber = explode('ST-',$lastTicketNumber);
+    $lastTicketId = Ticket::max('id');
+    $lastTicketNumber = Ticket::find($lastTicketId)->ticket_number;
+    $ticketNumber     = explode('ST-',$lastTicketNumber);
     $ticketNumberCast = (int)$ticketNumber[1] + 1;
+//    $defaultUserId    = 10;
 
-    $data['ticket_number'] = 'ST-' . $ticketNumberCast;
-    $data['id_users'] = Auth::user()->id;
+    $newTicket = new Ticket;
 
-    //Default User
-    $data['id_users_assigned'] = 10;
-    $data['created_at'] = date("Y-m-d H:i:s");
-    $data['updated_at'] = date("Y-m-d H:i:s");
+    $newTicket->id_customers      = $request->id_customers;
+    $newTicket->ticket_number     = 'ST-' . $ticketNumberCast;
+    $newTicket->id_reasons        = $request->id_reasons;
+    $newTicket->comment           = $request->comment;
+    $newTicket->status            = $request->status;
+    $newTicket->id_users          = Auth::user()->id;
+//    $newTicket->id_users_assigned = $defaultUserId;
+    $newTicket->save();
 
-    DB::table('tickets')->insert($data);
-
+    //1 = new ticket
+    //2 = update ticket
+    SendMail::ticketMail($newTicket, 1);
     return 'OK';
   }
   public function updateCustomerServiceInfo(Request $request)//NO

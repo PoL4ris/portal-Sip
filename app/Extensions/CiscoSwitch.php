@@ -154,36 +154,42 @@ class CiscoSwitch {
     }
 
     public function loadFromDB($ip = NULL, $mac = NULL, $hostName = NULL) {
+
         $array = array();
         $dbRecord = null;
         if ($ip) {
-            $array ['IPAddress'] = $ip;
+            $array ['ip_address'] = $ip;
         }
         if ($mac) {
-            $array ['MacAddress'] = $mac;
+            $array ['mac_address'] = $mac;
         }
         if ($hostName) {
-            $array ['HostName'] = $hostName;
+            $array ['host_name'] = $hostName;
         }
 
         if (count($array) > 0) {
-            $netNodeQuery = NetworkNode::where('Type','Switch');
+            $netNodeQuery = NetworkNode::where('id_types', config('const.type.switch'));
 
             foreach($array as $col => $value){
                 $netNodeQuery->where($col,$value);
             }
 
-            $netNode = $netNodeQuery->first()->toArray();
+            $netNode = $netNodeQuery->first();
 
-            if ($netNode) {
-                foreach ($netNode as $key => $value) {
-                    $this->switch[$key] = $value;
-                }
-                $this->switch['selected'] = true;
-            } else {
+            if($netNode == null){
                 $this->switch = null;
                 $this->selected = false;
+                return $this;
             }
+
+            $this->switch['dbModel'] = $netNode;
+            $netNodeArray = $netNode->toArray();
+
+            foreach ($netNodeArray as $key => $value) {
+                $this->switch[$key] = $value;
+            }
+            $this->switch['selected'] = true;
+
         }
         return $this;
     }
@@ -307,7 +313,8 @@ class CiscoSwitch {
 
     public function getSnmpAllPortAdminStatus($ip, $keyRegEx = '') {
 
-        $response = $this->getSnmpAllPortsQuery($ip, self::ifAdminStatus, $keyRegEx);        
+        $response = $this->getSnmpAllPortsQuery($ip, self::ifAdminStatus, $keyRegEx);
+//        return $response;
         return $this->filterResponses($response, '/^(.*)\(.*/', '$1');
     }
 
@@ -396,7 +403,7 @@ class CiscoSwitch {
 
     public function getSnmpAllPortLastChangeFormatted($ip, $keyRegEx = '') {
 
-        $portLastChangeResponse = $this->getSnmpAllPortLastChange($ip, $portNum, $isIdx);
+        $portLastChangeResponse = $this->getSnmpAllPortLastChange($ip, $keyRegEx);
         if(isset($portLastChangeResponse['error'])){
             return $portLastChangeResponse;
         }
@@ -898,14 +905,14 @@ class CiscoSwitch {
 
         $portIndexResponse = array();
         $portIndex = $portNum;
-        
+
         if($isIdx == false){
             if($useBridgeIndex){
                 $portIndexResponse = $this->getBridgePortIndex($ip, $portNum, $isIdx);
             } else {
                 $portIndexResponse = $this->getPortIndex($ip, $portNum, $isIdx); 
             }
-            
+
             if(isset($portIndexResponse['error'])){
                 return $portIndexResponse;
             }

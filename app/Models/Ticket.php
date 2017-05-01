@@ -12,41 +12,32 @@ class Ticket extends Model
   {
     DB::connection()->enableQueryLog();
   }
-
   public function customer() {
     return $this->hasOne('App\Models\Customer', 'id', 'id_customers');
   }
-
   public function reason() {
     return $this->hasOne('App\Models\Reason', 'id', 'id_reasons');
   }
-
   public function ticketNote() {
     return $this->hasOne('App\Models\TicketNote', 'id', 'id_ticket_notes');
   }
-
   public function lastTicketHistory() {
     return $this->hasOne('App\Models\TicketHistory', 'id_tickets')->orderBy('id','desc');
   }
-
   public function user() {
     return $this->hasOne('App\Models\User', 'id', 'id_users');
   }
-
   public function userAssigned() {
     return $this->hasOne('App\Models\User', 'id','id_users_assigned');
   }
-
   public function address() {
     return $this->belongsTo('App\Models\Address', 'id_customers', 'id_customers', 'App\Models\Customer');
   }
-
   public function contacts(){
     return $this->belongsTo('App\Models\Contact', 'id_customers', 'id_customers', 'App\Models\Customer');
   }
-
   public function ticketHistoryFull() {
-    return $this->hasMany('App\Models\TicketHistory', 'id_tickets', 'id');
+    return $this->hasMany('App\Models\TicketHistory', 'id_tickets', 'id')->orderBy('id','desc');
   }
   public function historyReason() {
 
@@ -56,4 +47,12 @@ class Ticket extends Model
   {
     return $this->belongsTo('App\Models\Building\Building', 'id_address', 'id_address', 'App\Models\Address');
   }
+
+
+
+
+  public function buildings() {
+    return $this->belongsToMany('App\Models\Building\Building');
+  }
+
 }

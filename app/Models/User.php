@@ -16,25 +16,8 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     Authorizable,
     CanResetPassword;
 
-    /**
-   * The database table used by the model.
-   *
-   * @var string
-   */
     protected $table = 'users';
-
-    /**
-   * The attributes that are mass assignable.
-   *
-   * @var array
-   */
     protected $fillable = ['id', 'first_name', 'last_name', 'email', 'password', 'remember_token', 'social_token', 'social_access', 'avatar', 'alias', 'id_status', 'id_profiles'];
-
-    /**
-   * The attributes excluded from the model's JSON form.
-   *
-   * @var array
-   */
     protected $hidden = ['password', 'remember_token'];
 
 //    public function isAnAdmin() {
@@ -44,23 +27,14 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     public function isActive() {
         return ($this->id_status == config('const.status.active')) ? true : false;
     }
-
-    /**
-     * 
-     * @return type
-     */
     public function status() {
-
         return $this->hasOne('App\Models\Status', 'id_status');
-    }    
-
-    /**
-     * 
-     * @return type
-     */
+    }
     public function profile() {
-
-        return $this->hasOne('App\Models\Profile', 'id_profiles');
+        return $this->hasOne('App\Models\Profile', 'id', 'id_profiles');
+    }
+    public function accessApps() {
+      return $this->hasMany('App\Models\AccessApp', 'id_profiles', 'id_profiles')->where('id_apps','!=', 0)->orderBy('id_apps', 'asc');
     }
 
 }

@@ -22,9 +22,9 @@ class MtikRouter {
         if ($props != NULL) {
             $this->username = isset($props['username']) ? $props['username'] : '';
             $this->password = isset($props['password']) ? $props['password'] : '';
-            $ip = isset($props['IPAddress']) ? $props['IPAddress'] : NULL;
-            $mac = isset($props['MacAddress']) ? $props['MacAddress'] : NULL;
-            $hostName = isset($props['HostName']) ? $props['HostName'] : NULL;
+            $ip = isset($props['ip_address']) ? $props['mac_address'] : NULL;
+            $mac = isset($props['mac_address']) ? $props['mac_address'] : NULL;
+            $hostName = isset($props['host_name']) ? $props['host_name'] : NULL;
             //            if($ip != NULL && $mac != NULL && $hostName)
             $this->loadFromDB($ip, $mac, $hostName);
         }
@@ -45,7 +45,7 @@ class MtikRouter {
         }
 
         if (count($array) > 0) {
-            $netNodeQuery = NetworkNode::where('id_types',7)
+            $netNodeQuery = NetworkNode::where('id_types', config('const.type.router'))
                 ->where('role','Master');
 
             foreach($array as $col => $value){
@@ -603,16 +603,19 @@ class MtikRouter {
      */
 
     public function getUserPortInfo($routerIp = NULL, $ip = NULL, $mac = NULL) {
+
         $apiQueryArray = array();
         $userPortInfo = array();
-        $userSession = Session::getInstance();
-        $userSession->universalNat = false;
-        $userSession->invalidUserIP = false;
-        //        error_log('MtikRouter.php: getUserPortInfo(): called');
+//        $userSession = Session::getInstance();
+//        $userSession->universalNat = false;
+//        $userSession->invalidUserIP = false;
+
+        $userPortInfo['universalNat'] = false;
+        $userPortInfo['invalidUserIP'] = false;
 
         if (!isset($routerIp)) {
             if ($this->isSelected()) {
-                $routerIp = $this->router['IPAddress'];
+                $routerIp = $this->router['ip_address'];
             }
         }
 
@@ -640,7 +643,7 @@ class MtikRouter {
                             $userPortInfo['Uni-ToIPAddress'] = $apiQueryResult[0]['to-address'];
 
                             // Now go back and find the dhcp lease
-                            $userSession->universalNat = true;
+                            $userPortInfo['universalNat'] = true;
                             $apiQueryArray ['?address'] = $apiQueryResult[0]['address'];
                             $apiQueryResult = $API->comm("/ip/dhcp-server/lease/print", $apiQueryArray);
                         }
@@ -683,7 +686,7 @@ class MtikRouter {
                         $userPortInfo['MacAddress'] = ($apiQueryResult[0]['mac-address']) ? $apiQueryResult[0]['mac-address'] : $userPortInfo['Uni-MacAddress'];
                     } else {
                         // User must have a static IP set
-                        if ($userSession->universalNat) {
+                        if ($userPortInfo['universalNat']) {
                             $userPortInfo['IPAddress'] = $userPortInfo['Uni-IPAddress'];
                             $userPortInfo['MacAddress'] = $userPortInfo['Uni-MacAddress'];
                         } else {
@@ -695,14 +698,13 @@ class MtikRouter {
                         $userPortInfo['Switch Port Number'] = NULL;
                         $userPortInfo['Switch Instance ID'] = NULL;
                         $userPortInfo['Port VLAN'] = NULL;
-                        $userSession->invalidUserIP = true;
+                        $userPortInfo['invalidUserIP'] = true;
                     }
 
                     $API->disconnect();
                 }
             }
         }
-        //        error_log('MtikRouter.php: getUserPortInfo(): $userSession->invalidUserIP = '.$userSession->invalidUserIP. ' $userSession->universalNat = '.$userSession->universalNat);
         return $userPortInfo;
     }
 

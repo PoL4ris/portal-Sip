@@ -2,14 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BuildingTicket;
 use App\Models\TicketHistory;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Extensions\SIPBilling;
+use App\Extensions\SIPSignup;
+use App\Extensions\SIPNetwork;
 use App\Extensions\BillingHelper;
 use App\Extensions\CiscoSwitch;
 use App\Extensions\DataMigrationUtils;
 use DB;
+//use App\User;
 use App\Models\Customer;
 use App\Models\Ticket;
 use App\Models\CustomerProduct;
@@ -18,6 +22,7 @@ use App\Models\Address;
 use App\Models\BillingTransactionLog;
 use App\Models\Building\Building;
 use App\Models\Product;
+use App\Models\User; // as Users;
 use App\Models\Port;
 use App\Models\NetworkNode;
 use App\Models\ContactType;
@@ -128,100 +133,36 @@ class TestController extends Controller
     public function supportTest()
     {
 
-      $warp = Building::with('neighborhood', 'contacts', 'properties')->find(28);
+      $result = User::with('accessApps')->find(1);
+      dd($result->toArray());
 
-      print '<pre>';
-      dd($warp->toArray());
-      die();
-    return;
-
-      $idList = array();
-      $bldID = Customer::with('address')->find($request->id)->address->id_buildings;
-      $products = Building::with('products')->find($bldID)->products->toArray();
-
-      foreach($products as $x => $idS)
-        $idList[$x] = $idS['id_products'];
+        dd(User::with('profile')->get()->toArray());
+        $building = Building::find(9);
+        //      dd(BuildingTicket::where('building_id', 9)->get());
+        dd($building->tickets);
+        dd($building);
 
 
 
-      return Product::whereIn('id', $idList)->get();
-
-
-
-
-
-
-    print '<pre>';
-    dd(Auth());
-    die();
-
-
-      $warpol = Customer::with(
-        'addresses',
-        'contacts',
-        'type',
-        'address.buildings',
-        'address.buildings.neighborhood',
-        'status',
-        'status.type',
-        'openTickets',
-        'log',
-        'log.user')->find(1598);
-
-      print '<pre>';
-      dd($warpol->toArray());
-      die();
-
-
-
-
-      $customer  = Customer::with('address')->find(501);
-      $address   = $customer->address;
-//      $toAddress = ['pablo@silverip.com', 'pol.laris@gmail.com', 'peyman@silverip.com'];
-      $toAddress = ['pablo@silverip.com'];
-      $template  = 'mail.signup';
-      $subject   = 'dummy Test Mail';
-
-      $data = array();
-      $data['uno']  = '111';
-      $data['dos']  = '222';
-      $data['tres'] = '333';
-
-      Mail::send(array('html'     => $template),
-
-                      ['customer' => $customer,
-                       'address'  => $address,
-                       'data'     => $data
-                      ], function($message) use($toAddress,
-                                                $subject,
-                                                $customer,
-                                                $address,
-                                                $data)
-                                                {
-                                                  $message->from('pablo@silverip.com', 'SilverIP');
-                                                  $message->to($toAddress,
-                                                               trim($customer->first_name).' '.trim($customer->last_name)
-                                                              )->subject($subject);
-                                                }
-                  );
-
-      return 'MAIL SENT';
-
-
+        $port = Port::find(5237);
+        dd($port->customers);
+        $customer = Customer::find(13897);
+        dd($customer->ports);
     }
+
     public function mail(){
-      $customer  = Customer::with('address')->find(501);
-      $address   = $customer->address;
-      $toAddress = 'pablo@silverip.com';
-      $template  = 'mail.signup';
-      $subject   = 'dummy Test Mail';
+        $customer  = Customer::with('address')->find(501);
+        $address   = $customer->address;
+        $toAddress = 'pablo@silverip.com';
+        $template  = 'mail.signup';
+        $subject   = 'dummy Test Mail';
 
-      $data = array();
-      $data['uno']  = '111';
-      $data['dos']  = '222';
-      $data['tres'] = '333';
+        $data = array();
+        $data['uno']  = '111';
+        $data['dos']  = '222';
+        $data['tres'] = '333';
 
-      return view('mail.signup', ['customer' => $customer, 'address' => $address]);
+        return view('mail.signup', ['customer' => $customer, 'address' => $address]);
     }
 
     public function cleanView(){
@@ -369,14 +310,14 @@ class TestController extends Controller
     public function testActivityLog(){
         ActivityLog::test();
     }
-    
+
     public function genericTest(){
-        
-//        $childProduct = Product::find(104);
-//        dd($childProduct->parentProduct);
-        
-        
-//        $building = Building::with('products.test')->find(6);
+
+        //        $childProduct = Product::find(104);
+        //        dd($childProduct->parentProduct);
+
+
+        //        $building = Building::with('products.test')->find(6);
         $building = Building::find(71);
         dd($building->activeParentProducts()->toArray());
     }
@@ -385,85 +326,164 @@ class TestController extends Controller
 
         $dbMigrationUtil = new DataMigrationUtils();
 
-//        $dbMigrationUtil->seedAppsTable();
-//        dd('done');
+        //        $dbMigrationUtil->seedAppsTable();
+        //        dd('done');
         dd(DataMigration::count());
-        
+
         dd(config('const.status.disabled'));
-//        $dbMigrationUtil->updateFromCustomersTable();
-//        dd($dbMigrationUtil->maxMysqlTimestamp('2017-03-26 12:32:12', '2017-03-27 12:32:12'));
-//        $dbMigrationUtil->migrateCustomersTable();
-//        $dbMigrationUtil->migrateSupportTicketHistoryTable();
-//        $dbMigrationUtil->migrateSupportTicketReasons();
+        //        $dbMigrationUtil->updateFromCustomersTable();
+        //        dd($dbMigrationUtil->maxMysqlTimestamp('2017-03-26 12:32:12', '2017-03-27 12:32:12'));
+        //        $dbMigrationUtil->migrateCustomersTable();
+        //        $dbMigrationUtil->migrateSupportTicketHistoryTable();
+        //        $dbMigrationUtil->migrateSupportTicketReasons();
 
         dd('done');
     }
 
     public function generalTest(){
 
-        $switch = new CiscoSwitch(['readCommunity' => config('netmgmt.cisco.read'),
-                                'writeCommunity' => config('netmgmt.cisco.write')]);
-        
-//        error_reporting(0);
-//        track_errors(true);
-        
-//        dd($switch->getSnmpModelNumber('10.10.35.6'));
-//        $response = $switch->getSnmpPortOperStatus('10.10.35.6', 11);
-//        $response = $switch->getSnmpAllPortLabel('10.10.35.6', '/Ethernet/');
-//        $response = $switch->getSnmpSysName('10.10.35.6');
-//        $response = $switch->getSnmpAllPortAdminStatus()'10.10.35.6');
-//        $response = $switch->getSnmpAllPortDesc('10.10.35.6', '/Ethernet/');
-//        $response = $switch->getSnmpAllPortAdminStatus('10.10.35.6', '/Ethernet/');
+        $lastTicketId = Ticket::max('id');
+        $lastTicketNumber = Ticket::find($lastTicketId)->ticket_number;
 
-//        dd($switch->getSnmpPortOperStatus('10.10.35.6', 2));
-//        dd($switch->getSnmpPortSpeed('10.10.35.6', 47));
-//        $response = $switch->getSnmpPortIndex('10.10.35.6', 2);
-//        echo 'Round 1 ... <br>';
-//        $response = $switch->getSnmpPortIndexList('10.10.35.6');
-//        echo 'Round 2 ... <br>';
-//        dd($switch->getSnmpPortIndexList('10.10.35.6'));
-//        $response = $switch->getSnmpPortLastChange('10.10.35.6', '47');
-//        $response = $switch->getSnmpPortfastStatus('10.10.35.6', '48');
-        
-        
-//        dd($switch->getSnmpPortfastMode('10.10.35.6', '6'));
-        
-//        dd($switch->getSnmpSwitchportMode('10.10.35.6', '48'));
+        dd($lastTicketNumber);
 
-//        $str = "1";
-//        dd(str_pad($str,4,"0",STR_PAD_LEFT));
-//        dd(base_convert('7', 16, 2));
-//        dd($switch->getSnmpPortVlanAssignment('10.10.35.6', '48'));
-//        dd($switch->getBridgePortIndex('10.10.35.6', '26'));
-        
-//        dd($switch->getSnmpTrunkPortNativeVlanAssignment('10.10.35.6', '47'));
-//        dd($switch->getSnmpTrunkPortEncapsulation('10.10.35.6', '47'));
-//        dd($switch->getSnmpBpduGuardStatus('10.10.35.6', '47'));
-        
-//        dd($switch->snmp2_set('10.10.35.6', 'BigSeem', '1.3.6.1.4.1.9.9.68.1.2.2.1.2.10115', 'i', 1));
-//        dd($switch->setSnmpIndexValueByPort('10.10.35.6', '15', false, false, '1.3.6.1.4.1.9.9.68.1.2.2.1.2', 'i', 1));
-        
-//        dd($switch->getSnmpPortInDataOct('10.10.35.6', '10136', true));
-//        dd($switch->getSnmpPortStats('10.10.35.6', '47'));
-//           
-//        dd($response);
-        
-        
-//        $port = Port::find(8734);
-//        dd([$port, $port->customer, $port->networkNode]);
-//        
-//        $networkNode = $port->networkNode;
-//        dd($networkNode);
-//        dd($networkNode->masterRouter);
-        
+        $ticketNumber     = explode('ST-',$lastTicketNumber);
+        $ticketNumberCast = (int)$ticketNumber[1] + 1;
+        $defaultUserId    = 10;
+
+        $newTicket = new Ticket;
+
+        // comment=Test+3&id_customers=4667&id_reasons=13&status=escalated
+        $newTicket->id_customers      = 4667;
+        $newTicket->ticket_number     = 'ST-' . $ticketNumberCast;
+        $newTicket->id_reasons        = 13;
+        $newTicket->comment           ='Test 4';
+        $newTicket->status            = 'escalated';
+        $newTicket->id_users          = Auth::user()->id;
+        $newTicket->id_users_assigned = $defaultUserId;
+        $newTicket->save();
+
+        dd($newTicket);
+
+
+
+        $sipNetwork = new SIPNetwork();
+
+        $portInfoTable = $sipNetwork->getSwitchPortInfoTable('10.11.254.140');
+        $neighborInfoTable = $sipNetwork->getSwitchCdpNeighborInfoTable('10.11.254.140');
+
+        dd([$portInfoTable, $neighborInfoTable]);
+
+
+        $port = Port::find(5237);
+        dd($port->customers);
+
+
+
+
+
+        $customer = Customer::find(13897);
+        dd($customer->ports);
+
+
+
+
+
+
+        $building = Building::find(81);
+
+        $address = $building->address->first();
+
+        $singupUtil = new SIPSignup();
+        $data = $singupUtil->getBuildingActivationFees($address->id);
+
+        dd($data);
+
+
+        $myProductPropertyValues = $building->load('buildingProducts.product.propertyValues');
+
+        dd($myProductPropertyValues->buildingProducts->pluck('product')); //->pluck('propertyValues'));
+
+        $products;
+        $building->load(['buildingProducts.product' => function ($q) use ( &$products ) {
+            $products = $q->with('propertyValues')->get(); //->unique();
+        }]);
+
+        dd($products);
+
+        //
+        //
+        //        $testArray = array(
+        //            '13253' => ['101','102','103','104','105','106','107','108','114','115','116','117','118','119','120','121','122','123','124','201','202','203','204','205','206','207','209','210','214','215','216','217','218','219','220','221','222','223','224','225','226','301','302','303','304','305','306','311','312','313','314','315','316','317','318','319','320','321','322','323','324','325','326','401','402','403','404','405','406','414','415','416','417','418','419','420','421','422','423','424','425','426','501','502','503','504','505','506','514','515','516','517','518','519','520','521','522','523','524','525','526','614','615','616','617','618','619','620','621','622','623','624','625','626','627','714','715','720','721','722','727'],
+        //            '13420' => ['101','102','103','104','105','106','107','108','114','115','116','117','118','119','120','121','122','123','124','201','202','203','204','205','206','207','209','210','214','215','216','217','218','219','220','221','222','223','224','225','226','301','302','303','304','305','306','311','312','313','314','315','316','317','318','319','320','321','322','323','324','325','326','401','402','403','404','405','406','414','415','416','417','418','419','420','421','422','423','424','425','426','501','502','503','504','505','506','514','515','516','517','518','519','520','521','522','523','524','525','526','614','615','616','617','618','619','620','621','622','623','624','625','626','627','714','715','720','721','722','727']);
+        //
+        //        dd(json_encode($testArray));
+        //
+        //
+        //        $switch = new CiscoSwitch(['readCommunity' => config('netmgmt.cisco.read'),
+        //                                   'writeCommunity' => config('netmgmt.cisco.write')]);
+
+
+        //        error_reporting(0);
+        //        track_errors(true);
+
+        //        dd($switch->getSnmpModelNumber('10.10.35.6'));
+        //        $response = $switch->getSnmpPortOperStatus('10.10.35.6', 11);
+        //        $response = $switch->getSnmpAllPortLabel('10.10.35.6', '/Ethernet/');
+        //        $response = $switch->getSnmpSysName('10.10.35.6');
+        //        $response = $switch->getSnmpAllPortAdminStatus()'10.10.35.6');
+        //        $response = $switch->getSnmpAllPortDesc('10.10.35.6', '/Ethernet/');
+        //        $response = $switch->getSnmpAllPortAdminStatus('10.10.35.6', '/Ethernet/');
+
+        //        dd($switch->getSnmpPortOperStatus('10.10.35.6', 2));
+        //        dd($switch->getSnmpPortSpeed('10.10.35.6', 47));
+        //        $response = $switch->getSnmpPortIndex('10.10.35.6', 2);
+        //        echo 'Round 1 ... <br>';
+        //        $response = $switch->getSnmpPortIndexList('10.10.35.6');
+        //        echo 'Round 2 ... <br>';
+        //        dd($switch->getSnmpPortIndexList('10.10.35.6'));
+        //        $response = $switch->getSnmpPortLastChange('10.10.35.6', '47');
+        //        $response = $switch->getSnmpPortfastStatus('10.10.35.6', '48');
+
+
+        //        dd($switch->getSnmpPortfastMode('10.10.35.6', '6'));
+
+        //        dd($switch->getSnmpSwitchportMode('10.10.35.6', '48'));
+
+        //        $str = "1";
+        //        dd(str_pad($str,4,"0",STR_PAD_LEFT));
+        //        dd(base_convert('7', 16, 2));
+        //        dd($switch->getSnmpPortVlanAssignment('10.10.35.6', '48'));
+        //        dd($switch->getBridgePortIndex('10.10.35.6', '26'));
+
+        //        dd($switch->getSnmpTrunkPortNativeVlanAssignment('10.10.35.6', '47'));
+        //        dd($switch->getSnmpTrunkPortEncapsulation('10.10.35.6', '47'));
+        //        dd($switch->getSnmpBpduGuardStatus('10.10.35.6', '47'));
+
+        //        dd($switch->snmp2_set('10.10.35.6', 'BigSeem', '1.3.6.1.4.1.9.9.68.1.2.2.1.2.10115', 'i', 1));
+        //        dd($switch->setSnmpIndexValueByPort('10.10.35.6', '15', false, false, '1.3.6.1.4.1.9.9.68.1.2.2.1.2', 'i', 1));
+
+        //        dd($switch->getSnmpPortInDataOct('10.10.35.6', '10136', true));
+        //        dd($switch->getSnmpPortStats('10.10.35.6', '47'));
+        //
+        //        dd($response);
+
+
+        //        $port = Port::find(8734);
+        //        dd([$port, $port->customer, $port->networkNode]);
+        //
+        //        $networkNode = $port->networkNode;
+        //        dd($networkNode);
+        //        dd($networkNode->masterRouter);
+
         $customer = Customer::find(5380);
         dd($customer->port);
-        
+
         dd($customer->getNetworkInfo());
-        
-        
+
+
         $customer = Customer::find(1928); // David Ellis - 41E8  #1305
-//        dd($customer);
+        //        dd($customer);
         dd($customer->getNetworkInfo()->toArray());
 
     }

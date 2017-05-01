@@ -1,40 +1,43 @@
+<!--TABLE LOAD-->
 <div class="container text-center" ng-if="!supportData">
   <i class="fa fa-gear loading-anim f-size-25 p-t-lg"></i>
 </div>
+<!--END TABLE LOAD-->
+<section ng-if="supportData" class="col-sm-12 col-md-12 col-lg-12 no-padding-sides support-table-grid null-section">
+<div class="row">
+  <div class="col-lg-12 m-t-lg ">
 
+    <div class="btn btn-primary m-r-lg support-status" ng-click="getAllOpenTickets($event)">All Open Tickets</div>
+    <div class="btn btn-primary m-r-lg support-status support-active" ng-click="getNoneBillingTickets($event)">Non-Billing Tickets</div>
+    <div class="btn btn-primary m-r-lg support-status" ng-click="getBillingTickets($event)">Billing Tickets</div>
+    <div class="btn btn-primary m-r-lg support-status" ng-click="getMyTickets($event)">My Tickets</div>
+    <button class="btn btn-success m-r-lg" ng-click="refreshSupportContent()"><i class="fa fa-refresh"></i></button>
+    <img src="/img/loading.gif" alt="" class="loading-gif-support no-display">
+
+    <div class="ticket-timing-results block-table-inline pull-right">
+      <div class="ttr-container">
+        <div class="old-gray   float-left time-data"><label>Total:</label>   {{ticketOpenTime.old}}</div>
+        <div class="old-green  float-left time-data"><label><b>></b> 12Hrs.</label> {{ticketOpenTime.old12}}</div>
+        <div class="old-yellow float-left time-data"><label><b>></b> 24Hrs.</label> {{ticketOpenTime.old24}}</div>
+        <div class="old-red    float-left time-data"><label><b>></b> 48Hrs.</label> {{ticketOpenTime.old48}}</div>
+      </div>
+    </div>
+
+    <div class="ticket-search-table size-100 m-t-lg">
+      <article ng-include="'/views/support/supportTicketSearch.html'" class="null-article"></article>
+    </div>
+
+  </div>
+</div>
+</section>
 <!--TICKET LIST-->
 <section ng-if="supportData" class="col-sm-12 col-md-12 col-lg-12 bg-white white-shadow m-t-lg p-b-lg support-table-grid">
   <div class="row">
 
-    <div class="col-lg-12 m-t-lg ">
+    <!--SUPPORT ACTIONS-->
 
-      <div class="btn btn-primary m-r-lg support-status" ng-click="getAllOpenTickets($event)">All Open Tickets</div>
-      <div class="btn btn-primary m-r-lg support-status support-active" ng-click="getNoneBillingTickets($event)">Non-Billing Tickets</div>
-      <div class="btn btn-primary m-r-lg support-status" ng-click="getBillingTickets($event)">Billing Tickets</div>
-      <div class="btn btn-primary m-r-lg support-status" ng-click="getMyTickets($event)">My Tickets</div>
 
-      <img src="/img/loading.gif" alt="" class="loading-gif-support no-display">
-
-      <div class="ticket-timing-results block-table-inline pull-right">
-        <div class="ttr-container">
-          <div class="old-gray   float-left time-data"><label>Total:</label>   {{ticketOpenTime.old}}</div>
-          <div class="old-green  float-left time-data"><label><b>></b> 12Hrs.</label> {{ticketOpenTime.old12}}</div>
-          <div class="old-yellow float-left time-data"><label><b>></b> 24Hrs.</label> {{ticketOpenTime.old24}}</div>
-          <div class="old-red    float-left time-data"><label><b>></b> 48Hrs.</label> {{ticketOpenTime.old48}}</div>
-        </div>
-      </div>
-
-      <div class="ticket-search-table size-100 m-t-lg">
-        <form >
-          <label>
-            <input type="text" placeholder="Search for Open / Closed Tickets...">
-            <i class="fa fa-search pull-right"></i>
-          </label>
-        </form>
-      </div>
-
-    </div>
-
+    <!--SUPPORT TABLE-->
     <article class="col-lg-12 tickets-history-table m-t-lg table-container">
       <table id="myTable" class="tablesorter table table-striped" datatable="ng" dt-options="dtOptions">
         <thead>
@@ -90,7 +93,6 @@
 </section>
 <!--END TICKET LIST-->
 
-
 <!-- MODAL DE TICKET -->
 <div class="modal fade" id="ticketModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-ticket-size">
@@ -106,17 +108,17 @@
           <div class="row">
             <div class="field-data col-lg-12" >
               <!--Name-->
-              <div class="col-lg-12 no-padding-sides">
+              <div class="col-lg-12 no-padding-sides m-b-lg">
                 <label><strong> {{selectedTicket.customer.first_name + ' ' + selectedTicket.customer.last_name}}</strong></label>
                 <button class="btn btn-primary pull-right"
                         ng-click="editFormByType('block-b')"
                         id="block-b">
                         Change Customer
                 </button>
-                <button class="btn btn-primary pull-right no-display"
-                        ng-click="editFormByType('block-b')"
+                <button class="btn btn-success pull-right no-display m-r-lg"
+                        ng-click="editFormByType('block-b'); updateCustomerOnTicket();"
                         id="save-block-b">
-                        Change Customer
+                        Update
                 </button>
               </div>
               <!--Default Info-->
@@ -137,12 +139,22 @@
                 <small class="text-muted">{{selectedTicket.status}}</small>
               </div>
               <!--Change Customer Search-->
-              <div ng-include="'/views/search.html'" class="header-search main-search stc-search"></div>
+
+              <p ng-if="selectedCustomerTicket" class="stcu-p">
+                {{selectedCustomerTicket.first_name}} {{selectedCustomerTicket.last_name}} | {{selectedCustomerTicket.code}} | #{{resultSearch.unit}}
+              </p>
+              <form id="customer-update-ticket-form">
+                <input type="hidden" readonly value="{{selectedCustomerTicket.id}}" name="id_customers">
+                <input type="hidden" readonly value="{{selectedTicket.id}}" name="id_ticket">
+              </form>
+              <div ng-include="'/views/genericSearch.html'"
+                   class="header-search main-search stc-search no-display"
+                   id="block-b-search"></div>
               <!--Details Info-->
               <div class="col-lg-12 no-padding-sides m-t-lg m-b-sm bg-gray p-b-lg">
                 <form id="form-1-ticket">
                   <div class="col-lg-12 no-padding-sides b-t-ddd b-b-ddd m-b-lg" >
-                    <div class="pull-left m-t-md">Details:</div>
+
                     <button class="btn m-b-xs w-xs btn-primary btn-edit ticket-right pull-right m-t-sm m-b-sm"
                             id="block-a"
                             ng-click="editFormByType('block-a')">
@@ -186,16 +198,16 @@
                 </form>
               </div>
               <!--Comments-->
-              <!--
+
               <div class="col-lg-12 b-t-ddd no-padding-sides p-t-lg p-b-lg m-t-lg">
-                <div>Info:</div>
-                <div class="comment-content m-b-md">{{selectedTicket.ticket_note.comment}}
+                <div>Summary:</div>
+                <div class="comment-content m-b-md">{{selectedTicket.comment}}
                   <p ng-repeat="comment in selectedTicket.ticket_note.ticket_history_full">
                     {{comment.comment}}
                   </p>
                 </div>
               </div>
-              -->
+
               <!--Info Left Block-->
               <div class="col-lg-4 no-padding-sides bg-gray">
                 <div>Created by</div>
@@ -207,11 +219,11 @@
               </div>
               <!--Update History Right Block-->
               <div class="col-lg-8 p-b-lg ">
-                <div>History:</div>
+                <div>Update Ticket:</div>
                 <form id="form-2-ticket">
                   <input type="hidden" name="id_reasons" value="{{selectedTicket.reason.id}}">
                   <input type="hidden" name="id_users_assigned" value="{{selectedTicket.user_assigned.id}}">
-                  <textarea name="comment"  placeholder="Go ahead..." class="textarea-main-size thistory-form-2 m-t-sm" value="err" required></textarea>
+                  <textarea name="comment"  placeholder="" class="textarea-main-size thistory-form-2 m-t-sm" value="err" required></textarea>
                   <div class="form-group col-lg-12 suhs no-padding-sides">
                     <label class="control-label">Status: </label>
                     <div class="col-sm-10 no-padding-sides">
@@ -222,7 +234,8 @@
                     </div>
                   </div>
                   <div class="display-content-main-box update-btn-ticket">
-                    <button class="btn m-b-xs w-xs btn-primary save-btn display-inline"  ng-click="submitFormUpdate('form-2-ticket')">UPDATE</button>
+                    <img src="/img/loading.gif" alt="" class="loading-gif-support m-r-lg" ng-if="loadingGif">
+                    <button id="onticket-update-btn" class="btn m-b-xs w-xs btn-primary save-btn display-inline"  ng-click="submitFormUpdate('form-2-ticket')">Update</button>
                   </div>
                 </form>
               </div>
@@ -255,7 +268,7 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">
           Cancel
         </button>
       </div>

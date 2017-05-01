@@ -1,40 +1,37 @@
-
 <div class="col-md-5 col-sm-12 col-xs-12">
     <div class="product-image">
-      <div id="myCarousel-3" class="carousel fade">
-        <div class="carousel-inner">
-          <div class="item active">
             <img src="/img/buildings/{{buildingData.img_building?buildingData.img_building:buildingData.buildings.img_building}}" alt="">
-          </div>
-        </div>
-      </div>
     </div>
-  </div>
+</div>
 
   <div class="col-md-7 col-sm-12 col-xs-12">
     <h2 class="b-b-ddd p-b-md m-b-md">{{buildingData.name?buildingData.name:buildingData.buildings.name}}</h2>
     <div class="row">
       <div class="col-lg-5 bld-box-info">
         <p><strong>Address:</strong></p>
-        <!--<p>Alias</p>-->
+        <p><strong>Alias</strong></p>
         <p><strong>Neighborhood:</strong></p>
         <p><strong>Code:</strong></p>
-        <!--<p>Year Built</p>-->
+        <p><strong>Year Built</strong></p>
         <p><strong>Units:</strong></p>
         <p><strong>Floors:</strong></p>
         <p><strong>Type:</strong></p>
-        <!--<p>Legal Builder</p>-->
+        <p><strong>Legal Builder</strong></p>
       </div>
       <div class="col-lg-7 bld-box-info text-align-right">
-        <p>{{buildingData.address ? buildingData.address[0].address : buildingData.name}}</p>
-        <!--<p>{{bld.alias?bld.alias:bld.buildings.alias}}</p>-->
-        <p>{{buildingData.neighborhood.name?buildingData.neighborhood.name:buildingData.buildings.neighborhood.name}}</p>
-        <p>{{buildingData.code?buildingData.code:buildingData.buildings.code}}</p>
-        <!--<p>{{bld.year_built?bld.year_built:bld.buildings.year_built}}</p>-->
-        <p>{{buildingData.units?buildingData.units:buildingData.buildings.units}}</p>
-        <p>{{buildingData.floors?buildingData.floors:buildingData.buildings.floors}}</p>
-        <p>{{buildingData.type?buildingData.type:buildingData.buildings.type}}</p>
-        <!--<p>{{bld.legal_name?bld.legal_name:bld.buildings.legal_name}}</p>-->
+        <p>{{buildingData.name}}</p>
+        <p>{{buildingData.alias}}</p>
+        <p>{{buildingData.neighborhood.name}}</p>
+        <p>{{buildingData.code}}</p>
+        <p>{{buildingData.year_built}}</p>
+        <p>{{buildingData.units}}</p>
+        <p>{{buildingData.floors}}</p>
+        <p>{{buildingData.type}}</p>
+        <p>{{buildingData.legal_name }}</p>
       </div>
     </div>
   </div>
+
+  <!--<pre>-->
+  <!--{{buildingData | json}}-->
+  <!--</pre>-->

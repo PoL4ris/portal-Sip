@@ -15,7 +15,7 @@ angular.module('app')
   .config(
     [          '$stateProvider', '$urlRouterProvider', 'JQ_CONFIG', 'MODULE_CONFIG', 
       function ($stateProvider,   $urlRouterProvider, JQ_CONFIG, MODULE_CONFIG) {
-          var layout = "tpl/app.html";
+          var layout = "tpl/apps.html";
           if(window.location.href.indexOf("material") > 0){
             layout = "tpl/blocks/material.layout.html";
             $urlRouterProvider

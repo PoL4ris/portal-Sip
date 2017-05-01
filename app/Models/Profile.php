@@ -6,12 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Profile extends Model
 {
-    /**
-     * 
-     * @return type
-     */
-    public function users() {
 
-        return $this->hasMany('App\Models\User', 'id');
-    }
+  public function users() {
+
+      return $this->hasMany('App\Models\User', 'id');
+  }
+  public function accessApps() {
+
+    return $this->hasMany('App\Models\AccessApp', 'id_profiles');
+  }
 }

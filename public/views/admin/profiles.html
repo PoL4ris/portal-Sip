@@ -1,0 +1,62 @@
+<div class="col-lg-12">
+  <div class="admin-workspace">
+    <div class="col-lg-12">
+      <button class="btn btn-primary" ng-click="addNewProfile()" ng-if="!newProfile"><i class="fa fa-plus"></i> Add Profile</button>
+      <button class="btn btn-danger" ng-click="profileCancel()" ng-if="newProfile"><i class="fa fa-times"></i> Cancel</button>
+    </div>
+    <div class="m-t-lg col-lg-3">
+      <table id="profile-table" class="tablesorter table table-striped" datatable="ng" dt-options="dtOptions" ng-if="adminUsers">
+        <thead>
+          <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Edit</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="data in adminProfiles">
+            <td>{{data.id}}</td>
+            <td>{{data.name}}</td>
+            <td><i class="btn btn-primary fa fa-pencil" ng-click="editProfile()"></i></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="m-t-lg col-lg-9" ng-if="newProfile || editProfileData">
+      <div class="row">
+        <form class="" id="admin-profile-form">
+          <!--PROFILE NAME-->
+          <div class="col-lg-2">
+            <label>Name</label>
+            <br>
+            <input type="text" placeholder="Profile Name" name="profile_name" class="size-100" value="{{editProfileData ? editProfileData.name : null}}" required>
+          </div>
+          <!--APPS CHECKBOX-->
+          <div class="col-lg-10">
+            <h3>Set Apps Access</h3>
+              <div class="col-lg-4 smart-form" ng-repeat="data in adminApps" ng-controller="adminPAppACont" ng-if="editProfileData">
+                <label class="checkbox">
+                  <input type="checkbox" name="{{data.id}}" ng-if="!dataCheck">
+                  <input type="checkbox" name="{{data.id}}" ng-if="dataCheck" checked="checked">
+                  <i></i>{{data.name}}
+                </label>
+              </div>
+              <div class="col-lg-4 smart-form" ng-repeat="data in adminApps" ng-if="!editProfileData">
+                <label class="checkbox">
+                  <input type="checkbox" name="{{data.id}}">
+                  <i></i>{{data.name}}
+                </label>
+              </div>
+          </div>
+          <!--ACTION BUTTONS-->
+          <div class="col-lg-12 m-t-lg">
+          <button class="btn btn-success pull-right" ng-if="!editProfileData" ng-click="submitNewProfile()">Submit Profile</button>
+          <button class="btn btn-success pull-right" ng-if="editProfileData" ng-click="updateAdminProfile()">Update Profile</button>
+        </div>
+        </form>
+      </div>
+      <button class="btn btn-danger" ng-click="profileCancel()" ng-if="editProfileData"><i class="fa fa-times"></i> Cancel</button>
+    </div>
+  </div>
+</div>
