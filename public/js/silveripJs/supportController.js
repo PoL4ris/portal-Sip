@@ -153,6 +153,7 @@ app.controller('supportController',                 function ($scope, $http, DTO
   };
   $scope.submitFormUpdate               = function (idForm) {
 
+
     $('#onticket-update-btn').attr('disabled', true);
 
     var infoData = getFormValues(idForm);
@@ -167,10 +168,14 @@ app.controller('supportController',                 function ($scope, $http, DTO
 
     $http.get("updateTicketHistory", {params:infoData})
       .then(function (response) {
+
+
         $scope.selectedTicket = response.data;
         $('#onticket-update-btn').removeAttr('disabled');
         $scope.loadingGif = false;
-        $('.thistory-form-2').val('');
+
+        $('#form-2-ticket').trigger('reset');
+
         $.smallBox({
           title: "Ticket Updated!",
           content: "<i class='fa fa-clock-o'></i> <i>2 seconds ago...</i>",
@@ -178,6 +183,11 @@ app.controller('supportController',                 function ($scope, $http, DTO
           iconSmall: "fa fa-thumbs-up bounce animated",
           timeout: 6000
         });
+
+        if(customerService.stateRoute == 'customers')
+          angular.element('#ticket-history-repeat-id').scope().getTicketHistory();
+
+
       });
 
   };

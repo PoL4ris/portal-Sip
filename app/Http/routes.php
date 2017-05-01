@@ -188,7 +188,7 @@ Route::group(['middleware' => 'web'], function () {
     Route::post('activate',                'SignupController@activate');
 
     //DUMMYCONTROLLER
-    Route::get('dummyRouteController',    'MainController@dummyRouteController');//new
+    Route::get('dummyRouteController',    'TestController@supportTest');//new
     Route::get('email/template_support_new_ticket',    'TestController@supportTest');//new
 
     //MAILS

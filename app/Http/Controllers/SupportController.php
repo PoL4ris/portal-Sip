@@ -301,6 +301,7 @@ class SupportController extends Controller
         $ticketHistoryRecord->save();
 
         $updateTicket = Ticket::find($request->id);
+        $updateTicket->status     = $request->status;
         $updateTicket->updated_at = $ticketHistoryRecord->created_at;
         $updateTicket->save();
 

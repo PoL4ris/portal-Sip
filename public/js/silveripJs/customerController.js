@@ -420,17 +420,21 @@ app.controller('customerController',                function ($scope, $http, $st
   $scope.pStInOptions = DTOptionsBuilder.newOptions().withDisplayLength(50);
 });
 app.controller('customerTicketHistoryController',   function ($scope, $http){
-  $http.get("getTicketHistory", {params:{'id':$scope.idCustomer}})
-    .then(function (response) {
-      $scope.ticketHistory = response.data;
-      $scope.letterLimit = 20;
-    });
+  $scope.getTicketHistory = function () {
+    $http.get("getTicketHistory", {params:{'id':$scope.idCustomer}})
+      .then(function (response) {
+        $scope.ticketHistory = response.data;
+        $scope.letterLimit = 20;
+      });
+  }
   $scope.showFullComment  = function(id) {
     $('#ticket-' + id).fadeIn('slow');
   }
   $scope.hideFullComment  = function(id) {
     $('#ticket-' + id).fadeOut('fast');
   }
+
+  $scope.getTicketHistory();
 });
 app.controller('customerInvoiceHistoryController',  function ($scope, $http){
   //   console.log($scope.customerData);

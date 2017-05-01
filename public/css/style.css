@@ -906,3 +906,32 @@ table.dataTable tbody tr {
 .customer-record:hover{
   font-weight: bold;
 }
+.summary-ticket-container{
+  background: #f4f4f4 none repeat scroll 0 0;
+  margin-bottom: 15px;
+}
+.summary-ticket-container .comment-content{
+  background: white none repeat scroll 0 0;
+  margin-top: 5px;
+  max-height: 200px;
+  overflow: auto;
+  padding-top: 10px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
