@@ -17,6 +17,7 @@ class Kernel extends ConsoleKernel
         Commands\TruncateDatabaseTables::class,
         Commands\MigrateFromLegacyDatabase::class,
         Commands\UpdateFromLegacyDatabase::class,
+        Commands\GeneralTasks::class,
     ];
 
     /**

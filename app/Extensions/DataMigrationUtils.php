@@ -2039,5 +2039,34 @@ class DataMigrationUtils {
         return false;
 
     }
+
+    public function generalDatabaseTask(){
+
+        $recordCount = 0;
+
+        $totalUpdateRecords = PaymentMethod::where('properties', 'LIKE', '[{%')->count();
+        $this->startProgressBar($totalUpdateRecords, 'Updating PaymentMethod properties');
+
+        while (true) {
+
+            $recordsProcessed = 0;
+            $pmRecords = PaymentMethod::where('properties', 'LIKE', '[{%')->take(500)->get();
+            if($pmRecords->count() == 0){
+                break;
+            }
+
+            foreach ($pmRecords as $pmRecord) {
+                $properties = $pmRecord->getProperties();
+                $newProperties = json_encode($properties);
+                $pmRecord->properties = $newProperties;
+                $pmRecord->save();
+                $recordsProcessed++;
+            }
+            $this->advanceProgressBar($recordsProcessed);
+            $recordCount += $recordsProcessed;
+        }
+        $this->stopProgressBar();
+        Log::info('Updated '.$recordCount.' records');
+    }
 }
 ?>
