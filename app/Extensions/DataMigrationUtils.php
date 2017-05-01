@@ -1379,8 +1379,8 @@ class DataMigrationUtils {
         if($legacyCustomer->CCnumber != null && $legacyCustomer->CCnumber != 'XXXX-XXXX-XXXX-' && $legacyCustomer->CCtoken != null) {
             $paymentMethod->id = $legacyCustomer->CID;
             $paymentMethod->account_number = $legacyCustomer->CCtoken;
-            $paymentMethod->properties = '[{"last four":"'. $legacyCustomer->CCnumber. '", "card type":"'.
-                $legacyCustomer->CCtype. '"}]';
+            $paymentMethod->properties = '{"last four":"'. $legacyCustomer->CCnumber. '", "card type":"'.
+                $legacyCustomer->CCtype. '"}';
             $paymentMethod->exp_month = $legacyCustomer->Expmo;
             $paymentMethod->exp_year = $legacyCustomer->Expyr;
             $paymentMethod->types = 'Credit Card';
