@@ -12,6 +12,7 @@ use stdClass;
 use App\Models\Building\Building;
 use App\Models\Address;
 use Validator;
+use Config;
 
 class TechScheduleController extends Controller
 {
@@ -111,14 +112,14 @@ class TechScheduleController extends Controller
                 if($tech == $value['tech']) {
                     $hourofappointment = new DateTime($appt['appointment']->getStart()->getDateTime());
                     $hourofappointment = $hourofappointment->format('H') - $tableoffset;
-                    $tablesetup[$hourofappointment][$key] = ['type' => 'pending', 'appointment' => $appt['appointment'] , 'hour' => $hourofappointment+$tableoffset, 'tech' => $tech ];
+                    $tablesetup[$hourofappointment][$key] = ['type' => 'pending', 'appointment' => $appt['appointment'] , 'hour' => $hourofappointment+$tableoffset, 'tech' => $tech , 'eventid' => (string)$appt['appointment']->getID() ];
 
                     //sadly we also need to figure the difference between the hour of the start of the appointment and the end.
                     $endhourofappointment = new DateTime($appt['appointment']->getEnd()->getDateTime());
                     $endhourofappointment = $endhourofappointment->format('H') - $tableoffset;
                     if($endhourofappointment > $hourofappointment) {
                         for($z=0;$z<$endhourofappointment-$hourofappointment;++$z) {
-                            $tablesetup[$hourofappointment+$z][$key] = ['type' => 'pending', 'appointment' => $appt['appointment'] , 'hour' => $hourofappointment+$tableoffset+$z, 'tech' => $tech ];
+                            $tablesetup[$hourofappointment+$z][$key] = ['type' => 'pending', 'appointment' => $appt['appointment'] , 'hour' => $hourofappointment+$tableoffset+$z, 'tech' => $tech , 'eventid' => (string)$appt['appointment']->getID() ];
                         }
                     }
 
@@ -201,8 +202,6 @@ for($row=0;$row<$tablesetup['rows'];$row++) {
     public function TechScheduler(Request $request) {
 
 
-        //dd($locations[3]->address[0]->address);
-
         return view('techscheduler.scheduler');
     }
 
@@ -221,7 +220,7 @@ for($row=0;$row<$tablesetup['rows'];$row++) {
                       ->orWhere('address', 'LIKE', '%'.$search.'%');
             })
             ->get();
-
+dd($locations);
         return $locations;
     }
 
@@ -283,11 +282,64 @@ for($row=0;$row<$tablesetup['rows'];$row++) {
         return $value;
 
     }
+public function moveAppointment(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'origin' => 'required',
+            'destination' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return redirect('tech-schedule')
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+
+$Calendar = new GoogleCalendar;
+
+$origin = json_decode($request['origin']);
+$destination = json_decode($request['destination']);
+
+//remove $origin->tech and replace with destination->tech
+$event=$Calendar->service->events->get(Config::get('google.pending_appointment'), $origin->eventid);
+
+$summary = $event->getSummary();
+$summary = str_replace($origin->tech, $destination->tech, $summary);
+$event->setSummary($summary);
+
+$eventstart =new DateTime($event->getStart()->getDateTime());
+$eventend =new DateTime($event->getEnd()->getDateTime());
+
+$diff = $eventstart->diff($eventend);
+$eventstart->setTime($destination->hour,0,0);
+$eventend = new DateTime($eventstart->format(DATE_RFC3339));
+$eventend->add($diff);
+
+    $start = new \Google_Service_Calendar_EventDateTime();
+    $start->setTimeZone('America/Chicago');
+    $start->setDateTime($eventstart->format(DATE_RFC3339));
+    $end = new \Google_Service_Calendar_EventDateTime();
+    $end->setTimeZone('America/Chicago');
+    $end->setDateTime($eventend->format(DATE_RFC3339));
+
+$event->setStart($start);
+$event->setEnd($end);
+$event->setSummary($summary);
+
+$updatedEvent = $Calendar->service->events->update(Config::get('google.pending_appointment'), $origin->eventid, $event);
+
+
+dd($eventend);
+
+
+return $request;
+
+
+}
 
     public function setAppointment(Request $request) {
         $validator = Validator::make($request->all(), [
             'username' => 'required',
-            'tech' => 'required',
             'buildingcode' => 'required',
             'unit' => 'required',
             'selected' => 'required',
