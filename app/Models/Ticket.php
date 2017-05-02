@@ -55,4 +55,8 @@ class Ticket extends Model
     return $this->belongsToMany('App\Models\Building\Building');
   }
 
+  public function difftime(){
+    return;
+  }
+
 }

@@ -34,6 +34,7 @@ use Mail;
 use Config;
 use Auth;
 use View;
+use Carbon\Carbon;
 
 //use ActivityLogs;
 use Symfony\Component\Console\Helper\ProgressBar;
@@ -132,9 +133,82 @@ class TestController extends Controller
 
     public function supportTest()
     {
+      $result = array();
+      $result['commercial'] = Building::where('type', 'like', '%commercial%')->count();
+      $result['retail']     = Building::where('type', 'not like', '%commercial%')->count();
+      $result['tickets']    = Ticket::where('status', '!=', 'closed')->count();
+      return $result;
 
-      $result = User::with('accessApps')->find(1);
-      dd($result->toArray());
+
+      $ticket = Ticket::take(10)->get();
+      $ticket->some = 'wapol';
+
+      dd($ticket);
+
+
+
+      //dd($ticket['created_at'], $ticket['updated_at']);
+
+
+      $uno = $ticket->created_at;
+      $dos = $ticket->updated_at;
+
+      $warp = $uno->diffInHours($dos);
+
+
+      dd($warp);
+
+
+
+
+
+      $customer = Customer::join('address', 'address.id_customers', '=', 'customers.id')
+                          ->join('buildings', 'buildings.id', '=', 'address.id_buildings')
+                          ->where('buildings.type', 'like', 'commercial')
+                          ->get(array('customers.id'));
+                          dd($customer);
+
+      $address = $customer->address->building;
+
+      dd($address);
+
+
+
+      dd($building);
+
+
+      $myProductPropertyValues = $building->load('buildingProducts.product.propertyValues');
+
+      dd($myProductPropertyValues->buildingProducts->pluck('product')); //->pluck
+
+
+
+
+
+
+
+
+
+      $record = Customer::where('id', '!=', 1)
+                ->take(3)
+                ->get();
+      $t1 = $record->load('address.building');
+
+        dd($t1->address->pluck('building', 'id'));
+
+
+      dd($record->toArray());
+
+
+
+
+
+      dd($record->toarray());
+
+
+
+
+
 
         dd(User::with('profile')->get()->toArray());
         $building = Building::find(9);
