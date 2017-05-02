@@ -137,11 +137,18 @@ class TestController extends Controller
       $result['commercial'] = Building::where('type', 'like', '%commercial%')->count();
       $result['retail']     = Building::where('type', 'not like', '%commercial%')->count();
       $result['tickets']    = Ticket::where('status', '!=', 'closed')->count();
+
+
+      $ticketAverage = DB::select('SELECT 
+                              avg(TIMESTAMPDIFF(HOUR, created_at, updated_at)) as hours,
+                              avg(TIMESTAMPDIFF(DAY, created_at, updated_at)) as days
+                            FROM tickets
+                              where updated_at > created_at
+                              and status like "%closed%"')[0];
+      $result['avgHour'] = $ticketAverage->hours;
+      $result['avgDay'] = $ticketAverage->days;
+
       return $result;
-
-
-      $ticket = Ticket::take(10)->get();
-      $ticket->some = 'wapol';
 
       dd($ticket);
 

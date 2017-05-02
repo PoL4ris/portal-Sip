@@ -33,10 +33,6 @@
 <!--TICKET LIST-->
 <section ng-if="supportData" class="col-sm-12 col-md-12 col-lg-12 bg-white white-shadow m-t-lg p-b-lg support-table-grid">
   <div class="row">
-
-    <!--SUPPORT ACTIONS-->
-
-
     <!--SUPPORT TABLE-->
     <article class="col-lg-12 tickets-history-table m-t-lg table-container">
       <table id="myTable" class="tablesorter table table-striped" datatable="ng" dt-options="dtOptions">
@@ -56,8 +52,15 @@
         </thead>
         <tbody>
           <tr ng-repeat="data in supportData" class="{{(data.last_ticket_history.id_users == 0 || data.last_ticket_history == null) ? 'customer-new-updated' : '' }}">
-            <td class="first-td" ng-click="displayTicketResume(data.id, data.id_customers)" data-toggle="modal" data-target="#ticketModal">{{data.ticket_number}}</td>
-            <td>{{data.status}}</a></td>
+
+            <td class="first-td"
+                ng-click="displayTicketResume(data.id, data.id_customers)"
+                data-toggle="modal"
+                data-target="#ticketModal">
+                {{data.ticket_number}}
+            </td>
+
+            <td class="capital-first">{{data.status}}</a></td>
             <td><a href="#/customers?id={{data.customer.id}}">{{data.customer.first_name}} {{data.customer.last_name}}</a></td>
             <td>{{data.address.code}} #{{data.address.unit}}</td>
             <td>{{data.contacts.value}}</td>
@@ -65,13 +68,14 @@
 
             <td ng-mouseover="showFullComment(data.id)"
                 ng-mouseleave="hideFullComment(data.id)"
-                ng-if="data.ticket_history.comment"
-                class="comment-long">
-                {{ data.ticket_history.comment | limitTo:letterLimit }}...
-              <div id='ticket-{{ data.id }}' style="display: none;" class="ticket-comment-pop">{{data.ticket_history.comment}}</div>
+                ng-if="data.comment"
+                class="comment-long"
+                ng-click="displayTicketResume(data.id, data.id_customers)"
+                data-toggle="modal"
+                data-target="#ticketModal">
+                {{data.comment | limitTo:letterLimit}}
+                <div id='ticket-{{ data.id }}' style="display: none;" class="ticket-comment-pop" ng-bind-html="data.comment"></div>
             </td>
-
-            <td ng-if="!data.ticket_history.comment"> {{data.ticket_history.comment}} </td>
 
             <td>{{data.user_assigned.first_name ? (data.user_assigned.first_name) : 'AUTO' }}</td>
             <td ng-init="resultDate = convertDate(data.updated_at)">{{resultDate | date : "MMM d, y h:mm a" }}</td>
@@ -88,7 +92,6 @@
         </tbody>
       </table>
     </article>
-
   </div>
 </section>
 <!--END TICKET LIST-->
@@ -251,7 +254,7 @@
                     <tbody>
                       <tr ng-repeat="history in selectedTicket.ticket_history_full" ng-controller="supportTicketHistory">
                         <td ng-init="resultDate = convertDate(history.created_at)" ng-if="history.created_at">{{resultDate | date : "MMM d, y h:mm a" }}</td>
-                        <td class="th-comment" height="100">{{history.comment}}</td>
+                        <td class="th-comment" height="100" ng-bind-html="history.comment"></td>
                         <td>{{history.status}}</td>
                         <td>{{dataUsersAssigned[history.id_users].alias}}</td>
                       </tr>

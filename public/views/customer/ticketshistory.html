@@ -22,9 +22,10 @@
               <td ng-init="ticketDateA = convertDate(ticket.created_at)">{{ ticketDateA | date : "MMM d, y h:mm a" }}</td>
               <td>{{ ticket.reason}}</td>
               <td ng-mouseover="showFullComment(ticket.id)"     style="position: relative;"
-                  ng-mouseleave="hideFullComment(ticket.id)"    ng-if="ticket.comment">
+                  ng-mouseleave="hideFullComment(ticket.id)"    ng-if="ticket.comment"
+                  ng-click="displayTicketResume(ticket.id, ticket.id_customers)" data-toggle="modal" data-target="#ticketModal">
                   {{ ticket.comment | limitTo : letterLimit }}...
-                <div id='ticket-{{ ticket.id }}' style="display: none;" class="ticket-comment-pop">{{ticket.comment}}</div>
+                <div id='ticket-{{ ticket.id }}' style="display: none;" class="ticket-comment-pop" ng-bind-html="ticket.comment"></div>
               </td>
               <td ng-if="!ticket.comment"> No Comment </td>
               <td class="capital-first">{{ ticket.status }}</td>
