@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 
 // LEGACY MODELS - REMOVE
-use App\Models\Network\DataServicePort;
+use App\Models\DataServicePort;
 use App\Models\Network\networkNodes;
 
 // NEW MODELS

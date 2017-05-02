@@ -20,7 +20,7 @@ use App\Models\CustomerProduct;
 use App\Models\DataMigration;
 use App\Models\Address;
 use App\Models\BillingTransactionLog;
-use App\Models\Building\Building;
+use App\Models\Building;
 use App\Models\Product;
 use App\Models\User; // as Users;
 use App\Models\Port;

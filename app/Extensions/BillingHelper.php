@@ -3,7 +3,7 @@
 namespace App\Extensions;
 
 use App\Models\NetworkNode;
-use App\Models\Building\Building;
+use App\Models\Building;
 use App\Models\Customer;
 use App\Models\Invoice;
 use App\Models\InvoiceLog;

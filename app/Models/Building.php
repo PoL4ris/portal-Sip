@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Building;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -41,7 +41,7 @@ class Building extends Model
                     ->whereLoose('product.id_products', 0);
     }
     public function properties() {
-        return $this->hasMany('App\Models\Building\BuildingPropertyValue', 'id_buildings');
+        return $this->hasMany('App\Models\BuildingPropertyValue', 'id_buildings');
     }
     public function getProperties(){
         $properties = $this->properties;

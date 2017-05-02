@@ -19,7 +19,7 @@ use App\Models\Ticket;
 use App\Models\TicketHistory;
 use App\Models\Address;
 use App\Models\Product;
-use App\Models\Building\Building;
+use App\Models\Building;
 use SendMail;
 
 class SupportController extends Controller

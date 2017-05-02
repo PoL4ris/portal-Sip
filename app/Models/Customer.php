@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\NetworkNodes;
-use App\Models\Building\Building;
+use App\Models\Building;
 use App\Models\Address;
 use App\Models\Ticket;
 use App\Models\Reason;
