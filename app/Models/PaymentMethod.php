@@ -21,7 +21,8 @@ class PaymentMethod extends Model
 
     public function getProperties(){
         $properties = json_decode($this->properties, true);
-        return array_shift($properties);
+        return $properties;
+//        return array_shift($properties);
     }
 
     public function getProperty($property){
