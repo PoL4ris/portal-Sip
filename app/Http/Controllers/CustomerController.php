@@ -24,15 +24,20 @@ use App\Models\NetworkNode;
 use App\Models\ContactType;
 use App\Models\Support\Ticketreasons;
 use App\Models\ActivityLog;
-
+//Controllers
 use App\Http\Controllers\NetworkController;
-
+//Extensions
 use DB;
 use Log;
 use Schema;
 use Auth;
 use ActivityLogs;
 use SendMail;
+
+/**
+ * Class CustomerController
+ * @package App\Http\Controllers
+ */
 
 class CustomerController extends Controller
 {
@@ -42,15 +47,22 @@ class CustomerController extends Controller
         $this->middleware('auth');
         $this->logType = 'customer';
     }
+
+    /**
+     * @param Request $request
+     * querySearch = String to search on:
+     * Code, Unit, First name, Last name, email,
+     * @return Array of Customers that match criteria.
+     */
     public function getCustomersSearch(Request $request)
     {
         $string = $request->querySearch;
-        $select = "select * from address inner join customers on address.id_customers = customers.id ";
-        $limit = ' limit 50';
-        $arrX = array();
-        $arrY = ' ';
+        $select = "SELECT * FROM address INNER JOIN customers ON address.id_customers = customers.id ";
+        $limit  = ' limit 50';
+        $arrX   = array();
+        $arrY   = ' ';
         $whereFlag = false;
-        $pattern = '/([0-9])\w+/';
+        $pattern   = '/([0-9])\w+/';
         $stringArray = explode(' ', $string);
 
         foreach($stringArray as $index => $item)
@@ -77,73 +89,21 @@ class CustomerController extends Controller
             unset($arrX['where']);
         }
 
-        $arrY .= $whereFlag?$tmpWhere:'';
+        $arrY .= $whereFlag ? $tmpWhere : '';
 
         foreach($arrX as $idx => $or)
             $arrY .= $or;
 
         return DB::select($select . $arrY . $limit);
-    }//MAIN SEARCH NEEDS TO RENAME
-
-    public function prepareQuery($data, $complex = null)
-    {
-
-        $tmpQueryData = $defaultData = $token = '';
-
-        if(!$complex)
-        {
-            $cleanData =  explode(' ', $data);
-
-            if(sizeof($cleanData) >= 1)
-                $defaultData = 'building.ShortName LIKE "%' . $cleanData[0] . '%" AND customers.Unit LIKE "%' . $cleanData[1] . '%" ';
-            else
-                $defaultData = 'building.ShortName LIKE "%' . $cleanData[0] . '%" ';
-            //    $defaultData = 'building.address LIKE "%' . $cleanData[0] . '%"';
-            //BUILDING TABLE
-
-            $tmpQueryData = $defaultData;
-        }
-        else
-        {
-            $complexQuery = [1 => 'Tel', 2 => 'Email', 3 => 'Unit', 4 => 'ShortName'];
-            foreach ($data as $x => $tipoQuery)
-            {
-                if($x == 0)
-                    continue;
-
-                if ($x == 4)
-                    $tabla = 'building';
-                else
-                    $tabla = 'customers';
-
-                if(!empty($tipoQuery))
-                {
-                    if($token != '')
-                    {
-                        $tmpQueryData .= ' AND ' . $tabla . '.' . $complexQuery[$x] . ' LIKE "%' . $tipoQuery .'%" ';
-                    }
-                    else
-                    {
-                        $tmpQueryData = '' . $tabla . '.' . $complexQuery[$x] . ' LIKE "%' . $tipoQuery .'%" ';
-                        $token = 'up';
-                        $defaultData = null;
-                    }
-                }
-            }
-        }
-
-        if (empty($tmpQueryData))
-            return;
-
-        //return  DB::select('select * from building inner join customers on building.id = customers.CID where ' . ($tmpQueryData?$tmpQueryData:$defaultData));
-        //BUILDING TABLE
-        return  DB::select('SELECT * FROM serviceLocation building INNER JOIN customers ON building.LocID = customers.LocID WHERE ' . ($tmpQueryData?$tmpQueryData:$defaultData) . ' LIMIT 100 ');
-
-    }//NO
-
+    }
+    /**
+     * @param Request $request
+     * id = id_customers to get data.
+     * @return Customer collection with relations.
+     * RENAME TO getCustomerData at the very end.
+     */
     public function customersData(Request $request)
     {
-
         return Customer::with('addresses',
                               'contacts',
                               'type',
@@ -155,32 +115,54 @@ class CustomerController extends Controller
                               'log',
                               'log.user')
             ->find($request->id);
-    }//MAIN FUNCTION CUSTOMER NEED TO RENAME
-
+    }
+    /**
+     * @param Request $request
+     * id = id_customers to get Status.
+     * @return Customer Status.
+     */
     public function getCustomerStatus(Request $request)
     {
         return Customer::with('status')->find($request->id)['status'];
-    }//SI
-    public function insertCustomerNote(Request $request){
-
+    }
+    /**
+     * @param Request $request.
+     * id = id_customers
+     * note = Note to add to customer;
+     * @return Notes attached to this customer.
+     */
+    public function insertCustomerNote(Request $request)
+    {
         $note = new Note;
-        $note->comment = $request->note;
-        $note->created_by = Auth::user()->id;
+        $note->comment      = $request->note;
+        $note->created_by   = Auth::user()->id;
         $note->id_customers = $request->id;
         $note->save();
 
         return Note::where('id_customers', $request->id)->get();
     }
-    public function getCustomerNotes(Request $request){
+    /**
+     * @param Request $request
+     * id = id_customers to get all his notes.
+     * @return Customer Notes.
+     */
+    public function getCustomerNotes(Request $request)
+    {
         return Note::where('id_customers', $request->id)->get();
     }
-    public function resetCustomerPassword(Request $request){
-
+    /**
+     * @param Request $request
+     * id = id_customers to search info and reset password
+     * Take the Customer Contact Value(phone number) and bcrypts the value as a new password
+     * @return response OK and New password.
+     */
+    public function resetCustomerPassword(Request $request)
+    {
         $customer = Customer::with('contact')->find($request->id);
+        $match    = preg_split('/[^0-9]+/', $customer->contact->value);
 
-        $match = preg_split('/[^0-9]+/', $customer->contact->value);
-
-        foreach($match as $item){
+        foreach($match as $item)
+        {
             if(isset($result))
                 $result .= $item;
             else
@@ -192,32 +174,56 @@ class CustomerController extends Controller
 
         //ADD ACTIVITY LOG HERE
         return ['response' => 'OK', 'password' => $result];
-
     }
+    /**
+     * @param Request $request
+     * id = id_customers to get all contacts related to this customer.
+     * @return Customer contacts.
+     */
     public function getCustomerContactData(Request $request)
     {
         return Customer::with('contacts')->find($request->id);
-    }//SI
+    }
+    /**
+     * @return Types of Contact:
+     * Mobile Phone
+     * Home Phone
+     * Fax
+     * Work Phone
+     * Email
+     */
     public function getContactTypes()
     {
         return ContactType::get();
-    }//SI
-
-    public function getDefaultPaymentMethod(Request $request) {
-
+    }
+    /**
+     * @param Request $request
+     * id = id_customers to get Default = 1,  Payment Method.
+     * @return array(default payment method , properties of default payment method).
+     */
+    public function getDefaultPaymentMethod(Request $request)
+    {
         $customer = Customer::find($request->id);
         return ($customer->defaultPaymentMethod != null) ? [$customer->defaultPaymentMethod, $customer->defaultPaymentMethod->getProperties()] : [];
-        //    return Customer::with('payment')->getRelation('payment')->where('priority', 1)->where('id_customers', $request->id)->get();
     }
-
-    public function getAllPaymentMethods(Request $request) {
-
+    /**
+     * @param Request $request
+     * id = id_customers to get all Payment Methods of this Customer.
+     * @return Array of Payment Methods of the selected Customer.
+     */
+    public function getAllPaymentMethods(Request $request)
+    {
         $customer = Customer::find($request->id);
         return $customer->allPaymentMethods;
-    }//SI
-
-    public function setDefaultPaymentMethod(Request $request) {
-
+    }
+    /**
+     * @param Request $request
+     * id = Payment method id to set this as a default payment method
+     * customerID = id_customers to find and update payment methods.
+     * @return Payment methods of the Customer selected.
+     */
+    public function setDefaultPaymentMethod(Request $request)
+    {
         $customer = Customer::find($request->customerID);
         $oldDefaultPm = $customer->defaultPaymentMethod;
 
@@ -226,8 +232,8 @@ class CustomerController extends Controller
 
         // Deactivate other payment methods
         PaymentMethod::where('id_customers', $request->customerID)
-            ->where('id', '!=', $request->id)
-            ->update(['priority' => 0]);
+                     ->where('id', '!=', $request->id)
+                     ->update(['priority' => 0]);
 
         $newDefaultPm = $customer->defaultPaymentMethod;
 
@@ -238,49 +244,93 @@ class CustomerController extends Controller
 
         ActivityLogs::add($this->logType, $request->customerID, 'update', 'updatePaymentMethods', $oldDefaultPm, $newDefaultPm, $data, ('update-payment'));
 
-
         return $customer->allPaymentMethods;
-
-    }//SI
-
+    }
+    /**
+     * @param Request $request
+     * id = id_customers to find all tickets related to.
+     * @return Customer with all his tickets.
+     * REFACTOR NAME getCustomerTickets
+     */
     public function getNewTicketData(Request $request)
     {
         return Customer::with('tickets')->find($request->id);
-    }//SI
+    }
+    /**
+     * @param Request $request
+     * id = id_customers to get all ticket history.
+     * @return Customer with all his ticket history.
+     */
     public function getTicketHistory(Request $request)
     {
         $customer = new Customer;
         return $customer->getTickets($request->id);
-    }//SI
+    }
+    /**
+     * getTicketHistoryNotes:
+     */
     public function getTicketHistoryNotes(Request $request)
     {
         return TicketNote::find($request->id);
-    }//SI
+    }//REMOVE FROM ROUTES TO BE ABLE TO REMOVE FROM HERE NOT IN USE ANYMORE.VERIFY THIS.
+    /**
+     * @param Request $request
+     * id = id_reason to find in reasons table.
+     * @return Reason requested.
+     */
     public function getTicketHistoryReason(Request $request)
     {
         return Reason::find($request->id);
-    }//SI
+    }
+    /**
+     * @param Request $request
+     * id = id_customers to get invoice huistory records.
+     * @return Invoice history of requested customer.
+     */
     public function getInvoiceHistory(Request $request)
     {
         return Invoice::where('id_customers', $request->id)->get();
-    }//SI
+    }
+    /**
+     * @param Request $request
+     * id = id_customers to get all billing transaction log.
+     * @return Billing transaction log of requested Customer.
+     */
     public function getBillingHistory(Request $request)
     {
         return billingTransactionLog::where('id_customers', $request->id)->get();
-    }//SI
-    public function getCustomerServices(Request $request)//SI
-    {
-        return Customer::with('services')->find($request->id?$request->id:$request->idCustomer);
     }
-    public function getCustomerProduct(Request $request)//SI
+    /**
+     * @param Request $request
+     * id = id_customers to get Customer services.
+     * @return Customer services of requested Customer
+     */
+    public function getCustomerServices(Request $request)//FIX IDCUSTOMER TO ID ON HTTP REQUEST.
+    {
+        return Customer::with('services')->find($request->id ? $request->id : $request->idCustomer);
+    }
+    /**
+     * @param Request $request
+     * id = id of customer product to get data of.
+     * @return Products of customer product.
+     */
+    public function getCustomerProduct(Request $request)
     {
         return CustomerProduct::with('product')->find($request->id);
     }
-    public function getCustomerProductType(Request $request)//SI
+    /**
+     * @param Request $request
+     * id = id product to get status.
+     * @return Status of requested product.
+     */
+    public function getCustomerProductType(Request $request)
     {
         return CustomerProduct::with('status')->find($request->id);
     }
-    public function getCustomerBuilding(Request $request)//SI
+    /**
+     * getCustomerBuilding
+     */
+    public function getCustomerBuilding(Request $request)//REMOVE FROM ROUTES TO BE ABLE TO REMOVE FROM HERE NOT IN USE ANYMORE.VERIFY THIS.
     {
 
         print '<pre>';
@@ -292,52 +342,53 @@ class CustomerController extends Controller
 
         return CustomerProduct::with('status')->find($request->id);
     }
-    public function getCustomerNetwork(Request $request)//SI
+    /**
+     * @param Request $request
+     * id = id_customers to get network info
+     * @return network info of requested Customer.
+     */
+    public function getCustomerNetwork(Request $request)// VERIFY  " $customer = new Customer; " IF ITS NEEDED OR ITS EXTRA.
     {
-
         $customer = new Customer;
         $customer = Customer::find($request->id);
-        //    return $customer->getNetworkNodes($request->id);
-        $netInfo = $customer->getNetworkInfo();
-        //      Log::info($netInfo);
+        $netInfo  = $customer->getNetworkInfo();
         return $netInfo;
-        //
-        //    return NetworkNode::join('ports', 'ports.id_network_nodes', '=', 'network_nodes.id')
-        //                      ->join('customers', 'ports.id_customers', '=', 'customers.id')
-        //                      ->where('ports.id_customers', '=', $request->id)
-        //                      ->select('*')
-        //                      ->get();
-
-        //
-        //    print_r($warp);die();
-        //
-        //    $data = $request->all();
-        //
-        //    $port = $this->getPortID($request->id);
-        //
-        //    $networkControllerInfo = new NetworkController();
-        //    $networkData = $networkControllerInfo->getCustomerConnectionInfo($port);
-        //    $networkData['portId'] = $port;
-        //    return $networkData;
-
     }
-    public function getPortID($id)//SI
+    /**
+     * @param $id
+     * id = id product to get Port attached to the customer.
+     * @return port id of the requested Customer-Product.
+     */
+    public function getPortID($id)
     {
         return CustomerProduct::with('port')->where('id_customers', $id)->get()[0]->id;
     }
-    public function getCustomerList ()//SI
+    /**
+     * getCustomerList
+     */
+    public function getCustomerList ()//VERIFY USAGE, AND REMOVE FROM ROUTES, CUSTOMERCONTROLLER.PHP AND CUSTOMERCONTROLLER.JS->NG-CONTROLLER. VERIFY THIS.
     {
         return Ticket::with('customer', 'address')->orderBy('created_at', 'asc')->where('id_customers', '!=', 1)->groupBy('id_customers')->take(100)->get();
         return Customer::all()->take(100);
     }
-    public function getAddress()//SI
+    /**
+     * getCustomerList
+     */
+    public function getAddress()//VERIFY USAGE, AND REMOVE FROM ROUTES, CUSTOMERCONTROLLER.PHP. VERIFY THIS.
     {
         return Address::groupBy('id_buildings')->get();
     }
-
-    public function updateAddressTable(Request $request)//SI
+    /**
+     * @param Request $request
+     * id = id_customers to update.
+     * id_table = id of record table.
+     * value = value to insert on (name, value...)
+     * field = direct field of the table DB --> Unit
+     * table = table name to update on the DB
+     * @return OK if any errors Occured.
+     */
+    public function updateAddressTable(Request $request)
     {
-
         $newData = array();
         $hasHashtag = explode('#', $request->value);
 
@@ -350,28 +401,14 @@ class CustomerController extends Controller
         ActivityLogs::add($this->logType, $request->id, 'update', 'updateAddressTable', $addressExist, $newData, null, 'update-unit');
 
         return 'OK';
-
-
-        //RECHECK
-        //    $params = $request->all();
-        //    $data[$params['field']] = explode('# ', $params['value'])[1];
-        //
-        //    $recordCustomer = $data;
-        //    $recordCustomer['old_data'] = Address::find($request->id)->toArray();
-        //
-        //    Address::where('id', $request->id)->update($data);
-        //
-        //    $logData['id_users'] = Auth::user()->id;
-        //    $logData['id_customers'] = $recordCustomer['old_data']['id_customers'];
-        //    $logData['action']   = 'update';
-        //    $logData['route']    = 'updateAddressTable';
-        //    $logData['data']     = serialize($recordCustomer);
-        //
-        //    Log::insert($logData);
-        //
-        //    return 'OK';
-
     }
+    /**
+     * @param Request $request
+     * id = id_customers to update.
+     * field = name of the field direct on the DB
+     * value = value of the field.
+     * @return string
+     */
     public function updateCustomersTable(Request $request)//SI
     {
         $params = $request->all();
