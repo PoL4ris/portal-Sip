@@ -119,7 +119,7 @@ Route::group(['middleware' => 'web'], function () {
     Route::post('userupdate',             'MainController@updateUser');
     //Customers
     Route::get('customers/{id?}',         'CustomerController@customers');
-    Route::post('updateCustomerData',     'CustomerController@updateCustomerData');
+//    Route::post('updateCustomerData',     'CustomerController@updateCustomerData');
     Route::get('insertCustomerService',   'CustomerController@insertCustomerService');
     Route::get('disableCustomerServices', 'CustomerController@disableCustomerServices');
     Route::get('activeCustomerServices',  'CustomerController@activeCustomerServices');
@@ -141,7 +141,7 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('updateContactsTable',     'CustomerController@updateContactsTable');
     Route::get('updateContactInfo',       'CustomerController@updateContactInfo');
     Route::get('insertContactInfo',       'CustomerController@insertContactInfo');
-    Route::post('insertCustomerData',     'CustomerController@insertCustomerData');
+//    Route::post('insertCustomerData',     'CustomerController@insertCustomerData');
     //New Ticket
     Route::get('insertCustomerTicket',    'CustomerController@insertCustomerTicket');
     Route::get('customersData',           'CustomerController@customersData');
@@ -220,8 +220,8 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('getTicketsByMonth',                 'ChartController@getTicketsByMonth');
     Route::get('getSignedUpCustomersByYear',        'ChartController@getSignedUpCustomersByYear');
     //UPDATE SERVICES
-    Route::get('updateCustomerServiceInfo',         'CustomerController@updateCustomerServiceInfo');
-    Route::get('updateCustomerActiveServiceInfo',   'CustomerController@updateCustomerActiveServiceInfo');
+//    Route::get('updateCustomerServiceInfo',         'CustomerController@updateCustomerServiceInfo');
+//    Route::get('updateCustomerActiveServiceInfo',   'CustomerController@updateCustomerActiveServiceInfo');
     //NO ROUTE NEEDED
     Route::get('test8',                             'NetworkController@getCustomerConnectionInfo');
     Route::get('cc-test',                           'TestController@testCC');
