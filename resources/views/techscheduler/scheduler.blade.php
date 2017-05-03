@@ -1,8 +1,6 @@
 <head>
 
 
-
-
     <!--script src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.2/js/bootstrap.min.js'></script-->
     <!--script src='https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.min.js'></script-->
 
@@ -11,7 +9,6 @@
     <script src='/js/bootstrap/js/bootstrap.min.js'></script>
     <link rel="stylesheet" href="/js/jquery-ui-1.12.1.custom/jquery-ui.css">
     <link rel="stylesheet" href="/js/bootstrap/css/bootstrap.css">
-
 
 
     <script src="/js/silveripJS/techScheduler.js" type="text/javascript"></script>
@@ -70,12 +67,12 @@
         }
 
         .dragdiv {
-           /* border-style: inset;
-            border: 1px solid grey; */
+            /* border-style: inset;
+             border: 1px solid grey; */
             width: 100%;
             height: 100%;
             float: left;
-            white-space:normal;
+            white-space: normal;
             word-wrap: break-word;
             display: table-cell;
         }
@@ -87,6 +84,7 @@
         .hovercss {
             background: lightblue;
         }
+
         .table-striped tbody > tr:nth-child(odd) > td {
             background-color: #e9f8ff;
         }
