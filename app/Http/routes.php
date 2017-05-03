@@ -41,7 +41,7 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('/',                       'MainController@homeView');
     Route::get('',                        'MainController@homeView');
     Route::get('home',                    'HomeController@index');
-    Route::get('test',                    'MainController@test');
+    Route::get('test',                    'MainController@test');//Remove
     //ADMIN
     Route::get('admin',                   'AdminController@admin');
     //POST ADMIN
