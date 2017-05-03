@@ -27,8 +27,6 @@ class TechScheduleController extends Controller
     {
         $Calendar = new GoogleCalendar;
         if (isset($request->date)) {
-            //dd($request->date);
-            //Log::info( print_r( $request->date ) );
             $date = new DateTime($request->date);
         } else {
             $date = new DateTime('now');
@@ -38,7 +36,7 @@ class TechScheduleController extends Controller
         $schedulerange = $Calendar->getScheduleRange($date);  //earliest and latest times someone is working
         $scheduledtechs = $Calendar->GetTechSchedule($date);  //exactly who is working and when
 
-        $pendingAppointments = $Calendar->GetAppointments($date);  //appointments!
+        $pendingAppointments = $Calendar->GetPendingAppointments($date);  //appointments!
 
         $completedAppointments = $Calendar->GetCompletedAppointments($date); //finished appointments.
 

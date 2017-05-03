@@ -1,6 +1,3 @@
-
-
-
 function dragAppointmentEnd(event, ui) {
 
 //and the info from the target cell
@@ -30,18 +27,13 @@ function movedappointment(a) {
 
 
 function renewtable(a) {
-    console.log('a value: ');
-    console.log(a);
-
     $('.datepicker').val(a);
-
     $.ajax({
         type: "GET",
         url: '/tech-schedule/generatetable',
         data: {date: a},
         success: populatetable,
     });
-
 }
 
 function updatesearch() {
@@ -147,7 +139,6 @@ function populatetable(data) {
 
 //drag and droppable appointments
     $(function () {
-//drag and drop calendar appointments.
 
         $(".dragdiv").draggable({
             snap: ".freeappointment",
@@ -168,6 +159,55 @@ function populatetable(data) {
 //end drag and drop
 
 } //end of populate table
+
+
+function preparesubmit() {
+    // this is needed to get only the bcode from the bcode input search otherwise gives bcode + address when scheduling.
+    var fullstring = $("#bcode").val();
+    var splitstring = fullstring.split(" ");
+    $("#bcode").val(splitstring[0]);
+    return true;
+}
+
+
+//document init
+$(document).ready(function () {
+
+
+    $('.datepicker').datepicker({  //init the datepicker
+        autoclose: true,
+        todayHighlight: true,
+        clearBtn: false,
+        format: 'mm-dd-yyyy',
+        onSelect: renewtable,
+        todayBtn: "linked",
+        startView: 0, maxViewMode: 0, minViewMode: 0
+
+    }).on('changeDate', renewtable);
+
+
+    //force proper date display
+    var date;
+    //olddate is defined in the main file due to use of laravel old.  repopulate date input with proper date if old date exists.
+    if (olddate) {
+
+        date = new Date(olddate);
+    } else {
+        date = new Date();
+    }
+
+    $('.datepicker').val((date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear());
+    $.ajax({  //init schedule table
+        type: "GET",
+        url: '/tech-schedule/generatetable',
+        data: {date: date},
+        success: populatetable
+    });
+
+    $("#service").selectmenu();  //nice looking select menu
+    $("#action").selectmenu();
+
+});
 
 
 

@@ -135,7 +135,7 @@ public function GetScheduleRange(DateTime $date) {
 
 }
 
-public function GetAppointments(DateTime $date) {
+public function GetPendingAppointments(DateTime $date) {
 
     $timeMin = new DateTime($date->format(DATE_RFC3339));
     $timeMin->setTime(00,00,00);
@@ -338,7 +338,7 @@ public function VerifyTechIsFree($tech, DateTime $startTime,  DateTime $endTime)
 
     $techSchedule = $this->GetTechSchedule($startTime);
 
-    $pendingAppointments = $this->GetAppointments($startTime);
+    $pendingAppointments = $this->GetPendingAppointments($startTime);
 
     
     $techavailable = false;

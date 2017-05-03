@@ -220,11 +220,11 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('test7',                   'NetworkController@activatePort');
 
      //Calendar Routes
-  Route::get('tech-schedule','TechScheduleController@TechScheduler');
-  Route::get('tech-schedule/moveappointment','TechScheduleController@moveAppointment');
-  Route::get('tech-schedule/bcodesearch','TechScheduleController@findBuildingCode');
-  Route::get('tech-schedule/setappointment','TechScheduleController@setAppointment');
-  Route::get('tech-schedule/generatetable','TechScheduleController@GenerateTableSchedule');
+    Route::get('tech-schedule','TechScheduleController@TechScheduler');
+    Route::get('tech-schedule/moveappointment','TechScheduleController@moveAppointment');
+    Route::get('tech-schedule/bcodesearch','TechScheduleController@findBuildingCode');
+    Route::get('tech-schedule/setappointment','TechScheduleController@setAppointment');
+    Route::get('tech-schedule/generatetable','TechScheduleController@GenerateTableSchedule');
 
     //DASHBOARDCHARTS
     Route::get('getTicketsByMonth',                 'ChartController@getTicketsByMonth');

@@ -17,43 +17,7 @@
     <script src="/js/silveripJS/techScheduler.js" type="text/javascript"></script>
     <script type="text/javascript">
         //our document init
-        $(document).ready(function () {
-
-
-            $('.datepicker').datepicker({  //init the datepicker
-                autoclose: true,
-                todayHighlight: true,
-                clearBtn: false,
-                format: 'mm-dd-yyyy',
-                onSelect: renewtable,
-                todayBtn: "linked",
-                startView: 0, maxViewMode: 0, minViewMode: 0
-
-            }).on('changeDate', renewtable);
-
-
-            //force proper date display
-            var date;
-            var olddate = "{{ old('date') }}";  //repopulate date input with proper date if old date exists.
-            if (olddate) {
-                console.log(olddate);
-                date = new Date(olddate);
-            } else {
-                date = new Date();
-            }
-
-            $('.datepicker').val((date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear());
-            $.ajax({  //init schedule table
-                type: "GET",
-                url: '/tech-schedule/generatetable',
-                data: {date: date},
-                success: populatetable
-            });
-
-            $("#service").selectmenu();  //nice looking select menu
-            $("#action").selectmenu();
-
-        });
+        var olddate = "{{ old('date') }}";
 
 
     </script>
@@ -79,7 +43,8 @@
         }
 
         input[type='checkbox'] {
-
+            width: 2em;
+            height: 2em;
             border-radius: 1.2em;
             border: 2px solid #555;
         }
@@ -120,7 +85,7 @@
         }
 
         .hovercss {
-            background: red;
+            background: lightblue;
         }
         .table-striped tbody > tr:nth-child(odd) > td {
             background-color: #e9f8ff;
@@ -151,7 +116,7 @@
 @endif
 
 <div class="form-group">
-    <form method="get" action="/tech-schedule/setappointment">
+    <form method="get" name="scheduleform" action="/tech-schedule/setappointment" onsubmit="preparesubmit()">
         <table id='sheader'>
             <tr>
                 <td><label for="dpick">Date</label></td>
