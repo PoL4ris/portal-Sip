@@ -13,7 +13,7 @@ class Address extends Model
     }
 
     public function building() {
-        return $this->hasOne('App\Models\Building\Building', 'id', 'id_buildings');
+        return $this->hasOne('App\Models\Building', 'id', 'id_buildings');
     }
 
     public function ticket() {
@@ -25,7 +25,7 @@ class Address extends Model
     }
 
     public function buildings() {
-        return $this->belongsTo('App\Models\Building\Building', 'id_buildings');
+        return $this->belongsTo('App\Models\Building', 'id_buildings');
     }
 
     public function customers() {

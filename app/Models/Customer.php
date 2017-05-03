@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\NetworkNodes;
-use App\Models\Building\Building;
+use App\Models\Building;
 use App\Models\Address;
 use App\Models\Ticket;
 use App\Models\Reason;
@@ -37,10 +37,23 @@ class Customer extends Model
     public function addresses() {
         return $this->hasMany('App\Models\Address', 'id_customers');
     }
-    public function payment() {
+
+//    public function payment() {
+//        return $this->hasOne('App\Models\PaymentMethod', 'id_customers')
+//                ->where('priority', 1);
+//    }
+
+    public function defaultPaymentMethod() {
         return $this->hasOne('App\Models\PaymentMethod', 'id_customers')
                 ->where('priority', 1);
     }
+
+    public function allPaymentMethods() {
+        return $this->hasMany('App\Models\PaymentMethod', 'id_customers')
+            ->where('account_number','!=','ERROR')
+            ->orderBy('priority', 'DESC');
+    }
+
     public function ticketHistory()
     {
         return $this->hasMany('App\Models\Ticket', 'id_customers', 'id');

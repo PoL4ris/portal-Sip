@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Network;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -20,7 +20,7 @@ class DataServicePort extends Model
     protected $primaryKey = 'id';
 
     public $timestamps = false;
-    
+
     public function networkNode() {
         return $this->belongsTo('App\Models\NetworkNode', 'id');
     }

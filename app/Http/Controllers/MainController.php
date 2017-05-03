@@ -7,14 +7,15 @@ use App\User;
 use App\Http\Requests;
 use DB;
 use Auth;
-use App\Models\Network\networkTab;
+//use App\Models\Network\networkTab;
+use App\Models\NetworkTab;
 use App\Models\Reason;
 use App\Models\App;
 use App\Models\AccessApp;
 use App\Models\Customer;
 use App\Models\Ticket;
 use App\Models\Address;
-use App\Models\Building\Building;
+use App\Models\Building;
 use App\Models\Status;
 use App\Models\User as Users;
 
@@ -168,10 +169,10 @@ class MainController extends Controller
 
   public function networkDashboard()
   {
-    return networkTab::get();
+    return NetworkTab::get();
 
 
-    return view('network.dashboard', ['networkdata' => $data]);
+//    return view('network.dashboard', ['networkdata' => $data]);
   }
 
   public function getTableData(Request $request)

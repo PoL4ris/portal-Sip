@@ -9,7 +9,7 @@ use View;
 //use App\Models\Product;
 use App\Models\Address;
 use App\Models\Contact;
-use App\Models\Building\Building;
+use App\Models\Building;
 use App\Models\Customer;
 use App\Models\CustomerProduct;
 use App\Models\CustomerPort;

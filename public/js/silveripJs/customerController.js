@@ -420,17 +420,21 @@ app.controller('customerController',                function ($scope, $http, $st
   $scope.pStInOptions = DTOptionsBuilder.newOptions().withDisplayLength(50);
 });
 app.controller('customerTicketHistoryController',   function ($scope, $http){
-  $http.get("getTicketHistory", {params:{'id':$scope.idCustomer}})
-    .then(function (response) {
-      $scope.ticketHistory = response.data;
-      $scope.letterLimit = 20;
-    });
+  $scope.getTicketHistory = function () {
+    $http.get("getTicketHistory", {params:{'id':$scope.idCustomer}})
+      .then(function (response) {
+        $scope.ticketHistory = response.data;
+        $scope.letterLimit = 20;
+      });
+  }
   $scope.showFullComment  = function(id) {
     $('#ticket-' + id).fadeIn('slow');
   }
   $scope.hideFullComment  = function(id) {
     $('#ticket-' + id).fadeOut('fast');
   }
+
+  $scope.getTicketHistory();
 });
 app.controller('customerInvoiceHistoryController',  function ($scope, $http){
   //   console.log($scope.customerData);
@@ -668,29 +672,32 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http){
   // app.controller('customerPaymentMethodsController',  function ($scope, $http,$uibModal, $log){
   // return;
 
-  $http.get("getCustomerPayment", {params:{'id':$scope.stcid ? $scope.stcid : $scope.idCustomer}})
+  $http.get("getDefaultPaymentMethod", {params:{'id':$scope.stcid ? $scope.stcid : $scope.idCustomer}})
     .then(function (response) {
       $scope.paymentData = response.data[0];
+      $scope.pproperties = response.data[1];
       $scope.customerData.defaultPayment = $scope.paymentData;
+      $scope.customerData.defaultPproperties = $scope.pproperties;
     });
-  $http.get("getPaymentMethods", {params:{'id':$scope.idCustomer}})
+  $http.get("getAllPaymentMethods", {params:{'id':$scope.idCustomer}})
     .then(function (response) {
       $scope.paymentMethods = response.data;
     });
 
-  $scope.setDefault         = function (id) {
-    $http.get("updatePaymentMethods", {params:{'id' : id, 'customerID' : $scope.idCustomer}})
+  $scope.setAsDefaultPaymentMethod = function (id) {
+    $http.get("setDefaultPaymentMethod", {params:{'id' : id, 'customerID' : $scope.idCustomer}})
       .then(function (response) {
         $scope.paymentMethods = response.data;
 
-        $http.get("getCustomerPayment", {params:{'id' : $scope.idCustomer}})
+        $http.get("getDefaultPaymentMethod", {params:{'id' : $scope.idCustomer}})
           .then(function (response) {
             $scope.paymentData = response.data[0];
+            $scope.pproperties = response.data[1];
           });
       });
   };
   $scope.getPaymentMethods  = function (customerId){
-    $http.get("getPaymentMethods", {params:{'id':customerId}})
+    $http.get("getAllPaymentMethods", {params:{'id':customerId}})
       .then(function (response) {
         $scope.paymentMethods = response.data;
       });

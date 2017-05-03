@@ -135,26 +135,27 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('refundAmount',            'BillingController@refund');
     Route::get('chargeAmount',            'BillingController@charge');
     Route::get('insertPaymentMethod',     'BillingController@insertPaymentMethod');
+    Route::get('getAllPaymentMethods',    'CustomerController@getAllPaymentMethods');
+    Route::get('setDefaultPaymentMethod', 'CustomerController@setDefaultPaymentMethod');
+    Route::get('getDefaultPaymentMethod', 'CustomerController@getDefaultPaymentMethod');
     //UpdateCustomer
     Route::get('updateAddressTable',      'CustomerController@updateAddressTable');
     Route::get('updateCustomersTable',    'CustomerController@updateCustomersTable');
     Route::get('updateContactsTable',     'CustomerController@updateContactsTable');
     Route::get('updateContactInfo',       'CustomerController@updateContactInfo');
-    Route::get('updatePaymentMethods',    'CustomerController@updatePaymentMethods');
     Route::get('insertContactInfo',       'CustomerController@insertContactInfo');
     Route::post('insertCustomerData',     'CustomerController@insertCustomerData');
     //New Ticket
     Route::get('insertCustomerTicket',    'CustomerController@insertCustomerTicket');
     Route::get('customersData',           'CustomerController@customersData');
     Route::get('getCustomerContactData',  'CustomerController@getCustomerContactData');
-    Route::get('getCustomerPayment',      'CustomerController@getCustomerPayment');
     Route::get('getNewTicketData',        'CustomerController@getNewTicketData');
     Route::get('getTicketHistory',        'CustomerController@getTicketHistory');
     Route::get('getTicketHistoryNotes',   'CustomerController@getTicketHistoryNotes');
     Route::get('getTicketHistoryReason',  'CustomerController@getTicketHistoryReason');
     Route::get('getInvoiceHistory',       'CustomerController@getInvoiceHistory');
     Route::get('getBillingHistory',       'CustomerController@getBillingHistory');
-    Route::get('getPaymentMethods',       'CustomerController@getPaymentMethods');
+
     Route::get('getCustomerNetwork',      'CustomerController@getCustomerNetwork');
     Route::get('getCustomerServices',     'CustomerController@getCustomerServices');
     Route::get('getCustomerProduct',      'CustomerController@getCustomerProduct');
@@ -191,7 +192,7 @@ Route::group(['middleware' => 'web'], function () {
     Route::post('activate',                'SignupController@activate');
 
     //DUMMYCONTROLLER
-    Route::get('dummyRouteController',    'MainController@dummyRouteController');//new
+    Route::get('dummyRouteController',    'TestController@supportTest');//new
     Route::get('email/template_support_new_ticket',    'TestController@supportTest');//new
 
     //MAILS

@@ -15,7 +15,7 @@
       <p class="">
         <label ng-init="noteDate = convertDate(note.created_at)" class="pull-right">{{noteDate | date : "MMM d, y h:mm a"}}</label>
         <br>
-        {{note.comment}}
+        <p ng-bind-html="note.comment"></p>
       </p>
 
     </div>

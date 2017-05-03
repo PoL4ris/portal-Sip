@@ -8,13 +8,19 @@ use App\Extensions\SIPBilling;
 use App\Models\Customer;
 use App\Models\Address;
 use App\Models\PaymentMethod;
+use App\Models\ActivityLog;
 use Log;
+
+use ActivityLogs;
 
 class BillingController extends Controller
 {
 
+    protected $logType;
+
     public function __construct(){
         $this->middleware('auth');
+        $this->logType = 'billing';
     }
 
     public function charge(Request $request){
@@ -66,12 +72,27 @@ class BillingController extends Controller
 
 
         if($request->id) {
+
             $pm = PaymentMethod::find($request->id);
+
+            // Copy the old model so we can use it to log this update
+            $oldModel = $pm->replicate();
+            $oldModel->id = $pm->id;
+
+            // Update the payment method with the info from the request
             $pm->exp_month = $request->exp_month;
             $pm->exp_year  = $request->exp_year;
             $pm->save();
-        }
-        else{
+
+            $data = $pm->getProperty('last four');
+
+            $newData = array();
+            $newData['exp_month'] = $pm->exp_month;
+            $newData['exp_year'] = $pm->exp_year;
+
+            ActivityLogs::add($this->logType, $request->id_customers, 'update', 'insertPaymentMethod', $oldModel, $newData, $data, ('update-payment'));
+
+        } else {
 
             $address = Address::where('id_customers', $request->id_customers)->first();
             if($address == null){
@@ -89,13 +110,26 @@ class BillingController extends Controller
             $pm->id_address     = $address->id;
             $pm->id_customers   = $request->id_customers;
             $pm->save();
+
+            // Set other cards to 0 (not default)
+            PaymentMethod::where('id_customers', $request->id_customers)
+                ->where('id', '!=', $pm->id)
+                ->update(['priority' => 0]);
+
+            $newData = array();
+            $newData['account_number'] = $pm->account_number;
+            $newData['exp_month'] = $pm->exp_month;
+            $newData['exp_year'] = $pm->exp_year;
+            $newData['types'] = 'Credit Card';
+            $newData['card_type'] = $pm->card_type;
+            ActivityLogs::add($this->logType, $request->id_customers, 'update', 'insertPaymentMethod', null, $newData, null, ('update-payment'));
         }
+
 
         //ACTIVITY LOG HERE
 
         return 'OK';
     }
-
 
     public function validateCard($number) {
 

@@ -1,199 +1,325 @@
-HOLA
+
+<!-------------------------------------------------------------------->
 
 
-
-
-<div class="ticket-search-table size-100 m-t-lg" ng-controller="tempTicketSearchController">
-  <form>
-    <label>
-      <input type="text" placeholder="Search for Open / Closed Tickets..." ng-keyup="getTicketsSearch()" ng-model="ticketSearch">
-      <i class="fa fa-search pull-right"></i>
-    </label>
-  </form>
-
-  <div class="" ng-if="ticketSearchResult">
-    <div class="search-result anim" >
-      {{ticketSearchResult}}
-    </div>
-  </div>
-</div>
-
-
-
-<div  class="building-list-side">
-  <!--<div data-smart-jqui-accordion>-->
-  <!--<div>-->
-  <!--<h4>Buildings</h4>-->
-
-  <div class="padding-10">
-    <div ng-repeat="building in bldListResult" class="bld-list-side">
-      <a href="#/buildings?id={{building.id}}">
-        {{building.id}} : {{building.code}} : {{building.name}}
-        <br>
-        {{building.name}}
-      </a>
-    </div>
-  </div>
-  <!---->
-  <!--</div>-->
-
-  <!--</div>-->
-
-</div>
-<hr>
-<hr>
-<hr>
-
-<!--<div ng-repeat="building in bldListResult">-->
-<!--{{building.id}} : {{building.code}} : {{building.name}}-->
+<!--<div class="col-lg-9 border4" ng-controller="warpolController">-->
+<!--{{warpolString}}-->
+<!--<hr>-->
+<!--<div ng-if="!dataResult"><img src="/img/loading.gif" alt="" class="loading-gif-support "></div>-->
+<!--<div ng-if="dataResult">{{dataResult}}</div>-->
 <!--</div>-->
 
 
+<!-------------------------------------------------------------------->
+<hr>
+<!-------------------------------------------------------------------->
 
-<tr>
-  <td><img src="styles/img/avatars/male.png" alt width="20"></td><td>Anna</td><td>Meeks</td><td>2007-04-05</td><td>carmel@forkform.me <a href-void class="pull-right"><i class="fa fa-key"></i></a></td><td>Holland</td><td>73490</td><td>255-757-8495</td><td><span class="label label-success">Active</span></td>
-</tr>
-<tr>
-  <td><img src="styles/img/avatars/male.png" alt width="20"></td><td>Millicent</td><td>Decker</td><td>2007-03-27</td><td>agustin.murray@babyback.me <a href-void class="pull-right"><i class="fa fa-key"></i></a></td><td>Leona</td><td>45960</td><td>207-445-7704</td><td><span class="label label-success">Active</span></td>
-</tr>
-<tr>
-  <td><img src="styles/img/avatars/male.png" alt width="20"></td><td>Misty</td><td>Mcdowell</td><td>2002-12-09</td><td>mona.doreen@processproduce.edu <a href-void class="pull-right"><i class="fa fa-key"></i></a></td><td>Sweetwater</td><td>94133</td><td>707-118-9601</td><td><span class="label label-success">Active</span></td>
-</tr>
-<tr class="danger ">
-  <td><img src="styles/img/avatars/male.png" alt width="20"></td><td>Cleo</td><td>Blue</td><td>1993-04-30</td><td>collin@berry.info <a href-void class="pull-right"><i class="fa fa-key"></i></a></td><td>Groesbeck</td><td>12764</td><td>543-827-8732</td><td><span class="label label-danger">Disabled</span></td>
-</tr>
-<tr>
-  <td><img src="styles/img/avatars/male.png" alt width="20"></td><td>Eliza</td><td>Proctor</td><td>2003-12-26</td><td>lawanda@event.me <a href-void class="pull-right"><i class="fa fa-key"></i></a></td><td>Alto</td><td>70454</td><td>453-985-9884</td><td><span class="label label-success">Active</span></td>
-</tr>
-<tr class="success">
-  <td><img src="styles/img/avatars/male.png" alt width="20"></td><td>Chantel</td><td>Medina</td><td>1993-04-01</td><td>marilynn.lucretia@animalanswer.edu <a href-void class="pull-right"><i class="fa fa-key"></i></a></td><td>Lozano</td><td>46151</td><td>789-917-1518</td><td><span class="label label-primary">ADMIN</span></td>
-</tr>
-<tr>
-  <td><img src="styles/img/avatars/male.png" alt width="20"></td><td>Tisha</td><td>Burns</td><td>1997-10-23</td><td>luella@square.me <a href-void class="pull-right"><i class="fa fa-key"></i></a></td><td>Dayton</td><td>18943</td><td>510-644-1193</td><td><span class="label label-success">Active</span></td>
-</tr>
-<tr>
-  <td><img src="styles/img/avatars/female.png" alt width="20"></td><td>Estelle</td><td>Barton</td><td>1993-01-21</td><td>rod.quinton@whilewhip.com <a href-void class="pull-right"><i class="fa fa-key"></i></a></td><td>Texline</td><td>29712</td><td>786-799-7584</td><td><span class="label label-success">Active</span></td>
-</tr>
-<tr>
-  <td><img src="styles/img/avatars/female.png" alt width="20"></td><td>Angeline</td><td>Roman</td><td>2002-11-23</td><td>katrina.claire.lindsey@letterlevel.com <a href-void class="pull-right"><i class="fa fa-key"></i></a></td><td>Ranchitos Las Lomas</td><td>87049</td><td>645-104-7232</td><td><span class="label label-success">Active</span></td>
-</tr>
-<tr>
-  <td><img src="styles/img/avatars/male.png" alt width="20"></td><td>Barrett</td><td>Pearce</td><td>2013-04-16</td><td>katrina.claire.lindsey@smooth.me <a href-void class="pull-right"><i class="fa fa-key"></i></a></td><td>Flowella</td><td>45074</td><td>234-002-0762</td><td><span class="label label-success">Active</span></td>
-</tr>
-<tr>
-  <td><img src="styles/img/avatars/male.png" alt width="20"></td><td>Margarita</td><td>Lancaster</td><td>2013-11-29</td><td>terra@smokesmooth.edu <a href-void class="pull-right"><i class="fa fa-key"></i></a></td><td>Grand Saline</td><td>50886</td><td>354-908-6520</td><td><span class="label label-success">Active</span></td>
-</tr>
-<tr>
-  <td><img src="styles/img/avatars/female.png" alt width="20"></td><td>Rebekah</td><td>Hatcher</td><td>2003-01-03</td><td>janelle.lourdes.laurel@antany.edu <a href-void class="pull-right"><i class="fa fa-key"></i></a></td><td>Laureles</td><td>26524</td><td>345-807-9800</td><td><span class="label label-success">Active</span></td>
-</tr>
-<tr class="warning">
-  <td><img src="styles/img/avatars/male.png" alt width="20"></td><td>Lesley</td><td>Mccall</td><td>2000-07-27</td><td>pam.kelli@recordred.me <a href-void class="pull-right"><i class="fa fa-key"></i></a></td><td>Eagle Lake</td><td>83430</td><td>255-974-8448</td><td><span class="label label-warning">Inactive</span></td>
-</tr>
-<tr>
-  <td><img src="styles/img/avatars/male.png" alt width="20"></td><td>Josephine</td><td>Cooley</td><td>2006-10-31</td><td>magdalena@accountacid.me <a href-void class="pull-right"><i class="fa fa-key"></i></a></td><td>Stagecoach</td><td>89756</td><td>502-841-8206</td><td><span class="label label-success">Active</span></td>
-</tr>
-<tr>
-  <td><img src="styles/img/avatars/male.png" alt width="20"></td><td>Joseph</td><td>Dawson</td><td>2013-01-25</td><td>yvonne.annette.june@streetstretch.com <a href-void class="pull-right"><i class="fa fa-key"></i></a></td><td>Oyster Creek</td><td>94520</td><td>954-256-3614</td><td><span class="label label-success">Active</span></td>
-</tr>
-<tr>
-  <td><img src="styles/img/avatars/male.png" alt width="20"></td><td>Marlin</td><td>Dorsey</td><td>1994-12-08</td><td>jerrod.weston.hershel@specialsponge.com <a href-void class="pull-right"><i class="fa fa-key"></i></a></td><td>Lubbock</td><td>19131</td><td>510-209-3012</td><td><span class="label label-success">Active</span></td>
-</tr>
-<tr>
-  <td><img src="styles/img/avatars/male.png" alt width="20"></td><td>Reginald</td><td>Nash</td><td>2000-11-26</td><td>mel@officeoil.edu <a href-void class="pull-right"><i class="fa fa-key"></i></a></td><td>Port Mansfield</td><td>24679</td><td>390-385-6930</td><td><span class="label label-success">Active</span></td>
-</tr>
-<tr>
-  <td><img src="styles/img/avatars/male.png" alt width="20"></td><td>Helga</td><td>Johnson</td><td>2000-03-09</td><td>kirby@stiffstill.edu <a href-void class="pull-right"><i class="fa fa-key"></i></a></td><td>Oakhurst</td><td>52280</td><td>443-588-7234</td><td><span class="label label-success">Active</span></td>
-</tr>
-<tr>
-  <td><img src="styles/img/avatars/male.png" alt width="20"></td><td>Silas</td><td>Arrington</td><td>2002-11-30</td><td>lula.lola@judgejump.org <a href-void class="pull-right"><i class="fa fa-key"></i></a></td><td>Bayou Vista</td><td>59377</td><td>729-309-5537</td><td><span class="label label-success">Active</span></td>
-</tr>
-<tr>
-  <td><img src="styles/img/avatars/female.png" alt width="20"></td><td>Thelma</td><td>Boyer</td><td>2004-10-26</td><td>athena.janel@attemptattention.com <a href-void class="pull-right"><i class="fa fa-key"></i></a></td><td>Keller</td><td>53463</td><td>958-473-4716</td><td><span class="label label-success">Active</span></td>
-</tr>
-<tr>
-  <td><img src="styles/img/avatars/female.png" alt width="20"></td><td>Sybil</td><td>Mahoney</td><td>1994-07-16</td><td>lara@water.edu <a href-void class="pull-right"><i class="fa fa-key"></i></a></td><td>Mila Doce</td><td>96556</td><td>129-759-9595</td><td><span class="label label-success">Active</span></td>
-</tr>
-<tr>
-  <td><img src="styles/img/avatars/male.png" alt width="20"></td><td>David</td><td>Dean</td><td>1992-12-06</td><td>ma.justina.gussie@pumppunishment.edu <a href-void class="pull-right"><i class="fa fa-key"></i></a></td><td>Columbus</td><td>88557</td><td>626-095-2870</td><td><span class="label label-success">Active</span></td>
-</tr>
-<tr>
-  <td><img src="styles/img/avatars/male.png" alt width="20"></td><td>Dina</td><td>Steward</td><td>1997-11-26</td><td>clifton.willard.daryl@far.info <a href-void class="pull-right"><i class="fa fa-key"></i></a></td><td>Mason</td><td>54724</td><td>912-684-8315</td><td><span class="label label-success">Active</span></td>
-</tr>
-<tr>
-  <td><img src="styles/img/avatars/male.png" alt width="20"></td><td>Raymundo</td><td>Massey</td><td>2005-08-30</td><td>lashawn.devon@bentberry.info <a href-void class="pull-right"><i class="fa fa-key"></i></a></td><td>Oak Valley</td><td>95324</td><td>680-005-5225</td><td><span class="label label-success">Active</span></td>
-</tr>
-<tr>
-  <td><img src="styles/img/avatars/male.png" alt width="20"></td><td>Nick</td><td>Mcallister</td><td>2006-07-08</td><td>deann@pleasure.info <a href-void class="pull-right"><i class="fa fa-key"></i></a></td><td>San Leanna</td><td>17585</td><td>408-044-0598</td><td><span class="label label-success">Active</span></td>
-</tr>
-<tr>
-  <td><img src="styles/img/avatars/male.png" alt width="20"></td><td>Charlene</td><td>Nance</td><td>2013-01-13</td><td>armando.felix.jimmie@ableabout.org <a href-void class="pull-right"><i class="fa fa-key"></i></a></td><td>Edgewater-Paisano</td><td>93799</td><td>476-739-7850</td><td><span class="label label-success">Active</span></td>
-</tr>
-<tr>
-  <td><img src="styles/img/avatars/male.png" alt width="20"></td><td>Judy</td><td>Corbett</td><td>2013-09-15</td><td>morton.jonas.forest@horse.edu <a href-void class="pull-right"><i class="fa fa-key"></i></a></td><td>Roma</td><td>39019</td><td>575-417-6267</td><td><span class="label label-success">Active</span></td>
-</tr>
-<tr>
-  <td><img src="styles/img/avatars/male.png" alt width="20"></td><td>Shauna</td><td>Elmore</td><td>1996-03-29</td><td>mel.marcelo@rootrough.me <a href-void class="pull-right"><i class="fa fa-key"></i></a></td><td>Channelview</td><td>18778</td><td>419-563-2551</td><td><span class="label label-success">Active</span></td>
-</tr>
-<tr>
-  <td><img src="styles/img/avatars/male.png" alt width="20"></td><td>Archie</td><td>Castillo</td><td>2001-03-11</td><td>walker.tyree@fruitfull.com <a href-void class="pull-right"><i class="fa fa-key"></i></a></td><td>Martindale</td><td>77003</td><td>197-694-7475</td><td><span class="label label-success">Active</span></td>
-</tr>
-<tr>
-  <td><img src="styles/img/avatars/male.png" alt width="20"></td><td>Ike</td><td>Yates</td><td>2005-08-08</td><td>kathi@fiction.com <a href-void class="pull-right"><i class="fa fa-key"></i></a></td><td>Denver City</td><td>96627</td><td>562-068-2504</td><td><span class="label label-success">Active</span></td>
-</tr>
-<tr>
-  <td><img src="styles/img/avatars/male.png" alt width="20"></td><td>James</td><td>Harrell</td><td>2001-07-05</td><td>rolando.clay@bitter.com <a href-void class="pull-right"><i class="fa fa-key"></i></a></td><td>Sanger</td><td>38876</td><td>971-978-5229</td><td><span class="label label-success">Active</span></td>
-</tr>
-<tr>
-  <td><img src="styles/img/avatars/male.png" alt width="20"></td><td>Hung</td><td>Walsh</td><td>2012-03-10</td><td>rory@acidacross.me <a href-void class="pull-right"><i class="fa fa-key"></i></a></td><td>Buckholts</td><td>13087</td><td>914-948-4150</td><td><span class="label label-success">Active</span></td>
-</tr>
-<tr>
-  <td><img src="styles/img/avatars/female.png" alt width="20"></td><td>Frankie</td><td>Porter</td><td>2006-05-28</td><td>aron.leopoldo.everette@businessbut.com <a href-void class="pull-right"><i class="fa fa-key"></i></a></td><td>Fair Oaks Ranch</td><td>81496</td><td>935-811-1608</td><td><span class="label label-success">Active</span></td>
-</tr>
-<tr>
-  <td><img src="styles/img/avatars/male.png" alt width="20"></td><td>Adrienne</td><td>Dickson</td><td>2000-05-09</td><td>felipe.bennie.gerardo@boiling.com <a href-void class="pull-right"><i class="fa fa-key"></i></a></td><td>Seabrook</td><td>67641</td><td>204-684-8982</td><td><span class="label label-success">Active</span></td>
-</tr>
-<tr>
-  <td><img src="styles/img/avatars/male.png" alt width="20"></td><td>Ursula</td><td>Covington</td><td>2009-05-16</td><td>brianne.nilda@year.me <a href-void class="pull-right"><i class="fa fa-key"></i></a></td><td>Richland</td><td>35047</td><td>101-930-4222</td><td><span class="label label-success">Active</span></td>
-</tr>
-<tr>
-  <td><img src="styles/img/avatars/male.png" alt width="20"></td><td>Wendy</td><td>Spence</td><td>1996-02-23</td><td>hilda.gwendolyn@brass.me <a href-void class="pull-right"><i class="fa fa-key"></i></a></td><td>Slaton</td><td>82159</td><td>936-779-1161</td><td><span class="label label-success">Active</span></td>
-</tr>
-<tr>
-  <td><img src="styles/img/avatars/male.png" alt width="20"></td><td>Sarah</td><td>Mcdaniel</td><td>2003-08-03</td><td>danny@language.com <a href-void class="pull-right"><i class="fa fa-key"></i></a></td><td>Needville</td><td>16354</td><td>805-226-9457</td><td><span class="label label-success">Active</span></td>
-</tr>
-<tr>
-  <td><img src="styles/img/avatars/male.png" alt width="20"></td><td>Bobbi</td><td>Taylor</td><td>2008-09-29</td><td>wesley@sunsupport.edu <a href-void class="pull-right"><i class="fa fa-key"></i></a></td><td>Santa Fe</td><td>56008</td><td>781-448-8791</td><td><span class="label label-success">Active</span></td>
-</tr>
-<tr>
-  <td><img src="styles/img/avatars/male.png" alt width="20"></td><td>Brendan</td><td>Mckay</td><td>2010-02-13</td><td>chong@example.org <a href-void class="pull-right"><i class="fa fa-key"></i></a></td><td>Las Colonias</td><td>63927</td><td>414-598-1649</td><td><span class="label label-success">Active</span></td>
-</tr>
-<tr>
-  <td><img src="styles/img/avatars/male.png" alt width="20"></td><td>Beverley</td><td>Dodson</td><td>2012-08-10</td><td>curt.quentin@crush.info <a href-void class="pull-right"><i class="fa fa-key"></i></a></td><td>Study Butte-Terlingua</td><td>71556</td><td>937-937-2841</td><td><span class="label label-success">Active</span></td>
-</tr>
-<tr>
-  <td><img src="styles/img/avatars/male.png" alt width="20"></td><td>Hassan</td><td>Bullock</td><td>2008-03-12</td><td>lena.christy@historyhole.me <a href-void class="pull-right"><i class="fa fa-key"></i></a></td><td>Hutchins</td><td>49192</td><td>108-577-5112</td><td><span class="label label-success">Active</span></td>
-</tr>
-<tr>
-  <td><img src="styles/img/avatars/male.png" alt width="20"></td><td>Mack</td><td>Huber</td><td>1999-09-07</td><td>marquita@push.me <a href-void class="pull-right"><i class="fa fa-key"></i></a></td><td>Waelder</td><td>36982</td><td>812-883-4685</td><td><span class="label label-success">Active</span></td>
-</tr>
-<tr>
-  <td><img src="styles/img/avatars/male.png" alt width="20"></td><td>Petra</td><td>Barnett</td><td>2003-10-24</td><td>elvia.alyce.deirdre@archargument.me <a href-void class="pull-right"><i class="fa fa-key"></i></a></td><td>Pittsburg</td><td>55769</td><td>624-871-4479</td><td><span class="label label-success">Active</span></td>
-</tr>
-<tr>
-  <td><img src="styles/img/avatars/male.png" alt width="20"></td><td>Suzan</td><td>Case</td><td>2012-01-20</td><td>casey@cover.edu <a href-void class="pull-right"><i class="fa fa-key"></i></a></td><td>Littlefield</td><td>30080</td><td>932-088-9855</td><td><span class="label label-success">Active</span></td>
-</tr>
-<tr>
-  <td><img src="styles/img/avatars/male.png" alt width="20"></td><td>Jon</td><td>Mueller</td><td>2012-11-19</td><td>samual.paris@change.edu <a href-void class="pull-right"><i class="fa fa-key"></i></a></td><td>Temple</td><td>30219</td><td>162-525-3454</td><td><span class="label label-success">Active</span></td>
-</tr>
-<tr>
-  <td><img src="styles/img/avatars/male.png" alt width="20"></td><td>Loyd</td><td>Valenzuela</td><td>1993-08-28</td><td>jerrold.robt.hank@seaseat.edu <a href-void class="pull-right"><i class="fa fa-key"></i></a></td><td>Harker Heights</td><td>37310</td><td>295-305-4911</td><td><span class="label label-success">Active</span></td>
-</tr>
-<tr>
-  <td><img src="styles/img/avatars/male.png" alt width="20"></td><td>Tracie</td><td>Ewing</td><td>2013-01-08</td><td>sang.deon@skysleep.info <a href-void class="pull-right"><i class="fa fa-key"></i></a></td><td>Kennard</td><td>67299</td><td>218-444-9426</td><td><span class="label label-success">Active</span></td>
-</tr>
-<tr>
-  <td><img src="styles/img/avatars/male.png" alt width="20"></td><td>Jame</td><td>Cooper</td><td>2013-09-18</td><td>christi@substance.org <a href-void class="pull-right"><i class="fa fa-key"></i></a></td><td>Keene</td><td>84931</td><td>121-381-7120</td><td><span class="label label-success">Active</span></td>
-</tr>
-<tr>
-  <td><img src="styles/img/avatars/male.png" alt width="20"></td><td>Clyde</td><td>Hudson</td><td>2008-08-22</td><td>elvia@smilesmoke.info <a href-void class="pull-right"><i class="fa fa-key"></i></a></td><td>Sunset</td><td>88755</td><td>561-388-1897</td><td><span class="label label-success">Active</span></td>
-</tr>
+
+
+
+
+<style>
+  #map {
+    height: 300px;
+    width: 100%;
+  }
+</style>
+<!--<article class="col-lg-3 ">-->
+
+<!--<div class="container ">SilverIP Locations.</div>-->
+
+<!--<div class="row">-->
+<!--<div id="map"></div>-->
+<!--</div>-->
+<!--<div class="row">-->
+<!--<div class="col-lg-12" id="lngLat"></div>-->
+<!--</div>-->
+
+<!--</article>-->
+
+<script>
+  var toma = [
+    '474 N Lakeshore Dr.',
+    '1235 S Prairie Ave',
+    '100 E. 14th Street',
+    '41 E 8th Street',
+    '1250 S Indiana',
+    '565 W Quincy St',
+    '4800 S Chicago Beach Dr.',
+    '222 N Columbus Drive',
+    '659 West Randolph Street',
+    '125 S Jefferson Street',
+    '2323 West Pershing Rd',
+    '616 West Fulton Street',
+    '1910 South Indiana Avenue',
+    '65 East Monroe Street',
+    '340 East Randolph Street',
+    '737 West Washington',
+    '1901 S Calumet Ave',
+    '1250 S Indiana',
+    '1335 S Prairie',
+    '657 West Fulton',
+    '1069 W 14th Place',
+    '1000 W 15th Place',
+    '1071 W 15th Place',
+    '1111 W 15th Place',
+    '1110 W 15th Place',
+    '1111 W 14th Place',
+    '125 E 13th',
+    '111 W Maple St',
+    '1300 North State Parkway',
+    '2225 W Pershing',
+    '30 West Oak Street',
+    '1600 S Wabash Ave',
+    '130 S Canal St',
+    '711 S Dearborn St',
+    '701 South Wells Steet',
+    '850 South Clark',
+    '901 W Madison Avenue',
+    '333 S Des Plaines Street',
+    '111 West Polk',
+    '212 E Cullerton Street',
+    '845 North State St',
+    '57 E Delaware Pl',
+    '1550 S Blue Island Ave',
+    '240 E Illinois Street',
+    '14 N Peoria Street',
+    '909 W Washington Blvd',
+    '1224 W Van Buren Street',
+    '1525 S Sangamon Street',
+    '1201 S Prairie Ave',
+    '1525 S Sangamon Street',
+    '8 E Randolph St',
+    '1901 S Calumet Ave',
+    '200 W Grand Ave',
+    '345 N Canal Street',
+    '610 S Michigan',
+    '1635 W Belmont Ave',
+    '845 W Fulton Market',
+    '2000 S Michigan Ave',
+    '1600 S Indiana Ave',
+    '730 S Clark Street',
+    '77 E Walton Street',
+    '213 W Institue Pl',
+    '70 W Huron Street',
+    '1339 N Dearborn Street',
+    '919 N Michigan Ave',
+    '360 E Randolph Street',
+    '235 W. Van Buren',
+    '501 N Clinton',
+    '900 S Clark Street',
+    '1700 E 56th Street',
+    '1623 S Lumber St',
+    '1046 W Kinzie St',
+    '10 S Dearborn',
+    '400 N. Clinton',
+    'N Clinton Street',
+    '270 E Pearson Street',
+    '2037 W Caroll Ave',
+    '308 W Erie Street',
+    '505 N McClurg Ct',
+    '71 W Hubbard Street',
+    '770 N Halsted Street',
+    '1211 S Prairie Ave',
+    '1331 S Prairie Ave',
+    '1600 S Wabash',
+    '1600 S Wabash Ave'
+  ];
+
+
+
+
+
+  function initMapXXX() {
+
+    var map = new google.maps.Map(document.getElementById('map'), {
+      zoom: 11,
+      center: {lat: 41.8599896, lng: -87.6814276}
+    });
+
+    var geocoder = new google.maps.Geocoder();
+
+    $.ajax(
+      {type:"GET",
+        url:"getBuildingLocations",
+        success: function(data)
+        {
+          for(var obj in toma)
+            geocodeAddress(geocoder, map, toma[obj]);
+        }
+      }
+    );
+  }
+
+  function geocodeAddress(geocoder, resultsMap, address) {
+
+
+    geocoder.geocode({'address': address}, function(results, status) {
+      if (status === 'OK') {
+
+        var marker = new google.maps.Marker({
+          map: resultsMap,
+          position: results[0].geometry.location,
+          animation: google.maps.Animation.DROP,
+
+        });
+        // Add a marker clusterer to manage the markers.
+//        var markerCluster = new MarkerClusterer(resultsMap, markers,
+//          {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
+      }
+
+    });
+  }
+
+</script>
+
+
+<script>
+
+  function initMap() {
+
+    var geocoder = new google.maps.Geocoder;
+    var infoWindow = new google.maps.InfoWindow;
+
+
+
+    var map = new google.maps.Map(document.getElementById('map'), {
+      zoom: 3,
+      center: {lat: 41.8599896, lng: -87.6814276}
+    });
+
+    var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+    var markers = locations.map(function(location, i) {
+
+      var dataText = geocoder.geocode({'location': location}, function(results, status) {
+        if(status == 'OK'){
+          return results[0].formatted_address;
+        }
+      });
+
+      var infowindow = new google.maps.InfoWindow({
+        content: dataText
+      });
+
+      var marker =  new google.maps.Marker({
+        position: location,
+        label: labels[i % labels.length],
+        animation: google.maps.Animation.DROP,
+        title:'hola'
+      });
+
+      marker.addListener('click', function() {
+        infowindow.open(map, marker);
+      });
+
+      return marker;
+
+    });
+
+    // Add a marker clusterer to manage the markers.
+    var markerCluster = new MarkerClusterer(map, markers,
+      {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
+  }
+  var locations = [
+    {lat: 41.8909587, lng: -87.6145694},
+    {lat: 41.8661398, lng: -87.62138089999996},
+    {lat: 41.864344, lng: -87.623596},
+    //
+//    {lat: 40.73418240000001, lng: -73.98927659999998},
+    {lat: 41.8662377, lng: -87.62303829999996},
+    {lat: 41.8784776 ,lng: -87.64216429999999},
+    {lat: 41.883999 , lng: -87.645037},
+    {lat: 41.8865424 , lng: -87.62150199999996},
+    {lat: 41.806603 , lng: -87.58658100000002},
+//
+    {lat: 41.87993609999999 , lng: -87.64207629999999},
+    {lat: 41.822647 , lng: -87.683246},
+    {lat: 41.8871622 , lng: -87.64364810000001},
+    {lat: 41.8561683 , lng: -87.622524},
+    {lat: 41.880633 , lng: -87.62508919999999},
+    {lat: 41.8847989 , lng: -87.61883619999998},
+//    {lat: 30.5451645 , lng: -83.87588410000001},
+    {lat: 41.8565449 , lng: -87.61883799999998},
+    {lat: 41.8662377 , lng: -87.62303829999996},
+    {lat: 41.864829 , lng: -87.62063},
+
+//    {lat: 46.1933858 , lng: -119.13294719999999},
+    {lat: 41.8623422 , lng: -87.6536289},
+//    {lat: 46.1949692 , lng: -119.13472330000002},
+//    {lat: 46.195198 , lng: -119.13462099999998},
+//    {lat: 46.1948084 , lng: -119.13438180000003},
+    {lat: 41.8864836 , lng: -87.64542619999997},
+    {lat: 41.8623334 , lng: -87.65469229999997},
+//    {lat: 42.0347528 , lng: -93.6094837},
+//    {lat: 40.9643082 , lng: -81.33136789999998},
+    {lat: 41.8600319 , lng: -87.6260719},
+
+    {lat: 41.8228275 , lng: -87.68127419999996},
+    {lat: 41.8797217 , lng: -87.64039830000002},
+//    {lat: 28.300869 , lng: -81.40409160000002},
+    {lat: 41.872941 , lng: -87.62887},
+//    {lat: 43.6654396 , lng: -94.44619410000001},
+    {lat: 41.8711831 , lng: -87.6310378},
+    {lat: 41.873148 , lng: -87.63324999999998},
+//    {lat: 40.77199 , lng: -73.9650198},
+    {lat: 41.8770189 , lng: -87.64354209999999},
+    {lat: 41.8556181 , lng: -87.62191899999999},
+
+//    {lat: 40.3126732 , lng: -111.7022652},
+    {lat: 41.8914805 , lng: -87.62065139999999},
+    {lat: 41.860556 , lng: -87.6596758},
+    {lat: 41.8719831 , lng: -87.63122390000001},
+    {lat: 41.89882 , lng: -87.62616600000001},
+    {lat: 41.8607715 , lng: -87.64930340000001},
+    {lat: 41.8823332 , lng: -87.65004239999996},
+    {lat: 41.87684 , lng: -87.658297},
+    {lat: 41.8828962 , lng: -87.65012539999998},
+    {lat: 41.867118 , lng: -87.6222062},
+
+    {lat: 41.884653 , lng: -87.62740459999998},
+    {lat: 41.8607715 , lng: -87.64930340000001},
+    {lat: 41.8565449 , lng: -87.61883799999998},
+    {lat: 41.93053889999999 , lng: -87.94476839999999},
+    {lat: 41.8881799 , lng: -87.63957340000002},
+    {lat: 41.9391985 , lng: -87.67009659999997},
+    {lat: 41.8740166 , lng: -87.62479200000001},
+    {lat: 41.8865563 , lng: -87.64926600000001},
+    {lat: 41.8552861 , lng: -87.6243404},
+    {lat: 41.8998721 , lng: -87.62492839999999},
+    {lat: 41.907052 , lng: -87.62966699999998},
+
+    {lat: 41.8599794 , lng: -87.62283709999997},
+    {lat: 41.8952363 , lng: -87.63088199999999},
+    {lat: 41.8971828 , lng: -87.63523709999998},
+    {lat: 41.8727316 , lng: -87.63095379999999},
+    {lat: 41.8847047 , lng: -87.61802539999996},
+    {lat: 41.891141 , lng: -87.6419942},
+    {lat: 41.8765326 , lng: -87.63475590000002},
+    {lat: 41.8997908 , lng: -87.62350099999998},
+    {lat: 41.8815908 , lng: -87.6298314},
+    {lat: 41.8891898 , lng: -87.65406000000002},
+
+    {lat: 41.8703138 , lng: -87.63102049999998},
+//    {lat: 40.1094968 , lng: -88.9996845},
+    {lat: 41.85893069999999 , lng: -87.6360631},
+    {lat: 41.793779 , lng: -87.583259},
+    {lat: 41.89419100000001 , lng: -87.63619169999998},
+    {lat: 41.8868117 , lng: -87.64134489999998},
+    {lat: 41.8978633 , lng: -87.61885029999996},
+    {lat: 41.8874668 , lng: -87.67813050000001},
+    {lat: 41.8897203 , lng: -87.63069380000002},
+    {lat: 41.8600319 , lng: -87.6260719},
+
+    {lat: 41.8667204 , lng: -87.62122039999997},
+    {lat: 41.8652037 , lng: -87.6207958},
+    {lat: 41.8961198 , lng: -87.64831219999996},
+    {lat: 41.8600319 , lng: -87.6260719},
+    {lat: 41.8914415 , lng: -87.61725079999997}
+  ]
+</script>
+<script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js">
+</script>
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAW-E_VYcz-wc9T-WS3_Y72cRoGC36VaM8&callback=initMap">
+</script>

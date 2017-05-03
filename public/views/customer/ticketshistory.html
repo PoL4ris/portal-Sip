@@ -17,14 +17,15 @@
             </tr>
           </thead>
           <tbody>
-            <tr ng-repeat="ticket in ticketHistory">
+            <tr ng-repeat="ticket in ticketHistory" id="ticket-history-repeat-id">
               <td class="first-td" ng-click="displayTicketResume(ticket.id, ticket.id_customers)" data-toggle="modal" data-target="#ticketModal">{{ ticket.ticket_number }}</td>
               <td ng-init="ticketDateA = convertDate(ticket.created_at)">{{ ticketDateA | date : "MMM d, y h:mm a" }}</td>
               <td>{{ ticket.reason}}</td>
               <td ng-mouseover="showFullComment(ticket.id)"     style="position: relative;"
-                  ng-mouseleave="hideFullComment(ticket.id)"    ng-if="ticket.comment">
+                  ng-mouseleave="hideFullComment(ticket.id)"    ng-if="ticket.comment"
+                  ng-click="displayTicketResume(ticket.id, ticket.id_customers)" data-toggle="modal" data-target="#ticketModal">
                   {{ ticket.comment | limitTo : letterLimit }}...
-                <div id='ticket-{{ ticket.id }}' style="display: none;" class="ticket-comment-pop">{{ticket.comment}}</div>
+                <div id='ticket-{{ ticket.id }}' style="display: none;" class="ticket-comment-pop" ng-bind-html="ticket.comment"></div>
               </td>
               <td ng-if="!ticket.comment"> No Comment </td>
               <td class="capital-first">{{ ticket.status }}</td>
@@ -125,16 +126,12 @@
                 </form>
               </div>
               <!--Comments-->
-              <!--
-              <div class="col-lg-12 b-t-ddd no-padding-sides p-t-lg p-b-lg m-t-lg">
-                <div>Info:</div>
-                <div class="comment-content m-b-md">{{selectedTicket.ticket_note.comment}}
-                  <p ng-repeat="comment in selectedTicket.ticket_note.ticket_history_full">
-                    {{comment.comment}}
-                  </p>
-                </div>
+
+              <div class="col-lg-12 b-t-ddd no-padding-sides p-t-lg p-b-lg m-t-lg summary-ticket-container">
+                <div>Summary:</div>
+                <div ng-bind-html="selectedTicket.comment" class="comment-content m-b-md">{{selectedTicket.comment}}</div>
               </div>
-              -->
+
               <!--Info Left Block-->
               <div class="col-lg-4 no-padding-sides bg-gray">
                 <div>Created by</div>

@@ -19,7 +19,7 @@ use App\Models\Ticket;
 use App\Models\TicketHistory;
 use App\Models\Address;
 use App\Models\Product;
-use App\Models\Building\Building;
+use App\Models\Building;
 use SendMail;
 
 class SupportController extends Controller
@@ -301,6 +301,7 @@ class SupportController extends Controller
         $ticketHistoryRecord->save();
 
         $updateTicket = Ticket::find($request->id);
+        $updateTicket->status     = $request->status;
         $updateTicket->updated_at = $ticketHistoryRecord->created_at;
         $updateTicket->save();
 

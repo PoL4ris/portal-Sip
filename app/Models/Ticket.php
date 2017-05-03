@@ -45,14 +45,18 @@ class Ticket extends Model
   }
   public function building()
   {
-    return $this->belongsTo('App\Models\Building\Building', 'id_address', 'id_address', 'App\Models\Address');
+    return $this->belongsTo('App\Models\Building', 'id_address', 'id_address', 'App\Models\Address');
   }
 
 
 
 
   public function buildings() {
-    return $this->belongsToMany('App\Models\Building\Building');
+    return $this->belongsToMany('App\Models\Building');
+  }
+
+  public function difftime(){
+    return;
   }
 
 }

@@ -1299,29 +1299,31 @@ app.controller('invoiceController', function ($scope, $http, customerId, notify,
 });
 app.controller('customerPaymentMethodsController',  function ($scope, $http,$uibModal, $log){
 
-  $http.get("getCustomerPayment", {params:{'id':$scope.stcid?$scope.stcid:$scope.customerData.id}})
+  $http.get("getDefaultPaymentMethod", {params:{'id':$scope.stcid?$scope.stcid:$scope.customerData.id}})
     .then(function (response) {
       $scope.paymentData = response.data[0];
+      $scope.pproperties = response.data[1];
     });
 
-  $http.get("getPaymentMethods", {params:{'id':$scope.customerData.id}})
+  $http.get("getAllPaymentMethods", {params:{'id':$scope.customerData.id}})
     .then(function (response) {
       $scope.paymentMethods = response.data;
     });
 
-  $scope.setDefault = function (id) {
-      $http.get("updatePaymentMethods", {params:{'id':id, 'customerID':$scope.customerData.id}})
+  $scope.setAsDefaultPaymentMethod = function (id) {
+      $http.get("setDefaultPaymentMethod", {params:{'id':id, 'customerID':$scope.customerData.id}})
         .then(function (response) {
           $scope.paymentMethods = response.data;
 
-          $http.get("getCustomerPayment", {params:{'id':$scope.stcid?$scope.stcid:$scope.customerData.id}})
+          $http.get("getDefaultPaymentMethod", {params:{'id':$scope.stcid?$scope.stcid:$scope.customerData.id}})
             .then(function (response) {
               $scope.paymentData = response.data[0];
+              $scope.pproperties = response.data[1];
             });
         });
     };
   $scope.getPaymentMethods = function (customerId){
-    $http.get("getPaymentMethods", {params:{'id':customerId}})
+    $http.get("getAllPaymentMethods", {params:{'id':customerId}})
       .then(function (response) {
         $scope.paymentMethods = response.data;
       });
