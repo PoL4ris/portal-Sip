@@ -269,4 +269,12 @@ class AdminController extends Controller
         unset($data['table']);
         DB::table($request['table'])->insert($data);
     }
+    /**
+     * @return List of Users
+     * REFACTOR AND RENAME, VERIFY USAGE AND UPDATE ASAP.
+     */
+    public function admin()
+    {
+        return User::get();
+    }
 }
