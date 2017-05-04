@@ -408,7 +408,7 @@ class GoogleCalendar {
 
 
         //$availableTechCalendar = $this->all(Config::get('google.schedule_appointment') );
-        //dd($availableTechCalendar);
+
         $pending_appointments = $this->service->events->listEvents(Config::get('google.pending_appointment'), $optParams);
         //should have google schedule now, but let's process the appointments and make a cleaner table.
 

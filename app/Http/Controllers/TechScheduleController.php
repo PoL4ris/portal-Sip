@@ -9,7 +9,7 @@ use App\Extensions\GoogleCalendar;
 use DateTime;
 use Log;
 use stdClass;
-use App\Models\Building\Building;
+use App\Models\Buildings;
 use App\Models\Address;
 use Validator;
 use Config;
@@ -200,17 +200,6 @@ class TechScheduleController extends Controller {
         }
 
 
-        /*
-for($row=0;$row<$tablesetup['rows'];$row++) {
-	for($column=0;$column<$tablesetup['columns'];$column++) {
-
-	}
-}
-*/
-
-        //populate existing appointments
-
-
         return $tablesetup;
 
     }
@@ -227,11 +216,6 @@ for($row=0;$row<$tablesetup['rows'];$row++) {
 
         $search = $request->search;
 
-        //$locations = Building::with('address')->where('id',"!=",1)->get();
-
-//        $locations = Building::where('id',"!=",1)
-//            ->where('code','LIKE',"%$search%")->get();
-
         $locations = Address::whereNull('id_customers')
             ->where(function ($query) use ($search)
             {
@@ -240,7 +224,7 @@ for($row=0;$row<$tablesetup['rows'];$row++) {
             })
             ->get();
 
-//dd($locations);
+
         return $locations;
     }
 
@@ -388,7 +372,7 @@ for($row=0;$row<$tablesetup['rows'];$row++) {
                 $request->appointmentdescription,  //appointment descrioption
                 $startTime,  //start time (dont' forget to set the date on the start and end times)
                 $endTime,  //end time
-                null);  //dtv account number
+                ( isset($dtvaccount) ? $dtvaccount : null));  //dtv account number
             //$onset is the newly created calendar appointment.
         }
 
