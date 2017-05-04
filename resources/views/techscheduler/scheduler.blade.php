@@ -12,83 +12,17 @@
 
 
     <script src="/js/silveripJS/techScheduler.js" type="text/javascript"></script>
+    <link rel="stylesheet" type="text/css" href="/css/plugins/tech-schedule.css">
+
+
     <script type="text/javascript">
-        //our document init
+        //provides old date for techScheduler.js from laravel old
         var olddate = "{{ old('date') }}";
-
-
     </script>
 
-    <style>
-        textarea {
-            border: solid 1px black;
-            width: 100%;
-            height: 100%;
 
-            -webkit-box-sizing: border-box; /* <=iOS4, <= Android  2.3 */
-            -moz-box-sizing: border-box; /* FF1+ */
-            box-sizing: border-box; /* Chrome, IE8, Opera, Safari 5.1*/
-        }
 
-        textarea.form-control {
-            height: 100%;
-        }
 
-        table {
-            border-collapse: separate;
-            border-spacing: 2px;
-        }
-
-        input[type='checkbox'] {
-            width: 2em;
-            height: 2em;
-            border-radius: 1.2em;
-            border: 2px solid #555;
-        }
-
-        input[type='checkbox']:checked {
-            background: #2980B9;
-        }
-
-        .scheduletable {
-            display: table;
-        }
-
-        .scheduletable td {
-            text-align: center;
-            border: 2px solid grey;
-            border-collapse: collapse;
-            border-radius: 5px;
-
-        }
-
-        .scheduletable th {
-            text-align: center;
-        }
-
-        .dragdiv {
-            /* border-style: inset;
-             border: 1px solid grey; */
-            width: 100%;
-            height: 100%;
-            float: left;
-            white-space: normal;
-            word-wrap: break-word;
-            display: table-cell;
-        }
-
-        .freeappointment .hover {
-            background: red;
-        }
-
-        .hovercss {
-            background: lightblue;
-        }
-
-        .table-striped tbody > tr:nth-child(odd) > td {
-            background-color: #e9f8ff;
-        }
-    </style>
 </head>
 <html>
 <body>
@@ -113,7 +47,7 @@
     </div>
 @endif
 
-<div class="form-group">
+<div class="form-group schedule-wrapper">
     <form method="get" name="scheduleform" action="/tech-schedule/setappointment" onsubmit="preparesubmit()">
         <table id='sheader'>
             <tr>
