@@ -2,278 +2,271 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\AccessApp;
-use App\Models\Customer;
 use Illuminate\Http\Request;
-
 use App\Http\Requests;
+//Laravel
 use DB;
 use Auth;
+//Controller
 use App\Http\Controllers\Lib\FormsController;
+//Models
 use App\Models\Profile;
 use App\Models\Status;
 use App\Models\User;
 use App\Models\App;
+use App\Models\AccessApp;
+use App\Models\Customer;
 
 
+/**
+ * Class AdminController
+ * @package App\Http\Controllers
+ * Post methods in general, secure or private info.
+ */
 class AdminController extends Controller
 {
-  public function __construct() {
-    $this->middleware('auth');
-  }
-
-  //FUNCTIONS
-  public function getProfileInfo()
-  {
-    return User::find(Auth::user()->id);
-  }
-  public function updateProfileInfo(Request $request)
-  {
-    $user = User::find(Auth::user()->id);
-    $user->password = bcrypt($request->password);
-    $user->save();
-    return 'OK';
-  }
-
-  public function getAdminUsers(Request $request){
-    return User::with('profile')->get();
-  }
-  public function getAdminProfiles(Request $request){
-      return Profile::with('accessApps')->get();
-  }
-  public function getAdminProfile(Request $request){
-      return Profile::find($request->params['id']);
-  }
-  public function updateAdminUser(Request $request){
-    if ($request->params['token'] == csrf_token()){
-      $data = $request->params['objetos'];
-      $user = User::find($data['id']);
-      $user->first_name = $data['first_name'];
-      $user->last_name = $data['last_name'];
-      $user->email = $data['email'];
-      $user->alias = $data['alias'];
-      if(!empty($data['password']))
-        $user->password = bcrypt($data['password']);
-
-      $user->social_access = $data['social_access'];
-      $user->id_status = $data['id_status'];
-      $user->id_profiles = $data['id_profiles'];
-      $user->save();
-      return $this->getAdminUsers($request);//arreglar illuminate request
-    }
-    else
+    public function __construct()
     {
-      print 'ERROR';
-      return;//with error or something...
+        $this->middleware('auth');
     }
-  }
-  public function insertAdminUser(Request $request)
-  {
-    if ($request->params['token'] == csrf_token()){
-      $data = $request->params['objetos'];
-      $user = new User;
-      $user->first_name = $data['first_name'];
-      $user->last_name = $data['last_name'];
-      $user->email = $data['email'];
-      $user->alias = $data['alias'];
-      $user->password = bcrypt($data['password']);
-      $user->social_access = $data['social_access'];
-      $user->id_status = $data['id_status'];
-      $user->id_profiles = $data['id_profiles'];
-      $user->save();
-      return $this->getAdminUsers($request);//arreglar illuminate request
-    }
-    else
+
+    /**
+     * @return gets logged user info.
+     */
+    public function getProfileInfo()
     {
-      print 'ERROR';
-      return;//with error or something...
+        return User::find(Auth::user()->id);
     }
-
-
-
-
-  }
-  public function getAdminApps(Request $request){
-    return App::get();
-  }
-  public function insertNewProfile(Request $request){
-
-    $data = $request->params['objects'];
-
-    $profile = new Profile;
-    $profile->name = $data['profile_name'];
-    $profile->save();
-
-    unset($data['profile_name']);
-
-    $aApps = new AccessApp;
-
-    foreach($data as $index => $item)
+    /**
+     * @param Request $request
+     * password = new password to set as bcrypt.
+     * @return OK, when update is complete.
+     */
+    public function updateProfileInfo(Request $request)
     {
-      $aApps = new AccessApp;
-      $aApps->id_apps = $index;
-      $aApps->id_profiles = $profile->id;
-      $aApps->save();
+        $user = User::find(Auth::user()->id);
+        $user->password = bcrypt($request->password);
+        $user->save();
+        return 'OK';
     }
-
-    return Profile::with('accessApps')->get();
-  }
-  public function updateAdminProfile(Request $request){
-    $data = $request->params['objects'];
-
-    $profile = Profile::find($data['id_profiles']);
-    $profile->name = $data['profile_name'];
-    $profile->save();
-
-    unset($data['profile_name']);
-
-    AccessApp::where('id_profiles', $data['id_profiles'])->delete();
-
-    $aApps = new AccessApp;
-
-    foreach($data as $index => $item)
+    /**
+     * @return List of portal users allowed to interact.
+     */
+    public function getAdminUsers()
     {
-      $aApps = new AccessApp;
-      $aApps->id_apps = $index;
-      $aApps->id_profiles = $data['id_profiles'];
-      $aApps->save();
+        return User::with('profile')->get();
     }
-
-    return Profile::with('accessApps')->get();
-
-  }
-  public function getAppAccess(Request $request){
-    $data = $request->params;
-    return AccessApp::where('id_profiles', $data['id_profiles'])
-                    ->where('id_apps', $data['id_apps'])
-                    ->first();
-
-    if($resultAccess)
-      return 'OK';
-    else
-      return 'ERROR';
-  }
-  public function insertNewApp(Request $request){
-
-    $data = $request->params['objects'];
-
-    $app = new App;
-    $app->name = $data['app_name'];
-    $app->icon = $data['icon'];
-    $app->url  = $data['url'];
-    $app->save();
-
-    unset($data['app_name'], $data['icon'], $data['url']);
-
-    $aApps = new AccessApp;
-
-    foreach($data as $index => $item)
+    /**
+     * @return List of profiles with respective access apps.
+     */
+    public function getAdminProfiles()
     {
-      $aApps = new AccessApp;
-      $aApps->id_apps = $app->id;
-      $aApps->id_profiles = $index;
-      $aApps->save();
+        return Profile::with('accessApps')->get();
     }
-
-    return App::get();
-  }
-  public function updateAdminApp(Request $request){
-    $data = $request->params['objects'];
-
-    $app = App::find($data['id_apps']);
-    $app->name = $data['app_name'];
-    if($data['icon'])
-      $app->icon = $data['icon'];
-    $app->url = $data['url'];
-    $app->save();
-
-    unset($data['app_name'], $data['icon'], $data['url']);
-
-    AccessApp::where('id_apps', $data['id_apps'])->delete();
-
-    $aApps = new AccessApp;
-
-    foreach($data as $index => $item)
+    /**
+     * @param Request $request
+     * id = id_users to update.
+     * users DB fields to update
+     * @return List of admin users.
+     */
+    public function updateAdminUser(Request $request)
     {
-      $aApps = new AccessApp;
-      $aApps->id_apps = $data['id_apps'];
-      $aApps->id_profiles = $index ;
-      $aApps->save();
+        $data = $request->params['objetos'];
+        $user = User::find($data['id']);
+        $user->first_name = $data['first_name'];
+        $user->last_name  = $data['last_name'];
+        $user->email = $data['email'];
+        $user->alias = $data['alias'];
+        if (!empty($data['password']))
+            $user->password = bcrypt($data['password']);
+
+        $user->social_access = $data['social_access'];
+        $user->id_status     = $data['id_status'];
+        $user->id_profiles   = $data['id_profiles'];
+        $user->save();
+
+        return $this->getAdminUsers();
+
     }
-    return App::get();
-  }
+    /**
+     * @param Request $request
+     * objetos = Users DB table field Values.
+     * @return List of admin users.
+     */
+    public function insertAdminUser(Request $request)
+    {
+        $data = $request->params['objetos'];
+        $user = new User;
+        $user->first_name  = $data['first_name'];
+        $user->last_name   = $data['last_name'];
+        $user->email       = $data['email'];
+        $user->alias       = $data['alias'];
+        $user->password    = bcrypt($data['password']);
+        $user->social_access = $data['social_access'];
+        $user->id_status   = $data['id_status'];
+        $user->id_profiles = $data['id_profiles'];
+        $user->save();
 
+        return $this->getAdminUsers();
+    }
+    /**
+     * @return List of all apps.
+     */
+    public function getAdminApps()
+    {
+        return App::get();
+    }
+    /**
+     * @param Request $request
+     * profile_name = vale of profile table to insert.
+     * @return List of profiles with access Apps.
+     */
+    public function insertNewProfile(Request $request)
+    {
+        $data = $request->params['objects'];
 
-  // Verify use of the next functions... Maybe old.
-  public function admin()
-  {
-    return DB::select('select * from users limit 10');
-  }
-  public function adminProfiles()
-  {
-    return Profile::All();
-  }
-  public function adminStatus()
-  {
-    return DB::select('select * from status');
-  }
-  public function adminElements()
-  {
-    return DB::select('select * from elements');
-  }
-  public function adminApps()
-  {
-    return DB::select('select * from apps');
-  }
-  public function adminTypes()
-  {
-    return DB::select('select * from types');
-  }
-  public function adminCustomers()
-  {
-    return DB::select('select * from customers limit 10');
-  }
-  public function adminAddress()
-  {
-    return DB::select('select * from address limit 10');
-  }
-  public function adminContacts()
-  {
-    return DB::select('select * from contacts limit 10');
-  }
-  public function adminPayments()
-  {
-    return DB::select('select * from payment_methods limit 10');
-  }
-  public function adminNotes()
-  {
-    return DB::select('select * from notes limit 10');
-  }
-  public function adminAccessApps()
-  {
-    return DB::select('select * from access_apps');
-  }
-  public function adminAccessAppElements()
-  {
-    return DB::select('select * from access_app_elements');
-  }
+        $profile = new Profile;
+        $profile->name = $data['profile_name'];
+        $profile->save();
 
+        unset($data['profile_name']);
 
+        $aApps = new AccessApp;
 
+        foreach ($data as $index => $item)
+        {
+            $aApps = new AccessApp;
+            $aApps->id_apps = $index;
+            $aApps->id_profiles = $profile->id;
+            $aApps->save();
+        }
 
+        return Profile::with('accessApps')->get();
+    }
+    /**
+     * @param Request $request
+     * id_profiles = id  profile to find and update.
+     * profile_name = new value.
+     * @return List of profiles with access Apps.
+     */
+    public function updateAdminProfile(Request $request)
+    {
+        $data = $request->params['objects'];
 
+        $profile = Profile::find($data['id_profiles']);
+        $profile->name = $data['profile_name'];
+        $profile->save();
 
-  public function getAdminForm(Request $request)
-  {
-    $dynamicForm = new FormsController();
-    $data = $dynamicForm->getFormType($request->table);
-    return $data;
-    return view('buildings.newbuildingform',['form' => $data]);
-  }
-  public function insertAdminForm(Request $request)
-  {
-    $data = $request->all();
-    unset($data['table']);
-    DB::table($request['table'])->insert($data);
-  }
+        unset($data['profile_name']);
+
+        AccessApp::where('id_profiles', $data['id_profiles'])->delete();
+
+        $aApps = new AccessApp;
+
+        foreach ($data as $index => $item)
+        {
+            $aApps = new AccessApp;
+            $aApps->id_apps = $index;
+            $aApps->id_profiles = $data['id_profiles'];
+            $aApps->save();
+        }
+
+        return Profile::with('accessApps')->get();
+
+    }
+    /**
+     * @param Request $request
+     * id_profiles = id profile.
+     * id_apps = id app.
+     * @return Access app requested.
+     */
+    public function getAppAccess(Request $request)
+    {
+        $data = $request->params;
+        return AccessApp::where('id_profiles', $data['id_profiles'])
+                        ->where('id_apps', $data['id_apps'])
+                        ->first();
+    }
+    /**
+     * @param Request $request
+     * objetos = app table field values.
+     * @return List of apps.
+     */
+    public function insertNewApp(Request $request)
+    {
+        $data = $request->params['objects'];
+
+        $app = new App;
+        $app->name = $data['app_name'];
+        $app->icon = $data['icon'];
+        $app->url  = $data['url'];
+        $app->save();
+
+        unset($data['app_name'], $data['icon'], $data['url']);
+
+        $aApps = new AccessApp;
+
+        foreach ($data as $index => $item)
+        {
+            $aApps = new AccessApp;
+            $aApps->id_apps = $app->id;
+            $aApps->id_profiles = $index;
+            $aApps->save();
+        }
+
+        return App::get();
+    }
+    /**
+     * @param Request $request
+     * objects = apps table fields to update.
+     * @return List of apps.
+     */
+    public function updateAdminApp(Request $request)
+    {
+        $data = $request->params['objects'];
+
+        $app = App::find($data['id_apps']);
+        $app->name = $data['app_name'];
+        if ($data['icon'])
+            $app->icon = $data['icon'];
+
+        $app->url = $data['url'];
+        $app->save();
+
+        unset($data['app_name'], $data['icon'], $data['url']);
+
+        AccessApp::where('id_apps', $data['id_apps'])->delete();
+
+        $aApps = new AccessApp;
+
+        foreach ($data as $index => $item)
+        {
+            $aApps = new AccessApp;
+            $aApps->id_apps = $data['id_apps'];
+            $aApps->id_profiles = $index;
+            $aApps->save();
+        }
+
+        return App::get();
+    }
+    /**
+     * Creates form from table requested.
+     * Not in use for the moment.
+     */
+    public function getAdminForm(Request $request)
+    {
+        $dynamicForm = new FormsController();
+        $data = $dynamicForm->getFormType($request->table);
+        return $data;
+        return view('buildings.newbuildingform', ['form' => $data]);
+    }
+    /**
+     * Given form, inserts full table with values.
+     */
+    public function insertAdminForm(Request $request)
+    {
+        $data = $request->all();
+        unset($data['table']);
+        DB::table($request['table'])->insert($data);
+    }
 }
