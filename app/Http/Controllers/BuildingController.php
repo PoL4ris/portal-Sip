@@ -84,7 +84,17 @@ class BuildingController extends Controller
   }
 
   //Building GET's
-  public function getBuildingsList(){
+  public function getBuildingsList(Request $request)
+  {
+    if ($request->type)
+    {
+        if ($request->type == 1)
+            return Building::where('type', 'like', 'commercial')
+                           ->orderBy('id', 'desc')->get();
+        else
+            return Building::where('type', '!=', 'commercial')
+                           ->orderBy('id', 'desc')->get();
+    }
     return Building::orderBy('id', 'desc')->get();
   }//new
   public function getNeighborhoodList()

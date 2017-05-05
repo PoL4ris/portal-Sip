@@ -1,67 +1,67 @@
 <!--<div jarvis-widget id="wid-id-1" data-widget-deletebutton="false" data-widget-editbutton="false" data-widget-custombutton="false" ng-controller="FormXeditableCtrl">-->
 <div ng-controller="FormXeditableCtrl" class="">
-  <div ng-controller="FormPluginsCtrl">
-    <div ng-controller="globalToolsCtl">
-      <!--BOTONES-->
+    <div ng-controller="FormPluginsCtrl">
+        <div ng-controller="globalToolsCtl">
+            <!--BOTONES-->
 
-        <div class="row">
-          <div class="col-sm-4">
-            <button id="customer-contact" class="btn btn btn-primary" ng-click="toggleDisabled('customer-contact')"><i class="fa fa-pencil"></i> Edit Info</button>
-            <!--<button ng-if="customerContactsData == ''" id="customer-contact" class="btn btn btn-default" ng-click="toggleDisabled()" disabled >Disabled</button>-->
-          </div>
-          <div class="col-sm-8">
-            <button id="add-property"
-                    class="btn btn btn-primary pull-right"
-                    ng-click="fadeViews('bpv-container', 'new-form-function', 1, 'customer-contact', 'add-property', 'add-property-cancel')">
-              Add new Contact
-            </button>
-            <button id="add-property-cancel"
-                    class="btn btn btn-danger pull-right m-r-lg no-display"
-                    ng-click="fadeViews('bpv-container', 'new-form-function', 0, 'customer-contact', 'add-property', 'add-property-cancel')">
-              Cancel
-            </button>
-          </div>
+            <div class="row">
+                <div class="col-sm-4">
+                    <button id="customer-contact" class="btn btn btn-primary" ng-click="toggleDisabled('customer-contact')"><i class="fa fa-pencil"></i> Edit Info</button>
+                    <!--<button ng-if="customerContactsData == ''" id="customer-contact" class="btn btn btn-default" ng-click="toggleDisabled()" disabled >Disabled</button>-->
+                </div>
+                <div class="col-sm-8">
+                    <button id="add-property"
+                            class="btn btn btn-primary pull-right"
+                            ng-click="fadeViews('bpv-container', 'new-form-function', 1, 'customer-contact', 'add-property', 'add-property-cancel')">
+                        Add new Contact
+                    </button>
+                    <button id="add-property-cancel"
+                            class="btn btn btn-danger pull-right m-r-lg no-display"
+                            ng-click="fadeViews('bpv-container', 'new-form-function', 0, 'customer-contact', 'add-property', 'add-property-cancel')">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+
+            <!--CONTENIDO-->
+            <div class="table-container m-t-lg tc-c-info" id="ccontactlist-gTools">
+                <table class="table table-bordered table-striped bpv-container">
+                    <tbody>
+                    <tr ng-repeat="contactinfo in customerContactsData">
+                        <td><strong>{{ contactTypes[(contactinfo.id_types - 1)].name }}:</strong></td>
+                        <td>
+                            <a href=""
+                               id="b-p-id-{{contactinfo.id}}"
+                               record-table="Contacts"
+                               data-pk="1"
+                               data-options="editableOptions"
+                               data-original-title="Set Value"
+                               record-field="value"
+                               smart-xeditable
+                               data-ng-model="contactinfo.value"
+                               record-id="{{contactinfo.id}}"
+                               data-type="text"
+                               record-idContainer="ccontactlist"
+                               data-placement="right"
+                               class="editable editable-click">
+                                {{contactinfo.value ? contactinfo.value : 'nada'}}
+                            </a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!--ADD FORM-->
+            <div class="new-form-function no-display">
+                <form action="" id="new-cct-form">
+                    <select name="id_types" id="" class="new-form-select new-form-fields m-b-lg" required>
+                        <option value="">Select Type</option>
+                        <option ng-repeat="type in contactTypes" value="{{type.id}}">{{type.name}}</option>
+                    </select>
+                    <textarea class="new-form-fields new-form-textarea m-b-lg" placeholder="Example: 127.0.0.1/255" name="value" required></textarea>
+                    <button class="btn btn-default float-right" ng-click="insertCustomerContact()">Add Contact</button>
+                </form>
+            </div>
         </div>
-
-      <!--CONTENIDO-->
-      <div class="table-container m-t-lg tc-c-info" id="ccontactlist-gTools">
-        <table class="table table-bordered table-striped bpv-container">
-          <tbody>
-            <tr ng-repeat="contactinfo in customerContactsData">
-              <td><strong>{{ contactTypes[(contactinfo.id_types - 1)].name }}:</strong></td>
-              <td>
-                <a href=""
-                   id="b-p-id-{{contactinfo.id}}"
-                   record-table="Contacts"
-                   data-pk="1"
-                   data-options="editableOptions"
-                   data-original-title="Set Value"
-                   record-field="value"
-                   smart-xeditable
-                   data-ng-model="contactinfo.value"
-                   record-id="{{contactinfo.id}}"
-                   data-type="text"
-                   record-idContainer="ccontactlist"
-                   data-placement="right"
-                   class="editable editable-click">
-                   {{contactinfo.value ? contactinfo.value : 'nada'}}
-                </a>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <!--ADD FORM-->
-      <div class="new-form-function no-display">
-        <form action="" id="new-cct-form">
-          <select name="id_types" id="" class="new-form-select new-form-fields m-b-lg" required>
-            <option value="">Select Type</option>
-            <option ng-repeat="type in contactTypes" value="{{type.id}}">{{type.name}}</option>
-          </select>
-          <textarea class="new-form-fields new-form-textarea m-b-lg" placeholder="Example: 127.0.0.1/255" name="value" required></textarea>
-          <button class="btn btn-default float-right" ng-click="insertCustomerContact()">Add Contact</button>
-        </form>
-      </div>
     </div>
-  </div>
 </div>
