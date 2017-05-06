@@ -376,8 +376,27 @@ class TestController extends Controller
         //        dd($customer);
 
         //        dd($billingHelper->getMode());
+
+
+//        $building = Building::find(8);
+//        dd($building->activeCustomers->take(5));
+//
+//        $customerProduct = CustomerProduct::find(4991);
+//        dd($customerProduct->address);
+//
+//        $customer = Customer::find(4667);
+//        dd($customer->customerProducts);
+
         $billingHelper = new BillingHelper();
-        dd($billingHelper->generateResidentialInvoiceRecords());
+
+        $billingHelper->generateResidentialChargeRecords();
+
+//        dd($billingHelper->getCustomersWithChargableProducts(28));
+//        dd($billingHelper->getChargeableCustomerProductsByBuildingId(28));
+//        dd($billingHelper->getChargeableCustomerProducts2(null,28));
+
+
+//        dd($billingHelper->generateResidentialInvoiceRecords());
         //        $billingHelper->processAutopayInvoices();
     }
 
@@ -415,6 +434,11 @@ class TestController extends Controller
     }
 
     public function generalTest(){
+
+        $building = Building::find(28);
+
+        dd($building->allAddresses);
+
 
         $lastTicketId = Ticket::max('id');
         $lastTicketNumber = Ticket::find($lastTicketId)->ticket_number;
