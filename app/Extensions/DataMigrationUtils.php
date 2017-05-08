@@ -1932,7 +1932,7 @@ class DataMigrationUtils {
         $customerProduct->renewed_at = ($legacyCustomerProduct->CProdDateRenewed == '0000-00-00 00:00:00') ? null : $legacyCustomerProduct->CProdDateRenewed;
         $customerProduct->id_users = $legacyCustomerProduct->UpdatedByID;
         $customerProduct->last_charged = ($legacyCustomerProduct->CProdLastCharged == '0000-00-00 00:00:00') ? null : $legacyCustomerProduct->CProdLastCharged;
-        $customerProduct->invoice_status = 0;
+        $customerProduct->charge_status = 0;
         $customerProduct->amount_owed = 0;
 
         switch ($legacyCustomerProduct->Status)
