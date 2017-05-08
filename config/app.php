@@ -173,6 +173,9 @@ return [
         //CSS inline
         Fedeisas\LaravelMailCssInliner\LaravelMailCssInlinerServiceProvider::class,
 
+        // Doctrine/DBAL timestamp type
+        MarkTopper\DoctrineDBALTimestampType\Laravel5ServiceProvider::class,
+
     ],
 
     /*
