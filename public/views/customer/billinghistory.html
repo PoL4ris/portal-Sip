@@ -1,42 +1,42 @@
-<div ng-controller="FormXeditableCtrl">
-  <div class="col-lg-12 billing-history-table" ng-controller="customerBillingHistoryController" >
-    <div id="customer-view-0">
-      <div class="panel panel-default no-border table-container">
-        <table id="myTables" class="tablesorter table" datatable="ng">
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Type</th>
-              <th>Amount</th>
-              <th>PaymentMode</th>
-              <th>Oder Number</th>
-              <th>Charge Desc</th>
-              <th>ActCode</th>
-              <th>Trans ID</th>
-              <th>Trans Status</th>
-              <!--<th>Invoice</th>-->
-            </tr>
-          </thead>
-          <tbody>
-            <tr ng-repeat="billing in billingHistory" >
-              <td ng-init="resultDate = convertDate(billing.created_at)">{{resultDate | date : "MMM d, y h:mm a" }}</td>
-              <td>{{ billing.transaction_type }}</td>
-              <td>{{ billing.amount }}</td>
-              <td>{{ billing.payment_mode }}</td>
-              <td>{{ billing.order_number }}</td>
-              <td>{{ billing.charge_description }}</td>
-              <td>{{ billing.action_code }}</td>
-              <td>{{ billing.transaction_id }}</td>
-              <td>{{ billing.response_text }}</td>
-              <!--<td>-->
-                <!--<p ng-click="setInvoiceData()" data-toggle="modal" data-target="#myModal" class="text-center">-->
-                  <!--<i class="fa fa-file-pdf-o"></i>-->
-                <!--</p>-->
-              <!--</td>-->
-            </tr>
-          </tbody>
-        </table>
-      </div>
+<div>
+    <div class="col-lg-12 billing-history-table" ng-controller="customerBillingHistoryController">
+        <div id="customer-view-0">
+            <div class="panel panel-default no-border table-container">
+                <table id="myTables" class="tablesorter table" datatable="ng">
+                    <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Type</th>
+                        <th>Amount</th>
+                        <th>PaymentMode</th>
+                        <th>Oder Number</th>
+                        <th>Charge Desc</th>
+                        <th>ActCode</th>
+                        <th>Trans ID</th>
+                        <th>Trans Status</th>
+                        <!--<th>Invoice</th>-->
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="billing in billingHistory">
+                        <td ng-init="resultDate = convertDate(billing.created_at)">{{resultDate | date : "MMM d, y h:mm a" }}</td>
+                        <td>{{ billing.transaction_type }}</td>
+                        <td>{{ billing.amount }}</td>
+                        <td>{{ billing.payment_mode }}</td>
+                        <td>{{ billing.order_number }}</td>
+                        <td>{{ billing.charge_description }}</td>
+                        <td>{{ billing.action_code }}</td>
+                        <td>{{ billing.transaction_id }}</td>
+                        <td>{{ billing.response_text }}</td>
+                        <!--<td>-->
+                        <!--<p ng-click="setInvoiceData()" data-toggle="modal" data-target="#myModal" class="text-center">-->
+                        <!--<i class="fa fa-file-pdf-o"></i>-->
+                        <!--</p>-->
+                        <!--</td>-->
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
-  </div>
 </div>

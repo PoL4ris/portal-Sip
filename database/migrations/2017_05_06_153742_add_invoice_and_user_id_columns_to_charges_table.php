@@ -12,17 +12,23 @@ class AddInvoiceAndUserIdColumnsToChargesTable extends Migration
      */
     public function up()
     {
-        Schema::table('charges', function (Blueprint $table) {
-            $table->bigInteger('id_users')->nullable()->after('id_address');
+        Schema::create('charges', function (Blueprint $table)
+        {
             $table->bigInteger('id_invoices')->nullable()->after('id_address');
+            $table->bigInteger('id_users')->nullable()->after('id_invoices');
         });
     }
 
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
     public function down()
     {
         Schema::table('charges', function (Blueprint $table) {
-            $table->dropColumn('id_users');
             $table->dropColumn('id_invoices');
+            $table->dropColumn('id_users');
         });
     }
 }

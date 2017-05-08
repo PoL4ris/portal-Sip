@@ -28,8 +28,8 @@ Route::get('process-lease',      'DhcpController@processLease');
 Route::get('invoiceTest',        'TestController@invoiceTest');
 Route::get('mail',               'TestController@mail');
 Route::get('migrate',            'TestController@testDataMigration');
-Route::get('gTest',               'TestController@generalTest');
-Route::get('netTest',               'NetworkController@getPrivateVlanByPort');
+Route::get('gTest',              'TestController@generalTest');
+Route::get('netTest',            'NetworkController@getPrivateVlanByPort');
 
 //Route::get('getSignupProducts',  'SignupController@getSignupProducts');
 
@@ -41,13 +41,12 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('/',                       'MainController@homeView');
     Route::get('',                        'MainController@homeView');
     Route::get('home',                    'HomeController@index');
-    Route::get('test',                    'MainController@test');
     //ADMIN
     Route::get('admin',                   'AdminController@admin');
     //POST ADMIN
     Route::post('getAdminUsers',          'AdminController@getAdminUsers');
     Route::post('getAdminProfiles',       'AdminController@getAdminProfiles');
-    Route::post('getAdminProfile',        'AdminController@getAdminProfile');
+//    Route::post('getAdminProfile',        'AdminController@getAdminProfile');
     Route::post('updateAdminUser',        'AdminController@updateAdminUser');
     Route::post('insertAdminUser',        'AdminController@insertAdminUser');
     Route::post('getAdminApps',           'AdminController@getAdminApps');
@@ -56,19 +55,6 @@ Route::group(['middleware' => 'web'], function () {
     Route::post('updateAdminProfile',     'AdminController@updateAdminProfile');
     Route::post('insertNewApp',           'AdminController@insertNewApp');
     Route::post('updateAdminApp',         'AdminController@updateAdminApp');
-    //  Route::get('adminStatus',             'AdminController@adminStatus');
-    //  Route::get('adminElements',           'AdminController@adminElements');
-    //  Route::get('adminApps',               'AdminController@adminApps');
-    //  Route::get('adminTypes',              'AdminController@adminTypes');
-    //  Route::get('adminCustomers',          'AdminController@adminCustomers');
-    //  Route::get('adminAddress',            'AdminController@adminAddress');
-    //  Route::get('adminContacts',           'AdminController@adminContacts');
-    //  Route::get('adminPayments',           'AdminController@adminPayments');
-    //  Route::get('adminNotes',              'AdminController@adminNotes');
-    //  Route::get('adminAccessApps',         'AdminController@adminAccessApps');
-    //  Route::get('adminAccessAppElements',  'AdminController@adminAccessAppElements');
-    //  Route::get('getAdminForm',            'AdminController@getAdminForm');
-    //  Route::get('insertAdminForm',         'AdminController@insertAdminForm');
     Route::get('getProfileInfo',          'AdminController@getProfileInfo');
     Route::get('updateProfileInfo',       'AdminController@updateProfileInfo');
     //MENU
@@ -76,9 +62,8 @@ Route::group(['middleware' => 'web'], function () {
 
     Route::get('getUserData',             'MainController@getUserData');
     //Dashboards
-    Route::get('buildingsdash',           'BuildingController@dashboard');
+//    Route::get('buildingsdash',           'BuildingController@dashboard');
     Route::get('supportdash/{filter?}',   'SupportController@dashboard');
-    Route::get('salesdash',               'MainController@salesdashboard');
     Route::get('networkdash',             'MainController@networkDashboard');
 
 
@@ -92,22 +77,16 @@ Route::group(['middleware' => 'web'], function () {
     //Search
     Route::get('buildingsSearch',         'BuildingController@getBuildingsSearchSimple');
     Route::get('customersSearch',         'CustomerController@getCustomersSearch');
-    Route::get('getCustomersPreview',     'MainController@getCustomersPreview');
     Route::get('getGenericSearch',        'CustomerController@getGenericSearch');//new
     Route::get('getFilterBld',            'BuildingController@getFilterBld');//new
     //GLOBAL SEARCH
-    Route::get('getCustomerCodeSearch',   'MainController@getCustomerCodeSearch');
-    Route::get('getCustomersSearch',      'MainController@getCustomersSearch');
+
     Route::get('getTicketsSearch',        'SupportController@getTicketsSearch');
-    Route::get('getBuildingsSearch',      'MainController@getBuildingsSearch');
-    Route::get('getCustomerPoundSearch',  'MainController@getCustomerPoundSearch');
 
     //Buildings & List
     Route::get('buildings/{id?}',         'BuildingController@buildings');
     Route::get('buildingData',            'BuildingController@buildingData');
     Route::get('getBuildingsList',        'BuildingController@getBuildingsList');//new
-    //Building Form
-    Route::get('newbuildingform',         'BuildingController@newbuildingform');
     //Insert Building
     Route::post('insertbuildingData',     'BuildingController@insertBuildingData');
     Route::get('insertBuildingProperties','BuildingController@insertBuildingProperties');
@@ -116,10 +95,8 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('updateBuilding',          'BuildingController@updateBuilding');
     Route::get('updateBldPropValTable',   'BuildingController@updateBldPropValTable');
     Route::get('updateBldContactTable',   'BuildingController@updateBldContactTable');
-    Route::post('userupdate',             'MainController@updateUser');
     //Customers
     Route::get('customers/{id?}',         'CustomerController@customers');
-    Route::post('updateCustomerData',     'CustomerController@updateCustomerData');
     Route::get('insertCustomerService',   'CustomerController@insertCustomerService');
     Route::get('disableCustomerServices', 'CustomerController@disableCustomerServices');
     Route::get('activeCustomerServices',  'CustomerController@activeCustomerServices');
@@ -141,7 +118,6 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('updateContactsTable',     'CustomerController@updateContactsTable');
     Route::get('updateContactInfo',       'CustomerController@updateContactInfo');
     Route::get('insertContactInfo',       'CustomerController@insertContactInfo');
-    Route::post('insertCustomerData',     'CustomerController@insertCustomerData');
     //New Ticket
     Route::get('insertCustomerTicket',    'CustomerController@insertCustomerTicket');
     Route::get('customersData',           'CustomerController@customersData');
@@ -181,12 +157,12 @@ Route::group(['middleware' => 'web'], function () {
         dd('There is nothing here.');
     });
 
-    Route::get('splash',                   'SignupController@getSplashPage');
-    Route::post('signup',                  'SignupController@getWelcomePage');
-    Route::get('form',                     'SignupController@getSignupForm');
-    Route::get('getUnitNumbersAjax',       'SignupController@getUnitNumbersAjax');
-    Route::post('register',                'SignupController@validateSignupForm');
-    Route::post('activate',                'SignupController@activate');
+    Route::get('splash',                  'SignupController@getSplashPage');
+    Route::post('signup',                 'SignupController@getWelcomePage');
+    Route::get('form',                    'SignupController@getSignupForm');
+    Route::get('getUnitNumbersAjax',      'SignupController@getUnitNumbersAjax');
+    Route::post('register',               'SignupController@validateSignupForm');
+    Route::post('activate',               'SignupController@activate');
 
     //DUMMYCONTROLLER
     Route::get('dummyRouteController',    'TestController@supportTest');//new
@@ -220,8 +196,7 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('getTicketsByMonth',                 'ChartController@getTicketsByMonth');
     Route::get('getSignedUpCustomersByYear',        'ChartController@getSignedUpCustomersByYear');
     //UPDATE SERVICES
-    Route::get('updateCustomerServiceInfo',         'CustomerController@updateCustomerServiceInfo');
-    Route::get('updateCustomerActiveServiceInfo',   'CustomerController@updateCustomerActiveServiceInfo');
+
     //NO ROUTE NEEDED
     Route::get('test8',                             'NetworkController@getCustomerConnectionInfo');
     Route::get('cc-test',                           'TestController@testCC');

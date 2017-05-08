@@ -1,52 +1,54 @@
 <div class="row">
-  <div class="col-sm-12">
-    <div id="myTabContent1" class="tab-content bg-color-white padding-10">
-      <div class="tab-pane fade active in " id="s2">
-        <h1> Find <span class="semi-bold">Customers</span></h1>
-        <br>
-        <div class="input-group input-group-lg">
-          <input class="form-control input-lg" type="text" placeholder="Search Customer..." id="search-user" ng-keyup="cDashboardSearch()" ng-model="genericSearch">
-          <div class="input-group-btn">
-            <button type="submit" class="btn btn-default">
-              <i class="fa fa-fw fa-search fa-lg"></i>
-            </button>
-          </div>
+    <div class="col-sm-12">
+        <div id="myTabContent1" class="tab-content bg-color-white padding-10">
+            <div class="tab-pane fade active in " id="s2">
+                <h1> Find <span class="semi-bold">Customers</span></h1>
+                <br>
+                <div class="input-group input-group-lg">
+                    <input class="form-control input-lg" type="text" placeholder="Search Customer..." id="search-user" ng-keyup="cDashboardSearch()" ng-model="genericSearch">
+                    <div class="input-group-btn">
+                        <button type="submit" class="btn btn-default">
+                            <i class="fa fa-fw fa-search fa-lg"></i>
+                        </button>
+                    </div>
+                </div>
+                <h1 class="font-md" ng-if="cDashboardSearchResult"> Search Results for <span class="semi-bold">Users</span>
+                    <small class="text-danger"> &#xA0;&#xA0;( {{cDashboardSearchResult.length}} results)</small>
+                </h1>
+                <br>
+                <div class="table-responsive">
+                    <table id="resultTable" class="table table-striped table-bordered table-hover">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Location</th>
+                            <th>Address</th>
+                            <th>Email / Username</th>
+                            <th>Signed up</th>
+                            <th>VIP</th>
+                            <th>Status</th>
+                        </tr>
+                        </thead>
+                        <tbody ng-if="cDashboardSearchResult">
+                        <tr class="status-dash-type-{{customerData.id_status}} cursor-pointer" ng-repeat="customerData in cDashboardSearchResult" ng-click="customerGoTo()">
+                            <td>{{customerData.id}}</td>
+                            <td>{{customerData.first_name}} {{customerData.last_name}}</td>
+                            <td>{{customerData.code}} #{{customerData.unit}}</td>
+                            <td>{{customerData.address}}</td>
+                            <td>{{customerData.email}}</td>
+                            <td ng-init="signedup = convertDate(customerData.signedup_at)">{{ signedup | date : "MMM d, y h:mm a" }}</td>
+                            <td><label class="label label-danger">{{customerData.vip}}</label></td>
+                            <td ng-if="customerData.id_status == 1"><span class="label status-dash-btn-{{customerData.id_status}}">Active</span></td>
+                            <td ng-if="customerData.id_status == 2"><span class="label status-dash-btn-{{customerData.id_status}}">Disabled</span></td>
+                            <td ng-if="customerData.id_status == 3"><span class="label status-dash-btn-{{customerData.id_status}}">Decommissioned</span></td>
+                            <td ng-if="customerData.id_status == 4"><span class="label status-dash-btn-{{customerData.id_status}}">Pending</span></td>
+                            <td ng-if="customerData.id_status == 5"><span class="label status-dash-btn-{{customerData.id_status}}">Admin</span></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
-        <h1 class="font-md" ng-if="cDashboardSearchResult"> Search Results for <span class="semi-bold">Users</span><small class="text-danger"> &#xA0;&#xA0;( {{cDashboardSearchResult.length}} results)</small></h1>
-        <br>
-        <div class="table-responsive">
-          <table id="resultTable" class="table table-striped table-bordered table-hover">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Location</th>
-                <th>Address</th>
-                <th>Email / Username</th>
-                <th>Signed up</th>
-                <th>VIP</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody ng-if="cDashboardSearchResult">
-              <tr class="status-dash-type-{{customerData.id_status}} cursor-pointer" ng-repeat="customerData in cDashboardSearchResult" ng-click="customerGoTo()">
-                <td>{{customerData.id}}</td>
-                <td>{{customerData.first_name}} {{customerData.last_name}}</td>
-                <td>{{customerData.code}} #{{customerData.unit}}</td>
-                <td>{{customerData.address}}</td>
-                <td>{{customerData.email}}</td>
-                <td ng-init="signedup = convertDate(customerData.signedup_at)">{{ signedup | date : "MMM d, y h:mm a" }}</td>
-                <td><label class="label label-danger">{{customerData.vip}}</label></td>
-                <td ng-if="customerData.id_status == 1"><span class="label status-dash-btn-{{customerData.id_status}}">Active</span></td>
-                <td ng-if="customerData.id_status == 2"><span class="label status-dash-btn-{{customerData.id_status}}">Disabled</span></td>
-                <td ng-if="customerData.id_status == 3"><span class="label status-dash-btn-{{customerData.id_status}}">Decommissioned</span></td>
-                <td ng-if="customerData.id_status == 4"><span class="label status-dash-btn-{{customerData.id_status}}">Pending</span></td>
-                <td ng-if="customerData.id_status == 5"><span class="label status-dash-btn-{{customerData.id_status}}">Admin</span></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
     </div>
-  </div>
 </div>

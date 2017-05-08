@@ -5,21 +5,21 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use App\Extensions\BillingHelper;
 
-class GenerateCustomerCharges extends Command {
-
+class GenerateCustomerCharges extends Command
+{
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'billing:generate-charges';
+    protected $signature = 'billing:generate-customer-charges';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Generate all customer charges and store them in the charges table';
+    protected $description = 'Generate charges for customer products';
 
     /**
      * Create a new command instance.
@@ -38,7 +38,7 @@ class GenerateCustomerCharges extends Command {
      */
     public function handle()
     {
-        $this->info('Starting charge generation');
+        $this->info('Starting data migration');
         $billingHelper = new BillingHelper();
         $billingHelper->generateResidentialChargeRecords();
         $this->info('Done');

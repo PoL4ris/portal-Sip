@@ -1,260 +1,276 @@
-<div  ng-controller="customerPaymentMethodsController" class="p-b-lg">
+<div ng-controller="customerPaymentMethodsController" class="p-b-lg">
 
-  <!--LADO UNO-->
-  <div class="col-lg-4 no-padding-sides"  ng-if="paymentData">
-    <h2 class="float-left m-b-lg">Default Credit Card</h2>
-
-
-    <label class="col-lg-8 no-padding-sides"><strong>Card Type:               </strong>   </label>
-    <label class="col-lg-4 block-b-label no-padding-sides" id="b-CCtype"  ng-if="paymentData">     {{ pproperties['card type'] }}</label>
-
-    <label class="col-lg-8 no-padding-sides"><strong>Card Number:    </strong>   </label>
-    <label class="col-lg-4 block-b-label no-padding-sides" id="b-CCnumber"  ng-if="paymentData">
-    {{ pproperties['last four'] | limitTo : 9 : 10}}
-    </label>
-
-    <label class="col-lg-8 no-padding-sides"><strong>Expiration Month:        </strong>   </label>
-    <label class="col-lg-4 block-b-label no-padding-sides" id="b-Expmo">      {{ paymentData.exp_month ? paymentData.exp_month : '( ERROR )'}}</label>
-    <label class="col-lg-8 no-padding-sides"><strong>Expiration Year:         </strong>   </label>
-    <label class="col-lg-4 block-b-label no-padding-sides" id="b-Expyr">      {{ paymentData.exp_year ? paymentData.exp_year : '( ERROR )'}}</label>
-
-    <div class="col-lg-12 no-padding-sides m-t-md">
-      <button class="btn btn-danger"  data-toggle="modal" data-target="#paymentManualCharge" ng-click="prepareFields();">Manual Charge</button>
-      <button class="btn btn-warning m-r-lg pull-right" data-toggle="modal" data-target="#paymentManualRefound"  ng-click="prepareFields();">Manual Refund</button>
-    </div>
-
-  </div>
-
-  <!--LADO DOS-->
-  <div class="{{paymentData ? 'col-lg-8' : 'col-lg-12'}}" id="customer-view-0" >
-
-    <div class="panel panel-default table-container">
-      <table id="myTable" class="tablesorter table" >
-        <thead>
-        <tr>
-          <th>Type</th>
-          <th>Last 4</th>
-          <th>Expiration</th>
-          <th>Updated</th>
-          <th>Edit</th>
-          <th>Set as Default</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr ng-repeat="payment in paymentMethods"  class="default-priority-{{payment.priority}}">
-
-          <td ng-init="pmprops = parJson(payment.properties)">{{ payment.card_type }}</td>
-          <td>{{ pmprops['last four'] | limitTo : 4 : 15 }}</td>
-          <td>{{ payment.exp_month }} / {{ payment.exp_year | limitTo : 2 : 2 }}</td>
-          <td ng-init="resultDate = convertDate(payment.updated_at)">{{resultDate | date : "MMM d, y h:mm a" }}</td>
-
-          <td><button class="btn btn-primary" title="Edit" alt="Edit" data-toggle="modal" data-target="#paymentMethodModal" ng-click="editPaymentMethod()"><i class="fa fa-pencil"></i></button></td>
-
-          <td class="text-center">
-            <button class="btn btn-default anim-btn" ng-click="setAsDefaultPaymentMethod(payment.id)" ng-if="payment.priority != 1">
-              <label class="display-none">s</label>
-              <i class="fa fa-thumbs-o-up "></i>
-            </button>
-
-            <label class="" ng-if="payment.priority == 1">
-              Default
-            </label>
-          </td>
-        </tr>
-        </tbody>
-      </table>
-
-    </div>
-    <div class="float-right">
-      <button class="btn btn-primary" data-toggle="modal" data-target="#paymentMethodModal" ng-click="editPaymentMethod(1)">New Payment Method</button>
-    </div>
-
-  </div>
+    <!--LADO UNO-->
+    <div class="col-lg-4 no-padding-sides" ng-if="paymentData">
+        <h2 class="float-left m-b-lg">Default Credit Card</h2>
 
 
-  <!--MODAL Manual Refound-->
-  <div class="modal fade" id="paymentManualRefound" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <label class="col-lg-8 no-padding-sides"><strong>Card Type: </strong> </label>
+        <label class="col-lg-4 block-b-label no-padding-sides" id="b-CCtype" ng-if="paymentData"> {{ pproperties['card type'] }}</label>
 
-    <div class="modal-dialog modal-ticket-size">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="cancelNewEvent()">
-            &times;
-          </button>
-          <span>Manual Refund</span>
+        <label class="col-lg-8 no-padding-sides"><strong>Card Number: </strong> </label>
+        <label class="col-lg-4 block-b-label no-padding-sides" id="b-CCnumber" ng-if="paymentData">
+            {{ pproperties['last four'] | limitTo : 9 : 10}}
+        </label>
+
+        <label class="col-lg-8 no-padding-sides"><strong>Expiration Month: </strong> </label>
+        <label class="col-lg-4 block-b-label no-padding-sides" id="b-Expmo"> {{ paymentData.exp_month ? paymentData.exp_month : '( ERROR )'}}</label>
+        <label class="col-lg-8 no-padding-sides"><strong>Expiration Year: </strong> </label>
+        <label class="col-lg-4 block-b-label no-padding-sides" id="b-Expyr"> {{ paymentData.exp_year ? paymentData.exp_year : '( ERROR )'}}</label>
+
+        <div class="col-lg-12 no-padding-sides m-t-md">
+            <button class="btn btn-danger" data-toggle="modal" data-target="#paymentManualCharge" ng-click="prepareFields();">Manual Charge</button>
+            <button class="btn btn-warning m-r-lg pull-right" data-toggle="modal" data-target="#paymentManualRefound" ng-click="prepareFields();">Manual Refund</button>
         </div>
-        <div class="modal-body">
-          <div class="wrapper-sm">
-            <div class="row">
-              <div class="col-lg-12">
-                <div class="manual-ref">
-                  <div class="cbox-containter">
-                    <form id="manual-refund-form">
-                      <div class="cboxc-top">
-                        <label>Amount to Refund</label><input type="text" placeholder="Set amount with no comas or signs" name="amount" required>
-                      </div>
-                      <div class="cboxc-bottom">
-                        <label>Description</label><input type="text" placeholder="Describe the reason" name="desc" required>
-                      </div>
-                      <span class="errormsg-payment" ng-if="errorMsgPaymentMethods">{{errorMsgPaymentMethods | limitTo : 40}}</span>
-                      <button class="btn btn-primary float-right m-t-lg" ng-click="refundFunct()"  ng-if="!something">Refund</button>
-                      <div class="pull-right m-t-lg" ng-if="something">
-                        Processing.
-                        <img src="/img/loading.gif" alt="">
-                      </div>
-                    </form>
-                  </div>
+
+    </div>
+
+    <!--LADO DOS-->
+    <div class="{{paymentData ? 'col-lg-8' : 'col-lg-12'}}" id="customer-view-0">
+
+        <div class="panel panel-default table-container">
+            <table id="myTable" class="tablesorter table">
+                <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Last 4</th>
+                    <th>Expiration</th>
+                    <th>Updated</th>
+                    <th>Edit</th>
+                    <th>Set as Default</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="payment in paymentMethods" class="default-priority-{{payment.priority}}">
+
+                    <td ng-init="pmprops = parJson(payment.properties)">{{ payment.card_type }}</td>
+                    <td>{{ pmprops['last four'] | limitTo : 4 : 15 }}</td>
+                    <td>{{ payment.exp_month }} / {{ payment.exp_year | limitTo : 2 : 2 }}</td>
+                    <td ng-init="resultDate = convertDate(payment.updated_at)">{{resultDate | date : "MMM d, y h:mm a" }}</td>
+
+                    <td>
+                        <button class="btn btn-primary" title="Edit" alt="Edit" data-toggle="modal" data-target="#paymentMethodModal" ng-click="editPaymentMethod()"><i class="fa fa-pencil"></i>
+                        </button>
+                    </td>
+
+                    <td class="text-center">
+                        <button class="btn btn-default anim-btn" ng-click="setAsDefaultPaymentMethod(payment.id)" ng-if="payment.priority != 1">
+                            <label class="display-none">s</label>
+                            <i class="fa fa-thumbs-o-up "></i>
+                        </button>
+
+                        <label class="" ng-if="payment.priority == 1">
+                            Default
+                        </label>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+        </div>
+        <div class="float-right">
+            <button class="btn btn-primary" data-toggle="modal" data-target="#paymentMethodModal" ng-click="editPaymentMethod(1)">New Payment Method</button>
+        </div>
+
+    </div>
+
+
+    <!--MODAL Manual Refound-->
+    <div class="modal fade" id="paymentManualRefound" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+
+        <div class="modal-dialog modal-ticket-size">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="cancelNewEvent()">
+                        &times;
+                    </button>
+                    <span>Manual Refund</span>
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-danger" data-dismiss="modal">
-            Cancel
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!--MODAL Manual Charge-->
-  <div class="modal fade" id="paymentManualCharge" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-
-    <div class="modal-dialog modal-ticket-size">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="cancelNewEvent()">
-            &times;
-          </button>
-          <span>Manual Charge</span>
-        </div>
-        <div class="modal-body">
-          <div class="wrapper-sm">
-            <div class="row">
-              <div class="col-lg-12">
-                <div class="manual-char" >
-                  <div class="cbox-containter">
-                    <form id="manual-charge-form">
-                      <div class="cboxc-top">
-                        <label>Amount to Charge</label><input type="text" placeholder="Set amount with no comas or signs" name="amount" required>
-                      </div>
-                      <div class="cboxc-bottom">
-                        <label>Description</label><input type="text" placeholder="Describe the reason" name="desc" required>
-                      </div>
-                      <span class="errormsg-payment" ng-if="errorMsgPaymentMethods">{{errorMsgPaymentMethods | limitTo : 40}}</span>
-                      <button class="btn btn-primary float-right m-t-lg" ng-click="chargeFunct()" ng-if="!something">Charge</button>
-                      <div class="pull-right m-t-lg" ng-if="something">
-                        Processing.
-                        <img src="/img/loading.gif" alt="">
-                      </div>
-                    </form>
-                  </div>
+                <div class="modal-body">
+                    <div class="wrapper-sm">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="manual-ref">
+                                    <div class="cbox-containter">
+                                        <form id="manual-refund-form">
+                                            <div class="cboxc-top">
+                                                <label>Amount to Refund</label><input type="text" placeholder="Set amount with no comas or signs" name="amount" required>
+                                            </div>
+                                            <div class="cboxc-bottom">
+                                                <label>Description</label><input type="text" placeholder="Describe the reason" name="desc" required>
+                                            </div>
+                                            <span class="errormsg-payment" ng-if="errorMsgPaymentMethods">{{errorMsgPaymentMethods | limitTo : 40}}</span>
+                                            <button class="btn btn-primary float-right m-t-lg" ng-click="refundFunct()" ng-if="!something">Refund</button>
+                                            <div class="pull-right m-t-lg" ng-if="something">
+                                                Processing.
+                                                <img src="/img/loading.gif" alt="">
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-
-
-              </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">
+                        Cancel
+                    </button>
+                </div>
             </div>
-          </div>
         </div>
-
-        <div class="modal-footer">
-          <button type="button" class="btn btn-danger" data-dismiss="modal">
-            Cancel
-          </button>
-        </div>
-
-      </div>
     </div>
-  </div>
 
-  <!--MODAL New Payment Method-->
-  <div class="modal fade" id="paymentMethodModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" ng-controller="addPaymentMethodController">
-    <div class="modal-dialog modal-ticket-size">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="cancelNewEvent()">
-            &times;
-          </button>
-          <span ng-if="editPaymentFlag == false">New Payment Method</span>
-          <span ng-if="editPaymentFlag == true">Update Expiration Date</span>
-        </div>
-        <div class="modal-body">
-          <div class="wrapper-sm">
-            <div class="row">
-            <div class="col-lg-12">
+    <!--MODAL Manual Charge-->
+    <div class="modal fade" id="paymentManualCharge" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 
-              <form id="paymentmethodform">
-
-                <label class="bold-type col-lg-4" required ng-if="editPaymentFlag == false">Name on card:</label>
-                <input type="text" name="card_name" class="col-lg-8 input-text" placeholder="First Name Last Name" required ng-if="editPaymentFlag == false">
-
-                <label class="bold-type col-lg-4" required ng-if="editPaymentFlag == false">Account Number:</label>
-                <input type="text" name="account_number" class="col-lg-8 input-text" placeholder="Account number with no signs(,/-)" required ng-if="editPaymentFlag == false">
-
-                <label class="bold-type col-lg-4" ng-if="editPaymentFlag == false">Billing Phone:</label>
-                <input type="text" name="billing_phone" class="col-lg-8 input-text"  placeholder="Ex: 555-444-3322" required ng-if="editPaymentFlag == false">
-
-                <span class="bold-type col-lg-3 m-t-lg">Exp Month :</span>
-                <select name="exp_month" class="col-lg-3  m-t-lg">
-
-                  <option value="" ng-if="!editPaymentValues">Select a Month</option>
-                  <option value="{{editPaymentValues.exp_month}}" selected  ng-if="editPaymentValues">{{editPaymentValues.exp_month}}</option>
-
-                  <option value="01">01</option><option  value="02">02</option><option  value="03">03</option>
-                  <option value="04">04</option><option  value="05">05</option><option  value="06">06</option>
-                  <option value="07">07</option><option  value="08">08</option><option  value="09">09</option>
-                  <option value="10">10</option><option  value="11">11</option><option  value="12">12</option>
-                </select>
-
-                <span class="bold-type col-lg-3  m-t-lg p-l-lg">Exp Year :</span>
-                <select name="exp_year" class="col-lg-3 m-t-lg">
-
-                  <option value="" ng-if="!editPaymentValues">Select a Year</option>
-                  <option value="{{editPaymentValues.exp_year}}" selected  ng-if="editPaymentValues">{{editPaymentValues.exp_year}}</option>
-
-                  <option value="2017">17</option><option value="2018">18</option>
-                  <option value="2019">19</option><option value="2020">20</option><option value="2021">21</option>
-                  <option value="2022">22</option>
-                </select>
-
-                <span class="bold-type col-lg-3 m-t-lg" required ng-if="editPaymentFlag == false">Card Type</span>
-                <select name="card_type" class="col-lg-3 m-t-lg" required ng-if="editPaymentFlag == false">
-
-                  <option value="" ng-if="!editPaymentValues">Select a Type</option>
-                  <option value="{{editPaymentValues.card_type ? editPaymentValues.card_type : '' }}" ng-if="editPaymentValues">{{editPaymentValues.card_type ? editPaymentValues.card_type : '' }}</option>
-
-                  <option value="VS">Visa</option>
-                  <option value="MC">Master Card</option>
-                  <option value="AX">Amex</option>
-                </select>
-
-                <label class="bold-type col-lg-3 m-t-lg p-l-lg" required ng-if="editPaymentFlag == false">CCV :</label>
-                <input type="text" name="CCV" class="col-lg-3 input-text m-t-lg" placeholder="CCV" required ng-if="editPaymentFlag == false">
+        <div class="modal-dialog modal-ticket-size">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="cancelNewEvent()">
+                        &times;
+                    </button>
+                    <span>Manual Charge</span>
+                </div>
+                <div class="modal-body">
+                    <div class="wrapper-sm">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="manual-char">
+                                    <div class="cbox-containter">
+                                        <form id="manual-charge-form">
+                                            <div class="cboxc-top">
+                                                <label>Amount to Charge</label><input type="text" placeholder="Set amount with no comas or signs" name="amount" required>
+                                            </div>
+                                            <div class="cboxc-bottom">
+                                                <label>Description</label><input type="text" placeholder="Describe the reason" name="desc" required>
+                                            </div>
+                                            <span class="errormsg-payment" ng-if="errorMsgPaymentMethods">{{errorMsgPaymentMethods | limitTo : 40}}</span>
+                                            <button class="btn btn-primary float-right m-t-lg" ng-click="chargeFunct()" ng-if="!something">Charge</button>
+                                            <div class="pull-right m-t-lg" ng-if="something">
+                                                Processing.
+                                                <img src="/img/loading.gif" alt="">
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
 
 
-                <div class="col-lg-12 m-b-md"></div>
-
-                <div class="col-lg-12 addServiceBoton m-b-sm">
-                  <button type="submit" class="btn m-b-xs w-xs btn-primary float-right" ng-click="addNewPaymentMethod()" ng-if="editPaymentFlag == false">Add</button>
-                  <button type="submit" class="btn m-b-xs w-xs btn-primary float-right" ng-click="addNewPaymentMethod()" ng-if="editPaymentFlag == true ">Update</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-              </form>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">
+                        Cancel
+                    </button>
+                </div>
 
             </div>
-
-            </div>
-          </div>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-danger" data-dismiss="modal">
-            Cancel
-          </button>
-        </div>
-      </div>
     </div>
-  </div>
+
+    <!--MODAL New Payment Method-->
+    <div class="modal fade" id="paymentMethodModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" ng-controller="addPaymentMethodController">
+        <div class="modal-dialog modal-ticket-size">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="cancelNewEvent()">
+                        &times;
+                    </button>
+                    <span ng-if="editPaymentFlag == false">New Payment Method</span>
+                    <span ng-if="editPaymentFlag == true">Update Expiration Date</span>
+                </div>
+                <div class="modal-body">
+                    <div class="wrapper-sm">
+                        <div class="row">
+                            <div class="col-lg-12">
+
+                                <form id="paymentmethodform">
+
+                                    <label class="bold-type col-lg-4" required ng-if="editPaymentFlag == false">Name on card:</label>
+                                    <input type="text" name="card_name" class="col-lg-8 input-text" placeholder="First Name Last Name" required ng-if="editPaymentFlag == false">
+
+                                    <label class="bold-type col-lg-4" required ng-if="editPaymentFlag == false">Account Number:</label>
+                                    <input type="text" name="account_number" class="col-lg-8 input-text" placeholder="Account number with no signs(,/-)" required ng-if="editPaymentFlag == false">
+
+                                    <label class="bold-type col-lg-4" ng-if="editPaymentFlag == false">Billing Phone:</label>
+                                    <input type="text" name="billing_phone" class="col-lg-8 input-text" placeholder="Ex: 555-444-3322" required ng-if="editPaymentFlag == false">
+
+                                    <span class="bold-type col-lg-3 m-t-lg">Exp Month :</span>
+                                    <select name="exp_month" class="col-lg-3  m-t-lg">
+
+                                        <option value="" ng-if="!editPaymentValues">Select a Month</option>
+                                        <option value="{{editPaymentValues.exp_month}}" selected ng-if="editPaymentValues">{{editPaymentValues.exp_month}}</option>
+
+                                        <option value="01">01</option>
+                                        <option value="02">02</option>
+                                        <option value="03">03</option>
+                                        <option value="04">04</option>
+                                        <option value="05">05</option>
+                                        <option value="06">06</option>
+                                        <option value="07">07</option>
+                                        <option value="08">08</option>
+                                        <option value="09">09</option>
+                                        <option value="10">10</option>
+                                        <option value="11">11</option>
+                                        <option value="12">12</option>
+                                    </select>
+
+                                    <span class="bold-type col-lg-3  m-t-lg p-l-lg">Exp Year :</span>
+                                    <select name="exp_year" class="col-lg-3 m-t-lg">
+
+                                        <option value="" ng-if="!editPaymentValues">Select a Year</option>
+                                        <option value="{{editPaymentValues.exp_year}}" selected ng-if="editPaymentValues">{{editPaymentValues.exp_year}}</option>
+
+                                        <option value="2017">17</option>
+                                        <option value="2018">18</option>
+                                        <option value="2019">19</option>
+                                        <option value="2020">20</option>
+                                        <option value="2021">21</option>
+                                        <option value="2022">22</option>
+                                    </select>
+
+                                    <span class="bold-type col-lg-3 m-t-lg" required ng-if="editPaymentFlag == false">Card Type</span>
+                                    <select name="card_type" class="col-lg-3 m-t-lg" required ng-if="editPaymentFlag == false">
+
+                                        <option value="" ng-if="!editPaymentValues">Select a Type</option>
+                                        <option value="{{editPaymentValues.card_type ? editPaymentValues.card_type : '' }}" ng-if="editPaymentValues">{{editPaymentValues.card_type ?
+                                            editPaymentValues.card_type : '' }}
+                                        </option>
+
+                                        <option value="VS">Visa</option>
+                                        <option value="MC">Master Card</option>
+                                        <option value="AX">Amex</option>
+                                    </select>
+
+                                    <label class="bold-type col-lg-3 m-t-lg p-l-lg" required ng-if="editPaymentFlag == false">CCV :</label>
+                                    <input type="text" name="CCV" class="col-lg-3 input-text m-t-lg" placeholder="CCV" required ng-if="editPaymentFlag == false">
+
+
+                                    <div class="col-lg-12 m-b-md"></div>
+
+                                    <div class="col-lg-12 addServiceBoton m-b-sm">
+                                        <button type="submit" class="btn m-b-xs w-xs btn-primary float-right" ng-click="addNewPaymentMethod()" ng-if="editPaymentFlag == false">Add</button>
+                                        <button type="submit" class="btn m-b-xs w-xs btn-primary float-right" ng-click="addNewPaymentMethod()" ng-if="editPaymentFlag == true ">Update</button>
+                                    </div>
+
+                                </form>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 </div>
 
