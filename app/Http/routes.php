@@ -62,7 +62,7 @@ Route::group(['middleware' => 'web'], function () {
 
     Route::get('getUserData',             'MainController@getUserData');
     //Dashboards
-    Route::get('buildingsdash',           'BuildingController@dashboard');
+//    Route::get('buildingsdash',           'BuildingController@dashboard');
     Route::get('supportdash/{filter?}',   'SupportController@dashboard');
     Route::get('networkdash',             'MainController@networkDashboard');
 
@@ -87,8 +87,6 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('buildings/{id?}',         'BuildingController@buildings');
     Route::get('buildingData',            'BuildingController@buildingData');
     Route::get('getBuildingsList',        'BuildingController@getBuildingsList');//new
-    //Building Form
-    Route::get('newbuildingform',         'BuildingController@newbuildingform');
     //Insert Building
     Route::post('insertbuildingData',     'BuildingController@insertBuildingData');
     Route::get('insertBuildingProperties','BuildingController@insertBuildingProperties');
