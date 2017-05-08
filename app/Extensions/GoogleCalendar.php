@@ -4,7 +4,7 @@ namespace App\Extensions;
 
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Log;
+
 use DateTime;
 use DateTimeZone;
 
@@ -291,7 +291,8 @@ class GoogleCalendar {
         $description .= "Scheduled By:\n";
         $description .= $user . " at " . (new DateTime('now'))->format(DATE_RFC3339);
 
-//$description .= "\n\naddress to building info\n";
+        //previously we also added a link to the binfo building page, we should do the same for the new portal
+        //building information provides technicians with a valuable tool for completing their appointments.
 
         $event = new \Google_Service_Calendar_Event;
         $start = new \Google_Service_Calendar_EventDateTime();
@@ -306,14 +307,14 @@ class GoogleCalendar {
         $event->setDescription($description);
 
 
-//get bcode and retrieve address from db
+//get bcode and retrieve address from db, use bcode to set the location of the event $event->setLocation();
 //$event->setLocation($address);
 
 
 //set the event on the pending calendar.
         $onset = $Calendar->service->events->insert(Config::get('google.pending_appointment'), $event, []);
 
-//$onset probably gets some sort of return value.
+//$onset is just the newly created appointment.
 
         return $onset;
     }
@@ -340,12 +341,12 @@ class GoogleCalendar {
                 if (max(new \DateTime($value['start'], new \DateTimeZone('America/Chicago')), $startTime) <= min(new \DateTime($value['end'], new \DateTimeZone('America/Chicago')), $endTime))
                 {
                     $techavailable = true;
-                    // Log::info('tech is available');
+
                     break;
                 } else
                 {
                     $techavailable = false;
-                    // Log::info('tech is not available');
+
                 }
             }
         }
@@ -360,8 +361,7 @@ class GoogleCalendar {
             {
                 if (max(new \DateTime($value['appointment']->getStart()->getDateTime(), new \DateTimeZone('America/Chicago')), $startTime) <= min(new \DateTime($value['appointment']->getEnd()->getDateTime(), new \DateTimeZone('America/Chicago')), $endTime))
                 {
-                    // Log::info('schedule conflict');
-                    //echo $value['appointment']->getSummary() . "<br>";
+
                     $scheduleconflict = true;
                     break;
                 } else

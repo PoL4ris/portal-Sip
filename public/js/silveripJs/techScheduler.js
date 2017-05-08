@@ -1,3 +1,27 @@
+
+
+app.controller('tech-scheduler', function ($scope) {
+    $scope.date = new Date() | $('.datepicker').val();
+    $scope.inittable = $http({
+        method: "GET",
+        data: {date: $scope.date},
+        url: '/tech-schedule/generatetable',
+        }).then(populatetable(response));
+    $scope.renewtable = renewtable($scope.date);
+
+});
+
+
+function renewtable(date) {
+    $('.datepicker').val(date);  //repopulates date field
+    $.ajax({
+        type: "GET",
+        url: '/tech-schedule/generatetable',
+        data: {date: date},
+        success: populatetable,
+    });
+}
+
 function dragAppointmentEnd(event, ui) {
 
 //and the info from the target cell
@@ -26,15 +50,6 @@ function movedappointment(a) {
 }
 
 
-function renewtable(a) {
-    $('.datepicker').val(a);
-    $.ajax({
-        type: "GET",
-        url: '/tech-schedule/generatetable',
-        data: {date: a},
-        success: populatetable,
-    });
-}
 
 function updatesearch() {
 //ajax get available codes
@@ -197,6 +212,7 @@ $(document).ready(function () {
     }
 
     $('.datepicker').val((date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear());
+
     $.ajax({  //init schedule table
         type: "GET",
         url: '/tech-schedule/generatetable',
