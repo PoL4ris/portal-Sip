@@ -36,7 +36,7 @@ class BillingHelper {
 
         // Get residential buildings
         $buildings = Building::with(['properties' => function ($query) {
-            $query->where('id_building_properties', config('const.3')
+            $query->where('id_building_properties', config('const.3'))
                 ->where('value','Retail')
                 ->orWhere('value','Bulk');
         }])

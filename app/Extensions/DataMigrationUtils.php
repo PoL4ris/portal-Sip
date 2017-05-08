@@ -1430,7 +1430,7 @@ class DataMigrationUtils {
         $building->type = $legacyLocation->Type;
         $building->legal_name = $legacyLocation->Name;
         $building->builder = '';
-        $building->year_built = date('Y-M-d H:i:s');
+//        $building->year_built = date('Y-M-d H:i:s');   Keep this commented since we don't have this info in the old database
         $building->units = ($legacyLocation->Units == null || $legacyLocation->Units == '') ? 0 : $legacyLocation->Units;
         $building->floors = 0;
         $building = $this->copyTimestamps($legacyLocation, $building);
@@ -1615,10 +1615,10 @@ class DataMigrationUtils {
         $customerProduct->id_products = $legacyCustomerProduct->ProdID;
         $customerProduct->id_customer_products = $legacyCustomerProduct->ParentCSID;
         $customerProduct->signed_up = $legacyCustomerProduct->CProdDateSignup;
-        $customerProduct->expires = $legacyCustomerProduct->CProdDateExpires;
-        $customerProduct->renewed_at = $legacyCustomerProduct->CProdDateRenewed;
+        $customerProduct->expires = ($legacyCustomerProduct->CProdDateExpires == '0000-00-00 00:00:00') ? null : $legacyCustomerProduct->CProdDateExpires;
+        $customerProduct->renewed_at = ($legacyCustomerProduct->CProdDateRenewed == '0000-00-00 00:00:00') ? null : $legacyCustomerProduct->CProdDateRenewed;
         $customerProduct->id_users = $legacyCustomerProduct->UpdatedByID;
-        $customerProduct->last_charged = $legacyCustomerProduct->CProdLastCharged;
+        $customerProduct->last_charged = ($legacyCustomerProduct->CProdLastCharged == '0000-00-00 00:00:00') ? null : $legacyCustomerProduct->CProdLastCharged;
         $customerProduct->invoice_status = 0;
         $customerProduct->amount_owed = 0;
 
