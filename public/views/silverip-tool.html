@@ -1,86 +1,78 @@
 <div class="row">
-  <div class="col-lg-12 customer-dash-grid">
-    <article ng-include="'/views/customer/dashboard.html'" class="null-article"></article>
-  </div>
+    <div class="col-lg-12 customer-dash-grid">
+        <article ng-include="'/views/customer/dashboard.html'" class="null-article"></article>
+    </div>
 </div>
 
 <article class="activity-log" id="activity-log">
 
-  <div class="al-box">
+    <div class="al-box">
 
-    <h3 class="no-margin al-title"><i class="fa fa-caret-down"></i>Activity Log</h3>
-    <h3 class="no-margin al-type-title">Support</h3>
+        <h3 class="no-margin al-title"><i class="fa fa-caret-down"></i>Activity Log</h3>
+        <h3 class="no-margin al-type-title">Support</h3>
 
-    <div ng-repeat="logEntry in customerData.customer.log" class="log-entry">
-      <!--<h3 class="no-margin al-type-title" ng-if="logEntry.type == customer">Type A - Ticket - Support - BILLING</h3>-->
+        <div ng-repeat="logEntry in customerData.customer.log" class="log-entry">
+            <!--<h3 class="no-margin al-type-title" ng-if="logEntry.type == customer">Type A - Ticket - Support - BILLING</h3>-->
 
-      <div class="type-a al-box-container">
-        <div class="log-content">
+            <div class="type-a al-box-container">
+                <div class="log-content">
 
-          <div class="al-lg-header">
-            <label class="al-lg-timestamp" ng-init="logEntryDate = convertDate(logEntry.timestamp)">{{logEntryDate | date : "MMM d, y h:mm a"}}</label>
-            <!--<label class="lg-type"><span>{{logEntry.type}}</span></label>-->
-            <label class="lg-user"><span>{{logEntry.user.first_name + ' ' + logEntry.user.alias}}</span></label>
-          </div>
+                    <div class="al-lg-header">
+                        <label class="al-lg-timestamp" ng-init="logEntryDate = convertDate(logEntry.timestamp)">{{logEntryDate | date : "MMM d, y h:mm a"}}</label>
+                        <!--<label class="lg-type"><span>{{logEntry.type}}</span></label>-->
+                        <label class="lg-user"><span>{{logEntry.user.first_name + ' ' + logEntry.user.alias}}</span></label>
+                    </div>
 
-          <div class="al-lg-description" ng-init="arrayData = parJson(logEntry.log_data)">
-            <span ng-if="arrayData.type == 'update-id_status'"><b>Status</b> updated to <b>{{customerData.statusList[(arrayData.new['id_status'])-1].name}}</b></span>
-            <span ng-if="arrayData.type == 'update-first_name'"><b>First name</b>  updated to <b>{{arrayData.new['first_name']}}</b></span>
-            <span ng-if="arrayData.type == 'update-last_name'"><b>Last name</b> updated to <b>{{arrayData.new['last_name']}}</b></span>
-            <span ng-if="arrayData.type == 'update-email'"><b>Username</b> updated to <b>{{arrayData.new['email']}}</b></span>
-            <span ng-if="arrayData.type == 'update-contact'"><b>Contact field </b> updated to <b>{{arrayData.new['value']}}</b></span>
-            <span ng-if="arrayData.type == 'update-unit'"><b>Unit number</b> updated to <b>{{arrayData.new['unit']}}</b></span>
-            <span ng-if="arrayData.type == 'insert-service'">Product<b> {{arrayData.data.name}}</b> added</span>
-            <span ng-if="arrayData.type == 'update-service'">Product updated to <b> {{arrayData.data.name}}</b> </span>
-            <span ng-if="arrayData.type == 'disable-service'">Product <b> {{arrayData.data.name}}</b> now is disabled</span>
-            <span ng-if="arrayData.type == 'active-service'">Product <b> {{arrayData.data.name}}</b> now is active</span>
-            <span ng-if="arrayData.type == 'update-payment'">Payment ending <b> {{ arrayData.data | limitTo : 5 : 14 }} now is Default</b> </span>
-          </div>
+                    <div class="al-lg-description" ng-init="arrayData = parJson(logEntry.log_data)">
+                        <span ng-if="arrayData.type == 'update-id_status'"><b>Status</b> updated to <b>{{customerData.statusList[(arrayData.new['id_status'])-1].name}}</b></span>
+                        <span ng-if="arrayData.type == 'update-first_name'"><b>First name</b>  updated to <b>{{arrayData.new['first_name']}}</b></span>
+                        <span ng-if="arrayData.type == 'update-last_name'"><b>Last name</b> updated to <b>{{arrayData.new['last_name']}}</b></span>
+                        <span ng-if="arrayData.type == 'update-email'"><b>Username</b> updated to <b>{{arrayData.new['email']}}</b></span>
+                        <span ng-if="arrayData.type == 'update-contact'"><b>Contact field </b> updated to <b>{{arrayData.new['value']}}</b></span>
+                        <span ng-if="arrayData.type == 'update-unit'"><b>Unit number</b> updated to <b>{{arrayData.new['unit']}}</b></span>
+                        <span ng-if="arrayData.type == 'insert-service'">Product<b> {{arrayData.data.name}}</b> added</span>
+                        <span ng-if="arrayData.type == 'update-service'">Product updated to <b> {{arrayData.data.name}}</b> </span>
+                        <span ng-if="arrayData.type == 'disable-service'">Product <b> {{arrayData.data.name}}</b> now is disabled</span>
+                        <span ng-if="arrayData.type == 'active-service'">Product <b> {{arrayData.data.name}}</b> now is active</span>
+                        <span ng-if="arrayData.type == 'update-payment'">Payment ending <b> {{ arrayData.data | limitTo : 5 : 14 }} now is Default</b> </span>
+                    </div>
 
-          <div class="al-lg-actions type-ticket" ng-if="logEntry.type == 'ticket'">
-            <button class="btn btn-default big-font" title="View Ticket"><i class="fa fa-eye"></i></button>
-            <button class="btn btn-danger big-font"  title="Close Ticket"><i class="fa fa-close"></i></button>
-            <button class="btn btn-success big-font" title="Escalate Ticket"><i class="fa fa-arrow-circle-o-up"></i></button>
-            <button class="btn btn-primary big-font" title="View Invoice"><i class="fa fa-file-pdf-o"></i></button>
-          </div>
+                    <div class="al-lg-actions type-ticket" ng-if="logEntry.type == 'ticket'">
+                        <button class="btn btn-default big-font" title="View Ticket"><i class="fa fa-eye"></i></button>
+                        <button class="btn btn-danger big-font" title="Close Ticket"><i class="fa fa-close"></i></button>
+                        <button class="btn btn-success big-font" title="Escalate Ticket"><i class="fa fa-arrow-circle-o-up"></i></button>
+                        <button class="btn btn-primary big-font" title="View Invoice"><i class="fa fa-file-pdf-o"></i></button>
+                    </div>
+
+                </div>
+            </div>
+
 
         </div>
-      </div>
 
 
+        <!--<div class="type-a al-box-container">-->
+        <!--<div class="log-content">-->
+        <!--<label class="al-lg-timestamp">Aug 07 2017 12:00:00</label>-->
+        <!--<div class="al-lg-header">-->
+        <!--<label class="lg-type"><span>Support</span></label>-->
+        <!--<label class="lg-user"><span>Pablo Laris</span></label>-->
+        <!--</div>-->
+        <!--<div class="al-lg-description">-->
+        <!--Description of the Event Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.-->
+        <!--</div>-->
+        <!--<div class="al-lg-actions type-ticket">-->
+        <!--<button class="btn btn-default big-font" title="View Ticket"><i class="fa fa-eye"></i></button>-->
+        <!--<button class="btn btn-danger big-font"  title="Close Ticket"><i class="fa fa-close"></i></button>-->
+        <!--<button class="btn btn-success big-font" title="Escalate Ticket"><i class="fa fa-arrow-circle-o-up"></i></button>-->
+        <!--<button class="btn btn-primary big-font" title="View Invoice"><i class="fa fa-file-pdf-o"></i></button>-->
+        <!--</div>-->
+        <!--</div>-->
+        <!--</div>-->
 
 
     </div>
-
-
-    <!--<div class="type-a al-box-container">-->
-      <!--<div class="log-content">-->
-        <!--<label class="al-lg-timestamp">Aug 07 2017 12:00:00</label>-->
-        <!--<div class="al-lg-header">-->
-          <!--<label class="lg-type"><span>Support</span></label>-->
-          <!--<label class="lg-user"><span>Pablo Laris</span></label>-->
-        <!--</div>-->
-        <!--<div class="al-lg-description">-->
-          <!--Description of the Event Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.-->
-        <!--</div>-->
-        <!--<div class="al-lg-actions type-ticket">-->
-          <!--<button class="btn btn-default big-font" title="View Ticket"><i class="fa fa-eye"></i></button>-->
-          <!--<button class="btn btn-danger big-font"  title="Close Ticket"><i class="fa fa-close"></i></button>-->
-          <!--<button class="btn btn-success big-font" title="Escalate Ticket"><i class="fa fa-arrow-circle-o-up"></i></button>-->
-          <!--<button class="btn btn-primary big-font" title="View Invoice"><i class="fa fa-file-pdf-o"></i></button>-->
-        <!--</div>-->
-      <!--</div>-->
-    <!--</div>-->
-
-
-
-
-
-
-  </div>
 </article>
-
-
 
 
 <!--<hr>-->

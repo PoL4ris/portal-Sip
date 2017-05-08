@@ -4,6 +4,8 @@ app.controller('buildingCtl',                       function($scope, $http, $sta
 
 
   console.log('bldContrl');
+
+
   if(customerService.sideBarFlag) {
     $scope.sipTool(2);
     customerService.sideBarFlag = false;
@@ -249,6 +251,18 @@ app.controller('buildingCtl',                       function($scope, $http, $sta
     $('#new-bc-form').trigger("reset");
 
   };
+  $scope.filterBuildingList = function () {
+    var type = this.buildingFilter;
+
+    if(type == 0)
+      type = null
+
+    $http.get("getBuildingsList", {params: {'type': type}})
+        .then(function (response) {
+            $scope.bldListResult = response.data;
+        });
+  }
+
 })
   .directive('getBuildingPropValues',             function (){
     return function (scope){
@@ -324,7 +338,7 @@ app.controller('buildingCtl',                       function($scope, $http, $sta
 //Building Side Bar
 app.controller('sideBldController',                 function($scope, $http, buildingService, $stateParams, customerService){
 
-
+console.log('this is someting');
 
 
   $http.get("getBuildingsList")

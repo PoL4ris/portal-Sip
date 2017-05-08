@@ -1,157 +1,159 @@
 <div ng-controller="FormXeditableCtrl" id="customer-products">
 
-  <div ng-controller="customerServicesController">
+    <div ng-controller="customerServicesController">
 
-    <div class="panel panel-default table-container">
-      <table class="tablesorter table m-b-lg">
-        <thead>
-        <tr><th>Service</th>
-        <!--<th>Signed at</th>-->
-        <th>Amount</th><th>Cycle</th><th>Status</th>
-        <!--<th>Last Updated</th>-->
-        <th colspan="2">Actions</th></tr>
-        </thead>
-        <tbody>
-        <tr ng-repeat="service in customerData.customerServices.services"
-            ng-controller="serviceProductController"
-            class="bg-status-{{customerProductStatus.status.name}} bg-payment-{{ (service.amount_owed > 0) ? 'debt' : 'no-debt'}}">
+        <div class="panel panel-default table-container">
+            <table class="tablesorter table m-b-lg">
+                <thead>
+                <tr>
+                    <th>Service</th>
+                    <!--<th>Signed at</th>-->
+                    <th>Amount</th>
+                    <th>Cycle</th>
+                    <th>Status</th>
+                    <!--<th>Last Updated</th>-->
+                    <th colspan="2">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="service in customerData.customerServices.services"
+                    ng-controller="serviceProductController"
+                    class="bg-status-{{customerProductStatus.status.name}} bg-payment-{{ (service.amount_owed > 0) ? 'debt' : 'no-debt'}}">
 
-          <td>{{ customerProduct.product.name }}</td>
-          <!--<td ng-init="resultDate = convertDate(service.signed_up)">{{resultDate | date : "M/d/yy h:mm a" }}</td>-->
-          <td>$ {{ customerProduct.product.amount }}.00</td>
-          <td class="text-capitalize">{{ customerProduct.product.frequency }}</td>
-          <td class="text-capitalize">{{ customerProductStatus.status.name }}</td>
-          <!--<td ng-init="resultDate = convertDate(service.updated_at)">{{resultDate | date : "short" }}</td>-->
+                    <td>{{ customerProduct.product.name }}</td>
+                    <!--<td ng-init="resultDate = convertDate(service.signed_up)">{{resultDate | date : "M/d/yy h:mm a" }}</td>-->
+                    <td>$ {{ customerProduct.product.amount }}.00</td>
+                    <td class="text-capitalize">{{ customerProduct.product.frequency }}</td>
+                    <td class="text-capitalize">{{ customerProductStatus.status.name }}</td>
+                    <!--<td ng-init="resultDate = convertDate(service.updated_at)">{{resultDate | date : "short" }}</td>-->
 
-          <td class="prod-btns">
-            <button class="btn fa btn-primary fa-eye modif-service-btn display-service-status-{{customerProductStatus.status.name}}"
-                    title="Edit Service"
-                    ng-click="setModeType('updateService'); serviceDataDisplay(true)"
-                    data-toggle="modal"
-                    data-target="#myModalService">
+                    <td class="prod-btns">
+                        <button class="btn fa btn-primary fa-eye modif-service-btn display-service-status-{{customerProductStatus.status.name}}"
+                                title="Edit Service"
+                                ng-click="setModeType('updateService'); serviceDataDisplay(true)"
+                                data-toggle="modal"
+                                data-target="#myModalService">
+                        </button>
+
+                        <button ng-if="customerProductStatus.status.name != 'disabled'"
+                                class="btn fa fa-times action-confirm btn-dark"
+                                ng-click="showConfirm(customerProduct.id, 'disable')"
+                                title="Cancel Service">
+                        </button>
+                        <button ng-if="customerProductStatus.status.name == 'disabled'"
+                                class="btn fa fa-check action-confirm btn-success"
+                                ng-click="showConfirm(customerProduct.id, 'active')"
+                                title="Active Service">
+                        </button>
+                        <a ng-if="service.amount_owed != 0"
+                           class="btn fa fa-usd action-confirm btn-danger"
+                           title="Charge"
+                           ng-click="setInvoiceTab()">
+                        </a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="col-lg-12 add-Service-btn no-padding-sides m-b-lg">
+            <button class="btn m-b-xs btn-sm btn-primary btn-addon bg-blue float-right" data-toggle="modal" data-target="#myModalService" ng-click="setModeType('')">
+                <i class="fa fa-plus"></i>
+                Add Service
             </button>
-
-            <button ng-if="customerProductStatus.status.name != 'disabled'"
-                    class="btn fa fa-times action-confirm btn-dark"
-                    ng-click="showConfirm(customerProduct.id, 'disable')"
-                    title="Cancel Service">
-            </button>
-            <button ng-if="customerProductStatus.status.name == 'disabled'"
-                    class="btn fa fa-check action-confirm btn-success"
-                    ng-click="showConfirm(customerProduct.id, 'active')"
-                    title="Active Service">
-            </button>
-            <a ng-if="service.amount_owed != 0"
-                    class="btn fa fa-usd action-confirm btn-danger"
-                    title="Charge"
-                    ng-click="setInvoiceTab()">
-            </a>
-          </td>
-        </tr>
-        </tbody>
-      </table>
+        </div>
     </div>
-
-    <div class="col-lg-12 add-Service-btn no-padding-sides m-b-lg">
-      <button class="btn m-b-xs btn-sm btn-primary btn-addon bg-blue float-right" data-toggle="modal" data-target="#myModalService"  ng-click="setModeType('')">
-        <i class="fa fa-plus"></i>
-        Add Service
-      </button>
-    </div>
-  </div>
 </div>
-
 
 
 <!--MODAL-->
 <div class="modal fade" id="myModalService" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog ">
-    <div class="modal-content">
+    <div class="modal-dialog ">
+        <div class="modal-content">
 
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-          &times;
-        </button>
-        <h4 class="modal-title" id="myModalServiceLabel">Service Information</h4>
-      </div>
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalServiceLabel">Service Information</h4>
+            </div>
 
-      <div class="modal-body">
-        <div class="wrapper-sm">
-          <div class="row">
-            <div class="field-data col-lg-12" >
+            <div class="modal-body">
+                <div class="wrapper-sm">
+                    <div class="row">
+                        <div class="field-data col-lg-12">
 
-              <label class="bold-type col-lg-12">Service/Plan</label>
+                            <label class="bold-type col-lg-12">Service/Plan</label>
 
-              <select ng-if="!currentServiceDisplay"
-                      class="col-lg-5 block-a-label add-prod-select-color"
-                      ng-options="servicio.product.name for servicio in customerData.availableServices track by servicio.product.id"
-                      ng-model="selectedItem"
-                      ng-change="serviceDataDisplay()" required>
-                <option value="" >Select Item</option>
-              </select>
+                            <select ng-if="!currentServiceDisplay"
+                                    class="col-lg-5 block-a-label add-prod-select-color"
+                                    ng-options="servicio.product.name for servicio in customerData.availableServices track by servicio.product.id"
+                                    ng-model="selectedItem"
+                                    ng-change="serviceDataDisplay()" required>
+                                <option value="">Select Item</option>
+                            </select>
 
-              <select ng-if="currentServiceDisplay"
-                      class="col-lg-5 block-a-label add-prod-select-color"
-                      ng-options="servicio.product.name for servicio in customerData.availableServices track by servicio.product.id"
-                      ng-model="selectedItem"
-                      ng-change="serviceDataDisplay()" required>
-                <option value="">{{currentServiceDisplay.name}}</option>
-              </select>
+                            <select ng-if="currentServiceDisplay"
+                                    class="col-lg-5 block-a-label add-prod-select-color"
+                                    ng-options="servicio.product.name for servicio in customerData.availableServices track by servicio.product.id"
+                                    ng-model="selectedItem"
+                                    ng-change="serviceDataDisplay()" required>
+                                <option value="">{{currentServiceDisplay.name}}</option>
+                            </select>
 
-              <div class="col-lg-7">
+                            <div class="col-lg-7">
 
-                <label class="bold-type col-lg-6">Amount</label>
-                <label class="col-lg-6 block-a-label">{{ currentServiceDisplay ? ('$' + currentServiceDisplay.amount + '.00') : 'Select Service' }}</label>
-                <label class="bold-type col-lg-6">Cycle</label>
-                <label class="col-lg-6 block-a-label">{{ currentServiceDisplay ? currentServiceDisplay.frequency : 'Select Service' }}</label>
-                <label class="bold-type col-lg-6">Status</label>
-                <label class="col-lg-6 block-a-label">{{ currentServiceDisplay ? 'Active' : 'Select Service' }}</label>
+                                <label class="bold-type col-lg-6">Amount</label>
+                                <label class="col-lg-6 block-a-label">{{ currentServiceDisplay ? ('$' + currentServiceDisplay.amount + '.00') : 'Select Service' }}</label>
+                                <label class="bold-type col-lg-6">Cycle</label>
+                                <label class="col-lg-6 block-a-label">{{ currentServiceDisplay ? currentServiceDisplay.frequency : 'Select Service' }}</label>
+                                <label class="bold-type col-lg-6">Status</label>
+                                <label class="col-lg-6 block-a-label">{{ currentServiceDisplay ? 'Active' : 'Select Service' }}</label>
 
 
+                                <div ng-if="showingCurrent">
 
-                <div ng-if="showingCurrent">
+                                    <label class="bold-type col-lg-6">Signed Up</label>
+                                    <label class="col-lg-6 block-a-label">
+                                        <b>{{showingCurrent.signed_up}}</b>
+                                    </label>
 
-                  <label class="bold-type col-lg-6">Signed Up</label>
-                  <label class="col-lg-6 block-a-label">
-                  <b>{{showingCurrent.signed_up}}</b>
-                  </label>
+                                    <label class="bold-type col-lg-6">Expires</label>
+                                    <label class="col-lg-6 block-a-label">
+                                        <b>{{showingCurrent.expires}}</b>
+                                    </label>
 
-                  <label class="bold-type col-lg-6">Expires</label>
-                  <label class="col-lg-6 block-a-label">
-                    <b>{{showingCurrent.expires}}</b>
-                  </label>
+                                    <label class="bold-type col-lg-6">Last Updated</label>
+                                    <label class="col-lg-6 block-a-label">
+                                        <b>{{showingCurrent.updated_at}}</b>
+                                    </label>
 
-                  <label class="bold-type col-lg-6">Last Updated</label>
-                  <label class="col-lg-6 block-a-label">
-                    <b>{{showingCurrent.updated_at}}</b>
-                  </label>
+                                </div>
 
+                            </div>
+
+                        </div>
+
+                        <div class="label-data-service col-lg-12" ng-if="currentServiceDisplay">
+                            <label>{{currentServiceDisplay.name}}</label>
+                        </div>
+
+                    </div>
                 </div>
-
-              </div>
-
             </div>
 
-            <div class="label-data-service col-lg-12" ng-if="currentServiceDisplay">
-              <label>{{currentServiceDisplay.name}}</label>
+            <div class="modal-footer">
+                <div class="col-lg-1 addServiceBoton" ng-if="!customerData.servicesMode">
+                    <button class="btn m-b-xs w-xs btn-primary" ng-click="addNewService()">Add</button>
+                </div>
+                <div class="col-lg-1 addServiceBoton" ng-if="customerData.servicesMode">
+                    <button class="btn m-b-xs w-xs btn-primary" ng-click="addNewService()">Update</button>
+                </div>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">
+                    Cancel
+                </button>
             </div>
 
-          </div>
         </div>
-      </div>
-
-      <div class="modal-footer">
-        <div class="col-lg-1 addServiceBoton" ng-if="!customerData.servicesMode">
-          <button class="btn m-b-xs w-xs btn-primary" ng-click="addNewService()" >Add</button>
-        </div>
-        <div class="col-lg-1 addServiceBoton" ng-if="customerData.servicesMode">
-          <button class="btn m-b-xs w-xs btn-primary" ng-click="addNewService()" >Update</button>
-        </div>
-        <button type="button" class="btn btn-danger" data-dismiss="modal">
-          Cancel
-        </button>
-      </div>
-
     </div>
-  </div>
 </div>

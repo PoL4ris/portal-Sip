@@ -1,53 +1,74 @@
-<article class="col-lg-12 col-md-12 col-sm-12 p-b-lg bg-white white-shadow null-article no-padding-right">
-  <div class="row">
+<div class="row no no-margin-sides">
+    <article class="col-lg-12 col-md-12 col-sm-12 p-b-lg bg-white white-shadow null-article no-padding-right">
+        <div class="row">
 
-    <div class="col-lg-5 col-md-12 no-padding-right" style="min-width: 300px; max-width: 300px;">
-      <article class="col-sm-12 col-md-12 col-lg-12 no-padding-sides m-t-lg status-color-{{customerData.customer.status.name}} null-article"  ng-include="'/views/customer/customer.html'" ></article>
-    </div>
+            <div class="col-lg-5 col-md-12 no-padding-right" style="min-width: 300px; max-width: 300px;">
+                <article class="col-sm-12 col-md-12 col-lg-12 no-padding-sides m-t-lg status-color-{{customerData.customer.status.name}} null-article"
+                         ng-include="'/views/customer/customer.html'"></article>
+            </div>
 
-    <div class="col-lg-7 col-md-12 m-t-lg customer-dash-grid" >
-      <article class="null-article" ng-include="'/views/customer/product.html'"></article>
-    </div>
+            <div class="col-lg-7 col-md-12 m-t-lg customer-dash-grid">
+                <article class="null-article" ng-include="'/views/customer/product.html'"></article>
+            </div>
 
-  </div>
-</article>
-
-
-
-
-<article class="col-sm-12 col-md-12 col-lg-12  bg-white white-shadow m-t-lg p-b-lg " id="c-fixed-content">
-  <div class="row">
-    <header role="heading" class="ui-sortable-handle">
-      <ul id="widget-tab-1" class="nav pull-left nav-tabs size-100">
-        <li class=""><a data-toggle="tab" href="#tab-r1" aria-expanded="false">       <i class="fa fa-lg fa-home"></i> <span class="hidden-mobile hidden-tablet"></span></a></li>
-        <li class="active"><a data-toggle="tab" href="#tab-r2" aria-expanded="false"> <i class="fa fa-lg fa-signal"></i> <span class="hidden-mobile hidden-tablet"> Network </span></a></li>
-        <li class=""><a data-toggle="tab" href="#tab-r3" aria-expanded="false">       <i class="fa fa-lg fa-comment-o"></i> <span class="hidden-mobile hidden-tablet"> New Ticket / Notes</span></a></li>
-        <li class=""><a data-toggle="tab" href="#tab-r4" aria-expanded="false">       <i class="fa fa-lg fa-arrow-circle-o-up"></i> <span class="hidden-mobile hidden-tablet"> Tickets </span></a></li>
-        <li class=""><a data-toggle="tab" href="#tab-r5" aria-expanded="true">        <i class="fa fa-lg fa-arrow-circle-o-down"></i> <span class="hidden-mobile hidden-tablet"> Contacts </span> </a></li>
-        <li class=""><a data-toggle="tab" href="#tab-r6" aria-expanded="false">       <i class="fa fa-lg fa-dollar"></i><span class="hidden-mobile hidden-tablet"> Payment Methods </span></a></li>
-        <li class=""><a data-toggle="tab" href="#tab-r7" aria-expanded="false" id="invoice-payment-tab-link"><i class="fa fa-lg fa-file-pdf-o"></i> <span class="hidden-mobile hidden-tablet"> Invoice History </span></a></li>
-        <li class=""><a data-toggle="tab" href="#tab-r8" aria-expanded="false">       <i class="fa fa-lg fa-clock-o"></i><span class="hidden-mobile hidden-tablet"> Payment History </span></a></li>
-      </ul>
-    </header>
-
-    <div class="col-lg-12 m-t-lg">
-      <div class="tab-content">
-
-        <div class="tab-pane " id="tab-r1">  <article class="col-sm-12 col-md-12 col-lg-12 no-padding-sides m-t-lg null-article" ></article></div>
-        <div class="tab-pane active" id="tab-r2">  <article class="col-sm-12 col-md-12 col-lg-12 no-padding-sides m-t-lg null-article"  ng-include="'/views/customer/network.html'"></article></div>
-
-        <div class="tab-pane" id="tab-r3">
-          <article class="col-sm-6 col-md-6 col-lg-6 null-article"    ng-include="'/views/customer/newticket.html'"></article>
-          <article class="col-sm-6 col-md-6 col-lg-6 null-article"    ng-include="'/views/customer/notes.html'"></article>
         </div>
+    </article>
 
-        <div class="tab-pane" id="tab-r4">         <article class="col-sm-12 col-md-12 col-lg-12 no-padding-sides null-article"         ng-include="'/views/customer/ticketshistory.html'" ng-controller="supportController" ></article></div>
-        <div class="tab-pane" id="tab-r5">         <article class="col-sm-12 col-md-12 col-lg-6 no-padding-sides null-article"          ng-include="'/views/customer/contactInfo.html'"></article></div>
-        <div class="tab-pane" id="tab-r6">         <article class="col-sm-12 col-md-12 col-lg-12 no-padding-sides null-article"         ng-include="'/views/customer/paymentMethods.html'"></article></div>
-        <div class="tab-pane" id="tab-r7">         <article class="col-sm-12 col-md-12 col-lg-12 no-padding-sides null-article"         ng-include="'/views/customer/invoicehistory.html'"></article></div>
-        <div class="tab-pane" id="tab-r8">         <article class="col-sm-12 col-md-12 col-lg-12 no-padding-sides null-article"         ng-include="'/views/customer/billinghistory.html'"></article></div>
 
-      </div>
-    </div>
-  </div>
-</article>
+    <article class="col-sm-12 col-md-12 col-lg-12  bg-white white-shadow m-t-lg p-b-lg " id="c-fixed-content">
+        <div class="row">
+            <header role="heading" class="ui-sortable-handle">
+                <ul id="widget-tab-1" class="nav pull-left nav-tabs size-100">
+                    <li class=""><a data-toggle="tab" href="#tab-r1" aria-expanded="false"> <i class="fa fa-lg fa-home"></i> <span class="hidden-mobile hidden-tablet"></span></a></li>
+                    <li class="active"><a data-toggle="tab" href="#tab-r2" aria-expanded="false"> <i class="fa fa-lg fa-signal"></i> <span class="hidden-mobile hidden-tablet"> Network </span></a></li>
+                    <li class=""><a data-toggle="tab" href="#tab-r3" aria-expanded="false"> <i class="fa fa-lg fa-comment-o"></i> <span
+                        class="hidden-mobile hidden-tablet"> New Ticket / Notes</span></a></li>
+                    <li class=""><a data-toggle="tab" href="#tab-r4" aria-expanded="false"> <i class="fa fa-lg fa-arrow-circle-o-up"></i> <span class="hidden-mobile hidden-tablet"> Tickets </span></a>
+                    </li>
+                    <li class=""><a data-toggle="tab" href="#tab-r5" aria-expanded="true"> <i class="fa fa-lg fa-arrow-circle-o-down"></i> <span class="hidden-mobile hidden-tablet"> Contacts </span>
+                    </a></li>
+                    <li class=""><a data-toggle="tab" href="#tab-r6" aria-expanded="false"> <i class="fa fa-lg fa-dollar"></i><span class="hidden-mobile hidden-tablet"> Payment Methods </span></a>
+                    </li>
+                    <li class=""><a data-toggle="tab" href="#tab-r7" aria-expanded="false" id="invoice-payment-tab-link"><i class="fa fa-lg fa-file-pdf-o"></i> <span
+                        class="hidden-mobile hidden-tablet"> Invoice History </span></a></li>
+                    <li class=""><a data-toggle="tab" href="#tab-r8" aria-expanded="false"> <i class="fa fa-lg fa-clock-o"></i><span class="hidden-mobile hidden-tablet"> Payment History </span></a>
+                    </li>
+                </ul>
+            </header>
+
+            <div class="col-lg-12 m-t-lg">
+                <div class="tab-content">
+
+                    <div class="tab-pane " id="tab-r1">
+                        <article class="col-sm-12 col-md-12 col-lg-12 no-padding-sides m-t-lg null-article"></article>
+                    </div>
+                    <div class="tab-pane active" id="tab-r2">
+                        <article class="col-sm-12 col-md-12 col-lg-12 no-padding-sides m-t-lg null-article" ng-include="'/views/customer/network.html'"></article>
+                    </div>
+
+                    <div class="tab-pane" id="tab-r3">
+                        <article class="col-sm-6 col-md-6 col-lg-6 null-article" ng-include="'/views/customer/newticket.html'"></article>
+                        <article class="col-sm-6 col-md-6 col-lg-6 null-article" ng-include="'/views/customer/notes.html'"></article>
+                    </div>
+
+                    <div class="tab-pane" id="tab-r4">
+                        <article class="col-sm-12 col-md-12 col-lg-12 no-padding-sides null-article" ng-include="'/views/customer/ticketshistory.html'" ng-controller="supportController"></article>
+                    </div>
+                    <div class="tab-pane" id="tab-r5">
+                        <article class="col-sm-12 col-md-12 col-lg-6 no-padding-sides null-article" ng-include="'/views/customer/contactInfo.html'"></article>
+                    </div>
+                    <div class="tab-pane" id="tab-r6">
+                        <article class="col-sm-12 col-md-12 col-lg-12 no-padding-sides null-article" ng-include="'/views/customer/paymentMethods.html'"></article>
+                    </div>
+                    <div class="tab-pane" id="tab-r7">
+                        <article class="col-sm-12 col-md-12 col-lg-12 no-padding-sides null-article" ng-include="'/views/customer/invoicehistory.html'"></article>
+                    </div>
+                    <div class="tab-pane" id="tab-r8">
+                        <article class="col-sm-12 col-md-12 col-lg-12 no-padding-sides null-article" ng-include="'/views/customer/billinghistory.html'"></article>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </article>
+</div>

@@ -1,25 +1,25 @@
 <div ng-controller="customerNotesController">
 
-  <div class="col-lg-12">
-    <form id="c-n-f" class="cnf-comment">
-      <p class="bold-type">New Note:</p>
-      <textarea placeholder="Comment" required id="textarea-note-customer"></textarea>
-      <button ng-click="newNote()" class="btn btn-primary pull-right"><i class="fa fa-plus m-r-md"></i> Add comment</button>
-    </form>
-  </div>
-
-
-  <div class="col-lg-12 notes-list">
-    <p class="bold-type">Customer Notes:</p>
-    <div ng-repeat="note in customerNotes" class="b-b-ddd m-t-md m-b-md p-b-sm">
-      <p class="">
-        <label ng-init="noteDate = convertDate(note.created_at)" class="pull-right">{{noteDate | date : "MMM d, y h:mm a"}}</label>
-        <br>
-        <p ng-bind-html="note.comment"></p>
-      </p>
-
+    <div class="col-lg-12">
+        <form id="c-n-f" class="cnf-comment">
+            <p class="bold-type">New Note:</p>
+            <textarea placeholder="Comment" required id="textarea-note-customer"></textarea>
+            <button ng-click="newNote()" class="btn btn-primary pull-right"><i class="fa fa-plus m-r-md"></i> Add comment</button>
+        </form>
     </div>
-  </div>
+
+
+    <div class="col-lg-12 notes-list">
+        <p class="bold-type">Customer Notes:</p>
+        <div ng-repeat="note in customerNotes" class="b-b-ddd m-t-md m-b-md p-b-sm">
+            <p class="">
+                <label ng-init="noteDate = convertDate(note.created_at)" class="pull-right">{{noteDate | date : "MMM d, y h:mm a"}}</label>
+                <br>
+            <p ng-bind-html="note.comment"></p>
+            </p>
+
+        </div>
+    </div>
 
 
 </div>
