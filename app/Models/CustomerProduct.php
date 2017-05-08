@@ -4,28 +4,50 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class CustomerProduct extends Model
-{
-    /**
-     * 
-     * @return type
-     */
-    public function customer() {
+class CustomerProduct extends Model {
 
-        return $this->hasOne('App\Models\Customer', 'id_customers');
+    public function address()
+    {
+        return $this->hasOne('App\Models\Address', 'id', 'id_address');
     }
 
-    /**
-     * 
-     * @return type
-     */
-    public function product() {
+    public function customer()
+    {
+        return $this->hasOne('App\Models\Customer', 'id', 'id_customers');
+    }
+
+    public function port()
+    {
+        return $this->hasOne('App\Models\Port', 'id_customer_products', 'id');
+    }
+
+    public function product()
+    {
         return $this->hasOne('App\Models\Product', 'id', 'id_products');
     }
-    public function status() {
+
+    public function status()
+    {
         return $this->hasOne('App\Models\Status', 'id', 'id_status');
     }
-    public function port() {
-        return $this->hasOne('App\Models\Port', 'id', 'id_customer_products');
-    }
+
+
+//    public function building()
+//    {
+////        return $this->hasManyThrough('App\Models\Building', 'App\Models\Address',
+////            'id_customers', ''
+//////            'App\Post', 'App\User',
+////            'country_id', 'user_id', 'id'
+////        );
+//        return $this->hasOne('App\Models\Product', 'id', 'id_products');
+//    }
+
+
+
+
+
+
+
+
+
 }

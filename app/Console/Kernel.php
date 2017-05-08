@@ -18,6 +18,7 @@ class Kernel extends ConsoleKernel
         Commands\MigrateFromLegacyDatabase::class,
         Commands\UpdateFromLegacyDatabase::class,
         Commands\GeneralTasks::class,
+        Commands\GenerateCustomerCharges::class,
     ];
 
     /**
