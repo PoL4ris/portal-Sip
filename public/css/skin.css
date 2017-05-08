@@ -1,6 +1,6 @@
 
 html {
-    background: #f1f1f1 none repeat scroll 0 0;
+    background: #f8f8f8 none repeat scroll 0 0;
 }
 body {
     font-family: "Lato",sans-serif;
@@ -476,10 +476,10 @@ body.smart-style-7 {
     color: #333;
 }
 .smart-style-7 nav ul li.active a {
-    color: #578294;
+    color: #578294 !important;
 }
 .smart-style-7 nav ul li.active > a::before {
-    color: #ffffff;
+    color: #578294;
     right: -35px;
 }
 .smart-style-7 .pagination > .active > a, .smart-style-7 .pagination > .active > a:focus, .smart-style-7 .pagination > .active > a:hover, .smart-style-7 .pagination > .active > span, .smart-style-7 .pagination > .active > span:focus, .smart-style-7 .pagination > .active > span:hover {

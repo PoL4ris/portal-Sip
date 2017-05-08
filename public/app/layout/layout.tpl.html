@@ -3,15 +3,16 @@
 <!-- END HEADER -->
 
 
-<!-- Left panel : Navigation area -->
-<!-- Note: This width of the aside area can be adjusted through LESS variables -->
+<!-- NAVIGATION -->
 <div data-smart-include="app/layout/partials/navigation.tpl.html" class="placeholder-left-panel"></div>
+<!-- END NAVIGATION -->
+
+<!-- SIDEBARS -->
 <div ui-view="silveriptool" id="silverip-side" class="silverip-right"></div>
-
-
+<!-- END SIDEBARS -->
 
 <div class="modal fade" id="modalTest" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="bg-white">something here</div>
+    <div class="bg-white">something here</div>
 </div>
 
 <!-- END NAVIGATION -->
@@ -20,36 +21,10 @@
 <!------------------------------------------------------------------------>
 
 
-
 <div id="main" role="main" class="silverip-right-location anim">
-    <!--<demo-states></demo-states>-->
-
-
-
-    <!-- RIBBON -->
-    <!--<div id="ribbon">-->
-
-        <!--<span class="ribbon-button-alignment">-->
-          <!--<span id="refresh" class="btn btn-ribbon" reset-widgets-->
-                          <!--tooltip-placement="bottom"-->
-                          <!--smart-tooltip-html="<i class='text-warning fa fa-warning'></i> Warning! This will reset all your widget settings.">-->
-            <!--<i class="fa fa-refresh"></i>-->
-          <!--</span>-->
-        <!--</span>-->
-
-         <!--breadcrumb-->
-        <!--<state-breadcrumbs></state-breadcrumbs>-->
-         <!--end breadcrumb-->
-
-
-    <!--</div>-->
-    <!-- END RIBBON -->
-
-
     <div data-smart-router-animation-wrap="content content@app" data-wrap-for="#content">
         <div data-ui-view="content" data-autoscroll="false" id="content"></div>
     </div>
-
 </div>
 
 <!------------------------------------------------------------------------>

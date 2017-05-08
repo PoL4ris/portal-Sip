@@ -833,10 +833,7 @@ table.dataTable tbody tr {
 .bld-workspace {
 }
 .bld-sub-nav {
-  background: white none repeat scroll 0 0;
   margin-bottom: 0;
-  margin-left: -14px;
-  margin-right: -30px;
   width: 200px;
 }
 .bld-workspace article {
@@ -921,11 +918,6 @@ table.dataTable tbody tr {
   overflow: auto;
   padding-top: 10px;
 }
-
-
-
-
-
 
 
 
