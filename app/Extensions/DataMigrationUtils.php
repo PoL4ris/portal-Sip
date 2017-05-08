@@ -493,7 +493,7 @@ class DataMigrationUtils {
         $legacyTableName = 'productPropertyValues';
         $updateFunction = function ($legacyProductPropertyValue)
         {
-            $this->findOrCreateProductPropertyValue($legacyProductPropertyValue->LocID, $legacyProductPropertyValue->PropID, $legacyProductPropertyValue->Value);
+            $this->findOrCreateProductPropertyValue($legacyProductPropertyValue);
 
             return true;
         };
