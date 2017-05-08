@@ -3,8 +3,8 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class Charges extends Migration
-{
+class CreateChargesTable extends Migration {
+
     /**
      * Run the migrations.
      *
@@ -12,7 +12,8 @@ class Charges extends Migration
      */
     public function up()
     {
-        Schema::create('charges', function(Blueprint $table) {
+        Schema::create('charges', function (Blueprint $table)
+        {
             $table->increments('id');
             $table->string('name')->nullable();
             $table->string('address')->nullable();
