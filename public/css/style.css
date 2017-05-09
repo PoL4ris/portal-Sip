@@ -828,13 +828,15 @@ table.dataTable tbody tr {
   cursor: pointer;
 }
 .sub-nav-active {
-  width: calc(100% - 200px);
+  width: auto;
+  min-width: calc(100% - 200px);
 }
 .bld-workspace {
 }
 .bld-sub-nav {
   margin-bottom: 0;
   width: 200px;
+  overflow: hidden;
 }
 .bld-workspace article {
 }
@@ -905,7 +907,8 @@ table.dataTable tbody tr {
   top: -6px;
 }
 .customer-record:hover{
-  font-weight: bold;
+
+  opacity: .7;
 }
 .summary-ticket-container{
   background: #f4f4f4 none repeat scroll 0 0;

@@ -1,9 +1,44 @@
 
 //Building Controllers
 app.controller('buildingCtl',                       function($scope, $http, $stateParams, customerService) {
+    console.log('bldContrl');
 
 
-  console.log('bldContrl');
+
+
+
+
+
+
+
+    $scope.fedeINbtn = function () {
+        $('#left-bld').animate({width: '200px'});
+//        $('#left-bld').fadeIn('slow');
+
+    }
+    $scope.fedeOUTbtn = function(){
+        $('#left-bld').animate({width: '0'});
+//        $('#left-bld').fadeOut('slow');
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
   if(customerService.sideBarFlag) {

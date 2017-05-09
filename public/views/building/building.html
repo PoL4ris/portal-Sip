@@ -1,6 +1,6 @@
 <div class="row">
     <!--LEFT CONTENT-->
-    <div class="bld-sub-nav pull-left">
+    <div class="bld-sub-nav pull-left anim" id="left-bld">
         <div class="bld-filters-sub-nav">
 
             <div class="search-subnav-bld">
@@ -29,7 +29,9 @@
         </div>
     </div>
     <!--RIGHT CONTENT-->
-    <div class="sub-nav-active pull-left padding-10">
+    <div class="sub-nav-active pull-left padding-10 p-l-lg anim">
+        <button ng-click="fedeINbtn()">Fade In</button>
+        <button ng-click="fedeOUTbtn()">Fade Out</button>
 
         <div class="bld-workspace">
             <!-- BUSCADOR -->
@@ -37,8 +39,6 @@
             <!-- BUILDING -->
             <article class="col-lg-6 p-t-lg m-b-lg null-article" ng-include="'/views/building/buildings.html'"></article>
         </div>
-
-
         <article class="col-sm-12 col-md-12 col-lg-12  bg-white white-shadow m-t-lg p-b-lg null-article" id="c-fixed-content">
             <div class="row">
                 <header role="heading" class="ui-sortable-handle">
