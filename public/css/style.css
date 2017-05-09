@@ -643,6 +643,10 @@ table.dataTable tbody tr {
 .bg-payment-debt {
   border: 2px solid crimson;
 }
+.bg-declined-payment{
+  /*background: rgba(220,20,60,.6) !important;*/
+  box-shadow: 0 0 0 1.5px crimson inset;
+}
 .bg-payment-no-debt {
 }
 .display-service-status-active {
