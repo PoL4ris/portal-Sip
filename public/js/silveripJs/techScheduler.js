@@ -1,4 +1,10 @@
-app.controller('techschedulercontroller', function ($scope, $http) {
+app.controller('techschedulercontroller', function ($scope, $http, customerService) {
+
+    if (customerService.sideBarFlag) {
+        $scope.sipTool(2);
+        customerService.sideBarFlag = false;
+    }
+
     $scope.today = new Date();
     $scope.techscheduledate = $('.datepicker').val() != '' ? $('.datepicker').val() : (($scope.today.getMonth() + 1) + '/' + $scope.today.getDate() + '/' + $scope.today.getFullYear());
 

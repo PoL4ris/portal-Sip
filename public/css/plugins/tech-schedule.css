@@ -30,6 +30,7 @@
     border-radius: 10px !important;  /*these are important because our base css says they are and it needs an override to look pretty*/
     -webkit-border-radius: 10px !important;
     -moz-border-radius: 10px !important;
+    box-sizing: border-box;
  }
 
 .schedule-wrapper table {
