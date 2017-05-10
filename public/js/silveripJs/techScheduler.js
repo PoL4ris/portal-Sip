@@ -1,9 +1,6 @@
 app.controller('techschedulercontroller', function ($scope, $http) {
     $scope.today = new Date();
     $scope.techscheduledate = $('.datepicker').val() != '' ? $('.datepicker').val() : (($scope.today.getMonth() + 1) + '/' + $scope.today.getDate() + '/' + $scope.today.getFullYear());
-    //$("#service").selectmenu();  //nice looking select menu
-    // $("#action").selectmenu();
-
 
     $scope.renewtable = function (date) {
         console.log('table is renewing');
@@ -28,9 +25,6 @@ app.controller('techschedulercontroller', function ($scope, $http) {
     });
 
     $scope.renewtable($scope.techscheduledate);
-
-    $scope.services = ["TV", "INT"];
-
 
     $scope.updatebuildingsearch = function () {
         $scope.bcodesearchvariable = $('#buildingcode').val();
@@ -65,7 +59,7 @@ app.controller('techschedulercontroller', function ($scope, $http) {
         });
         $scope.loadinganimation = true;
 
-    }
+    };
 
 
     $scope.populatetable = function (data) {
@@ -185,8 +179,8 @@ app.controller('techschedulercontroller', function ($scope, $http) {
         var selected = [];
         var submission = getFormValues('scheduleform');
         submission['selected[]'] = [];
-        $('input[name="selected[]"]:checked').each( function(){
-             submission['selected[]'].push( $(this).val() );
+        $('input[name="selected[]"]:checked').each(function () {
+            submission['selected[]'].push($(this).val());
         });
 
         $http.get("/tech-schedule/setappointment", {

@@ -356,6 +356,14 @@ class TechScheduleController extends Controller {
 
         }
 
+        $search = $request->buildingcode;
+        $locations = Address::whereNull('id_customers')
+            ->where('code', '=', $search )
+            ->get();
+
+
+
+
         foreach ($techlist as $key => $value)
         {
 
@@ -376,7 +384,8 @@ class TechScheduleController extends Controller {
                 $request->appointmentdescription,  //appointment descrioption
                 $startTime,  //start time (dont' forget to set the date on the start and end times)
                 $endTime,  //end time
-                (isset($request->dtvaccount) ? $request->dtvaccount : null));  //dtv account number
+                $locations[0]['address'],
+                (isset($request->dtvaccount) && ($request->dtvaccount != '')? $request->dtvaccount : null));  //dtv account number
             //$onset is the newly created calendar appointment.
         }
 

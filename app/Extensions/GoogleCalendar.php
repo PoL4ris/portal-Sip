@@ -262,7 +262,7 @@ class GoogleCalendar {
 
     }
 
-    public function SetTechAppointment($user, $tech, $buildingcode, $unit, $service, $action, $customername, $customerphone, $appointmentdescription, DateTime $startTime, DateTime $endTime, $dtvaccount = null)
+    public function SetTechAppointment($user, $tech, $buildingcode, $unit, $service, $action, $customername, $customerphone, $appointmentdescription, DateTime $startTime, DateTime $endTime, $address = null ,$dtvaccount = null)
     {
         $date = new $startTime;
 
@@ -305,10 +305,13 @@ class GoogleCalendar {
         $event->setEnd($end);
         $event->setSummary($summary);
         $event->setDescription($description);
+        if($address)
+        {
+            $event->setLocation($address);
+        }
 
 
-//get bcode and retrieve address from db, use bcode to set the location of the event $event->setLocation();
-//$event->setLocation($address);
+
 
 
 //set the event on the pending calendar.
