@@ -1,6 +1,9 @@
 //ADMIN
 app.controller('adminController',                   function($scope, $http, customerService, adminService){
 
+
+
+
   if(customerService.sideBarFlag) {
     $scope.sipTool(2);
     customerService.sideBarFlag = false;
@@ -10,6 +13,7 @@ app.controller('adminController',                   function($scope, $http, cust
 
   $http.post("getAdminUsers", {params:{'token':adminService.existeToken}})
     .then(function (response) {
+
       $scope.adminUsers = response.data;
     });
 

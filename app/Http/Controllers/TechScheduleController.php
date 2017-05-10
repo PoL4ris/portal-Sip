@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Requests;
 use Auth;
 use App\Extensions\GoogleCalendar;
 use DateTime;
@@ -24,6 +23,8 @@ class TechScheduleController extends Controller {
 
     public function GenerateTableSchedule(Request $request)
     {
+
+
         $Calendar = new GoogleCalendar;
         if (isset($request->date))
         {
@@ -32,6 +33,7 @@ class TechScheduleController extends Controller {
         {
             $date = new DateTime('now');
         }
+
         $datenow = new DateTime('now');
 
         $schedulerange = $Calendar->getScheduleRange($date);  //earliest and latest times someone is working
@@ -330,6 +332,8 @@ class TechScheduleController extends Controller {
 
         //first we need to figure out which techs were selected and for how long.
         $techlist = array();
+
+
         foreach ($request->selected as $block)
         {
             $info = json_decode($block);
@@ -372,13 +376,13 @@ class TechScheduleController extends Controller {
                 $request->appointmentdescription,  //appointment descrioption
                 $startTime,  //start time (dont' forget to set the date on the start and end times)
                 $endTime,  //end time
-                ( isset($dtvaccount) ? $dtvaccount : null));  //dtv account number
+                (isset($request->dtvaccount) ? $request->dtvaccount : null));  //dtv account number
             //$onset is the newly created calendar appointment.
         }
 
         $request->session()->flash('alert-success', $onset->getSummary());
 
-        return redirect('tech-schedule');
+        return redirect('/#/tech-schedule');
     }
 
 

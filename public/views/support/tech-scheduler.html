@@ -1,19 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-
+<link rel="stylesheet" type="text/css" media="screen" href="/css/plugins/tech-schedule.css">
 <div class="form-group schedule-wrapper">
-    <form method="get" name="scheduleform" action="/tech-schedule/setappointment" onsubmit="preparesubmit()">
+    <div style="position: absolute; height: 100%; width: 100%; top: 0; left: 0; background: rgba(0,0,0,0.5); z-index: 10;"
+         ng-if="loadinganimation"></div>
+    <form id='scheduleform' method="get" name="scheduleform"
+          action="/tech-schedule/setappointment" ng-submit="prepareforappointmentsubmission($event)"
+          class="{{loadinganimation?'hideornohide':''}}">
+        <img src="/img/loading.gif" alt="" class="loading-gif-support" ng-if="loadinganimation">
         <table id='sheader'>
             <tr>
-                <td><label for="dpick">Date</label></td>
-                <td><input id="dpick" type="text" class="datepicker form-control" name="date" tabindex="0"></input>
-                    <input type="hidden" name="username"
-                           value="{{Auth::user()->first_name . ' ' . Auth::user()->last_name}}"></input>
+                <td><label for="techscheduledate">Date</label></td>
+                <td><input id="techscheduledate" type="text" class="datepicker form-control" name="techscheduledate"
+                           tabindex="0"></input>
+                    <input type="hidden" name="username" id="username"
+                           value="{{userDataAuth.first_name}}"></input>
                 </td>
                 <td><label for="adesc">Appointment Description</label></td>
             </tr>
@@ -21,39 +20,41 @@
             <tr>
                 <td><label for="cname">Customer Name</label></td>
                 <td><input type="text" id='cname' name="customername" class="form-control"
-                           value="{{old('customername')}}" tabindex="1"></input></td>
+                           tabindex="1"></input></td>
                 <td rowspan="7" style="width: 600px; max-width: 100%; height: 100%"><textarea type="text" id="adesc"
                                                                                               name="appointmentdescription"
                                                                                               class="form-control"
-                                                                                              tabindex="8">{{old('appointmentdescription')}}</textarea>
-                    <!--should be textarea--></td>
+                                                                                              tabindex="8"></textarea>
+                </td>
             </tr>
             <tr>
                 <td><label for="cphone">Customer Phone</label></td>
                 <td><input type="text" id='cphone' name="customerphone" class="form-control"
-                           value="{{old('customerphone')}}" tabindex="2"></input></td>
+                           tabindex="2"></input></td>
             </tr>
             <tr>
-                <td><label for="bcode">Building Code</label></td>
-                <td><input type="text" onkeyup="updatesearch()" id="bcode" name="buildingcode" class="form-control"
-                           value="{{old('buildingcode')}}" tabindex="3"></input></td>
+                <td><label for="buildingcode">Building Code</label></td>
+                <td><input type="text" ng-keyup="updatebuildingsearch()" id="buildingcode" name="buildingcode"
+                           class="form-control"
+                           tabindex="3"></input></td>
             </tr>
             <tr>
                 <td><label for="unit">Unit</label></td>
-                <td><input type="text" id="unit" name="unit" class="form-control" value="{{old('unit')}}"
+                <td><input type="text" id="unit" name="unit" class="form-control" id="unit"
                            tabindex="4"></input></td>
             </tr>
             <tr>
                 <td><label for="service">Service</label></td>
-                <td><select id="service" name="service" value="{{old('service')}}" tabindex="5">
+                <td><select id="service" name="service" tabindex="5" class="selectpicker form-control">
                     <option disabled selected>Service</option>
                     <option>TV</option>
                     <option>INT</option>
-                </select><!--should be dropdown--></td>
+                </select></td><!--should be dropdown-->
             </tr>
+
             <tr>
                 <td><label for="action">Action</label></td>
-                <td><select id="action" name="action" value="{{old('action')}}" tabindex="6">
+                <td><select id="action" name="action" tabindex="6" class="selectpicker form-control">
                     <option disabled selected>Action</option>
                     <option>Connect</option>
                     <option>Repair</option>
@@ -63,15 +64,13 @@
             <tr>
                 <td><label for="dtvaccount">DTV Account</label></td>
                 <td><input type="text" id="dtvaccount" name="dtvaccount" class="form-control"
-                           value="{{old('dtvaccount')}}" tabindex="7"></input></td>
+                           tabindex="7"></input></td>
             </tr>
+        </table>
 
-
-            <table class='scheduletable table-sm table-striped'>
-                <tbody></tbody>
-            </table>
-            <input type="submit" value="Submit">
+        <table class='scheduletable table table-striped'>
+            <tbody></tbody>
+        </table>
+        <input type="submit" value="Submit">
     </form>
 </div>
-</body>
-</html>

@@ -8,9 +8,29 @@
     box-sizing: border-box; /* Chrome, IE8, Opera, Safari 5.1*/
 }
 
-.schedule-wrapper textarea.form-control {
-    height: 100%;
+.schedule-wrapper {
+    width: 100%;
 }
+
+.schedule-wrapper #scheduleform {
+    position: relative;
+}
+
+.schedule-wrapper #sheader {
+    position: relative;
+}
+
+.schedule-wrapper #sheader td {
+    position: relative;
+}
+
+.schedule-wrapper #adesc.form-control {
+    position: absolute;
+    top: 0;
+    border-radius: 10px !important;  /*these are important because our base css says they are and it needs an override to look pretty*/
+    -webkit-border-radius: 10px !important;
+    -moz-border-radius: 10px !important;
+ }
 
 .schedule-wrapper table {
     border-collapse: separate;
@@ -29,7 +49,8 @@
 }
 
 .schedule-wrapper .scheduletable {
-    display: table;
+    /*display: table;*/
+    table-layout: fixed;
 }
 
 .schedule-wrapper .scheduletable td {
@@ -37,7 +58,16 @@
     border: 2px solid grey;
     border-collapse: collapse;
     border-radius: 5px;
+    display: table-cell;
+    padding: 0;
+}
 
+.schedule-wrapper .scheduletable th:first-child {
+    width: 50px;
+}
+
+.schedule-wrapper .scheduletable td:first-child {
+    width: 100%;
 }
 
 .schedule-wrapper .scheduletable th {
@@ -45,14 +75,7 @@
 }
 
 .schedule-wrapper .dragdiv {
-    /* border-style: inset;
-     border: 1px solid grey; */
-    width: 100%;
-    height: 100%;
-    float: left;
-    white-space: normal;
-    word-wrap: break-word;
-    display: table-cell;
+
 }
 
 .schedule-wrapper .freeappointment .hover {
@@ -65,4 +88,8 @@
 
 .schedule-wrapper .table-striped tbody > tr:nth-child(odd) > td {
     background-color: #e9f8ff;
+}
+
+.schedule-wrapper .hideornohide {
+    z-index: 1;
 }
