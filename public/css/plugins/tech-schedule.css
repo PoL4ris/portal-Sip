@@ -27,7 +27,7 @@
 .schedule-wrapper #adesc.form-control {
     position: absolute;
     top: 0;
-    border-radius: 10px !important;  /*these are important because our base css says they are and it needs an override to look pretty*/
+    border-radius: 10px !important;  /*these are important because our base bootstrap css says they are and it needs an override to look pretty*/
     -webkit-border-radius: 10px !important;
     -moz-border-radius: 10px !important;
     box-sizing: border-box;
@@ -39,8 +39,8 @@
 }
 
 .schedule-wrapper input[type='checkbox'] {
-    width: 2em;
-    height: 2em;
+    width: 20px;
+    height: 20px;
     border-radius: 1.2em;
     border: 2px solid #555;
 }

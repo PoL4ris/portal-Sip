@@ -77,7 +77,7 @@ class GoogleCalendar {
     public function GetScheduleRange(DateTime $date)
     {
 
-
+     //needed for the schedule builder to determine length of schedule.
         $startofday;
         $endofday;
 
@@ -113,7 +113,7 @@ class GoogleCalendar {
 
     public function GetTechSchedule(DateTime $date)
     {
-
+        //lists the technicians that are working and their hours on a given date.
         $timeMin = new DateTime($date->format(DATE_RFC3339));
         $timeMin->setTime(00, 00, 00);
 
@@ -129,11 +129,8 @@ class GoogleCalendar {
         );
 
 
-        //$availableTechCalendar = $this->all(Config::get('google.schedule_appointment') );
-        //dd($availableTechCalendar);
         $scheduledtechs = $this->service->events->listEvents(Config::get('google.schedule_appointment'), $optParams);
-        //should have google schedule now, but let's process the appointments and make a cleaner table.
-        //dd($scheduledtechs);
+
         $listing = [];
         foreach ($scheduledtechs as $techevent)
         {
@@ -234,11 +231,8 @@ class GoogleCalendar {
             array_push($techsworking, $techevent->getSummary());
         }
 
-
-        //$availableTechCalendar = $this->all(Config::get('google.schedule_appointment') );
-        //dd($availableTechCalendar);
         $onsite_appointments = $this->service->events->listEvents(Config::get('google.onsite_appointment'), $optParams);
-        //should have google schedule now, but let's process the appointments and make a cleaner table.
+
 
         foreach ($onsite_appointments as $appointment)
         {
@@ -291,9 +285,6 @@ class GoogleCalendar {
         $description .= "Scheduled By:\n";
         $description .= $user . " at " . (new DateTime('now'))->format(DATE_RFC3339);
 
-        //previously we also added a link to the binfo building page, we should do the same for the new portal
-        //building information provides technicians with a valuable tool for completing their appointments.
-
         $event = new \Google_Service_Calendar_Event;
         $start = new \Google_Service_Calendar_EventDateTime();
         $end = new \Google_Service_Calendar_EventDateTime();;
@@ -317,7 +308,7 @@ class GoogleCalendar {
 //set the event on the pending calendar.
         $onset = $Calendar->service->events->insert(Config::get('google.pending_appointment'), $event, []);
 
-//$onset is just the newly created appointment.
+//$onset is just the newly created appointment in case we need anything else done with it.
 
         return $onset;
     }
@@ -325,7 +316,7 @@ class GoogleCalendar {
     public function VerifyTechIsFree($tech, DateTime $startTime, DateTime $endTime)
     {
 
-
+        //verify that tech is free at particular date and time.
         $techSchedule = $this->GetTechSchedule($startTime);
 
         $pendingAppointments = $this->GetPendingAppointments($startTime);
@@ -409,9 +400,6 @@ class GoogleCalendar {
             array_push($techsworking, $techevent->getSummary());
         }
 
-
-        //$availableTechCalendar = $this->all(Config::get('google.schedule_appointment') );
-
         $pending_appointments = $this->service->events->listEvents(Config::get('google.pending_appointment'), $optParams);
         //should have google schedule now, but let's process the appointments and make a cleaner table.
 
@@ -432,7 +420,6 @@ class GoogleCalendar {
         }
 
 
-        // dd($pending_appointments);
         return $listing;
 
     }
