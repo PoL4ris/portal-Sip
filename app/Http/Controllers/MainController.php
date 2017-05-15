@@ -93,5 +93,31 @@ class MainController extends Controller
     {
         return Address::whereNull('id_customers')->groupBy('id_buildings')->get();
     }
+
+    /**
+     * @return dashboard Data
+     * Commercial Buildings
+     * Retail Buildings
+     * Open Tickets
+     * Average time to close ticket (hours)
+     * Average time to close ticket (days)
+     */
+    public function dashboard()
+    {
+        //Dashboard data Working
+        $result = array();
+        $result['commercial'] = Building::where('type', 'like', '%commercial%')->count();
+        $result['retail']     = Building::where('type', 'not like', '%commercial%')->count();
+        $result['tickets']    = Ticket::where('status', '!=', 'closed')->count();
+        $ticketAverage        = DB::select('SELECT 
+                                              avg(TIMESTAMPDIFF(HOUR, created_at, updated_at)) as hours,
+                                              avg(TIMESTAMPDIFF(DAY, created_at, updated_at))  as days
+                                            FROM tickets
+                                              where updated_at > created_at
+                                              and status like "%closed%"')[0];
+        $result['avgHour']    = $ticketAverage->hours;
+        $result['avgDay']     = $ticketAverage->days;
+        return $result;
+    }
 }
 

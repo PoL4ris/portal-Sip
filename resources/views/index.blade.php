@@ -130,6 +130,7 @@ Possible attributes
 <script src="/js/smart/build/appJs/app-11.js"></script>
 
 <script src="/js/countUp.js"></script>
+<script src="/js/chart.min.js"></script>
 
 <script src="/js/main.js"></script>
 <script src="/js/silveripJs/menuController.js"></script>

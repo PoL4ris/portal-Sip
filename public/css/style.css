@@ -832,8 +832,7 @@ table.dataTable tbody tr {
   cursor: pointer;
 }
 .sub-nav-active {
-  width: auto;
-  min-width: calc(100% - 200px);
+  width: calc(100% - 200px);
 }
 .bld-workspace {
 }
@@ -925,7 +924,9 @@ table.dataTable tbody tr {
   overflow: auto;
   padding-top: 10px;
 }
-
+.algo{
+background: #777777;
+}
 
 
 

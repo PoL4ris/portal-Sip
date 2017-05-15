@@ -4,12 +4,11 @@
     <div class="widget-body" ng-controller="globalToolsCtl" id="buildingContacts-gTools">
       <div class="row">
 
-        <div class="col-lg-6">
+        <div class="col-lg-4">
           <button ng-if="buildingData.contacts != ''" id="enable-contact" class="btn btn-success" ng-click="toggleDisabled()">Edit</button>
           <button ng-if="buildingData.contacts == ''" id="enable-contact" class="btn btn-dark" ng-click="toggleDisabled()" disabled >Cancel</button>
         </div>
-
-        <div class="col-lg-6">
+        <div class="col-lg-8">
           <button id="add-contact" class="btn btn btn-primary pull-right" ng-click="fadeViews('bc-container', 'new-contact-form', 1, 'enable-contact', 'add-contact', 'add-contact-cancel')">
             Add new Contact
           </button>
@@ -18,40 +17,39 @@
           </button>
         </div>
 
-        <div class="col-lg-12 m-t-lg m-b-lg p-b-lg">
-          <div class="col-lg-2" ng-repeat="bldContact in buildingData.contacts">
-            <div class="panel panel-darken">
-              <div class="panel-heading">
-                <h3 class="panel-title">
-                  <span smart-xeditable data-type="text" data-ng-model="bldContact.first_name" data-original-title="First Name" data-options="editableOptions" data-pk="1" record-idContainer="buildingContacts" record-table="BldContact" record-field="first_name" record-id="{{bldContact.id}}">{{bldContact.first_name}}</span>
-                  <span smart-xeditable data-type="text" data-ng-model="bldContact.last_name"  data-original-title="Last Name"  data-options="editableOptions" data-pk="1" record-idContainer="buildingContacts" record-table="BldContact" record-field="last_name" record-id="{{bldContact.id}}">{{bldContact.last_name}}</span>
-                </h3>
-              </div>
-              <div class="panel-body no-padding text-align-center">
-                <div class="the-price">
-                  <small>Company <br>
-                    <span smart-xeditable data-type="text" data-ng-model="bldContact.company" data-original-title="Company Name" data-options="editableOptions" data-pk="1" record-idContainer="buildingContacts" record-table="BldContact" record-field="company" record-id="{{bldContact.id}}">{{bldContact.company}}</span>
-                  </small>
-                </div>
-                <table class="table">
-                  <tr><td>Contact</td></tr>
-                  <tr class="active">
-                    <td>
-                      <span smart-xeditable data-type="text" data-ng-model="bldContact.contact" data-original-title="Contact" data-options="editableOptions" data-pk="1" record-idContainer="buildingContacts" record-table="BldContact" record-field="contact" record-id="{{bldContact.id}}">{{bldContact.contact}}</span>
-                    </td>
-                  </tr>
-                  <tr><td>Contact #2</td></tr>
-                  <tr class="active">
-                    <td>
-                      <span smart-xeditable data-type="text" data-ng-model="bldContact.fax" data-original-title="Contact # 2" data-options="editableOptions" data-pk="1" record-idContainer="buildingContacts" record-table="BldContact" record-field="fax" record-id="{{bldContact.id}}">{{bldContact.fax?bldContact.fax:'N/A'}}</span>
-                    </td>
-                  </tr>
-                </table>
-              </div>
-            </div>
-          </div>
-        </div>
 
+          <div class="col-lg-12 m-t-lg m-b-lg p-b-lg">
+              <div class="col-lg-4 border" ng-repeat="bldContact in buildingData.contacts">
+
+                  <span>fname</span><br>
+                  <span smart-xeditable data-type="text" data-ng-model="bldContact.first_name" data-original-title="First Name" data-options="editableOptions" data-pk="1" record-idContainer="buildingContacts"
+                        record-table="BldContact" record-field="first_name" record-id="{{bldContact.id}}">{{bldContact.first_name}}</span>
+                  <br>
+                  <span>lname</span><br>
+                  <span smart-xeditable data-type="text" data-ng-model="bldContact.last_name" data-original-title="Last Name" data-options="editableOptions" data-pk="1" record-idContainer="buildingContacts"
+                        record-table="BldContact" record-field="last_name" record-id="{{bldContact.id}}">{{bldContact.last_name}}</span>
+                  <br>
+                  <span>company</span><br>
+                  <span smart-xeditable data-type="text" data-ng-model="bldContact.company" data-original-title="Company Name" data-options="editableOptions" data-pk="1" record-idContainer="buildingContacts"
+                        record-table="BldContact" record-field="company" record-id="{{bldContact.id}}">{{bldContact.company}}</span>
+                  <br>
+                  <span>contact</span><br>
+                  <span smart-xeditable data-type="text" data-ng-model="bldContact.contact" data-original-title="Contact" data-options="editableOptions" data-pk="1" record-idContainer="buildingContacts"
+                        record-table="BldContact" record-field="contact" record-id="{{bldContact.id}}">{{bldContact.contact}}</span>
+                  <br>
+                  <span>fax</span><br>
+                  <span smart-xeditable data-type="text" data-ng-model="bldContact.fax" data-original-title="Contact # 2" data-options="editableOptions" data-pk="1" record-idContainer="buildingContacts"
+                        record-table="BldContact" record-field="fax" record-id="{{bldContact.id}}">{{bldContact.fax?bldContact.fax:'N/A'}}</span>
+
+
+              </div>
+          </div>
+
+
+
+
+
+        <!-- NEW CONTACT FORM-->
         <div class="new-contact-form no-display">
 
           <building-contact-form>
@@ -135,8 +133,9 @@
             </form>
           </building-contact-form>
         </div>
-
+        <!-- END NEW CONTACT FORM-->
       </div>
+
     </div>
   </div>
 

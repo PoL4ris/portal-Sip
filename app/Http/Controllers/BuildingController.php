@@ -43,7 +43,7 @@ class BuildingController extends Controller
      */
     public function buildingData(Request $request)
     {
-        return Building::with('neighborhood', 'contacts', 'properties')->find($request->id ? $request->id : 28);
+        return Building::with('neighborhood', 'contacts', 'properties')->find($request->id ? $request->id : 23);
     }
 
     /**
@@ -76,6 +76,16 @@ class BuildingController extends Controller
                                                  ->get();
         return $data;
 
+    }
+
+    /**
+     * @param Request $request
+     * id = property id to find and return
+     * @return property data
+     */
+    public function getBuildingProperty(Request $request)
+    {
+        return BuildingProperty::find($request->id);
     }
 
     //Building GET's
@@ -170,7 +180,7 @@ class BuildingController extends Controller
     {
         $data = $request->all();
 
-        $record = new BuildingPropertyValue();
+        $record = new BuildingPropertyValue;
         $record->id_buildings = $data['id_buildings'];
         $record->id_building_properties = $data['id_building_properties'];
         $record->value = $data['value'];

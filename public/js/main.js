@@ -174,14 +174,29 @@ angular.module('app.warpol', ['ui.router']).config(function ($stateProvider) {
                 "content@app": {
                     templateUrl: '/views/warpol.html',
                     controller: 'warpolController',
-                },
-                "silveriptool": {
-                    templateUrl: '/views/warpol.html',
-                    controller: 'warpolController',
-                },
-                "leftSidebar": {
-                    templateUrl: '/views/warpol.html',
-                    controller: 'warpolController',
+                }
+            },
+            resolve: {
+                scripts: function (lazyScript) {
+                    return lazyScript.register([
+                        '/js/smart/build/vendor.ui.js'
+                    ]);
+                }
+            }
+        })
+});
+
+angular.module('app.dummyapp', ['ui.router']).config(function ($stateProvider) {
+    $stateProvider
+        .state('app.dummyapp', {
+            url: '/dummyapp',
+            data: {
+                title: 'dummyapp'
+            },
+            views: {
+                "content@app": {
+                    templateUrl: '/views/dummyapp.html',
+//                    controller: 'warpolController',
                 }
             },
             resolve: {

@@ -699,6 +699,8 @@ angular.module('SmartAdmin.Layout').directive('stateBreadcrumbs', function ($roo
 'use strict';
 
 angular.module('SmartAdmin.Layout').factory('lazyScript', function($q, $http){
+
+
   var cache = {};
 
   function isPending(scriptName){

@@ -188,6 +188,7 @@ var app = angular.module('app', [
   'app.support',
   'app.admin',
   'app.customershome',
+  'app.dummyapp',
   'app.warpol'
 ])
   .config(function ($provide, $httpProvider, RestangularProvider) {

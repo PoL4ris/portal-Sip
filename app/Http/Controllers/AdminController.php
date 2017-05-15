@@ -16,6 +16,7 @@ use App\Models\User;
 use App\Models\App;
 use App\Models\AccessApp;
 use App\Models\Customer;
+use App\Models\BuildingProperty;
 
 
 /**
@@ -248,6 +249,26 @@ class AdminController extends Controller
         }
 
         return App::get();
+    }
+    /**
+     * @return Building properties list.
+     */
+    public function getAdminBldProperties(){
+        return BuildingProperty::get();
+    }
+    /**
+     * @param Request $request
+     * objetos = Building Property DB table field Values.
+     * @return List of Building Properties.
+     */
+    public function insertNewBldProperty(Request $request){
+        $data = $request->params['objects'];
+        $user = new BuildingProperty;
+        $user->name         = $data['property_name'];
+        $user->description  = $data['property_description'];
+        $user->save();
+
+        return $this->getAdminBldProperties();
     }
     /**
      * Creates form from table requested.
