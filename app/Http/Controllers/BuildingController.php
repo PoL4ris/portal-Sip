@@ -96,10 +96,17 @@ class BuildingController extends Controller
      */
     public function getBuildingsList(Request $request)
     {
-        if ($request->type) {
+
+        if ($request->type || $request['query']) {
             if ($request->type == 1)
                 return Building::where('type', 'like', 'commercial')
                                ->orderBy('id', 'desc')
+                               ->get();
+            else if($request['query'] == 'reports')
+                return Building::where('type', '!=', 'commercial')
+                               ->join('retail_revenues', 'buildings.id', '=', 'retail_revenues.locid')
+                               ->where('type', '!=', 'commercial')
+                               ->groupBy('code')
                                ->get();
             else
                 return Building::where('type', '!=', 'commercial')

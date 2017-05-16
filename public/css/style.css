@@ -67,6 +67,9 @@
 .display-none {
   display: none;
 }
+.overflow-hidden{
+  overflow: hidden;
+}
 .no-display {
   display: none;
 }

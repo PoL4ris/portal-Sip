@@ -220,15 +220,13 @@ class ReportController extends Controller
     {
 
         $shortname = $request->code;
+        $bldData = Building::where('code',$request->code)->first();
 
-//        $shortname = '1600i';
         $retailStats = $this->getRetailRevenue($shortname);
-
 
         $monthsArray     = array_keys($retailStats);
         $monthsList      = implode(',', array_keys($retailStats));
         $monthsListArray = explode(',',$monthsList);
-//        dd($monthsListArray);
 
         $latestMonth    = $monthsArray[count($monthsArray)-1];
         $data_pointsArr = array();
@@ -253,6 +251,7 @@ class ReportController extends Controller
         $result['shortname']    = $shortname;
         $result['route']        = 'getDisplayRetailRevenue';
         $result['data_points']  = $data_points;
+        $result['building']     = $bldData;
 
         return $result;
 
@@ -263,10 +262,10 @@ class ReportController extends Controller
 
         $carbonDate = Carbon::today();
         $carbonDate->day('01');
-        $currentYear = 2016;
+        $currentYear = $carbonDate->year;
         $carbonDate->subMonths(12);
         $month = $carbonDate->format('m');
-        $year = 2016;
+        $year = $carbonDate->year;
 
 
         $retailStatsArr = array();
@@ -299,8 +298,9 @@ class ReportController extends Controller
     //on click bars
     public function getDisplayRetailRevenueDetails(Request $request){
 
-        $shortname = $request['shortname'];
-        $date = $request['date'];
+
+        $shortname  = $request['shortname'];
+        $date       = $request['date'];
         if($date != null && $date != ''){
             $carbonDate = Carbon::createFromFormat('M-y-d', $date.'-01');
             $month = $carbonDate->format('m');
@@ -311,7 +311,11 @@ class ReportController extends Controller
                 ->get()
                 ->toArray();
 
-            return array('retail_stat' => $retailStats[0],'month' => $carbonDate->format('F'),'year' => $carbonDate->format('Y'),'shortname' => $shortname);
+
+            return array('retail_stat'  => $retailStats[0],
+                         'month'        => $carbonDate->format('F'),
+                         'year'         => $carbonDate->format('Y'),
+                         'shortname'    => $shortname);
 
             return view('reports.retailrevenuedetails', array('retail_stat' => $retailStats[0],
                 'month' => $carbonDate->format('F'),
@@ -346,54 +350,48 @@ class ReportController extends Controller
     }
     public function getDisplayLocationStats(Request $request) {
 
+        $allProducts = $this->getAllInternetProductsForLocation($request);
 
-        $shortname = $request['shortname'];
-        $allProducts = $this->getAllInternetProductsForLocation($shortname);
-
-        return array('products' => $allProducts, 'shortname' => $shortname);
+        return array('products' => $allProducts);
 
         return view('reports.retaillocationstats', array('products' => $allProducts, 'shortname' => $shortname));
     }
-    public function getAllInternetProductsForLocation($shortname = null){
+    public function getAllInternetProductsForLocation($data = null)
+    {
+        $allProducts = Building::find($data->id_buildings)
+                               ->activeParentProducts()
+                               ->pluck('product')
+                               ->toArray();
 
-        $serviceLocationWithProductsArr = ServiceLocation::with('internetProducts')
-            ->where('ShortName', '=', $shortname)
-            ->get()
-            ->toArray();
+        $subbedProductsArr = array();
+        $subbedProducts = Customer::join('customer_products', 'customer_products.id_customers', '=', 'customers.id')
+                                  ->join('address', 'address.id_customers', '=', 'customers.id')
+                                  ->join('products', 'customer_products.id_products', '=', 'products.id')
+                                  ->where('products.id_types', '=', 1) //1 => Internet
+                                  ->where('customer_products.id_status', '=', 3) //1 => Active BUT 3 is active somehow to this table
+                                  ->where('customers.id_status', '=', 1) //1 => Active
+                                  ->where('address.code', '=', $data->code)
+                                  ->select(DB::raw('count(customers.id) as Total'),
+                                                   'products.id',
+                                                   'products.name',
+                                                   'products.amount',
+                                                   'products.frequency')
+                                  ->groupby('products.name')
+                                  ->get();
 
-        $allProducts = array();
-        if(count($serviceLocationWithProductsArr) >  0){
+        foreach ($subbedProducts as $product) {
+            $subbedProductsArr[$product->id] = $product;
+        }
 
-            $serviceLocationWithProducts = $serviceLocationWithProductsArr[0];
-            $allProductsArr = $serviceLocationWithProducts['internet_products'];
-            foreach($allProductsArr as $product){
-                $allProducts[$product['ProdID']] = $product;
+        foreach($allProducts as $key => $product) {
+            if(array_key_exists($key, $subbedProductsArr)) {
+                $allProducts[$key]['Total'] = $subbedProductsArr[$key]->Total;
             }
-
-            $subbedProductsArr = array();
-            $subbedProducts = Customer::join('customerProducts', 'customers.CID', '=', 'customerProducts.CID')
-                ->join('serviceLocation', 'customers.LocID', '=', 'serviceLocation.LocID')
-                ->join('products', 'customerProducts.ProdID', '=', 'products.ProdID')
-                ->where('products.ProdType', '=', 'Internet')
-                ->where('customerProducts.Status', '=', 'active')
-                ->where('customers.AccountStatus', 'like', 'ACTIVE%')
-                ->where('serviceLocation.ShortName','=',$shortname)
-                ->select(DB::raw('count(customers.CID) as Total'), 'products.ProdID', 'products.ProdName', 'products.Amount', 'products.ChargeFrequency')
-                ->groupby('products.ProdName')
-                ->get();
-
-            foreach ($subbedProducts as $product) {
-                $subbedProductsArr[$product->ProdID] = $product;
-            }
-
-            foreach($allProducts as $key => $product){
-                if(array_key_exists($key, $subbedProductsArr)){
-                    $allProducts[$key]['Total'] = $subbedProductsArr[$key]->Total;
-                } else {
-                    $allProducts[$key]['Total'] = 0;
-                }
+            else {
+                $allProducts[$key]['Total'] = 0;
             }
         }
+
         return $allProducts;
     }
 
@@ -426,85 +424,13 @@ class ReportController extends Controller
             $this->updateRetailRevenueDBTable($locid, $shortname, $buildingMrrTable);
         }
 
-
         dd('COMPLETE');
 
-
-        //Dashboard data Working
-        $result = array();
-        $result['commercial'] = Building::where('type', 'like', '%commercial%')->count();
-        $result['retail'] = Building::where('type', 'not like', '%commercial%')->count();
-        $result['tickets'] = Ticket::where('status', '!=', 'closed')->count();
+    }
 
 
-        $ticketAverage = DB::select('SELECT 
-                              avg(TIMESTAMPDIFF(HOUR, created_at, updated_at)) as hours,
-                              avg(TIMESTAMPDIFF(DAY, created_at, updated_at)) as days
-                            FROM tickets
-                              where updated_at > created_at
-                              and status like "%closed%"')[0];
-        $result['avgHour'] = $ticketAverage->hours;
-        $result['avgDay'] = $ticketAverage->days;
-
-        return $result;
-        //EDN Dashboard data Working
-
-
-        //dd($ticket['created_at'], $ticket['updated_at']);
-
-
-        $uno = $ticket->created_at;
-        $dos = $ticket->updated_at;
-
-        $warp = $uno->diffInHours($dos);
-
-
-        dd($warp);
-
-
-        $customer = Customer::join('address', 'address.id_customers', '=', 'customers.id')
-            ->join('buildings', 'buildings.id', '=', 'address.id_buildings')
-            ->where('buildings.type', 'like', 'commercial')
-            ->get(array('customers.id'));
-        dd($customer);
-
-        $address = $customer->address->building;
-
-        dd($address);
-
-
-        dd($building);
-
-
-        $myProductPropertyValues = $building->load('buildingProducts.product.propertyValues');
-
-        dd($myProductPropertyValues->buildingProducts->pluck('product')); //->pluck
-
-
-        $record = Customer::where('id', '!=', 1)
-            ->take(3)
-            ->get();
-        $t1 = $record->load('address.building');
-
-        dd($t1->address->pluck('building', 'id'));
-
-
-        dd($record->toArray());
-
-
-        dd($record->toarray());
-
-
-        dd(User::with('profile')->get()->toArray());
-        $building = Building::find(9);
-        //      dd(BuildingTicket::where('building_id', 9)->get());
-        dd($building->tickets);
-        dd($building);
-
-
-        $port = Port::find(5237);
-        dd($port->customers);
-        $customer = Customer::find(13897);
-        dd($customer->ports);
+    public function something(Request $request)
+    {
+        dd('aaa');
     }
 }

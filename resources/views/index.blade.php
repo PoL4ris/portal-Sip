@@ -140,6 +140,7 @@ Possible attributes
 <script src="/js/silveripJs/supportController.js"></script>
 <script src="/js/silveripJs/profileController.js"></script>
 <script src="/js/silveripJs/adminController.js"></script>
+<script src="/js/silveripJs/reportController.js"></script>
 <script src="/js/lib.js"></script>
 <script src="/js/silveripJs/globalTools.js"></script>
 <script src="/js/calendar.js"></script>

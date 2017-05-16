@@ -138,62 +138,13 @@ class TestController extends Controller
     
     public function supportTest()
     {
+        dd(
+            Building::where('type', '!=', 'commercial')
+                        ->orderBy('id', 'desc')
+                        ->get()
+                        ->toArray()
+        );
 
-
-
-        $uno = $ticket->created_at;
-        $dos = $ticket->updated_at;
-
-        $warp = $uno->diffInHours($dos);
-
-
-        dd($warp);
-
-
-        $customer = Customer::join('address', 'address.id_customers', '=', 'customers.id')
-            ->join('buildings', 'buildings.id', '=', 'address.id_buildings')
-            ->where('buildings.type', 'like', 'commercial')
-            ->get(array('customers.id'));
-        dd($customer);
-
-        $address = $customer->address->building;
-
-        dd($address);
-
-
-        dd($building);
-
-
-        $myProductPropertyValues = $building->load('buildingProducts.product.propertyValues');
-
-        dd($myProductPropertyValues->buildingProducts->pluck('product')); //->pluck
-
-
-        $record = Customer::where('id', '!=', 1)
-            ->take(3)
-            ->get();
-        $t1 = $record->load('address.building');
-
-        dd($t1->address->pluck('building', 'id'));
-
-
-        dd($record->toArray());
-
-
-        dd($record->toarray());
-
-
-        dd(User::with('profile')->get()->toArray());
-        $building = Building::find(9);
-        //      dd(BuildingTicket::where('building_id', 9)->get());
-        dd($building->tickets);
-        dd($building);
-
-
-        $port = Port::find(5237);
-        dd($port->customers);
-        $customer = Customer::find(13897);
-        dd($customer->ports);
     }
 
     public function mail()

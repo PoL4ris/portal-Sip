@@ -171,9 +171,20 @@ Route::group(['middleware' => 'web'], function () {
 
     //DUMMYCONTROLLER
     Route::get('getMainDashboard',    'MainController@dashboard');//new
+
+
+
+
+
+    //REPORTCONTROLLER
+    Route::get('reports/{code?}', 'ReportController@something');//new
     Route::get('getDisplayRetailRevenue', 'ReportController@getDisplayRetailRevenue');//new
     Route::get('getDisplayRetailRevenueDetails', 'ReportController@getDisplayRetailRevenueDetails');//new
     Route::get('getDisplayRetailRevenueUnitDetails', 'ReportController@getDisplayRetailRevenueUnitDetails');//new
+    Route::get('getDisplayLocationStats', 'ReportController@getDisplayLocationStats');//new
+
+
+
 
 
     Route::get('email/template_support_new_ticket',    'TestController@supportTest');//new
