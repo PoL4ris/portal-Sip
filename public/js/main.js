@@ -12,8 +12,9 @@ angular.module('app.buildings', ['ui.router']).config(function ($stateProvider) 
         }
       },
       resolve: {
-        scripts: function (lazyScript, customerService) {
+        scripts: function (lazyScript, customerService, generalService) {
           customerService.stateRoute = 'buildings';
+          generalService.stateRoute = 'buildings';
           return lazyScript.register([
             '/js/smart/build/vendor.ui.js'
           ]);
@@ -35,8 +36,9 @@ angular.module('app.customershome', ['ui.router']).config(function ($stateProvid
         }
       },
       resolve: {
-        scripts: function (lazyScript, customerService) {
+        scripts: function (lazyScript, customerService, generalService) {
           customerService.stateRoute = 'customershome';
+          generalService.stateRoute = 'customershome';
           return lazyScript.register([
             '/js/smart/build/vendor.ui.js'
           ]);
@@ -62,8 +64,9 @@ angular.module('app.customers', ['ui.router']).config(function ($stateProvider) 
         }
       },
       resolve: {
-        scripts: function (lazyScript, customerService) {
+        scripts: function (lazyScript, customerService, generalService) {
           customerService.stateRoute = 'customers';
+          generalService.stateRoute = 'customers';
           return lazyScript.register([
             '/js/smart/build/vendor.ui.js'
           ]);
@@ -108,8 +111,9 @@ angular.module('app.support', ['ui.router']).config(function ($stateProvider) {
         }
       },
       resolve: {
-        scripts: function (lazyScript, customerService) {
+        scripts: function (lazyScript, customerService, generalService) {
           customerService.stateRoute = 'support';
+          generalService.stateRoute = 'support';
           return lazyScript.register([
             '/js/smart/build/vendor.ui.js'
           ]);
@@ -236,26 +240,31 @@ angular.module('app.dummyapp', ['ui.router']).config(function ($stateProvider) {
 });
 
 
-app.factory('customerService', function () {
+app.factory('customerService',  function () {
   return {
     exist: true,
     sideBarFlag: true,
     rightView: false
   };
 });
-app.factory('buildingService', function () {
+app.factory('buildingService',  function () {
   return {
     exist: true
   };
 });
-app.factory('supportService', function () {
+app.factory('supportService',   function () {
   return {
     exist: true
   };
 });
-app.factory('adminService', function () {
+app.factory('adminService',     function () {
   return {
     existeToken: $('#auth-user').attr('tmpTokenTest')
+  };
+});
+app.factory('generalService',   function () {
+  return {
+    exist: true
   };
 });
 

@@ -1,5 +1,5 @@
 //Building Controllers
-app.controller('buildingCtl', function ($scope, $http, $stateParams, customerService) {
+app.controller('buildingCtl',             function ($scope, $http, $stateParams, customerService, buildingService) {
   console.log('bldContrl');
 
   //TMP HIDE AND SHOW SIDEBAR
@@ -13,7 +13,6 @@ app.controller('buildingCtl', function ($scope, $http, $stateParams, customerSer
 //        $('#left-bld').fadeOut('slow');
   }
 
-
   if (customerService.sideBarFlag) {
     $scope.sipTool(2);
     customerService.sideBarFlag = false;
@@ -26,7 +25,8 @@ app.controller('buildingCtl', function ($scope, $http, $stateParams, customerSer
 
   $http.get("buildingData", {params: {'id': $scope.idBuilding}})
     .then(function (response) {
-      $scope.buildingData = response.data;
+      buildingService.building = response.data;
+      $scope.buildingData      = response.data;
     });
 
   $http.get("getBuildingsList")
@@ -61,19 +61,19 @@ app.controller('buildingCtl', function ($scope, $http, $stateParams, customerSer
 //     }
 
 
-  $scope.displayBldData = function (idBld) {
+  $scope.displayBldData             = function (idBld) {
     $http.get("buildings/" + idBld)
       .then(function (response) {
         $scope.buildingData = response.data;
       });
   }
-  $scope.filterBldList = function () {
+  $scope.filterBldList              = function () {
     $http.get("getFilterBld", {params: {'query': this.filterBldListModel}})
       .then(function (response) {
         $scope.bldListResult = response.data;
       });
   }
-  $scope.displayBldForm = function () {
+  $scope.displayBldForm             = function () {
     if ($scope.show == false) {
       $scope.show = true;
       $('#bld-content-form').fadeIn('slow');
@@ -87,7 +87,7 @@ app.controller('buildingCtl', function ($scope, $http, $stateParams, customerSer
       $('#cancel-bld-btn').fadeOut('fast');
     }
   }
-  $scope.buildingsList = function (position) {
+  $scope.buildingsList              = function (position) {
     //Math var operations.
     var offset = parseInt($scope.bldData.offset);
     var limit = parseInt($scope.bldData.limit);
@@ -132,7 +132,7 @@ app.controller('buildingCtl', function ($scope, $http, $stateParams, customerSer
 
     //     $scope.offsetLimitFunction(offset, limit);
   }
-  $scope.buscador = function (searchType, side) {
+  $scope.buscador                   = function (searchType, side) {
     var query = {};
 
     if (side == 'left')
@@ -151,11 +151,11 @@ app.controller('buildingCtl', function ($scope, $http, $stateParams, customerSer
     return;
 
   }
-  $scope.clearSearch = function () {
+  $scope.clearSearch                = function () {
     this.searchRight = '';
     $scope.buscador();
   }
-  $scope.editFormByType = function (id) {
+  $scope.editFormByType             = function (id) {
 
     tempTicketID = id;
 
@@ -182,7 +182,7 @@ app.controller('buildingCtl', function ($scope, $http, $stateParams, customerSer
     }
 
   }
-  $scope.submitForm = function () {
+  $scope.submitForm                 = function () {
     console.log('buildingCtl');
     var objects = $('#building-update-form').serializeArray();
     var infoData = {};
@@ -202,13 +202,13 @@ app.controller('buildingCtl', function ($scope, $http, $stateParams, customerSer
 
     $scope.editFormByType('block-a');
   }
-  $scope.getBuildingPropertyValues = function () {
+  $scope.getBuildingPropertyValues  = function () {
     $http.get("getBuildingProperties")
       .then(function (response) {
         $scope.propValuesList = response.data;
       });
   }
-  $scope.insertBuildingProperty = function () {
+  $scope.insertBuildingProperty     = function () {
 
     var infoData = getFormValues('new-bpv-form');
     infoData['id_buildings'] = $scope.buildingData.id;
@@ -221,24 +221,24 @@ app.controller('buildingCtl', function ($scope, $http, $stateParams, customerSer
     angular.element('#add-property-cancel').scope().fadeViews('bpv-container', 'new-form-function', 0, 'enable', 'add-property', 'add-property-cancel');
     $('#new-bpv-form').trigger("reset");
   }
-
-  $scope.insertBuildingContact = function () {
+  $scope.insertBuildingContact      = function () {
     var infoData = getFormValues('new-bc-form');
     if (!infoData['first_name'] && !infoData['last_name'] && !infoData['contact'])
       return;
 
-    infoData['id_buildings'] = $scope.bld.id;
+    infoData['id_buildings'] = buildingService.building.id;
 
     $http.get("insertBuildingContacts", {params: infoData})
       .then(function (response) {
-        $scope.bld = response.data;
+        buildingService.building = response.data;
+        $scope.buildingData      = response.data;
       });
 
     angular.element('#add-contact-cancel').scope().fadeViews('bc-container', 'new-contact-form', 0, 'enable-contact', 'add-contact', 'add-contact-cancel')
     $('#new-bc-form').trigger("reset");
 
   };
-  $scope.filterBuildingList = function () {
+  $scope.filterBuildingList         = function () {
     var type = this.buildingFilter;
 
     if (type == 0)
@@ -251,13 +251,13 @@ app.controller('buildingCtl', function ($scope, $http, $stateParams, customerSer
   }
 
 })
-  .directive('getBuildingPropValues', function () {
+  .directive('getBuildingPropValues',     function () {
     return function (scope) {
       scope.getBuildingPropertyValues();
     }
 
   })
-  .directive('buildingContactForm', function () {
+  .directive('buildingContactForm',       function () {
 
 
     return {
@@ -267,8 +267,8 @@ app.controller('buildingCtl', function ($scope, $http, $stateParams, customerSer
         form.bootstrapValidator({
           container: '#messages',
           feedbackIcons: {
-            valid: 'glyphicon glyphicon-ok',
-            invalid: 'glyphicon glyphicon-remove',
+            valid:      'glyphicon glyphicon-ok',
+            invalid:    'glyphicon glyphicon-remove',
             validating: 'glyphicon glyphicon-refresh'
           },
           fields: {
@@ -279,21 +279,21 @@ app.controller('buildingCtl', function ($scope, $http, $stateParams, customerSer
                 }
               }
             },
-            last_name: {
+            last_name:  {
               validators: {
                 notEmpty: {
                   message: 'The Last Name is required and cannot be empty'
                 }
               }
             },
-            contact: {
+            contact:    {
               validators: {
                 notEmpty: {
                   message: 'The Contact field is required and cannot be empty'
                 }
               }
             },
-            fax: {
+            fax:        {
               validators: {
                 stringLength: {
                   max: 100,
@@ -301,7 +301,7 @@ app.controller('buildingCtl', function ($scope, $http, $stateParams, customerSer
                 }
               }
             },
-            company: {
+            company:    {
               validators: {
                 stringLength: {
                   max: 200,
@@ -309,7 +309,7 @@ app.controller('buildingCtl', function ($scope, $http, $stateParams, customerSer
                 }
               }
             },
-            comments: {
+            comments:   {
               validators: {
                 stringLength: {
                   max: 500,
@@ -322,18 +322,14 @@ app.controller('buildingCtl', function ($scope, $http, $stateParams, customerSer
       }
     }
   })
-
-
-app.controller('getBuildingPropertyCtl', function ($scope, $http){
+app.controller('getBuildingPropertyCtl',  function ($scope, $http){
     $http.get("getBuildingProperty", {params: {'id': $scope.properData.id_building_properties}})
       .then(function (response) {
         $scope.getBuildingProperty = response.data.name;
       });
 });
-
-
 //Building Side Bar
-app.controller('sideBldController', function ($scope, $http, buildingService, $stateParams, customerService) {
+app.controller('sideBldController',       function ($scope, $http, buildingService, $stateParams, customerService) {
 
   console.log('this is someting');
 

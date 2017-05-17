@@ -198,10 +198,17 @@ class BuildingController extends Controller
 
     public function insertBuildingContacts(Request $request)
     {
-        $data = $request->all();
-        BuildingContact::insert($data);
+        $newContactData = new BuildingContact;
+        $newContactData->id_buildings   = $request->id_buildings;
+        $newContactData->first_name     = $request->first_name;
+        $newContactData->last_name      = $request->last_name;
+        $newContactData->contact        = $request->contact;
+        $newContactData->fax            = $request->fax;
+        $newContactData->company        = $request->company;
+        $newContactData->comments       = $request->comments;
+        $newContactData->save();
 
-        return $this->getBuilding($data['id_buildings']);
+        return $this->getBuilding($request->id_buildings);
     }
 
     //Building Update's
@@ -214,19 +221,29 @@ class BuildingController extends Controller
 
     public function updateBldPropValTable(Request $request)
     {
-        $data = $request->all();
 
-        $record = BuildingPropertyValue::find($data['id']);
-        $record->value = $data['value'];
+        $record = BuildingPropertyValue::find($request->id_table);
+        $record->value = $request->value;
         $record->save();
-
         return 'OK';
     }
 
+    /**
+     * @param Request $request
+     * "field" => "first_name" exp
+     * "id" => "23" building
+     * "id_table" => "30" record id
+     * "table" => "BldContact" routeIndex
+     * "value" => "Pablo" value
+     * @return string
+     * OK, if the update is complete.
+     */
     public function updateBldContactTable(Request $request)
     {
         $objeto = [$request->field => $request->value];
-        BuildingContact::where('id', $request->id)->update($objeto);
+        BuildingContact::where('id', $request->id_table)->update($objeto);
+        $updatedRecord = BuildingContact::find($request->id_table);
+        $updatedRecord->save();
         return 'OK';
     }
 

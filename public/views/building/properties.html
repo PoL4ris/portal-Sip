@@ -36,18 +36,18 @@
                             <td ng-controller="getBuildingPropertyCtl">{{getBuildingProperty}}</td>
 
                             <td>
-                                <a href=""
-                                   id="b-p-id-{{properData.idBpv}}"
+                                <a
+                                   id="b-p-id-{{properData.id}}"
+                                   smart-xeditable
                                    data-type="textarea"
                                    data-pk="1"
-                                   smart-xeditable
+                                   record-id="{{properData.id}}"
                                    data-ng-model="properData.name"
-                                   data-options="editableOptions"
-                                   data-original-title="Enter text"
-                                   record-idContainer="buildingProperties"
-                                   record-table="BldPropVal"
                                    record-field="value"
-                                   record-id="{{properData.idBpv}}"
+                                   record-table="BldPropVal"
+                                   record-idContainer="buildingProperties"
+                                   data-original-title="Enter text"
+                                   data-options="editableOptions"
                                    class="editable editable-click"
                                    ng-bind-html="properData.value"></a>
                             </td>

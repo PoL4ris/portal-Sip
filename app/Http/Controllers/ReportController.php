@@ -49,7 +49,6 @@ class ReportController extends Controller
     //MRR Process
     public function queryBuild($code)
     {
-
         $query = "SELECT";
         $query .= "MONTH(b.date_time)    as Month,";
         $query .= "YEAR(b.date_time)     as Year,";
@@ -87,26 +86,29 @@ class ReportController extends Controller
         if (!$buildingMrrTable || !isset($buildingMrrTable))
             return;
 
-        if (array_key_exists($key, $buildingMrrTable)) {
-            $buildingMrrTable[$key]['amount'] -= $mrr->Amount;
-            $buildingMrrTable[$key]['credits'] += $mrr->Amount;
+        if (array_key_exists($key, $buildingMrrTable))
+        {
+            $buildingMrrTable[$key]['amount']   -= $mrr->Amount;
+            $buildingMrrTable[$key]['credits']  += $mrr->Amount;
             $buildingMrrTable[$key]['details'][] = array($mrr->Date,
-                $mrr->Unit,
-                $mrr->First . ' ' . $mrr->Last,
-                $mrr->Description,
-                (-1 * $mrr->Amount));
-        } else {
-            $buildingMrrTable[$key]['products'] = array();
+                                                         $mrr->Unit,
+                                                         $mrr->First . ' ' . $mrr->Last,
+                                                         $mrr->Description,
+                                                         (-1 * $mrr->Amount));
+        }
+        else
+        {
+            $buildingMrrTable[$key]['products']     = array();
             $buildingMrrTable[$key]['productTypes'] = array();
-            $buildingMrrTable[$key]['units'] = array($mrr->Unit);
-            $buildingMrrTable[$key]['amount'] = $mrr->Amount * -1;
-            $buildingMrrTable[$key]['credits'] = floatval($mrr->Amount);
-            $buildingMrrTable[$key]['details'] = array(
-                array($mrr->Date,
-                    $mrr->Unit,
-                    $mrr->First . ' ' . $mrr->Last,
-                    $mrr->Description,
-                    (-1 * $mrr->Amount))
+            $buildingMrrTable[$key]['units']        = array($mrr->Unit);
+            $buildingMrrTable[$key]['amount']       = $mrr->Amount * -1;
+            $buildingMrrTable[$key]['credits']      = floatval($mrr->Amount);
+            $buildingMrrTable[$key]['details']      = array(
+                                                            array($mrr->Date,
+                                                                  $mrr->Unit,
+                                                                  $mrr->First . ' ' . $mrr->Last,
+                                                                  $mrr->Description,
+                                                                  (-1 * $mrr->Amount))
             );
         }
         return $buildingMrrTable;
@@ -122,47 +124,68 @@ class ReportController extends Controller
             return;
 
         $chargeDetailArr = array_shift($decodedChargeDetails);
+        $prodName        = '';
+        $prodType        = '';
 
-        $prodName = '';
-        $prodType = '';
-
-        if (array_key_exists('ProdName', $chargeDetailArr) == false && count($chargeDetailArr) == 6) {
+        if (array_key_exists('ProdName', $chargeDetailArr) == false && count($chargeDetailArr) == 6)
+        {
             $prodName = $chargeDetailArr[0];
             $prodType = ucfirst($chargeDetailArr[3]) . ' ' . $chargeDetailArr[2];
-        } else {
+        }
+        else
+        {
             $prodName = $chargeDetailArr['ProdName'];
             $prodType = ucfirst($chargeDetailArr['ChargeFrequency']) . ' ' . $chargeDetailArr['ProdType'];
         }
 
-        if (array_key_exists($key, $buildingMrrTable)) {
-
-            if (array_key_exists($prodName, $buildingMrrTable[$key]['products'])) {
+        if (array_key_exists($key, $buildingMrrTable))
+        {
+            if (array_key_exists($prodName, $buildingMrrTable[$key]['products']))
+            {
                 $buildingMrrTable[$key]['products'][$prodName] += 1;
-            } else {
+            }
+            else
+            {
                 $buildingMrrTable[$key]['products'][$prodName] = 1;
             }
 
-            if (array_key_exists($prodType, $buildingMrrTable[$key]['productTypes'])) {
+            if (array_key_exists($prodType, $buildingMrrTable[$key]['productTypes']))
+            {
                 $buildingMrrTable[$key]['productTypes'][$prodType]++;
-            } else {
+            }
+            else
+            {
                 $buildingMrrTable[$key]['productTypes'][$prodType] = 1;
             }
 
-            if (array_search($mrr->Unit, $buildingMrrTable[$key]['units']) === false) {
+            if (array_search($mrr->Unit, $buildingMrrTable[$key]['units']) === false)
+            {
                 $buildingMrrTable[$key]['units'][] = $mrr->Unit;
             }
 
             $buildingMrrTable[$key]['amount'] += $mrr->Amount;
 
-            $buildingMrrTable[$key]['details'][] = array($mrr->Date, $mrr->Unit, $mrr->First . ' ' . $mrr->Last, $mrr->Description, $mrr->Amount);
+            $buildingMrrTable[$key]['details'][] = array($mrr->Date,
+                                                         $mrr->Unit,
+                                                         $mrr->First . ' ' .
+                                                         $mrr->Last,
+                                                         $mrr->Description,
+                                                         $mrr->Amount);
 
-        } else {
-            $buildingMrrTable[$key]['products'] = array($prodName => 1);
+        }
+        else
+        {
+            $buildingMrrTable[$key]['products']     = array($prodName => 1);
             $buildingMrrTable[$key]['productTypes'] = array($prodType => 1);
-            $buildingMrrTable[$key]['units'] = array($mrr->Unit);
-            $buildingMrrTable[$key]['amount'] = $mrr->Amount;
-            $buildingMrrTable[$key]['details'] = array(
-                array($mrr->Date, $mrr->Unit, $mrr->First . ' ' . $mrr->Last, $mrr->Description, $mrr->Amount)
+            $buildingMrrTable[$key]['units']        = array($mrr->Unit);
+            $buildingMrrTable[$key]['amount']       = $mrr->Amount;
+            $buildingMrrTable[$key]['details']      = array(
+                                                        array($mrr->Date,
+                                                              $mrr->Unit,
+                                                              $mrr->First . ' ' .
+                                                              $mrr->Last,
+                                                              $mrr->Description,
+                                                              $mrr->Amount)
             );
         }
         return $buildingMrrTable;
@@ -171,33 +194,37 @@ class ReportController extends Controller
     //MRR Process
     public function updateRetailRevenueDBTable($locid, $shortname, $buildingMrrTable)
     {
-
         if (!$buildingMrrTable || !isset($buildingMrrTable))
             return;
-        foreach ($buildingMrrTable as $date => $mrr) {
-
+        foreach ($buildingMrrTable as $date => $mrr)
+        {
             $carbonDate = Carbon::createFromFormat('m-Y', $date);
             $carbonDate->day('01');
-            $month = $carbonDate->format('m');
-            $year = $carbonDate->year;
+            $month      = $carbonDate->format('m');
+            $year       = $carbonDate->year;
 
             $rev_record = RetailRevenue::where('month', '=', $month)
-                ->where('year', '=', $year)
-                ->where('locid', '=', $locid)->first();
+                                       ->where('year',  '=', $year)
+                                       ->where('locid', '=', $locid)
+                                       ->first();
 
-            if (isset($rev_record)) {
-                if ($rev_record->status != 'new') {
+            if (isset($rev_record))
+            {
+                if ($rev_record->status != 'new')
+                {
                     echo 'Skipping data insert for ' . $shortname . ' - ' . $month . '/' . $year . '<br/>';
                     return false;
                 }
                 echo 'Updating data for ' . $shortname . ' - ' . $month . '/' . $year . ' ... ';
 
-            } else {
-                $rev_record = new RetailRevenue;
-                $rev_record->locid = $locid;
-                $rev_record->shortname = $shortname;
-                $rev_record->month = $month;
-                $rev_record->year = $year;
+            }
+            else
+            {
+                $rev_record             = new RetailRevenue;
+                $rev_record->locid      = $locid;
+                $rev_record->shortname  = $shortname;
+                $rev_record->month      = $month;
+                $rev_record->year       = $year;
                 echo 'Adding data for ' . $shortname . ' - ' . $month . '/' . $year . ' ... ';
             }
 
@@ -205,9 +232,9 @@ class ReportController extends Controller
                 $mrr['credits'] = 0;
             }
 
-            $revenue_data = json_encode($mrr);
-            $rev_record->revenue_data = $revenue_data;
-            $rev_record->status = 'new';
+            $revenue_data               = json_encode($mrr);
+            $rev_record->revenue_data   = $revenue_data;
+            $rev_record->status         = 'new';
             $rev_record->save();
             echo ' done<br/>';
         }
@@ -219,19 +246,19 @@ class ReportController extends Controller
     public function getDisplayRetailRevenue(Request $request)
     {
 
-        $shortname = $request->code;
-        $bldData = Building::where('code',$request->code)->first();
-
-        $retailStats = $this->getRetailRevenue($shortname);
+        $shortname       = $request->code;
+        $bldData         = Building::where('code',$request->code)->first();
+        $retailStats     = $this->getRetailRevenue($shortname);
 
         $monthsArray     = array_keys($retailStats);
         $monthsList      = implode(',', array_keys($retailStats));
         $monthsListArray = explode(',',$monthsList);
+        $latestMonth     = $monthsArray[count($monthsArray)-1];
 
-        $latestMonth    = $monthsArray[count($monthsArray)-1];
-        $data_pointsArr = array();
-        $months         = array();
-        $x              = $y = 0;
+        $data_pointsArr  = array();
+        $months          = array();
+        $result          = array();
+        $x               = $y = 0;
 
         foreach($retailStats as $statObj)
         {
@@ -243,8 +270,6 @@ class ReportController extends Controller
 
         $data_points = $data_pointsArr;
 
-//        dd($monthsListArray);
-        $result = array();
         $result['data']         = $retailStats;
         $result['latestMonth']  = $latestMonth;
         $result['months']       = $monthsListArray;
@@ -254,40 +279,36 @@ class ReportController extends Controller
         $result['building']     = $bldData;
 
         return $result;
-
+        //Laravel View Return OLD
         return view('reports', array('retail_stats' => $retailStats, 'shortname' => $shortname));
     }
     public function getRetailRevenue($shortname = null)
     {
-
-        $carbonDate = Carbon::today();
+        $carbonDate     = Carbon::today();
         $carbonDate->day('01');
-        $currentYear = $carbonDate->year;
+        $currentYear    = $carbonDate->year;
         $carbonDate->subMonths(12);
-        $month = $carbonDate->format('m');
-        $year = $carbonDate->year;
-
+        $month          = $carbonDate->format('m');
+        $year           = $carbonDate->year;
 
         $retailStatsArr = array();
-        if (isset($shortname)) {
+
+        if (isset($shortname))
+        {
             $retailStats = RetailRevenue::where('shortname', $shortname)
-                ->where(function ($query) use ($year, $month, $currentYear) {
-                    $query->where('year', '=', $currentYear);
-                    $query->orWhere(function ($query2) use ($year, $month) {
-                        $query2->where('year', '>=', $year);
-                        $query2->where('month', '>=', $month);
-                    });
-                })
-                ->orderBy('year', 'asc')
-                ->orderBy('month', 'asc')
-                ->get();
+                                        ->where(function ($query) use ($year, $month, $currentYear) {
+                                            $query->where('year', '=', $currentYear);
+                                            $query->orWhere(function ($query2) use ($year, $month) {
+                                                $query2->where('year',  '>=', $year);
+                                                $query2->where('month', '>=', $month);
+                                            });
+                                        })
+                                        ->orderBy('year',  'asc')
+                                        ->orderBy('month', 'asc')
+                                        ->get();
 
-//                        $queries = DB::getQueryLog();
-//                        $last_query = end($queries);
-//                        dd($retailStats);
-
-
-            foreach ($retailStats as $stat) {
+            foreach ($retailStats as $stat)
+            {
                 $dateFormatter = Carbon::createFromDate($stat->year, $stat->month, '01');
                 $retailStatsArr[$dateFormatter->format('M') . '-' . $dateFormatter->format('y')] = $stat;
             }
@@ -296,64 +317,61 @@ class ReportController extends Controller
     }
 
     //on click bars
-    public function getDisplayRetailRevenueDetails(Request $request){
-
-
+    public function getDisplayRetailRevenueDetails(Request $request)
+    {
         $shortname  = $request['shortname'];
         $date       = $request['date'];
-        if($date != null && $date != ''){
-            $carbonDate = Carbon::createFromFormat('M-y-d', $date.'-01');
-            $month = $carbonDate->format('m');
-            $year = $carbonDate->year;
-            $retailStats = RetailRevenue::where('shortname', $shortname)
-                ->where('year', $year)
-                ->where('month', $month)
-                ->get()
-                ->toArray();
 
+        if($date != null && $date != '')
+        {
+            $carbonDate  = Carbon::createFromFormat('M-y-d', $date.'-01');
+            $month       = $carbonDate->format('m');
+            $year        = $carbonDate->year;
+            $retailStats = RetailRevenue::where('shortname', $shortname)
+                                        ->where('year',  $year)
+                                        ->where('month', $month)
+                                        ->get()
+                                        ->toArray();
 
             return array('retail_stat'  => $retailStats[0],
                          'month'        => $carbonDate->format('F'),
                          'year'         => $carbonDate->format('Y'),
                          'shortname'    => $shortname);
-
-            return view('reports.retailrevenuedetails', array('retail_stat' => $retailStats[0],
-                'month' => $carbonDate->format('F'),
-                'year' => $carbonDate->format('Y'),
-                'shortname' => $shortname));
+            //LARAVEL RETURN VIEW OLD
+            return view('reports.retailrevenuedetails', array('retail_stat' => $retailStats[0],'month' => $carbonDate->format('F'),'year' => $carbonDate->format('Y'),    'shortname' => $shortname));
         }
         return null;
     }
-    public function getDisplayRetailRevenueUnitDetails(Request $request){
-
-        $shortname = $request['shortname'];
-        $date = $request['date'];
-        if($date != null && $date != ''){
-            $carbonDate = Carbon::createFromFormat('F-Y-d', $date.'-01');
-            $month = $carbonDate->format('m');
-            $year = $carbonDate->year;
+    public function getDisplayRetailRevenueUnitDetails(Request $request)
+    {
+        $shortname  = $request['shortname'];
+        $date       = $request['date'];
+        if($date != null && $date != '')
+        {
+            $carbonDate  = Carbon::createFromFormat('F-Y-d', $date.'-01');
+            $month       = $carbonDate->format('m');
+            $year        = $carbonDate->year;
             $retailStats = RetailRevenue::where('shortname', $shortname)
-                ->where('year', $year)
-                ->where('month', $month)
-                ->get()
-                ->toArray();
+                                        ->where('year',  $year)
+                                        ->where('month', $month)
+                                        ->get()
+                                        ->toArray();
 
             return array('retail_stat' => $retailStats[0],
-                'month' => $carbonDate->format('F'),
-                'year' => $carbonDate->format('Y'));
+                         'month' => $carbonDate->format('F'),
+                         'year'  => $carbonDate->format('Y'));
 
-            return view('reports.retailrevenueunitdetails', array('retail_stat' => $retailStats[0],
-                'month' => $carbonDate->format('F'),
-                'year' => $carbonDate->format('Y')));
+            //LARAVEL RETURN VIEW OLD
+            return view('reports.retailrevenueunitdetails', array('retail_stat' => $retailStats[0],'month' => $carbonDate->format('F'), 'year' => $carbonDate->format('Y')));
         }
         return null;
     }
-    public function getDisplayLocationStats(Request $request) {
-
+    public function getDisplayLocationStats(Request $request)
+    {
         $allProducts = $this->getAllInternetProductsForLocation($request);
-
         return array('products' => $allProducts);
 
+        //LARAVEL RETURN VIEW OLD
         return view('reports.retaillocationstats', array('products' => $allProducts, 'shortname' => $shortname));
     }
     public function getAllInternetProductsForLocation($data = null)
@@ -363,31 +381,35 @@ class ReportController extends Controller
                                ->pluck('product')
                                ->toArray();
 
-        $subbedProductsArr = array();
-        $subbedProducts = Customer::join('customer_products', 'customer_products.id_customers', '=', 'customers.id')
-                                  ->join('address', 'address.id_customers', '=', 'customers.id')
-                                  ->join('products', 'customer_products.id_products', '=', 'products.id')
-                                  ->where('products.id_types', '=', 1) //1 => Internet
-                                  ->where('customer_products.id_status', '=', 3) //1 => Active BUT 3 is active somehow to this table
-                                  ->where('customers.id_status', '=', 1) //1 => Active
-                                  ->where('address.code', '=', $data->code)
-                                  ->select(DB::raw('count(customers.id) as Total'),
-                                                   'products.id',
-                                                   'products.name',
-                                                   'products.amount',
-                                                   'products.frequency')
-                                  ->groupby('products.name')
-                                  ->get();
+        $subbedProductsArr  = array();
+        $subbedProducts     = Customer::join('customer_products', 'customer_products.id_customers', '=', 'customers.id')
+                                      ->join('address',  'address.id_customers',          '=', 'customers.id')
+                                      ->join('products', 'customer_products.id_products', '=', 'products.id')
+                                          ->where('products.id_types',           '=', 1)    //1 => Internet
+                                          ->where('customer_products.id_status', '=', 3)    //1 => Active BUT 3 is active somehow to this table
+                                          ->where('customers.id_status',         '=', 1)    //1 => Active
+                                          ->where('address.code',                '=', $data->code)
+                                      ->select(DB::raw('count(customers.id) as Total'),
+                                                       'products.id',
+                                                       'products.name',
+                                                       'products.amount',
+                                                       'products.frequency')
+                                      ->groupby('products.name')
+                                      ->get();
 
-        foreach ($subbedProducts as $product) {
+        foreach ($subbedProducts as $product)
+        {
             $subbedProductsArr[$product->id] = $product;
         }
 
-        foreach($allProducts as $key => $product) {
-            if(array_key_exists($key, $subbedProductsArr)) {
+        foreach($allProducts as $key => $product)
+        {
+            if(array_key_exists($key, $subbedProductsArr))
+            {
                 $allProducts[$key]['Total'] = $subbedProductsArr[$key]->Total;
             }
-            else {
+            else
+            {
                 $allProducts[$key]['Total'] = 0;
             }
         }
@@ -401,22 +423,29 @@ class ReportController extends Controller
         //mrr process
         $buildingLocation = Building::where('type', '!=', 'commercial')->get();
 
-        foreach ($buildingLocation as $location) {
-            $locid = $location->id;
-            $shortname = $location->code;
+        foreach ($buildingLocation as $location)
+        {
+            $locid      = $location->id;
+            $shortname  = $location->code;
 
-            $retailMrr = $this->queryBuild($shortname);
+            $retailMrr  = $this->queryBuild($shortname);
 
             $buildingMrrTable = array();
-            foreach ($retailMrr as $mrr) {
+            foreach ($retailMrr as $mrr)
+            {
                 $trimmedChargeDetails = trim($mrr->ChargeDetails);
-                if (strcasecmp($mrr->TransactionType, 'SALE') == 0 && ($trimmedChargeDetails == null || $trimmedChargeDetails == '')) {
+
+                if (strcasecmp($mrr->TransactionType, 'SALE') == 0 && ($trimmedChargeDetails == null || $trimmedChargeDetails == ''))
+                {
                     continue;
                 }
 
-                if ($mrr->TransactionType == 'CREDIT') {
+                if ($mrr->TransactionType == 'CREDIT')
+                {
                     $buildingMrrTable = $this->subtractCredit($buildingMrrTable, $mrr);
-                } else {
+                }
+                else
+                {
                     $buildingMrrTable = $this->addSale($buildingMrrTable, $mrr);
                 }
             }

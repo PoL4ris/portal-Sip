@@ -15,8 +15,13 @@ app.controller('reportController', function ($scope, $http, customerService, $st
       $scope.bldListResult = response.data;
     });
 
-  $scope.executeChartReport   = function (codeId) {
-    $http.get("getDisplayRetailRevenue", {params: {'code': $stateParams.code ? $stateParams.code : codeId}})
+  $scope.executeChartReport   = function () {
+
+    if(!$stateParams.code)
+      return;
+
+    $scope.stateExist = true;
+    $http.get("getDisplayRetailRevenue", {params: {'code': $stateParams.code }})
       .then(function (response) {
         $scope.data         = response.data.data;
         $scope.latestMonth  = response.data.latestMonth;
@@ -110,6 +115,9 @@ app.controller('reportController', function ($scope, $http, customerService, $st
   $("#revenueChart").click(function (evt) {
 
     var activeBars    = myNewChart_1.getBarsAtEvent(evt);
+    if(activeBars.length <= 0 )
+      return;
+
     var date          = activeBars[0].label;
     var shortname     = $scope.shortname;
     var ajax_url      = 'getDisplayRetailRevenueDetails';
