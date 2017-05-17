@@ -418,7 +418,7 @@ class ReportController extends Controller
     }
 
 
-    public function supportTest()
+    public function mrrProcess()
     {
         //mrr process
         $buildingLocation = Building::where('type', '!=', 'commercial')->get();
