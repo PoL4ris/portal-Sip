@@ -1,20 +1,20 @@
-angular.module('app.buildings', ['ui.router']).config(function ($stateProvider) {
+angular.module('app.buildings',     ['ui.router']).config(function ($stateProvider) {
   $stateProvider
     .state('app.buildings', {
-      url: '/buildings?{id:int}',
+      url:  '/buildings?{id:int}',
       data: {
         title: 'Buildings'
       },
       views: {
         "content@app": {
           templateUrl: '/views/building/building.html',
-          controller: 'buildingCtl'
+          controller:  'buildingCtl'
         }
       },
       resolve: {
         scripts: function (lazyScript, customerService, generalService) {
           customerService.stateRoute = 'buildings';
-          generalService.stateRoute = 'buildings';
+          generalService.stateRoute  = 'buildings';
           return lazyScript.register([
             '/js/smart/build/vendor.ui.js'
           ]);
@@ -25,20 +25,20 @@ angular.module('app.buildings', ['ui.router']).config(function ($stateProvider) 
 angular.module('app.customershome', ['ui.router']).config(function ($stateProvider) {
   $stateProvider
     .state('app.customershome', {
-      url: '/customershome',
+      url:  '/customershome',
       data: {
         title: 'Customer Home'
       },
       views: {
         "content@app": {
           templateUrl: '/views/customersHome.html',
-          controller: 'customersHomeController'
+          controller:  'customersHomeController'
         }
       },
       resolve: {
         scripts: function (lazyScript, customerService, generalService) {
           customerService.stateRoute = 'customershome';
-          generalService.stateRoute = 'customershome';
+          generalService.stateRoute  = 'customershome';
           return lazyScript.register([
             '/js/smart/build/vendor.ui.js'
           ]);
@@ -46,27 +46,27 @@ angular.module('app.customershome', ['ui.router']).config(function ($stateProvid
       }
     })
 });
-angular.module('app.customers', ['ui.router']).config(function ($stateProvider) {
+angular.module('app.customers',     ['ui.router']).config(function ($stateProvider) {
   $stateProvider
     .state('app.customers', {
-      url: '/customers?{id:int}',
+      url:  '/customers?{id:int}',
       data: {
         title: 'Customers'
       },
       views: {
         "content@app": {
           templateUrl: '/views/customers.html',
-          controller: 'customerController',
+          controller:  'customerController',
         },
         "silveriptool": {
           templateUrl: '/views/silverip-tool.html',
-          controller: 'customerController',
+          controller:  'customerController',
         }
       },
       resolve: {
         scripts: function (lazyScript, customerService, generalService) {
           customerService.stateRoute = 'customers';
-          generalService.stateRoute = 'customers';
+          generalService.stateRoute  = 'customers';
           return lazyScript.register([
             '/js/smart/build/vendor.ui.js'
           ]);
@@ -74,18 +74,17 @@ angular.module('app.customers', ['ui.router']).config(function ($stateProvider) 
       }
     })
 });
-
-angular.module('app.network', ['ui.router']).config(function ($stateProvider) {
+angular.module('app.network',       ['ui.router']).config(function ($stateProvider) {
   $stateProvider
     .state('app.network', {
-      url: '/network',
+      url:  '/network',
       data: {
         title: 'Network'
       },
       views: {
         "content@app": {
           templateUrl: '/views/allNetwork.html',
-          controller: 'networkController as datatables'
+          controller:  'networkController as datatables'
         }
       },
       resolve: {
@@ -97,23 +96,23 @@ angular.module('app.network', ['ui.router']).config(function ($stateProvider) {
       }
     })
 });
-angular.module('app.support', ['ui.router']).config(function ($stateProvider) {
+angular.module('app.support',       ['ui.router']).config(function ($stateProvider) {
   $stateProvider
     .state('app.support', {
-      url: '/support',
+      url:  '/support',
       data: {
         title: 'Support'
       },
       views: {
         "content@app": {
           templateUrl: '/views/support/support.html',
-          controller: 'supportController'
+          controller:  'supportController'
         }
       },
       resolve: {
         scripts: function (lazyScript, customerService, generalService) {
           customerService.stateRoute = 'support';
-          generalService.stateRoute = 'support';
+          generalService.stateRoute  = 'support';
           return lazyScript.register([
             '/js/smart/build/vendor.ui.js'
           ]);
@@ -121,10 +120,10 @@ angular.module('app.support', ['ui.router']).config(function ($stateProvider) {
       }
     })
 });
-angular.module('app.calendar', ['ui.router']).config(function ($stateProvider) {
+angular.module('app.calendar',      ['ui.router']).config(function ($stateProvider) {
   $stateProvider
     .state('app.calendar', {
-      url: '/calendar',
+      url:  '/calendar',
       data: {
         title: 'calendar'
       },
@@ -143,19 +142,17 @@ angular.module('app.calendar', ['ui.router']).config(function ($stateProvider) {
       }
     })
 });
-
-
-angular.module('app.reports', ['ui.router']).config(function ($stateProvider) {
+angular.module('app.reports',       ['ui.router']).config(function ($stateProvider) {
   $stateProvider
     .state('app.reports', {
-      url: '/reports?{code:string}',
+      url:  '/reports?{code:string}',
       data: {
         title: 'reports'
       },
       views: {
         "content@app": {
           templateUrl: '/views/reports.html',
-          controller: 'reportController',
+          controller:  'reportController',
         }
       },
       resolve: {
@@ -167,19 +164,17 @@ angular.module('app.reports', ['ui.router']).config(function ($stateProvider) {
       }
     })
 });
-
-
-angular.module('app.admin', ['ui.router']).config(function ($stateProvider) {
+angular.module('app.admin',         ['ui.router']).config(function ($stateProvider) {
   $stateProvider
     .state('app.admin', {
-      url: '/admin',
+      url:  '/admin',
       data: {
         title: 'Admin'
       },
       views: {
         "content@app": {
           templateUrl: '/views/admin/admin.html',
-          controller: 'adminController'
+          controller:  'adminController'
         }
       },
       resolve: {
@@ -191,19 +186,17 @@ angular.module('app.admin', ['ui.router']).config(function ($stateProvider) {
       }
     })
 });
-
-
-angular.module('app.warpol', ['ui.router']).config(function ($stateProvider) {
+angular.module('app.warpol',        ['ui.router']).config(function ($stateProvider) {
   $stateProvider
     .state('app.warpol', {
-      url: '/warpol',
+      url:  '/warpol',
       data: {
         title: 'Warpol'
       },
       views: {
         "content@app": {
           templateUrl: '/views/warpol.html',
-          controller: 'warpolController',
+          controller:  'warpolController',
         }
       },
       resolve: {
@@ -215,11 +208,10 @@ angular.module('app.warpol', ['ui.router']).config(function ($stateProvider) {
       }
     })
 });
-
-angular.module('app.dummyapp', ['ui.router']).config(function ($stateProvider) {
+angular.module('app.dummyapp',      ['ui.router']).config(function ($stateProvider) {
   $stateProvider
     .state('app.dummyapp', {
-      url: '/dummyapp',
+      url:  '/dummyapp',
       data: {
         title: 'dummyapp'
       },
