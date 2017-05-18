@@ -49,6 +49,12 @@ class Customer extends Model {
         return $this->hasMany('App\Models\CustomerProduct', 'id_customers', 'id');
     }
 
+    public function activeCustomerProducts()
+    {
+        return $this->hasMany('App\Models\CustomerProduct', 'id_customers', 'id')
+            ->where('id_status', config('const.status.active'));
+    }
+
     public function defaultPaymentMethod()
     {
         return $this->hasOne('App\Models\PaymentMethod', 'id_customers')

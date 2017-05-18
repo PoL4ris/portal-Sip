@@ -18,7 +18,6 @@ class Building extends Model {
         return $this->belongsToMany('App\Models\Customer', 'address', 'id_buildings', 'id_customers');
     }
 
-
     public function address()
     {
         return $this->hasOne('App\Models\Address', 'id_buildings', 'id');
@@ -61,6 +60,18 @@ class Building extends Model {
         $products = $this->products;
 
         return $products->whereLoose('id_status', config('const.status.active'));
+    }
+
+    public function activeInternetProducts()
+    {
+        return $this->hasMany('App\Models\BuildingProduct', 'id_buildings', 'id')
+            ->where('id_status', config('const.status.active'))
+            ->with(['product' => function ($query){
+                $query->where('id_types', config('const.type.internet'));
+            }]);
+
+//        $products = $this->products;
+//        return $products->whereLoose('id_status', config('const.status.active'));
     }
 
     public function activeParentProducts()

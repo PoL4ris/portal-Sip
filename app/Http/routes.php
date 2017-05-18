@@ -177,7 +177,7 @@ Route::group(['middleware' => 'web'], function () {
 
 
     //REPORTCONTROLLER -> REFACTOR NAMES...
-    Route::get('mrrProcess', 'ReportController@mrrProcess');//new
+//    Route::get('mrrProcess', 'ReportController@mrrProcess');//new
     Route::get('reports/{code?}', 'ReportController@something');//new
     Route::get('getDisplayRetailRevenue', 'ReportController@getDisplayRetailRevenue');//new
     Route::get('getDisplayRetailRevenueDetails', 'ReportController@getDisplayRetailRevenueDetails');//new

@@ -363,6 +363,52 @@ class TestController extends Controller
     public function generalTest()
     {
 
+        $building = Building::find(30);
+
+        dd($building->activeInternetProducts);
+
+        $allProducts = Building::find(30)
+            ->activeParentProducts()
+            ->pluck('product')
+            ->toArray();
+//dd($allProducts);
+
+        $subbedProducts = Customer::join('customer_products', 'customer_products.id_customers', '=', 'customers.id')
+            ->join('address', 'address.id_customers', '=', 'customers.id')
+            ->join('products', 'customer_products.id_products', '=', 'products.id')
+            ->where('products.id_types', '=', config('const.type.internet'))
+            ->where('customer_products.id_status', '=', config('const.status.active'))
+            ->where('customers.id_status', '=', config('const.status.active'))
+            ->where('address.code', '=', '1300S')
+            ->select(DB::raw('count(customers.id) as Total'),
+                'products.id',
+                'products.name',
+                'products.amount',
+                'products.frequency')
+            ->groupby('products.name')
+            ->get();
+dd($subbedProducts);
+
+        foreach ($subbedProducts as $product)
+        {
+            $subbedProductsArr[$product->id] = $product;
+        }
+dd($subbedProductsArr);
+        foreach ($allProducts as $key => $product)
+        {
+            if (array_key_exists($key, $subbedProductsArr))
+            {
+                $allProducts[$key]['Total'] = $subbedProductsArr[$key]->Total;
+            } else
+            {
+                $allProducts[$key]['Total'] = 0;
+            }
+        }
+
+        dd($subbedProducts);
+
+
+
         $building = Building::find(28);
 
         dd($building->allAddresses);
