@@ -210,6 +210,30 @@ angular.module('app.tech-schedule', ['ui.router']).config(function ($stateProvid
         })
 });
 
+angular.module('app.tech-appointments', ['ui.router']).config(function ($stateProvider) {
+    $stateProvider
+        .state('app.tech-appointments', {
+            url: '/tech-appointments',
+            data: {
+                title: 'tech-appointments'
+            },
+            views: {
+                "content@app": {
+                    templateUrl: '/views/support/tech-appointments.html',
+                    controller: 'tech-appointments'
+                }
+            },
+            resolve: {
+                scripts: function (lazyScript) {
+                    return lazyScript.register([
+                        '/js/smart/build/vendor.ui.js'
+                    ]);
+                }
+            }
+        })
+});
+
+
 
 app.factory('customerService', function () {
     return {

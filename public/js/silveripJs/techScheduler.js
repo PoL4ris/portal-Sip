@@ -109,7 +109,7 @@ app.controller('techschedulercontroller', function ($scope, $http, customerServi
                         filler = 'closed';
                         break;
                     case 'free':
-                        filler = '<div class="freeappointment"><input type="checkbox" class="techtimeselect" name="selected[]" value=' + JSON.stringify(data[it1][it2]) + '></div>';
+                        filler = '<div class="freeappointment"><input type="checkbox" class="techtimeselect" name="selected[]" value=' + JSON.stringify(data[it1][it2]) + ' ng-model="selected"' + '></div>';
                         break;
                     case 'completed':
                         filler = '<a style="color:' + appointmentcolor['completed'] + ';" href=' + data[it1][it2]['appointment']['htmlLink'] + '>' + data[it1][it2]['appointment']['summary'] + '</a>';
@@ -200,7 +200,55 @@ app.controller('techschedulercontroller', function ($scope, $http, customerServi
         return true;
     };
 
+    return;
+
 });
 
 
+app.controller('tech-appointments', function ($scope, $http, customerService) {
 
+    if (customerService.sideBarFlag) {
+        $scope.sipTool(2);
+        customerService.sideBarFlag = false;
+    }
+
+    $scope.userDataAuth = JSON.parse($('#auth-user').val());
+    $scope.techalias = $scope.userDataAuth.alias;
+
+    $scope.refresh = function () {
+        $http.get('/tech-schedule/myappointments', {params: {tech: $scope.techalias}}).then(function (response) {
+                $scope.appointments = response.data;
+                console.log($scope.appointments);
+                $scope.loadinganimation = false;
+            }
+        );
+    };
+
+    $scope.refresh();
+    $scope.loadinganimation = false;
+
+
+    $scope.arguments = [];
+
+    $scope.submit = function (event) {
+        $scope.loadinganimation = true;
+        for (x = 0; x < event.target.length; x++) {
+            if (event.target[x].name) {
+                $scope.arguments[event.target[x].name] = event.target[x].value;
+            }
+        }
+
+        console.log($scope.arguments);
+        $http.get('/tech-schedule/changestatus',
+            {
+                params: $scope.arguments
+            }).then(function (response) {
+                $scope.refresh();
+            }
+        );
+
+
+    };
+
+    return;
+});

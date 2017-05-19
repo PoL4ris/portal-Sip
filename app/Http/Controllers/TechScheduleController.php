@@ -21,6 +21,12 @@ class TechScheduleController extends Controller {
 
     }
 
+    /**
+     * @param Request $request
+     * @return mixed
+     * filters google calendar information, returns 2d array for timespan with relevent information for scheduling or rescheduling technicians.
+     * accepts a date via $request->date, not required (will display today if no date provided).
+     */
     public function GenerateTableSchedule(Request $request)
     {
 
@@ -206,13 +212,23 @@ class TechScheduleController extends Controller {
 
     }
 
-    public function TechScheduler(Request $request)
+    /**
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * returns a basic view of the tech scheduler.  No longer relevant probably.
+     */
+/*    public function TechScheduler(Request $request)
     {
 
 
         return view('techscheduler.scheduler');
-    }
+    }*/
 
+    /**
+     * @param Request $request->search
+     * @return json
+     * for given search, return code and address
+     */
     public function findBuildingCode(Request $request)
     {
 
@@ -231,6 +247,11 @@ class TechScheduleController extends Controller {
     }
 
 
+    /**
+     * @param Request $request
+     * @return array
+     * returns json with schedule range (earliest start time and latest end time)
+     */
     public function getScheduleRange(Request $request)
     {
         $Calendar = new GoogleCalendar;
@@ -249,6 +270,11 @@ class TechScheduleController extends Controller {
 
     }
 
+    /**
+     * @param Request $request
+     * @return string
+     * for given origin and destination, moves appointment from origin to destination, changes assigned tech if applicable
+     */
     public function moveAppointment(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -258,9 +284,7 @@ class TechScheduleController extends Controller {
 
         if ($validator->fails())
         {
-            return redirect('tech-schedule')
-                ->withErrors($validator)
-                ->withInput();
+            return false;
         }
 
 
@@ -316,8 +340,7 @@ class TechScheduleController extends Controller {
             'customername'           => 'required',
             'customerphone'          => 'required',
             'appointmentdescription' => 'required',
-            'selected'               => 'required',
-        ]);
+            ]);
 
         if ($validator->fails())
         {
@@ -358,18 +381,16 @@ class TechScheduleController extends Controller {
 
         $search = $request->buildingcode;
         $locations = Address::whereNull('id_customers')
-            ->where('code', '=', $search )
+            ->where('code', '=', $search)
             ->get();
-
-
 
 
         foreach ($techlist as $key => $value)
         {
 
-            $startTime = new DateTime($request->date);
+            $startTime = new DateTime($request->techscheduledate);
             $startTime->setTime($value->start, 00, 00);
-            $endTime = new DateTime($request->date);
+            $endTime = new DateTime($request->techscheduledate);
             $endTime->setTime($value->end, 00, 00);
 
             $onset = $Calendar->SetTechAppointment(
@@ -385,13 +406,80 @@ class TechScheduleController extends Controller {
                 $startTime,  //start time (dont' forget to set the date on the start and end times)
                 $endTime,  //end time
                 $locations[0]['address'],
-                (isset($request->dtvaccount) && ($request->dtvaccount != '')? $request->dtvaccount : null));  //dtv account number
+                (isset($request->dtvaccount) && ($request->dtvaccount != '') ? $request->dtvaccount : null));  //dtv account number
             //$onset is the newly created calendar appointment.
         }
 
         $request->session()->flash('alert-success', $onset->getSummary());
 
         return redirect('/#/tech-schedule');
+    }
+
+
+    public function GetMyAppointments(Request $request)
+    {
+        $Calendar = new GoogleCalendar;
+        $tech=Auth::user()->alias;
+
+        $date = $request->date ? $request->date : new DateTime();
+        $appointments = $Calendar->GetAppointmentsByTech($tech, $date);
+
+        return $appointments;
+
+    }
+
+    public function changeappointmentstatus(Request $request) {
+$Calendar = new GoogleCalendar;
+        $validator = Validator::make($request->all(), [
+            'origin'               => 'required',
+            'eventid'           => 'required',
+            'target'                   => 'required',
+        ]);
+
+        if ($validator->fails())
+        {
+            return $validator->errors()->all();
+        }
+
+        switch($request->origin) {
+            case 'onsite':
+                $event = $Calendar->service->events->get(Config::get('google.onsite_appointment'),$request->eventid);
+                $origin = Config::get('google.onsite_appointment');
+                break;
+            case 'pending':
+                $event = $Calendar->service->events->get(Config::get('google.pending_appointment'),$request->eventid);
+                $origin = Config::get('google.pending_appointment');
+                break;
+        };
+
+        $description=$event->getDescription();
+
+
+        switch($request->target) {
+            case 'onsite':
+                $description.="\n\n" . Auth::user()->first_name . ' ' . Auth::user()->last_name . ' Onsite at ' . (new DateTime())->format('Y-m-d H:i:s');
+                $target = Config::get('google.onsite_appointment');
+                break;
+            case 'problem':
+                $description.="\n\n" . Auth::user()->first_name . ' ' . Auth::user()->last_name . ' Problem Ticket ' . (new DateTime())->format('Y-m-d H:i:s') . ":\n" . $request->comment;
+                $target = Config::get('google.problem_appointment');
+                break;
+            case 'cancel':
+                $description.="\n\n" . Auth::user()->first_name . ' ' . Auth::user()->last_name . ' Customer Cancelled ' . (new DateTime())->format('Y-m-d H:i:s') . ":\n" . $request->comment;
+                $target = Config::get('google.cancelled_appointment');
+                break;
+            case 'complete':
+                $description.="\n\n" . Auth::user()->first_name . ' ' . Auth::user()->last_name . ' Completed ' . (new DateTime())->format('Y-m-d H:i:s') . ":\n" . $request->comment;
+                $target = Config::get('google.completed_appointment');
+                break;
+            default:
+                break;
+        };
+        $event->setDescription($description);
+        $Calendar->service->events->update($origin, $request->eventid, $event);
+        $Calendar->service->events->move($origin,$request->eventid,$target);
+
+        return 'updated';
     }
 
 

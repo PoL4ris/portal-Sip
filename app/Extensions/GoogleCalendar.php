@@ -67,6 +67,9 @@ class GoogleCalendar {
 
 //start custom codes
 
+    /**
+     * @return \Google_Service_Calendar_CalendarList
+     */
     public function ListAvailableCalendars()
     {
         $results = $this->service->calendarList->listCalendarList();
@@ -74,6 +77,11 @@ class GoogleCalendar {
         return $results;
     }
 
+    /**
+     * @param DateTime $date
+     * defines earliest and latest tech availability on given date.
+     * @return array
+     */
     public function GetScheduleRange(DateTime $date)
     {
 
@@ -111,6 +119,10 @@ class GoogleCalendar {
 
     }
 
+    /**
+     * @param DateTime $date
+     * @return array indicates each techs work hours.
+     */
     public function GetTechSchedule(DateTime $date)
     {
         //lists the technicians that are working and their hours on a given date.
@@ -141,6 +153,10 @@ class GoogleCalendar {
 
     }
 
+    /**
+     * @param DateTime $date
+     * @return array of all appointments completed on given date
+     */
     public function GetCompletedAppointments(DateTime $date)
     {
 
@@ -181,7 +197,10 @@ class GoogleCalendar {
                 $summary = $appointment->getSummary();
                 if ($this->foundinstring($summary, $tech))
                 {
-                    array_push($listing, ['tech' => $tech, 'appointment' => $appointment]);
+                    $appointmentend = $appointment->getEnd()->getDateTime();
+                    $appointmentstart = $appointment->getStart()->getDateTime();
+
+                    array_push($listing, ['tech' => $tech, 'appointment' => $appointment, 'start' => $appointmentstart, 'end' => $appointmentend, 'type' => 'completed']);
                 }
             }
 
@@ -194,6 +213,12 @@ class GoogleCalendar {
 
     }
 
+    /**
+     * just a helper function, finds $needle in $haystack
+     * @param $haystack
+     * @param $needle
+     * @return bool
+     */
     private function foundinstring($haystack, $needle)
     {
         $result = strpos($haystack, $needle);
@@ -204,8 +229,12 @@ class GoogleCalendar {
         {
             return false;
         }
-    }
+    }  //does this contain that?
 
+    /**
+     * @param DateTime $date
+     * @return array containing all current techs that are marked as onsite
+     */
     public function GetOnsiteAppointments(DateTime $date)
     {
 
@@ -243,20 +272,37 @@ class GoogleCalendar {
                 $summary = $appointment->getSummary();
                 if ($this->foundinstring($summary, $tech))
                 {
-                    array_push($listing, ['tech' => $tech, 'appointment' => $appointment]);
+                    $appointmentend = $appointment->getEnd()->getDateTime();
+                    $appointmentstart = $appointment->getStart()->getDateTime();
+
+                    array_push($listing, ['tech' => $tech, 'appointment' => $appointment, 'start' => $appointmentstart, 'end' => $appointmentend,'type' => 'onsite']);
                 }
             }
 
 
         }
 
-
-        // dd($pending_appointments);
         return $listing;
 
     }
 
-    public function SetTechAppointment($user, $tech, $buildingcode, $unit, $service, $action, $customername, $customerphone, $appointmentdescription, DateTime $startTime, DateTime $endTime, $address = null ,$dtvaccount = null)
+    /**
+     * @param $user
+     * @param $tech
+     * @param $buildingcode
+     * @param $unit
+     * @param $service (int or tv)
+     * @param $action (connect repair or other)
+     * @param $customername
+     * @param $customerphone
+     * @param $appointmentdescription
+     * @param DateTime $startTime
+     * @param DateTime $endTime
+     * @param null $address
+     * @param null $dtvaccount
+     * @return \Google_Service_Calendar_Event
+     */
+    public function SetTechAppointment($user, $tech, $buildingcode, $unit, $service, $action, $customername, $customerphone, $appointmentdescription, DateTime $startTime, DateTime $endTime, $address = null , $dtvaccount = null)
     {
         $date = new $startTime;
 
@@ -313,6 +359,13 @@ class GoogleCalendar {
         return $onset;
     }
 
+    /**
+     * checks that tech is not already booked in given datetime range.
+     * @param $tech
+     * @param DateTime $startTime
+     * @param DateTime $endTime
+     * @return bool
+     */
     public function VerifyTechIsFree($tech, DateTime $startTime, DateTime $endTime)
     {
 
@@ -375,6 +428,11 @@ class GoogleCalendar {
 
     }
 
+    /**
+     * for given date return array of all pending appointments.
+     * @param DateTime $date
+     * @return array
+     */
     public function GetPendingAppointments(DateTime $date)
     {
 
@@ -412,7 +470,11 @@ class GoogleCalendar {
                 $summary = $appointment->getSummary();
                 if ($this->foundinstring($summary, $tech))
                 {
-                    array_push($listing, ['tech' => $tech, 'appointment' => $appointment]);
+
+                    $appointmentend = $appointment->getEnd()->getDateTime();
+                    $appointmentstart = $appointment->getStart()->getDateTime();
+
+                    array_push($listing, ['tech' => $tech, 'appointment' => $appointment, 'start' => $appointmentstart, 'end' => $appointmentend,'type' => 'pending']);
                 }
             }
 
@@ -423,6 +485,39 @@ class GoogleCalendar {
         return $listing;
 
     }
+
+    /**
+     * for given tech on given date return all that technicians appointments.
+     * @param $tech
+     * @param DateTime $date
+     * @return array
+     */
+    public function GetAppointmentsByTech($tech, DateTime $date) {
+
+        $pending=$this->GetPendingAppointments($date);
+        $onsite=$this->GetOnsiteAppointments($date);
+
+        $totallist = [];
+
+    foreach($onsite as $event)
+    {
+        if ($event['tech'] == $tech)
+        {
+            array_push($totallist, $event);
+        }
+    }
+
+        foreach($pending as $event) {
+            if($event['tech']==$tech) {
+             array_push($totallist,$event);
+            }
+        }
+
+        return $totallist;
+    }
+
+
+
 
 
 }
