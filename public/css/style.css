@@ -1,4 +1,3 @@
-
 .border {
   border: 2px solid red;
 }
@@ -67,6 +66,9 @@
 .display-none {
   display: none;
 }
+.overflow-hidden{
+  overflow: hidden;
+}
 .no-display {
   display: none;
 }
@@ -111,6 +113,15 @@
 }
 .p-t-lg {
   padding-top: 15px;
+}
+.text-black{
+  color: #000;
+}
+.p-t-md {
+  padding-top: 10px;
+}
+.p-t-sm {
+  padding-top: 5px;
 }
 .p-l-md {
   padding-left: 10px;
@@ -643,6 +654,10 @@ table.dataTable tbody tr {
 .bg-payment-debt {
   border: 2px solid crimson;
 }
+.bg-declined-payment{
+  /*background: rgba(220,20,60,.6) !important;*/
+  box-shadow: 0 0 0 1.5px crimson inset;
+}
 .bg-payment-no-debt {
 }
 .display-service-status-active {
@@ -833,11 +848,9 @@ table.dataTable tbody tr {
 .bld-workspace {
 }
 .bld-sub-nav {
-  background: white none repeat scroll 0 0;
   margin-bottom: 0;
-  margin-left: -14px;
-  margin-right: -30px;
   width: 200px;
+  overflow: hidden;
 }
 .bld-workspace article {
 }
@@ -908,7 +921,8 @@ table.dataTable tbody tr {
   top: -6px;
 }
 .customer-record:hover{
-  font-weight: bold;
+
+  opacity: .7;
 }
 .summary-ticket-container{
   background: #f4f4f4 none repeat scroll 0 0;
@@ -921,6 +935,9 @@ table.dataTable tbody tr {
   overflow: auto;
   padding-top: 10px;
 }
+.algo{
+background: #777777;
+}
 
 
 
@@ -933,9 +950,17 @@ table.dataTable tbody tr {
 
 
 
-
-
-
-
-
-
+.hotline{
+  border-top:2px solid crimson;
+  min-height: 60px;
+  max-height: 60px;
+}
+.hotline p i{
+  color: #0f94f6;
+  font-size: 22px;
+}
+.regular-contact{
+  border-top:2px solid #0f94f6;
+}
+.bld-contacts{}
+.bld-contacts div{}

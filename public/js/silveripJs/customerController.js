@@ -1010,7 +1010,7 @@ app.controller('customerNotesController',           function ($scope, $http){
       return;
   }
 });
-app.controller('customerBillingHistoryController',  function ($scope, $http, $uibModal, $log){
+app.controller('customerBillingHistoryController',  function ($scope, $http, $uibModal, $log, DTOptionsBuilder){
 
   $http.get("getBillingHistory", {params:{'id':$scope.idCustomer}})
     .then(function (response) {
@@ -1038,6 +1038,7 @@ app.controller('customerBillingHistoryController',  function ($scope, $http, $ui
     });
 
   };
+  $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('order', [0, 'desc']);
 });
 app.controller('customersHomeController',           function ($scope, $http, customerService){
 

@@ -34,7 +34,8 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         return $this->hasOne('App\Models\Profile', 'id', 'id_profiles');
     }
     public function accessApps() {
-      return $this->hasMany('App\Models\AccessApp', 'id_profiles', 'id_profiles')->where('id_apps','!=', 0)->orderBy('id_apps', 'asc');
+      return $this->hasMany('App\Models\AccessApp', 'id_profiles', 'id_profiles')
+                  ->where('id_apps','!=', 0);
     }
 
 }

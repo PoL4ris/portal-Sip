@@ -1,6 +1,8 @@
-<ul ng-controller="menuController" style="overflow: auto; max-height: 90%;">
-  <li data-ui-sref-active="active" ng-repeat="menu in SiteMenu.access_apps" id="{{menu.apps.url}}-app-id">
-    <a data-ui-sref="app.{{ menu.apps.url }}" title="{{ menu.apps.name }}"><i class="fa fa-lg fa-fw {{ menu.apps.icon }}"></i><span
-      class="menu-item-parent">{{ menu.apps.name }}</span></a>
-  </li>
+<ul ng-controller="menuController">
+    <li data-ui-sref-active="active" ng-repeat="menu in SiteMenu" id="{{menu.url}}-app-id">
+        <a data-ui-sref="app.{{ menu.url }}" title="{{ menu.name }}">
+            <i class="fa fa-lg fa-fw {{ menu.icon }}"></i>
+            <span class="menu-item-parent">{{ menu.name }}</span>
+        </a>
+    </li>
 </ul>

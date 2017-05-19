@@ -1,5 +1,5 @@
 // Global Tools //
-app.controller('globalToolsCtl',                    function ($scope, $http, $compile, $sce, $stateParams, customerService, supportService){
+app.controller('globalToolsCtl',                    function ($scope, $http, $compile, $sce, $stateParams, customerService, supportService, buildingService, generalService){
 
   $scope.customerData   = {};
   $scope.globalScopeVar = true;
@@ -32,10 +32,17 @@ app.controller('globalToolsCtl',                    function ($scope, $http, $co
   };
   $scope.singleUpdateXedit    = function(id, value, field, table, routeFunction) {
 
+    console.log('singleUpdateXedit -> globalTools function to send xedit update');
     console.log('Function singleUpdateXedit---> with routeFunction ---' + routeFunction);
 
+    var mainId;
+    if(generalService.stateRoute == 'buildings')
+      mainId = buildingService.building.id;
+    else
+      mainId = customerService.customer.id;
+
     var data = {};
-    data['id']        = customerService.customer.id;
+    data['id']        = mainId;
     data['value']     = value;
     data['field']     = field;
     data['table']     = table;
@@ -45,6 +52,9 @@ app.controller('globalToolsCtl',                    function ($scope, $http, $co
       .then(function (response) {
         if(response.data == 'OK')
         {
+          if(generalService.stateRoute == 'buildings')
+            return 'OK';
+
           if(routeFunction)
             $scope.resolveRouteFunction(routeFunction, customerService.customer.id);
 
@@ -313,7 +323,7 @@ app.controller('globalToolsCtl',                    function ($scope, $http, $co
 
 });
 function gToolsxEdit(value, field, id, idContainer, table, model){
-  //   console.log(id + ' <--|--id|:: '+  value+ ' <--|--value|:: ' +  field + ' <--|--field|:: ' +  table + ' <--|--table|:: '+  idContainer + ' <--|--idContainer|');
+     console.log(id + ' <--|--id|:: '+  value+ ' <--|--value|:: ' +  field + ' <--|--field|:: ' +  table + ' <--|--table|:: '+  idContainer + ' <--|--idContainer|');
   angular.element('#' + idContainer + '-gTools').scope().singleUpdateXedit(id, value, field, table, model);
 }
 function getFormValues(id){

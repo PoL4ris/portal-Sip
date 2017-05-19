@@ -33,24 +33,23 @@
                         class="hidden-mobile hidden-tablet"> Invoice History </span></a></li>
                     <li class=""><a data-toggle="tab" href="#tab-r8" aria-expanded="false"> <i class="fa fa-lg fa-clock-o"></i><span class="hidden-mobile hidden-tablet"> Payment History </span></a>
                     </li>
+                    <li class=""><a data-toggle="tab" href="#tab-r9" aria-expanded="false"> <i class="fa fa-lg fa-th"></i><span class="hidden-mobile hidden-tablet"> Schedule Tech </span></a>
+                    </li>
                 </ul>
             </header>
-
             <div class="col-lg-12 m-t-lg">
                 <div class="tab-content">
 
-                    <div class="tab-pane " id="tab-r1">
+                    <div class="tab-pane" id="tab-r1">
                         <article class="col-sm-12 col-md-12 col-lg-12 no-padding-sides m-t-lg null-article"></article>
                     </div>
                     <div class="tab-pane active" id="tab-r2">
                         <article class="col-sm-12 col-md-12 col-lg-12 no-padding-sides m-t-lg null-article" ng-include="'/views/customer/network.html'"></article>
                     </div>
-
                     <div class="tab-pane" id="tab-r3">
                         <article class="col-sm-6 col-md-6 col-lg-6 null-article" ng-include="'/views/customer/newticket.html'"></article>
                         <article class="col-sm-6 col-md-6 col-lg-6 null-article" ng-include="'/views/customer/notes.html'"></article>
                     </div>
-
                     <div class="tab-pane" id="tab-r4">
                         <article class="col-sm-12 col-md-12 col-lg-12 no-padding-sides null-article" ng-include="'/views/customer/ticketshistory.html'" ng-controller="supportController"></article>
                     </div>
@@ -65,6 +64,9 @@
                     </div>
                     <div class="tab-pane" id="tab-r8">
                         <article class="col-sm-12 col-md-12 col-lg-12 no-padding-sides null-article" ng-include="'/views/customer/billinghistory.html'"></article>
+                    </div>
+                    <div class="tab-pane" id="tab-r9">
+                        <article class="col-sm-12 col-md-12 col-lg-12 no-padding-sides m-t-lg null-article" ng-include="'/views/support/tech-scheduler.html'" ng-controller="techschedulercontroller"></article>
                     </div>
 
                 </div>
