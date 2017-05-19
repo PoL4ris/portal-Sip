@@ -57,6 +57,8 @@ Route::group(['middleware' => 'web'], function () {
     Route::post('updateAdminApp',         'AdminController@updateAdminApp');
     Route::post('getAdminBldProperties',  'AdminController@getAdminBldProperties');
     Route::post('insertNewBldProperty',   'AdminController@insertNewBldProperty');
+    Route::post('getAppPositionDown',     'AdminController@getAppPositionDown');
+    Route::post('getAppPositionUp',       'AdminController@getAppPositionUp');
     //PROFILE
     Route::get('getProfileInfo',          'AdminController@getProfileInfo');
     Route::get('updateProfileInfo',       'AdminController@updateProfileInfo');

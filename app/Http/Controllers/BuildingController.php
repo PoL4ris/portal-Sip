@@ -53,9 +53,20 @@ class BuildingController extends Controller
      */
     public function getFilterBld(Request $request)
     {
-        return Building::where('code', 'like', '%' . $request['query'] . '%')
-                       ->orWhere('name', 'like', '%' . $request['query'] . '%')
-                       ->orderBy('id', 'desc')->get();
+        if($request->report)
+        {
+            return Building::where('type', '!=', 'commercial')
+                           ->join('retail_revenues', 'buildings.id', '=', 'retail_revenues.locid')
+                           ->where('code',   'like', '%' . $request['query'] . '%')
+                           ->orWhere('name', 'like', '%' . $request['query'] . '%')
+                           ->groupBy('code')
+                           ->orderBy('buildings.id', 'desc')
+                           ->get();
+        }
+        else
+            return Building::where('code',   'like', '%' . $request['query'] . '%')
+                           ->orWhere('name', 'like', '%' . $request['query'] . '%')
+                           ->orderBy('id', 'desc')->get();
     }
 
 

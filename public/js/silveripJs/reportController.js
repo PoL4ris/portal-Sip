@@ -109,6 +109,12 @@ app.controller('reportController', function ($scope, $http, customerService, $st
         $scope.detailsArrDos = $scope.parJson(response.data.retail_stat['revenue_data']);
       });
   };
+  $scope.filterBldList        = function () {
+    $http.get("getFilterBld", {params: {'query': this.filterBldListModel, 'report' : true}})
+      .then(function (response) {
+        $scope.bldListResult = response.data;
+      });
+  }
 
   $scope.executeChartReport();
 

@@ -1,5 +1,5 @@
 //ADMIN
-app.controller('adminController',                   function($scope, $http, customerService, adminService){
+app.controller('adminController',                   function($scope, $http, customerService, adminService, DTOptionsBuilder){
 
   if(customerService.sideBarFlag) {
     $scope.sipTool(2);
@@ -190,6 +190,20 @@ app.controller('adminController',                   function($scope, $http, cust
         $scope.appCancel();
       });
   };
+  $scope.positionDown         = function(){
+    $http.post("getAppPositionDown", {params:{'record':this.data}})
+      .then(function (response) {
+          console.log('OK');
+        $scope.adminApps = response.data;
+      });
+  };
+  $scope.positionUp         = function(){
+    $http.post("getAppPositionUp", {params:{'record':this.data}})
+      .then(function (response) {
+        console.log('OK');
+        $scope.adminApps = response.data;
+      });
+  };
   //Building Properties
   $scope.getBldProperties     = function(){
     $http.post("getAdminBldProperties", {params:{'token':adminService.existeToken}})
@@ -242,6 +256,7 @@ app.controller('adminController',                   function($scope, $http, cust
   $scope.getBldProperties();
   $scope.fontAwesomeArray = fontAwesomeArray;
 
+  $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('order', [1, 'asc']);
 });
 app.controller('adminPAppACont',                    function ($scope, $http){
 

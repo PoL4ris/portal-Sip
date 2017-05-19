@@ -41,7 +41,8 @@ class MainController extends Controller
      */
     public function menuMaker()
     {
-        return Users::with('accessApps', 'accessApps.apps')->find(Auth::user()->id);
+//        return Users::with('accessApps', 'accessApps.apps')->find(Auth::user()->id);
+        return Users::find(Auth::user()->id)->accessApps->load('apps')->pluck('apps', 'apps.position')->sortBy('position');
     }
     /**
      * @return Logged user information.

@@ -138,12 +138,18 @@ class TestController extends Controller
     
     public function supportTest()
     {
+
+//    dd(User::with('accessApps', 'accessApps.apps')->find(1)->toArray());
+        $war = User::find(1)->accessApps->load('apps')->pluck('apps', 'apps.position')->sortBy('position');
+        dd($war);
+        $war = User::find(1);
+        $warpol = $war->accessApps->load('apps')->pluck('apps', 'apps.position')->sortBy('position');
+
         dd(
-            Building::where('type', '!=', 'commercial')
-                        ->orderBy('id', 'desc')
-                        ->get()
-                        ->toArray()
+            $warpol
+//            $warpol->sortBy('position')->toArray()
         );
+
 
     }
 
