@@ -7,6 +7,8 @@ use App\User;
 use App\Http\Requests;
 use DB;
 use Auth;
+use DateTime;
+use App\Extensions\GoogleCalendar;
 //Models
 use App\Models\NetworkTab;
 use App\Models\Reason;
@@ -118,6 +120,37 @@ class MainController extends Controller
                                               and status like "%closed%"')[0];
         $result['avgHour']    = $ticketAverage->hours;
         $result['avgDay']     = $ticketAverage->days;
+        return $result;
+    }
+
+    /**
+     * @param Request $request
+     * date to go Find event for
+     * @return array
+     * Calendar Data from date requested.
+     */
+
+    public function calendarDashboard(Request $request)
+    {
+        $calendar   = new GoogleCalendar;
+        $date       = new DateTime ($request->date);
+        $result     = array();
+
+        //Rango de fecha 12 horas, de 8 am a 8pm
+        //$scheduleRange          = $calendar->getScheduleRange($date);
+        //Nombres de los Tecnicos [0]
+        //$scheduledTechs         = $calendar->GetTechSchedule($date);
+
+        $pendingAppointments    = $calendar->GetPendingAppointments($date);
+        $completedAppointments  = $calendar->GetCompletedAppointments($date);
+        $onsiteAppointments     = $calendar->GetOnsiteAppointments($date);
+
+
+        $result['total_events'] = count($pendingAppointments) + count($completedAppointments) + count($onsiteAppointments);
+        $result['pending']      = count($pendingAppointments);
+        $result['complete']     = count($completedAppointments);
+        $result['onsite']       = count($onsiteAppointments);
+
         return $result;
     }
 }

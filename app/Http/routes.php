@@ -170,9 +170,9 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('getUnitNumbersAjax',      'SignupController@getUnitNumbersAjax');
     Route::post('register',               'SignupController@validateSignupForm');
     Route::post('activate',               'SignupController@activate');
-
-    //DUMMYCONTROLLER
-    Route::get('getMainDashboard',    'MainController@dashboard');//new
+    //Dashboard Main View
+    Route::get('getMainDashboard',        'MainController@dashboard');//new
+    Route::get('getCalendarDashboard',    'MainController@calendarDashboard');//new
 
 
 

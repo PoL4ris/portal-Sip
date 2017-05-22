@@ -29,7 +29,9 @@ use App\Models\ContactType;
 use App\Models\PaymentMethod;
 use App\Models\ActivityLog;
 use App\Models\RetailRevenue;
-use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\TechScheduleController;
+use App\Extensions\GoogleCalendar;
+use DateTime;
 use App\Http\Controllers\Lib\UtilsController;
 use Mail;
 use Config;
@@ -138,6 +140,44 @@ class TestController extends Controller
     
     public function supportTest()
     {
+
+        $calendar   = new GoogleCalendar;
+        $date       = new DateTime ('05/22/2017');
+        $result = array();
+
+        //Rango de fecha 12 horas, de 8 am a 8pm
+        $scheduleRange          = $calendar->getScheduleRange(new DateTime ('05/22/2017'));
+        //Nombres de los Tecnicos [0]
+        $scheduledTechs         = $calendar->GetTechSchedule($date);
+
+        //Pending Appointments [0]
+        $pendingAppointments    = $calendar->GetPendingAppointments($date);
+        //Citas completadas
+        $completedAppointments  = $calendar->GetCompletedAppointments($date);
+        //Onsite Appts
+        $onsiteAppointments     = $calendar->GetOnsiteAppointments($date);
+
+
+        $result['total_events'] = count($pendingAppointments) + count($completedAppointments) + count($onsiteAppointments);
+        $result['pending']      = count($pendingAppointments);
+        $result['complete']     = count($completedAppointments) ;
+        $result['onsite']       = count($onsiteAppointments);
+
+        dd($result);
+
+
+//
+//
+//
+//
+
+
+
+
+//        $warpol = new TechScheduleController;
+//
+//        dd($warpol->GenerateTableSchedule());
+
 
 //    dd(User::with('accessApps', 'accessApps.apps')->find(1)->toArray());
         $war = User::find(1)->accessApps->load('apps')->pluck('apps', 'apps.position')->sortBy('position');
