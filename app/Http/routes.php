@@ -199,7 +199,7 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('tech-schedule/setappointment', 'TechScheduleController@setAppointment');
     Route::get('tech-schedule/generatetable', 'TechScheduleController@GenerateTableSchedule');
     Route::get('tech-schedule/myappointments','TechScheduleController@GetMyAppointments');
-    Route::get('/tech-schedule/changestatus','TechScheduleController@changeappointmentstatus');
+    Route::get('/tech-schedule/changestatus','TechScheduleController@ChangeAppointmentStatus');
 
     //DASHBOARDCHARTS
     Route::get('getTicketsByMonth',                 'ChartController@getTicketsByMonth');

@@ -217,15 +217,15 @@ class TechScheduleController extends Controller {
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      * returns a basic view of the tech scheduler.  No longer relevant probably.
      */
-/*    public function TechScheduler(Request $request)
-    {
+    /*    public function TechScheduler(Request $request)
+        {
 
 
-        return view('techscheduler.scheduler');
-    }*/
+            return view('techscheduler.scheduler');
+        }*/
 
     /**
-     * @param Request $request->search
+     * @param Request $request ->search
      * @return json
      * for given search, return code and address
      */
@@ -288,13 +288,15 @@ class TechScheduleController extends Controller {
         }
 
 
+
         $Calendar = new GoogleCalendar;
 
         $origin = json_decode($request['origin']);
         $destination = json_decode($request['destination']);
 
-//remove $origin->tech and replace with destination->tech
+        //remove $origin->tech and replace with destination->tech
         $event = $Calendar->service->events->get(Config::get('google.pending_appointment'), $origin->eventid);
+
 
         $summary = $event->getSummary();
         $summary = str_replace($origin->tech, $destination->tech, $summary);
@@ -318,6 +320,11 @@ class TechScheduleController extends Controller {
         $event->setStart($start);
         $event->setEnd($end);
         $event->setSummary($summary);
+        $updateDescription = $event->getDescription();
+
+        $today = new DateTime();
+        $updateDescription.= "\n" . Auth::user()->first_name . ' ' . Auth::user()->last_name . ' Rescheduled on: ' . $today->format('Y-m-d H:i:s') . ' for ' . (new DateTime( $start->getDateTime() ))->format('Y-m-d H:i:s') . "\n";
+        $event->setDescription($updateDescription);
 
         $updatedEvent = $Calendar->service->events->update(Config::get('google.pending_appointment'), $origin->eventid, $event);
 
@@ -340,7 +347,7 @@ class TechScheduleController extends Controller {
             'customername'           => 'required',
             'customerphone'          => 'required',
             'appointmentdescription' => 'required',
-            ]);
+        ]);
 
         if ($validator->fails())
         {
@@ -419,7 +426,7 @@ class TechScheduleController extends Controller {
     public function GetMyAppointments(Request $request)
     {
         $Calendar = new GoogleCalendar;
-        $tech=Auth::user()->alias;
+        $tech = Auth::user()->alias;
 
         $date = $request->date ? $request->date : new DateTime();
         $appointments = $Calendar->GetAppointmentsByTech($tech, $date);
@@ -428,12 +435,13 @@ class TechScheduleController extends Controller {
 
     }
 
-    public function changeappointmentstatus(Request $request) {
-$Calendar = new GoogleCalendar;
+    public function ChangeAppointmentStatus(Request $request)
+    {
+        $Calendar = new GoogleCalendar;
         $validator = Validator::make($request->all(), [
-            'origin'               => 'required',
-            'eventid'           => 'required',
-            'target'                   => 'required',
+            'origin'  => 'required',
+            'eventid' => 'required',
+            'target'  => 'required',
         ]);
 
         if ($validator->fails())
@@ -441,35 +449,37 @@ $Calendar = new GoogleCalendar;
             return $validator->errors()->all();
         }
 
-        switch($request->origin) {
+        switch ($request->origin)
+        {
             case 'onsite':
-                $event = $Calendar->service->events->get(Config::get('google.onsite_appointment'),$request->eventid);
+                $event = $Calendar->service->events->get(Config::get('google.onsite_appointment'), $request->eventid);
                 $origin = Config::get('google.onsite_appointment');
                 break;
             case 'pending':
-                $event = $Calendar->service->events->get(Config::get('google.pending_appointment'),$request->eventid);
+                $event = $Calendar->service->events->get(Config::get('google.pending_appointment'), $request->eventid);
                 $origin = Config::get('google.pending_appointment');
                 break;
         };
 
-        $description=$event->getDescription();
+        $description = $event->getDescription();
 
 
-        switch($request->target) {
+        switch ($request->target)
+        {
             case 'onsite':
-                $description.="\n\n" . Auth::user()->first_name . ' ' . Auth::user()->last_name . ' Onsite at ' . (new DateTime())->format('Y-m-d H:i:s');
+                $description .= "\n\n" . Auth::user()->first_name . ' ' . Auth::user()->last_name . ' Onsite at ' . (new DateTime())->format('Y-m-d H:i:s');
                 $target = Config::get('google.onsite_appointment');
                 break;
             case 'problem':
-                $description.="\n\n" . Auth::user()->first_name . ' ' . Auth::user()->last_name . ' Problem Ticket ' . (new DateTime())->format('Y-m-d H:i:s') . ":\n" . $request->comment;
+                $description .= "\n\n" . Auth::user()->first_name . ' ' . Auth::user()->last_name . ' Problem Ticket ' . (new DateTime())->format('Y-m-d H:i:s') . ":\n" . $request->comment;
                 $target = Config::get('google.problem_appointment');
                 break;
             case 'cancel':
-                $description.="\n\n" . Auth::user()->first_name . ' ' . Auth::user()->last_name . ' Customer Cancelled ' . (new DateTime())->format('Y-m-d H:i:s') . ":\n" . $request->comment;
+                $description .= "\n\n" . Auth::user()->first_name . ' ' . Auth::user()->last_name . ' Customer Cancelled ' . (new DateTime())->format('Y-m-d H:i:s') . ":\n" . $request->comment;
                 $target = Config::get('google.cancelled_appointment');
                 break;
             case 'complete':
-                $description.="\n\n" . Auth::user()->first_name . ' ' . Auth::user()->last_name . ' Completed ' . (new DateTime())->format('Y-m-d H:i:s') . ":\n" . $request->comment;
+                $description .= "\n\n" . Auth::user()->first_name . ' ' . Auth::user()->last_name . ' Completed ' . (new DateTime())->format('Y-m-d H:i:s') . ":\n" . $request->comment;
                 $target = Config::get('google.completed_appointment');
                 break;
             default:
@@ -477,7 +487,7 @@ $Calendar = new GoogleCalendar;
         };
         $event->setDescription($description);
         $Calendar->service->events->update($origin, $request->eventid, $event);
-        $Calendar->service->events->move($origin,$request->eventid,$target);
+        $Calendar->service->events->move($origin, $request->eventid, $target);
 
         return 'updated';
     }
