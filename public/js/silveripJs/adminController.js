@@ -1,5 +1,5 @@
 //ADMIN
-app.controller('adminController',                   function($scope, $http, customerService, adminService){
+app.controller('adminController',                   function($scope, $http, customerService, adminService, DTOptionsBuilder){
 
 
 
@@ -86,12 +86,12 @@ app.controller('adminController',                   function($scope, $http, cust
 
   }
   //Profile
-  $scope.getAdminProfiles     = function (){
+  $scope.getAdminProfiles     = function(){
     $http.post("getAdminProfiles", {params:{'token':adminService.existeToken}})
       .then(function (response) {
         $scope.adminProfiles = response.data;
       });
-  }
+  };
   $scope.addNewProfile        = function(){
     $scope.getAdminApps();
     $scope.editProfileData = null;
@@ -193,8 +193,53 @@ app.controller('adminController',                   function($scope, $http, cust
         $scope.adminApps = response.data;
         $scope.appCancel();
       });
-  }
+  };
+  $scope.positionDown         = function(){
+    $http.post("getAppPositionDown", {params:{'record':this.data}})
+      .then(function (response) {
+          console.log('OK');
+        $scope.adminApps = response.data;
+      });
+  };
+  $scope.positionUp         = function(){
+    $http.post("getAppPositionUp", {params:{'record':this.data}})
+      .then(function (response) {
+        console.log('OK');
+        $scope.adminApps = response.data;
+      });
+  };
+  //Building Properties
+  $scope.getBldProperties     = function(){
+    $http.post("getAdminBldProperties", {params:{'token':adminService.existeToken}})
+      .then(function (response) {
+        $scope.bldProperties = response.data;
+      });
+  };
+  $scope.addNewBldProp        = function(){
+    $scope.editBldPropData  = null;
+    $scope.newBldProp       = true;
+  };
+  $scope.bldPropCancel        = function(){
+    $scope.newBldProp      = false;
+    $scope.editBldPropData = false;
+  };
+  $scope.submitNewApp         = function(){
+    var objects = getFormValues('admin-bldprop-form');
 
+    if(objects.property_name.length === 0 || objects.property_description.length === 0)
+      return;
+
+    $http.post("insertNewBldProperty", {params:{'objects' : objects}})
+      .then(function (response) {
+        $scope.bldProperties = response.data;
+        $scope.bldPropCancel();
+      });
+  };
+  $scope.editBldProp          = function(){
+    $scope.getAdminApps();
+    $scope.newBldProp = null;
+    $scope.editBldPropData = this.data;
+  };
 
 
   $scope.setView              = function(id){
@@ -202,18 +247,20 @@ app.controller('adminController',                   function($scope, $http, cust
     //0 = Users
     //1 = Profiles
     //2 = Apps
-    //3 = Access Apps
+    //3 = Building Properties
     var views = {'0' : 'users',
-      '1' : 'profiles',
-      '2' : 'apps',
-      '3' : 'acces_apps',
+                 '1' : 'profiles',
+                 '2' : 'apps',
+                 '3' : 'bprop',
     }
     $scope.displayView = views[id];
   };
   $scope.getAdminProfiles();
   $scope.getAdminApps();
+  $scope.getBldProperties();
   $scope.fontAwesomeArray = fontAwesomeArray;
 
+  $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('order', [1, 'asc']);
 });
 app.controller('adminPAppACont',                    function ($scope, $http){
 

@@ -43,7 +43,7 @@ class BuildingController extends Controller
      */
     public function buildingData(Request $request)
     {
-        return Building::with('neighborhood', 'contacts', 'properties')->find($request->id ? $request->id : 28);
+        return Building::with('neighborhood', 'contacts', 'properties')->find($request->id ? $request->id : 23);
     }
 
     /**
@@ -53,9 +53,20 @@ class BuildingController extends Controller
      */
     public function getFilterBld(Request $request)
     {
-        return Building::where('code', 'like', '%' . $request['query'] . '%')
-                       ->orWhere('name', 'like', '%' . $request['query'] . '%')
-                       ->orderBy('id', 'desc')->get();
+        if($request->report)
+        {
+            return Building::where('type', '!=', 'commercial')
+                           ->join('retail_revenues', 'buildings.id', '=', 'retail_revenues.locid')
+                           ->where('code',   'like', '%' . $request['query'] . '%')
+                           ->orWhere('name', 'like', '%' . $request['query'] . '%')
+                           ->groupBy('code')
+                           ->orderBy('buildings.id', 'desc')
+                           ->get();
+        }
+        else
+            return Building::where('code',   'like', '%' . $request['query'] . '%')
+                           ->orWhere('name', 'like', '%' . $request['query'] . '%')
+                           ->orderBy('id', 'desc')->get();
     }
 
 
@@ -78,6 +89,16 @@ class BuildingController extends Controller
 
     }
 
+    /**
+     * @param Request $request
+     * id = property id to find and return
+     * @return property data
+     */
+    public function getBuildingProperty(Request $request)
+    {
+        return BuildingProperty::find($request->id);
+    }
+
     //Building GET's
     /**
      * @param Request $request
@@ -86,10 +107,17 @@ class BuildingController extends Controller
      */
     public function getBuildingsList(Request $request)
     {
-        if ($request->type) {
+
+        if ($request->type || $request['query']) {
             if ($request->type == 1)
                 return Building::where('type', 'like', 'commercial')
                                ->orderBy('id', 'desc')
+                               ->get();
+            else if($request['query'] == 'reports')
+                return Building::where('type', '!=', 'commercial')
+                               ->join('retail_revenues', 'buildings.id', '=', 'retail_revenues.locid')
+                               ->where('type', '!=', 'commercial')
+                               ->groupBy('code')
                                ->get();
             else
                 return Building::where('type', '!=', 'commercial')
@@ -170,7 +198,7 @@ class BuildingController extends Controller
     {
         $data = $request->all();
 
-        $record = new BuildingPropertyValue();
+        $record = new BuildingPropertyValue;
         $record->id_buildings = $data['id_buildings'];
         $record->id_building_properties = $data['id_building_properties'];
         $record->value = $data['value'];
@@ -181,10 +209,17 @@ class BuildingController extends Controller
 
     public function insertBuildingContacts(Request $request)
     {
-        $data = $request->all();
-        BuildingContact::insert($data);
+        $newContactData = new BuildingContact;
+        $newContactData->id_buildings   = $request->id_buildings;
+        $newContactData->first_name     = $request->first_name;
+        $newContactData->last_name      = $request->last_name;
+        $newContactData->contact        = $request->contact;
+        $newContactData->fax            = $request->fax;
+        $newContactData->company        = $request->company;
+        $newContactData->comments       = $request->comments;
+        $newContactData->save();
 
-        return $this->getBuilding($data['id_buildings']);
+        return $this->getBuilding($request->id_buildings);
     }
 
     //Building Update's
@@ -197,19 +232,29 @@ class BuildingController extends Controller
 
     public function updateBldPropValTable(Request $request)
     {
-        $data = $request->all();
 
-        $record = BuildingPropertyValue::find($data['id']);
-        $record->value = $data['value'];
+        $record = BuildingPropertyValue::find($request->id_table);
+        $record->value = $request->value;
         $record->save();
-
         return 'OK';
     }
 
+    /**
+     * @param Request $request
+     * "field" => "first_name" exp
+     * "id" => "23" building
+     * "id_table" => "30" record id
+     * "table" => "BldContact" routeIndex
+     * "value" => "Pablo" value
+     * @return string
+     * OK, if the update is complete.
+     */
     public function updateBldContactTable(Request $request)
     {
         $objeto = [$request->field => $request->value];
-        BuildingContact::where('id', $request->id)->update($objeto);
+        BuildingContact::where('id', $request->id_table)->update($objeto);
+        $updatedRecord = BuildingContact::find($request->id_table);
+        $updatedRecord->save();
         return 'OK';
     }
 

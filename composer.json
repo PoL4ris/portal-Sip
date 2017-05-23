@@ -15,7 +15,8 @@
         "monolog/monolog": "^1.18",
         "doctrine/dbal": "^2.5",
         "guzzlehttp/guzzle": "~5.3|~6.0",
-        "fedeisas/laravel-mail-css-inliner": "^2.0"
+        "fedeisas/laravel-mail-css-inliner": "^2.0",
+        "marktopper/doctrine-dbal-timestamp-type": "^1.0"
 
     },
     "require-dev": {

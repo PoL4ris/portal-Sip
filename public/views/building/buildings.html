@@ -1,11 +1,14 @@
 <div class="col-md-5 col-sm-12 col-xs-12">
     <div class="product-image">
-        <img src="/img/buildings/{{buildingData.img_building?buildingData.img_building:buildingData.buildings.img_building}}" alt="">
+        <img src="/img/buildings/{{buildingData.img_building ? buildingData.img_building : buildingData.buildings.img_building}}" alt="">
     </div>
 </div>
-
 <div class="col-md-7 col-sm-12 col-xs-12">
-    <h2 class="b-b-ddd p-b-md m-b-md">{{buildingData.name?buildingData.name:buildingData.buildings.name}}</h2>
+    <h2 class="b-b-ddd p-b-md m-b-md">{{buildingData.name ? buildingData.name : buildingData.buildings.name}}
+        <small>id
+            <b>( {{buildingData.id}} )</b>
+        </small>
+    </h2>
     <div class="row">
         <div class="col-lg-5 bld-box-info">
             <p><strong>Address:</strong></p>
@@ -23,7 +26,7 @@
             <p>{{buildingData.alias}}</p>
             <p>{{buildingData.neighborhood.name}}</p>
             <p>{{buildingData.code}}</p>
-            <p>{{buildingData.year_built}}</p>
+            <p ng-init="resultDate = convertDate(buildingData.year_built)" ng-if="buildingData.year_built" >{{resultDate | date : "MMM d, y h:mm a" }}</p>
             <p>{{buildingData.units}}</p>
             <p>{{buildingData.floors}}</p>
             <p>{{buildingData.type}}</p>
@@ -31,7 +34,3 @@
         </div>
     </div>
 </div>
-
-<!--<pre>-->
-<!--{{buildingData | json}}-->
-<!--</pre>-->

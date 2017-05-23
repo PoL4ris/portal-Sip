@@ -1,0 +1,165 @@
+<div class="row">
+    <!--LEFT CONTENT-->
+    <div class="bld-sub-nav pull-left anim" id="left-bld">
+        <div class="search-subnav-bld">
+            <input type="text" placeholder="Filter Search" ng-keyup="filterBldList()" ng-model="filterBldListModel">
+        </div>
+        <div class="building-list-side">
+            <div class="bld-list-side" ng-repeat="building in bldListResult">
+                <a href="#/reports?code={{building.code}}">
+                    <p alt="{{building.name}}" title="{{building.name}}">
+                        <b>{{building.code}}</b>
+                        <br>
+                        <span class="txt-color-blueDark">
+                            {{building.name}}
+                        </span>
+                    </p>
+                </a>
+            </div>
+        </div>
+    </div>
+    <!--END LEFT CONTENT-->
+
+    <!--RIGHT CONTENT-->
+    <div class="sub-nav-active pull-left padding-10 p-l-lg anim">
+        <!--<button ng-click="executeChartReport('1600I')" class="btn btn-warning">PRESS ME WAZAAAAAAA!</button>-->
+        <div class="bld-workspace">
+
+            <h5 class="text-primary text-center padding-bottom-3 txt-color-blueDark b-b-ddd p-b-sm" ng-if="stateExist">{{shortname}} - Monthly Recurring<strong> Revenue</strong></h5>
+
+            <h5 class="text-primary text-left padding-bottom-3" ng-if="!stateExist">Select Building<strong> To see reports.</strong></h5>
+            <!--GRAFICA-->
+            <div class="col-lg-6 overflow-hidden">
+                <h5 class="text-primary text-left padding-bottom-3" ng-if="stateExist">Past <strong>12 Months</strong></h5>
+                <canvas id="revenueChart" height="250"></canvas>
+            </div>
+            <!--END GRAFICA-->
+            <!--ESTADISTICAS DE LOCACION-->
+            <div class="col-lg-6">
+                <!--CON-->
+
+
+                <div ng-if="yaExisteTres">
+                    <h5 class="text-primary text-left padding-bottom-3">Current <strong>Penetration</strong></h5>
+                    <div id="location-stats-div" class="well no-padding custom-scroll filters-fixed-size padding-10" >
+                        <table id="location-plan-stats" class="tablesorter table table-striped" datatable="ng" dt-options="dtOptions">
+                            <caption style="text-align: center;font-weight: bold;caption-side: top;width: 100%;border-bottom: 1px solid #DDD;">
+                                Current Penetration
+                            </caption>
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Price</th>
+                                    <th>Subscribers</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="prod_details in products">
+                                    <td>{{ prod_details.name }}</td>
+                                    <td>{{ '$' + prod_details.amount }}</td>
+                                    <td>{{ prod_details.Total }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+
+                <!--CON-->
+
+            </div>
+            <!--END ESTADISTICAS DE LOCACION-->
+            <!--SUMMARY STATS-->
+            <div class="col-lg-6">
+                <!--CON-->
+
+
+                <div ng-if="yaExiste">
+                    <h5 class="text-primary text-left padding-bottom-3">Summary for <strong>{{ month }} {{ year }}</strong></h5>
+                    <div id="retail-summary-div" class="table-responsive padding-top-7">
+                        <table class="table table-bordered">
+                            <tbody>
+                            <tr>
+                                <td><b>Products</b></td>
+                                <td>
+                                    <div ng-repeat="(indame, prod_name) in detailsArr.products">
+                                        {{ indame + ' x ' + prod_name }}
+                                        <br>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><b>Product Types</b></td>
+                                <td>
+                                    <div ng-repeat="(indame, prod_name) in detailsArr.productTypes">
+                                        {{ prod_name + ' (' + indame + ')' }}
+                                        <br>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><b>Units</b></td>
+                                <td>{{ detailsArr.units.length }}</td>
+                            </tr>
+                            <tr>
+                                <td><b>Total Charged</b></td>
+                                <td>{{ '$'+ detailsArr.amount +'.'+detailsArr.credits }}</td>
+                            </tr>
+                            <tr>
+                                <td><b>Credit Issued</b></td>
+                                <td>{{ '$'+ detailsArr.credits }}</td>
+                            </tr>
+                            <tr>
+                                <td><b>Revenue</b></td>
+                                <td>{{ '$'+ detailsArr.amount }}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+
+                <!--CON-->
+            </div>
+            <!--END SUMMARY STATS-->
+            <!--BREAKDOWN-->
+            <div class="col-lg-6">
+                <div ng-if="existeDos">
+                    <!--CON-->
+
+
+                    <h5 class="text-primary text-left padding-bottom-3">Breakdown for <strong>{{ monthDos }} {{ yearDos }}</strong></h5>
+                    <div class="well filters-fixed-size padding-10">
+                        <table id="retail-revenue-unit-details" class="tablesorter table table-striped " datatable="ng" dt-options="dtOptions">
+                            <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Unit</th>
+                                <th>Name</th>
+                                <th>Details</th>
+                                <th>Amount</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="tDetails in detailsArrDos.details">
+
+                                <td ng-init="resultDate = convertDate(tDetails[0])" ng-if="tDetails">{{resultDate | date : "MMM d, y h:mm a" }}</td>
+                                <td>{{ tDetails[1] }}</td>
+                                <td>{{ tDetails[2] }}</td>
+                                <td>{{ tDetails[3] }}</td>
+                                <td>{{ '$' + tDetails[4] }}</td>
+                            </tr>
+
+
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                    <!--CON-->
+                </div>
+            </div>
+            <!--END BREAKDOWN-->
+        </div>
+    </div>
+</div>

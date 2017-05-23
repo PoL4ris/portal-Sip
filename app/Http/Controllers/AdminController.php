@@ -16,6 +16,7 @@ use App\Models\User;
 use App\Models\App;
 use App\Models\AccessApp;
 use App\Models\Customer;
+use App\Models\BuildingProperty;
 
 
 /**
@@ -30,6 +31,56 @@ class AdminController extends Controller
         $this->middleware('auth');
     }
 
+    /**
+     * @param Request $request
+     * record to find update and change position UP;
+     * @return string
+     * List of all apps.
+     */
+    public function getAppPositionUp(Request $request)
+    {
+        $data = $request->params['record'];
+
+        $otherRecord = App::where('position', ($data['position'] - 1))->first();
+        $thisRecord  = App::find($data['id']);
+
+        if(!$otherRecord || !$thisRecord)
+            return 'ERROR';
+
+        $otherRecord->position = ($otherRecord->position + 1);
+        $otherRecord->save();
+
+        $thisRecord->position = $data['position'] - 1;
+        $thisRecord->save();
+
+        return App::orderBy('position', 'asc')->get();
+
+    }
+    /**
+     * @param Request $request
+     * record to find update and change position DOWN;
+     * @return string
+     * List of all apps.
+     */
+    public function getAppPositionDown(Request $request)
+    {
+        $data = $request->params['record'];
+
+        $otherRecord = App::where('position', ($data['position'] + 1))->first();
+        $thisRecord  = App::find($data['id']);
+
+        if(!$otherRecord || !$thisRecord)
+            return 'ERROR';
+
+        $otherRecord->position = ($otherRecord->position - 1);
+        $otherRecord->save();
+
+        $thisRecord->position = $data['position'] + 1;
+        $thisRecord->save();
+
+        return App::orderBy('position', 'asc')->get();
+
+    }
     /**
      * @return gets logged user info.
      */
@@ -114,7 +165,7 @@ class AdminController extends Controller
      */
     public function getAdminApps()
     {
-        return App::get();
+        return App::orderBy('position', 'asc')->get();
     }
     /**
      * @param Request $request
@@ -248,6 +299,26 @@ class AdminController extends Controller
         }
 
         return App::get();
+    }
+    /**
+     * @return Building properties list.
+     */
+    public function getAdminBldProperties(){
+        return BuildingProperty::get();
+    }
+    /**
+     * @param Request $request
+     * objetos = Building Property DB table field Values.
+     * @return List of Building Properties.
+     */
+    public function insertNewBldProperty(Request $request){
+        $data = $request->params['objects'];
+        $user = new BuildingProperty;
+        $user->name         = $data['property_name'];
+        $user->description  = $data['property_description'];
+        $user->save();
+
+        return $this->getAdminBldProperties();
     }
     /**
      * Creates form from table requested.

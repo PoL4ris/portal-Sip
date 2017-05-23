@@ -55,6 +55,11 @@ Route::group(['middleware' => 'web'], function () {
     Route::post('updateAdminProfile',     'AdminController@updateAdminProfile');
     Route::post('insertNewApp',           'AdminController@insertNewApp');
     Route::post('updateAdminApp',         'AdminController@updateAdminApp');
+    Route::post('getAdminBldProperties',  'AdminController@getAdminBldProperties');
+    Route::post('insertNewBldProperty',   'AdminController@insertNewBldProperty');
+    Route::post('getAppPositionDown',     'AdminController@getAppPositionDown');
+    Route::post('getAppPositionUp',       'AdminController@getAppPositionUp');
+    //PROFILE
     Route::get('getProfileInfo',          'AdminController@getProfileInfo');
     Route::get('updateProfileInfo',       'AdminController@updateProfileInfo');
     //MENU
@@ -87,6 +92,8 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('buildings/{id?}',         'BuildingController@buildings');
     Route::get('buildingData',            'BuildingController@buildingData');
     Route::get('getBuildingsList',        'BuildingController@getBuildingsList');//new
+
+    Route::get('getBuildingProperty',     'BuildingController@getBuildingProperty');//new
     //Insert Building
     Route::post('insertbuildingData',     'BuildingController@insertBuildingData');
     Route::get('insertBuildingProperties','BuildingController@insertBuildingProperties');
@@ -165,7 +172,24 @@ Route::group(['middleware' => 'web'], function () {
     Route::post('activate',               'SignupController@activate');
 
     //DUMMYCONTROLLER
-    Route::get('dummyRouteController',    'TestController@supportTest');//new
+    Route::get('getMainDashboard',    'MainController@dashboard');//new
+
+
+
+
+
+    //REPORTCONTROLLER -> REFACTOR NAMES...
+//    Route::get('mrrProcess', 'ReportController@mrrProcess');//new
+    Route::get('reports/{code?}', 'ReportController@something');//new
+    Route::get('getDisplayRetailRevenue', 'ReportController@getDisplayRetailRevenue');//new
+    Route::get('getDisplayRetailRevenueDetails', 'ReportController@getDisplayRetailRevenueDetails');//new
+    Route::get('getDisplayRetailRevenueUnitDetails', 'ReportController@getDisplayRetailRevenueUnitDetails');//new
+    Route::get('getDisplayLocationStats', 'ReportController@getDisplayLocationStats');//new
+
+
+
+
+
     Route::get('email/template_support_new_ticket',    'TestController@supportTest');//new
 
     //MAILS
