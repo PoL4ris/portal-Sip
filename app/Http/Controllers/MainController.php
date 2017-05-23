@@ -92,9 +92,9 @@ class MainController extends Controller
     /**
      * @return List of all buildings for geoLoc GoogleMap
      */
-    public function getBuildingLocations()
+    public function getBuildingLocations(Request $request)
     {
-        return Address::whereNull('id_customers')->groupBy('id_buildings')->get();
+        return Address::whereNull('id_customers')->groupBy('id_buildings')->take(10)->offset($request->offset)->orderBy('id', 'asc')->get();
     }
 
     /**
