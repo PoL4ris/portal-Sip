@@ -685,12 +685,17 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http){
     });
 
   $scope.setAsDefaultPaymentMethod = function (id) {
+
     $http.get("setDefaultPaymentMethod", {params:{'id' : id, 'customerID' : $scope.idCustomer}})
       .then(function (response) {
+        $scope.defaultCssColor = true;
+        setTimeout(function(){$scope.defaultCssColor = false;}, 500);
+
         $scope.paymentMethods = response.data;
 
         $http.get("getDefaultPaymentMethod", {params:{'id' : $scope.idCustomer}})
           .then(function (response) {
+
             $scope.paymentData = response.data[0];
             $scope.pproperties = response.data[1];
           });

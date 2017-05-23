@@ -30,7 +30,7 @@
                             <th>Status</th>
                         </tr>
                         </thead>
-                        <tbody ng-if="cDashboardSearchResult">
+                        <tbody ng-if="cDashboardSearchResult" class="">
                         <tr class="status-dash-type-{{customerData.id_status}} cursor-pointer customer-record" ng-repeat="customerData in cDashboardSearchResult" ng-click="customerGoTo()">
                             <td>{{customerData.id}}</td>
                             <td>{{customerData.first_name}} {{customerData.last_name}}</td>

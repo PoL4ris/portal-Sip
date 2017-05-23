@@ -1,5 +1,5 @@
 <div class="col-lg-12">
-    <div class="admin-workspace">
+    <div class="admin-workspace animated fadeInLeft">
         <div class="col-lg-12">
             <button class="btn btn-primary" ng-click="addNewApp()" ng-if="!newApp"><i class="fa fa-plus"></i> Add App</button>
             <button class="btn btn-danger"  ng-click="appCancel()" ng-if="newApp"> <i class="fa fa-times"></i> Cancel</button>
@@ -30,9 +30,9 @@
                     <td><i class="btn btn-primary fa fa-pencil" ng-click="editApp()"></i></td>
                     <td>
                         <i class="btn btn-dark fa fa-angle-double-up"      ng-if="$first" disabled></i>
-                        <i class="btn btn-dark fa fa-angle-double-down"    ng-if="$last"  disabled></i>
                         <i class="btn btn-success fa fa-angle-double-up"   ng-if="!$first" ng-click="positionUp()" ></i>
                         <i class="btn btn-warning fa fa-angle-double-down" ng-if="!$last"  ng-click="positionDown()" ></i>
+                        <i class="btn btn-dark fa fa-angle-double-down"    ng-if="$last"  disabled></i>
                     </td>
                 </tr>
                 </tbody>
@@ -41,7 +41,7 @@
         <!--END TABLE-->
         <div class="m-t-lg col-lg-6" ng-if="newApp || editAppData">
             <div class="row">
-                <form class="" id="admin-app-form">
+                <form class="animated fadeInRight" id="admin-app-form">
                     <!--APP DATA-->
                     <div class="col-lg-3">
                         <label>Name</label>

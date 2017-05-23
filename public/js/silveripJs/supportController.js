@@ -102,33 +102,35 @@ app.controller('supportController',                 function ($scope, $http, DTO
         $scope.dataUsersAssigned = response.data;
       });
   };
-  $scope.editFormByType                 = function (id) {
+  $scope.editFormByType                 = function (id, specialLabel = 0) {
+    /*  specialLabel
+    * 0 => Edit/Cancel
+    * 1 => Change Customer/Cancel
+    * */
+    var arrLabel = {'0': 'Edit', '1' : 'Change Customer'};
+//    tempTicketID = id;
 
-    tempTicketID = id;
-
-    if ($('#' + id).attr('stand') == '1') {
+    if ($('#' + id).attr('stand') == '1')
+    {
       $('.' + id + '-label').css('display','table-cell');
       $('.' + id + '-edit').css('display','none');
       $('#save-' + id).fadeOut( "slow" );
-      $('#' + id).html('Edit');
-      $('#' + id).switchClass('btn-danger', 'btn-info');
+      $('#' + id).html(arrLabel[specialLabel]);
+      $('#' + id).switchClass('btn-danger', 'btn-primary');
       $('#' + id).attr('stand', '2');
-//           if(path == '/supportdash')
-//           {
-//               $('.resultadosComplex').html('');
-//               $('.dis-input').val('');
-//           }
 
       if (id == 'block-b')
         $('#block-b-search').fadeOut();
 
     }
-    else {
+    else
+    {
       $('.' + id + '-label').css('display','none');
       $('.' + id + '-edit').fadeIn( "slow" );
       $('#save-' + id).fadeIn( "slow" );
       $('#' + id).html('Cancel');
       $('#' + id).switchClass('btn-success', 'btn-danger');
+      $('#' + id).switchClass('btn-primary', 'btn-danger');
       $('#' + id).attr('stand', '1');
 
       if (id == 'block-b')
@@ -322,7 +324,7 @@ app.controller('supportControllerTools',            function ($scope, $http) {
   }
   $scope.editFormByType = function (id) {
 
-    tempTicketID = id;
+//    tempTicketID = id;
 
     if (warpol('#' + id).attr('stand') == '1')
     {

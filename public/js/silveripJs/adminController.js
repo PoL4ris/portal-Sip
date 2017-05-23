@@ -260,7 +260,7 @@ app.controller('adminController',                   function($scope, $http, cust
   $scope.getBldProperties();
   $scope.fontAwesomeArray = fontAwesomeArray;
 
-  $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('order', [1, 'asc']);
+  $scope.dtOptions = DTOptionsBuilder.newOptions().withDisplayLength(25).withOption('order', [1, 'asc']);
 });
 app.controller('adminPAppACont',                    function ($scope, $http){
 
