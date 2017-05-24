@@ -155,6 +155,8 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('getProducts',             'SupportController@getProducts');//new
     Route::get('getStatus',               'MainController@getStatus');//new
     Route::get('getBuildingLocations',    'MainController@getBuildingLocations');//new
+    Route::get('insertAddressCoordinates','MainController@insertAddressCoordinates');//new
+    Route::get('getBuildingsCodeList',    'BuildingController@getBuildingsCodeList');
 
     //LOGS
     Route::get('getCustomerLog',          'CustomerController@getCustomerLog');//new
@@ -173,6 +175,7 @@ Route::group(['middleware' => 'web'], function () {
     //Dashboard Main View
     Route::get('getMainDashboard',        'MainController@dashboard');//new
     Route::get('getCalendarDashboard',    'MainController@calendarDashboard');//new
+
 
 
 
@@ -215,6 +218,7 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('test3',                   'NetworkController@getRouterInfoByPortID');
     Route::get('test6',                   'NetworkController@authenticatePort');
     Route::get('test7',                   'NetworkController@activatePort');
+
 
     //Calendar Routes
     Route::get('tech-schedule', 'TechScheduleController@TechScheduler');

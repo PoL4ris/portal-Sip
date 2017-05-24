@@ -1,0 +1,216 @@
+<style>
+    #map {
+        height: 400px;
+        width: 100%;
+    }
+</style>
+<article class="col-lg-12 ">
+    <div class="row">
+        <div id="map"></div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12" id="lngLat"></div>
+    </div>
+
+</article>
+
+<script>
+  var index = {
+    '16384': '1331 S Prairie Chicago IL 60605',
+    '16385': '1235 S Prairie Ave Chicago IL 60605',
+    '16386': '1600 S Indiana Ave Chicago IL 60616',
+    '16387': '100 E 14th Street Chicago IL 60605',
+    '16388': '41 E 8th Street Chicago IL 60605',
+    '16389': '1550 S Blue Island Ave Chicago IL 60608',
+    '16390': '1250 S Indiana Chicago IL 60605',
+    '16391': '1211P S Prairie Ave Chicago IL 60605',
+    '16392': '565 W Quincy St Chicago IL 60661',
+//    };
+//    var index2 = {
+    '16393': '270 E Pearson Chicago IL 60611',
+    '16394': '360 E Randolph Chicago IL 60601',
+    '16395': '235 W Van Buren Chicago IL 60607',
+    '16396': '4800 S Chicago Beach Dr. Chicago IL 60615',
+    '16397': '222 N Columbus Drive Chicago IL 60601',
+    '16398': '501 N Clinton Chicago IL 60654',
+    '16399': '659 West Randolph Street Chicago IL 60661',
+    '16400': '770 N Halsted Street Chicago IL 60642',
+    '16401': '213 W. Institute Pl Chicago IL 60610',
+    '16402': '159 E Walton Street Chicago IL 60611',
+//    };
+//    var index3 = {
+    '16403': '2323 West Pershing Rd Chicago IL 60609',
+    '16404': '845 N. State Street Chicago IL 60610',
+    '16405': '616 West Fulton Street Chicago IL 60661',
+    '16406': '70 W Huron Street Chicago IL 60654',
+    '16407': '1339 N Dearborn Street Chicago IL 60610',
+    '16408': '1910 South Indiana Avenue Chicago IL 60616',
+    '16409': '77 E Walton Street Chicago IL 60611',
+    '16410': '65 East Monroe Street Chicago IL 60603',
+    '16411': '1224 W Van Buren St Chicago IL 60607',
+    '16412': '1524 S Sangamon Street Chicago IL 60608',
+//    };
+//    var index4 = {
+    '16413': '340 East Randolph Street Chicago IL 60601',
+    '16414': '71 W Hubbard Chicago IL 60654',
+    '16415': '737 West Washington Chicago IL 60601',
+    '16416': '730 S Clark St Chicago IL 60605',
+    '16417': '8 E Randolph St Chicago IL 60601',
+    '16418': '125 S Jefferson Chicago IL 60605',
+    '16419': '240 E Illinois St Chicago IL 60611',
+    '16420': '1901 S Calumet Ave Chicago IL 60605',
+    '16421': '657 West Fulton Chicago IL 60661',
+    '16422': '1600 S Wabash Chicago IL 60616',
+//    };
+//    var index5 = {
+    '16423': '60 East Monroe Chicago IL 60603',
+    '16426': '1033 W 14th Place,1069 W 14th Place Chicago IL 60608',
+    '16427': '610 S Michigan Ave Chicago IL 60605',
+    '16428': '1000 W 15th Street,1070 W 15th Street Chicago IL 60608',
+    '16429': '1001 W 15th Street,1071 W 15th Street Chicago IL 60608',
+    '16430': '2037 W Caroll Ave Chicago IL 60612',
+    '16431': '345 N Canal Street Chicago IL 60606',
+    '16432': '1111 W 15th Street,1151 W 15th Street Chicago IL 60608',
+    '16433': '200 W Grand Ave Chicago IL 60654',
+    '16434': '1110 W 15th Street,1150 W 15th Street Chicago IL 60608',
+//    };
+//    var index6 = {
+    '16424': '1335 S Prairie Chicago IL 60605',
+    '16435': '308 W Erie Chicago IL 60654',
+    '16436': '1111 W 14th Place,1151 W 14th Place Chicago IL 60608',
+    '16437': '1901 S Calumet Ave Chicago IL 60605',
+    '16438': '1600 S Wabash Ave Chicago IL 60616',
+    '16439': '125 E 13th Chicago IL 60605',
+    '16440': '57 E. Delaware Chicago IL 60610',
+    '16441': '111 W Maple St Chicago IL 60610',
+    '16442': '1525 S Sangamon Street Chicago IL 60608',
+    '16443': '1201P S Prairie Ave Chicago IL 60605',
+//    };
+//    var index7 = {
+    '16444': '1300 North State Parkway Chicago IL 60610',
+    '16445': '2000 S Michigan Ave Chicago IL 60616',
+    '16446': '845 W Fulton Market Chicago IL 60607',
+    '16447': '2225 W Pershing Chicago IL 60610',
+    '16448': '30 West Oak Street Chicago IL 60610',
+    '16449': '1635 W Belmont Ave Chicago IL 60657',
+    '16450': '1600 S Wabash Chicago IL 60616',
+    '16451': '130 S Canal St Chicago IL 60606',
+    '16452': '400 N Clinton Chicago IL 60654',
+    '16453': '1700 E 56th Street Chicago IL 60637',
+//    };
+//    var index8 = {
+    '16454': '711 S Dearborn St Chicago IL 60605',
+    '16455': '701 South Wells Steet Chicago IL 60607',
+    '16456': '10 S Dearborn Chicago IL 60603',
+    '16457': '850 South Clark Street Chicago IL 60605',
+    '16458': '901 W Madison Avenue Chicago IL 60607',
+    '16459': '1623 S Lumber St Chicago IL 60616',
+    '16460': '333 S Des Plaines Street Chicago IL 60661',
+    '16461': '400 N Clinton Chicago IL 60654',
+    '16462': '909 W Washington Blvd Chicago IL 60607',
+    '16463': '14 N Peoria Street Chicago IL 60607',
+//    };
+//    var index9 = {
+    '16464': '505 N McClurg Chicago IL 60611',
+    '16465': '111 West Polk Street Chicago IL 60605',
+    '16466': '212 E Cullerton Street Chicago IL 60616',
+    '16467': '900 S Clark Chicago IL 60605',
+    '16468': '1046 W Kinzie St Chicago IL 60642'
+  };
+
+  //Calcula e inserta longitud y latitud 10x10 Tops
+  //WarpolIn & InsertData
+  function warpolin(){
+    var geocoder    = new google.maps.Geocoder;
+
+
+    $.each(index9,function(i, item)
+    {
+      geocoder.geocode({'address': item}, function(results, status)
+      {
+        if (status === 'OK')
+        {
+          insertData(results[0].geometry.location.lng(), results[0].geometry.location.lat(), i, item);
+        }
+      });
+      console.log('OK ===> ');
+    });
+
+  }
+  function insertData(long, lat, id, address){
+    $.ajax({
+        type: "GET",
+        url: "insertAddressCoordinates",
+        data: {'long': long, 'lat':lat, 'id':id, 'address':address},
+        success: function (data)
+        {
+          return "OK";
+        }
+      }
+    );
+  }
+  //Main function
+  function initMap() {
+    $.ajax({
+        type: "GET",
+        url:  "getBuildingsCodeList",
+        success: function (data) {
+          var codes = data
+          mapCreate(codes);
+        }
+      }
+    );
+  }
+  //Rock Function
+  function mapCreate(codes) {
+    $.ajax({
+        type: "GET",
+        url:  "getBuildingLocations",
+        success: function (data) {
+          var locations   = data;
+          var img         = null;
+          var imgStyle    = 'max-height: 100px; text-align: center; margin: 0 auto; display: block;';
+          var geocoder    = new google.maps.Geocoder;
+          var infoWindow  = new google.maps.InfoWindow;
+          var map         = new google.maps.Map(document.getElementById('map'), {
+            zoom:   10,
+            center: {lat: 41.8599896, lng: -87.6814276}
+          });
+          var markers     = locations.map(function (location, i)
+          {
+            if (codes[location.index].building)
+              img = codes[location.index].building.img_building
+            else
+              img = 'logoSmall.png';
+
+            var infowindow = new google.maps.InfoWindow({
+              content: '<a href="#/buildings?id=' + codes[location.index].id_buildings + '">' + index[location.index] + '<hr>' + '<img style="' + imgStyle + '" src="/img/buildings/' + img + '"/>' + '</a>'
+            });
+
+            var marker     = new google.maps.Marker({
+              position:  location,
+              label:     codes[location.index].code,
+              animation: google.maps.Animation.DROP
+            });
+
+            marker.addListener('click', function () {
+              infowindow.open(map, marker);
+            });
+            return marker;
+          });
+
+          // Add a marker clusterer to manage the markers.
+          var markerCluster = new MarkerClusterer(map, markers, {
+            imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'
+          });
+        }
+      }
+    );
+    return;
+  }
+</script>
+<script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js">
+</script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAW-E_VYcz-wc9T-WS3_Y72cRoGC36VaM8&callback=initMap"></script>
+<!--TO run and insert Bld Data-->
+<!--<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAW-E_VYcz-wc9T-WS3_Y72cRoGC36VaM8&callback=warpolin"></script>-->

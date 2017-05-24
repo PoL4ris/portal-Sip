@@ -1,7 +1,7 @@
 //ADMIN
 app.controller('adminController',                   function($scope, $http, customerService, adminService, DTOptionsBuilder){
 
-
+console.log('this is the admincontroller rawr');
 
 
   if(customerService.sideBarFlag) {
@@ -175,6 +175,7 @@ app.controller('adminController',                   function($scope, $http, cust
     $http.post("insertNewApp", {params:{'objects' : objects}})
       .then(function (response) {
         $scope.adminApps = response.data;
+        $('#adminModalApps').modal('toggle');
         $scope.appCancel();
       });
   };
@@ -189,8 +190,8 @@ app.controller('adminController',                   function($scope, $http, cust
 
     $http.post("updateAdminApp", {params:{'objects' : objects}})
       .then(function (response) {
-
         $scope.adminApps = response.data;
+        $('#adminModalApps').modal('toggle');
         $scope.appCancel();
       });
   };
@@ -201,7 +202,7 @@ app.controller('adminController',                   function($scope, $http, cust
         $scope.adminApps = response.data;
       });
   };
-  $scope.positionUp         = function(){
+  $scope.positionUp           = function(){
     $http.post("getAppPositionUp", {params:{'record':this.data}})
       .then(function (response) {
         console.log('OK');
@@ -223,7 +224,7 @@ app.controller('adminController',                   function($scope, $http, cust
     $scope.newBldProp      = false;
     $scope.editBldPropData = false;
   };
-  $scope.submitNewApp         = function(){
+  $scope.submitNewBldProp     = function(){
     var objects = getFormValues('admin-bldprop-form');
 
     if(objects.property_name.length === 0 || objects.property_description.length === 0)

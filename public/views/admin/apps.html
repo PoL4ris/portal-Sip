@@ -1,11 +1,10 @@
 <div class="col-lg-12">
     <div class="admin-workspace animated fadeInLeft">
         <div class="col-lg-12">
-            <button class="btn btn-primary" ng-click="addNewApp()" ng-if="!newApp"><i class="fa fa-plus"></i> Add App</button>
-            <button class="btn btn-danger"  ng-click="appCancel()" ng-if="newApp"> <i class="fa fa-times"></i> Cancel</button>
+            <button class="btn btn-primary" ng-click="addNewApp()" data-toggle="modal" data-target="#adminModalApps"><i class="fa fa-plus"></i> Add App</button>
         </div>
         <!--TABLE-->
-        <div class="m-t-lg col-lg-6">
+        <div class="m-t-lg col-lg-12">
             <table id="profile-table" class="tablesorter table table-striped" datatable="ng" dt-options="dtOptions" ng-if="adminUsers">
                 <thead>
                 <tr>
@@ -27,7 +26,7 @@
                     <td>{{data.icon}}</td>
                     <td><i class="fa {{data.icon}}"></i></td>
                     <td>{{data.url}}</td>
-                    <td><i class="btn btn-primary fa fa-pencil" ng-click="editApp()"></i></td>
+                    <td><i class="btn btn-primary fa fa-pencil" ng-click="editApp()" data-toggle="modal" data-target="#adminModalApps"></i></td>
                     <td>
                         <i class="btn btn-dark fa fa-angle-double-up"      ng-if="$first" disabled></i>
                         <i class="btn btn-success fa fa-angle-double-up"   ng-if="!$first" ng-click="positionUp()" ></i>
@@ -39,72 +38,96 @@
             </table>
         </div>
         <!--END TABLE-->
-        <div class="m-t-lg col-lg-6" ng-if="newApp || editAppData">
-            <div class="row">
-                <form class="animated fadeInRight" id="admin-app-form">
-                    <!--APP DATA-->
-                    <div class="col-lg-3">
-                        <label>Name</label>
-                        <br>
-                        <input type="text"
-                               placeholder="App Name"
-                               name="app_name"
-                               class="size-100"
-                               value="{{editAppData ? editAppData.name : null}}"
-                               required>
-                        <hr>
-                        <label>Icon Name</label>
-                        <br>
-                        <select class="size-50 pull-left"
-                                ng-options="icono for icono in fontAwesomeArray track by icono"
-                                ng-model="selectedIcon"
-                                name="icon"
-                                ng-change="setIconApp()">
-                            <option value="">{{editAppData ? editAppData.icon : null}}</option>
-                        </select>
-                        <div class="size-50 pull-left text-center icon-preview">
-                            <i class="fa {{selectedIcon}} " ng-if="selectedIcon"></i>
-                            <i class="fa {{editAppData ? editAppData.icon : selectedIcon}} " ng-if="!selectedIcon"></i>
+
+    </div>
+</div>
+
+<!-- MODAL USERS-->
+<div class="modal fade" id="adminModalApps" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-ticket-size">
+        <div class="modal-content">
+            <form id="admin-app-form">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <span ng-if="editAppData">Edit App Info</span>
+                    <span ng-if="!editAppData">New App Info</span>
+                </div>
+                <div class="modal-body">
+                    <div class="wrapper-sm">
+                        <div class="row">
+
+                            <!--SOMETHING HERE-->
+
+                                <!--APP DATA-->
+                                <div class="col-lg-5">
+                                    <label>Name</label>
+                                    <br>
+                                    <input type="text"
+                                           placeholder="App Name"
+                                           name="app_name"
+                                           class="size-100"
+                                           value="{{editAppData ? editAppData.name : null}}"
+                                           required>
+                                    <hr>
+                                    <label>Icon Name</label>
+                                    <br>
+                                    <select class="size-50 pull-left"
+                                            ng-options="icono for icono in fontAwesomeArray track by icono"
+                                            ng-model="selectedIcon"
+                                            name="icon"
+                                            ng-change="setIconApp()">
+                                        <option value="">{{editAppData ? editAppData.icon : null}}</option>
+                                    </select>
+                                    <div class="size-50 pull-left text-center icon-preview">
+                                        <i class="fa {{selectedIcon}} " ng-if="selectedIcon"></i>
+                                        <i class="fa {{editAppData ? editAppData.icon : selectedIcon}} " ng-if="!selectedIcon"></i>
+                                    </div>
+                                    <br>
+                                    <hr>
+                                    <label>Url</label>
+                                    <br>
+                                    <input type="text"
+                                           placeholder="Url (No signs or spaces , - # / _ )"
+                                           name="url"
+                                           class="size-100"
+                                           value="{{editAppData ? editAppData.url : null}}"
+                                           required>
+                                    <br>
+                                    <br>
+                                    <label><small>Default Position is Last.</small></label>
+                                </div>
+                                <!--APPS CHECKBOX-->
+                                <div class="col-lg-7">
+                                    <h3>Set Profile Access</h3>
+                                    <div class="col-lg-4 smart-form" ng-repeat="data in adminProfiles" ng-controller="adminAProfileACont" ng-if="editAppData">
+                                        <label class="checkbox">
+                                            <input type="checkbox" name="{{data.id}}" ng-if="!dataCheck">
+                                            <input type="checkbox" name="{{data.id}}" ng-if="dataCheck" checked="checked">
+                                            <i></i>{{data.name}}
+                                        </label>
+                                    </div>
+                                    <div class="col-lg-4 smart-form" ng-repeat="data in adminProfiles" ng-if="!editAppData">
+                                        <label class="checkbox">
+                                            <input type="checkbox" name="{{data.id}}">
+                                            <i></i>{{data.name}}
+                                        </label>
+                                    </div>
+                                </div>
+
+                            <!--SOMETHING HERE-->
                         </div>
-                        <br>
-                        <hr>
-                        <label>Url</label>
-                        <br>
-                        <input type="text"
-                               placeholder="Url (No signs or spaces , - # / _ )"
-                               name="url"
-                               class="size-100"
-                               value="{{editAppData ? editAppData.url : null}}"
-                               required>
-                        <br>
-                        <br>
-                        <label><small>Default Position is Last / 0</small></label>
                     </div>
-                    <!--APPS CHECKBOX-->
-                    <div class="col-lg-9">
-                        <h3>Set Profile Access</h3>
-                        <div class="col-lg-4 smart-form" ng-repeat="data in adminProfiles" ng-controller="adminAProfileACont" ng-if="editAppData">
-                            <label class="checkbox">
-                                <input type="checkbox" name="{{data.id}}" ng-if="!dataCheck">
-                                <input type="checkbox" name="{{data.id}}" ng-if="dataCheck" checked="checked">
-                                <i></i>{{data.name}}
-                            </label>
-                        </div>
-                        <div class="col-lg-4 smart-form" ng-repeat="data in adminProfiles" ng-if="!editAppData">
-                            <label class="checkbox">
-                                <input type="checkbox" name="{{data.id}}">
-                                <i></i>{{data.name}}
-                            </label>
-                        </div>
-                    </div>
-                    <!--ACTION BUTTONS-->
-                    <div class="col-lg-12 m-t-lg">
-                        <button class="btn btn-success pull-right" ng-if="!editAppData" ng-click="submitNewApp()">Submit App</button>
-                        <button class="btn btn-success pull-right" ng-if="editAppData" ng-click="updateAdminApp()">Update App</button>
-                    </div>
-                </form>
-            </div>
-            <button class="btn btn-danger" ng-click="appCancel()" ng-if="editAppData"><i class="fa fa-times"></i> Cancel</button>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-success pull-left" ng-if="!editAppData" ng-click="submitNewApp()">Submit App</button>
+                    <button class="btn btn-success pull-left" ng-if="editAppData" ng-click="updateAdminApp()">Update App</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="appCancel()">Cancel</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
+<!-- END MODAL USERS -->
+
+
+

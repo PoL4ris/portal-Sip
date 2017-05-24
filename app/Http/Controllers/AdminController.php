@@ -251,6 +251,7 @@ class AdminController extends Controller
         $app->name = $data['app_name'];
         $app->icon = $data['icon'];
         $app->url  = $data['url'];
+        $app->position  = App::max('position')+1;
         $app->save();
 
         unset($data['app_name'], $data['icon'], $data['url']);

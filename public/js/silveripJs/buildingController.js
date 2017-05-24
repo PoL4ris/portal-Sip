@@ -5,12 +5,11 @@ app.controller('buildingCtl',             function ($scope, $http, $stateParams,
   //TMP HIDE AND SHOW SIDEBAR
   $scope.fedeINbtn  = function () {
     $('#left-bld').animate({width: '200px'});
-//        $('#left-bld').fadeIn('slow');
-
+    $('#right-bld').css('width', 'calc(100% - 200px)');
   }
   $scope.fedeOUTbtn = function () {
     $('#left-bld').animate({width: '0'});
-//        $('#left-bld').fadeOut('slow');
+    setTimeout(function(){ $('#right-bld').css('width', '100%'); }, 500);
   }
 
   if (customerService.sideBarFlag) {
@@ -248,6 +247,37 @@ app.controller('buildingCtl',             function ($scope, $http, $stateParams,
       .then(function (response) {
         $scope.bldListResult = response.data;
       });
+  }
+
+  $scope.jsonPropertiesFix          = function (json) {
+
+    var jsonParse          = JSON.parse(json);
+    var jsonKey            = Object.keys(jsonParse)[0];
+    var jsonLength         = jsonParse[jsonKey].length;
+    var jsonValues         = jsonParse[jsonKey];
+    $scope.unitsResultData = {'arrIndex'   : jsonKey,
+                              'arrLength'  : jsonLength,
+                              'arrValues'  : jsonValues,
+                              'rawData'    : jsonParse
+                             };
+    return $scope.unitsResultData;
+  };
+  $scope.exportToCsv                = function () {
+
+    var data = [$scope.unitsResultData.arrValues];
+
+    var csv = buildingService.building.code + ' Units\n';
+    data.forEach(function (row) {
+      csv += row.join('\n');
+      csv += "\n";
+    });
+
+    var hiddenElement = document.createElement('a');
+    hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
+    hiddenElement.target = '_blank';
+    hiddenElement.download = buildingService.building.name + ' ' + buildingService.building.code + ' Units.csv';
+    hiddenElement.click();
+
   }
 
 })

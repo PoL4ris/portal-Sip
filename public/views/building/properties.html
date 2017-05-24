@@ -1,8 +1,3 @@
-<!--<pre>-->
-<!--{{propValuesList | json}}-->
-<!--{{buildingData.properties | json}}-->
-<!--</pre>-->
-
 <div id="wid-id-0" ng-controller="FormXeditableCtrl">
     <div ng-controller="FormPluginsCtrl">
         <div class="widget-body" ng-controller="globalToolsCtl" id="buildingProperties-gTools">
@@ -10,14 +5,14 @@
 
                 <div class="col-lg-4">
                     <button ng-if="buildingData.properties != ''" id="enable" class="btn btn btn-success" ng-click="toggleDisabled()">Edit</button>
-                    <button ng-if="buildingData.properties == ''" id="enable" class="btn btn btn-dark" ng-click="toggleDisabled()" disabled>Edit</button>
+                    <!--<button ng-if="buildingData.properties == ''" id="enable" class="btn btn btn-success" ng-click="toggleDisabled()" disabled>Edit</button>-->
                 </div>
                 <div class="col-lg-8">
 
                     <button id="add-property"
                             class="btn btn btn-primary pull-right"
                             ng-click="fadeViews('bpv-container', 'new-form-function', 1, 'enable', 'add-property', 'add-property-cancel')">
-                        Add new Property
+                        Add new property
                     </button>
 
                     <button id="add-property-cancel"
@@ -32,7 +27,6 @@
                     <table id="user" class="table table-bordered table-striped bld-prop-table bpv-container" style="clear: both">
                         <tbody>
                         <tr ng-repeat="properData in buildingData.properties">
-
                             <td ng-controller="getBuildingPropertyCtl">{{getBuildingProperty}}</td>
 
                             <td>
@@ -49,17 +43,44 @@
                                    data-original-title="Enter text"
                                    data-options="editableOptions"
                                    class="editable editable-click"
-                                   ng-bind-html="properData.value"></a>
+                                   ng-bind-html="properData.value"
+                                   ng-if="properData.id_building_properties != 23">
+                                </a>
+                                <a ng-init="arrayData = jsonPropertiesFix(properData.value)" ng-if="properData.id_building_properties == 23">
+                                    <div class="col-lg-1 no-padding-sides  p-t-sm">
+                                        {{arrayData.arrLength}}
+                                    </div>
+                                    <!--<div class="col-lg-3 no-padding-sides  p-t-sm">-->
+                                        <!--<span class="txt-color-blueDark m-r-sm">Download unit list :  </span>-->
+                                    <!--</div>-->
+                                    <div class="pull-right m-l-lg " title="Remove units">
+                                        <i class="btn btn-danger fa fa-times" data-toggle="modal" data-target="#propertyUnitsModal"></i>
+                                    </div>
+                                    <!--<div class="col-lg-2 no-padding-sides  p-t-sm">-->
+                                        <!--<span class="txt-color-blueDark m-r-sm">Edit Units :  </span>-->
+                                    <!--</div>-->
+                                    <div class="pull-right m-l-lg" title="Add units">
+                                        <i class="btn btn-success fa fa-plus" data-toggle="modal" data-target="#propertyUnitsModal"></i>
+                                    </div>
+                                    <div class="pull-right no-padding-sides " alt="Download" title="Download">
+                                        <i class="btn btn-success fa fa-file-excel-o" ng-click="exportToCsv()"></i>
+                                    </div>
+
+
+                                </a>
                             </td>
                         </tr>
                         </tbody>
                     </table>
+                    <!---------------------------------------->
+
+                    <!---------------------------------------->
                 </div>
 
                 <div class="new-form-function no-display">
                     <div get-building-prop-values>
                         <h3>{{buildingData.name}}
-                            <small><strong>id: ({{buildingData.id}})</strong></small>
+                            <!--<small><strong>id: ({{buildingData.id}})</strong></small>-->
                         </h3>
 
                         <form id="new-bpv-form">
@@ -79,3 +100,36 @@
         </div>
     </div>
 </div>
+
+
+
+
+
+<!-- MODAL DE TICKET -->
+<div class="modal" id="propertyUnitsModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-ticket-size">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="cancelNewEvent()">
+                    &times;
+                </button>
+                <span>Edit Units</span>
+            </div>
+            <div class="modal-body">
+                <div class="wrapper-sm">
+                    <div class="row">
+
+                        <div class="col-lg-1 border5 text-center no-padding-sides" ng-repeat="units in unitsResultData.arrValues">{{units}}</div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END MODAL DE TICKET -->
