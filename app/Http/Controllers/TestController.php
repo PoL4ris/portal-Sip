@@ -19,7 +19,7 @@ use App\Models\Ticket;
 use App\Models\CustomerProduct;
 use App\Models\DataMigration;
 use App\Models\Address;
-use App\Models\BillingTransactionLog;
+use App\Models\BuildingPropertyValue;
 use App\Models\Building;
 use App\Models\Product;
 use App\Models\User;
@@ -140,6 +140,30 @@ class TestController extends Controller
     
     public function supportTest()
     {
+
+
+        $data = Building::with('address', 'neighborhood', 'contacts')->find(68);
+        $data->properties = BuildingPropertyValue::join('building_properties',
+            'building_property_values.id_building_properties',
+            '=',
+            'building_properties.id')
+            ->where('building_property_values.id_buildings', '=', 68)
+            ->select('*', 'building_property_values.id as idBpv')
+            ->get();
+
+
+
+
+            dd($data->toArray());
+
+
+
+
+
+
+
+
+
 
         $calendar   = new GoogleCalendar;
         $date       = new DateTime ('05/22/2017');

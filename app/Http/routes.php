@@ -102,6 +102,9 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('updateBuilding',          'BuildingController@updateBuilding');
     Route::get('updateBldPropValTable',   'BuildingController@updateBldPropValTable');
     Route::get('updateBldContactTable',   'BuildingController@updateBldContactTable');
+    Route::get('deleteAllPropUnits',      'BuildingController@deleteAllPropUnits');//new
+    Route::get('deleteUnitsByArray',      'BuildingController@deleteUnitsByArray');//new
+    Route::get('addUnitsByArray',         'BuildingController@addUnitsByArray');//new
     //Customers
     Route::get('customers/{id?}',         'CustomerController@customers');
     Route::get('insertCustomerService',   'CustomerController@insertCustomerService');
