@@ -327,6 +327,7 @@ angular.module('SmartAdmin.Forms').directive('smartXeditable', function($timeout
 'use strict';
 
 angular.module('SmartAdmin.Forms').directive('smartDropzone', function () {
+  console.log('entra al SmartDropZone');
   return function (scope, element, attrs) {
     var config, dropzone;
 

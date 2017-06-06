@@ -237,9 +237,15 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('getSignedUpCustomersByYear',        'ChartController@getSignedUpCustomersByYear');
     //UPDATE SERVICES
 
+    //SALES APP ROUTES
+//    Route::get('getSignedUpCustomersByYear',        'ChartController@getSignedUpCustomersByYear');
+
     //NO ROUTE NEEDED
     Route::get('test8',                             'NetworkController@getCustomerConnectionInfo');
     Route::get('cc-test',                           'TestController@testCC');
+
+    //LoginApp
+    Route::get('authApp',                           'Auth\AuthController@AppSocialCredentials');
 
     $s = 'social.';
     Route::get('/social/redirect/{provider}',   ['as' => $s . 'redirect',

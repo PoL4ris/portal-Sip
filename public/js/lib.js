@@ -29,7 +29,32 @@ app.controller('libController', function ($scope, $http) {
 
 });
 
-app.controller('warpolController', function($scope, $http){
+app.controller('warpolController', function($scope, $http, customerService, buildingService){
+
+  if (customerService.sideBarFlag) {
+    $scope.sipTool(2);
+    customerService.sideBarFlag = false;
+  }
+
+
+
+  $scope.dropzoneConfig = {
+//    'options': { // passed into the Dropzone constructor
+//      'url': '/api/plug'
+//    },
+    'eventHandlers': {
+      'sending': function (file, xhr, formData) {
+        console.log('sending CONSOLE');
+        console.log(file);
+        console.log(xhr);
+        console.log(formData);
+      },
+      'success': function (file, response) {
+        console.log('success CONSOLE');
+      }
+    }
+  };
+
 
 
 

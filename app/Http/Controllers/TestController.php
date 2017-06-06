@@ -142,6 +142,25 @@ class TestController extends Controller
     {
 
 
+        //Dashboard data Working
+        $result = array();
+        $result['commercial'] = Building::where('type', 'like', '%commercial%')->count();
+        $result['retail']     = Building::where('type', 'not like', '%commercial%')->count();
+        $result['tickets']    = Ticket::where('status', '!=', 'closed')->count();
+        $ticketAverage        = DB::select('SELECT 
+                                              avg(TIMESTAMPDIFF(HOUR, created_at, updated_at)) as hours,
+                                              avg(TIMESTAMPDIFF(DAY, created_at, updated_at))  as days
+                                            FROM tickets
+                                              where updated_at > created_at
+                                              and status like "%closed%"')[0];
+        $result['avgHour']    = $ticketAverage->hours;
+        $result['avgDay']     = $ticketAverage->days;
+        return $result;
+
+
+
+
+
         $data = Building::with('address', 'neighborhood', 'contacts')->find(68);
         $data->properties = BuildingPropertyValue::join('building_properties',
             'building_property_values.id_building_properties',

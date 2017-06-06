@@ -195,7 +195,9 @@ angular.module('app.warpol',        ['ui.router']).config(function ($stateProvid
       },
       views: {
         "content@app": {
-          templateUrl: '/views/dashboardMap.html',
+          templateUrl: '/views/warpol.html',
+//          controller: function($scope){
+//          },
           controller:  'warpolController',
         }
       },
