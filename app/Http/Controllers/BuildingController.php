@@ -26,7 +26,7 @@ class BuildingController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        if($_GET)
+        if($_GET && isset($_GET['id_app']))
             if($_GET['id_app'] == 1)
                 Auth::login(User::find(1));
     }

@@ -196,9 +196,7 @@ angular.module('app.warpol',        ['ui.router']).config(function ($stateProvid
       views: {
         "content@app": {
           templateUrl: '/views/warpol.html',
-//          controller: function($scope){
-//          },
-          controller:  'warpolController',
+          controller:  'dropZoneController as app',
         }
       },
       resolve: {
@@ -220,7 +218,7 @@ angular.module('app.dummyapp',      ['ui.router']).config(function ($stateProvid
       views: {
         "content@app": {
           templateUrl: '/views/dummyapp.html',
-//                    controller: 'warpolController',
+          controller: 'dummyAppController',
         }
       },
       resolve: {

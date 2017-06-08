@@ -641,7 +641,8 @@ angular.module('app.forms').config(function ($stateProvider) {
           controller: function($scope){
             $scope.dropzoneConfig = {
               'options': { // passed into the Dropzone constructor
-                'url': '/api/plug'
+                'url': '/uploadSalesFiles',
+                'method'  : 'GET',
               },
               'eventHandlers': {
                 'sending': function (file, xhr, formData) {

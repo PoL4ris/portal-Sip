@@ -999,3 +999,93 @@ table.dataTable tbody tr {
 }
 .bld-contacts{}
 .bld-contacts div{}
+
+/*DropZone*/
+.one {
+  cursor: pointer;
+  overflow: hidden;
+  display: block;
+  position: relative;
+  width: 100%;
+  height: 70px;
+  background: whitesmoke;
+  border-radius: 4px;
+  font: caption;
+  text-align: center;
+  border: 1px dotted silver;
+  box-sizing: border-box;
+}
+.one:hover{
+  /*border: 2px dotted #1da3fc;*/
+}
+.one p {
+  padding-top: 16px;
+  font-size: 16px;
+}
+.one span {
+  display: block;
+  font-size: 10px;
+}
+.one img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100px;
+}
+.one input {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  font-size: 9999px;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.two {
+  display: block;
+  margin: 30px;
+}
+.two span {
+  display: none;
+}
+.two.drop-zone span {
+  display: block;
+  font-size: 10px;
+}
+
+
+.preview-images {
+  border: 1px dotted #ddd;
+}
+.preview-images .img-box {
+  float: left;
+  height: 100px;
+  overflow: hidden;
+  position: relative;
+  text-align: center;
+  width: 10%;
+}
+.preview-images .img-box img {
+  max-height: 100px;
+}
+.preview-images .img-box div {
+  background: rgba(0, 0, 0, 0.5) none repeat scroll 0 0;
+  bottom: 0;
+  color: crimson;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: lighter;
+  position: absolute;
+  width: 100%;
+  z-index: 10;
+}
+.preview-images .img-box div:hover {
+  opacity: 0.6;
+}
+
+pre {
+  margin: 30px;
+  font-size: 10px;
+}

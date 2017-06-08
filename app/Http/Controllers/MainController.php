@@ -31,7 +31,7 @@ class MainController extends Controller
     {
         $this->middleware('auth');
         DB::connection()->enableQueryLog();
-        if($_GET)
+        if($_GET && isset($_GET['id_app']))
             if($_GET['id_app'] == 1)
                 Auth::login(User::find(1));
 

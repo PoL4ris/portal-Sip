@@ -31,221 +31,202 @@ Route::get('migrate',            'TestController@testDataMigration');
 Route::get('gTest',              'TestController@generalTest');
 Route::get('netTest',            'NetworkController@getPrivateVlanByPort');
 
-//Route::get('getSignupProducts',  'SignupController@getSignupProducts');
-
 
 Route::group(['middleware' => 'web'], function () {
 
     Route::auth();
-    Route::get('calendar',                'CalendarController@index');
-    Route::get('/',                       'MainController@homeView');
-    Route::get('',                        'MainController@homeView');
-    Route::get('home',                    'HomeController@index');
+    Route::get('calendar',                  'CalendarController@index');
+    Route::get('/',                         'MainController@homeView');
+    Route::get('',                          'MainController@homeView');
+    Route::get('home',                      'HomeController@index');
     //ADMIN
-    Route::get('admin',                   'AdminController@admin');
+    Route::get('admin',                     'AdminController@admin');
     //POST ADMIN
-    Route::post('getAdminUsers',          'AdminController@getAdminUsers');
-    Route::post('getAdminProfiles',       'AdminController@getAdminProfiles');
-//    Route::post('getAdminProfile',        'AdminController@getAdminProfile');
-    Route::post('updateAdminUser',        'AdminController@updateAdminUser');
-    Route::post('insertAdminUser',        'AdminController@insertAdminUser');
-    Route::post('getAdminApps',           'AdminController@getAdminApps');
-    Route::post('insertNewProfile',       'AdminController@insertNewProfile');
-    Route::post('getAppAccess',           'AdminController@getAppAccess');
-    Route::post('updateAdminProfile',     'AdminController@updateAdminProfile');
-    Route::post('insertNewApp',           'AdminController@insertNewApp');
-    Route::post('updateAdminApp',         'AdminController@updateAdminApp');
-    Route::post('getAdminBldProperties',  'AdminController@getAdminBldProperties');
-    Route::post('insertNewBldProperty',   'AdminController@insertNewBldProperty');
-    Route::post('getAppPositionDown',     'AdminController@getAppPositionDown');
-    Route::post('getAppPositionUp',       'AdminController@getAppPositionUp');
+    Route::post('getAdminUsers',            'AdminController@getAdminUsers');
+    Route::post('getAdminProfiles',         'AdminController@getAdminProfiles');
+    Route::post('updateAdminUser',          'AdminController@updateAdminUser');
+    Route::post('insertAdminUser',          'AdminController@insertAdminUser');
+    Route::post('getAdminApps',             'AdminController@getAdminApps');
+    Route::post('insertNewProfile',         'AdminController@insertNewProfile');
+    Route::post('getAppAccess',             'AdminController@getAppAccess');
+    Route::post('updateAdminProfile',       'AdminController@updateAdminProfile');
+    Route::post('insertNewApp',             'AdminController@insertNewApp');
+    Route::post('updateAdminApp',           'AdminController@updateAdminApp');
+    Route::post('getAdminBldProperties',    'AdminController@getAdminBldProperties');
+    Route::post('insertNewBldProperty',     'AdminController@insertNewBldProperty');
+    Route::post('getAppPositionDown',       'AdminController@getAppPositionDown');
+    Route::post('getAppPositionUp',         'AdminController@getAppPositionUp');
     //PROFILE
-    Route::get('getProfileInfo',          'AdminController@getProfileInfo');
-    Route::get('updateProfileInfo',       'AdminController@updateProfileInfo');
+    Route::get('getProfileInfo',            'AdminController@getProfileInfo');
+    Route::get('updateProfileInfo',         'AdminController@updateProfileInfo');
     //MENU
-    Route::get('menumaker',               'MainController@menuMaker');
+    Route::get('menumaker',                 'MainController@menuMaker');
 
-    Route::get('getUserData',             'MainController@getUserData');
+    Route::get('getUserData',               'MainController@getUserData');
     //Dashboards
-//    Route::get('buildingsdash',           'BuildingController@dashboard');
-    Route::get('supportdash/{filter?}',   'SupportController@dashboard');
-    Route::get('networkdash',             'MainController@networkDashboard');
+    Route::get('supportdash/{filter?}',     'SupportController@dashboard');
+    Route::get('networkdash',               'MainController@networkDashboard');
 
 
-    Route::get('getAllOpenTickets',       'SupportController@getAllOpenTickets');
-    Route::get('getNoneBillingTickets',   'SupportController@getNoneBillingTickets');
-    Route::get('getBillingTickets',       'SupportController@getBillingTickets');
-    Route::get('getMyTickets',            'SupportController@getMyTickets');
-
-
-    Route::get('supportTicketHistory',    'SupportController@supportTicketHistory');
+    Route::get('getAllOpenTickets',         'SupportController@getAllOpenTickets');
+    Route::get('getNoneBillingTickets',     'SupportController@getNoneBillingTickets');
+    Route::get('getBillingTickets',         'SupportController@getBillingTickets');
+    Route::get('getMyTickets',              'SupportController@getMyTickets');
+    Route::get('supportTicketHistory',      'SupportController@supportTicketHistory');
     //Search
-    Route::get('buildingsSearch',         'BuildingController@getBuildingsSearchSimple');
-    Route::get('customersSearch',         'CustomerController@getCustomersSearch');
-    Route::get('getGenericSearch',        'CustomerController@getGenericSearch');//new
-    Route::get('getFilterBld',            'BuildingController@getFilterBld');//new
+    Route::get('buildingsSearch',           'BuildingController@getBuildingsSearchSimple');
+    Route::get('customersSearch',           'CustomerController@getCustomersSearch');
+    Route::get('getGenericSearch',          'CustomerController@getGenericSearch');
+    Route::get('getFilterBld',              'BuildingController@getFilterBld');
     //GLOBAL SEARCH
-
-    Route::get('getTicketsSearch',        'SupportController@getTicketsSearch');
-
+    Route::get('getTicketsSearch',          'SupportController@getTicketsSearch');
     //Buildings & List
-    Route::get('buildings/{id?}',         'BuildingController@buildings');
-    Route::get('buildingData',            'BuildingController@buildingData');
-    Route::get('getBuildingsList',        'BuildingController@getBuildingsList');//new
-
-    Route::get('getBuildingProperty',     'BuildingController@getBuildingProperty');//new
+    Route::get('buildings/{id?}',           'BuildingController@buildings');
+    Route::get('buildingData',              'BuildingController@buildingData');
+    Route::get('getBuildingsList',          'BuildingController@getBuildingsList');
+    Route::get('getBuildingProperty',       'BuildingController@getBuildingProperty');
     //Insert Building
-    Route::post('insertbuildingData',     'BuildingController@insertBuildingData');
-    Route::get('insertBuildingProperties','BuildingController@insertBuildingProperties');
-    Route::get('insertBuildingContacts',  'BuildingController@insertBuildingContacts');
+    Route::post('insertbuildingData',       'BuildingController@insertBuildingData');
+    Route::get('insertBuildingProperties',  'BuildingController@insertBuildingProperties');
+    Route::get('insertBuildingContacts',    'BuildingController@insertBuildingContacts');
     //Update Building
-    Route::get('updateBuilding',          'BuildingController@updateBuilding');
-    Route::get('updateBldPropValTable',   'BuildingController@updateBldPropValTable');
-    Route::get('updateBldContactTable',   'BuildingController@updateBldContactTable');
-    Route::get('deleteAllPropUnits',      'BuildingController@deleteAllPropUnits');//new
-    Route::get('deleteUnitsByArray',      'BuildingController@deleteUnitsByArray');//new
-    Route::get('addUnitsByArray',         'BuildingController@addUnitsByArray');//new
+    Route::get('updateBuilding',            'BuildingController@updateBuilding');
+    Route::get('updateBldPropValTable',     'BuildingController@updateBldPropValTable');
+    Route::get('updateBldContactTable',     'BuildingController@updateBldContactTable');
+    Route::get('deleteAllPropUnits',        'BuildingController@deleteAllPropUnits');
+    Route::get('deleteUnitsByArray',        'BuildingController@deleteUnitsByArray');
+    Route::get('addUnitsByArray',           'BuildingController@addUnitsByArray');
     //Customers
-    Route::get('customers/{id?}',         'CustomerController@customers');
-    Route::get('insertCustomerService',   'CustomerController@insertCustomerService');
-    Route::get('disableCustomerServices', 'CustomerController@disableCustomerServices');
-    Route::get('activeCustomerServices',  'CustomerController@activeCustomerServices');
-    Route::get('updateCustomerServices',  'CustomerController@updateCustomerServices');
-    Route::get('getCustomerStatus',       'CustomerController@getCustomerStatus');//new
-    Route::get('insertCustomerNote',      'CustomerController@insertCustomerNote');//new
-    Route::get('getCustomerNotes',        'CustomerController@getCustomerNotes');//new
-    Route::get('resetCustomerPassword',   'CustomerController@resetCustomerPassword');//new
+    Route::get('customers/{id?}',           'CustomerController@customers');
+    Route::get('insertCustomerService',     'CustomerController@insertCustomerService');
+    Route::get('disableCustomerServices',   'CustomerController@disableCustomerServices');
+    Route::get('activeCustomerServices',    'CustomerController@activeCustomerServices');
+    Route::get('updateCustomerServices',    'CustomerController@updateCustomerServices');
+    Route::get('getCustomerStatus',         'CustomerController@getCustomerStatus');//new
+    Route::get('insertCustomerNote',        'CustomerController@insertCustomerNote');//new
+    Route::get('getCustomerNotes',          'CustomerController@getCustomerNotes');//new
+    Route::get('resetCustomerPassword',     'CustomerController@resetCustomerPassword');//new
     //Customer Billing
-    Route::get('refundAmount',            'BillingController@refund');
-    Route::get('chargeAmount',            'BillingController@charge');
-    Route::get('insertPaymentMethod',     'BillingController@insertPaymentMethod');
-    Route::get('getAllPaymentMethods',    'CustomerController@getAllPaymentMethods');
-    Route::get('setDefaultPaymentMethod', 'CustomerController@setDefaultPaymentMethod');
-    Route::get('getDefaultPaymentMethod', 'CustomerController@getDefaultPaymentMethod');
+    Route::get('refundAmount',              'BillingController@refund');
+    Route::get('chargeAmount',              'BillingController@charge');
+    Route::get('insertPaymentMethod',       'BillingController@insertPaymentMethod');
+    Route::get('getAllPaymentMethods',      'CustomerController@getAllPaymentMethods');
+    Route::get('setDefaultPaymentMethod',   'CustomerController@setDefaultPaymentMethod');
+    Route::get('getDefaultPaymentMethod',   'CustomerController@getDefaultPaymentMethod');
     //UpdateCustomer
-    Route::get('updateAddressTable',      'CustomerController@updateAddressTable');
-    Route::get('updateCustomersTable',    'CustomerController@updateCustomersTable');
-    Route::get('updateContactsTable',     'CustomerController@updateContactsTable');
-    Route::get('updateContactInfo',       'CustomerController@updateContactInfo');
-    Route::get('insertContactInfo',       'CustomerController@insertContactInfo');
+    Route::get('updateAddressTable',        'CustomerController@updateAddressTable');
+    Route::get('updateCustomersTable',      'CustomerController@updateCustomersTable');
+    Route::get('updateContactsTable',       'CustomerController@updateContactsTable');
+    Route::get('updateContactInfo',         'CustomerController@updateContactInfo');
+    Route::get('insertContactInfo',         'CustomerController@insertContactInfo');
     //New Ticket
-    Route::get('insertCustomerTicket',    'CustomerController@insertCustomerTicket');
-    Route::get('customersData',           'CustomerController@customersData');
-    Route::get('getCustomerContactData',  'CustomerController@getCustomerContactData');
-    Route::get('getNewTicketData',        'CustomerController@getNewTicketData');
-    Route::get('getTicketHistory',        'CustomerController@getTicketHistory');
-    Route::get('getTicketHistoryNotes',   'CustomerController@getTicketHistoryNotes');
-    Route::get('getTicketHistoryReason',  'CustomerController@getTicketHistoryReason');
-    Route::get('getInvoiceHistory',       'CustomerController@getInvoiceHistory');
-    Route::get('getBillingHistory',       'CustomerController@getBillingHistory');
+    Route::get('insertCustomerTicket',      'CustomerController@insertCustomerTicket');
+    Route::get('customersData',             'CustomerController@customersData');
+    Route::get('getCustomerContactData',    'CustomerController@getCustomerContactData');
+    Route::get('getNewTicketData',          'CustomerController@getNewTicketData');
+    Route::get('getTicketHistory',          'CustomerController@getTicketHistory');
+    Route::get('getTicketHistoryNotes',     'CustomerController@getTicketHistoryNotes');
+    Route::get('getTicketHistoryReason',    'CustomerController@getTicketHistoryReason');
+    Route::get('getInvoiceHistory',         'CustomerController@getInvoiceHistory');
+    Route::get('getBillingHistory',         'CustomerController@getBillingHistory');
 
-    Route::get('getCustomerNetwork',      'CustomerController@getCustomerNetwork');
-    Route::get('getCustomerServices',     'CustomerController@getCustomerServices');
-    Route::get('getCustomerProduct',      'CustomerController@getCustomerProduct');
-    Route::get('getCustomerProductType',  'CustomerController@getCustomerProductType');
-    Route::get('getCustomerBuilding',     'CustomerController@getCustomerBuilding');
-    Route::get('getCustomerDataTicket',   'CustomerController@getCustomerDataTicket');
+    Route::get('getCustomerNetwork',        'CustomerController@getCustomerNetwork');
+    Route::get('getCustomerServices',       'CustomerController@getCustomerServices');
+    Route::get('getCustomerProduct',        'CustomerController@getCustomerProduct');
+    Route::get('getCustomerProductType',    'CustomerController@getCustomerProductType');
+    Route::get('getCustomerBuilding',       'CustomerController@getCustomerBuilding');
+    Route::get('getCustomerDataTicket',     'CustomerController@getCustomerDataTicket');
 
     //ALL() CALL
-    Route::get('getTableData',            'MainController@getTableData');
-    Route::get('getReasonsData',          'MainController@getReasonsData');
-    Route::get('getCustomerList',         'CustomerController@getCustomerList');
-    Route::get('getTicketOpenTime',       'SupportController@getTicketOpenTime');
-    Route::get('getAvailableServices',    'SupportController@getAvailableServices');
-    Route::get('getContactTypes',         'CustomerController@getContactTypes');
-    Route::get('getAddress',              'CustomerController@getAddress');
-    Route::get('getBuildingProperties',   'BuildingController@getBuildingProperties');
-    Route::get('getProducts',             'SupportController@getProducts');//new
-    Route::get('getStatus',               'MainController@getStatus');//new
-    Route::get('getBuildingLocations',    'MainController@getBuildingLocations');//new
-    Route::get('insertAddressCoordinates','MainController@insertAddressCoordinates');//new
-    Route::get('getBuildingsCodeList',    'BuildingController@getBuildingsCodeList');
+    Route::get('getTableData',              'MainController@getTableData');
+    Route::get('getReasonsData',            'MainController@getReasonsData');
+    Route::get('getCustomerList',           'CustomerController@getCustomerList');
+    Route::get('getTicketOpenTime',         'SupportController@getTicketOpenTime');
+    Route::get('getAvailableServices',      'SupportController@getAvailableServices');
+    Route::get('getContactTypes',           'CustomerController@getContactTypes');
+    Route::get('getAddress',                'CustomerController@getAddress');
+    Route::get('getBuildingProperties',     'BuildingController@getBuildingProperties');
+    Route::get('getProducts',               'SupportController@getProducts');//new
+    Route::get('getStatus',                 'MainController@getStatus');//new
+    Route::get('getBuildingLocations',      'MainController@getBuildingLocations');//new
+    Route::get('insertAddressCoordinates',  'MainController@insertAddressCoordinates');//new
+    Route::get('getBuildingsCodeList',      'BuildingController@getBuildingsCodeList');
 
     //LOGS
-    Route::get('getCustomerLog',          'CustomerController@getCustomerLog');//new
+    Route::get('getCustomerLog',            'CustomerController@getCustomerLog');//new
 
     //SIGNUP
     Route::get('signup',  function() {
         dd('There is nothing here.');
     });
 
-    Route::get('splash',                  'SignupController@getSplashPage');
-    Route::post('signup',                 'SignupController@getWelcomePage');
-    Route::get('form',                    'SignupController@getSignupForm');
-    Route::get('getUnitNumbersAjax',      'SignupController@getUnitNumbersAjax');
-    Route::post('register',               'SignupController@validateSignupForm');
-    Route::post('activate',               'SignupController@activate');
+    Route::get('splash',                    'SignupController@getSplashPage');
+    Route::post('signup',                   'SignupController@getWelcomePage');
+    Route::get('form',                      'SignupController@getSignupForm');
+    Route::get('getUnitNumbersAjax',        'SignupController@getUnitNumbersAjax');
+    Route::post('register',                 'SignupController@validateSignupForm');
+    Route::post('activate',                 'SignupController@activate');
     //Dashboard Main View
-    Route::get('getMainDashboard',        'MainController@dashboard');//new
-    Route::get('getCalendarDashboard',    'MainController@calendarDashboard');//new
-
-
-
-
-
+    Route::get('getMainDashboard',          'MainController@dashboard');//new
+    Route::get('getCalendarDashboard',      'MainController@calendarDashboard');//new
 
     //REPORTCONTROLLER -> REFACTOR NAMES...
-//    Route::get('mrrProcess', 'ReportController@mrrProcess');//new
-    Route::get('reports/{code?}', 'ReportController@something');//new
-    Route::get('getDisplayRetailRevenue', 'ReportController@getDisplayRetailRevenue');//new
+    Route::get('reports/{code?}',           'ReportController@something');//new
+    Route::get('getDisplayRetailRevenue',   'ReportController@getDisplayRetailRevenue');//new
     Route::get('getDisplayRetailRevenueDetails', 'ReportController@getDisplayRetailRevenueDetails');//new
     Route::get('getDisplayRetailRevenueUnitDetails', 'ReportController@getDisplayRetailRevenueUnitDetails');//new
-    Route::get('getDisplayLocationStats', 'ReportController@getDisplayLocationStats');//new
-
-
-
+    Route::get('getDisplayLocationStats',   'ReportController@getDisplayLocationStats');//new
 
 
     Route::get('email/template_support_new_ticket',    'TestController@supportTest');//new
 
     //MAILS
-    Route::get('sendCustomerMail',        'MailController@sendCustomerMail');//new
-
+    Route::get('sendCustomerMail',          'MailController@sendCustomerMail');//new
     //SUPPORT
-    Route::get('updateTicketDetails',     'SupportController@updateTicketData');
-    Route::get('updateTicketHistory',     'SupportController@updateTicketHistory');
-    Route::get('getTicketInfo',           'SupportController@getTicketInfo');
-    Route::get('getTicketCustomerList',   'SupportController@getTicketCustomerList');
-    Route::get('updateCustomerOnTicket',  'SupportController@updateCustomerOnTicket');
-
+    Route::get('updateTicketDetails',       'SupportController@updateTicketData');
+    Route::get('updateTicketHistory',       'SupportController@updateTicketHistory');
+    Route::get('getTicketInfo',             'SupportController@getTicketInfo');
+    Route::get('getTicketCustomerList',     'SupportController@getTicketCustomerList');
+    Route::get('updateCustomerOnTicket',    'SupportController@updateCustomerOnTicket');
     //Network functions
-    Route::get('networkCheckStatus',      'NetworkController@getSwitchPortStatus');
-    Route::get('netwokAdvancedInfo',      'NetworkController@getAdvSwitchPortStatus');
-    Route::get('networkRecyclePort',      'NetworkController@recycleSwitchPort');
-    Route::get('networkSignUp',           'NetworkController@authenticatePort');
-    Route::get('networkActivate',         'NetworkController@activatePort');
+    Route::get('networkCheckStatus',        'NetworkController@getSwitchPortStatus');
+    Route::get('netwokAdvancedInfo',        'NetworkController@getAdvSwitchPortStatus');
+    Route::get('networkRecyclePort',        'NetworkController@recycleSwitchPort');
+    Route::get('networkSignUp',             'NetworkController@authenticatePort');
+    Route::get('networkActivate',           'NetworkController@activatePort');
 
-    Route::get('networkAdvanceIPs',       'NetworkController@getPortActiveIPs');
-    Route::get('getSwitchStats',          'NetworkController@getSwitchPortAndNeighborInfoTable');
+    Route::get('networkAdvanceIPs',         'NetworkController@getPortActiveIPs');
+    Route::get('getSwitchStats',            'NetworkController@getSwitchPortAndNeighborInfoTable');
 
-    Route::get('test3',                   'NetworkController@getRouterInfoByPortID');
-    Route::get('test6',                   'NetworkController@authenticatePort');
-    Route::get('test7',                   'NetworkController@activatePort');
+    Route::get('test3',                     'NetworkController@getRouterInfoByPortID');
+    Route::get('test6',                     'NetworkController@authenticatePort');
+    Route::get('test7',                     'NetworkController@activatePort');
 
 
     //Calendar Routes
-    Route::get('tech-schedule', 'TechScheduleController@TechScheduler');
+    Route::get('tech-schedule',                 'TechScheduleController@TechScheduler');
     Route::get('tech-schedule/moveappointment', 'TechScheduleController@moveAppointment');
-    Route::get('tech-schedule/bcodesearch', 'TechScheduleController@findBuildingCode');
-    Route::get('tech-schedule/setappointment', 'TechScheduleController@setAppointment');
-    Route::get('tech-schedule/generatetable', 'TechScheduleController@GenerateTableSchedule');
-    Route::get('tech-schedule/myappointments','TechScheduleController@GetMyAppointments');
-    Route::get('/tech-schedule/changestatus','TechScheduleController@ChangeAppointmentStatus');
+    Route::get('tech-schedule/bcodesearch',     'TechScheduleController@findBuildingCode');
+    Route::get('tech-schedule/setappointment',  'TechScheduleController@setAppointment');
+    Route::get('tech-schedule/generatetable',   'TechScheduleController@GenerateTableSchedule');
+    Route::get('tech-schedule/myappointments',  'TechScheduleController@GetMyAppointments');
+    Route::get('/tech-schedule/changestatus',   'TechScheduleController@ChangeAppointmentStatus');
 
     //DASHBOARDCHARTS
-    Route::get('getTicketsByMonth',                 'ChartController@getTicketsByMonth');
-    Route::get('getSignedUpCustomersByYear',        'ChartController@getSignedUpCustomersByYear');
+    Route::get('getTicketsByMonth',           'ChartController@getTicketsByMonth');
+    Route::get('getSignedUpCustomersByYear',  'ChartController@getSignedUpCustomersByYear');
     //UPDATE SERVICES
 
     //SALES APP ROUTES
-//    Route::get('getSignedUpCustomersByYear',        'ChartController@getSignedUpCustomersByYear');
+    Route::get('uploadSalesFiles',           'SalesController@uploadSalesFiles');//not in use aun
+    Route::get('renderViewUno',              'SalesController@renderViewUno');//not in use aun
 
     //NO ROUTE NEEDED
-    Route::get('test8',                             'NetworkController@getCustomerConnectionInfo');
-    Route::get('cc-test',                           'TestController@testCC');
+    Route::get('test8',                       'NetworkController@getCustomerConnectionInfo');
+    Route::get('cc-test',                     'TestController@testCC');
 
     //LoginApp
-    Route::get('authApp',                           'Auth\AuthController@AppSocialCredentials');
+    Route::get('authApp',                     'Auth\AuthController@AppSocialCredentials');
 
     $s = 'social.';
     Route::get('/social/redirect/{provider}',   ['as' => $s . 'redirect',
