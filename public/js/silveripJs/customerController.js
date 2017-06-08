@@ -458,11 +458,11 @@ app.controller('customerNetworkController',         function ($scope, $http){
   $http.get("getCustomerNetwork", {params:{'id':$scope.idCustomer}})
     .then(function (response) {
       $scope.customerNetwork = response.data[0];
+//      console.log($scope.customerNetwork);
 
-//console.log($scope.customerNetwork);
+
 
       if(response.data.length > 0){
-//             console.log(response.data);
         networkServices(0, true);
       }
     });
