@@ -4,40 +4,60 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Address extends Model
-{
+class Address extends Model {
+
     protected $table = 'address';
 
-    public function customer() {
+    public function billingTransactionLogs()
+    {
+        return $this->hasMany('App\Models\BillingTransactionLog', 'id_customers', 'id_customers');
+    }
+
+    public function billingTransactionLogsByMonth($month, $year)
+    {
+        return $this->hasMany('App\Models\BillingTransactionLog', 'id_customers', 'id_customers')
+            ->where('date_time', 'LIKE', $year.'-'.$month.'-%');
+    }
+
+    public function customer()
+    {
         return $this->hasOne('App\Models\Customer', 'id', 'id_customers');
     }
 
-    public function building() {
+    public function building()
+    {
         return $this->hasOne('App\Models\Building', 'id', 'id_buildings');
     }
 
-    public function ticket() {
+    public function ticket()
+    {
         return $this->belongsTo('App\Models\Ticket', 'id_customers', 'id_customers', 'App\Models\Customer');
     }
 
-    public function tickets() {
-      return $this->hasMany('App\Models\Ticket', 'id_customers', 'id_buildings')->where('status', '!=', 'closed');
+    public function tickets()
+    {
+        return $this->hasMany('App\Models\Ticket', 'id_customers', 'id_buildings')->where('status', '!=', 'closed');
     }
 
-    public function buildings() {
+    public function buildings()
+    {
         return $this->belongsTo('App\Models\Building', 'id_buildings');
     }
 
-    public function customers() {
+    public function customers()
+    {
         return $this->belongsTo('App\Models\Customer', 'id_customers');
     }
 
-    public function customerWhere($id){
+    public function customerWhere($id)
+    {
         $where = $this->customers;
+
         return $where->where('id', $id);
     }
 
-    public function contacts() {
+    public function contacts()
+    {
         return $this->hasMany('App\Models\Contact', 'id_customers');
     }
 }

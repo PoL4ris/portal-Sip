@@ -61,7 +61,8 @@
         ]
     },
     "config": {
-        "preferred-install": "dist"
+        "preferred-install": "dist",
+        "http": true
     },
     "repositories": {
         "repo-name": {

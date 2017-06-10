@@ -9,6 +9,7 @@ use App\Http\Requests;
 use App\Extensions\SIPBilling;
 use App\Extensions\SIPSignup;
 use App\Extensions\SIPNetwork;
+use App\Extensions\SIPReporting;
 use App\Extensions\BillingHelper;
 use App\Extensions\CiscoSwitch;
 use App\Extensions\DataMigrationUtils;
@@ -42,8 +43,8 @@ use Carbon\Carbon;
 //use ActivityLogs;
 use Symfony\Component\Console\Helper\ProgressBar;
 
-class TestController extends Controller
-{
+class TestController extends Controller {
+
     public function __construct()
     {
         //        $this->middleware('auth');
@@ -137,7 +138,7 @@ class TestController extends Controller
 
         dd($ticket2);
     }
-    
+
     public function supportTest()
     {
 
@@ -284,7 +285,8 @@ class TestController extends Controller
         $z = 0;
         $p = 0;
 
-        for ($p = 0; $z < $a; $p++) {
+        for ($p = 0; $z < $a; $p ++)
+        {
 
 
             //        print 'SERIE-->' . $p . '<br>';
@@ -292,7 +294,8 @@ class TestController extends Controller
             $y = $x;
             $x = $z;
 
-            if ($z % 2 == 0) {
+            if ($z % 2 == 0)
+            {
                 $b = $b + $z;
                 print '|----- <strong>' . $b . '</strong> -----|<br>';
             }
@@ -409,6 +412,21 @@ class TestController extends Controller
     public function generalTest()
     {
 
+        $address = Address::whereNull('id_customers')
+            ->whereNotNull('id_buildings')
+            ->where('code', '125J')
+            ->first();
+
+        dd($address->billingTransactionLogsByMonth('04', '2017')->get());
+
+//                        with('billingTransactionLog')
+        $billingTransactionLog = BillingTransactionLog::with('customer.building')->find(40); //->->get();
+        dd($billingTransactionLog);
+
+        $reportingHelper = new SIPReporting();
+        dd($reportingHelper->getBuildingMrrData('125J', 4, 2017));
+
+
         $building = Building::find(30);
 
         dd($building->activeInternetProducts);
@@ -433,13 +451,13 @@ class TestController extends Controller
                 'products.frequency')
             ->groupby('products.name')
             ->get();
-dd($subbedProducts);
+        dd($subbedProducts);
 
         foreach ($subbedProducts as $product)
         {
             $subbedProductsArr[$product->id] = $product;
         }
-dd($subbedProductsArr);
+        dd($subbedProductsArr);
         foreach ($allProducts as $key => $product)
         {
             if (array_key_exists($key, $subbedProductsArr))
@@ -454,7 +472,6 @@ dd($subbedProductsArr);
         dd($subbedProducts);
 
 
-
         $building = Building::find(28);
 
         dd($building->allAddresses);
@@ -466,7 +483,7 @@ dd($subbedProductsArr);
         dd($lastTicketNumber);
 
         $ticketNumber = explode('ST-', $lastTicketNumber);
-        $ticketNumberCast = (int)$ticketNumber[1] + 1;
+        $ticketNumberCast = (int) $ticketNumber[1] + 1;
         $defaultUserId = 10;
 
         $newTicket = new Ticket;
@@ -514,8 +531,9 @@ dd($subbedProductsArr);
 
         dd($myProductPropertyValues->buildingProducts->pluck('product')); //->pluck('propertyValues'));
 
-        $products;
-        $building->load(['buildingProducts.product' => function ($q) use (&$products) {
+//        $products;
+        $building->load(['buildingProducts.product' => function ($q) use (&$products)
+        {
             $products = $q->with('propertyValues')->get(); //->unique();
         }]);
 

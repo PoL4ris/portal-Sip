@@ -39,8 +39,8 @@ class GenerateMrrReport extends Command
     public function handle()
     {
         $this->info('Starting data migration');
-        $reportingHelper = new SIPReporting();
-        $reportingHelper->generateMrrReport();
+        $reportingHelper = new SIPReporting(true);
+        $reportingHelper->generateMrrReportJob();
         $this->info('Done');
     }
 }
