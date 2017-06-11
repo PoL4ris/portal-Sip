@@ -385,9 +385,15 @@ class TestController extends Controller
         //        dd($billingHelper->getMode());
 
 
-//        $building = Building::find(8);
-//        dd($building->activeCustomers->take(5));
+//        $building = Building::with('activeCustomerProducts.product')->find(28);
+//        $activeCustomerProducts = $building->activeCustomerProducts;
+//        dd($activeCustomerProducts);
 //
+//        $products = $activeCustomerProducts->pluck('product');
+//        dd($building->activeCustomers->take(5));
+//        dd($building->customerProducts);
+//        dd($products->pluck('frequency'));
+
 //        $customerProduct = CustomerProduct::find(4991);
 //        dd($customerProduct->address);
 //
@@ -396,10 +402,10 @@ class TestController extends Controller
 
         $billingHelper = new BillingHelper();
 
-        $billingHelper->generateResidentialChargeRecords();
+//        $billingHelper->generateResidentialChargeRecords();
 
 //        dd($billingHelper->getCustomersWithChargableProducts(28));
-//        dd($billingHelper->getChargeableCustomerProductsByBuildingId(28));
+        dd($billingHelper->getChargeableCustomerProductsByBuildingId(28));
 //        dd($billingHelper->getChargeableCustomerProducts2(null,28));
 
 

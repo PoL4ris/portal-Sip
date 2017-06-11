@@ -18,6 +18,21 @@ class Building extends Model {
         return $this->belongsToMany('App\Models\Customer', 'address', 'id_buildings', 'id_customers');
     }
 
+    public function customerProducts()
+    {
+        return $this->hasManyThrough(
+            'App\Models\CustomerProduct', 'App\Models\Address',
+            'id_buildings', 'id_address', 'id'
+        );
+    }
+
+    public function activeCustomerProducts()
+    {
+        return $this->hasManyThrough(
+            'App\Models\CustomerProduct', 'App\Models\Address',
+            'id_buildings', 'id_address', 'id'
+        )->where('id_status', config('const.status.active'));
+    }
 
     public function address()
     {
