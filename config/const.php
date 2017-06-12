@@ -31,6 +31,12 @@ return [
         'work_phone'   => 4,
         'email'        => 5,
     ],
+    'customer_product_charge_status' => [
+        'none'    => 0,
+        'charged' => 1,
+        'paid'    => 2,
+        'failed'  => 3,
+    ],
     'charge_type'       => [
         'charge'   => 'charge',
         'payment'  => 'payment',
@@ -42,8 +48,16 @@ return [
     'charge_status'     => [
         'none'      => 0,
         'pending'   => 1,
-        'processed' => 2,
-        'failed'    => 3,
+        'invoiced' => 2,
+        'paid'     => 3,
+        'failed'   => 4,
+    ],
+    'invoice_status'                 => [
+        'none'    => 0,
+        'open'    => 1,
+        'pending' => 2,
+        'paid'    => 3,
+        'failed'  => 4,
     ],
     'building_property' => [
         'type'              => '1',
