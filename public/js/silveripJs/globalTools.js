@@ -314,10 +314,7 @@ app.controller('globalToolsCtl',                    function ($scope, $http, $co
   $scope.convertDate          = function(valor){
     return new Date(valor);
   }
-  $scope.warpol = function (warp){
-    console.log('Esto entro en Warpol y mando :');
-    console.log(warp);
-  }
+
 
 
 
@@ -338,3 +335,5 @@ function getFormValues(id){
 app.controller('userAuthController',                function ($scope){
   $scope.userDataAuth = JSON.parse($('#auth-user').val());
 })
+
+

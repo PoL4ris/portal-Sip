@@ -269,7 +269,8 @@ class SupportController extends Controller
         $ticketHistoryRecord->save();
 
         $updateTicket = Ticket::find($request->id);
-        $updateTicket->status = $request->status;
+        $updateTicket->id_users   = Auth::user()->id;
+        $updateTicket->status     = $request->status;
         $updateTicket->updated_at = $ticketHistoryRecord->created_at;
         $updateTicket->save();
 
@@ -294,8 +295,8 @@ class SupportController extends Controller
     {
         $request['ticketId'] = $request->id;
         $ticket = Ticket::find($request->id);
-        $ticket->id_reasons = $request->id_reasons;
-        $ticket->status     = $request->status;
+        $ticket->id_reasons  = $request->id_reasons;
+        $ticket->status      = $request->status;
         $ticket->id_users_assigned = $request->id_users_assigned;
         $ticket->save();
 
