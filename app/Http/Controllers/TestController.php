@@ -405,9 +405,9 @@ class TestController extends Controller
 //        $billingHelper->generateResidentialChargeRecords();
 
 //        dd($billingHelper->getCustomersWithChargableProducts(28));
-        dd($billingHelper->getChargeableCustomerProductsByBuildingId(28));
+//        dd($billingHelper->getChargeableCustomerProductsByBuildingId(28));
 //        dd($billingHelper->getChargeableCustomerProducts2(null,28));
-
+        dd($billingHelper->invoicePendingCharges());
 
 //        dd($billingHelper->generateResidentialInvoiceRecords());
         //        $billingHelper->processAutopayInvoices();

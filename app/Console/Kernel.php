@@ -19,6 +19,7 @@ class Kernel extends ConsoleKernel
         Commands\UpdateFromLegacyDatabase::class,
         Commands\GeneralTasks::class,
         Commands\GenerateCustomerCharges::class,
+        Commands\InvoicePendingCharges::class,
     ];
 
     /**
