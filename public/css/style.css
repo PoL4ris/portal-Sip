@@ -1104,6 +1104,12 @@ table.dataTable tbody tr {
   max-height: 150px;
   min-height: 50px;
 }
+.label-refund, .label-charge{
+  position: absolute;
+  top:-20px;
+  left:0;
+}
+
 pre {
   margin: 30px;
   font-size: 10px;

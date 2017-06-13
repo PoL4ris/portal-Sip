@@ -365,11 +365,18 @@ class AdminController extends Controller
     public function getChargesStats()
     {
         $todayRecords = Charge::where('status', config('const.charge_status.pending_approval'))
-            ->where('processing_type', config('const.type.manual_pay'))->whereRaw('created_at > DATE_SUB(NOW(), INTERVAL 1 DAY)')->orderBy('created_at', 'desc')->get();
+                                ->where('processing_type', config('const.type.manual_pay'))
+                                ->whereRaw('created_at > DATE_SUB(NOW(), INTERVAL 1 DAY)')
+                                ->orderBy('created_at', 'desc')->get();
         $weekRecords  = Charge::where('status', config('const.charge_status.pending_approval'))
-            ->where('processing_type', config('const.type.manual_pay'))->whereRaw('created_at > DATE_SUB(NOW(), INTERVAL 1 WEEK)')->orderBy('created_at', 'desc')->get();
+                                ->where('processing_type', config('const.type.manual_pay'))
+                                ->whereRaw('created_at > DATE_SUB(NOW(), INTERVAL 1 WEEK)')
+                                ->orderBy('created_at', 'desc')
+                                ->get();
         $monthRecords = Charge::where('status', config('const.charge_status.pending_approval'))
-            ->where('processing_type', config('const.type.manual_pay'))->whereRaw('created_at > DATE_SUB(NOW(), INTERVAL 1 MONTH)')->orderBy('created_at', 'desc')->get();
+                                ->where('processing_type', config('const.type.manual_pay'))
+                                ->whereRaw('created_at > DATE_SUB(NOW(), INTERVAL 1 MONTH)')
+                                ->orderBy('created_at', 'desc')->get();
 
         $result['day']   = $this->getResultAmounts($todayRecords);
         $result['week']  = $this->getResultAmounts($weekRecords);
@@ -385,7 +392,7 @@ class AdminController extends Controller
 
         foreach($timeRecords as $z => $item)
         {
-            if($item->type == 'Charge')
+            if($item->type != 'credit')
             {
                 $result['charges'][] = $item;
                 $result['charges_amount'] = $result['charges_amount'] + $item->amount;

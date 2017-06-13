@@ -7,47 +7,80 @@ app.controller('chargesController', function ($scope, $http, customerService, ad
   }
 
 
-  $http.post('getPendingManualCharges', {params: {'token': adminService.existeToken}})
+  $http.get('getPendingManualCharges')
     .then(function (response) {
       $scope.chargesData = response.data;
     });
 
 
-  $http.post('getChargesStats', {params: {'token': adminService.existeToken}})
-    .then(function (response) {
-      $scope.resultStatsData = response.data;
-    });
 
 
-  $scope.confirmAction = function () {
-    console.log(this.charge);
-
-    $http.post('approveManualCharge', {params: {'data': this.charge.id}})
+  $scope.getChargeStat = function () {
+    $http.get('getChargesStats')
       .then(function (response) {
-        console.log(response.data);
+        $scope.resultStatsData = response.data;
+      });
+  }
+  $scope.getChargeStat();
+  $scope.confirmAction = function () {
+
+    $http.get('approveManualCharge', {params: {'id': this.charge.id}})
+      .then(function (response) {
+        $scope.chargesData = response.data;
+        $scope.getChargeStat();
+        $.smallBox({
+          title: "Action Confirmed!",
+          content: "<i class='fa fa-clock-o'></i> <i>3 seconds ago...</i>",
+          color: "transparent",
+          timeout: 6000
+        });
       });
 
   }
   $scope.cancelAction  = function () {
-    console.log(this.charge);
 
-    $http.post('denyManualCharge', {params: {'data': this.charge.id}})
+    $http.get('denyManualCharge', {params: {'id': this.charge.id}})
       .then(function (response) {
-        console.log(response.data);
+        $scope.chargesData = response.data;
+        $scope.getChargeStat();
+        $.smallBox({
+          title: "Action Denied!",
+          content: "<i class='fa fa-clock-o'></i> <i>3 seconds ago...</i>",
+          color: "transparent",
+          timeout: 6000
+        });
       });
 
   }
-  $scope.editAction    = function () {
+  $scope.editAction     = function () {
     $scope.editRecordTmp = this.charge;
   }
   $scope.editAndConfirm = function () {
-    console.log(this.editRecordTmp);
+    $scope.loadingtap = true;
 
     var objects = getFormValues('edit-action-form');
-    objects['id'] = $scope.idCustomer;
-    $http.post('updateManualCharge', {params: objects})
+    objects['id'] = $scope.editRecordTmp.id;
+
+    $http.get('updateManualCharge', {params: objects})
       .then(function (response) {
-        console.log(response.data);
+        if(response.data.response == 'OK')
+        {
+          $scope.chargesData = response.data.updated_data;
+
+          $('#editActionModal').modal('toggle');
+          $('#edit-action-form').trigger("reset");
+
+          $scope.editRecordTmp = false;
+          $scope.loadingtap = false;
+
+          $scope.getChargeStat();
+          $.smallBox({
+            title: "Edit Confirmed!",
+            content: "<i class='fa fa-clock-o'></i> <i>3 seconds ago...</i>",
+            color: "transparent",
+            timeout: 6000
+          });
+        }
       });
   }
 

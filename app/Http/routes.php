@@ -57,7 +57,7 @@ Route::group(['middleware' => 'web'], function () {
     Route::post('getAppPositionDown',       'AdminController@getAppPositionDown');
     Route::post('getAppPositionUp',         'AdminController@getAppPositionUp');
     Route::post('getCharges',               'AdminController@getCharges');
-    Route::post('getChargesStats',          'AdminController@getChargesStats');
+    Route::get('getChargesStats',          'AdminController@getChargesStats');
     //PROFILE
     Route::get('getProfileInfo',            'AdminController@getProfileInfo');
     Route::get('updateProfileInfo',         'AdminController@updateProfileInfo');
@@ -121,10 +121,10 @@ Route::group(['middleware' => 'web'], function () {
 
     Route::get('manualRefund',             'BillingController@manualRefund');
     Route::get('manualCharge',             'BillingController@manualCharge');
-    Route::post('updateManualCharge',      'BillingController@updateManualCharge');
-    Route::post('approveManualCharge',     'BillingController@approveManualCharge');
-    Route::post('denyManualCharge',        'BillingController@denyManualCharge');
-    Route::post('getPendingManualCharges', 'BillingController@getPendingManualCharges');
+    Route::get('updateManualCharge',      'BillingController@updateManualCharge');
+    Route::get('approveManualCharge',     'BillingController@approveManualCharge');
+    Route::get('denyManualCharge',        'BillingController@denyManualCharge');
+    Route::get('getPendingManualCharges', 'BillingController@getPendingManualCharges');
 
     //UpdateCustomer
     Route::get('updateAddressTable',        'CustomerController@updateAddressTable');
