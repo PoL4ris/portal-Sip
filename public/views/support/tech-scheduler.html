@@ -1,0 +1,80 @@
+<link rel="stylesheet" type="text/css" media="screen" href="/css/plugins/tech-schedule.css">
+
+
+<div class="form-group schedule-wrapper" ng-controller="techschedulercontroller">
+    <div style="position: absolute; height: 100%; width: 100%; top: 0; left: 0; background: rgba(0,0,0,0.5); z-index: 10;"
+         ng-if="loadinganimation"></div>
+    <form id='scheduleform' method="get" name="scheduleform"
+          action="/tech-schedule/setappointment" ng-submit="prepareforappointmentsubmission($event)"
+          class="{{loadinganimation?'hideornohide':''}}">
+        <img src="/img/loading.gif" alt="" class="loading-gif-support" ng-if="loadinganimation">
+
+
+        <table id='sheader'>
+            <tr>
+                <td><label for="techscheduledate">Date</label></td>
+                <td><input id="techscheduledate" type="text" class="datepicker form-control" name="techscheduledate"
+                           tabindex="0" ng-model="techscheduledate"></input>
+                    <input type="hidden" name="username" id="username"
+                           value="{{userDataAuth.first_name}}" ng-model="username"></input>
+                </td>
+                <td><label for="adesc">Appointment Description</label></td>
+            </tr>
+
+            <tr>
+                <td><label for="cname">Customer Name</label></td>
+                <td><input type="text" id='cname' name="customername" class="form-control"
+                           tabindex="1" ng-model="customername"></input></td>
+                <td rowspan="7" style="width: 600px; max-width: 100%; height: 100%"><textarea type="text" id="adesc"
+                                                                                              name="appointmentdescription"
+                                                                                              class="form-control"
+                                                                                              tabindex="8" ng-model="appointmentdescription"></textarea>
+                </td>
+            </tr>
+            <tr>
+                <td><label for="cphone">Customer Phone</label></td>
+                <td><input type="text" id='cphone' name="customerphone" class="form-control"
+                           tabindex="2" ng-model="customerphone"></input></td>
+            </tr>
+            <tr>
+                <td><label for="buildingcode">Building Code</label></td>
+                <td><input type="text" ng-keyup="updatebuildingsearch()" id="buildingcode" name="buildingcode"
+                           class="form-control"
+                           tabindex="3" ng-model="buildingcode"></input></td>
+            </tr>
+            <tr>
+                <td><label for="unit">Unit</label></td>
+                <td><input type="text" id="unit" name="unit" class="form-control" id="unit"
+                           tabindex="4" ng-model="unit"></input></td>
+            </tr>
+            <tr>
+                <td><label for="service">Service</label></td>
+                <td><select id="service" name="service" tabindex="5" class="selectpicker form-control" ng-model="service">
+                    <option disabled selected>Service</option>
+                    <option>TV</option>
+                    <option>INT</option>
+                </select></td><!--should be dropdown-->
+            </tr>
+
+            <tr>
+                <td><label for="action">Action</label></td>
+                <td><select id="action" name="action" tabindex="6" class="selectpicker form-control" ng-model="action">
+                    <option disabled selected>Action</option>
+                    <option>Connect</option>
+                    <option>Repair</option>
+                    <option>Other</option>
+                </select><!--should be dropdown--></td>
+            </tr>
+            <tr>
+                <td><label for="dtvaccount">DTV Account</label></td>
+                <td><input type="text" id="dtvaccount" name="dtvaccount" class="form-control"
+                           tabindex="7" ng-model="dtvaccount"></input></td>
+            </tr>
+        </table>
+
+        <table class='scheduletable table table-striped table-hover table-responsive'>
+            <tbody></tbody>
+        </table>
+        <input type="submit" value="Submit">
+    </form>
+</div>

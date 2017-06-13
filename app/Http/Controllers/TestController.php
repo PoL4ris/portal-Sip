@@ -19,16 +19,19 @@ use App\Models\Ticket;
 use App\Models\CustomerProduct;
 use App\Models\DataMigration;
 use App\Models\Address;
-use App\Models\BillingTransactionLog;
+use App\Models\BuildingPropertyValue;
 use App\Models\Building;
 use App\Models\Product;
-use App\Models\User; // as Users;
+use App\Models\User;
 use App\Models\Port;
 use App\Models\NetworkNode;
 use App\Models\ContactType;
 use App\Models\PaymentMethod;
 use App\Models\ActivityLog;
-use App\Http\Controllers\CustomerController;
+use App\Models\RetailRevenue;
+use App\Http\Controllers\TechScheduleController;
+use App\Extensions\GoogleCalendar;
+use DateTime;
 use App\Http\Controllers\Lib\UtilsController;
 use Mail;
 use Config;
@@ -41,12 +44,14 @@ use Symfony\Component\Console\Helper\ProgressBar;
 
 class TestController extends Controller
 {
-    public function __construct(){
+    public function __construct()
+    {
         //        $this->middleware('auth');
         DB::connection()->enableQueryLog();
     }
 
-    public function testCustomerTickets(){
+    public function testCustomerTickets()
+    {
         //        $customer = Customer::with('tickets')
         //                            ->find('501');    
         //        dd($customer);
@@ -57,7 +62,8 @@ class TestController extends Controller
 
     }
 
-    public function testCC(){
+    public function testCC()
+    {
 
         //        $customer = Customers::find('10248');
         $customer = Customer::find('10249');
@@ -82,7 +88,7 @@ class TestController extends Controller
 
 
         $sipBilling = new SIPBilling;
-        dd($sipBilling->getMode()); 
+        dd($sipBilling->getMode());
 
         //        $result = $sipBilling->authCCByCID('10247', '1.00', 'SilverIP Comm');
         //        $result = $sipBilling->authCCByCID($customer->CID, '1.00', 'SilverIP Comm');
@@ -95,7 +101,8 @@ class TestController extends Controller
         dd($result);
     }
 
-    public function testDBRelations(){
+    public function testDBRelations()
+    {
 
         //        $customer = Customer::with('reason3Tickets', 'type')->find(1782);
         //        $tickets = Customer::with('reason3Tickets', 'type')->find(1782);
@@ -130,63 +137,43 @@ class TestController extends Controller
 
         dd($ticket2);
     }
-
+    
     public function supportTest()
     {
-      $result = array();
-      $result['commercial'] = Building::where('type', 'like', '%commercial%')->count();
-      $result['retail']     = Building::where('type', 'not like', '%commercial%')->count();
-      $result['tickets']    = Ticket::where('status', '!=', 'closed')->count();
 
 
-      $ticketAverage = DB::select('SELECT 
-                              avg(TIMESTAMPDIFF(HOUR, created_at, updated_at)) as hours,
-                              avg(TIMESTAMPDIFF(DAY, created_at, updated_at)) as days
-                            FROM tickets
-                              where updated_at > created_at
-                              and status like "%closed%"')[0];
-      $result['avgHour'] = $ticketAverage->hours;
-      $result['avgDay'] = $ticketAverage->days;
-
-      return $result;
-
-      dd($ticket);
-
-
-
-      //dd($ticket['created_at'], $ticket['updated_at']);
-
-
-      $uno = $ticket->created_at;
-      $dos = $ticket->updated_at;
-
-      $warp = $uno->diffInHours($dos);
-
-
-      dd($warp);
+        //Dashboard data Working
+        $result = array();
+        $result['commercial'] = Building::where('type', 'like', '%commercial%')->count();
+        $result['retail']     = Building::where('type', 'not like', '%commercial%')->count();
+        $result['tickets']    = Ticket::where('status', '!=', 'closed')->count();
+        $ticketAverage        = DB::select('SELECT 
+                                              avg(TIMESTAMPDIFF(HOUR, created_at, updated_at)) as hours,
+                                              avg(TIMESTAMPDIFF(DAY, created_at, updated_at))  as days
+                                            FROM tickets
+                                              where updated_at > created_at
+                                              and status like "%closed%"')[0];
+        $result['avgHour']    = $ticketAverage->hours;
+        $result['avgDay']     = $ticketAverage->days;
+        return $result;
 
 
 
 
 
-      $customer = Customer::join('address', 'address.id_customers', '=', 'customers.id')
-                          ->join('buildings', 'buildings.id', '=', 'address.id_buildings')
-                          ->where('buildings.type', 'like', 'commercial')
-                          ->get(array('customers.id'));
-                          dd($customer);
-
-      $address = $customer->address->building;
-
-      dd($address);
-
+        $data = Building::with('address', 'neighborhood', 'contacts')->find(68);
+        $data->properties = BuildingPropertyValue::join('building_properties',
+            'building_property_values.id_building_properties',
+            '=',
+            'building_properties.id')
+            ->where('building_property_values.id_buildings', '=', 68)
+            ->select('*', 'building_property_values.id as idBpv')
+            ->get();
 
 
-      dd($building);
 
 
-      $myProductPropertyValues = $building->load('buildingProducts.product.propertyValues');
-
-      dd($myProductPropertyValues->buildingProducts->pluck('product')); //->pluck
+            dd($data->toArray());
 
 
 
@@ -196,63 +183,83 @@ class TestController extends Controller
 
 
 
-      $record = Customer::where('id', '!=', 1)
-                ->take(3)
-                ->get();
-      $t1 = $record->load('address.building');
 
-        dd($t1->address->pluck('building', 'id'));
+        $calendar   = new GoogleCalendar;
+        $date       = new DateTime ('05/22/2017');
+        $result = array();
 
+        //Rango de fecha 12 horas, de 8 am a 8pm
+        $scheduleRange          = $calendar->getScheduleRange(new DateTime ('05/22/2017'));
+        //Nombres de los Tecnicos [0]
+        $scheduledTechs         = $calendar->GetTechSchedule($date);
 
-      dd($record->toArray());
-
-
-
-
-
-      dd($record->toarray());
-
-
-
+        //Pending Appointments [0]
+        $pendingAppointments    = $calendar->GetPendingAppointments($date);
+        //Citas completadas
+        $completedAppointments  = $calendar->GetCompletedAppointments($date);
+        //Onsite Appts
+        $onsiteAppointments     = $calendar->GetOnsiteAppointments($date);
 
 
+        $result['total_events'] = count($pendingAppointments) + count($completedAppointments) + count($onsiteAppointments);
+        $result['pending']      = count($pendingAppointments);
+        $result['complete']     = count($completedAppointments) ;
+        $result['onsite']       = count($onsiteAppointments);
 
-        dd(User::with('profile')->get()->toArray());
-        $building = Building::find(9);
-        //      dd(BuildingTicket::where('building_id', 9)->get());
-        dd($building->tickets);
-        dd($building);
+        dd($result);
+
+
+//
+//
+//
+//
 
 
 
-        $port = Port::find(5237);
-        dd($port->customers);
-        $customer = Customer::find(13897);
-        dd($customer->ports);
+
+//        $warpol = new TechScheduleController;
+//
+//        dd($warpol->GenerateTableSchedule());
+
+
+//    dd(User::with('accessApps', 'accessApps.apps')->find(1)->toArray());
+        $war = User::find(1)->accessApps->load('apps')->pluck('apps', 'apps.position')->sortBy('position');
+        dd($war);
+        $war = User::find(1);
+        $warpol = $war->accessApps->load('apps')->pluck('apps', 'apps.position')->sortBy('position');
+
+        dd(
+            $warpol
+//            $warpol->sortBy('position')->toArray()
+        );
+
+
     }
 
-    public function mail(){
-        $customer  = Customer::with('address')->find(501);
-        $address   = $customer->address;
+    public function mail()
+    {
+        $customer = Customer::with('address')->find(501);
+        $address = $customer->address;
         $toAddress = 'pablo@silverip.com';
-        $template  = 'mail.signup';
-        $subject   = 'dummy Test Mail';
+        $template = 'mail.signup';
+        $subject = 'dummy Test Mail';
 
         $data = array();
-        $data['uno']  = '111';
-        $data['dos']  = '222';
+        $data['uno'] = '111';
+        $data['dos'] = '222';
         $data['tres'] = '333';
 
         return view('mail.signup', ['customer' => $customer, 'address' => $address]);
     }
 
-    public function cleanView(){
+    public function cleanView()
+    {
         $supController = new SupportController();
 
 
-        $record = Ticket::with('customer', 'reason', 'ticketNote','lastTicketHistory', 'user', 'userAssigned', 'address', 'contacts')
-            ->where('id_reasons','!=', 11)
-            ->where('status','!=', 'closed')
+        $record = Ticket::with('customer', 'reason', 'ticketNote', 'lastTicketHistory', 'user', 'userAssigned', 'address', 'contacts')
+            ->where('id_reasons', '!=', 11)
+            ->where('status', '!=', 'closed')
             ->orderBy('updated_at', 'desc')
             ->limit(3)
             ->get()->toArray();
@@ -261,12 +268,11 @@ class TestController extends Controller
 
 
         //    $result = Customer::with('contacts.types')
-        $result = Customer::with('addresses', 'contacts', 'type','address.buildings', 'address.buildings.neighborhood', 'status', 'status.type', 'openTickets', 'log')
+        $result = Customer::with('addresses', 'contacts', 'type', 'address.buildings', 'address.buildings.neighborhood', 'status', 'status.type', 'openTickets', 'log')
             //                             'status.type',
             //                             'openTickets')
             ->find(501)
             ->toArray();
-
 
 
         //      print '<pre>';
@@ -285,12 +291,12 @@ class TestController extends Controller
 
         //    print_r($last_query);
 
-        $coso = CustomerProduct::where('id_customers',501)->get()->toArray();
+        $coso = CustomerProduct::where('id_customers', 501)->get()->toArray();
 
         print_r($coso);
         die();
 
-        $coso = Customer::with('address', 'contact', 'type','address.buildings', 'address.buildings.neighborhood')->find(13579)->toarray();
+        $coso = Customer::with('address', 'contact', 'type', 'address.buildings', 'address.buildings.neighborhood')->find(13579)->toarray();
 
         $queries = DB::getQueryLog();
         $last_query = end($queries);
@@ -306,11 +312,11 @@ class TestController extends Controller
         );
 
 
-
         die();
     }
 
-    public function logFunction() {
+    public function logFunction()
+    {
 
         $a = 4000000;
         //      $a = 63245986;
@@ -321,7 +327,7 @@ class TestController extends Controller
         $z = 0;
         $p = 0;
 
-        for($p = 0; $z < $a; $p++){
+        for ($p = 0; $z < $a; $p++) {
 
 
             //        print 'SERIE-->' . $p . '<br>';
@@ -329,15 +335,14 @@ class TestController extends Controller
             $y = $x;
             $x = $z;
 
-            if($z % 2 == 0)
-            {
+            if ($z % 2 == 0) {
                 $b = $b + $z;
                 print '|----- <strong>' . $b . '</strong> -----|<br>';
             }
 
             /**
-     * Add new card
-     */
+             * Add new card
+             */
             $pm = new PaymentMethod;
             $pm->id_customers = '4667';
             $pm->id_address = '33';
@@ -373,7 +378,8 @@ class TestController extends Controller
 
     }
 
-    public function invoiceTest(){
+    public function invoiceTest()
+    {
         //        $customerModel = new Customer;
         //        dd($customerModel->getActiveCustomerProductsByBuildingID('28'));
         //        dd($customerModel->getActiveCustomerProductsByCustomerID('3839'));
@@ -413,11 +419,13 @@ class TestController extends Controller
         //        $billingHelper->processAutopayInvoices();
     }
 
-    public function testActivityLog(){
+    public function testActivityLog()
+    {
         ActivityLog::test();
     }
 
-    public function genericTest(){
+    public function genericTest()
+    {
 
         //        $childProduct = Product::find(104);
         //        dd($childProduct->parentProduct);
@@ -428,7 +436,8 @@ class TestController extends Controller
         dd($building->activeParentProducts()->toArray());
     }
 
-    public function testDataMigration() {
+    public function testDataMigration()
+    {
 
         $dbMigrationUtil = new DataMigrationUtils();
 
@@ -446,7 +455,54 @@ class TestController extends Controller
         dd('done');
     }
 
-    public function generalTest(){
+    public function generalTest()
+    {
+
+        $building = Building::find(30);
+
+        dd($building->activeInternetProducts);
+
+        $allProducts = Building::find(30)
+            ->activeParentProducts()
+            ->pluck('product')
+            ->toArray();
+//dd($allProducts);
+
+        $subbedProducts = Customer::join('customer_products', 'customer_products.id_customers', '=', 'customers.id')
+            ->join('address', 'address.id_customers', '=', 'customers.id')
+            ->join('products', 'customer_products.id_products', '=', 'products.id')
+            ->where('products.id_types', '=', config('const.type.internet'))
+            ->where('customer_products.id_status', '=', config('const.status.active'))
+            ->where('customers.id_status', '=', config('const.status.active'))
+            ->where('address.code', '=', '1300S')
+            ->select(DB::raw('count(customers.id) as Total'),
+                'products.id',
+                'products.name',
+                'products.amount',
+                'products.frequency')
+            ->groupby('products.name')
+            ->get();
+dd($subbedProducts);
+
+        foreach ($subbedProducts as $product)
+        {
+            $subbedProductsArr[$product->id] = $product;
+        }
+dd($subbedProductsArr);
+        foreach ($allProducts as $key => $product)
+        {
+            if (array_key_exists($key, $subbedProductsArr))
+            {
+                $allProducts[$key]['Total'] = $subbedProductsArr[$key]->Total;
+            } else
+            {
+                $allProducts[$key]['Total'] = 0;
+            }
+        }
+
+        dd($subbedProducts);
+
+
 
         $building = Building::find(28);
 
@@ -458,24 +514,23 @@ class TestController extends Controller
 
         dd($lastTicketNumber);
 
-        $ticketNumber     = explode('ST-',$lastTicketNumber);
+        $ticketNumber = explode('ST-', $lastTicketNumber);
         $ticketNumberCast = (int)$ticketNumber[1] + 1;
-        $defaultUserId    = 10;
+        $defaultUserId = 10;
 
         $newTicket = new Ticket;
 
         // comment=Test+3&id_customers=4667&id_reasons=13&status=escalated
-        $newTicket->id_customers      = 4667;
-        $newTicket->ticket_number     = 'ST-' . $ticketNumberCast;
-        $newTicket->id_reasons        = 13;
-        $newTicket->comment           ='Test 4';
-        $newTicket->status            = 'escalated';
-        $newTicket->id_users          = Auth::user()->id;
+        $newTicket->id_customers = 4667;
+        $newTicket->ticket_number = 'ST-' . $ticketNumberCast;
+        $newTicket->id_reasons = 13;
+        $newTicket->comment = 'Test 4';
+        $newTicket->status = 'escalated';
+        $newTicket->id_users = Auth::user()->id;
         $newTicket->id_users_assigned = $defaultUserId;
         $newTicket->save();
 
         dd($newTicket);
-
 
 
         $sipNetwork = new SIPNetwork();
@@ -490,15 +545,8 @@ class TestController extends Controller
         dd($port->customers);
 
 
-
-
-
         $customer = Customer::find(13897);
         dd($customer->ports);
-
-
-
-
 
 
         $building = Building::find(81);
@@ -516,7 +564,7 @@ class TestController extends Controller
         dd($myProductPropertyValues->buildingProducts->pluck('product')); //->pluck('propertyValues'));
 
         $products;
-        $building->load(['buildingProducts.product' => function ($q) use ( &$products ) {
+        $building->load(['buildingProducts.product' => function ($q) use (&$products) {
             $products = $q->with('propertyValues')->get(); //->unique();
         }]);
 

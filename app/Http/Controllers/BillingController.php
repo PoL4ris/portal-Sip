@@ -12,6 +12,7 @@ use App\Models\Address;
 use App\Models\PaymentMethod;
 use App\Models\ActivityLog;
 use Log;
+use Auth;
 
 use ActivityLogs;
 
@@ -88,7 +89,7 @@ class BillingController extends Controller {
         $billingHelper = new BillingHelper();
         $result = $billingHelper->createManualChargeForCustomer($customer, $amount, $chargeDesc, $user->id);
 
-        return $result;
+        return 'OK';
     }
 
     public function manualRefund(Request $request)
@@ -110,7 +111,7 @@ class BillingController extends Controller {
         $billingHelper = new BillingHelper();
         $result = $billingHelper->createManualRefundForCustomer($customer, $amount, $chargeDesc, $user->id);
 
-        return $result;
+        return 'OK';
     }
 
     public function updateManualCharge(Request $request)
@@ -132,12 +133,11 @@ class BillingController extends Controller {
         $billingHelper = new BillingHelper();
         $result = $billingHelper->updateManualChargeAmount($charge, $amount, $comment, $user->id);
 
-        return $result;
+        return ['response'=>'OK', 'updated_data' => $this->getPendingManualCharges()];
     }
 
     public function approveManualCharge(Request $request)
     {
-
         $input = $request->all();
         $chargeId = $input['id'];
 
@@ -151,7 +151,7 @@ class BillingController extends Controller {
         $billingHelper = new BillingHelper();
         $result = $billingHelper->approveManualCharge($charge);
 
-        return $result;
+        return $this->getPendingManualCharges();
     }
 
     public function denyManualCharge(Request $request)
@@ -170,10 +170,10 @@ class BillingController extends Controller {
         $billingHelper = new BillingHelper();
         $result = $billingHelper->denyManualCharge($charge);
 
-        return $result;
+        return $this->getPendingManualCharges();
     }
 
-    public function getPendingManualCharges(Request $request)
+    public function getPendingManualChargesByCustomer(Request $request)
     {
         $input = $request->all();
         $customerId = $input['cid'];
@@ -185,6 +185,14 @@ class BillingController extends Controller {
             return 'ERROR';
         }
         return $customer->pendingManualCharges;
+    }
+
+    public function getPendingManualCharges()
+    {
+
+        return Charge::where('status', config('const.charge_status.pending_approval'))
+                      ->where('processing_type', config('const.type.manual_pay'))
+                      ->get();
     }
 
     public function insertPaymentMethod(Request $request)

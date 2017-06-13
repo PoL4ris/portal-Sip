@@ -2,9 +2,9 @@
 
     <div class="col-lg-12 tickets-history-table" ng-controller="customerTicketHistoryController">
         <div ng-if="!customerData.customer.open_tickets">
-            <div class="loading-default animate-if"><img src="/img/default.gif" alt=""></div>
+            <img src="/img/loading.gif" alt="" class="loading-gif-support m-r-lg" >
         </div>
-        <div class="panel panel-default  table-container no-border" ng-if="customerData.customer.open_tickets">
+        <div class="panel panel-default  table-container no-border animated fadeInLeft" ng-if="customerData.customer.open_tickets">
             <table id="myTable" class="tablesorter table" datatable="ng">
                 <thead>
                 <tr>

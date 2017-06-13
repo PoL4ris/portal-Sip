@@ -14,10 +14,12 @@
 
 
 <div class="" ng-if="customerSearchResult">
-    <div class="search-result anim">
+    <div class="search-result animated fadeInDown">
         <div ng-repeat="resultSearch in customerSearchResult"
              ng-click="clearSearch()"
-             class="main-search-result-container tmp-container-search {{($index == focusIndex) ? 'focus-index-focus' : ''}}">
+             class="main-search-result-container
+                   tmp-container-search {{($index == focusIndex) ? 'focus-index-focus' : ''}}
+                   ">
 
             <a href="#/customers?id={{resultSearch.id}}">
 

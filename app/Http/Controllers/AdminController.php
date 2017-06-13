@@ -15,7 +15,8 @@ use App\Models\Status;
 use App\Models\User;
 use App\Models\App;
 use App\Models\AccessApp;
-use App\Models\Customer;
+use App\Models\BuildingProperty;
+use App\Models\Charge;
 
 
 /**
@@ -30,6 +31,56 @@ class AdminController extends Controller
         $this->middleware('auth');
     }
 
+    /**
+     * @param Request $request
+     * record to find update and change position UP;
+     * @return string
+     * List of all apps.
+     */
+    public function getAppPositionUp(Request $request)
+    {
+        $data = $request->params['record'];
+
+        $otherRecord = App::where('position', ($data['position'] - 1))->first();
+        $thisRecord  = App::find($data['id']);
+
+        if(!$otherRecord || !$thisRecord)
+            return 'ERROR';
+
+        $otherRecord->position = ($otherRecord->position + 1);
+        $otherRecord->save();
+
+        $thisRecord->position = $data['position'] - 1;
+        $thisRecord->save();
+
+        return App::orderBy('position', 'asc')->get();
+
+    }
+    /**
+     * @param Request $request
+     * record to find update and change position DOWN;
+     * @return string
+     * List of all apps.
+     */
+    public function getAppPositionDown(Request $request)
+    {
+        $data = $request->params['record'];
+
+        $otherRecord = App::where('position', ($data['position'] + 1))->first();
+        $thisRecord  = App::find($data['id']);
+
+        if(!$otherRecord || !$thisRecord)
+            return 'ERROR';
+
+        $otherRecord->position = ($otherRecord->position - 1);
+        $otherRecord->save();
+
+        $thisRecord->position = $data['position'] + 1;
+        $thisRecord->save();
+
+        return App::orderBy('position', 'asc')->get();
+
+    }
     /**
      * @return gets logged user info.
      */
@@ -114,7 +165,7 @@ class AdminController extends Controller
      */
     public function getAdminApps()
     {
-        return App::get();
+        return App::orderBy('position', 'asc')->get();
     }
     /**
      * @param Request $request
@@ -200,6 +251,7 @@ class AdminController extends Controller
         $app->name = $data['app_name'];
         $app->icon = $data['icon'];
         $app->url  = $data['url'];
+        $app->position  = App::max('position')+1;
         $app->save();
 
         unset($data['app_name'], $data['icon'], $data['url']);
@@ -250,6 +302,26 @@ class AdminController extends Controller
         return App::get();
     }
     /**
+     * @return Building properties list.
+     */
+    public function getAdminBldProperties(){
+        return BuildingProperty::get();
+    }
+    /**
+     * @param Request $request
+     * objetos = Building Property DB table field Values.
+     * @return List of Building Properties.
+     */
+    public function insertNewBldProperty(Request $request){
+        $data = $request->params['objects'];
+        $user = new BuildingProperty;
+        $user->name         = $data['property_name'];
+        $user->description  = $data['property_description'];
+        $user->save();
+
+        return $this->getAdminBldProperties();
+    }
+    /**
      * Creates form from table requested.
      * Not in use for the moment.
      */
@@ -276,5 +348,62 @@ class AdminController extends Controller
     public function admin()
     {
         return User::get();
+    }
+
+    /**
+     * @param Request $request
+     * @return Result of all Pending Charges.
+     */
+    public function getCharges(Request $request)
+    {
+        return Charge::where('status', 777)->orWhere('status', 778)->orderBy('created_at', 'desc')->get();
+    }
+
+    /**
+     * @return stats of today Charges
+     */
+    public function getChargesStats()
+    {
+        $todayRecords = Charge::where('status', config('const.charge_status.pending_approval'))
+                                ->where('processing_type', config('const.type.manual_pay'))
+                                ->whereRaw('created_at > DATE_SUB(NOW(), INTERVAL 1 DAY)')
+                                ->orderBy('created_at', 'desc')->get();
+        $weekRecords  = Charge::where('status', config('const.charge_status.pending_approval'))
+                                ->where('processing_type', config('const.type.manual_pay'))
+                                ->whereRaw('created_at > DATE_SUB(NOW(), INTERVAL 1 WEEK)')
+                                ->orderBy('created_at', 'desc')
+                                ->get();
+        $monthRecords = Charge::where('status', config('const.charge_status.pending_approval'))
+                                ->where('processing_type', config('const.type.manual_pay'))
+                                ->whereRaw('created_at > DATE_SUB(NOW(), INTERVAL 1 MONTH)')
+                                ->orderBy('created_at', 'desc')->get();
+
+        $result['day']   = $this->getResultAmounts($todayRecords);
+        $result['week']  = $this->getResultAmounts($weekRecords);
+        $result['month'] = $this->getResultAmounts($monthRecords);
+
+        return $result;
+
+    }
+
+    public function getResultAmounts($timeRecords)
+    {
+        $result['charges_amount'] = $result['refund_amount'] = 0;
+
+        foreach($timeRecords as $z => $item)
+        {
+            if($item->type != 'credit')
+            {
+                $result['charges'][] = $item;
+                $result['charges_amount'] = $result['charges_amount'] + $item->amount;
+            }
+            else
+            {
+                $result['refund'][] = $item;
+                $result['refund_amount'] = $result['refund_amount'] + $item->amount;
+            }
+        }
+
+        return $result;
     }
 }

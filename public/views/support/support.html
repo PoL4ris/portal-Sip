@@ -1,6 +1,6 @@
 <!--TABLE LOAD-->
 <div class="container text-center" ng-if="!supportData">
-    <i class="fa fa-gear loading-anim f-size-25 p-t-lg"></i>
+    <img src="/img/loading.gif" alt="" class="loading-gif-support">
 </div>
 <!--END TABLE LOAD-->
 <section ng-if="supportData" class="col-sm-12 col-md-12 col-lg-12 no-padding-sides support-table-grid null-section">
@@ -31,7 +31,7 @@
     </div>
 </section>
 <!--TICKET LIST-->
-<section ng-if="supportData" class="col-sm-12 col-md-12 col-lg-12 bg-white white-shadow m-t-lg p-b-lg support-table-grid">
+<section ng-if="supportData" class="col-sm-12 col-md-12 col-lg-12 bg-white white-shadow m-t-lg p-b-lg support-table-grid animated fadeInDown">
     <div class="row">
         <!--SUPPORT TABLE-->
         <article class="col-lg-12 tickets-history-table m-t-lg table-container">
@@ -97,7 +97,7 @@
 <!--END TICKET LIST-->
 
 <!-- MODAL DE TICKET -->
-<div class="modal fade" id="ticketModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade animated" id="ticketModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-ticket-size">
         <div class="modal-content">
             <div class="modal-header">
@@ -114,12 +114,12 @@
                             <div class="col-lg-12 no-padding-sides m-b-lg">
                                 <label><strong> {{selectedTicket.customer.first_name + ' ' + selectedTicket.customer.last_name}}</strong></label>
                                 <button class="btn btn-primary pull-right"
-                                        ng-click="editFormByType('block-b')"
+                                        ng-click="editFormByType('block-b', 1)"
                                         id="block-b">
                                     Change Customer
                                 </button>
                                 <button class="btn btn-success pull-right no-display m-r-lg"
-                                        ng-click="editFormByType('block-b'); updateCustomerOnTicket();"
+                                        ng-click="editFormByType('block-b', 1); updateCustomerOnTicket();"
                                         id="save-block-b">
                                     Update
                                 </button>

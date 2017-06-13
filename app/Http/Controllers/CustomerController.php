@@ -24,6 +24,7 @@ use App\Models\NetworkNode;
 use App\Models\ContactType;
 use App\Models\Support\Ticketreasons;
 use App\Models\ActivityLog;
+use App\Models\Charge;
 //Controllers
 use App\Http\Controllers\NetworkController;
 //Extensions
@@ -667,5 +668,66 @@ class CustomerController extends Controller
                           ->where('id_type' ,$request->id_type)
                           ->orderBy('id'    , 'desc')
                           ->get();
+    }
+
+    public function refundAmountAction(Request $request)
+    {
+
+
+        $customerInfo    = Customer::find($request->cid);
+        $customerAddress = Address::where('id_customers', $request->cid)->first();
+        $customerInvoice = Invoice::where('id_customers', $request->cid)->first();
+
+        $newCharge = new Charge;
+        $newCharge->name = $customerInfo->first_name . ' ' . $customerInfo->last_name;
+        $newCharge->address = $customerAddress->address;
+//        $newCharge->description = 'New Charge';       //?? always the same?
+//        $newCharge->description = 'Current Amount owed : $ ' . $customerInvoice->amount;//?? always the same?
+//        $newCharge->details
+        $newCharge->amount = $request->amount;
+//        $newCharge->qty
+        $newCharge->id_customers = $request->cid;
+//        $newCharge->id_customer_products
+        $newCharge->id_address = $customerAddress->id;
+        $newCharge->id_invoices = $customerInvoice->id;
+        $newCharge->id_users = Auth::user()->id;
+        $newCharge->status = 777;//Default for MANUAL (refound)
+        $newCharge->type = 'Refund';
+        $newCharge->comment = $request->desc;
+
+        $newCharge->save();
+        return 'OK';
+    }
+    public function chargeAmountAction(Request $request)
+    {
+
+
+        $customerInfo    = Customer::find($request->cid);
+        $customerAddress = Address::where('id_customers', $request->cid)->first();
+        $customerInvoice = Invoice::where('id_customers', $request->cid)->first();
+
+        $newCharge = new Charge;
+        $newCharge->name = $customerInfo->first_name . ' ' . $customerInfo->last_name;
+        $newCharge->address = $customerAddress->address;
+//        $newCharge->description = 'New Charge';       //?? always the same?
+        $newCharge->description = 'Current Amount owed : $ ' . $customerInvoice->amount;//?? always the same?
+//        $newCharge->details
+        $newCharge->amount = $request->amount;
+//        $newCharge->qty
+        $newCharge->id_customers = $request->cid;
+//        $newCharge->id_customer_products
+        $newCharge->id_address = $customerAddress->id;
+        $newCharge->id_invoices = $customerInvoice->id;
+        $newCharge->id_users = Auth::user()->id;
+        $newCharge->status = 778;//Default for MANUAL (charge)
+        $newCharge->type = 'Charge';
+        $newCharge->comment = $request->desc;
+        $newCharge->bill_cycle_day = 1; //Default for 1fay of the month
+//        $newCharge->processing_type // ??? ---> NO IDEA *******
+//        $newCharge->start_date    //??? ---> First day of the next month????
+//        $newCharge->end_date    //??? ---> Last day of the next month????
+//        $newCharge->due_date      //??? ---> NO IDEA *******
+        $newCharge->save();
+        return 'OK';
     }
 }

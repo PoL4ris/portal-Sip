@@ -1,96 +1,167 @@
 <div id="wid-id-0" ng-controller="FormXeditableCtrl">
+    <div ng-controller="FormPluginsCtrl">
+        <div class="widget-body" ng-controller="globalToolsCtl" id="buildingProperties-gTools">
+            <div class="row">
 
-  <div ng-controller="FormPluginsCtrl">
-    <div class="widget-body" ng-controller="globalToolsCtl" id="buildingProperties-gTools">
-      <div class="row">
+                <div class="col-lg-4">
+                    <button ng-if="buildingData.properties != ''" id="enable" class="btn btn btn-success" ng-click="toggleDisabled()">Edit</button>
+                    <!--<button ng-if="buildingData.properties == ''" id="enable" class="btn btn btn-success" ng-click="toggleDisabled()" disabled>Edit</button>-->
+                </div>
+                <div class="col-lg-8">
 
-        <div class="col-lg-6">
-            <button ng-if="buildingData.properties != ''" id="enable" class="btn btn btn-success" ng-click="toggleDisabled()">Edit</button>
-            <button ng-if="buildingData.properties == ''" id="enable" class="btn btn btn-dark" ng-click="toggleDisabled()" disabled >Edit</button>
-          </div>
-        <div class="col-lg-6">
+                    <button id="add-property"
+                            class="btn btn btn-primary pull-right"
+                            ng-click="fadeViews('bpv-container', 'new-form-function', 1, 'enable', 'add-property', 'add-property-cancel')">
+                        Add new property
+                    </button>
 
-            <button id="add-property"
-                    class="btn btn btn-primary pull-right"
-                    ng-click="fadeViews('bpv-container', 'new-form-function', 1, 'enable', 'add-property', 'add-property-cancel')">
-              Add new Property
-            </button>
+                    <button id="add-property-cancel"
+                            class="btn btn btn-danger pull-right m-r-lg no-display"
+                            ng-click="fadeViews('bpv-container', 'new-form-function', 0, 'enable', 'add-property', 'add-property-cancel')">
+                        Cancel
+                    </button>
 
-            <button id="add-property-cancel"
-                    class="btn btn btn-danger pull-right m-r-lg no-display"
-                    ng-click="fadeViews('bpv-container', 'new-form-function', 0, 'enable', 'add-property', 'add-property-cancel')">
-              Cancel
-            </button>
+                </div>
 
-          </div>
+                <div class="col-lg-12 m-t-lg m-b-lg p-b-lg">
+                    <table id="user" class="table table-bordered table-striped bld-prop-table bpv-container" style="clear: both">
+                        <tbody>
+                        <tr ng-repeat="properData in buildingData.properties">
+                            <td ng-controller="getBuildingPropertyCtl">{{getBuildingProperty}}</td>
+                            <td>
+                                <a
+                                   id="b-p-id-{{properData.id}}"
+                                   smart-xeditable
+                                   data-type="textarea"
+                                   data-pk="1"
+                                   record-id="{{properData.id}}"
+                                   data-ng-model="properData.name"
+                                   record-field="value"
+                                   record-table="BldPropVal"
+                                   record-idContainer="buildingProperties"
+                                   data-original-title="Enter text"
+                                   data-options="editableOptions"
+                                   class="editable editable-click"
+                                   ng-bind-html="properData.value"
+                                   ng-if="properData.id_building_properties != 23">
+                                </a>
+                                <a ng-init="arrayData = jsonPropertiesFix(properData.value)" ng-if="properData.id_building_properties == 23">
+                                    <div class="col-lg-1 no-padding-sides  p-t-sm">
+                                        {{arrayData.arrLength ? arrayData.arrLength : 0}}
+                                    </div>
+                                    <div class="pull-right m-l-lg " title="Remove units" ng-if="unitsResultData">
+                                        <i class="btn btn-danger fa fa-times" data-toggle="modal" data-target="#propertyUnitsModalRemove"></i>
+                                    </div>
+                                    <div class="pull-right m-l-lg" title="Add units">
+                                        <i class="btn btn-success fa fa-plus" data-toggle="modal" data-target="#propertyUnitsModalAdd"></i>
+                                    </div>
+                                    <div class="pull-right no-padding-sides " alt="Download" title="Download" ng-if="unitsResultData">
+                                        <i class="btn btn-success fa fa-file-excel-o" ng-click="exportToCsv()"></i>
+                                    </div>
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
 
-        <div class="col-lg-4 m-t-lg m-b-lg p-b-lg">
-          <table id="user" class="table table-bordered table-striped bld-prop-table bpv-container" style="clear: both">
-            <tbody>
-              <tr ng-repeat="properData in buildingData.properties" >
-                <td>{{propValuesList[properData.id_building_properties].name}}</td>
-                <td ng-if="properData.name == 'Unit'">
-                  <p>
-                    <a href="form-x-editable.html#"
-                       id="b-p-id-{{properData.idBpv}}"
-                       data-type="textarea"
-                       data-pk="1"
-                       smart-xeditable
-                       data-ng-model="properData.name"
-                       data-options="editableOptions"
-                       data-original-title="Enter username"
-                       record-idContainer="buildingProperties"
-                       record-table="BldPropVal"
-                       record-field="value"
-                       record-id="{{properData.idBpv}}"
-                       class="editable editable-click">{{properData.value}}</a>
-                    </a>
-                  </p>
-                </td>
-                <td ng-if="properData.name != 'Unit'">
-                  <a href="form-x-editable.html#"
-                     id="b-p-id-{{properData.idBpv}}"
-                     data-type="textarea"
-                     data-pk="1"
-                     smart-xeditable
-                     data-ng-model="properData.name"
-                     data-options="editableOptions"
-                     data-original-title="Enter text"
-                     record-idContainer="buildingProperties"
-                     record-table="BldPropVal"
-                     record-field="value"
-                     record-id="{{properData.idBpv}}"
-                     class="editable editable-click">{{properData.value}}</a>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+                <div class="new-form-function no-display">
+                    <div get-building-prop-values>
+                        <h3>{{buildingData.name}}
+                            <!--<small><strong>id: ({{buildingData.id}})</strong></small>-->
+                        </h3>
+
+                        <form id="new-bpv-form">
+                            <select name="id_building_properties" id="" class="new-form-select new-form-fields m-b-lg" required>
+                                <option value="">Select Property</option>
+                                <option ng-repeat="property in propValuesList" value="{{property.id}}">{{property.name}}</option>
+                            </select>
+                            <textarea class="new-form-fields new-form-textarea m-b-lg" placeholder="Example: 127.0.0.1/255" name="value" required></textarea>
+                            <button class="btn btn-primary" ng-click="insertBuildingProperty()">Add Property</button>
+                        </form>
+
+
+                    </div>
+                </div>
+
+            </div>
         </div>
-
-        <div class="new-form-function no-display">
-          <div get-building-prop-values>
-            <h3>{{buildingData.name}} <small><strong>id: ({{buildingData.id}})</strong></small> </h3>
-
-            <form action="" id="new-bpv-form">
-              <select name="id_building_properties" id="" class="new-form-select new-form-fields m-b-lg" required>
-                <option value="">Select Property</option>
-                <option ng-repeat="property in propValuesList" value="{{property.id}}">{{property.name}}</option>
-              </select>
-              <textarea class="new-form-fields new-form-textarea m-b-lg" placeholder="Example: 127.0.0.1/255" name="value" required></textarea>
-              <button class="btn btn-primary" ng-click="insertBuildingProperty()">Add Property</button>
-            </form>
-
-
-          </div>
-        </div>
-
-      </div>
     </div>
-  </div>
-
-
-
-
-
-
 </div>
+
+<!-- MODAL DE REMOVE UNITS -->
+<div class="modal" id="propertyUnitsModalRemove" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-ticket-size">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="cancelNewEvent()">
+                    &times;
+                </button>
+                <span>Remove Units</span>
+            </div>
+            <div class="modal-body">
+                <div class="wrapper-sm">
+                    <div class="row units-overflow">
+                        <div class="col-lg-12">
+                            <input type="checkbox" name="checkAll" ng-click="checkAllUnits()" id="check-uncheck" >
+                            <label for="checkAll">Check / Uncheck</label>
+                        </div>
+                        <hr>
+                        <form id="units-form-container">
+                            <div class="col-lg-1 text-center no-padding-sides m-b-sm" ng-repeat="units in unitsResultData.arrValues">
+                                <div class="squaredOne">
+                                    <input type="checkbox" value="{{units}}" id="check-{{units}}" name="{{units}}" class="units-checks"/>
+                                    <label for="check-{{units}}">{{units}}</label>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger pull-left" data-dismiss="modal" ng-click="removePropUnits()">
+                    Delete
+                </button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END MODAL DE REMOVE UNITS -->
+
+
+<!-- MODAL DE ADD UNITS -->
+<div class="modal" id="propertyUnitsModalAdd" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-ticket-size">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="cancelNewEvent()">
+                    &times;
+                </button>
+                <span>Add Units</span>
+            </div>
+            <div class="modal-body">
+                <div class="wrapper-sm">
+                    <div class="row units-overflow">
+
+                        <form id="add-units-comma-separated">
+                            <textarea name="unitsComaArray"  class="new-form-textarea padding-10" placeholder="List units comma separated, Ex. 100, 230F, 400R..." id="comma-separated-units"  required></textarea>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary pull-left" data-dismiss="modal" ng-click="addPropUnits()">
+                    Add Units
+                </button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END MODAL DE ADD UNITS -->

@@ -49,6 +49,12 @@ class Customer extends Model {
         return $this->hasMany('App\Models\CustomerProduct', 'id_customers', 'id');
     }
 
+    public function activeCustomerProducts()
+    {
+        return $this->hasMany('App\Models\CustomerProduct', 'id_customers', 'id')
+            ->where('id_status', config('const.status.active'));
+    }
+
     public function defaultPaymentMethod()
     {
         return $this->hasOne('App\Models\PaymentMethod', 'id_customers')
@@ -114,6 +120,7 @@ class Customer extends Model {
         return $this->hasMany('App\Models\Charge', 'id_customers')
             ->where('status', config('const.charge_status.pending_approval'))
             ->where('processing_type', config('const.type.manual_pay'));
+
     }
 
 

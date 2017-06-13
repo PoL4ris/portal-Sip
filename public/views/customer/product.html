@@ -1,17 +1,14 @@
 <div ng-controller="FormXeditableCtrl" id="customer-products">
-
     <div ng-controller="customerServicesController">
 
-        <div class="panel panel-default table-container">
+        <div class="panel panel-default table-container  animated fadeInDown">
             <table class="tablesorter table m-b-lg">
                 <thead>
                 <tr>
                     <th>Service</th>
-                    <!--<th>Signed at</th>-->
                     <th>Amount</th>
                     <th>Cycle</th>
                     <th>Status</th>
-                    <!--<th>Last Updated</th>-->
                     <th colspan="2">Actions</th>
                 </tr>
                 </thead>
@@ -21,12 +18,9 @@
                     class="bg-status-{{customerProductStatus.status.name}} bg-payment-{{ (service.amount_owed > 0) ? 'debt' : 'no-debt'}}">
 
                     <td>{{ customerProduct.product.name }}</td>
-                    <!--<td ng-init="resultDate = convertDate(service.signed_up)">{{resultDate | date : "M/d/yy h:mm a" }}</td>-->
                     <td>$ {{ customerProduct.product.amount }}.00</td>
                     <td class="text-capitalize">{{ customerProduct.product.frequency }}</td>
                     <td class="text-capitalize">{{ customerProductStatus.status.name }}</td>
-                    <!--<td ng-init="resultDate = convertDate(service.updated_at)">{{resultDate | date : "short" }}</td>-->
-
                     <td class="prod-btns">
                         <button class="btn fa btn-primary fa-eye modif-service-btn display-service-status-{{customerProductStatus.status.name}}"
                                 title="Edit Service"
@@ -45,11 +39,6 @@
                                 ng-click="showConfirm(customerProduct.id, 'active')"
                                 title="Active Service">
                         </button>
-                        <a ng-if="service.amount_owed != 0"
-                           class="btn fa fa-usd action-confirm btn-danger"
-                           title="Charge"
-                           ng-click="setInvoiceTab()">
-                        </a>
                     </td>
                 </tr>
                 </tbody>
@@ -62,6 +51,7 @@
                 Add Service
             </button>
         </div>
+
     </div>
 </div>
 

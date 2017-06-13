@@ -6,8 +6,9 @@ use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use Log;
 use App\Models\ScheduledJob;
-class Kernel extends ConsoleKernel
-{
+
+class Kernel extends ConsoleKernel {
+
     /**
      * The Artisan commands provided by your application.
      *
@@ -20,12 +21,13 @@ class Kernel extends ConsoleKernel
         Commands\GeneralTasks::class,
         Commands\GenerateCustomerCharges::class,
         Commands\InvoicePendingCharges::class,
+        Commands\GenerateMrrReport::class,
     ];
 
     /**
      * Define the application's command schedule.
      *
-     * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
+     * @param  \Illuminate\Console\Scheduling\Schedule $schedule
      * @return void
      */
     protected function schedule(Schedule $schedule)
@@ -50,14 +52,28 @@ class Kernel extends ConsoleKernel
             ->withoutOverlapping()
             ->sendOutputTo(config('joblogs.update-data-from-legacy-db-job-log'));
 
+        $events[] = $schedule->command('report:generate-mrr-report')
+            ->name('report:generate-mrr-report')
+            ->daily()
+            ->withoutOverlapping()
+            ->sendOutputTo(config('joblogs.generate-mrr-report-job-log'));
 
-        $schedule->call(function() use ($events, $schedule) {
-            foreach($events as $event){
-                $scheduledJob = ScheduledJob::where('command',$event->description)->first();
-                if($scheduledJob == null){ continue; }
+        /**
+         *  Leave the code below alone. It updates job timestamps and status
+         *  in the database. Add your scheduled jobs above this section
+         */
+        $schedule->call(function () use ($events, $schedule)
+        {
+            foreach ($events as $event)
+            {
+                $scheduledJob = ScheduledJob::where('command', $event->description)->first();
+                if ($scheduledJob == null)
+                {
+                    continue;
+                }
                 $scheduledJob->schedule = $event->getExpression();
                 $scheduledJob->save();
-                Log::info('Updated schedule for: '.$event->description);
+                Log::info('Updated schedule for: ' . $event->description);
             }
         })->everyMinute()
             ->name('portal jobs schedule checker')

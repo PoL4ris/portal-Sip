@@ -78,6 +78,18 @@ class Building extends Model {
         return $products->whereLoose('id_status', config('const.status.active'));
     }
 
+    public function activeInternetProducts()
+    {
+        return $this->hasMany('App\Models\BuildingProduct', 'id_buildings', 'id')
+            ->where('id_status', config('const.status.active'))
+            ->with(['product' => function ($query){
+                $query->where('id_types', config('const.type.internet'));
+            }]);
+
+//        $products = $this->products;
+//        return $products->whereLoose('id_status', config('const.status.active'));
+    }
+
     public function activeParentProducts()
     {
         $products = $this->products;

@@ -329,6 +329,7 @@ app.controller('customerController',                function ($scope, $http, $st
       $scope.currentServiceDisplay = this.selectedItem.product;
     }
   };
+  //disable becaus its gone the button that triggers.
   $scope.setInvoiceTab              = function (){
     $('#invoice-payment-tab-link').trigger('click');
   };
@@ -458,11 +459,11 @@ app.controller('customerNetworkController',         function ($scope, $http){
   $http.get("getCustomerNetwork", {params:{'id':$scope.idCustomer}})
     .then(function (response) {
       $scope.customerNetwork = response.data[0];
+//      console.log($scope.customerNetwork);
 
-//console.log($scope.customerNetwork);
+
 
       if(response.data.length > 0){
-//             console.log(response.data);
         networkServices(0, true);
       }
     });
@@ -685,12 +686,17 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http){
     });
 
   $scope.setAsDefaultPaymentMethod = function (id) {
+
     $http.get("setDefaultPaymentMethod", {params:{'id' : id, 'customerID' : $scope.idCustomer}})
       .then(function (response) {
+        $scope.defaultCssColor = true;
+        setTimeout(function(){$scope.defaultCssColor = false;}, 500);
+
         $scope.paymentMethods = response.data;
 
         $http.get("getDefaultPaymentMethod", {params:{'id' : $scope.idCustomer}})
           .then(function (response) {
+
             $scope.paymentData = response.data[0];
             $scope.pproperties = response.data[1];
           });
@@ -702,7 +708,43 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http){
         $scope.paymentMethods = response.data;
       });
   };
+
+
+
+  //Temporal version to work with
   $scope.refundFunct        = function (){
+
+    $scope.errorMsgPaymentMethods = null;
+
+    var regex = /[^\w]/g
+
+    var objects = getFormValues('manual-refund-form');
+    objects['cid'] = $scope.idCustomer;
+
+
+    if(!objects.cid || !objects.amount || !objects.desc)
+      return;
+
+    if(regex.test(objects.amount)){
+      $scope.errorMsgPaymentMethods = 'Verify the amount.';
+      return;
+    }
+
+    processing(1);
+
+    $http.get("manualRefund", {params:objects})
+      .then(function (response)
+      {
+        console.log(response.data);
+        processing(0);
+      });
+
+
+  }
+
+
+
+  $scope.refundFunctXXX        = function (){
     $scope.errorMsgPaymentMethods = null;
 
     var regex = /[^\w]/g
@@ -747,8 +789,40 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http){
         $('#paymentManualRefound').modal('toggle');
         $('#manual-refund-form').trigger("reset");
       });
-  };
+  };//working functin to refound.
+
+
+
+
+
   $scope.chargeFunct        = function (){
+    $scope.errorMsgPaymentMethods = null;
+
+    var regex = /[^\w]/g
+
+    var objects = getFormValues('manual-charge-form');
+    objects['cid'] = $scope.idCustomer;
+
+    if(!objects.cid || !objects.amount || !objects.desc)
+      return;
+
+    if(regex.test(objects.amount)){
+      $scope.errorMsgPaymentMethods = 'Verify the amount.';
+      return;
+    }
+
+    processing(1);
+
+    $http.get("manualCharge", {params:objects})
+      .then(function (response)
+      {
+        //$scope.paymentMethods = response.data;
+        console.log(response.data);
+        processing(0);
+
+      });
+  }
+  $scope.chargeFunctXXX        = function (){
     $scope.errorMsgPaymentMethods = null;
 
     var regex = /[^\w]/g

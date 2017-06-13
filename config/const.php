@@ -31,13 +31,7 @@ return [
         'work_phone'   => 4,
         'email'        => 5,
     ],
-    'customer_product_charge_status' => [
-        'none'    => 0,
-        'charged' => 1,
-        'paid'    => 2,
-        'failed'  => 3,
-    ],
-    'charge_type'                    => [
+    'charge_type'       => [
         'charge'   => 'charge',
         'payment'  => 'payment',
         'credit'   => 'credit',

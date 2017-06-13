@@ -1,0 +1,43 @@
+<style>
+    .onsite {
+        background: rgba(63, 127, 191, 0.49);
+    }
+
+    .pending {
+        background: rgba(191, 63, 63, 0.49);
+    }
+</style>
+
+<div ng-controller="tech-appointments">
+
+    <div style="position: absolute; height: 100%; width: 100%; top: 0; left: 0; background: rgba(0,0,0,0.5); z-index: 10;"
+         ng-if="loadinganimation"><div style="padding: 10% 0; text-align: center; font-size: 3em;"><img src="/img/loading.gif" alt="" class="loading-gif-support" ng-if="loadinganimation">PLEASE WAIT</div></div>
+
+
+<div ng-show="!appointments.length" class="well">No pending appointments at this time.</div>
+    <div ng-repeat="x in appointments" class="well" ng-class=x.type>
+        <form id={{x.appointment.id}} ng-submit="submit($event)">
+            <div class="well">
+                <b>  {{x.appointment.summary}}</b><br>
+                {{x.appointment.location}}<br>
+
+                {{ x.start | date : "h:mm"}} - {{ x.end | date : "h:mm"}}<br>
+                {{x.type}}
+            </div>
+            <pre>{{x.appointment.description}}</pre>
+
+            <input type="submit" form="{{x.appointment.id}}" value="Onsite" ng-click="settarget='onsite'">
+            <input type="button" value="Completed" ng-click="settarget='complete';">
+            <input type="button" value="Problem" ng-click="settarget='problem';">
+            <input type="button" value="Canceled" ng-click="settarget='cancel';">
+            <input type="hidden" name="target" value="{{settarget}}">
+            <input type="hidden" name="eventid" value="{{x.appointment.id}}">
+            <input type="hidden" name="origin" value="{{x.type}}">
+            {{settarget}}
+            {{console.log(x)}}
+            <br><textarea name="comment" style="width: 100%;" ng-if='settarget' form={{x.appointment.id}}></textarea>
+            <input type="submit" value="submit" form={{x.appointment.id}} ng-if='settarget'>
+        </form>
+    </div>
+    <br>
+</div>

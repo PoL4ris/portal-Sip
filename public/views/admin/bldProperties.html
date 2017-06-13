@@ -1,0 +1,71 @@
+<div class="col-lg-12">
+    <div class="admin-workspace animated fadeInLeft">
+
+        <div class="col-lg-12">
+            <button class="btn btn-primary" ng-click="addNewBldProp()" ng-if="!newBldProp"><i class="fa fa-plus"></i> Add Building Property</button>
+            <button class="btn btn-danger" ng-click="bldPropCancel()" ng-if="newBldProp"><i class="fa fa-times"></i> Cancel</button>
+        </div>
+
+        <!--TABLE-->
+        <div class="m-t-lg col-lg-6 bg-white padding-10">
+            <table id="bproperty-table" class="tablesorter table table-striped" datatable="ng" dt-options="dtOptions" ng-if="bldProperties">
+                <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Created At</th>
+                    <th>Edit</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="data in bldProperties">
+                    <td>{{data.id}}</td>
+                    <td>{{data.name}}</td>
+                    <td>{{data.description}}</td>
+                    <td ng-init="cAtData = convertDate(data.created_at)">{{cAtData | date : "MMM d, y h:mm a" }}</td>
+                    <td><i class="btn btn-primary fa fa-pencil" ng-click="editBldProp()"></i></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <!--END TABLE-->
+
+        <!--FORM-->
+        <div class="m-t-lg col-lg-6" ng-if="newBldProp || editBldPropData">
+            <div class="row">
+                <form class="animated fadeInRight" id="admin-bldprop-form">
+                    <!--APP DATA-->
+                    <div class="col-lg-12">
+                        <label>Name</label>
+                        <br>
+                        <input type="text"
+                               placeholder="Property Name"
+                               name="property_name"
+                               class="size-100 p-l-md"
+                               value="{{editBldPropData ? editBldPropData.name : null}}"
+                               required>
+                        <hr>
+
+                        <label>Description</label>
+                        <br>
+                        <input type="text"
+                               placeholder="Description"
+                               name="property_description"
+                               class="size-100 p-l-md"
+                               value="{{editBldPropData ? editBldPropData.description : null}}"
+                               required>
+                    </div>
+                    <!--ACTION BUTTONS-->
+                    <div class="col-lg-12 m-t-lg">
+                        <button class="btn btn-success pull-right" ng-if="!editBldPropData" ng-click="submitNewBldProp()">Submit Property</button>
+                        <button class="btn btn-success pull-right" ng-if="editBldPropData" ng-click="updateAdminApp()">Update Property</button>
+                    </div>
+                </form>
+            </div>
+            <button class="btn btn-danger" ng-click="bldPropCancel()" ng-if="editBldPropData"><i class="fa fa-times"></i> Cancel</button>
+        </div>
+        <!--END FORM-->
+
+    </div>
+</div>

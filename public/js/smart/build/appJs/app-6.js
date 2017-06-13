@@ -116,6 +116,7 @@ angular.module('app').factory('Todo', function (Restangular, APP_CONFIG, $httpBa
 'use strict';
 
 angular.module('app.graphs').directive('chartjsBarChart', function () {
+console.log('this is working');
   return {
     restrict: 'A',
     link: function (scope, element, attributes) {
@@ -142,6 +143,9 @@ angular.module('app.graphs').directive('chartjsBarChart', function () {
         //String - A legend template
         legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].lineColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
       }
+
+
+      console.log(barOptions);
 
       var barData = {
         labels: ["January", "February", "March", "April", "May", "June", "July"],
