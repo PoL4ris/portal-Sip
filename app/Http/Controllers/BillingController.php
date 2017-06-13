@@ -173,7 +173,7 @@ class BillingController extends Controller {
         return $result;
     }
 
-    public function getPendingManualCharges(Request $request)
+    public function getPendingManualChargesByCustomer(Request $request)
     {
         $input = $request->all();
         $customerId = $input['cid'];
@@ -185,6 +185,14 @@ class BillingController extends Controller {
             return 'ERROR';
         }
         return $customer->pendingManualCharges;
+    }
+
+    public function getPendingManualCharges(Request $request)
+    {
+
+        return Charge::where('status', config('const.charge_status.pending_approval'))
+                      ->where('processing_type', config('const.type.manual_pay'))
+                      ->get();
     }
 
     public function insertPaymentMethod(Request $request)

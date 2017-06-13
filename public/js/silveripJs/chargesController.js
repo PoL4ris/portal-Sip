@@ -7,7 +7,7 @@ app.controller('chargesController', function ($scope, $http, customerService, ad
   }
 
 
-  $http.post('getCharges', {params: {'token': adminService.existeToken}})
+  $http.post('getPendingManualCharges', {params: {'token': adminService.existeToken}})
     .then(function (response) {
       $scope.chargesData = response.data;
     });
@@ -22,21 +22,19 @@ app.controller('chargesController', function ($scope, $http, customerService, ad
   $scope.confirmAction = function () {
     console.log(this.charge);
 
-//    $http.get('confirmActionWithRecord', {params: {'data': this.charge}})
-//    $http.post('confirmActionWithRecord', {params: {'token': adminService.existeToken, 'data': this.charge}})
-//      .then(function (response) {
-//        $scope.resultStatsData = response.data;
-//      });
+    $http.post('approveManualCharge', {params: {'data': this.charge.id}})
+      .then(function (response) {
+        console.log(response.data);
+      });
 
   }
   $scope.cancelAction  = function () {
     console.log(this.charge);
 
-//    $http.get('cancelActionWithRecord', {params: {'data': this.charge}})
-//    $http.post('cancelActionWithRecord', {params: {'token': adminService.existeToken, 'data': this.charge}})
-//      .then(function (response) {
-//        $scope.resultStatsData = response.data;
-//      });
+    $http.post('denyManualCharge', {params: {'data': this.charge.id}})
+      .then(function (response) {
+        console.log(response.data);
+      });
 
   }
   $scope.editAction    = function () {
@@ -46,11 +44,11 @@ app.controller('chargesController', function ($scope, $http, customerService, ad
     console.log(this.editRecordTmp);
 
     var objects = getFormValues('edit-action-form');
-    $http.get('cancelActionWithRecord', {params: {'data': this.charge}})
-//    $http.post('cancelActionWithRecord', {params: {'token': adminService.existeToken, 'data': this.charge}})
-//      .then(function (response) {
-//        $scope.resultStatsData = response.data;
-//      });
+    objects['id'] = $scope.idCustomer;
+    $http.post('updateManualCharge', {params: objects})
+      .then(function (response) {
+        console.log(response.data);
+      });
   }
 
 

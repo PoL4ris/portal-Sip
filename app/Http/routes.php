@@ -119,8 +119,8 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('refundAmountAction',        'CustomerController@refundAmountAction');
     Route::get('chargeAmountAction',        'CustomerController@chargeAmountAction');
 
-    Route::post('manualRefund',            'BillingController@manualRefund');
-    Route::post('manualCharge',            'BillingController@manualCharge');
+    Route::get('manualRefund',             'BillingController@manualRefund');
+    Route::get('manualCharge',             'BillingController@manualCharge');
     Route::post('updateManualCharge',      'BillingController@updateManualCharge');
     Route::post('approveManualCharge',     'BillingController@approveManualCharge');
     Route::post('denyManualCharge',        'BillingController@denyManualCharge');

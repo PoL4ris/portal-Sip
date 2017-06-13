@@ -130,10 +130,10 @@
                                 <div class="cbox-containter">
                                     <form id="edit-action-form">
                                         <div class="cboxc-top">
-                                            <label>Amount to Edit</label><input type="text" placeholder="Set amount with no comas or signs" name="new_amount" required ng-if="editRecordTmp" value="{{editRecordTmp.amount}}"><input type="text" placeholder="Set amount with no comas or signs" name="new_amount" required ng-if="!editRecordTmp" >
+                                            <label>Amount to Edit</label><input type="text" placeholder="Set amount with no comas or signs" name="amount" required ng-if="editRecordTmp" value="{{editRecordTmp.amount}}"><input type="text" placeholder="Set amount with no comas or signs" name="amount" required ng-if="!editRecordTmp" >
                                         </div>
                                         <div class="cboxc-bottom">
-                                            <label>Description</label><textarea type="text" placeholder="Describe the reason" name="new_desc" required ng-if="editRecordTmp">{{editRecordTmp.comment}}</textarea><textarea type="text" placeholder="Describe the reason" name="new_desc" required ng-if="!editRecordTmp" ></textarea>
+                                            <label>Description</label><textarea type="text" placeholder="Describe the reason" name="desc" required ng-if="editRecordTmp">{{editRecordTmp.comment}}</textarea><textarea type="text" placeholder="Describe the reason" name="desc" required ng-if="!editRecordTmp" ></textarea>
                                         </div>
 
                                         <button class="btn btn-primary float-right m-t-lg" ng-click="editAndConfirm()">Edit & Confirm</button>

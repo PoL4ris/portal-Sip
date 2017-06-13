@@ -732,7 +732,7 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http){
 
     processing(1);
 
-    $http.get("refundAmountAction", {params:objects})
+    $http.get("manualRefund", {params:objects})
       .then(function (response)
       {
         console.log(response.data);
@@ -813,7 +813,7 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http){
 
     processing(1);
 
-    $http.get("chargeAmountAction", {params:objects})
+    $http.get("manualCharge", {params:objects})
       .then(function (response)
       {
         //$scope.paymentMethods = response.data;
