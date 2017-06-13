@@ -120,11 +120,6 @@ Route::group(['middleware' => 'web'], function () {
     Route::post('denyManualCharge',        'BillingController@denyManualCharge');
     Route::post('getPendingManualCharges', 'BillingController@getPendingManualCharges');
 
-
-
-
-    // Updated manual charge/refund addition/update/approval/denial functions.
-
     //UpdateCustomer
     Route::get('updateAddressTable',      'CustomerController@updateAddressTable');
     Route::get('updateCustomersTable',    'CustomerController@updateCustomersTable');
