@@ -52,6 +52,8 @@ return [
         'paid'     => 3,
         'failed'   => 4,
         'disabled' => 5,
+        'pending_approval' => 6,
+        'denied' => 7,
     ],
     'invoice_status'                 => [
         'none'    => 0,

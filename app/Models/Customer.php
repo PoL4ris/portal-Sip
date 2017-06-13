@@ -109,7 +109,12 @@ class Customer extends Model {
         return $this->hasOne('App\Models\Type', 'id', 'id_types');
     }
 
-
+    public function pendingManualCharges()
+    {
+        return $this->hasMany('App\Models\Charge', 'id_customers')
+            ->where('status', config('const.charge_status.pending_approval'))
+            ->where('processing_type', config('const.type.manual_pay'));
+    }
 
 
 

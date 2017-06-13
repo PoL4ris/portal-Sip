@@ -112,6 +112,19 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('getAllPaymentMethods',    'CustomerController@getAllPaymentMethods');
     Route::get('setDefaultPaymentMethod', 'CustomerController@setDefaultPaymentMethod');
     Route::get('getDefaultPaymentMethod', 'CustomerController@getDefaultPaymentMethod');
+
+    Route::post('manualRefund',            'BillingController@manualRefund');
+    Route::post('manualCharge',            'BillingController@manualCharge');
+    Route::post('updateManualCharge',      'BillingController@updateManualCharge');
+    Route::post('approveManualCharge',     'BillingController@approveManualCharge');
+    Route::post('denyManualCharge',        'BillingController@denyManualCharge');
+    Route::post('getPendingManualCharges', 'BillingController@getPendingManualCharges');
+
+
+
+
+    // Updated manual charge/refund addition/update/approval/denial functions.
+
     //UpdateCustomer
     Route::get('updateAddressTable',      'CustomerController@updateAddressTable');
     Route::get('updateCustomersTable',    'CustomerController@updateCustomersTable');

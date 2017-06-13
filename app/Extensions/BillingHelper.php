@@ -53,7 +53,7 @@ class BillingHelper {
         {
             // Get list of chargeable products/services for the requested building
             $customerProducts = $this->getChargeableCustomerProductsByBuildingId($building->id);
-            $count = $this->addChargesToDatabase($customerProducts);
+            $count = $this->addChargesForCustomerProducts($customerProducts);
             Log::info('BillingHelper::generateInvoiceRecords(): Added ' . $count . ' invoices for ' . $building->nickname . ' to DB');
         }
 
@@ -111,12 +111,12 @@ class BillingHelper {
             });
     }
 
-    protected function addChargesToDatabase($customerProducts)
+    protected function addChargesForCustomerProducts($customerProducts)
     {
         $count = 0;
         foreach ($customerProducts as $customerProduct)
         {
-            $result = $this->addChargeForCustomerProductToDatabase($customerProduct);
+            $result = $this->createChargeForCustomerProduct($customerProduct);
             if ($result == false)
             {
                 continue;
@@ -129,7 +129,7 @@ class BillingHelper {
         return $count;
     }
 
-    public function addChargeForCustomerProductToDatabase($customerProduct, $userId = 0)
+    public function createChargeForCustomerProduct($customerProduct, $userId = 0)
     {
         $customer = $customerProduct->customer;
         $address = $customerProduct->address;
@@ -151,34 +151,108 @@ class BillingHelper {
             return false;
         }
 
-        Charge::create(['name'                 => trim($customer->first_name, "\x20,\xC2,\xA0") . ' ' . trim($customer->last_name, "\x20,\xC2,\xA0"),
-                        'address'              => $this->getFormattedAddress($address),
-                        'description'          => 'New Charge',
-                        'details'              => json_encode(array('customer_product_id'     => $customerProduct->id,
-                                                                    'customer_product_status' => $customerProduct->id_status,
-                                                                    'product_id'              => $customerProduct->id_products,
-                                                                    'product_name'            => $product->name,
-                                                                    'product_desc'            => $product->description,
-                                                                    'product_amount'          => $product->amount,
-                                                                    'product_frequency'       => $product->frequency,
-                                                                    'product_type'            => $product->type
-                        )),
-                        'amount'               => number_format($product->amount, 2),
-                        'qty'                  => 1,
-                        'id_customers'         => $customerProduct->id_customers,
-                        'id_customer_products' => $customerProduct->id,
-                        'id_address'           => $customerProduct->id_address,
-                        'id_users'             => $userId,
-                        'status'               => config('const.charge_status.pending'),
-                        'type'                 => config('const.charge_type.charge'),
-                        'bill_cycle_day'       => '1',
-                        'processing_type'      => config('const.type.auto_pay'),  // auto_pay, manual_pay
-                        'start_date'           => $dateRange['startDate'],
-                        'end_date'             => $dateRange['endDate'],
-                        'due_date'             => date("Y-m-d H:i:s", strtotime("first day of next month  00:00:00"))
+        Charge::create([
+//                        'name'                 => trim($customer->first_name, "\x20,\xC2,\xA0") . ' ' . trim($customer->last_name, "\x20,\xC2,\xA0"),
+//                        'address'              => $this->getFormattedAddress($address),
+            'description'          => 'New Charge',
+            'details'              => json_encode(array('customer_product_id'     => $customerProduct->id,
+                                                        'customer_product_status' => $customerProduct->id_status,
+                                                        'product_id'              => $customerProduct->id_products,
+                                                        'product_name'            => $product->name,
+                                                        'product_desc'            => $product->description,
+                                                        'product_amount'          => $product->amount,
+                                                        'product_frequency'       => $product->frequency,
+                                                        'product_type'            => $product->type
+            )),
+            'amount'               => number_format($product->amount, 2),
+            'qty'                  => 1,
+            'id_customers'         => $customerProduct->id_customers,
+            'id_customer_products' => $customerProduct->id,
+            'id_address'           => $customerProduct->id_address,
+            'id_users'             => $userId,
+            'status'               => config('const.charge_status.pending'),
+            'type'                 => config('const.charge_type.charge'),
+            'bill_cycle_day'       => '1',
+            'processing_type'      => config('const.type.auto_pay'),  // auto_pay, manual_pay
+            'start_date'           => $dateRange['startDate'],
+            'end_date'             => $dateRange['endDate'],
+            'due_date'             => date("Y-m-d H:i:s", strtotime("first day of next month  00:00:00"))
         ]);
 
         return true;
+    }
+
+    public function createManualChargeForCustomer(Customer $customer, $amount, $comment, $userId = 0)
+    {
+        $address = $customer->address;
+
+        Charge::create(['description'     => 'Manual Charge',
+                        'amount'          => number_format($amount, 2),
+                        'qty'             => 1,
+                        'id_customers'    => $customer->id,
+                        'id_address'      => $address->id,
+                        'id_users'        => $userId,
+                        'status'          => config('const.charge_status.pending_approval'),
+                        'type'            => config('const.charge_type.charge'),
+                        'comment'         => $comment,
+                        'bill_cycle_day'  => '1',
+                        'processing_type' => config('const.type.manual_pay'),  // auto_pay, manual_pay
+                        'due_date'        => date("Y-m-d H:i:s", strtotime("first day of next month  00:00:00"))
+        ]);
+
+        return true;
+    }
+
+    public function createManualRefundForCustomer(Customer $customer, $amount, $comment, $userId = 0)
+    {
+        $address = $customer->address;
+
+        Charge::create(['description'     => 'Manual Refund',
+                        'amount'          => number_format($amount, 2),
+                        'qty'             => 1,
+                        'id_customers'    => $customer->id,
+                        'id_address'      => $address->id,
+                        'id_users'        => $userId,
+                        'status'          => config('const.charge_status.pending_approval'),
+                        'type'            => config('const.charge_type.credit'),
+                        'comment'         => $comment,
+                        'bill_cycle_day'  => '1',
+                        'processing_type' => config('const.type.manual_pay'),  // auto_pay, manual_pay
+                        'due_date'        => date("Y-m-d H:i:s", strtotime("first day of next month  00:00:00"))
+        ]);
+
+        return true;
+    }
+
+    public function updateManualChargeAmount(Charge $charge, $amount, $comment, $userId = 0)
+    {
+        $charge->amount = number_format($amount, 2);
+        $charge->comment = $comment;
+        $charge->id_users = $userId;
+        $charge->save();
+
+        return true;
+    }
+
+    public function approveManualCharge(Charge $charge)
+    {
+        $charge->status = config('const.charge_status.pending');
+        $charge->processing_type = config('const.type.auto_pay');
+        $charge->save();
+
+        return true;
+    }
+
+    public function denyManualCharge(Charge $charge)
+    {
+        $charge->status = config('const.charge_status.denied');
+        $charge->save();
+
+        return true;
+    }
+
+    public function getPendingManualCharges(Customer $customer){
+
     }
 
     protected function getProductChargeDates($product)
