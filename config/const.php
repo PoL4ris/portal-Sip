@@ -1,14 +1,14 @@
 <?php
 
 return [
-    'status'            => [
+    'status'                         => [
         'active'         => env('STATUS_ACTIVE', 1),
         'disabled'       => env('STATUS_DISABLED', 2),
         'new'            => env('STATUS_NEW', 3),
         'decommissioned' => env('STATUS_DECOMMISSIONED', 4),
         'closed'         => 'closed'
     ],
-    'type'              => [
+    'type'                           => [
         'internet'        => 1,
         'phone'           => 2,
         'phone_option'    => 3,
@@ -24,13 +24,20 @@ return [
         'auto_pay'        => 13,
         'manual_pay'      => 14,
     ],
-    'contact_type'      => [
+    'contact_type'                   => [
         'mobile_phone' => 1,
         'home_phone'   => 2,
         'fax'          => 3,
         'work_phone'   => 4,
         'email'        => 5,
     ],
+    'customer_product_charge_status' => [
+        'none'    => 0,
+        'charged' => 1,
+        'paid'    => 2,
+        'failed'  => 3,
+    ],
+    'charge_type'                    => [
     'customer_product_charge_status' => [
         'none'    => 0,
         'charged' => 1,
@@ -45,12 +52,15 @@ return [
         'discount' => 'discount',
         'promo'    => 'promo'
     ],
-    'charge_status'     => [
-        'none'      => 0,
-        'pending'   => 1,
+    'charge_status'                  => [
+        'none'     => 0,
+        'pending'  => 1,
         'invoiced' => 2,
         'paid'     => 3,
         'failed'   => 4,
+        'disabled' => 5,
+        'pending_approval' => 6,
+        'denied' => 7,
     ],
     'invoice_status'                 => [
         'none'    => 0,
@@ -59,7 +69,7 @@ return [
         'paid'    => 3,
         'failed'  => 4,
     ],
-    'building_property' => [
+    'building_property'              => [
         'type'              => '1',
         'units'             => '2',
         'service_type'      => '3',
@@ -88,20 +98,20 @@ return [
         'building_setup'    => '27',
         'front_desk'        => '28',
     ],
-    'product_property'  => [
+    'product_property'               => [
         'data-service-download' => '1',
         'data-service-upload'   => '2',
         'service-title'         => '3',
         'service-slogans'       => '4',
         'data-service-delivery' => '5',
     ],
-    'reason_category'   => [
+    'reason_category'                => [
         'internet' => '1',
         'phone'    => '2',
         'misc'     => '3',
         'tv'       => '4'
     ],
-    'reason'            => [
+    'reason'                         => [
         'unknown'               => '1',
         'slow_internet'         => '2',
         'no_internet_access'    => '3',
