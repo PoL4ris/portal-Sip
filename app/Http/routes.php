@@ -56,6 +56,8 @@ Route::group(['middleware' => 'web'], function () {
     Route::post('insertNewBldProperty',     'AdminController@insertNewBldProperty');
     Route::post('getAppPositionDown',       'AdminController@getAppPositionDown');
     Route::post('getAppPositionUp',         'AdminController@getAppPositionUp');
+    Route::post('getCharges',               'AdminController@getCharges');
+    Route::post('getChargesStats',          'AdminController@getChargesStats');
     //PROFILE
     Route::get('getProfileInfo',            'AdminController@getProfileInfo');
     Route::get('updateProfileInfo',         'AdminController@updateProfileInfo');
@@ -113,6 +115,8 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('getAllPaymentMethods',      'CustomerController@getAllPaymentMethods');
     Route::get('setDefaultPaymentMethod',   'CustomerController@setDefaultPaymentMethod');
     Route::get('getDefaultPaymentMethod',   'CustomerController@getDefaultPaymentMethod');
+    Route::get('refundAmountAction',        'CustomerController@refundAmountAction');
+    Route::get('chargeAmountAction',        'CustomerController@chargeAmountAction');
     //UpdateCustomer
     Route::get('updateAddressTable',        'CustomerController@updateAddressTable');
     Route::get('updateCustomersTable',      'CustomerController@updateCustomersTable');

@@ -329,6 +329,7 @@ app.controller('customerController',                function ($scope, $http, $st
       $scope.currentServiceDisplay = this.selectedItem.product;
     }
   };
+  //disable becaus its gone the button that triggers.
   $scope.setInvoiceTab              = function (){
     $('#invoice-payment-tab-link').trigger('click');
   };
@@ -707,7 +708,43 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http){
         $scope.paymentMethods = response.data;
       });
   };
+
+
+
+  //Temporal version to work with
   $scope.refundFunct        = function (){
+
+    $scope.errorMsgPaymentMethods = null;
+
+    var regex = /[^\w]/g
+
+    var objects = getFormValues('manual-refund-form');
+    objects['cid'] = $scope.idCustomer;
+
+
+    if(!objects.cid || !objects.amount || !objects.desc)
+      return;
+
+    if(regex.test(objects.amount)){
+      $scope.errorMsgPaymentMethods = 'Verify the amount.';
+      return;
+    }
+
+    processing(1);
+
+    $http.get("refundAmountAction", {params:objects})
+      .then(function (response)
+      {
+        console.log(response.data);
+        processing(0);
+      });
+
+
+  }
+
+
+
+  $scope.refundFunctXXX        = function (){
     $scope.errorMsgPaymentMethods = null;
 
     var regex = /[^\w]/g
@@ -752,8 +789,40 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http){
         $('#paymentManualRefound').modal('toggle');
         $('#manual-refund-form').trigger("reset");
       });
-  };
+  };//working functin to refound.
+
+
+
+
+
   $scope.chargeFunct        = function (){
+    $scope.errorMsgPaymentMethods = null;
+
+    var regex = /[^\w]/g
+
+    var objects = getFormValues('manual-charge-form');
+    objects['cid'] = $scope.idCustomer;
+
+    if(!objects.cid || !objects.amount || !objects.desc)
+      return;
+
+    if(regex.test(objects.amount)){
+      $scope.errorMsgPaymentMethods = 'Verify the amount.';
+      return;
+    }
+
+    processing(1);
+
+    $http.get("chargeAmountAction", {params:objects})
+      .then(function (response)
+      {
+        //$scope.paymentMethods = response.data;
+        console.log(response.data);
+        processing(0);
+
+      });
+  }
+  $scope.chargeFunctXXX        = function (){
     $scope.errorMsgPaymentMethods = null;
 
     var regex = /[^\w]/g

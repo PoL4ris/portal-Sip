@@ -284,7 +284,7 @@ app.controller('supportTicketHistory',              function ($scope, $http){
 });
 //En espera de edicion de usuario data
 app.controller('supportControllerTools',            function ($scope, $http) {
-  console.log('supportControllerTools');
+//  console.log('supportControllerTools');
   $scope.buscador = function(side) {
     var query = {};
     if (side == 'center')

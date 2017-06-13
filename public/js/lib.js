@@ -1,6 +1,6 @@
 app.controller('libController', function ($scope, $http) {
 
-  console.log('dashboardController');
+//  console.log('dashboardController');
 
   $http.get("getMainDashboard")
     .then(function (response) {

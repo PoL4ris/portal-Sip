@@ -141,6 +141,9 @@
 .p-l-lg {
   padding-left: 15px;
 }
+.ddd{
+  border:1px dotted silver
+}
 .size-50 {
   width: 50%;
 }
@@ -1085,6 +1088,22 @@ table.dataTable tbody tr {
   opacity: 0.6;
 }
 
+.style-refund{
+  border-left:2px solid #0086ff;
+}
+.style-charge{
+  border-left:2px solid #ffce54;
+}
+.cbox-containter textarea{
+  border: 1px solid #ddd;
+  border-radius: 2px;
+  padding: 4px;
+  width: 65%;
+  max-width: 65%;
+  min-width: 65%;
+  max-height: 150px;
+  min-height: 50px;
+}
 pre {
   margin: 30px;
   font-size: 10px;

@@ -230,6 +230,28 @@ angular.module('app.dummyapp',      ['ui.router']).config(function ($stateProvid
       }
     })
 });
+angular.module('app.charges',       ['ui.router']).config(function ($stateProvider) {
+  $stateProvider
+    .state('app.charges', {
+      url:  '/charges',
+      data: {
+        title: 'Charges'
+      },
+      views: {
+        "content@app": {
+          templateUrl: '/views/test.html',
+          controller: 'chargesController',
+        }
+      },
+      resolve: {
+        scripts: function (lazyScript) {
+          return lazyScript.register([
+            '/js/smart/build/vendor.ui.js'
+          ]);
+        }
+      }
+    })
+});
 
 angular.module('app.tech-schedule', ['ui.router']).config(function ($stateProvider) {
     $stateProvider

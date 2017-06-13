@@ -15,8 +15,8 @@ use App\Models\Status;
 use App\Models\User;
 use App\Models\App;
 use App\Models\AccessApp;
-use App\Models\Customer;
 use App\Models\BuildingProperty;
+use App\Models\Charge;
 
 
 /**
@@ -348,5 +348,52 @@ class AdminController extends Controller
     public function admin()
     {
         return User::get();
+    }
+
+    /**
+     * @param Request $request
+     * @return Result of all Pending Charges.
+     */
+    public function getCharges(Request $request)
+    {
+        return Charge::where('status', 777)->orWhere('status', 778)->orderBy('created_at', 'desc')->get();
+    }
+
+    /**
+     * @return stats of today Charges
+     */
+    public function getChargesStats()
+    {
+        $todayRecords = Charge::where('status', 777)->orWhere('status', 778)->whereRaw('created_at > DATE_SUB(NOW(), INTERVAL 1 DAY)')->orderBy('created_at', 'desc')->get();
+        $weekRecords  = Charge::where('status', 777)->orWhere('status', 778)->whereRaw('created_at > DATE_SUB(NOW(), INTERVAL 1 WEEK)')->orderBy('created_at', 'desc')->get();
+        $monthRecords = Charge::where('status', 777)->orWhere('status', 778)->whereRaw('created_at > DATE_SUB(NOW(), INTERVAL 1 MONTH)')->orderBy('created_at', 'desc')->get();
+
+        $result['day']   = $this->getResultAmounts($todayRecords);
+        $result['week']  = $this->getResultAmounts($weekRecords);
+        $result['month'] = $this->getResultAmounts($monthRecords);
+
+        return $result;
+
+    }
+
+    public function getResultAmounts($timeRecords)
+    {
+        $result['charges_amount'] = $result['refund_amount'] = 0;
+
+        foreach($timeRecords as $z => $item)
+        {
+            if($item->type == 'Charge' && $item->status == 778)
+            {
+                $result['charges'][] = $item;
+                $result['charges_amount'] = $result['charges_amount'] + $item->amount;
+            }
+            else
+            {
+                $result['refund'][] = $item;
+                $result['refund_amount'] = $result['refund_amount'] + $item->amount;
+            }
+        }
+
+        return $result;
     }
 }
