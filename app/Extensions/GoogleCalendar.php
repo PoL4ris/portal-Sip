@@ -329,7 +329,7 @@ class GoogleCalendar {
 
         $description .= "{$appointmentdescription}\n\n";
         $description .= "Scheduled By:\n";
-        $description .= $user . " at " . (new DateTime('now'))->format(DATE_RFC3339);
+        $description .= $user . " on " . (new DateTime('now'))->format(DATE_RFC3339);
 
         $event = new \Google_Service_Calendar_Event;
         $start = new \Google_Service_Calendar_EventDateTime();
@@ -352,11 +352,11 @@ class GoogleCalendar {
 
 
 //set the event on the pending calendar.
-        $onset = $Calendar->service->events->insert(Config::get('google.pending_appointment'), $event, []);
+        $googleresponse = $Calendar->service->events->insert(Config::get('google.pending_appointment'), $event, []);
 
-//$onset is just the newly created appointment in case we need anything else done with it.
+//$googleresponse is just the newly created appointment in case we need anything else done with it.
 
-        return $onset;
+        return $googleresponse;
     }
 
     /**

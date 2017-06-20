@@ -2,13 +2,17 @@
 
 
 <div class="form-group schedule-wrapper" ng-controller="techschedulercontroller">
+
+
+    <div ng-repeat="error in errors">{{error}}</div>
+    <a ng-if=messages target="_blank" href={{messages}}>Appointment Scheduled, Click to display on google</a>
     <div style="position: absolute; height: 100%; width: 100%; top: 0; left: 0; background: rgba(0,0,0,0.5); z-index: 10;"
          ng-if="loadinganimation"></div>
     <form id='scheduleform' method="get" name="scheduleform"
           action="/tech-schedule/setappointment" ng-submit="prepareforappointmentsubmission($event)"
           class="{{loadinganimation?'hideornohide':''}}">
         <img src="/img/loading.gif" alt="" class="loading-gif-support" ng-if="loadinganimation">
-
+        <img src="/img/Regions.png" style="float: right; max-height: 300px;">
 
         <table id='sheader'>
             <tr>
@@ -25,11 +29,12 @@
                 <td><label for="cname">Customer Name</label></td>
                 <td><input type="text" id='cname' name="customername" class="form-control"
                            tabindex="1" ng-model="customername"></input></td>
-                <td rowspan="7" style="width: 600px; max-width: 100%; height: 100%"><textarea type="text" id="adesc"
+                <td rowspan="7" style="height: 100%; width: 80%;"><textarea type="text" id="adesc"
                                                                                               name="appointmentdescription"
                                                                                               class="form-control"
                                                                                               tabindex="8" ng-model="appointmentdescription"></textarea>
                 </td>
+
             </tr>
             <tr>
                 <td><label for="cphone">Customer Phone</label></td>
@@ -40,7 +45,9 @@
                 <td><label for="buildingcode">Building Code</label></td>
                 <td><input type="text" ng-keyup="updatebuildingsearch()" id="buildingcode" name="buildingcode"
                            class="form-control"
-                           tabindex="3" ng-model="buildingcode"></input></td>
+                           tabindex="3" ng-model="buildingcode"></input>
+                    <div>{{selectaddress}}</div>
+                </td>
             </tr>
             <tr>
                 <td><label for="unit">Unit</label></td>
@@ -50,20 +57,19 @@
             <tr>
                 <td><label for="service">Service</label></td>
                 <td><select id="service" name="service" tabindex="5" class="selectpicker form-control" ng-model="service">
-                    <option disabled selected>Service</option>
                     <option>TV</option>
                     <option>INT</option>
-                </select></td><!--should be dropdown-->
+                    <option>INT/TV</option>
+                </select></td>
             </tr>
 
             <tr>
                 <td><label for="action">Action</label></td>
                 <td><select id="action" name="action" tabindex="6" class="selectpicker form-control" ng-model="action">
-                    <option disabled selected>Action</option>
                     <option>Connect</option>
                     <option>Repair</option>
                     <option>Other</option>
-                </select><!--should be dropdown--></td>
+                </select>
             </tr>
             <tr>
                 <td><label for="dtvaccount">DTV Account</label></td>
