@@ -28,6 +28,7 @@ use App\Models\NetworkNode;
 use App\Models\ContactType;
 use App\Models\PaymentMethod;
 use App\Models\ActivityLog;
+use App\Models\Charge;
 use App\Models\RetailRevenue;
 use App\Http\Controllers\TechScheduleController;
 use App\Extensions\GoogleCalendar;
@@ -140,6 +141,14 @@ class TestController extends Controller
     
     public function supportTest()
     {
+
+
+        $warpol = Charge::where('id',20)->get();
+//        $warpol = Charge::whereRaw('created_at > DATE_SUB(NOW(), INTERVAL 1 MONTH)')->get();
+        $warpol2 = $warpol->load('productDetail.product');
+
+
+        dd($warpol2->toArray());
 
 
         //Dashboard data Working

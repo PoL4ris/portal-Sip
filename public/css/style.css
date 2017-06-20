@@ -39,7 +39,7 @@
   background: rgba(255, 122, 122, 0.3) none repeat scroll 0 0 !important;
   border: 1px solid #ff7a7a;
 }
-.old-yellow {
+.old-yellow{
   background: rgba(224, 219, 10, 0.3) none repeat scroll 0 0 !important;
   border: 1px solid #e0db0a;
 }
@@ -144,6 +144,7 @@
 .ddd{
   border:1px dotted silver
 }
+
 .size-50 {
   width: 50%;
 }
@@ -892,6 +893,7 @@ table.dataTable tbody tr {
   min-height: 100%;
   position: fixed;
   width: 200px;
+  /*border-right:1px solid #ddd;*/
 }
 .sub-nav .admin-sub-nav {
   padding: 10px;
@@ -1110,6 +1112,56 @@ table.dataTable tbody tr {
   left:0;
 }
 
+.ch-border{
+  border:2px solid red;
+  border-top:none;
+  border-bottom:none;
+  border-left:1px solid transparent;
+  border-right:1px solid transparent;
+}
+.ch-border-1{
+  border-left:3px solid;
+}
+.ch-pending, .ch-1{
+  /*background: rgba(224, 219, 10, 0.3) none repeat scroll 0 0 !important;*/
+  border-color: #e0db0a;
+}
+.ch-invoiced, .ch-2{
+  /*background: rgba(144, 224, 107, 0.3) none repeat scroll 0 0 !important;*/
+  border-color: #90e06b;
+}
+.ch-paid, .ch-3{
+  /*background: rgba(0, 134, 255, 0.3) none repeat scroll 0 0 !important;*/
+  border-color: #0086ff;
+}
+.ch-failed, .ch-4{
+  /*background: rgba(255, 122, 122, 0.3) none repeat scroll 0 0 !important;*/
+  border-color: #ff7a7a;
+}
+.ch-disabled, .ch-5{
+  /*background: rgba(250, 251, 252, 0.3) none repeat scroll 0 0 !important;*/
+  border-color: #000000;
+}
+.ch-pending-Approval, .ch-6{
+  /*background: rgba(255, 214, 0, 0.3) none repeat scroll 0 0 !important;*/
+  border-color: #ffd600;
+}
+.ch-denied, .ch-7{
+  /*background: rgba(255, 109, 0, 0.3) none repeat scroll 0 0 !important;*/
+  border-color: #ff6d00;
+}
+.ch-active-month{
+  border-bottom: 3px solid #0086ff;
+}
+.ch-active-year{
+  border-bottom: 3px solid #00c853;
+}
+.months-select-style{
+
+}
+.months-select-style:hover{
+  background: rgba(0, 134, 255, 0.17);
+}
 pre {
   margin: 30px;
   font-size: 10px;

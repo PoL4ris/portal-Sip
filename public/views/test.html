@@ -1,161 +1,121 @@
+<div class="row">
 
-
-<div class="col-lg-12 p-t-lg p-b-lg bg-white white-shadow filters-fixed-size">
-    <div class="col-lg-12 no-padding-sides p-t-lg p-b-lg b-b-ddd m-b-lg">
-
-        <div class="col-lg-4 no-padding-sides"><h4>Pending Charges</h4></div>
-
-
-
-        <div class="col-lg-4 text-align-right status-color-active">
-            <label class="label-refund">Refund</label>
-            <div class="col-lg-4">
-                <label>Today  <br><span>${{resultStatsData.day.refund_amount}}</span></label>
-            </div>
-            <div class="col-lg-4">
-                <label>This Week <br><span>${{resultStatsData.week.refund_amount}}</span></label>
-            </div>
-            <div class="col-lg-4">
-                <label>This Month <br><span>${{resultStatsData.month.refund_amount}}</span></label>
-            </div>
+    <div class="sub-nav pull-left">
+        <div class="admin-sub-nav">
+            <p ng-click="setView(0)">Billing Approval</p>
+            <p ng-click="setView(1)">Charges & Invoices</p>
+            <!--<p ng-click="setView(2)">Monthly Billing</p>-->
+            <!--<p ng-click="setView(3)">WILL GO</p>-->
         </div>
-        <div class="col-lg-4  text-align-right status-color-decommissioned">
-            <label class="label-charge">Charge</label>
-            <div class="col-lg-4">
-                <label>Today <br><span>${{resultStatsData.day.charges_amount}}</span></label>
-            </div>
-            <div class="col-lg-4">
-                <label>This Week <br><span>${{resultStatsData.week.charges_amount}}</span></label>
-            </div>
-            <div class="col-lg-4">
-                <label>This Month <br><span>${{resultStatsData.month.charges_amount}}</span></label>
-            </div>
-        </div>
-
     </div>
 
+    <article class="workspace  null-article admin-app pull-left">
+        <div ng-include="'/views/charges.html'"            id="admin-profiles-include"  ng-if="displayView == 'charges'" ></div>
+        <div ng-include="'/views/chargesAndInvoices.html'"       id="admin-users-include"     ng-if="displayView == 'pending'"    ></div>
+        <!--<div ng-include="'/views/admin/apps.html'"               id="admin-apps-include"      ng-if="displayView == 'apps'"     ></div>-->
+        <!--<div ng-include="'/views/admin/bldProperties.html'"      id="admin-bprop-include"     ng-if="displayView == 'bprop'"    ></div>-->
+    </article>
 
-    <hr>
-
-    <table id="myTable" class="tablesorter table table-striped" datatable="ng">
-        <thead>
-        <tr>
-            <th>Customer</th>
-            <th>Address</th>
-            <th>Type</th>
-            <th>Amount</th>
-            <th>Comment</th>
-            <th>Request Date</th>
-            <th>Actions</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr  ng-repeat="charge in chargesData"  >
-            <td class="{{charge.type == 'credit' ? 'style-refund' : 'style-charge'}}">{{charge.name?charge.name:'N/A'}}</td>
-            <td>{{charge.address?charge.address:'N/A'}}</td>
-            <td class="capital-first"><b>{{charge.type}}</b></td>
-            <td>${{charge.amount}}</td>
-            <td>{{charge.comment}}</td>
-            <td ng-init="resultDate = convertDate(charge.created_at)">{{ resultDate | date : "MMM d, y h:mm a" }}</td>
-            <td>
-                <i class="btn btn-primary fa fa-check"  title="Accept" ng-click="confirmAction()"></i>
-                <i class="btn btn-danger  fa fa-times"  title="Cancel" ng-click="cancelAction()"></i>
-                <i class="btn btn-warning fa fa-pencil" title="Edit"   ng-click="editAction()" data-toggle="modal" data-target="#editActionModal"></i>
-            </td>
-
-        </tr>
-        </tbody>
-    </table>
-
-
-
-
-
-    <!--<div class="col-lg-12" ng-repeat="charge in chargesData">-->
-        <!--<div class="row bg-white white-shadow p-t-lg p-b-lg" >-->
-
-
-            <!--&lt;!&ndash;<div class="col-lg-6">ID</div>                      <div class="col-lg-6">=> {{charge.id}}</div>&ndash;&gt;-->
-            <!--<div class="col-lg-12">-->
-                <!--<p>-->
-                    <!--<b>{{charge.name}}</b>,-->
-                    <!--<br>-->
-                    <!--With address:-->
-                        <!--<b>{{charge.address}}</b>, Requests <b class="capital-first">{{charge.type}}</b> of <b> $ {{charge.amount}}</b>-->
-                    <!--<br>-->
-                    <!--{{charge.description}}-->
-                    <!--<br>-->
-                    <!--<b>Reason:</b>-->
-                    <!--<br>-->
-                    <!--{{charge.comment}}-->
-                <!--</p>-->
-            <!--</div>-->
-
-
-
-            <!--&lt;!&ndash;Charges means Manual refund&ndash;&gt;-->
-            <!--<div class="col-lg-12" ng-if="charge.status == 777 ">-->
-                <!--<button class="btn btn-primary">Confirm </button>-->
-                <!--<button class="btn btn-danger">Deny</button>-->
-                <!--<button class="btn btn-warning">Adjust</button>-->
-            <!--</div>-->
-
-
-            <!--<div class="col-lg-12" ng-if="charge.status == 778 ">-->
-                <!--<button class="btn btn-primary">Confirm </button>-->
-                <!--<button class="btn btn-danger">Deny</button>-->
-            <!--</div>-->
-
-
-
-
-        <!--</div>-->
-    <!--</div>-->
 </div>
 
 
-
-<div class="modal fade" id="editActionModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-
+<!-- MODAL USERS-->
+<div class="modal fade" id="adminModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-ticket-size">
         <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-                    &times;
-                </button>
-                <span>Edit Request.</span>
-            </div>
-            <div class="modal-body">
-                <div class="wrapper-sm">
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <div class="manual-ref">
-                                <div class="cbox-containter">
-                                    <form id="edit-action-form">
-                                        <div class="cboxc-top">
-                                            <label>Amount to Edit</label><input type="text" placeholder="Set amount with no comas or signs" name="amount" required ng-if="editRecordTmp" value="{{editRecordTmp.amount}}"><input type="text" placeholder="Set amount with no comas or signs" name="amount" required ng-if="!editRecordTmp" >
-                                        </div>
-                                        <div class="cboxc-bottom">
-                                            <label>Description</label><textarea type="text" placeholder="Describe the reason" name="desc" required ng-if="editRecordTmp">{{editRecordTmp.comment}}</textarea><textarea type="text" placeholder="Describe the reason" name="desc" required ng-if="!editRecordTmp" ></textarea>
-                                        </div>
+            <form id="admin-edit-form">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <span ng-if="adminEditingUser">Edit User Info</span>
+                    <span ng-if="!adminEditingUser">New User Info</span>
+                </div>
+                <div class="modal-body">
+                    <div class="wrapper-sm">
+                        <div class="row">
 
-                                        <button class="btn btn-primary float-right m-t-lg" ng-click="editAndConfirm()">Edit & Confirm</button>
-                                        <div class="pull-right m-t-lg" ng-if="loadingtap">
-                                            Processing.
-                                            <img src="/img/loading.gif" alt="">
-                                        </div>
-                                    </form>
+                            <!--SOMETHING HERE-->
+                            <div class="admin-edit-container anim">
+                                <!--CONTENT-->
+                                <div class="col-lg-12">
+                                    <div class="col-lg-6 m-b-lg">
+                                        <label>First Name</label><br>
+                                        <input type="text" value="{{adminEditingUser.first_name}}" name="first_name">
+                                        <!--<input type="text" placeholder="First Name" name="first_name" ng-if="newUserRequired" required>-->
+                                    </div>
+                                    <div class="col-lg-6 m-b-lg">
+                                        <label>Last Name</label><br>
+                                        <input type="text" value="{{adminEditingUser.last_name}}" name="last_name">
+                                        <!--<input type="text" placeholder="Last Name"  name="last_name" ng-if="newUserRequired" required>-->
+                                    </div>
+
+                                    <div class="col-lg-6 m-b-lg">
+                                        <label>Email/Username</label><br>
+                                        <input type="text" value="{{adminEditingUser.email}}" name="email">
+                                        <!--<input type="text" placeholder="Email" name="email" ng-if="newUserRequired" required>-->
+                                    </div>
+                                    <div class="col-lg-6 m-b-lg">
+                                        <label>Alias</label><br>
+                                        <input type="text" value="{{adminEditingUser.alias}}" name="alias">
+                                        <!--<input type="text" placeholder="Alias"  name="alias" ng-if="newUserRequired" required>-->
+                                    </div>
+
+                                    <div class="col-lg-12 m-b-lg">
+                                        <label>Reset Password</label><br>
+                                        <input id="pswRegen"
+                                               readonly
+                                               type="text"
+                                               placeholder="Set Password"
+                                               class="m-b-lg"
+                                               value="{{createdPsw ? createdPsw : null}}"
+                                               name="password">
+                                        <button class="btn btn-success" ng-click="generatePsw()">Generate Password</button>
+                                        <span id="psw-alert" class="pull-right no-display" ng-if="newUserRequired">Verify fields</span>
+                                    </div>
+
+                                    <div class="col-lg-4">
+                                        <label>Social Access</label><br>
+                                        <select name="social_access" id="1">
+                                            <option value="{{adminEditingUser?adminEditingUser.social_access:0}}">{{adminEditingUser.social_access == 1 ? 'Yes' : 'No'}}</option>
+                                            <option value="1">Yes</option>
+                                            <option value="0">No</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <label>Status</label><br>
+                                        <select name="id_status" id="2">
+                                            <option value="{{adminEditingUser?adminEditingUser.id_status:2}}">{{adminEditingUser.id_status == 1 ? 'Active' : 'Disabled'}}</option>
+                                            <option value="1">Active</option>
+                                            <option value="2">Disabled</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <label for="">Profile/Rol</label><br>
+                                        <select name="id_profiles" id="3">
+                                            <option selected value="{{adminEditingUser.id_profiles}}">{{adminEditingUser.profile.name}}</option>
+                                            <option value="{{profile.id}}" ng-repeat="profile in adminProfiles">{{profile.name}}</option>
+                                        </select>
+                                    </div>
+
                                 </div>
                             </div>
+                            <!--SOMETHING HERE-->
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-dismiss="modal">
-                    Cancel
-                </button>
-            </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success pull-left" ng-click="updateUser()" ng-if="adminEditingUser">Update</button>
+                    <button type="button" class="btn btn-success pull-left" ng-click="insertNewUser()" ng-if="!adminEditingUser">Add</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
+<!-- END MODAL USERS -->
+
+
+
+
+
+
+
