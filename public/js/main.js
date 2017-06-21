@@ -196,9 +196,7 @@ angular.module('app.warpol',        ['ui.router']).config(function ($stateProvid
       views: {
         "content@app": {
           templateUrl: '/views/warpol.html',
-//          controller: function($scope){
-//          },
-          controller:  'warpolController',
+          controller:  'dropZoneController as app',
         }
       },
       resolve: {
@@ -220,7 +218,29 @@ angular.module('app.dummyapp',      ['ui.router']).config(function ($stateProvid
       views: {
         "content@app": {
           templateUrl: '/views/dummyapp.html',
-//                    controller: 'warpolController',
+          controller: 'dummyAppController',
+        }
+      },
+      resolve: {
+        scripts: function (lazyScript) {
+          return lazyScript.register([
+            '/js/smart/build/vendor.ui.js'
+          ]);
+        }
+      }
+    })
+});
+angular.module('app.charges',       ['ui.router']).config(function ($stateProvider) {
+  $stateProvider
+    .state('app.charges', {
+      url:  '/charges',
+      data: {
+        title: 'Charges'
+      },
+      views: {
+        "content@app": {
+          templateUrl: '/views/test.html',
+          controller: 'chargesController',
         }
       },
       resolve: {

@@ -62,7 +62,7 @@ app.controller('networkController',                 function ($scope, $http, cus
 
     if (stance.attr('stance') == '1')
     {
-      console.log('Stance = 2');
+//      console.log('Stance = 2');
       stance.attr('stance', 2);
       stance.removeClass(mas);
       stance.addClass(menos);
@@ -70,7 +70,7 @@ app.controller('networkController',                 function ($scope, $http, cus
     }
     else
     {
-      console.log('Stance = 1');
+//      console.log('Stance = 1');
       stance.attr('stance', 1);
       stance.removeClass(menos);
       stance.addClass(mas);

@@ -1,6 +1,6 @@
 app.controller('libController', function ($scope, $http) {
 
-  console.log('dashboardController');
+//  console.log('dashboardController');
 
   $http.get("getMainDashboard")
     .then(function (response) {
@@ -29,8 +29,101 @@ app.controller('libController', function ($scope, $http) {
 
 });
 
-app.controller('warpolController', function($scope, $http, customerService, buildingService){
+app.controller('dropZoneController', function($scope, $http, customerService){
 
+  if (customerService.sideBarFlag) {
+    $scope.sipTool(2);
+    customerService.sideBarFlag = false;
+  }
+
+  var ctrl = this;
+  ctrl.data = { upload:[] }
+  $scope.filesControl = ctrl.data.upload;
+
+  $scope.getDataControl = function(){
+    console.log($scope.filesControl);
+  }
+  $scope.removeImage = function (keyId){
+    $scope.filesControl.splice(keyId, 1);
+    ctrl.data.upload = $scope.filesControl;
+  }
+
+  $('.drop-zone-box').on('dragenter', function() {
+    $(this)
+      .css({'background-color' : 'rgba(255,255,255,0.4)'})
+      .find("p").show();
+  });
+
+  $('.drop-zone-box').on('dragleave', function() {
+    $(this)
+      .css({'background-color' : ''})
+      .find("p").hide();
+  });
+
+})
+.directive('dropZone',[
+    function(){
+
+      var config = {
+        template: '<label class="drop-zone">' +
+        '<input type="file" multiple accept="jpg" />' +
+        '<div ng-transclude></div>' +       // <= transcluded stuff
+        '</label>',
+        transclude: true,
+        replace: true,
+        require: '?ngModel',
+        link: function (scope, element, attributes, ngModel) {
+          var upload = element[0].querySelector('input');
+          upload.addEventListener('dragover', uploadDragOver, false);
+          upload.addEventListener('drop', uploadFileSelect, false);
+          upload.addEventListener('change', uploadFileSelect, false);
+          config.scope = scope;
+          config.model = ngModel;
+        }
+      }
+      return config;
+
+      // Helper functions
+      function uploadDragOver(e) {
+        e.stopPropagation();
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'copy';
+      }
+
+      function uploadFileSelect(e) {
+
+        e.stopPropagation();
+        e.preventDefault();
+        var files = e.dataTransfer ? e.dataTransfer.files : e.target.files;
+        for (var i = 0, file; file = files[i]; ++i) {
+          var reader = new FileReader();
+          reader.onload = (function (file) {
+            return function (e) {
+
+              var data = {
+                data: e.target.result,
+                dataSize: e.target.result.length
+              };
+              for (var p in file) {
+                data[p] = file[p]
+              }
+
+              config.scope.$apply(function () {
+                config.model.$viewValue.push(data)
+              })
+            }
+          })(file);
+          reader.readAsDataURL(file);
+        }
+      }
+    }
+])
+
+
+
+
+
+app.controller('dummyAppController', function ($scope, $http,customerService){
   if (customerService.sideBarFlag) {
     $scope.sipTool(2);
     customerService.sideBarFlag = false;
@@ -38,25 +131,48 @@ app.controller('warpolController', function($scope, $http, customerService, buil
 
 
 
-  $scope.dropzoneConfig = {
-//    'options': { // passed into the Dropzone constructor
-//      'url': '/api/plug'
-//    },
-    'eventHandlers': {
-      'sending': function (file, xhr, formData) {
-        console.log('sending CONSOLE');
-        console.log(file);
-        console.log(xhr);
-        console.log(formData);
-      },
-      'success': function (file, response) {
-        console.log('success CONSOLE');
-      }
-    }
-  };
+
+//  $http.get('renderViewUno')
+//    .then(function(response){
+//      console.log(response.data);
+//      $scope.htmlLoco = response.data;
+//      $scope.trustedInputHtml = $sce.trustAsHtml(response.data);
+//
+//    });
 
 
 
 
 
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

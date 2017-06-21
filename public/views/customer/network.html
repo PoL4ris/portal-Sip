@@ -15,14 +15,15 @@
                 </div>
                 <div class="field-data  col-lg-12 padding-5">
                     <div class="bold-type col-lg-4">Address:</div>
-                    <div class="col-lg-8 anim"
+                    <div class="col-lg-6 anim "
                          ng-click="getCoreData(customerNetwork.network_node.ip_address)"
                          data-toggle="modal"
                          data-target="#corStats">
-                        <a href="">
+                        <a href="" id="ip-clipboard-id">
                             {{ customerNetwork.network_node.ip_address?customerNetwork.network_node.ip_address:'' }}
                         </a>
                     </div>
+                        {{ customerNetwork.network_node.ip_address?customerNetwork.network_node.ip_address:'' }}
                 </div>
                 <div class="field-data  col-lg-12 padding-5">
                     <div class="bold-type col-lg-4">Access:</div>
@@ -58,7 +59,7 @@
                     <div class="bold-type col-lg-6">Vlan:</div>
                     <div class="col-lg-6 anim" id="vlan"></div>
                 </div>
-                <div class="field-data col-lg-12 padding-5">
+                <div class="field-data  col-lg-12 padding-5">
                     <div class="bold-type col-lg-6">IP:</div>
                     <div class="col-lg-6" id="IPs"></div>
                 </div>

@@ -1923,6 +1923,8 @@ class DataMigrationUtils {
             return false;
         }
 
+        $legacyProduct =  $legacyCustomerProduct->product;
+
         $customerProduct->id = $legacyCustomerProduct->CSID;
         $customerProduct->id_customers = $legacyCustomerProduct->CID;
         $customerProduct->id_products = $legacyCustomerProduct->ProdID;
@@ -1932,7 +1934,7 @@ class DataMigrationUtils {
         $customerProduct->renewed_at = ($legacyCustomerProduct->CProdDateRenewed == '0000-00-00 00:00:00') ? null : $legacyCustomerProduct->CProdDateRenewed;
         $customerProduct->id_users = $legacyCustomerProduct->UpdatedByID;
         $customerProduct->last_charged = ($legacyCustomerProduct->CProdLastCharged == '0000-00-00 00:00:00') ? null : $legacyCustomerProduct->CProdLastCharged;
-        $customerProduct->charge_status = 0;
+        $customerProduct->charge_status = ($legacyProduct->ChargeFrequency == 'onetime') ? config('const.customer_product_charge_status.paid') : config('const.customer_product_charge_status.none');
         $customerProduct->amount_owed = 0;
 
         switch ($legacyCustomerProduct->Status)

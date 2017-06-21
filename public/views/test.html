@@ -1,274 +1,161 @@
-<article class="activity-log" id="activity-log">
-  <div class="al-box">
-    <h3 class="no-margin al-title"><i class="fa fa-caret-down"></i>Activity Log</h3>
-    <h3 class="no-margin al-type-title">Type A - Ticket - Support - BILLING</h3>
-
-    <div ng-repeat="logEntry in customerData.customer.log" class="log-entry">
-      <!--<h3 class="no-margin al-type-title" ng-if="logEntry.type == customer">Type A - Ticket - Support - BILLING</h3>-->
 
 
-      <div class="type-a al-box-container">
-        <div class="log-content">
-          <div class="al-lg-header">
-            <label class="al-lg-timestamp">{{logEntry.timestamp}}</label>
-            <label class="lg-type"><span>{{logEntry.type}}</span></label>
-            <label class="lg-user"><span>{{logEntry.user.first_name}}</span></label>
-          </div>
-          <div class="al-lg-description" ng-init="arrayData = parJson(logEntry.log_data)">
-            {{logEntry.user.first_name + ' ' + logEntry.user.last_name}} updated:
-            <span ng-if="arrayData.new['id_status']">Status.</span>
-            <span ng-if="arrayData.new['first_name']">First name.</span>
-            <span ng-if="arrayData.new['last_name']">Last name.</span>
-            <span ng-if="arrayData.new['email']">Username.</span>
-          </div>
-          <div class="al-lg-actions type-ticket" ng-if="logEntry.type == 'ticket'">
-            <button class="btn btn-default big-font" title="View Ticket"><i class="fa fa-eye"></i></button>
-            <button class="btn btn-danger big-font"  title="Close Ticket"><i class="fa fa-close"></i></button>
-            <button class="btn btn-success big-font" title="Escalate Ticket"><i class="fa fa-arrow-circle-o-up"></i></button>
-            <button class="btn btn-primary big-font" title="View Invoice"><i class="fa fa-file-pdf-o"></i></button>
-          </div>
+<div class="col-lg-12 p-t-lg p-b-lg bg-white white-shadow filters-fixed-size">
+    <div class="col-lg-12 no-padding-sides p-t-lg p-b-lg b-b-ddd m-b-lg">
+
+        <div class="col-lg-4 no-padding-sides"><h4>Pending Charges</h4></div>
+
+
+
+        <div class="col-lg-4 text-align-right status-color-active">
+            <label class="label-refund">Refund</label>
+            <div class="col-lg-4">
+                <label>Today  <br><span>${{resultStatsData.day.refund_amount}}</span></label>
+            </div>
+            <div class="col-lg-4">
+                <label>This Week <br><span>${{resultStatsData.week.refund_amount}}</span></label>
+            </div>
+            <div class="col-lg-4">
+                <label>This Month <br><span>${{resultStatsData.month.refund_amount}}</span></label>
+            </div>
         </div>
-      </div>
-
-
+        <div class="col-lg-4  text-align-right status-color-decommissioned">
+            <label class="label-charge">Charge</label>
+            <div class="col-lg-4">
+                <label>Today <br><span>${{resultStatsData.day.charges_amount}}</span></label>
+            </div>
+            <div class="col-lg-4">
+                <label>This Week <br><span>${{resultStatsData.week.charges_amount}}</span></label>
+            </div>
+            <div class="col-lg-4">
+                <label>This Month <br><span>${{resultStatsData.month.charges_amount}}</span></label>
+            </div>
+        </div>
 
     </div>
 
 
-    <div class="type-a al-box-container">
-      <div class="log-content">
-        <label class="al-lg-timestamp">Aug 07 2017 12:00:00</label>
-        <div class="al-lg-header">
-          <label class="lg-type"><span>Support</span></label>
-          <label class="lg-user"><span>Pablo Laris</span></label>
-        </div>
-        <div class="al-lg-description">
-          Description of the Event Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
-        </div>
-        <div class="al-lg-actions type-ticket">
-          <button class="btn btn-default big-font" title="View Ticket"><i class="fa fa-eye"></i></button>
-          <button class="btn btn-danger big-font"  title="Close Ticket"><i class="fa fa-close"></i></button>
-          <button class="btn btn-success big-font" title="Escalate Ticket"><i class="fa fa-arrow-circle-o-up"></i></button>
-          <button class="btn btn-primary big-font" title="View Invoice"><i class="fa fa-file-pdf-o"></i></button>
-        </div>
-      </div>
-    </div>
+    <hr>
+
+    <table id="myTable" class="tablesorter table table-striped" datatable="ng">
+        <thead>
+        <tr>
+            <th>Customer</th>
+            <th>Address</th>
+            <th>Type</th>
+            <th>Amount</th>
+            <th>Comment</th>
+            <th>Request Date</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr  ng-repeat="charge in chargesData"  >
+            <td class="{{charge.type == 'credit' ? 'style-refund' : 'style-charge'}}">{{charge.name?charge.name:'N/A'}}</td>
+            <td>{{charge.address?charge.address:'N/A'}}</td>
+            <td class="capital-first"><b>{{charge.type}}</b></td>
+            <td>${{charge.amount}}</td>
+            <td>{{charge.comment}}</td>
+            <td ng-init="resultDate = convertDate(charge.created_at)">{{ resultDate | date : "MMM d, y h:mm a" }}</td>
+            <td>
+                <i class="btn btn-primary fa fa-check"  title="Accept" ng-click="confirmAction()"></i>
+                <i class="btn btn-danger  fa fa-times"  title="Cancel" ng-click="cancelAction()"></i>
+                <i class="btn btn-warning fa fa-pencil" title="Edit"   ng-click="editAction()" data-toggle="modal" data-target="#editActionModal"></i>
+            </td>
+
+        </tr>
+        </tbody>
+    </table>
 
 
 
 
 
-
-  </div>
-</article>
-
-<pre>
-{{customerData.customer.log | json}}
-</pre>
+    <!--<div class="col-lg-12" ng-repeat="charge in chargesData">-->
+        <!--<div class="row bg-white white-shadow p-t-lg p-b-lg" >-->
 
 
+            <!--&lt;!&ndash;<div class="col-lg-6">ID</div>                      <div class="col-lg-6">=> {{charge.id}}</div>&ndash;&gt;-->
+            <!--<div class="col-lg-12">-->
+                <!--<p>-->
+                    <!--<b>{{charge.name}}</b>,-->
+                    <!--<br>-->
+                    <!--With address:-->
+                        <!--<b>{{charge.address}}</b>, Requests <b class="capital-first">{{charge.type}}</b> of <b> $ {{charge.amount}}</b>-->
+                    <!--<br>-->
+                    <!--{{charge.description}}-->
+                    <!--<br>-->
+                    <!--<b>Reason:</b>-->
+                    <!--<br>-->
+                    <!--{{charge.comment}}-->
+                <!--</p>-->
+            <!--</div>-->
+
+
+
+            <!--&lt;!&ndash;Charges means Manual refund&ndash;&gt;-->
+            <!--<div class="col-lg-12" ng-if="charge.status == 777 ">-->
+                <!--<button class="btn btn-primary">Confirm </button>-->
+                <!--<button class="btn btn-danger">Deny</button>-->
+                <!--<button class="btn btn-warning">Adjust</button>-->
+            <!--</div>-->
+
+
+            <!--<div class="col-lg-12" ng-if="charge.status == 778 ">-->
+                <!--<button class="btn btn-primary">Confirm </button>-->
+                <!--<button class="btn btn-danger">Deny</button>-->
+            <!--</div>-->
 
 
 
 
-
-<!--<div class="type-a al-box-container">-->
-  <!--<div class="log-content">-->
-    <!--<label class="al-lg-timestamp">Aug 07 2017 12:00:00</label>-->
-    <!--<div class="al-lg-header">-->
-      <!--<label class="lg-type"><span>Support</span></label>-->
-      <!--&lt;!&ndash;<label class="lg-type">TYPE : <span>Support</span></label>&ndash;&gt;-->
-      <!--<label class="lg-user"><span>Pablo Laris</span></label>-->
-      <!--&lt;!&ndash;<label class="lg-user">Created by: <span>Pablo Laris</span></label>&ndash;&gt;-->
+        <!--</div>-->
     <!--</div>-->
-    <!--<div class="al-lg-description">Description of the Event Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</div>-->
-    <!--<div class="al-lg-actions">-->
-      <!--<span>Actions:</span>-->
-      <!--<button class="btn btn-default"><i class="fa fa-arrow-circle-o-right"></i> View ticket</button>-->
-      <!--<br>-->
-      <!--<button class="btn btn-danger"><i class="fa fa-arrow-circle-o-right"></i> Close ticket</button>-->
-      <!--<br>-->
-      <!--<button class="btn btn-success"><i class="fa fa-arrow-circle-o-right"></i> Escalate ticket</button>-->
-      <!--<br>-->
-      <!--<button class="btn btn-primary"><i class="fa fa-file-pdf-o"></i> View invoice</button>-->
-    <!--</div>-->
-  <!--</div>-->
-<!--</div>-->
-<!--<div class="type-a al-box-container">-->
-  <!--<div class="log-content log-c-a">-->
-    <!--<label class="al-lg-timestamp">Aug 07 2017 12:00:00</label>-->
-    <!--<div class="al-lg-header">-->
-      <!--<label class="lg-type"><span>Support</span></label>-->
-      <!--&lt;!&ndash;<label class="lg-type">TYPE : <span>Support</span></label>&ndash;&gt;-->
-      <!--<label class="lg-user"><span>Pablo Laris</span></label>-->
-      <!--&lt;!&ndash;<label class="lg-user">Created by: <span>Pablo Laris</span></label>&ndash;&gt;-->
-    <!--</div>-->
-    <!--<div class="al-lg-description">Description of the Event Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</div>-->
-  <!--</div>-->
-  <!--<div class="al-lg-actions type-ticket log-c-b">-->
-    <!--<button class="btn btn-default big-font" title="View Ticket"><i class="fa fa-eye"></i></button>-->
-    <!--<button class="btn btn-danger big-font" title="Close Ticket"><i class="fa fa-close"></i></button>-->
-    <!--<button class="btn btn-success big-font" title="Escalate Ticket"><i class="fa fa-arrow-circle-o-up"></i></button>-->
-    <!--<button class="btn btn-primary big-font" title="View Invoice"><i class="fa fa-file-pdf-o"></i></button>-->
-  <!--</div>-->
-<!--</div>-->
-<!--<div class="type-a al-box-container">-->
-  <!--<div class="log-content">-->
-    <!--<label class="al-lg-timestamp">Aug 07 2017 12:00:00</label>-->
-    <!--<div class="al-lg-header">-->
-      <!--<label class="lg-type"><span>Support</span></label>-->
-      <!--&lt;!&ndash;<label class="lg-type">TYPE : <span>Support</span></label>&ndash;&gt;-->
-      <!--<label class="lg-user"><span>Pablo Laris</span></label>-->
-      <!--&lt;!&ndash;<label class="lg-user">Created by: <span>Pablo Laris</span></label>&ndash;&gt;-->
-    <!--</div>-->
-    <!--<div class="al-lg-description">Description of the Event Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</div>-->
-    <!--<div class="al-lg-actions">-->
-      <!--<button class="btn btn-default big-font" title="View Ticket"><i class="fa fa-eye"></i></button>-->
-      <!--<button class="btn btn-danger big-font" title="Close Ticket"><i class="fa fa-close"></i></button>-->
-      <!--<button class="btn btn-success big-font" title="Escalate Ticket"><i class="fa fa-arrow-circle-o-up"></i></button>-->
-      <!--<button class="btn btn-primary big-font" title="View Invoice"><i class="fa fa-file-pdf-o"></i></button>-->
-    <!--</div>-->
-  <!--</div>-->
-<!--</div>-->
-<!--<div class="type-a al-box-container">-->
-  <!--<div class="log-content">-->
-    <!--<label class="al-lg-timestamp">Aug 07 2017 12:00:00</label>-->
-    <!--<div class="al-lg-header">-->
-      <!--&lt;!&ndash;<label class="lg-type"><span>Support</span></label>&ndash;&gt;-->
-      <!--<label class="lg-type"><strong>TYPE :</strong> <span>Support</span></label>-->
-      <!--&lt;!&ndash;<label class="lg-user"><span>Pablo Laris</span></label>&ndash;&gt;-->
-      <!--<label class="lg-user"><strong>Created by:</strong> <span>Pablo Laris</span></label>-->
-    <!--</div>-->
-    <!--<div class="al-lg-description">Description of the Event Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</div>-->
-    <!--<div class="al-lg-actions">-->
-      <!--<span>Actions:</span>-->
-      <!--<button class="btn btn-default"><i class="fa fa-arrow-circle-o-right"></i> View ticket</button>-->
-      <!--<br>-->
-      <!--<button class="btn btn-danger"><i class="fa fa-arrow-circle-o-right"></i> Close ticket</button>-->
-      <!--<br>-->
-      <!--<button class="btn btn-success"><i class="fa fa-arrow-circle-o-right"></i> Escalate ticket</button>-->
-      <!--<br>-->
-      <!--<button class="btn btn-primary"><i class="fa fa-file-pdf-o"></i> View invoice</button>-->
-    <!--</div>-->
-  <!--</div>-->
-<!--</div>-->
-
-
-
-
-
-
-
-
-
-<div class="">
-
-  <div class="search-content">
-    <input type="text" class="input-search id-search" placeholder="Customer Search..." ng-keyup="buscador()" ng-model="searchCustomer"><i class="is-lupa fa fa-search"></i>
-  </div>
-
-  <div class="search-content-close" ng-click="clearSearch()">
-    <i class="fa fa-plus plus-cross"></i>
-  </div>
-
 </div>
 
 
 
-<div class="" ng-if="customerSearchResult">
-  <div class="search-result anim" >
-    <div ng-repeat="resultSearch in customerSearchResult" ng-click="clearSearch()" class="main-search-result-container tmp-container-search">
+<div class="modal fade" id="editActionModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 
-      <a href="#/customers?id={{resultSearch.id}}">
+    <div class="modal-dialog modal-ticket-size">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <span>Edit Request.</span>
+            </div>
+            <div class="modal-body">
+                <div class="wrapper-sm">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="manual-ref">
+                                <div class="cbox-containter">
+                                    <form id="edit-action-form">
+                                        <div class="cboxc-top">
+                                            <label>Amount to Edit</label><input type="text" placeholder="Set amount with no comas or signs" name="amount" required ng-if="editRecordTmp" value="{{editRecordTmp.amount}}"><input type="text" placeholder="Set amount with no comas or signs" name="amount" required ng-if="!editRecordTmp" >
+                                        </div>
+                                        <div class="cboxc-bottom">
+                                            <label>Description</label><textarea type="text" placeholder="Describe the reason" name="desc" required ng-if="editRecordTmp">{{editRecordTmp.comment}}</textarea><textarea type="text" placeholder="Describe the reason" name="desc" required ng-if="!editRecordTmp" ></textarea>
+                                        </div>
 
-        <div class="col-lg-12 no-padding-sides">
-
-          <!--<div class="col-lg-12"><i class="fa fa-flag m-r-sm"></i>Status : {{resultSearch.id_status == 1?'ACTIVE':'DISABLED'}}</div>-->
-
-          <!--<div class="col-lg-12"><i class="fa fa-user m-r-sm"></i> {{resultSearch.first_name}} {{resultSearch.last_name}}</div>-->
-
-          <!--<div class="col-lg-6"><i class="fa fa-home m-r-sm"></i>Unit : #{{resultSearch.unit}} </div>-->
-          <!--<div class="col-lg-6 labe"><i class="fa fa-code m-r-sm"></i>Code : {{resultSearch.code}}</div>-->
-
-          <!--<div class="col-lg-12"><strong class=" m-r-sm">@</strong>Email : {{resultSearch.email}}</div>-->
-
-
-
-          <!--new tmp-->
-          <div class="col-lg-12"><i class="fa fa-user m-r-sm status-type-{{resultSearch.id_status}}"></i> {{resultSearch.first_name}} {{resultSearch.last_name}} | {{resultSearch.code}} | #{{resultSearch.unit}}</div>
-
-
-
-
-
-
-
-          <!--<div class="col-lg-4 labe">Status</div>       <div class="col-lg-8 valu color-text ct-status">{{resultSearch.id_status == 1?'ACTIVE':'DISABLED'}}</div>-->
-          <!--<div class="col-lg-4 labe">First Name</div>   <div class="col-lg-8 valu">{{resultSearch.first_name}}</div>-->
-          <!--<div class="col-lg-4 labe">Last Name</div>    <div class="col-lg-8 valu color-text">{{resultSearch.last_name}}</div>-->
-
-          <!--<div class="col-lg-4 labe">Email</div>        <div class="col-lg-8 valu color-text">{{resultSearch.email}}</div>-->
-          <!--<div class="col-lg-4 labe">Address</div>      <div class="col-lg-8 valu">{{resultSearch.address}}</div>-->
-          <!--<div class="col-lg-4 labe">Code</div>         <div class="col-lg-8 valu color-text ct-code">{{resultSearch.code}}</div>-->
-
-          <!--<div class="col-lg-4 labe">Unit</div>         <div class="col-lg-8 valu color-text">{{resultSearch.unit}}</div>-->
-          <!--<div class="col-lg-4 labe">Zip</div>          <div class="col-lg-8 valu">{{resultSearch.zip}}</div>-->
-
+                                        <button class="btn btn-primary float-right m-t-lg" ng-click="editAndConfirm()">Edit & Confirm</button>
+                                        <div class="pull-right m-t-lg" ng-if="loadingtap">
+                                            Processing.
+                                            <img src="/img/loading.gif" alt="">
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">
+                    Cancel
+                </button>
+            </div>
         </div>
-
-      </a>
-
     </div>
-  </div>
 </div>
-
-
-
-<!--SEARCH-->
-<!--<form ng-submit="search()">-->
-<!--<input type="text" placeholder="Search..." ng-model="globalSearch"  ng-keyup="valLength()">-->
-<!--<i class="is-lupa fa fa-search" id="lupa-global"></i>-->
-<!--<i class="is-tache fa fa-times" id="tache-global" ng-click="closeSearch()" style="display: none;"></i>-->
-<!--<input type="submit" class="display-none">-->
-<!--</form>-->
-
-<!--<div class="search-gb-result anim" id="globalSearch">-->
-
-<!--<div ng-if="globalCustomerCodeSearch" class="anim gsrdiv animate-if b-r">-->
-<!--<h5>Customer Code Result</h5>-->
-<!--<p ng-if="globalCustomerCodeSearch.length === 0">No results.</p>-->
-<!--<div ng-if="loadingCl" class="loading-default animate-if"><img src="/img/default.gif" alt=""></div>-->
-<!--<p ng-repeat="gcs in globalCustomerCodeSearch" class="animate-if" ng-click="displayCustomerResume(gcs.customer.id); closeSearch()">-{{gcs.customer.first_name}} {{gcs.customer.last_name}}</p>-->
-<!--</div>-->
-
-<!--<div ng-if="globalCustomersSearch" class="anim gsrdiv animate-if b-r">-->
-<!--<h5>Customers Result</h5>-->
-<!--<p ng-if="globalCustomersSearch.length === 0">No results.</p>-->
-<!--<div ng-if="loadingCu" class="loading-default animate-if"><img src="/img/default.gif" alt=""></div>-->
-<!--<p ng-repeat="gcus in globalCustomersSearch" class="animate-if" ng-click="displayCustomerResume(gcus.id); closeSearch()">-{{gcus.first_name}} {{gcus.last_name}}</p>-->
-<!--</div>-->
-
-<!--<div ng-if="globalTicketsSearch" class="anim gsrdiv animate-if b-r">-->
-<!--<h5>Tickets Result</h5>-->
-<!--<p ng-if="globalTicketsSearch.length === 0">No results.</p>-->
-<!--<div ng-if="loadingS" class="loading-default animate-if"><img src="/img/default.gif" alt=""></div>-->
-<!--<p ng-repeat="gts in globalTicketsSearch" class="animate-if" ng-click="displayTicketResume(gts.id, gts.id_customers); closeSearch()">-{{gts.ticket_number}} {{gts.status}}</p>-->
-<!--</div>-->
-
-<!--<div ng-if="globalBuildingsSearch" class="anim gsrdiv animate-if b-r">-->
-<!--<h5>Buildings Result</h5>-->
-<!--<p ng-if="globalBuildingsSearch.length === 0">No results.</p>-->
-<!--<div ng-if="loadingB" class="loading-default animate-if"><img src="/img/default.gif" alt=""></div>-->
-<!--<p ng-repeat="gbs in globalBuildingsSearch" class="animate-if" ng-click="displayBuildingResume(gbs.id); closeSearch()">-{{gbs.name}} {{gbs.code}}</p>-->
-<!--</div>-->
-
-<!--<div ng-if="globalCustomerPoundSearch" class="anim gsrdiv animate-if">-->
-<!--<h5>Code + Pound Sign</h5>-->
-<!--<p ng-if="globalCustomerPoundSearch.length === 0">No results.</p>-->
-<!--<div ng-if="loadingCP" class="loading-default animate-if"><img src="/img/default.gif" alt=""></div>-->
-<!--<p ng-repeat="gcps in globalCustomerPoundSearch" class="animate-if" ng-click="displayBuildingResume(gcps.customer.id); closeSearch()">-{{gcps.customer.first_name}} {{gcps.customer.last_name}}</p>-->
-<!--</div>-->
-
-<!--</div>-->
-
-

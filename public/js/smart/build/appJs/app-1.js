@@ -192,7 +192,8 @@ var app = angular.module('app', [
   'app.tech-schedule',
   'app.tech-appointments',
   'app.dummyapp',
-  'app.reports'
+  'app.reports',
+  'app.charges'
 ])
   .config(function ($provide, $httpProvider, RestangularProvider) {
 
@@ -641,7 +642,8 @@ angular.module('app.forms').config(function ($stateProvider) {
           controller: function($scope){
             $scope.dropzoneConfig = {
               'options': { // passed into the Dropzone constructor
-                'url': '/api/plug'
+                'url': '/uploadSalesFiles',
+                'method'  : 'GET',
               },
               'eventHandlers': {
                 'sending': function (file, xhr, formData) {

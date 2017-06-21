@@ -53,7 +53,7 @@ class BillingHelper {
         {
             // Get list of chargeable products/services for the requested building
             $customerProducts = $this->getChargeableCustomerProductsByBuildingId($building->id);
-            $count = $this->addChargesToDatabase($customerProducts);
+            $count = $this->addChargesForCustomerProducts($customerProducts);
             Log::info('BillingHelper::generateInvoiceRecords(): Added ' . $count . ' invoices for ' . $building->nickname . ' to DB');
         }
 
@@ -96,48 +96,48 @@ class BillingHelper {
             {
                 $query->where(function ($query2)
                 {
-                    // Get 'onetime' products that have not been invoiced (status = 0)
+                    // Get 'onetime' products that have not been charged (status = 0)
                     $query2->where('customer_products.charge_status', '=', config('const.charge_status.none'))
                         ->where('products.frequency', '=', 'onetime');
                 })->orWhere(function ($query3) use ($firstDayOfNextMonthMysql)
                 {
-                    // Get 'monthly' and/or 'annual' products that have not been invoiced (status = 0 or 1 and an expired invoice date)
-                    $query3->where('customer_products.charge_status', '<', config('const.charge_status.processed'))
+                    // Get 'monthly' and/or 'annual' products that have not been charged (status = 0 or 1 and an expired invoice date)
+                    $query3->where('customer_products.charge_status', '<', config('const.charge_status.pending'))
                         ->where('products.frequency', '<>', 'onetime')
                         ->where('products.frequency', '<>', 'included')
-                        ->where('customer_products.next_charge_date', '<', $firstDayOfNextMonthMysql);
+                        ->whereNull('customer_products.next_charge_date')
+                        ->orWhere('customer_products.next_charge_date', '<', $firstDayOfNextMonthMysql);
                 });
             });
     }
 
-    protected function addChargesToDatabase($customerProducts)
+    protected function addChargesForCustomerProducts($customerProducts)
     {
         $count = 0;
         foreach ($customerProducts as $customerProduct)
         {
-            $result = $this->addChargeForCustomerProductToDatabase($customerProduct);
+            $result = $this->createChargeForCustomerProduct($customerProduct);
             if ($result == false)
             {
                 continue;
-//                break;
             }
+            // Uncomment this when ready to run a real or production test
+//            $this->updateCustomerProductChargeStatus($customerProduct);
             $count ++;
-//            break;
         }
 
         return $count;
     }
 
-    public function addChargeForCustomerProductToDatabase($customerProduct, $userId = 0)
+    public function createChargeForCustomerProduct($customerProduct, $userId = 0)
     {
-
         $customer = $customerProduct->customer;
         $address = $customerProduct->address;
         $product = $customerProduct->product;
         $dateRange = $this->getProductChargeDates($product);
 
         $charge = Charge::where('id_customers', $customerProduct->id_customers)
-            ->where('id_products', $customerProduct->id_products)
+            ->where('id_customer_products', $customerProduct->id)
             ->where('id_address', $customerProduct->id_address)
             ->where('start_date', $dateRange['startDate'])
             ->where('end_date', $dateRange['endDate'])->first();
@@ -151,35 +151,108 @@ class BillingHelper {
             return false;
         }
 
-        Charge::create(['name'            => trim($customer->first_name, "\x20,\xC2,\xA0") . ' ' . trim($customer->last_name, "\x20,\xC2,\xA0"),
-                        'address'         => $this->getFormattedAddress($address),
-                        'description'     => 'New Charge',
-                        'details'         => json_encode(array('customer_product_id' => $customerProduct->id,
-                                                               'customer_product_status' => $customerProduct->id_status,
-                                                               'product_id'          => $customerProduct->id_products,
-                                                               'product_name'        => $product->name,
-                                                               'product_desc'        => $product->description,
-                                                               'product_amount'      => $product->amount,
-                                                               'product_frequency'   => $product->frequency,
-                                                               'product_type'        => $product->type
-                        )),
-                        'amount'          => (strpos($product->amount, '.') === false) ? $product->amount . '.00' : $product->amount,
+        Charge::create([
+//                        'name'                 => trim($customer->first_name, "\x20,\xC2,\xA0") . ' ' . trim($customer->last_name, "\x20,\xC2,\xA0"),
+//                        'address'              => $this->getFormattedAddress($address),
+            'description'          => 'New Charge',
+            'details'              => json_encode(array('customer_product_id'     => $customerProduct->id,
+                                                        'customer_product_status' => $customerProduct->id_status,
+                                                        'product_id'              => $customerProduct->id_products,
+                                                        'product_name'            => $product->name,
+                                                        'product_desc'            => $product->description,
+                                                        'product_amount'          => $product->amount,
+                                                        'product_frequency'       => $product->frequency,
+                                                        'product_type'            => $product->type
+            )),
+            'amount'               => number_format($product->amount, 2),
+            'qty'                  => 1,
+            'id_customers'         => $customerProduct->id_customers,
+            'id_customer_products' => $customerProduct->id,
+            'id_address'           => $customerProduct->id_address,
+            'id_users'             => $userId,
+            'status'               => config('const.charge_status.pending'),
+            'type'                 => config('const.charge_type.charge'),
+            'bill_cycle_day'       => '1',
+            'processing_type'      => config('const.type.auto_pay'),  // auto_pay, manual_pay
+            'start_date'           => $dateRange['startDate'],
+            'end_date'             => $dateRange['endDate'],
+            'due_date'             => date("Y-m-d H:i:s", strtotime("first day of next month  00:00:00"))
+        ]);
+
+        return true;
+    }
+
+    public function createManualChargeForCustomer(Customer $customer, $amount, $comment, $userId = 0)
+    {
+        $address = $customer->address;
+
+        Charge::create(['description'     => 'Manual Charge',
+                        'amount'          => number_format($amount, 2),
                         'qty'             => 1,
-                        'id_customers'    => $customerProduct->id_customers,
-                        'id_products'     => $customerProduct->id_products,
-                        'id_address'      => $customerProduct->id_address,
+                        'id_customers'    => $customer->id,
+                        'id_address'      => $address->id,
                         'id_users'        => $userId,
-                        'status'          => config('const.charge_status.pending'),
+                        'status'          => config('const.charge_status.pending_approval'),
                         'type'            => config('const.charge_type.charge'),
+                        'comment'         => $comment,
                         'bill_cycle_day'  => '1',
-                        'processing_type' => config('const.type.auto_pay'),  // auto_pay, manual_pay
-                        'start_date'      => $dateRange['startDate'],
-                        'end_date'        => $dateRange['endDate'],
+                        'processing_type' => config('const.type.manual_pay'),  // auto_pay, manual_pay
                         'due_date'        => date("Y-m-d H:i:s", strtotime("first day of next month  00:00:00"))
         ]);
 
-        $this->updateCustomerProductChargeStatus($customerProduct);
         return true;
+    }
+
+    public function createManualRefundForCustomer(Customer $customer, $amount, $comment, $userId = 0)
+    {
+        $address = $customer->address;
+
+        Charge::create(['description'     => 'Manual Refund',
+                        'amount'          => number_format($amount, 2),
+                        'qty'             => 1,
+                        'id_customers'    => $customer->id,
+                        'id_address'      => $address->id,
+                        'id_users'        => $userId,
+                        'status'          => config('const.charge_status.pending_approval'),
+                        'type'            => config('const.charge_type.credit'),
+                        'comment'         => $comment,
+                        'bill_cycle_day'  => '1',
+                        'processing_type' => config('const.type.manual_pay'),  // auto_pay, manual_pay
+                        'due_date'        => date("Y-m-d H:i:s", strtotime("first day of next month  00:00:00"))
+        ]);
+
+        return true;
+    }
+
+    public function updateManualChargeAmount(Charge $charge, $amount, $comment, $userId = 0)
+    {
+        $charge->amount = number_format($amount, 2);
+        $charge->comment = $comment;
+        $charge->id_users = $userId;
+        $charge->save();
+
+        return true;
+    }
+
+    public function approveManualCharge(Charge $charge)
+    {
+        $charge->status = config('const.charge_status.pending');
+        $charge->processing_type = config('const.type.auto_pay');
+        $charge->save();
+
+        return true;
+    }
+
+    public function denyManualCharge(Charge $charge)
+    {
+        $charge->status = config('const.charge_status.denied');
+        $charge->save();
+
+        return true;
+    }
+
+    public function getPendingManualCharges(Customer $customer){
+
     }
 
     protected function getProductChargeDates($product)
@@ -230,14 +303,158 @@ class BillingHelper {
         }
 
         $customerProduct->next_charge_date = $timestampMysql;
-        $customerProduct->charge_status = config('const.charge_status.pending');
-        $customerProduct->amount_owed += $customerProduct->product->amount;
+        $customerProduct->charge_status = config('const.customer_product_charge_status.charged');
+        $customerProduct->amount_owed += number_format($customerProduct->product->amount, 2);
         $customerProduct->save();
     }
+//    protected function setPendingChargeStatusToInvoicing(){
+//
+//        DB::table('charges')
+//            ->where('id_status', config('const.charge_status.pending'))
+//            ->update(['id_status' => config('const.charge_status.invoicing')]);
+//
+//    }
 
+    public function invoicePendingCharges()
+    {
+        while (true)
+        {
+            $charges = Charge::where('status', config('const.charge_status.pending'))
+                ->take(100)
+                ->get();
 
+            if ($charges->count() == 0)
+            {
+                break;
+            }
 
+            foreach ($charges as $charge)
+            {
+                $invoice = $this->findOrCreateOpenInvoice($charge->id_customers, $charge->id_address);
+                $this->addChargeToInvoice($charge, $invoice);
+            }
+        }
+    }
 
+    public function findOrCreateOpenInvoice($customerId, $addressId)
+    {
+        $invoice = Invoice::firstOrCreate(['id_customers' => $customerId, 'id_address' => $addressId, 'status' => config('const.invoice_status.open')]);
+
+        if ($invoice->description == null)
+        {
+            $invoice->description = 'New Invoice';
+        }
+        if ($invoice->name == null)
+        {
+            $invoice->name = $this->getCustomerName($customerId);
+        }
+        if ($invoice->address == null)
+        {
+            $invoice->address = $this->getCustomerAddress($addressId);
+        }
+        if ($invoice->bill_cycle_day == null)
+        {
+            $invoice->bill_cycle_day = '1';
+        }
+        if ($invoice->processing_type == null)
+        {
+            $invoice->processing_type = config('const.type.auto_pay'); // 13 = Autopay, 14 = Manual Pay
+        }
+
+        if ($invoice->due_date == null)
+        {
+            $firstDayOfNextMonthTime = strtotime("first day of next month  00:00:00");
+            $firstDayOfNextMonthMysql = date("Y-m-d H:i:s", $firstDayOfNextMonthTime);
+            $invoice->due_date = $firstDayOfNextMonthMysql;
+        }
+
+        return $invoice;
+    }
+
+    protected function getCustomerName($customerId)
+    {
+        $customer = Customer::find($customerId);
+        if ($customer != null)
+        {
+            return trim($customer->first_name, "\x20,\xC2,\xA0") . ' ' . trim($customer->last_name, "\x20,\xC2,\xA0");
+        }
+
+        return null;
+    }
+
+    protected function getCustomerAddress($addressId)
+    {
+        $address = Address::find($addressId);
+        if ($address != null)
+        {
+            $addressString = trim($address->address);
+            if (trim($address->unit != ''))
+            {
+                $addressString .= "\n" . 'Apt ' . $address->unit;
+            }
+            $addressString .= "\n" . trim($address->city) . ', ' . trim($address->state) . ' ' . trim($address->zip);
+
+            return $addressString;
+        }
+
+        return null;
+    }
+
+    protected function addChargeToInvoice(Charge $charge, Invoice $invoice)
+    {
+
+        $charge->id_invoices = $invoice->id;
+        $charge->status = config('const.charge_status.invoiced');
+        $charge->save();
+
+        if ($charge->type == config('const.charge_type.charge'))
+        {
+            $invoice->amount += number_format($charge->amount, 2);
+        } else
+        {
+            $invoice->amount -= number_format($charge->amount, 2);
+        }
+        $invoice->save();
+    }
+
+    protected function removeChargeFromInvoice(Charge $charge)
+    {
+
+        if ($charge->id_invoices == null)
+        {
+            return true;
+        }
+
+        $invoice = Invoice::find($charge->id_invoices);
+
+        $charge->delete();
+
+        if ($invoice != null)
+        {
+            $this->updateInvoiceAmount($invoice);
+        }
+
+        return true;
+    }
+
+    protected function updateInvoiceAmount(Invoice $invoice)
+    {
+        $charges = $invoice->charges;
+
+        $total = 0;
+        foreach ($charges as $charge)
+        {
+            if ($charge->id_types != config('const.charge_type.charge'))
+            {
+                $total -= $charge->amount;
+            } else
+            {
+                $total += $charge->amount;
+            }
+        }
+        $invoice->amount = number_format($total, 2);
+        $invoice->save();
+    }
 
 
 
