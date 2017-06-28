@@ -7,7 +7,7 @@ var app = angular.module('app', ["ngRoute"]);
 
 app.config(['$routeProvider', function ($routeProvider) {
   $routeProvider
-    .when("/",              {templateUrl: "/views/test.html"})
+    .when("/",              {templateUrl: "/views/billing.html"})
     .when("/buildings",     {templateUrl: "/views/dummy.html"})
 //     .when("/buildings",     {templateUrl: "/views/building/buildings.html"})
 //     .when("/admin",         {templateUrl: "/views/admin.html", controller:"admin"})

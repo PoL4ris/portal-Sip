@@ -1111,7 +1111,7 @@ angular.module('app.misc').config(function ($stateProvider) {
             },
             views: {
                 "content@app": {
-                    templateUrl: 'app/misc/views/test.html'
+                    templateUrl: 'app/misc/views/billing.html'
                 }
             }
         })
