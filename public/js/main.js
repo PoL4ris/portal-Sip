@@ -129,7 +129,7 @@ angular.module('app.calendar',      ['ui.router']).config(function ($stateProvid
       },
       views: {
         "content@app": {
-//           templateUrl: '/views/test.html'
+//           templateUrl: '/views/billing.html'
           templateUrl: '/views/v2Test.html'
         }
       },
@@ -239,7 +239,7 @@ angular.module('app.charges',       ['ui.router']).config(function ($stateProvid
       },
       views: {
         "content@app": {
-          templateUrl: '/views/test.html',
+          templateUrl: '/views/billing.html',
           controller: 'chargesController',
         }
       },

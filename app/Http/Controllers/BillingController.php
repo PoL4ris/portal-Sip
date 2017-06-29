@@ -195,6 +195,34 @@ class BillingController extends Controller {
                       ->get();
     }
 
+    /**
+     * @param Request $request
+     * Year
+     * Month
+     * @return mixed
+     */
+    public function getChargesAndInvoices(Request $request)
+    {
+        $result['year']     = isset($request->chAndInYear)  ? $request->chAndInYear  : Date('Y');
+        $result['month']    = isset($request->chAndInMonth) ? $request->chAndInMonth : Date('M');
+
+        if(count($request->all()) > 1)
+            $timeData = '"' . $result['year'] . '-' . $result['month'] . '-' . '0"' ;
+        else
+            $timeData = 'CURRENT_DATE()';
+
+            $result['charges']  = Charge::with('customer',
+                                               'address',
+                                               'invoices',
+                                               'user',
+                                               'productDetail.product')
+                                        ->whereRaw('YEAR(created_at)  = YEAR('  . $timeData . ')')
+                                        ->whereRaw('MONTH(created_at) = MONTH(' . $timeData . ')')
+                                        ->get();
+
+        return $result;
+    }
+
     public function insertPaymentMethod(Request $request)
     {
 
