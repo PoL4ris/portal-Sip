@@ -291,7 +291,7 @@ class CustomerController extends Controller
      */
     public function getInvoiceHistory(Request $request)
     {
-        return Invoice::where('id_customers', $request->id)->get();
+        return Invoice::with('address')->where('id_customers', $request->id)->get();
     }
     /**
      * @param Request $request

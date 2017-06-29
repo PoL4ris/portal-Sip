@@ -443,6 +443,7 @@ app.controller('customerInvoiceHistoryController',  function ($scope, $http){
   if(!$scope.invoiceData)
     $http.get("getInvoiceHistory", {params:{'id':$scope.idCustomer}})
       .then(function (response) {
+        console.log(response.data);
         $scope.invoiceData = response.data;
       });
 

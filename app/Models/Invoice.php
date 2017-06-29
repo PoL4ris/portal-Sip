@@ -30,4 +30,9 @@ class Invoice extends Model {
 
         return $detailsArray;
     }
+
+    public function address()
+    {
+        return $this->hasOne('App\Models\Address', 'id', 'id_address');
+    }
 }
