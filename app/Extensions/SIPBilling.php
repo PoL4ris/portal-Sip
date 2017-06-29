@@ -387,6 +387,53 @@ class SIPBilling {
         return $response;
     }
 
+    public function chargeCustomer(Customer $customer, $amount = 0, $desc = 'SilverIP Comm', $orderNumber = false, $details = false) {
+
+        if($customer == null){
+            $result['TRANSACTIONID'] = '';   //Returns the unique tranaction ID
+            $result['ACTIONCODE'] = '900';     // 000 = Approved, else Denied
+            $result['APPROVAL'] = 'ERROR';
+            $result['CVV2'] = '';
+            $result['VERIFICATIONRESULT'] = '';
+            $result['RESPONSETEXT'] = 'ERROR';
+            $result['ADDRESSMATCH'] = '';
+            $result['ZIPMATCH'] = '';
+            $result['AVS'] = '';
+            $result['FAILED'] = 'Customer not found';
+            $this->logChargeResult($result);
+            return $result;
+        }
+
+        $paymentMethod = $customer->defaultPaymentMethod;
+
+        if($paymentMethod == null){
+            $result['TRANSACTIONID'] = '';   //Returns the unique tranaction ID
+            $result['ACTIONCODE'] = '900';     // 000 = Approved, else Denied
+            $result['APPROVAL'] = 'ERROR';
+            $result['CVV2'] = '';
+            $result['VERIFICATIONRESULT'] = '';
+            $result['RESPONSETEXT'] = 'ERROR';
+            $result['ADDRESSMATCH'] = '';
+            $result['ZIPMATCH'] = '';
+            $result['AVS'] = '';
+            $result['FAILED'] = 'Payment method not found';
+            $this->logChargeResult($result);
+            return $result;
+        }
+
+        $xactionRequest = array();
+        if ($orderNumber != false) {
+            $xactionRequest['OrderNumber'] = $orderNumber;
+        }
+        $result = $this->processCC($xactionRequest, false, $amount, $desc, $paymentMethod);
+
+        $result['Comment'] = $customer->comment;
+        if(isset($result['FAILED']) == false){
+            $this->storeXaction($result, $customer, $paymentMethod->address, $paymentMethod,  $details);
+        }
+        return $result;
+    }
+
     public function chargePaymentMethod($paymentMethodId, $amount = 0, $desc = 'SilverIP Comm', $orderNumber = false, $details = false) {
 
         $paymentMethod = $this->getPaymentMethod($paymentMethodId);

@@ -15,6 +15,8 @@ use App\Extensions\DataMigrationUtils;
 use DB;
 //use App\User;
 use App\Models\Customer;
+use App\Models\Charge;
+use App\Models\Invoice;
 use App\Models\Ticket;
 use App\Models\CustomerProduct;
 use App\Models\DataMigration;
@@ -406,14 +408,34 @@ class TestController extends Controller
 //        $customer = Customer::find(4667);
 //        dd($customer->customerProducts);
 
+//        $charge = Charge::find(97);
+//        dd($charge);
+
+
+        $invoice = Invoice::find(97);
+        $invoiceDetails = $invoice->details();
+        $detailsCollection = collect($invoiceDetails);
+        $customerProductIds = $detailsCollection->pluck('customer_product_id')->toArray();
+        dd($customerProductIds);
+
+
+        $charges = $invoice->charges;
+        $details = $charges->pluck('details');
+        foreach($details as $chargeDetails){
+            dd(json_decode($chargeDetails, true));
+        }
+        dd($details);
+
+
         $billingHelper = new BillingHelper();
 
 //        $billingHelper->generateResidentialChargeRecords();
+        $billingHelper->invoicePendingCharges();
 
 //        dd($billingHelper->getCustomersWithChargableProducts(28));
 //        dd($billingHelper->getChargeableCustomerProductsByBuildingId(28));
 //        dd($billingHelper->getChargeableCustomerProducts2(null,28));
-        dd($billingHelper->invoicePendingCharges());
+//        dd($billingHelper->invoicePendingCharges());
 
 //        dd($billingHelper->generateResidentialInvoiceRecords());
         //        $billingHelper->processAutopayInvoices();

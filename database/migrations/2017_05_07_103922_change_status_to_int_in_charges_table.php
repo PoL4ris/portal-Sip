@@ -3,8 +3,8 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class ChangeStatusToIntInChargesTable extends Migration
-{
+class ChangeStatusToIntInChargesTable extends Migration {
+
     /**
      * Run the migrations.
      *
@@ -12,8 +12,9 @@ class ChangeStatusToIntInChargesTable extends Migration
      */
     public function up()
     {
-        Schema::table('charges', function (Blueprint $table) {
-            $table->int('status')->nullable()->change();
+        Schema::table('charges', function (Blueprint $table)
+        {
+            $table->integer('status')->nullable()->change();
         });
     }
 
@@ -24,7 +25,8 @@ class ChangeStatusToIntInChargesTable extends Migration
      */
     public function down()
     {
-        Schema::table('charges', function (Blueprint $table) {
+        Schema::table('charges', function (Blueprint $table)
+        {
             $table->string('status')->nullable()->change();
         });
     }

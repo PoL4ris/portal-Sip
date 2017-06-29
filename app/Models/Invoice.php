@@ -12,4 +12,22 @@ class Invoice extends Model {
     {
         return $this->hasMany('App\Models\Charge', 'id_invoices');
     }
+
+    public function details()
+    {
+
+        $charges = $this->charges;
+        $detailsArray = array();
+        foreach ($charges as $charge)
+        {
+            if ($charge->details == '')
+            {
+                continue;
+            }
+            $chargeDetailsArray = json_decode($charge->details, true);
+            $detailsArray[] = $chargeDetailsArray;
+        }
+
+        return $detailsArray;
+    }
 }

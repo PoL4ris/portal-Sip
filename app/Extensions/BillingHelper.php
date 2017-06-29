@@ -45,7 +45,7 @@ class BillingHelper {
                 ->where('value', 'LIKE', '%Retail%')
                 ->orWhere('value', 'LIKE', '%Bulk%');
         }])
-//            ->where('id', 28) // 28 is temporary for testing
+            ->where('id', 4)// 28 is temporary for testing
             ->get();
 
         $count = 0;
@@ -54,10 +54,10 @@ class BillingHelper {
             // Get list of chargeable products/services for the requested building
             $customerProducts = $this->getChargeableCustomerProductsByBuildingId($building->id);
             $count = $this->addChargesForCustomerProducts($customerProducts);
-            Log::info('BillingHelper::generateInvoiceRecords(): Added ' . $count . ' invoices for ' . $building->nickname . ' to DB');
+            Log::info('BillingHelper::generateInvoiceRecords(): Added ' . $count . ' charges for ' . $building->nickname . ' to DB');
         }
 
-        return 'Generated ' . $count . ' invoices and added them to the DB.';
+        return 'Generated ' . $count . ' charges and added them to the DB.';
     }
 
 
@@ -224,6 +224,17 @@ class BillingHelper {
         return true;
     }
 
+    /**
+     *  Manual charge and refund request and approval functions
+     */
+
+    /**
+     * @param Charge $charge
+     * @param $amount
+     * @param $comment
+     * @param int $userId
+     * @return bool
+     */
     public function updateManualChargeAmount(Charge $charge, $amount, $comment, $userId = 0)
     {
         $charge->amount = number_format($amount, 2);
@@ -237,7 +248,10 @@ class BillingHelper {
     public function approveManualCharge(Charge $charge)
     {
         $charge->status = config('const.charge_status.pending');
-        $charge->processing_type = config('const.type.auto_pay');
+        /**
+         *  We will leave the processing type as manual pay
+         */
+        // $charge->processing_type = config('const.type.auto_pay');
         $charge->save();
 
         return true;
@@ -251,7 +265,8 @@ class BillingHelper {
         return true;
     }
 
-    public function getPendingManualCharges(Customer $customer){
+    public function getPendingManualCharges(Customer $customer)
+    {
 
     }
 
@@ -307,13 +322,11 @@ class BillingHelper {
         $customerProduct->amount_owed += number_format($customerProduct->product->amount, 2);
         $customerProduct->save();
     }
-//    protected function setPendingChargeStatusToInvoicing(){
-//
-//        DB::table('charges')
-//            ->where('id_status', config('const.charge_status.pending'))
-//            ->update(['id_status' => config('const.charge_status.invoicing')]);
-//
-//    }
+
+
+    /**
+     *  Invoice generation functions
+     */
 
     public function invoicePendingCharges()
     {
@@ -344,14 +357,14 @@ class BillingHelper {
         {
             $invoice->description = 'New Invoice';
         }
-        if ($invoice->name == null)
-        {
-            $invoice->name = $this->getCustomerName($customerId);
-        }
-        if ($invoice->address == null)
-        {
-            $invoice->address = $this->getCustomerAddress($addressId);
-        }
+//        if ($invoice->name == null)
+//        {
+//            $invoice->name = $this->getCustomerName($customerId);
+//        }
+//        if ($invoice->address == null)
+//        {
+//            $invoice->address = $this->getCustomerAddress($addressId);
+//        }
         if ($invoice->bill_cycle_day == null)
         {
             $invoice->bill_cycle_day = '1';
@@ -457,11 +470,242 @@ class BillingHelper {
     }
 
 
+    /**
+     * Invoice processing functions
+     */
+
+    public function processPendingAutopayInvoices()
+    {
+
+        $nowMysql = date("Y-m-d H:i:s");
+        $invoices = Invoice::where('status', config('const.invoice_status.pending'))
+            ->where('processing_type', config('const.type.auto_pay'))
+            ->where('due_date', 'is', 'NULL')
+            ->orWhere('due_date', '<=', $nowMysql)
+            ->orWhere('due_date', '')
+            ->chunk(100, function ($invoices)
+            {
+                foreach ($invoices as $invoice)
+                {
+                    $this->processInvoice($invoice);
+                    dd('Done');
+                    break;
+                }
+            });
+    }
+
+    protected function processInvoice(Invoice $invoice)
+    {
+
+        if (isset($invoice) == false)
+        {
+            Log::info('BillingHelper::processInvoice(): $invoice is not set!');
+
+            return false;
+        }
+
+        if ($invoice->amount <= 0)
+        {
+            Log::info('BillingHelper::processInvoice(): ERROR: Invalid invoice amount: ' . $invoice->amount);
+
+            return false;
+        }
+
+        // Charge the invoice
+        $billingService = new SIPBilling();
+        $charges = $invoice->charges;
+        $details = $charges->pluck('details');
+
+        $chargeDetailsArray = array();
+        foreach ($details as $chargeDetails)
+        {
+            $chargeDetailsArray[] = json_decode($chargeDetails, true);
+        }
+
+
+        $customer = Customer::find($invoice->id_customers);
+        $chargeResult = $billingService->chargeCustomer($customer, $invoice->amount, 'invoice_id: ' . $invoice->id, 'SilverIP Data', json_encode($chargeDetailsArray));
+
+//        $invoiceDetails = ($invoice->details != '') ? json_decode($invoice->details, true) : null;
+//        $customerProductIds = ($invoiceDetails != null) ? array_column($invoiceDetails, 'customer_product_id') : null;
+        $transactionId = isset($chargeResult['TRANSACTIONID']) ? $chargeResult['TRANSACTIONID'] : null;
+
+        if ($chargeResult['RESPONSETEXT'] == 'APPROVED')
+        {
+
+            Log::info('BillingHelper::processInvoice(): INFO: id: ' . $invoice->id_customers . ', ' . trim($customer->first_name) . ' ' . trim($customer->last_name) . ', $' . $invoice->amount . ', ' . 'invoice: ' . $invoice->id . " ... Approved\n");
+            $invoice->status = config('const.invoice_status.paid');
+            $invoice->save();
+            $this->updateInvoiceProductDates($invoice, false);
+
+//            if ($customerProductIds != null)
+//            {
+//                // Update the customer product/service's expiration and charge timestamps
+//                $updateCount = $this->updateCustomerProductDates($customerProductIds);
+//                error_log('BillingHelper::processInvoice(): INFO: Updated expiration dates for ' . $updateCount . ' products of invoice: ' . $invoice->id);
+//            } else
+//            {
+//                error_log('BillingHelper::processInvoice(): ERROR: Could not update expiration dates for invoice: ' . $invoice->id);
+//            }
+
+
+            $this->logInvoice($invoice, 'processed', $transactionId);
+            $this->sendInvoiceReceiptEmail($invoice, $chargeResult);
+//            Invoice::destroy($invoice->id);
+
+        } else
+        {
+
+            Log::info('BillingHelper::processInvoice(): INFO: id: ' . $invoice->id_customers . ', ' . trim($customer->first_name) . ' ' . trim($customer->last_name) . ', $' . $invoice->amount . ', ' . 'invoice: ' . $invoice->id . " ... Declined\n");
+            $invoice->failed_charges_count ++;
+            $invoice->save();
+            $this->updateInvoiceProductDates($invoice, true);
+            $this->logInvoice($invoice, 'failed', $transactionId);
+
+//            if ($customerProductIds != null)
+//            {
+//                // Update the customer product/service's charge timestamp only
+//
+//                $updateCount = $this->updateCustomerProductDates($customerProductIds, true);
+//                error_log('BillingHelper::processInvoice(): INFO: Updated failed count for ' . $updateCount . ' product(s) of invoice: ' . $invoice->id);
+//            } else
+//            {
+//                error_log('BillingHelper::processInvoice(): ERROR: Could not update failed counts for invoice: ' . $invoice->id);
+//            }
+
+            /*** Create a ticket ***/
+
+            $this->sendChargeDeclienedEmail($invoice, $chargeResult);
+
+            //            if ($testRun == false) {
+            //                $ticketReason = 'Credit Card Declined for ' . date("M-Y") . ' (' . getFormattedPrice($amountToCharge) . ') --- TransID: ' . $chargeResult['TRANSACTIONID'] . ' - Action: ' . $chargeResult['ACTIONCODE'] . ' - Approval: ' . $chargeResult['APPROVAL'] . '- Response: ' . $chargeResult['RESPONSETEXT'];
+            //                createTicket($cid, '18', $ticketReason, 'escalated', 0, false);
+            //                addCustomerComment($cid, $ticketReason);
+            //                flagCustomerAccount($cid, '1', 'CC Declined');
+            //                foreach ($customer['LineItems'] as $lineItem) {
+            //                    updateCustomerProductBillingFlag($lineItem['CSID'], $lineItem['BillingFlag'] - 1, date("M-Y") . ' Charge Delined', false);
+            //                }
+            //                if ($skipEmails == false) {
+            //                    sendMonthlyDeclinedEmail($customer, $testRun);
+            //                }
+            //            }
+        }
+    }
+
+    protected function logInvoice(Invoice $invoice, $status = null, $transactionId = null, $comment = null)
+    {
+        // Log the invoice event
+        $invoiceLog = new InvoiceLog;
+        $invoiceLog->id_invoices = $invoice->id;
+        $invoiceLog->id_customers = $invoice->id_customers;
+        $invoiceLog->status = $status;
+        $invoiceLog->id_transactions = $transactionId;
+        $invoiceLog->comment = $comment;
+        $invoiceLog->invoice_record = $invoice->toJson();
+        $invoiceLog->save();
+
+        return $invoiceLog->id;
+    }
+
+    protected function updateInvoiceProductDates(Invoice $invoice, $updateChargeTimestampOnly = false)
+    {
+
+        $invoiceDetails = $invoice->details();
+
+        if (count($invoiceDetails) == 0)
+        {
+            error_log('BillingHelper::processInvoice(): ERROR: invoice: ' . $invoice->id . ' has no products.');
+            return false;
+        }
+
+        $detailsCollection = collect($invoiceDetails);
+        $customerProductIds = $detailsCollection->pluck('customer_product_id');
+
+        $updateCount = 0;
+        foreach ($customerProductIds as $customerProductId)
+        {
+
+            $this->updateCustomerProductAttributes($customerProductId, $updateChargeTimestampOnly);
+            $updateCount ++;
+        }
+
+        Log::info('BillingHelper::processInvoice(): INFO: Updated expiration dates for ' . $updateCount . ' products of invoice: ' . $invoice->id);
+
+        return $updateCount;
+    }
+
+    protected function updateCustomerProductAttributes($customerProductId, $updateChargeTimestampOnly = false)
+    {
+
+        $customerProduct = CustomerProduct::find($customerProductId);
+        $firstDayOfMonthTime = strtotime("first day of this month 00:00:00");
+
+        if ($updateChargeTimestampOnly == false)
+        {
+
+            $timestampMysql = null;
+            if ($customerProduct->product->frequency == 'annual')
+            {
+                // Set the next expiration date to next year for annual plans
+                $dateExpires = date('Y-m-d H:i:s', strtotime('+1 year', $firstDayOfMonthTime));
+            } elseif ($customerProduct->product->frequency == 'monthly')
+            {
+                // Set the next expiration date to next month for monthly plans
+                $dateExpires = date('Y-m-d H:i:s', strtotime('+1 month', $firstDayOfMonthTime));
+            } else
+            {
+                // Mark "onetime" purchases with a 2 to indicate "paid" status so they won't be charged again
+                $customerProduct->invoice_status = config('const.invoice_status.paid');
+                $dateExpires = date('Y-m-d H:i:s');
+            }
+
+            $customerProduct->expires = $dateExpires;
+            $customerProduct->renewed_at = date('Y-m-d H:i:s');
+            $customerProduct->amount_owed -= $customerProduct->product->amount;
+        }
+
+        $customerProduct->last_charged = date('Y-m-d H:i:s');
+        $customerProduct->save();
+    }
 
 
 
 
 
+//    protected function changeOpenInvoicesToPending()
+//    {
+//
+//        DB::table('invoices')
+//            ->where('id_status', config('const.invoice_status.open'))
+//            ->update(['id_status' => config('const.invoice_status.pending')]);
+//
+//    }
+//
+//    public function processPendingInvoices()
+//    {
+//        while (true)
+//        {
+//            $invoices = Invoice::where('status', config('const.invoice_status.pending'))
+//                ->take(100)
+//                ->get();
+//
+//            if ($invoices->count() == 0)
+//            {
+//                break;
+//            }
+//
+//            foreach ($invoices as $invoice)
+//            {
+//                $invoice = $this->chargePendingInvoice($invoice);
+////                $this->addChargeToInvoice($charge, $invoice);
+//            }
+//        }
+//    }
+//
+//    public function chargePendingInvoice(Invoice $invoice){
+//
+//
+//    }
 
 
 //    protected function getChargeableCustomerProducts($customerId = null, $buildingId = null)
@@ -946,147 +1190,33 @@ class BillingHelper {
 //
 //    }
 
-    public function generateResidentialInvoiceRecords()
-    {
+//    public function generateResidentialInvoiceRecords()
+//    {
+//
+//        // Get residential buildings
+//        $buildings = Building::with(['properties' => function ($query)
+//        {
+//            $query->where('id_building_properties', config('const.building_property.service_type'))
+//                ->where('value', 'Retail')
+//                ->orWhere('value', 'Bulk');
+//        }])
+//            ->where('id', 28)->get();
+//
+//        $count = 0;
+//
+//        foreach ($buildings as $building)
+//        {
+//            $invoiceDataTable = $this->generateBuildingInvoiceDataTable($building->id);
+//            $count = $this->addInvoicesToDatabase($invoiceDataTable);
+//            error_log('BillingHelper::generateInvoiceRecords(): Added invoices for ' . $building->nickname . ' to DB');
+//        }
+//
+//        return 'Generated ' . $count . ' invoices and added them to the DB.';
+//
+//    }
 
-        // Get residential buildings
-        $buildings = Building::with(['properties' => function ($query)
-        {
-            $query->where('id_building_properties', config('const.building_property.service_type'))
-                ->where('value', 'Retail')
-                ->orWhere('value', 'Bulk');
-        }])
-            ->where('id', 28)->get();
 
-        $count = 0;
 
-        foreach ($buildings as $building)
-        {
-            $invoiceDataTable = $this->generateBuildingInvoiceDataTable($building->id);
-            $count = $this->addInvoicesToDatabase($invoiceDataTable);
-            error_log('BillingHelper::generateInvoiceRecords(): Added invoices for ' . $building->nickname . ' to DB');
-        }
-
-        return 'Generated ' . $count . ' invoices and added them to the DB.';
-
-    }
-
-    public function processAutopayInvoices()
-    {
-
-        $nowMysql = date("Y-m-d H:i:s");
-        $invoices = Invoice::where('status', 'pending')
-            ->where('processing_type', '13')
-            //            ->where('due_date', 'is', 'NULL')
-            //            ->orWhere('due_date', '<=', $nowMysql)
-            //            ->orWhere('due_date', '')            
-            ->chunk(100, function ($invoices)
-            {
-                foreach ($invoices as $invoice)
-                {
-                    $this->processInvoice($invoice);
-                    dd('Done');
-                    break;
-                }
-            });
-    }
-
-    protected function processInvoice(Invoice $invoice)
-    {
-
-        if (isset($invoice) == false)
-        {
-            error_log('BillingHelper::processInvoice(): $invoice is not set!');
-
-            return false;
-        }
-
-        if ($invoice->amount <= 0)
-        {
-            error_log('BillingHelper::processInvoice(): ERROR: Invalid invoice amount: ' . $invoice->amount);
-
-            return false;
-        }
-
-        // Charge the invoice
-        $billingService = new SIPBilling();
-        $chargeResult = $billingService->chargeCC($invoice->id_customers, $invoice->amount, 'invoice_id: ' . $invoice->id, 'SilverIP Data', $invoice->details);
-
-        $customer = Customer::find($invoice->id_customers);
-        $invoiceDetails = ($invoice->details != '') ? json_decode($invoice->details, true) : null;
-        $customerProductIds = ($invoiceDetails != null) ? array_column($invoiceDetails, 'customer_product_id') : null;
-        $transactionId = isset($chargeResult['TRANSACTIONID']) ? $chargeResult['TRANSACTIONID'] : null;
-
-        if ($chargeResult['RESPONSETEXT'] == 'APPROVED')
-        {
-
-            error_log('BillingHelper::processInvoice(): INFO: id: ' . $invoice->id_customers . ', ' . trim($customer->first_name) . ' ' . trim($customer->last_name) . ', $' . $invoice->amount . ', ' . 'invoice: ' . $invoice->id . " ... Approved\n");
-
-            if ($customerProductIds != null)
-            {
-                // Update the customer product/service's expiration and charge timestamps
-                $updateCount = $this->updateCustomerProductDates($customerProductIds);
-                error_log('BillingHelper::processInvoice(): INFO: Updated expiration dates for ' . $updateCount . ' products of invoice: ' . $invoice->id);
-            } else
-            {
-                error_log('BillingHelper::processInvoice(): ERROR: Could not update expiration dates for invoice: ' . $invoice->id);
-            }
-
-            $this->logInvoice($invoice, 'processed', $transactionId);
-            $this->sendInvoiceReceiptEmail($invoice, $chargeResult);
-            Invoice::destroy($invoice->id);
-
-        } else
-        {
-
-            error_log('BillingHelper::processInvoice(): INFO: id: ' . $invoice->id_customers . ', ' . trim($customer->first_name) . ' ' . trim($customer->last_name) . ', $' . $invoice->amount . ', ' . 'invoice: ' . $invoice->id . " ... Declined\n");
-
-            $invoice->failed_charges_count ++;
-            $invoice->save();
-            $this->logInvoice($invoice, 'failed', $transactionId);
-
-            if ($customerProductIds != null)
-            {
-                // Update the customer product/service's charge timestamp only
-                $updateCount = $this->updateCustomerProductDates($customerProductIds, true);
-                error_log('BillingHelper::processInvoice(): INFO: Updated failed count for ' . $updateCount . ' product(s) of invoice: ' . $invoice->id);
-            } else
-            {
-                error_log('BillingHelper::processInvoice(): ERROR: Could not update failed counts for invoice: ' . $invoice->id);
-            }
-            /*** Create a ticket ***/
-
-            $this->sendChargeDeclienedEmail($invoice, $chargeResult);
-
-            //            if ($testRun == false) {
-            //                $ticketReason = 'Credit Card Declined for ' . date("M-Y") . ' (' . getFormattedPrice($amountToCharge) . ') --- TransID: ' . $chargeResult['TRANSACTIONID'] . ' - Action: ' . $chargeResult['ACTIONCODE'] . ' - Approval: ' . $chargeResult['APPROVAL'] . '- Response: ' . $chargeResult['RESPONSETEXT'];
-            //                createTicket($cid, '18', $ticketReason, 'escalated', 0, false);
-            //                addCustomerComment($cid, $ticketReason);
-            //                flagCustomerAccount($cid, '1', 'CC Declined');
-            //                foreach ($customer['LineItems'] as $lineItem) {
-            //                    updateCustomerProductBillingFlag($lineItem['CSID'], $lineItem['BillingFlag'] - 1, date("M-Y") . ' Charge Delined', false);
-            //                }
-            //                if ($skipEmails == false) {
-            //                    sendMonthlyDeclinedEmail($customer, $testRun);
-            //                }
-            //            }
-        }
-    }
-
-    protected function logInvoice(Invoice $invoice, $status = null, $transactionId = null, $comment = null)
-    {
-        // Log the invoice event
-        $invoiceLog = new InvoiceLog;
-        $invoiceLog->id_invoices = $invoice->id;
-        $invoiceLog->id_customers = $invoice->id_customers;
-        $invoiceLog->status = $status;
-        $invoiceLog->id_transactions = $transactionId;
-        $invoiceLog->comment = $comment;
-        $invoiceLog->invoice_record = $invoice->toJson();
-        $invoiceLog->save();
-
-        return $invoiceLog->id;
-    }
 
     protected function generateBuildingInvoiceDataTable($buildingId)
     {
@@ -1211,6 +1341,7 @@ class BillingHelper {
             $customerProduct->save();
         }
     }
+
 
     protected function updateCustomerProductDates($customerProductIds = array(), $updateChargeTimestampOnly = false)
     {
