@@ -1162,6 +1162,11 @@ table.dataTable tbody tr {
 .months-select-style:hover{
   background: rgba(0, 134, 255, 0.17);
 }
+.align-smart-form-check{
+  display: inline-block;
+  top: -10px;
+  left: 15px;
+}
 pre {
   margin: 30px;
   font-size: 10px;

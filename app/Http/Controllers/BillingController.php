@@ -216,8 +216,8 @@ class BillingController extends Controller {
                                                'invoices',
                                                'user',
                                                'productDetail.product')
-                                        ->whereRaw('YEAR(created_at)  = YEAR('  . $timeData . ')')
-                                        ->whereRaw('MONTH(created_at) = MONTH(' . $timeData . ')')
+                                        ->whereRaw('YEAR(start_date)  = YEAR('  . $timeData . ')')
+                                        ->whereRaw('MONTH(start_date) = MONTH(' . $timeData . ')')
                                         ->get();
 
         return $result;

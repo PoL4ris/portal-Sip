@@ -84,6 +84,12 @@ app.controller('chargesController', function ($scope, $http, customerService, ad
         }
       });
   }
+  $scope.getFormChecks = function (){
+    var objects = getFormValues('pending-charges-form');
+    console.log(objects);
+  }
+
+
   //Charges and invoices
   $scope.getCharges           = function () {
 
