@@ -245,7 +245,7 @@ class BillingHelper {
         return true;
     }
 
-    public function approveManualCharge(Charge $charge)
+    public function approveManualCharge(Charge $charge, $notifyViaEmail = false)
     {
         $charge->status = config('const.charge_status.pending');
         /**
@@ -254,7 +254,9 @@ class BillingHelper {
         // $charge->processing_type = config('const.type.auto_pay');
         $charge->save();
 
-        return true;
+        return $this->invoiceManualCharge($charge, $notifyViaEmail);
+
+//        return true;
     }
 
     public function denyManualCharge(Charge $charge)
@@ -328,11 +330,20 @@ class BillingHelper {
      *  Invoice generation functions
      */
 
-    public function invoicePendingCharges()
+    public function invoiceManualCharge(Charge $charge, $notifyViaEmail = false)
+    {
+        $invoice = $this->createNewManualInvoice($charge->id_customers, $charge->id_address);
+        $this->addChargeToInvoice($charge, $invoice);
+
+        return $this->processInvoice($invoice, $notifyViaEmail);
+    }
+
+    public function invoicePendingAutoPayCharges()
     {
         while (true)
         {
             $charges = Charge::where('status', config('const.charge_status.pending'))
+                ->where('processing_type', config('const.type.auto_pay'))
                 ->take(100)
                 ->get();
 
@@ -383,6 +394,37 @@ class BillingHelper {
 
         return $invoice;
     }
+
+    public function createNewManualInvoice($customerId, $addressId)
+    {
+        $invoice = Invoice::create(['id_customers' => $customerId, 'id_address' => $addressId, 'status' => config('const.invoice_status.open')]);
+
+        if ($invoice->description == null)
+        {
+            $invoice->description = 'New Manual Invoice';
+        }
+        if ($invoice->bill_cycle_day == null)
+        {
+            $invoice->bill_cycle_day = '1';
+        }
+        if ($invoice->processing_type == null)
+        {
+            $invoice->processing_type = config('const.type.manual_pay'); // 13 = Autopay, 14 = Manual Pay
+        }
+
+        if ($invoice->due_date == null)
+        {
+            $firstDayOfNextMonthTime = strtotime("first day of next month  00:00:00");
+            $firstDayOfNextMonthMysql = date("Y-m-d H:i:s", $firstDayOfNextMonthTime);
+            $invoice->due_date = $firstDayOfNextMonthMysql;
+        }
+
+        $invoice->status = config('const.invoice_status.pending');
+        $invoice->save();
+
+        return $invoice;
+    }
+
 
     protected function getCustomerName($customerId)
     {
@@ -494,7 +536,7 @@ class BillingHelper {
             });
     }
 
-    protected function processInvoice(Invoice $invoice)
+    protected function processInvoice(Invoice $invoice, $notifyViaEmail = true)
     {
 
         if (isset($invoice) == false)
@@ -550,7 +592,11 @@ class BillingHelper {
 
 
             $this->logInvoice($invoice, 'processed', $transactionId);
-            $this->sendInvoiceReceiptEmail($invoice, $chargeResult);
+            if ($notifyViaEmail)
+            {
+                $this->sendInvoiceReceiptEmail($invoice, $chargeResult);
+            }
+
 //            Invoice::destroy($invoice->id);
 
         } else
@@ -574,9 +620,10 @@ class BillingHelper {
 //            }
 
             /*** Create a ticket ***/
-
-            $this->sendChargeDeclienedEmail($invoice, $chargeResult);
-
+            if ($notifyViaEmail)
+            {
+                $this->sendChargeDeclienedEmail($invoice, $chargeResult);
+            }
             //            if ($testRun == false) {
             //                $ticketReason = 'Credit Card Declined for ' . date("M-Y") . ' (' . getFormattedPrice($amountToCharge) . ') --- TransID: ' . $chargeResult['TRANSACTIONID'] . ' - Action: ' . $chargeResult['ACTIONCODE'] . ' - Approval: ' . $chargeResult['APPROVAL'] . '- Response: ' . $chargeResult['RESPONSETEXT'];
             //                createTicket($cid, '18', $ticketReason, 'escalated', 0, false);
@@ -590,6 +637,8 @@ class BillingHelper {
             //                }
             //            }
         }
+
+        return $chargeResult;
     }
 
     protected function logInvoice(Invoice $invoice, $status = null, $transactionId = null, $comment = null)
@@ -615,6 +664,7 @@ class BillingHelper {
         if (count($invoiceDetails) == 0)
         {
             error_log('BillingHelper::processInvoice(): ERROR: invoice: ' . $invoice->id . ' has no products.');
+
             return false;
         }
 
@@ -1214,8 +1264,6 @@ class BillingHelper {
 //        return 'Generated ' . $count . ' invoices and added them to the DB.';
 //
 //    }
-
-
 
 
     protected function generateBuildingInvoiceDataTable($buildingId)
