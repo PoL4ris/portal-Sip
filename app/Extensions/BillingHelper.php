@@ -576,14 +576,14 @@ class BillingHelper {
         {
             Log::info('BillingHelper::processInvoice(): $invoice is not set!');
 
-            return false;
+            return ['ERRMSG' => 'Invalid is empty!'];
         }
 
         if ($invoice->amount <= 0)
         {
             Log::info('BillingHelper::processInvoice(): ERROR: Invalid invoice amount: ' . $invoice->amount);
 
-            return false;
+            return ['ERRMSG' => 'Invalid invoice amount: ' . $invoice->amount];
         }
 
         // Charge the invoice
