@@ -115,9 +115,9 @@ app.controller('chargesController', function ($scope, $http, customerService, ad
 
 
 
-    var infoData = {};
+    var infoData = '';
     for(var obj in objects ) {
-      infoData[objects[obj]['name']] = objects[obj]['name'];
+      infoData += '"' + objects[obj]['name'] + '",';
     }
 
 
