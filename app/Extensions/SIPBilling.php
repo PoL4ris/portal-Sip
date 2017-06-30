@@ -242,6 +242,7 @@ class SIPBilling {
 
     protected function processCC($request, $authOnly = false, $totAmount = 0, $desc = 'SilverIP Comm', PaymentMethod $pm = null, Address $address = null) {
 
+Log::info('processCC(): $request: ' . print_r(processCC, true));
         // Gather the IPPay response in the following array
         $result = array();
 
