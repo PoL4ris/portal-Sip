@@ -400,6 +400,7 @@ class SIPBilling {
             $result['ZIPMATCH'] = '';
             $result['AVS'] = '';
             $result['FAILED'] = 'Customer not found';
+            $result['ERRMSG'] = 'Customer not found';
             $this->logChargeResult($result);
             return $result;
         }
@@ -417,6 +418,7 @@ class SIPBilling {
             $result['ZIPMATCH'] = '';
             $result['AVS'] = '';
             $result['FAILED'] = 'Payment method not found';
+            $result['ERRMSG'] = 'Payment method not found';
             $this->logChargeResult($result);
             return $result;
         }
@@ -519,6 +521,7 @@ class SIPBilling {
             $result['ZIPMATCH'] = '';
             $result['AVS'] = '';
             $result['FAILED'] = 'Customer not found';
+            $result['ERRMSG'] = 'Customer not found';
             $this->logChargeResult($result);
             return $result;
         }
@@ -536,6 +539,7 @@ class SIPBilling {
             $result['ZIPMATCH'] = '';
             $result['AVS'] = '';
             $result['FAILED'] = 'Payment method not found';
+            $result['ERRMSG'] = 'Payment method not found';
             $this->logChargeResult($result);
             return $result;
         }
