@@ -24,35 +24,56 @@ app.controller('chargesController', function ($scope, $http, customerService, ad
   }
   $scope.getChargeStat();
   $scope.confirmAction        = function () {
+    var thisId = this.charge.id;
+    $.SmartMessageBox({
+      title: "Please Confirm",
+      content: 'Confirm authorize action.',
+      buttons: '[No][Yes]'
+    }, function (ButtonPressed) {
 
-    $http.get('approveManualCharge', {params: {'id': this.charge.id}})
-      .then(function (response) {
-        $scope.chargesData = response.data;
-        $scope.getChargeStat();
-        $.smallBox({
-          title: "Action Confirmed!",
-          content: "<i class='fa fa-clock-o'></i> <i>3 seconds ago...</i>",
-          color: "transparent",
-          timeout: 6000
-        });
-      });
-
+      if (ButtonPressed === "Yes") {
+        $http.get('approveManualCharge', {params: {'id': thisId}})
+          .then(function (response) {
+            $scope.chargesData = response.data;
+            $scope.getChargeStat();
+            $.smallBox({
+              title: "Action Confirmed!",
+              content: "<i class='fa fa-clock-o'></i> <i>3 seconds ago...</i>",
+              color: "transparent",
+              timeout: 6000
+            });
+          });
+      }
+    });
   }
+
   $scope.cancelAction         = function () {
 
-    $http.get('denyManualCharge', {params: {'id': this.charge.id}})
-      .then(function (response) {
-        $scope.chargesData = response.data;
-        $scope.getChargeStat();
-        $.smallBox({
-          title: "Action Denied!",
-          content: "<i class='fa fa-clock-o'></i> <i>3 seconds ago...</i>",
-          color: "transparent",
-          timeout: 6000
-        });
-      });
+    var thisId = this.charge.id;
+    $.SmartMessageBox({
+      title: "Please Confirm",
+      content: 'Confirm authorize action.',
+      buttons: '[No][Yes]'
+    }, function (ButtonPressed) {
 
+      if (ButtonPressed === "Yes") {
+
+
+        $http.get('denyManualCharge', {params: {'id': thisId}})
+          .then(function (response) {
+            $scope.chargesData = response.data;
+            $scope.getChargeStat();
+            $.smallBox({
+              title: "Action Denied!",
+              content: "<i class='fa fa-clock-o'></i> <i>3 seconds ago...</i>",
+              color: "transparent",
+              timeout: 6000
+            });
+          });
+      }
+    });
   }
+
   $scope.editAction           = function () {
     $scope.editRecordTmp = this.charge;
   }
@@ -84,11 +105,14 @@ app.controller('chargesController', function ($scope, $http, customerService, ad
         }
       });
   }
-  $scope.getFormChecks = function (){
+  //Process more than one request.
+  $scope.getFormChecks        = function (){
     var objects = getFormValues('pending-charges-form');
     console.log(objects);
-  }
 
+    $('#testmodaluno').modal('toggle');
+
+  }
 
   //Charges and invoices
   $scope.getCharges           = function () {
@@ -106,13 +130,13 @@ app.controller('chargesController', function ($scope, $http, customerService, ad
         adminService.chAndInYear        = response.data.year
       });
   }
-//  $scope.getCharges();
   $scope.showProductDetail    = function () {
     $scope.showProductDetails = this.charge.product_detail;
   }
   $scope.showInvoiceDetail    = function () {
     $scope.showInvoiceDetails = this.charge;
   }
+
   //Global
   $scope.setView              = function (id) {
     //Views:
@@ -159,7 +183,9 @@ app.controller('chargesController', function ($scope, $http, customerService, ad
     $scope.getCharges();
   };
 
-  $scope.somethinHere        = function () {
+
+  //Confirm Action Example
+  $scope.somethinHere         = function () {
 
     $.SmartMessageBox({
       title: "Please Confirm",
