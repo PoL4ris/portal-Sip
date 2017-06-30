@@ -141,40 +141,24 @@ class BillingController extends Controller {
         $input = $request->all();
         $chargeInputJson = $input['IDs'];
         $chargeIDArray = json_decode($chargeInputJson, true);
-        foreach($chargeIDArray as $chargeId){
-            $charge = Charge::find($chargeId);
-            if ($charge == null)
-            {
-                Log::notice('BillingController::approveManualCharge(): Charge not found with id: ' . $chargeId);
-
-                return 'ERROR';
-            }
-        }
 
         $billingHelper = new BillingHelper();
-//        $result = $billingHelper->approveManualCharge($charge);
         $result = $billingHelper->approveManualChargeList($chargeIDArray, false);
 
-        return $this->getPendingManualCharges();
+        return [$this->getPendingManualCharges(), $result];
     }
 
     public function denyManualCharge(Request $request)
     {
 
         $input = $request->all();
-        $chargeId = $input['id'];
+        $chargeInputJson = $input['IDs'];
+        $chargeIDArray = json_decode($chargeInputJson, true);
 
-        $charge = Charge::find($chargeId);
-        if ($charge == null)
-        {
-            Log::notice('BillingController::denyManualCharge(): Charge not found with id: ' . $chargeId);
-
-            return 'ERROR';
-        }
         $billingHelper = new BillingHelper();
-        $result = $billingHelper->denyManualCharge($charge);
+        $result = $billingHelper->denyManualChargeList($chargeIDArray);
 
-        return $this->getPendingManualCharges();
+        return [$this->getPendingManualCharges(), $result];
     }
 
     public function getPendingManualChargesByCustomer(Request $request)

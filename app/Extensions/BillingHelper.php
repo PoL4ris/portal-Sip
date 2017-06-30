@@ -249,7 +249,14 @@ class BillingHelper {
 
         $resultsArray = array();
         foreach($chargeIds as $chargeId){
-            $resultsArray[] = $this->approveManualCharge(Charge::find($chargeId), $notifyViaEmail);
+            $charge = Charge::find($chargeId);
+            if ($charge == null)
+            {
+                $resultsArray[$chargeId] = ['ERRMSG' => 'Charge not found'];
+                Log::notice('BillingController::approveManualChargeList(): Charge not found with id: ' . $chargeId);
+                continue;
+            }
+            $resultsArray[$chargeId] = $this->approveManualCharge($charge, $notifyViaEmail);
         }
         return $resultsArray;
     }
@@ -267,6 +274,22 @@ class BillingHelper {
         return $this->processInvoice($invoice, $notifyViaEmail);
 
 //        return true;
+    }
+
+    public function denyManualChargeList($chargeIds){
+
+        $resultsArray = array();
+        foreach($chargeIds as $chargeId){
+            $charge = Charge::find($chargeId);
+            if ($charge == null)
+            {
+                $resultsArray[$chargeId] = ['ERRMSG' => 'Charge not found'];
+                Log::notice('BillingController::denyManualChargeList(): Charge not found with id: ' . $chargeId);
+                continue;
+            }
+            $resultsArray[$chargeId] = $this->denyManualCharge($charge);
+        }
+        return $resultsArray;
     }
 
     public function denyManualCharge(Charge $charge)
