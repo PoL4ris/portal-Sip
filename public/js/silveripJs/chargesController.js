@@ -34,6 +34,7 @@ app.controller('chargesController', function ($scope, $http, customerService, ad
       if (ButtonPressed === "Yes") {
         $http.get('approveManualCharge', {params: {'id': thisId}})
           .then(function (response) {
+            console.log(response.data);
             $scope.chargesData = response.data;
             $scope.getChargeStat();
             $.smallBox({
@@ -111,6 +112,22 @@ app.controller('chargesController', function ($scope, $http, customerService, ad
     console.log(objects);
 
     $('#testmodaluno').modal('toggle');
+
+
+    $http.get('approveManualCharge', {params: {'chargesArray': objects}})
+      .then(function (response) {
+
+        console.log(response.data);
+//        $scope.chargesData = response.data;
+//        $scope.getChargeStat();
+//        $.smallBox({
+//          title: "Action Confirmed!",
+//          content: "<i class='fa fa-clock-o'></i> <i>3 seconds ago...</i>",
+//          color: "transparent",
+//          timeout: 6000
+//        });
+
+      });
 
   }
 
