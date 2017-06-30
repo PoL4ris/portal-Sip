@@ -113,6 +113,20 @@ app.controller('chargesController', function ($scope, $http, customerService, ad
     var objects = $('#pending-charges-form').serializeArray();
     objects.splice(0, 1);
 
+
+
+    var infoData = {};
+    for(var obj in objects ) {
+      infoData[objects[obj]['name']] = objects[obj]['name'];
+    }
+
+
+    console.log(infoData);
+
+
+return;
+
+
     $('#testmodaluno').modal('toggle');
 
 
