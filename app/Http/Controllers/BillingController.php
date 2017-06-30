@@ -139,17 +139,21 @@ class BillingController extends Controller {
     public function approveManualCharge(Request $request)
     {
         $input = $request->all();
-        $chargeId = $input['id'];
+        $chargeInputJson = $input['IDs'];
+        $chargeIDArray = json_decode($chargeInputJson, true);
+        foreach($chargeIDArray as $chargeId){
+            $charge = Charge::find($chargeId);
+            if ($charge == null)
+            {
+                Log::notice('BillingController::approveManualCharge(): Charge not found with id: ' . $chargeId);
 
-        $charge = Charge::find($chargeId);
-        if ($charge == null)
-        {
-            Log::notice('BillingController::approveManualCharge(): Charge not found with id: ' . $chargeId);
-
-            return 'ERROR';
+                return 'ERROR';
+            }
         }
+
         $billingHelper = new BillingHelper();
-        $result = $billingHelper->approveManualCharge($charge);
+//        $result = $billingHelper->approveManualCharge($charge);
+        $result = $billingHelper->approveManualChargeList($chargeIDArray, false);
 
         return $this->getPendingManualCharges();
     }

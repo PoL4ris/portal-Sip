@@ -245,6 +245,15 @@ class BillingHelper {
         return true;
     }
 
+    public function approveManualChargeList($chargeIds, $notifyViaEmail = false){
+
+        $resultsArray = array();
+        foreach($chargeIds as $chargeId){
+            $resultsArray[] = $this->approveManualCharge(Charge::find($chargeId), $notifyViaEmail);
+        }
+        return $resultsArray;
+    }
+
     public function approveManualCharge(Charge $charge, $notifyViaEmail = false)
     {
         $charge->status = config('const.charge_status.pending');

@@ -108,29 +108,19 @@ app.controller('chargesController', function ($scope, $http, customerService, ad
   }
   //Process more than one request.
   $scope.getFormChecks        = function (){
-    var objects = getFormValues('pending-charges-form');
 
     var objects = $('#pending-charges-form').serializeArray();
-    objects.splice(0, 1);
+      objects.shift();
 
-
-
-    var infoData = {};
+    var infoData = [];
     for(var obj in objects ) {
-      infoData[objects[obj]['name']] = objects[obj]['name'];
+        infoData.push(objects[obj]['name']);
     }
-
-
-    console.log(infoData);
-
-
-return;
-
 
     $('#testmodaluno').modal('toggle');
 
 
-    $http.get('approveManualCharge', {params: {'chargesArray': objects}})
+    $http.get('approveManualCharge', {params: {'IDs': JSON.stringify(infoData)}})
       .then(function (response) {
 
         console.log(response.data);
@@ -146,6 +136,22 @@ return;
       });
 
   }
+
+    function dump(obj) {
+        var out = '';
+        for (var i in obj) {
+            out += i + ": " + obj[i] + "\n";
+        }
+
+        console.log(out);
+        // alert(out);
+        //
+        // // or, if you wanted to avoid alerts...
+        //
+        // var pre = document.createElement('pre');
+        // pre.innerHTML = out;
+        // document.body.appendChild(pre)
+    }
 
   //Charges and invoices
   $scope.getCharges           = function () {
