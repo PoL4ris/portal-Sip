@@ -109,7 +109,9 @@ app.controller('chargesController', function ($scope, $http, customerService, ad
   //Process more than one request.
   $scope.getFormChecks        = function (){
     var objects = getFormValues('pending-charges-form');
-    console.log(objects);
+
+    var objects = $('#pending-charges-form').serializeArray();
+    objects.splice(0, 1);
 
     $('#testmodaluno').modal('toggle');
 

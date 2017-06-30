@@ -49,8 +49,8 @@
                     <td>
                         <div class="smart-form align-smart-form-check">
                             <label class="checkbox">
-                                <input type="checkbox" name="maId-{{charge.id}}" ng-if="!dataCheck">
-                                <input type="checkbox" name="maId-{{charge.id}}" ng-if="dataCheck" checked="checked">
+                                <input type="checkbox" name="{{charge.id}}" ng-if="!dataCheck">
+                                <input type="checkbox" name="{{charge.id}}" ng-if="dataCheck" checked="checked">
                                 <i></i>{{data.name}}
                             </label>
                         </div>
