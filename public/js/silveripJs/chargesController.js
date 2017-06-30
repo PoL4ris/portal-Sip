@@ -32,7 +32,7 @@ app.controller('chargesController', function ($scope, $http, customerService, ad
     }, function (ButtonPressed) {
 
       if (ButtonPressed === "Yes") {
-        $http.get('approveManualCharge', {params: {'id': thisId}})
+        $http.get('approveManualCharge', {params: {'IDs': {0:thisId}}})
           .then(function (response) {
             console.log(response.data);
             $scope.chargesData = response.data;
@@ -60,7 +60,7 @@ app.controller('chargesController', function ($scope, $http, customerService, ad
       if (ButtonPressed === "Yes") {
 
 
-        $http.get('denyManualCharge', {params: {'id': thisId}})
+        $http.get('denyManualCharge', {params: {'IDs': {0:thisId}}})
           .then(function (response) {
             $scope.chargesData = response.data;
             $scope.getChargeStat();
