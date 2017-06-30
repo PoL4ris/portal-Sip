@@ -506,6 +506,50 @@ class SIPBilling {
         return $result;
     }
 
+    public function refundCustomer(Customer $customer, $amount = 0, $desc = 'SilverIP Comm', $details = false) {
+
+        if($customer == null){
+            $result['TRANSACTIONID'] = '';   //Returns the unique tranaction ID
+            $result['ACTIONCODE'] = '900';     // 000 = Approved, else Denied
+            $result['APPROVAL'] = 'ERROR';
+            $result['CVV2'] = '';
+            $result['VERIFICATIONRESULT'] = '';
+            $result['RESPONSETEXT'] = 'ERROR';
+            $result['ADDRESSMATCH'] = '';
+            $result['ZIPMATCH'] = '';
+            $result['AVS'] = '';
+            $result['FAILED'] = 'Customer not found';
+            $this->logChargeResult($result);
+            return $result;
+        }
+
+        $paymentMethod = $customer->defaultPaymentMethod;
+
+        if($paymentMethod == null){
+            $result['TRANSACTIONID'] = '';   //Returns the unique tranaction ID
+            $result['ACTIONCODE'] = '900';     // 000 = Approved, else Denied
+            $result['APPROVAL'] = 'ERROR';
+            $result['CVV2'] = '';
+            $result['VERIFICATIONRESULT'] = '';
+            $result['RESPONSETEXT'] = 'ERROR';
+            $result['ADDRESSMATCH'] = '';
+            $result['ZIPMATCH'] = '';
+            $result['AVS'] = '';
+            $result['FAILED'] = 'Payment method not found';
+            $this->logChargeResult($result);
+            return $result;
+        }
+
+        $xactionRequest = ['TransactionType' => 'CREDIT'];
+        $result = $this->processCC($xactionRequest, false, $amount, $desc, $paymentMethod);
+
+        $result['Comment'] = $customer->comment;
+        if(isset($result['FAILED']) == false){
+            $this->storeXaction($result, $customer, $paymentMethod->address, $paymentMethod,  $details);
+        }
+        return $result;
+    }
+
     public function refundPaymentMethod($paymentMethodId, $amount, $desc = 'SilverIP Comm', $details = false) {
 
         $paymentMethod = $this->getPaymentMethod($paymentMethodId);

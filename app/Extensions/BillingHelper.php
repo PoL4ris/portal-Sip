@@ -579,7 +579,7 @@ class BillingHelper {
             return ['ERRMSG' => 'Invalid is empty!'];
         }
 
-        if ($invoice->amount <= 0)
+        if ($invoice->amount == 0)
         {
             Log::info('BillingHelper::processInvoice(): ERROR: Invalid invoice amount: ' . $invoice->amount);
 
@@ -599,7 +599,14 @@ class BillingHelper {
 
 
         $customer = Customer::find($invoice->id_customers);
-        $chargeResult = $billingService->chargeCustomer($customer, $invoice->amount, 'invoice_id: ' . $invoice->id, 'SilverIP Data', json_encode($chargeDetailsArray));
+
+        if($invoice->amount > 0){
+            $chargeResult = $billingService->chargeCustomer($customer, $invoice->amount, 'invoice_id: ' . $invoice->id, 'SilverIP Data', json_encode($chargeDetailsArray));
+        } else {
+            $chargeResult = $billingService->refundCustomer($customer, -1 * $invoice->amount, 'invoice_id: ' . $invoice->id, json_encode($chargeDetailsArray));
+        }
+
+
 
 //        $invoiceDetails = ($invoice->details != '') ? json_decode($invoice->details, true) : null;
 //        $customerProductIds = ($invoiceDetails != null) ? array_column($invoiceDetails, 'customer_product_id') : null;
