@@ -254,7 +254,8 @@ class BillingHelper {
         // $charge->processing_type = config('const.type.auto_pay');
         $charge->save();
 
-        return $this->invoiceManualCharge($charge, $notifyViaEmail);
+        $invoice =  $this->invoiceManualCharge($charge);
+        return $this->processInvoice($invoice, $notifyViaEmail);
 
 //        return true;
     }
@@ -330,12 +331,12 @@ class BillingHelper {
      *  Invoice generation functions
      */
 
-    public function invoiceManualCharge(Charge $charge, $notifyViaEmail = false)
+    public function invoiceManualCharge(Charge $charge)
     {
         $invoice = $this->createNewManualInvoice($charge->id_customers, $charge->id_address);
         $this->addChargeToInvoice($charge, $invoice);
 
-        return $this->processInvoice($invoice, $notifyViaEmail);
+        return $invoice;
     }
 
     public function invoicePendingAutoPayCharges()
