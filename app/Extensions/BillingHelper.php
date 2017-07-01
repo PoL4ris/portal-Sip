@@ -603,7 +603,8 @@ class BillingHelper {
         if($invoice->amount > 0){
             $chargeResult = $billingService->chargeCustomer($customer, $invoice->amount, 'invoice_id: ' . $invoice->id, 'SilverIP Data', json_encode($chargeDetailsArray));
         } else {
-            $chargeResult = $billingService->refundCustomer($customer, -1 * $invoice->amount, 'invoice_id: ' . $invoice->id, json_encode($chargeDetailsArray));
+//            $chargeResult = $billingService->refundCustomer($customer, -1 * $invoice->amount, 'invoice_id: ' . $invoice->id, json_encode($chargeDetailsArray));
+            $chargeResult = $billingService->refundCustomer($customer, -1 * $invoice->amount, 'invoice', json_encode($chargeDetailsArray));
         }
 
 
