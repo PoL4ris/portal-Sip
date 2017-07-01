@@ -242,7 +242,6 @@ class SIPBilling {
 
     protected function processCC($request, $authOnly = false, $totAmount = 0, $desc = 'SilverIP Comm', PaymentMethod $pm = null, Address $address = null) {
 
-Log::info('processCC(): $request: ' . print_r($request, true));
         // Gather the IPPay response in the following array
         $result = array();
 
@@ -336,13 +335,17 @@ Log::info('processCC(): $request: ' . print_r($request, true));
             }
         }
 
+        Log::info('processCC(): $request: ' . print_r($request, true));
+
         $ippayresult = array();
         $ipPayHandle = new IpPay();
 
         //process card - 0 is for test server, 1 for live server
         if ($this->testMode == true) {
+            Log::info('processCC(): Calling IpPay in test mode');
             $ippayresult = $ipPayHandle->process($request, 0);  // IPPay test server
         } else {
+            Log::info('processCC(): Calling IpPay in production mode');
             $ippayresult = $ipPayHandle->process($request, 1);  // IPPay live server
         }
 
