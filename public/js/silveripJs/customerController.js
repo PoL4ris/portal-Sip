@@ -712,6 +712,9 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http){
 
 
 
+
+
+
   //Temporal version to work with
   $scope.refundFunct        = function (){
 
@@ -736,15 +739,21 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http){
     $http.get("manualRefund", {params:objects})
       .then(function (response)
       {
-        console.log(response.data);
         processing(0);
+        $.smallBox({
+          title: "Transaction Completed!",
+          content: "<i class='fa fa-clock-o'></i> <i>3 seconds ago...</i>",
+          color: "transparent",
+          iconSmall: "fa fa-thumbs-up bounce animated",
+          timeout: 6000
+        });
+
+        $('#paymentManualRefound').modal('toggle');
+        $('#manual-charge-form').trigger("reset");
       });
 
 
   }
-
-
-
   $scope.refundFunctXXX        = function (){
     $scope.errorMsgPaymentMethods = null;
 
@@ -793,9 +802,6 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http){
   };//working functin to refound.
 
 
-
-
-
   $scope.chargeFunct        = function (){
     $scope.errorMsgPaymentMethods = null;
 
@@ -820,6 +826,17 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http){
         //$scope.paymentMethods = response.data;
         console.log(response.data);
         processing(0);
+
+        $.smallBox({
+          title: "Transaction Completed!",
+          content: "<i class='fa fa-clock-o'></i> <i>3 seconds ago...</i>",
+          color: "transparent",
+          iconSmall: "fa fa-thumbs-up bounce animated",
+          timeout: 6000
+        });
+
+        $('#paymentManualCharge').modal('toggle');
+        $('#manual-charge-form').trigger("reset");
 
       });
   }
@@ -867,7 +884,12 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http){
         $('#paymentManualCharge').modal('toggle');
         $('#manual-charge-form').trigger("reset");
       });
-  };
+  };//working functin to refound.
+
+
+
+
+
   $scope.prepareFields = function(){
     $('#manual-refund-form').trigger("reset");
     $('#manual-charge-form').trigger("reset");

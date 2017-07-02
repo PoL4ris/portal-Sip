@@ -35,7 +35,7 @@ app.controller('chargesController', function ($scope, $http, customerService, ad
         $http.get('approveManualCharge', {params: {'IDs': {0:thisId}}})
           .then(function (response) {
             console.log(response.data);
-            $scope.chargesData = response.data;
+//            $scope.chargesData = response.data;
             $scope.getChargeStat();
             $.smallBox({
               title: "Action Confirmed!",
@@ -109,6 +109,8 @@ app.controller('chargesController', function ($scope, $http, customerService, ad
   //Process more than one request.
   $scope.getFormChecks        = function (){
 
+    $scope.loadingTransaction = true;
+
     var objects = $('#pending-charges-form').serializeArray();
       objects.shift();
 
@@ -123,8 +125,10 @@ app.controller('chargesController', function ($scope, $http, customerService, ad
     $http.get('approveManualCharge', {params: {'IDs': JSON.stringify(infoData)}})
       .then(function (response) {
 
+        $scope.loadingTransaction = false;
+
         console.log(response.data);
-//        $scope.chargesData = response.data;
+        $scope.transactionResponse = response.data.results;
 //        $scope.getChargeStat();
 //        $.smallBox({
 //          title: "Action Confirmed!",
@@ -135,6 +139,11 @@ app.controller('chargesController', function ($scope, $http, customerService, ad
 
       });
 
+  }
+
+  $scope.somethingFool = function (){
+
+    console.log(this.checkCoso);
   }
 
     function dump(obj) {

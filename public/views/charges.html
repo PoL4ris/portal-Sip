@@ -3,7 +3,7 @@
     <div class="col-lg-12 no-padding-sides p-t-lg p-b-lg b-b-ddd m-b-lg">
         <div class="col-lg-4 no-padding-sides"><h4>Pending Charges</h4></div>
         <div class="col-lg-4 text-align-right status-color-active">
-            <label class="label-refund">Refund</label>
+            <label class="label-refund">Refunds</label>
             <div class="col-lg-4">
                 <label>Today  <br><span>${{resultStatsData.day.refund_amount}}</span></label>
             </div>
@@ -15,7 +15,7 @@
             </div>
         </div>
         <div class="col-lg-4  text-align-right status-color-decommissioned">
-            <label class="label-charge">Charge</label>
+            <label class="label-charge">Charges</label>
             <div class="col-lg-4">
                 <label>Today <br><span>${{resultStatsData.day.charges_amount}}</span></label>
             </div>
@@ -26,14 +26,13 @@
                 <label>This Month <br><span>${{resultStatsData.month.charges_amount}}</span></label>
             </div>
         </div>
-        <br>
-        <button class="btn btn-success m-r-lg" ng-click="getFormChecks()">Process</button>
     </div>
 
     <form id="pending-charges-form">
         <table id="myTable" class="tablesorter table table-striped" datatable="ng">
             <thead>
                 <tr>
+                    <th>ID</th>
                     <th></th>
                     <th>Customer</th>
                     <th>Address</th>
@@ -46,11 +45,12 @@
             </thead>
             <tbody>
                 <tr ng-repeat="charge in chargesData">
+                    <td>{{charge.id}}</td>
                     <td>
                         <div class="smart-form align-smart-form-check">
                             <label class="checkbox">
-                                <input type="checkbox" name="{{charge.id}}" ng-if="!dataCheck">
-                                <input type="checkbox" name="{{charge.id}}" ng-if="dataCheck" checked="checked">
+                                <input type="checkbox" name="{{charge.id}}" ng-if="!dataCheck" ng-change="somethingFool()" ng-model="checkCoso">
+                                <input type="checkbox" name="{{charge.id}}" ng-if="dataCheck" checked="checked"  ng-change="somethingFool()"  ng-model="checkCoso">
                                 <i></i>{{data.name}}
                             </label>
                         </div>
@@ -70,6 +70,10 @@
             </tbody>
         </table>
     </form>
+
+    <button class="btn btn-success m-r-lg" ng-click="getFormChecks()">Process</button>
+    <button class="btn btn-primary m-r-lg" >Process All</button>
+    <button class="btn btn-danger m-r-lg" >Deny All</button>
 </div>
 
 <!--MODAL-->
@@ -111,7 +115,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-dismiss="modal">
-                    Cancel
+                    Close
                 </button>
             </div>
         </div>
@@ -132,9 +136,41 @@
                 <div class="wrapper-sm">
                     <div class="row">
                         <div class="col-lg-12">
-                        Action Response
-                            <br>
-                            <img src="/img/loading.gif" alt="" class="loading-gif-support">
+                            <h2>Transactions:</h2>
+                            <hr>
+
+                            <img src="/img/loading.gif" alt="" class="loading-gif-support" ng-if="loadingTransaction">
+
+
+
+                            <div class="">
+                                <div ng-repeat="(key, item) in transactionResponse">
+                                    <hr>
+
+
+                                    <div class="col-lg-6">
+                                        <div class="col-lg-6 no-padding-sides">Transaction ID:</div>
+                                        <div class="col-lg-6 no-padding-sides"><b> {{key}}</b></div>
+                                        <div class="col-lg-6 no-padding-sides">Payment Type:</div>
+                                        <div class="col-lg-6 no-padding-sides"><b> {{item.PaymentType}}</b></div>
+                                        <div class="col-lg-6 no-padding-sides">Transaction Type:</div>
+                                        <div class="col-lg-6 no-padding-sides"><b> {{item.TransactionType}}</b></div>
+                                    </div>
+
+                                    <div class="col-lg-6">
+                                            <span>Response: <br>
+                                            <b>  {{item.ERRMSG}}</b></span>
+                                    </div>
+
+
+
+
+                                </div>
+                            </div>
+
+
+
+
                         </div>
                     </div>
                 </div>
