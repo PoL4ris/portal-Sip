@@ -2,19 +2,8 @@
 <div class="col-lg-12 p-t-lg p-b-lg bg-white white-shadow filters-fixed-size">
     <div class="col-lg-12 no-padding-sides p-t-lg p-b-lg b-b-ddd m-b-lg">
         <div class="col-lg-4 no-padding-sides"><h4>Pending Charges</h4></div>
+
         <div class="col-lg-4 text-align-right status-color-active">
-            <label class="label-refund">Refunds</label>
-            <div class="col-lg-4">
-                <label>Today  <br><span>${{resultStatsData.day.refund_amount}}</span></label>
-            </div>
-            <div class="col-lg-4">
-                <label>This Week <br><span>${{resultStatsData.week.refund_amount}}</span></label>
-            </div>
-            <div class="col-lg-4">
-                <label>This Month <br><span>${{resultStatsData.month.refund_amount}}</span></label>
-            </div>
-        </div>
-        <div class="col-lg-4  text-align-right status-color-decommissioned">
             <label class="label-charge">Charges</label>
             <div class="col-lg-4">
                 <label>Today <br><span>${{resultStatsData.day.charges_amount}}</span></label>
@@ -26,6 +15,19 @@
                 <label>This Month <br><span>${{resultStatsData.month.charges_amount}}</span></label>
             </div>
         </div>
+        <div class="col-lg-4 text-align-right status-color-decommissioned">
+            <label class="label-refund">Refunds</label>
+            <div class="col-lg-4">
+                <label>Today  <br><span>${{resultStatsData.day.refund_amount}}</span></label>
+            </div>
+            <div class="col-lg-4">
+                <label>This Week <br><span>${{resultStatsData.week.refund_amount}}</span></label>
+            </div>
+            <div class="col-lg-4">
+                <label>This Month <br><span>${{resultStatsData.month.refund_amount}}</span></label>
+            </div>
+        </div>
+
     </div>
 
     <form id="pending-charges-form">
@@ -49,8 +51,8 @@
                     <td>
                         <div class="smart-form align-smart-form-check">
                             <label class="checkbox">
-                                <input type="checkbox" name="{{charge.id}}" ng-if="!dataCheck" ng-change="somethingFool()" ng-model="checkCoso">
-                                <input type="checkbox" name="{{charge.id}}" ng-if="dataCheck" checked="checked"  ng-change="somethingFool()"  ng-model="checkCoso">
+                                <input class="check-input" type="checkbox" name="{{charge.id}}" ng-if="!dataCheck" ng-change="somethingFool()" ng-model="checkCoso">
+                                <input class="check-input" type="checkbox" name="{{charge.id}}" ng-if="dataCheck" checked="checked"  ng-change="somethingFool()"  ng-model="checkCoso">
                                 <i></i>{{data.name}}
                             </label>
                         </div>
@@ -71,7 +73,7 @@
         </table>
     </form>
 
-    <button class="btn btn-success m-r-lg" ng-click="getFormChecks()">Process</button>
+    <button class="btn btn-success m-r-lg process-checks" ng-click="processCheck()" disabled>Process</button>
     <button class="btn btn-primary m-r-lg" >Process All</button>
     <button class="btn btn-danger m-r-lg" >Deny All</button>
 </div>
@@ -122,12 +124,6 @@
     </div>
 </div>
 <!--END MODAL-->
-
-
-
-
-
-
 
 <div class="modal fade" id="testmodaluno" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-ticket-size">

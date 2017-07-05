@@ -141,9 +141,16 @@ app.controller('chargesController', function ($scope, $http, customerService, ad
 
   }
 
-  $scope.somethingFool = function (){
+  $scope.processCheck = function (){
 
-    console.log(this.checkCoso);
+    var objects = $('#pending-charges-form').serializeArray();
+    objects.shift();
+
+    if(objects.length > 0)
+      $('.process-checks').attr('disabled', false);
+    else
+      $('.process-checks').attr('disabled', true);
+
   }
 
     function dump(obj) {
@@ -257,4 +264,12 @@ app.controller('chargesController', function ($scope, $http, customerService, ad
 
     });
   };
+
+
+
+
+
+
+
+
 });
