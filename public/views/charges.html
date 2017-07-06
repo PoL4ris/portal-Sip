@@ -51,8 +51,8 @@
                     <td>
                         <div class="smart-form align-smart-form-check">
                             <label class="checkbox">
-                                <input class="check-input" type="checkbox" name="{{charge.id}}" ng-if="!dataCheck" ng-change="somethingFool()" ng-model="checkCoso">
-                                <input class="check-input" type="checkbox" name="{{charge.id}}" ng-if="dataCheck" checked="checked"  ng-change="somethingFool()"  ng-model="checkCoso">
+                                <input class="check-input" type="checkbox" name="{{charge.id}}" ng-if="!dataCheck" ng-change="processCheck()" ng-model="checkCoso">
+                                <input class="check-input" type="checkbox" name="{{charge.id}}" ng-if="dataCheck" checked="checked"  ng-change="processCheck()"  ng-model="checkCoso">
                                 <i></i>{{data.name}}
                             </label>
                         </div>
@@ -72,10 +72,11 @@
             </tbody>
         </table>
     </form>
+    <hr>
 
-    <button class="btn btn-success m-r-lg process-checks" ng-click="processCheck()" disabled>Process</button>
-    <button class="btn btn-primary m-r-lg" >Process All</button>
-    <button class="btn btn-danger m-r-lg" >Deny All</button>
+    <button class="btn btn-success m-r-lg process-checks" ng-click="getFormChecks()" disabled>Process</button>
+    <button class="btn btn-danger m-r-lg pull-right"      ng-click="denyAll()" >Deny All</button>
+    <button class="btn btn-primary m-r-lg pull-right"     ng-click="approveAll()">Approve All</button>
 </div>
 
 <!--MODAL-->

@@ -112,7 +112,7 @@ app.controller('chargesController', function ($scope, $http, customerService, ad
     $scope.loadingTransaction = true;
 
     var objects = $('#pending-charges-form').serializeArray();
-      objects.shift();
+    objects.shift();
 
     var infoData = [];
     for(var obj in objects ) {
@@ -139,6 +139,75 @@ app.controller('chargesController', function ($scope, $http, customerService, ad
 
       });
 
+  }
+
+  $scope.approveAll = function (){
+    var confAction = confirm('Are you sure you want to Approve all this pending charges?');
+    if (confAction == true) {
+
+      $scope.loadingTransaction = true;
+
+      var objects = $scope.chargesData
+      var infoData = [];
+
+      for (var obj in objects) {
+        infoData.push(objects[obj]['id'].toString());
+      }
+
+      $('#testmodaluno').modal('toggle');
+
+
+      $http.get('approveManualCharge', {params: {'IDs': JSON.stringify(infoData)}})
+        .then(function (response) {
+
+          $scope.loadingTransaction = false;
+
+          console.log(response.data);
+          $scope.transactionResponse = response.data.results;
+//        $scope.getChargeStat();
+//        $.smallBox({
+//          title: "Action Confirmed!",
+//          content: "<i class='fa fa-clock-o'></i> <i>3 seconds ago...</i>",
+//          color: "transparent",
+//          timeout: 6000
+//        });
+
+        });
+    }
+  }
+  $scope.denyAll = function () {
+    var confAction = confirm('Are you sure you want to Deny all this pending charges?');
+    if (confAction == true) {
+
+      $scope.loadingTransaction = true;
+
+      var objects = $scope.chargesData
+      var infoData = [];
+
+      for (var obj in objects) {
+        infoData.push(objects[obj]['id'].toString());
+      }
+
+      $('#testmodaluno').modal('toggle');
+
+
+      $http.get('denyManualCharge', {params: {'IDs': JSON.stringify(infoData)}})
+        .then(function (response) {
+
+          $scope.loadingTransaction = false;
+
+          console.log(response.data);
+          $scope.transactionResponse = response.data.results;
+//        $scope.getChargeStat();
+//        $.smallBox({
+//          title: "Action Confirmed!",
+//          content: "<i class='fa fa-clock-o'></i> <i>3 seconds ago...</i>",
+//          color: "transparent",
+//          timeout: 6000
+//        });
+
+        });
+    }
   }
 
   $scope.processCheck = function (){
