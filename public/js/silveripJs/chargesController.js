@@ -107,7 +107,11 @@ app.controller('chargesController', function ($scope, $http, customerService, ad
       });
   }
   //Process more than one request.
-  $scope.getFormChecks        = function (){
+
+
+
+
+  $scope.getFormChecks            = function (){
 
     $scope.loadingTransaction = true;
 
@@ -116,7 +120,7 @@ app.controller('chargesController', function ($scope, $http, customerService, ad
 
     var infoData = [];
     for(var obj in objects ) {
-        infoData.push(objects[obj]['name']);
+      infoData.push(objects[obj]['name']);
     }
 
     $('#testmodaluno').modal('toggle');
@@ -140,6 +144,45 @@ app.controller('chargesController', function ($scope, $http, customerService, ad
       });
 
   }
+  $scope.getFormChecksDeny        = function (){
+
+    $scope.loadingTransaction = true;
+
+    var objects = $('#pending-charges-form').serializeArray();
+    objects.shift();
+
+    var infoData = [];
+    for(var obj in objects ) {
+      infoData.push(objects[obj]['name']);
+    }
+
+    $('#testmodaluno').modal('toggle');
+
+
+    $http.get('denyManualCharge', {params: {'IDs': JSON.stringify(infoData)}})
+      .then(function (response) {
+
+        $scope.loadingTransaction = false;
+
+        console.log(response.data);
+        $scope.transactionResponse = response.data.results;
+//        $scope.getChargeStat();
+//        $.smallBox({
+//          title: "Action Confirmed!",
+//          content: "<i class='fa fa-clock-o'></i> <i>3 seconds ago...</i>",
+//          color: "transparent",
+//          timeout: 6000
+//        });
+
+      });
+
+  }
+
+
+
+
+
+
 
   $scope.approveAll = function (){
     var confAction = confirm('Are you sure you want to Approve all this pending charges?');
@@ -215,28 +258,17 @@ app.controller('chargesController', function ($scope, $http, customerService, ad
     var objects = $('#pending-charges-form').serializeArray();
     objects.shift();
 
-    if(objects.length > 0)
+    if(objects.length > 0){
       $('.process-checks').attr('disabled', false);
-    else
+      $('.process-all').attr('disabled', true);
+    }
+    else{
       $('.process-checks').attr('disabled', true);
+      $('.process-all').attr('disabled', false);
+    }
 
   }
 
-    function dump(obj) {
-        var out = '';
-        for (var i in obj) {
-            out += i + ": " + obj[i] + "\n";
-        }
-
-        console.log(out);
-        // alert(out);
-        //
-        // // or, if you wanted to avoid alerts...
-        //
-        // var pre = document.createElement('pre');
-        // pre.innerHTML = out;
-        // document.body.appendChild(pre)
-    }
 
   //Charges and invoices
   $scope.getCharges           = function () {

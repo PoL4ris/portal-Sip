@@ -74,9 +74,11 @@
     </form>
     <hr>
 
-    <button class="btn btn-success m-r-lg process-checks" ng-click="getFormChecks()" disabled>Process</button>
-    <button class="btn btn-danger m-r-lg pull-right"      ng-click="denyAll()" >Deny All</button>
-    <button class="btn btn-primary m-r-lg pull-right"     ng-click="approveAll()">Approve All</button>
+    <button class="btn btn-primary m-r-lg process-checks" ng-click="getFormChecks()" disabled>Approve Selected</button>
+    <button class="btn btn-danger m-r-lg process-checks" ng-click="getFormChecksDeny()" disabled>Deny Selected</button>
+
+    <button class="btn btn-danger m-r-lg pull-right process-all"      ng-click="denyAll()" >Deny All</button>
+    <button class="btn btn-primary m-r-lg pull-right process-all"     ng-click="approveAll()">Approve All</button>
 </div>
 
 <!--MODAL-->
