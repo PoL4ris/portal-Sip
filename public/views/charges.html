@@ -3,6 +3,8 @@
     <div class="col-lg-12 no-padding-sides p-t-lg p-b-lg b-b-ddd m-b-lg">
         <div class="col-lg-4 no-padding-sides"><h4>Pending Charges</h4></div>
 
+
+
         <div class="col-lg-4 text-align-right status-color-active">
             <label class="label-charge">Charges</label>
             <div class="col-lg-4">
@@ -27,6 +29,12 @@
                 <label>This Month <br><span>${{resultStatsData.month.refund_amount}}</span></label>
             </div>
         </div>
+
+        <div class="col-lg-12">
+            <input type="checkbox" name="checkAll" ng-click="checkAllCharges()" id="check-uncheck">
+            <label for="checkAll">Check / Uncheck All</label>
+        </div>
+
 
     </div>
 
@@ -64,9 +72,9 @@
                     <td>{{charge.comment}}</td>
                     <td ng-init="resultDate = convertDate(charge.created_at)">{{ resultDate | date : "MMM d, y h:mm a" }}</td>
                     <td>
-                        <i class="btn btn-primary  fa fa-check" title="Accept" ng-click="confirmAction()"></i>
-                        <i class="btn btn-danger   fa fa-times" title="Cancel" ng-click="cancelAction()"></i>
-                        <i class="btn btn-warning fa fa-pencil" title="Edit" ng-click="editAction()" data-toggle="modal" data-target="#editActionModal"></i>
+                        <i class="btn btn-primary  fa fa-check"  title="Accept" ng-click="confirmAction()"></i>
+                        <i class="btn btn-danger   fa fa-times"  title="Cancel" ng-click="cancelAction()"></i>
+                        <i class="btn btn-warning  fa fa-pencil" title="Edit"   ng-click="editAction()" data-toggle="modal" data-target="#editActionModal"></i>
                     </td>
                 </tr>
             </tbody>

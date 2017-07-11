@@ -179,6 +179,11 @@ app.controller('chargesController', function ($scope, $http, customerService, ad
   }
 
 
+  $scope.checkAllCharges              = function () {
+    $('.check-input').prop('checked', $('#check-uncheck').is(':checked'));
+    $scope.processCheck();
+  }
+
 
 
 
