@@ -1167,6 +1167,10 @@ table.dataTable tbody tr {
   top: -10px;
   left: 15px;
 }
+.transaction-result-box{
+  clear: both;
+}
+
 pre {
   margin: 30px;
   font-size: 10px;

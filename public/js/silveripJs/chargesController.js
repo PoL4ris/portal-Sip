@@ -47,7 +47,6 @@ app.controller('chargesController', function ($scope, $http, customerService, ad
       }
     });
   }
-
   $scope.cancelAction         = function () {
 
     var thisId = this.charge.id;
@@ -74,7 +73,6 @@ app.controller('chargesController', function ($scope, $http, customerService, ad
       }
     });
   }
-
   $scope.editAction           = function () {
     $scope.editRecordTmp = this.charge;
   }
@@ -107,23 +105,25 @@ app.controller('chargesController', function ($scope, $http, customerService, ad
       });
   }
   //Process more than one request.
-
-
-
-
-  $scope.getFormChecks            = function (){
+  $scope.getFormChecks        = function () {
 
     $scope.loadingTransaction = true;
 
     var objects = $('#pending-charges-form').serializeArray();
     objects.shift();
 
+    if(objects.length === 0){
+      alert('Verify this action.');
+      return;
+    }
+
+
     var infoData = [];
     for(var obj in objects ) {
       infoData.push(objects[obj]['name']);
     }
 
-    $('#testmodaluno').modal('toggle');
+    $('#proccessingModal').modal('toggle');
 
 
     $http.get('approveManualCharge', {params: {'IDs': JSON.stringify(infoData)}})
@@ -133,6 +133,10 @@ app.controller('chargesController', function ($scope, $http, customerService, ad
 
         console.log(response.data);
         $scope.transactionResponse = response.data.results;
+        $scope.chargesData = response.data['pending-charges'];
+        processCheckFunct();
+
+
 //        $scope.getChargeStat();
 //        $.smallBox({
 //          title: "Action Confirmed!",
@@ -144,19 +148,24 @@ app.controller('chargesController', function ($scope, $http, customerService, ad
       });
 
   }
-  $scope.getFormChecksDeny        = function (){
+  $scope.getFormChecksDeny    = function () {
 
     $scope.loadingTransaction = true;
 
     var objects = $('#pending-charges-form').serializeArray();
     objects.shift();
 
+    if(objects.length === 0){
+      alert('Verify this action.');
+      return;
+    }
+
     var infoData = [];
     for(var obj in objects ) {
       infoData.push(objects[obj]['name']);
     }
 
-    $('#testmodaluno').modal('toggle');
+    $('#proccessingModal').modal('toggle');
 
 
     $http.get('denyManualCharge', {params: {'IDs': JSON.stringify(infoData)}})
@@ -166,6 +175,12 @@ app.controller('chargesController', function ($scope, $http, customerService, ad
 
         console.log(response.data);
         $scope.transactionResponse = response.data.results;
+        $scope.chargesData = response.data['pending-charges'];
+        processCheckFunct();
+
+
+
+//        console.log(response.data['pending-charges']);
 //        $scope.getChargeStat();
 //        $.smallBox({
 //          title: "Action Confirmed!",
@@ -177,19 +192,8 @@ app.controller('chargesController', function ($scope, $http, customerService, ad
       });
 
   }
-
-
-  $scope.checkAllCharges              = function () {
-    $('.check-input').prop('checked', $('#check-uncheck').is(':checked'));
-    $scope.processCheck();
-  }
-
-
-
-
-
-
-  $scope.approveAll = function (){
+  //ALL Actions
+  $scope.approveAll           = function () {
     var confAction = confirm('Are you sure you want to Approve all this pending charges?');
     if (confAction == true) {
 
@@ -202,7 +206,7 @@ app.controller('chargesController', function ($scope, $http, customerService, ad
         infoData.push(objects[obj]['id'].toString());
       }
 
-      $('#testmodaluno').modal('toggle');
+      $('#proccessingModal').modal('toggle');
 
 
       $http.get('approveManualCharge', {params: {'IDs': JSON.stringify(infoData)}})
@@ -212,6 +216,8 @@ app.controller('chargesController', function ($scope, $http, customerService, ad
 
           console.log(response.data);
           $scope.transactionResponse = response.data.results;
+          $scope.chargesData = response.data['pending-charges'];
+
 //        $scope.getChargeStat();
 //        $.smallBox({
 //          title: "Action Confirmed!",
@@ -223,7 +229,7 @@ app.controller('chargesController', function ($scope, $http, customerService, ad
         });
     }
   }
-  $scope.denyAll = function () {
+  $scope.denyAll              = function () {
     var confAction = confirm('Are you sure you want to Deny all this pending charges?');
     if (confAction == true) {
 
@@ -236,7 +242,7 @@ app.controller('chargesController', function ($scope, $http, customerService, ad
         infoData.push(objects[obj]['id'].toString());
       }
 
-      $('#testmodaluno').modal('toggle');
+      $('#proccessingModal').modal('toggle');
 
 
       $http.get('denyManualCharge', {params: {'IDs': JSON.stringify(infoData)}})
@@ -246,6 +252,8 @@ app.controller('chargesController', function ($scope, $http, customerService, ad
 
           console.log(response.data);
           $scope.transactionResponse = response.data.results;
+          $scope.chargesData = response.data['pending-charges'];
+
 //        $scope.getChargeStat();
 //        $.smallBox({
 //          title: "Action Confirmed!",
@@ -257,24 +265,14 @@ app.controller('chargesController', function ($scope, $http, customerService, ad
         });
     }
   }
-
-  $scope.processCheck = function (){
-
-    var objects = $('#pending-charges-form').serializeArray();
-    objects.shift();
-
-    if(objects.length > 0){
-      $('.process-checks').attr('disabled', false);
-      $('.process-all').attr('disabled', true);
-    }
-    else{
-      $('.process-checks').attr('disabled', true);
-      $('.process-all').attr('disabled', false);
-    }
-
+  //Check Input verify.
+  $scope.checkAllCharges      = function () {
+    $('.check-input').prop('checked', $('#check-uncheck').is(':checked'));
+    $scope.processCheck();
   }
-
-
+  $scope.processCheck         = function () {
+    processCheckFunct();
+  }
   //Charges and invoices
   $scope.getCharges           = function () {
 
@@ -373,9 +371,19 @@ app.controller('chargesController', function ($scope, $http, customerService, ad
 
 
 
-
-
-
-
-
 });
+
+
+function processCheckFunct(){
+  var objects = $('#pending-charges-form').serializeArray();
+  objects.shift();
+
+  if(objects.length > 0){
+    $('.process-checks').attr('disabled', false);
+    $('.process-all').attr('disabled', true);
+  }
+  else{
+    $('.process-checks').attr('disabled', true);
+    $('.process-all').attr('disabled', false);
+  }
+}
