@@ -276,7 +276,8 @@ class SupportController extends Controller
 
         //1 = new ticket
         //2 = update ticket
-        SendMail::ticketMail($ticketHistoryRecord, 2);
+        $response = SendMail::ticketMail($ticketHistoryRecord, $request->status);
+        Log::info($response);
 
         $request['ticketId'] = $request->id;
 
