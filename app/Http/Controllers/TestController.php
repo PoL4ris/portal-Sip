@@ -30,7 +30,6 @@ use App\Models\NetworkNode;
 use App\Models\ContactType;
 use App\Models\PaymentMethod;
 use App\Models\ActivityLog;
-use App\Models\Charge;
 use App\Models\RetailRevenue;
 use App\Http\Controllers\TechScheduleController;
 use App\Extensions\GoogleCalendar;
@@ -143,108 +142,12 @@ class TestController extends Controller
     
     public function supportTest()
     {
+        $customer = new Customer;
+        $resultado = $customer->getTickets(7435);
 
 
-        $warpol = Charge::where('id',20)->get();
-//        $warpol = Charge::whereRaw('created_at > DATE_SUB(NOW(), INTERVAL 1 MONTH)')->get();
-        $warpol2 = $warpol->load('productDetail.product');
-
-
-        dd($warpol2->toArray());
-
-
-        //Dashboard data Working
-        $result = array();
-        $result['commercial'] = Building::where('type', 'like', '%commercial%')->count();
-        $result['retail']     = Building::where('type', 'not like', '%commercial%')->count();
-        $result['tickets']    = Ticket::where('status', '!=', 'closed')->count();
-        $ticketAverage        = DB::select('SELECT 
-                                              avg(TIMESTAMPDIFF(HOUR, created_at, updated_at)) as hours,
-                                              avg(TIMESTAMPDIFF(DAY, created_at, updated_at))  as days
-                                            FROM tickets
-                                              where updated_at > created_at
-                                              and status like "%closed%"')[0];
-        $result['avgHour']    = $ticketAverage->hours;
-        $result['avgDay']     = $ticketAverage->days;
-        return $result;
-
-
-
-
-
-        $data = Building::with('address', 'neighborhood', 'contacts')->find(68);
-        $data->properties = BuildingPropertyValue::join('building_properties',
-            'building_property_values.id_building_properties',
-            '=',
-            'building_properties.id')
-            ->where('building_property_values.id_buildings', '=', 68)
-            ->select('*', 'building_property_values.id as idBpv')
-            ->get();
-
-
-
-
-            dd($data->toArray());
-
-
-
-
-
-
-
-
-
-
-        $calendar   = new GoogleCalendar;
-        $date       = new DateTime ('05/22/2017');
-        $result = array();
-
-        //Rango de fecha 12 horas, de 8 am a 8pm
-        $scheduleRange          = $calendar->getScheduleRange(new DateTime ('05/22/2017'));
-        //Nombres de los Tecnicos [0]
-        $scheduledTechs         = $calendar->GetTechSchedule($date);
-
-        //Pending Appointments [0]
-        $pendingAppointments    = $calendar->GetPendingAppointments($date);
-        //Citas completadas
-        $completedAppointments  = $calendar->GetCompletedAppointments($date);
-        //Onsite Appts
-        $onsiteAppointments     = $calendar->GetOnsiteAppointments($date);
-
-
-        $result['total_events'] = count($pendingAppointments) + count($completedAppointments) + count($onsiteAppointments);
-        $result['pending']      = count($pendingAppointments);
-        $result['complete']     = count($completedAppointments) ;
-        $result['onsite']       = count($onsiteAppointments);
-
-        dd($result);
-
-
-//
-//
-//
-//
-
-
-
-
-//        $warpol = new TechScheduleController;
-//
-//        dd($warpol->GenerateTableSchedule());
-
-
-//    dd(User::with('accessApps', 'accessApps.apps')->find(1)->toArray());
-        $war = User::find(1)->accessApps->load('apps')->pluck('apps', 'apps.position')->sortBy('position');
-        dd($war);
-        $war = User::find(1);
-        $warpol = $war->accessApps->load('apps')->pluck('apps', 'apps.position')->sortBy('position');
-
-        dd(
-            $warpol
-//            $warpol->sortBy('position')->toArray()
-        );
-
-
+        dd( $resultado->toArray() );
+        die();
     }
 
     public function mail()
