@@ -8,6 +8,11 @@ return [
         'decommissioned' => env('STATUS_DECOMMISSIONED', 4),
         'closed'         => 'closed'
     ],
+    'ticket_status'                  => [
+        'new' => 'new',
+        'escalated' => 'escalated',
+        'closed'    => 'closed'
+    ],
     'type'                           => [
         'internet'        => 1,
         'phone'           => 2,
@@ -37,7 +42,7 @@ return [
         'paid'    => 2,
         'failed'  => 3,
     ],
-    'charge_type'       => [
+    'charge_type'                    => [
         'charge'   => 'charge',
         'payment'  => 'payment',
         'credit'   => 'credit',
@@ -46,14 +51,14 @@ return [
         'promo'    => 'promo'
     ],
     'charge_status'                  => [
-        'none'     => 0,
-        'pending'  => 1,
-        'invoiced' => 2,
-        'paid'     => 3,
-        'failed'   => 4,
-        'disabled' => 5,
+        'none'             => 0,
+        'pending'          => 1,
+        'invoiced'         => 2,
+        'paid'             => 3,
+        'failed'           => 4,
+        'disabled'         => 5,
         'pending_approval' => 6,
-        'denied' => 7,
+        'denied'           => 7,
     ],
     'invoice_status'                 => [
         'none'    => 0,

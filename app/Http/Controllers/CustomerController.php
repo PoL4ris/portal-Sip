@@ -651,7 +651,7 @@ class CustomerController extends Controller
 
         //1 = new ticket
         //2 = update ticket
-        SendMail::ticketMail($newTicket, 1);
+        SendMail::ticketMail($newTicket, config('const.ticket_status.new'));
         return 'OK';
     }
     /**
