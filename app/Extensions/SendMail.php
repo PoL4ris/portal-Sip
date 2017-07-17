@@ -24,7 +24,7 @@ class SendMail {
 
 
     //$toAddress = ['pablo@silverip.com', 'pol.laris@gmail.com', 'peyman@silverip.com'];
-    $toAddress = $ticketData->customer->email;
+    $toAddress = config('mail.support-ticket-recipient');
     $template  = 'email.template_support_ticket';
     $ticketData->mailType  = $type == 1 ? 'New Support Ticket' : 'Ticket Update';
     $ticketData->type      = $type ;
