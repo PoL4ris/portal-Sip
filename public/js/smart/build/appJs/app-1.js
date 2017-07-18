@@ -3,6 +3,7 @@
 
 
 var appConfig = window.appConfig || {};
+console.log(appConfig);
 
 appConfig.menu_speed = 200;
 

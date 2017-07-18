@@ -155,7 +155,6 @@ app.controller('supportController',                 function ($scope, $http, DTO
   };
   $scope.submitFormUpdate               = function (idForm) {
 
-
     $('#onticket-update-btn').attr('disabled', true);
 
     var infoData = getFormValues(idForm);
@@ -185,6 +184,9 @@ app.controller('supportController',                 function ($scope, $http, DTO
           iconSmall: "fa fa-thumbs-up bounce animated",
           timeout: 6000
         });
+
+        $('#ticketModal').modal('toggle');
+        $scope.refreshSupportContent();
 
         if(customerService.stateRoute == 'customers')
           angular.element('#ticket-history-repeat-id').scope().getTicketHistory();
