@@ -76,7 +76,8 @@
                         ng-click="displayTicketResume(data.id, data.id_customers)"
                         data-toggle="modal"
                         data-target="#ticketModal">
-                        {{data.comment | limitTo:letterLimit}}
+                        <div ng-bind-html="data.comment | limitTo:30"></div>
+                        <!--{{data.comment | limitTo:letterLimit}}-->
                         <div id='ticket-{{ data.id }}' style="display: none;" class="ticket-comment-pop" ng-bind-html="data.comment"></div>
                     </td>
 
