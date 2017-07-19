@@ -105,7 +105,34 @@ class SupportController extends Controller
             else if ($rec['updated_at'] <= $time12)
                 $record[$k]['old'] = 'old-green';
             else
+            {
+
+//            print $coma1 = new DateTime( $rec->toArray()['created_at']);
+//            print '<br>';
+//            print $cosoTemp = date("Y-m-d H:i:s", strtotime('now'));
+
+//            $interval = $cosoTemp->diff($coma1);
+//            print $interval;
+
+
+//            die();
+
+
+
+
+
                 $record[$k]['old'] = 'old';
+
+//                $interval = $datetime1->diff($datetime2);
+
+//                print_r($rec['updated_at']);
+
+
+
+
+
+                $record[$k]['old-by'] = 'old';
+            }
 
             if ($record[$k]['updated_at'] == null)
             {

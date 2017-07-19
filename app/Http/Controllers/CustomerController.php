@@ -617,12 +617,12 @@ class CustomerController extends Controller
     public function insertContactInfo(Request $request)
     {
         $newContact = new Contact;
-        $newContact->id_customers = $request->customerId;
-        $newContact->id_types = $request->typeId;
-        $newContact->value = $request->contactInfoVal;
+        $newContact->id_customers = $request->id_customers;
+        $newContact->id_types = $request->id_types;
+        $newContact->value = $request->value;
         $newContact->save();
 
-        return Customer::with('contacts')->find($request->customerId);
+        return Customer::with('contacts')->find($request->id_customers);
     }
     /**
      * @param Request $request
