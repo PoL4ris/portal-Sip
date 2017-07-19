@@ -16,11 +16,13 @@ use App\Extensions\DataMigrationUtils;
 use DB;
 //use App\User;
 use App\Models\Customer;
+use App\Models\Charge;
+use App\Models\Invoice;
 use App\Models\Ticket;
 use App\Models\CustomerProduct;
 use App\Models\DataMigration;
 use App\Models\Address;
-use App\Models\BillingTransactionLog;
+use App\Models\BuildingPropertyValue;
 use App\Models\Building;
 use App\Models\Product;
 use App\Models\User;
@@ -141,57 +143,12 @@ class TestController extends Controller {
 
     public function supportTest()
     {
-
-        $calendar   = new GoogleCalendar;
-        $date       = new DateTime ('05/22/2017');
-        $result = array();
-
-        //Rango de fecha 12 horas, de 8 am a 8pm
-        $scheduleRange          = $calendar->getScheduleRange(new DateTime ('05/22/2017'));
-        //Nombres de los Tecnicos [0]
-        $scheduledTechs         = $calendar->GetTechSchedule($date);
-
-        //Pending Appointments [0]
-        $pendingAppointments    = $calendar->GetPendingAppointments($date);
-        //Citas completadas
-        $completedAppointments  = $calendar->GetCompletedAppointments($date);
-        //Onsite Appts
-        $onsiteAppointments     = $calendar->GetOnsiteAppointments($date);
+        $customer = new Customer;
+        $resultado = $customer->getTickets(7435);
 
 
-        $result['total_events'] = count($pendingAppointments) + count($completedAppointments) + count($onsiteAppointments);
-        $result['pending']      = count($pendingAppointments);
-        $result['complete']     = count($completedAppointments) ;
-        $result['onsite']       = count($onsiteAppointments);
-
-        dd($result);
-
-
-//
-//
-//
-//
-
-
-
-
-//        $warpol = new TechScheduleController;
-//
-//        dd($warpol->GenerateTableSchedule());
-
-
-//    dd(User::with('accessApps', 'accessApps.apps')->find(1)->toArray());
-        $war = User::find(1)->accessApps->load('apps')->pluck('apps', 'apps.position')->sortBy('position');
-        dd($war);
-        $war = User::find(1);
-        $warpol = $war->accessApps->load('apps')->pluck('apps', 'apps.position')->sortBy('position');
-
-        dd(
-            $warpol
-//            $warpol->sortBy('position')->toArray()
-        );
-
-
+        dd( $resultado->toArray() );
+        die();
     }
 
     public function mail()
@@ -351,23 +308,49 @@ class TestController extends Controller {
         //        dd($billingHelper->getMode());
 
 
-//        $building = Building::find(8);
-//        dd($building->activeCustomers->take(5));
+//        $building = Building::with('activeCustomerProducts.product')->find(28);
+//        $activeCustomerProducts = $building->activeCustomerProducts;
+//        dd($activeCustomerProducts);
 //
+//        $products = $activeCustomerProducts->pluck('product');
+//        dd($building->activeCustomers->take(5));
+//        dd($building->customerProducts);
+//        dd($products->pluck('frequency'));
+
 //        $customerProduct = CustomerProduct::find(4991);
 //        dd($customerProduct->address);
 //
 //        $customer = Customer::find(4667);
 //        dd($customer->customerProducts);
 
+//        $charge = Charge::find(97);
+//        dd($charge);
+
+
+        $invoice = Invoice::find(97);
+        $invoiceDetails = $invoice->details();
+        $detailsCollection = collect($invoiceDetails);
+        $customerProductIds = $detailsCollection->pluck('customer_product_id')->toArray();
+        dd($customerProductIds);
+
+
+        $charges = $invoice->charges;
+        $details = $charges->pluck('details');
+        foreach($details as $chargeDetails){
+            dd(json_decode($chargeDetails, true));
+        }
+        dd($details);
+
+
         $billingHelper = new BillingHelper();
 
-        $billingHelper->generateResidentialChargeRecords();
+//        $billingHelper->generateResidentialChargeRecords();
+        $billingHelper->invoicePendingCharges();
 
 //        dd($billingHelper->getCustomersWithChargableProducts(28));
 //        dd($billingHelper->getChargeableCustomerProductsByBuildingId(28));
 //        dd($billingHelper->getChargeableCustomerProducts2(null,28));
-
+//        dd($billingHelper->invoicePendingCharges());
 
 //        dd($billingHelper->generateResidentialInvoiceRecords());
         //        $billingHelper->processAutopayInvoices();

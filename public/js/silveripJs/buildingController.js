@@ -5,12 +5,11 @@ app.controller('buildingCtl',             function ($scope, $http, $stateParams,
   //TMP HIDE AND SHOW SIDEBAR
   $scope.fedeINbtn  = function () {
     $('#left-bld').animate({width: '200px'});
-//        $('#left-bld').fadeIn('slow');
-
+    $('#right-bld').css('width', 'calc(100% - 200px)');
   }
   $scope.fedeOUTbtn = function () {
     $('#left-bld').animate({width: '0'});
-//        $('#left-bld').fadeOut('slow');
+    setTimeout(function(){ $('#right-bld').css('width', '100%'); }, 500);
   }
 
   if (customerService.sideBarFlag) {
@@ -249,6 +248,108 @@ app.controller('buildingCtl',             function ($scope, $http, $stateParams,
         $scope.bldListResult = response.data;
       });
   }
+
+
+
+
+
+  $scope.jsonPropertiesFix          = function (json) {
+    var jsonParse          = JSON.parse(json);
+    var jsonKey            = Object.keys(jsonParse)[0];
+
+    if(!jsonKey)
+    {
+      $scope.unitsResultData = false;
+      $scope.checkAllUnits();
+      return;
+    }
+
+    var jsonLength         = jsonParse[jsonKey].length;
+    var jsonValues         = jsonParse[jsonKey];
+    $scope.unitsResultData = {'arrIndex'   : jsonKey,
+                              'arrLength'  : jsonLength,
+                              'arrValues'  : jsonValues,
+                              'rawData'    : jsonParse,
+                              'recordId'   : this.properData.idBpv ? this.properData.idBpv : this.properData.id
+                             };
+
+    return $scope.unitsResultData;
+  };
+  $scope.exportToCsv                = function () {
+
+    var data = [$scope.unitsResultData.arrValues];
+
+    var csv = buildingService.building.code + ' Units\n';
+    data.forEach(function (row) {
+      csv += row.join('\n');
+      csv += "\n";
+    });
+
+    var hiddenElement = document.createElement('a');
+    hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
+    hiddenElement.target = '_blank';
+    hiddenElement.download = buildingService.building.name + ' ' + buildingService.building.code + ' Units.csv';
+    hiddenElement.click();
+
+  }
+
+  $scope.checkAllUnits              = function () {
+    $('.units-checks').prop('checked', $('#check-uncheck').is(':checked'));
+  }
+  $scope.removePropUnits            = function(){
+
+    var obj = getFormValues('units-form-container');
+    var arr = Object.keys(obj).map(function (key) { return obj[key]; });
+
+    if(arr.length > 0 )
+      if (arr.length == $scope.unitsResultData.arrLength)
+      {
+        $http.get("deleteAllPropUnits", {params: {'id': $scope.unitsResultData.recordId,'jsonIndex' : $scope.unitsResultData.arrIndex}})
+          .then(function (response) {
+            $scope.buildingData = response.data;
+            $('#units-form-container').trigger("reset");
+          });
+      }
+      else
+      {
+        var arreglo = {'arr'  :arr,
+                       'id'   : $scope.unitsResultData.recordId,
+                       'jsonIndex'    : $scope.unitsResultData.arrIndex,
+                       'arrValues'    : $scope.unitsResultData.arrValues,
+                       'id_buildings' : buildingService.building.id
+                       };
+
+        $http.get("deleteUnitsByArray", {params: {'content' : arreglo }})
+          .then(function (response) {
+            $scope.buildingData = response.data;
+            $('#units-form-container').trigger("reset");
+          });
+      }
+
+  }
+  $scope.addPropUnits               = function(){
+
+    var units = getFormValues('add-units-comma-separated');
+
+    if(units.unitsComaArray.length <= 0 )
+      return;
+
+    var arreglo = {'units'       : units.unitsComaArray,
+                   'id'           : $scope.unitsResultData.recordId,
+                   'jsonIndex'    : $scope.unitsResultData.arrIndex,
+                   'arrValues'    : $scope.unitsResultData.arrValues,
+                   'id_buildings' : buildingService.building.id
+                  };
+
+    $http.get("addUnitsByArray", {params: {'content' : arreglo }})
+      .then(function (response) {
+        console.log('DONE');
+        $scope.buildingData = response.data;
+        $('#add-units-comma-separated').trigger("reset");
+      });
+
+  }
+
 
 })
   .directive('getBuildingPropValues',     function () {

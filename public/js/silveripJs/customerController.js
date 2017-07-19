@@ -329,6 +329,7 @@ app.controller('customerController',                function ($scope, $http, $st
       $scope.currentServiceDisplay = this.selectedItem.product;
     }
   };
+  //disable becaus its gone the button that triggers.
   $scope.setInvoiceTab              = function (){
     $('#invoice-payment-tab-link').trigger('click');
   };
@@ -442,6 +443,7 @@ app.controller('customerInvoiceHistoryController',  function ($scope, $http){
   if(!$scope.invoiceData)
     $http.get("getInvoiceHistory", {params:{'id':$scope.idCustomer}})
       .then(function (response) {
+        console.log(response.data);
         $scope.invoiceData = response.data;
       });
 
@@ -458,11 +460,11 @@ app.controller('customerNetworkController',         function ($scope, $http){
   $http.get("getCustomerNetwork", {params:{'id':$scope.idCustomer}})
     .then(function (response) {
       $scope.customerNetwork = response.data[0];
+//      console.log($scope.customerNetwork);
 
-//console.log($scope.customerNetwork);
+
 
       if(response.data.length > 0){
-//             console.log(response.data);
         networkServices(0, true);
       }
     });
@@ -707,7 +709,52 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http){
         $scope.paymentMethods = response.data;
       });
   };
+
+
+
+
+
+
+  //Temporal version to work with
   $scope.refundFunct        = function (){
+
+    $scope.errorMsgPaymentMethods = null;
+
+    var regex = /[^\w]/g
+
+    var objects = getFormValues('manual-refund-form');
+    objects['cid'] = $scope.idCustomer;
+
+
+    if(!objects.cid || !objects.amount || !objects.desc)
+      return;
+
+    if(regex.test(objects.amount)){
+      $scope.errorMsgPaymentMethods = 'Verify the amount.';
+      return;
+    }
+
+    processing(1);
+
+    $http.get("manualRefund", {params:objects})
+      .then(function (response)
+      {
+        processing(0);
+        $.smallBox({
+          title: "Transaction Completed!",
+          content: "<i class='fa fa-clock-o'></i> <i>3 seconds ago...</i>",
+          color: "transparent",
+          iconSmall: "fa fa-thumbs-up bounce animated",
+          timeout: 6000
+        });
+
+        $('#paymentManualRefound').modal('toggle');
+        $('#manual-charge-form').trigger("reset");
+      });
+
+
+  }
+  $scope.refundFunctXXX        = function (){
     $scope.errorMsgPaymentMethods = null;
 
     var regex = /[^\w]/g
@@ -752,8 +799,48 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http){
         $('#paymentManualRefound').modal('toggle');
         $('#manual-refund-form').trigger("reset");
       });
-  };
+  };//working functin to refound.
+
+
   $scope.chargeFunct        = function (){
+    $scope.errorMsgPaymentMethods = null;
+
+    var regex = /[^\w]/g
+
+    var objects = getFormValues('manual-charge-form');
+    objects['cid'] = $scope.idCustomer;
+
+    if(!objects.cid || !objects.amount || !objects.desc)
+      return;
+
+    if(regex.test(objects.amount)){
+      $scope.errorMsgPaymentMethods = 'Verify the amount.';
+      return;
+    }
+
+    processing(1);
+
+    $http.get("manualCharge", {params:objects})
+      .then(function (response)
+      {
+        //$scope.paymentMethods = response.data;
+        console.log(response.data);
+        processing(0);
+
+        $.smallBox({
+          title: "Transaction Completed!",
+          content: "<i class='fa fa-clock-o'></i> <i>3 seconds ago...</i>",
+          color: "transparent",
+          iconSmall: "fa fa-thumbs-up bounce animated",
+          timeout: 6000
+        });
+
+        $('#paymentManualCharge').modal('toggle');
+        $('#manual-charge-form').trigger("reset");
+
+      });
+  }
+  $scope.chargeFunctXXX        = function (){
     $scope.errorMsgPaymentMethods = null;
 
     var regex = /[^\w]/g
@@ -797,7 +884,12 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http){
         $('#paymentManualCharge').modal('toggle');
         $('#manual-charge-form').trigger("reset");
       });
-  };
+  };//working functin to refound.
+
+
+
+
+
   $scope.prepareFields = function(){
     $('#manual-refund-form').trigger("reset");
     $('#manual-charge-form').trigger("reset");

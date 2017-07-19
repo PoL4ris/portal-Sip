@@ -43,7 +43,7 @@
                 <tbody>
                 <tr ng-repeat="payment in paymentMethods" class="default-priority-{{payment.priority}} {{(payment.priority == 1 && defaultCssColor) ? 'old-green' : '' }}">
 
-                    <td ng-init="pmprops = parJson(payment.properties)[0]">{{ pmprops['card type'] }}</td>
+                    <td ng-init="pmprops = parJson(payment.properties)">{{ pmprops['card type'] }}</td>
                     <td>{{ pmprops['last four'] | limitTo : 4 : 15 }}</td>
                     <td>{{ payment.exp_month }} / {{ payment.exp_year | limitTo : 2 : 2 }}</td>
                     <td ng-init="resultDate = convertDate(payment.updated_at)">{{resultDate | date : "MMM d, y h:mm a" }}</td>
@@ -154,8 +154,6 @@
                                         </form>
                                     </div>
                                 </div>
-
-
                             </div>
                         </div>
                     </div>

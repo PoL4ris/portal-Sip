@@ -15,8 +15,8 @@ use App\Models\Status;
 use App\Models\User;
 use App\Models\App;
 use App\Models\AccessApp;
-use App\Models\Customer;
 use App\Models\BuildingProperty;
+use App\Models\Charge;
 
 
 /**
@@ -251,6 +251,7 @@ class AdminController extends Controller
         $app->name = $data['app_name'];
         $app->icon = $data['icon'];
         $app->url  = $data['url'];
+        $app->position  = App::max('position')+1;
         $app->save();
 
         unset($data['app_name'], $data['icon'], $data['url']);
@@ -347,5 +348,62 @@ class AdminController extends Controller
     public function admin()
     {
         return User::get();
+    }
+
+    /**
+     * @param Request $request
+     * @return Result of all Pending Charges.
+     */
+    public function getCharges(Request $request)
+    {
+        return Charge::where('status', 777)->orWhere('status', 778)->orderBy('created_at', 'desc')->get();
+    }
+
+    /**
+     * @return stats of today Charges
+     */
+    public function getChargesStats()
+    {
+        $todayRecords = Charge::where('status', config('const.charge_status.pending_approval'))
+                                ->where('processing_type', config('const.type.manual_pay'))
+                                ->whereRaw('created_at > DATE_SUB(NOW(), INTERVAL 1 DAY)')
+                                ->orderBy('created_at', 'desc')->get();
+        $weekRecords  = Charge::where('status', config('const.charge_status.pending_approval'))
+                                ->where('processing_type', config('const.type.manual_pay'))
+                                ->whereRaw('created_at > DATE_SUB(NOW(), INTERVAL 1 WEEK)')
+                                ->orderBy('created_at', 'desc')
+                                ->get();
+        $monthRecords = Charge::where('status', config('const.charge_status.pending_approval'))
+                                ->where('processing_type', config('const.type.manual_pay'))
+                                ->whereRaw('created_at > DATE_SUB(NOW(), INTERVAL 1 MONTH)')
+                                ->orderBy('created_at', 'desc')->get();
+
+        $result['day']   = $this->getResultAmounts($todayRecords);
+        $result['week']  = $this->getResultAmounts($weekRecords);
+        $result['month'] = $this->getResultAmounts($monthRecords);
+
+        return $result;
+
+    }
+
+    public function getResultAmounts($timeRecords)
+    {
+        $result['charges_amount'] = $result['refund_amount'] = 0;
+
+        foreach($timeRecords as $z => $item)
+        {
+            if($item->type != 'credit')
+            {
+                $result['charges'][] = $item;
+                $result['charges_amount'] = $result['charges_amount'] + $item->amount;
+            }
+            else
+            {
+                $result['refund'][] = $item;
+                $result['refund_amount'] = $result['refund_amount'] + $item->amount;
+            }
+        }
+
+        return $result;
     }
 }

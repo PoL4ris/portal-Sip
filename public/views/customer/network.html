@@ -1,9 +1,4 @@
 <div ng-controller="FormXeditableCtrl" class="customer-network">
-    <!--<div jarvis-widget id="wid-id-5" data-widget-deletebutton="false" data-widget-editbutton="false" data-widget-custombutton="false" ng-controller="FormXeditableCtrl">-->
-    <!--<header>-->
-    <!--<span class="widget-icon"><i class="fa fa-sitemap"></i></span><h2>Network</h2>-->
-    <!--</header>-->
-
     <div class="widget-body-toolbar">
         <div class="row">
             <div class="bold-type col-lg-4 no-padding-sides text-center b-r-ddd">Switch Info</div>
@@ -20,11 +15,11 @@
                 </div>
                 <div class="field-data  col-lg-12 padding-5">
                     <div class="bold-type col-lg-4">Address:</div>
-                    <div class="col-lg-8 anim"
+                    <div class="col-lg-6 anim " onclick="this.select();"
                          ng-click="getCoreData(customerNetwork.network_node.ip_address)"
                          data-toggle="modal"
                          data-target="#corStats">
-                        <a href="">
+                        <a href="" id="ip-clipboard-id">
                             {{ customerNetwork.network_node.ip_address?customerNetwork.network_node.ip_address:'' }}
                         </a>
                     </div>
@@ -63,7 +58,7 @@
                     <div class="bold-type col-lg-6">Vlan:</div>
                     <div class="col-lg-6 anim" id="vlan"></div>
                 </div>
-                <div class="field-data col-lg-12 padding-5">
+                <div class="field-data  col-lg-12 padding-5">
                     <div class="bold-type col-lg-6">IP:</div>
                     <div class="col-lg-6" id="IPs"></div>
                 </div>
@@ -87,10 +82,6 @@
                 </div>
             </div>
 
-            <!--<div class="btn-group btn-group-justified float-left w-auto no-padding-sides m-t-lg network-btn" >-->
-            <!--getSwitchPortStatus();-->
-            <!--</div>-->
-
         </div>
 
         <div class="col-lg-12 padding-bottom-10 padding-top-10 no-padding-sides b-t-ddd"
@@ -98,10 +89,7 @@
 
             <div class="btn btn-success network-functions m-r-sm" ng-click="networkServices(0)" type="0" portid="{{customerNetwork.id}}">Check status</div>
 
-            <div class="btn btn-dark network-functions action-confirm m-r-sm" id="recycleButton" ng-click="smartModEg1($event)" type="3" portid="{{customerNetwork.id}}">Recycle port</div>
-            <!--<div class="col-lg-2 text-center">-->
-            <!--<p class="btn btn-success network-functions m-r-sm"  type="4" portid="{{customerNetwork.port_number}}">Check IP's</p>-->
-            <!--</div>-->
+            <div class="btn btn-warning network-functions action-confirm m-r-sm" id="recycleButton" ng-click="smartModEg1($event)" type="3" portid="{{customerNetwork.id}}">Recycle port</div>
             <div class="btn btn-danger network-functions action-confirm access-type-net m-r-sm"
                  ng-if="customerNetwork.access_level != 'signup'"
                  type="5"
@@ -116,9 +104,6 @@
                  portid="{{customerNetwork.id}}"
                  ng-click="smartModEg1($event)">Activate
             </div>
-            <!--<div class="col-lg-2 text-center">-->
-            <!--<p class="btn btn-success network-functions"  type="" portid="{{customerNetwork.port_number}}">Building IP Stats</p>-->
-            <!--</div>-->
         </div>
     </div>
 </div>

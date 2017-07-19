@@ -1,0 +1,192 @@
+
+<div class="col-lg-12 p-t-lg p-b-lg bg-white white-shadow filters-fixed-size">
+    <div class="col-lg-12 no-padding-sides p-t-lg p-b-lg b-b-ddd m-b-lg">
+        <div class="col-lg-4 no-padding-sides"><h4>Pending Charges</h4></div>
+
+
+
+        <div class="col-lg-4 text-align-right status-color-active">
+            <label class="label-charge">Charges</label>
+            <div class="col-lg-4">
+                <label>Today <br><span>${{resultStatsData.day.charges_amount}}</span></label>
+            </div>
+            <div class="col-lg-4">
+                <label>This Week <br><span>${{resultStatsData.week.charges_amount}}</span></label>
+            </div>
+            <div class="col-lg-4">
+                <label>This Month <br><span>${{resultStatsData.month.charges_amount}}</span></label>
+            </div>
+        </div>
+        <div class="col-lg-4 text-align-right status-color-decommissioned">
+            <label class="label-refund">Refunds</label>
+            <div class="col-lg-4">
+                <label>Today  <br><span>${{resultStatsData.day.refund_amount}}</span></label>
+            </div>
+            <div class="col-lg-4">
+                <label>This Week <br><span>${{resultStatsData.week.refund_amount}}</span></label>
+            </div>
+            <div class="col-lg-4">
+                <label>This Month <br><span>${{resultStatsData.month.refund_amount}}</span></label>
+            </div>
+        </div>
+
+        <div class="col-lg-12">
+            <input type="checkbox" name="checkAll" ng-click="checkAllCharges()" id="check-uncheck">
+            <label for="checkAll">Check / Uncheck All</label>
+        </div>
+
+
+    </div>
+
+    <form id="pending-charges-form">
+        <table id="myTable" class="tablesorter table table-striped" datatable="ng">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th></th>
+                    <th>Customer</th>
+                    <th>Address</th>
+                    <th>Type</th>
+                    <th>Amount</th>
+                    <th>Comment</th>
+                    <th>Request Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="charge in chargesData">
+                    <td>{{charge.id}}</td>
+                    <td>
+                        <div class="smart-form align-smart-form-check">
+                            <label class="checkbox">
+
+                                <input class="check-input"
+                                       type="checkbox"
+                                       name="{{charge.id}}"
+                                       ng-if="!dataCheck"
+                                       ng-change="processCheck()"
+                                       ng-model="checkCoso"
+                                       onclick="processCheckFunct();">
+
+
+                                <input class="check-input"
+                                       type="checkbox"
+                                       name="{{charge.id}}"
+                                       ng-if="dataCheck"
+                                       checked="checked"
+                                       ng-change="processCheck()"
+                                       ng-model="checkCoso"
+                                       onclick="processCheckFunct();">
+
+                                <i></i>{{data.name}}
+                            </label>
+                        </div>
+                    </td>
+                    <td class="{{charge.type == 'credit' ? 'style-refund' : 'style-charge'}}">{{charge.name ? charge.name : 'N/A'}}</td>
+                    <td>{{charge.address ? charge.address : 'N/A'}}</td>
+                    <td class="capital-first"><b>{{charge.type}}</b></td>
+                    <td>${{charge.amount}}</td>
+                    <td>{{charge.comment}}</td>
+                    <td ng-init="resultDate = convertDate(charge.created_at)">{{ resultDate | date : "MMM d, y h:mm a" }}</td>
+                    <td>
+                        <i class="btn btn-primary  fa fa-check"  title="Accept" ng-click="confirmAction()"></i>
+                        <i class="btn btn-danger   fa fa-times"  title="Cancel" ng-click="cancelAction()"></i>
+                        <i class="btn btn-warning  fa fa-pencil" title="Edit"   ng-click="editAction()" data-toggle="modal" data-target="#editActionModal"></i>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
+    <hr>
+
+    <button class="btn btn-primary m-r-lg process-checks" ng-click="getFormChecks()" disabled>Approve Selected</button>
+    <button class="btn btn-danger m-r-lg process-checks" ng-click="getFormChecksDeny()" disabled>Deny Selected</button>
+
+    <button class="btn btn-danger m-r-lg pull-right process-all"      ng-click="denyAll()" >Deny All</button>
+    <button class="btn btn-primary m-r-lg pull-right process-all"     ng-click="approveAll()">Approve All</button>
+</div>
+
+<!--MODAL-->
+<div class="modal fade" id="editActionModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-ticket-size">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <span>Edit Request.</span>
+            </div>
+            <div class="modal-body">
+                <div class="wrapper-sm">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="manual-ref">
+                                <div class="cbox-containter">
+                                    <form id="edit-action-form">
+                                        <div class="cboxc-top">
+                                            <label>Amount to Edit</label><input type="text" placeholder="Set amount with no comas or signs" name="amount" required ng-if="editRecordTmp" value="{{editRecordTmp.amount}}"><input type="text" placeholder="Set amount with no comas or signs" name="amount" required ng-if="!editRecordTmp" >
+                                        </div>
+                                        <div class="cboxc-bottom">
+                                            <label>Description</label><textarea type="text" placeholder="Describe the reason" name="desc" required ng-if="editRecordTmp">{{editRecordTmp.comment}}</textarea><textarea type="text" placeholder="Describe the reason" name="desc" required ng-if="!editRecordTmp" ></textarea>
+                                        </div>
+
+                                        <button class="btn btn-primary float-right m-t-lg" ng-click="editAndConfirm()">Edit & Confirm</button>
+                                        <div class="pull-right m-t-lg" ng-if="loadingtap">
+                                            Processing.
+                                            <img src="/img/loading.gif" alt="">
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--END MODAL-->
+
+<div class="modal fade" id="proccessingModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-ticket-size">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="wrapper-sm">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <h2>Transactions</h2>
+                            <img src="/img/loading.gif" alt="" class="loading-gif-support" ng-if="loadingTransaction">
+                            <div class="">
+                                <div ng-repeat="(key, item) in transactionResponse" class="transaction-result-box">
+                                    <hr>
+                                    <div class="col-lg-6 m-b-md">
+                                        <div class="col-lg-6 no-padding-sides">Transaction ID:</div>
+                                        <div class="col-lg-6 no-padding-sides"><b> {{key}}</b></div>
+                                        <div class="col-lg-6 no-padding-sides">Payment Type:</div>
+                                        <div class="col-lg-6 no-padding-sides"><b> {{item.PaymentType ? item.PaymentType : 'N/A'}}</b></div>
+                                        <div class="col-lg-6 no-padding-sides">Transaction Type:</div>
+                                        <div class="col-lg-6 no-padding-sides"><b> {{item.TransactionType ? item.TransactionType : 'N/A'}}</b></div>
+                                    </div>
+                                    <div class="col-lg-6 m-b-md">
+                                        <span>Response: <br>
+                                        <b>  {{item.ERRMSG ? item.ERRMSG : 'No error Message.'}}</b></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

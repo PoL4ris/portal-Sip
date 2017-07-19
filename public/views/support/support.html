@@ -3,6 +3,8 @@
     <img src="/img/loading.gif" alt="" class="loading-gif-support">
 </div>
 <!--END TABLE LOAD-->
+
+<!--TICKET ACTIONS-->
 <section ng-if="supportData" class="col-sm-12 col-md-12 col-lg-12 no-padding-sides support-table-grid null-section">
     <div class="row">
         <div class="col-lg-12 m-t-lg ">
@@ -31,6 +33,7 @@
     </div>
 </section>
 <!--TICKET LIST-->
+
 <section ng-if="supportData" class="col-sm-12 col-md-12 col-lg-12 bg-white white-shadow m-t-lg p-b-lg support-table-grid animated fadeInDown">
     <div class="row">
         <!--SUPPORT TABLE-->
@@ -73,7 +76,8 @@
                         ng-click="displayTicketResume(data.id, data.id_customers)"
                         data-toggle="modal"
                         data-target="#ticketModal">
-                        {{data.comment | limitTo:letterLimit}}
+                        <div ng-bind-html="data.comment | limitTo:30"></div>
+                        <!--{{data.comment | limitTo:letterLimit}}-->
                         <div id='ticket-{{ data.id }}' style="display: none;" class="ticket-comment-pop" ng-bind-html="data.comment"></div>
                     </td>
 
@@ -258,7 +262,7 @@
                                             <td ng-init="resultDate = convertDate(history.created_at)" ng-if="history.created_at">{{resultDate | date : "MMM d, y h:mm a" }}</td>
                                             <td class="th-comment" height="100" ng-bind-html="history.comment"></td>
                                             <td>{{history.status}}</td>
-                                            <td>{{dataUsersAssigned[history.id_users].alias}}</td>
+                                            <td>{{historyData.user.alias}}</td>
                                         </tr>
                                         </tbody>
                                     </table>

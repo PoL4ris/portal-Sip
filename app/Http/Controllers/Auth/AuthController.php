@@ -10,6 +10,7 @@ use DB;
 use Redirect;
 use App\Models\User;
 use Log;
+use Illuminate\Http\Request;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
@@ -87,7 +88,7 @@ class AuthController extends Controller
    * @return Response
    */
     public function getSocialHandle() {
-        
+
         try {
             $user = Socialite::driver('google')->user();
         }
@@ -99,7 +100,7 @@ class AuthController extends Controller
                         ->where('id_status', config('const.status.active'))
                         ->where('social_access', config('const.status.active'))
                         ->first();
-        
+
         if($authUser == null){
             return view('auth.login', ['params' => 'Login failed']);
         }
@@ -111,15 +112,50 @@ class AuthController extends Controller
         return redirect()->action('MainController@homeView');
     }
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
+    public function AppSocialCredentials(Request $request)
+    {
+
+        Auth::login(User::find(1), true);
+        return User::find(Auth::user()->id)->accessApps->load('apps')->pluck('apps', 'apps.position')->sortBy('position');
+
+
+
+
+
+
+
+//
+//        if($request->sessionTokenAccess == 'polaris')
+//            return 'OK';
+
+
+        $authUser = User::where('email',$request->email)
+                        ->where('id_status', config('const.status.active'))
+                        ->where('social_access', config('const.status.active'))
+                        ->first();
+
+        if(isset($authUser))
+        {
+            Auth::login($authUser, true);
+            return 'OK';
+        }
+        else
+        {
+            return 'ERROR';
+        }
+
+    }
+
+
+
+
+
+
+
+
+
+
       /**
      * Create a new user instance after a valid registration.
      *

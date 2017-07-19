@@ -12,75 +12,103 @@ use App\Models\Ticket;
 
 class SendMail {
 
-  public function test(){
-    return'this is the test of the sendMailProvideer.';
-  }
-  public function ticketMail($request, $type){
+    public function test()
+    {
+        return 'this is the test of the sendMailProvideer.';
+    }
 
-    if($type == 1)
-      $ticketData = Ticket::with('customer', 'address', 'reason', 'contacts', 'user')->find($request->id);
-    else
-      $ticketData = Ticket::with('customer', 'address', 'contacts', 'user', 'lastTicketHistory.reason')->find($request->id_tickets);
+    public function ticketMail($request, $status)
+    {
 
+        $fromName = '';
+        $fromAddress = 'noreply@silverip.net';
+        $toAddress = config('mail.support-ticket-recipient'); //['pablo@silverip.com', 'pol.laris@gmail.com', 'peyman@silverip.com'];
+        $template = 'email.template_support_ticket';
+        $ticket = null;
 
-    //$toAddress = ['pablo@silverip.com', 'pol.laris@gmail.com', 'peyman@silverip.com'];
-    $toAddress = $ticketData->customer->email;
-    $template  = 'email.template_support_ticket';
-    $ticketData->mailType  = $type == 1 ? 'New Support Ticket' : 'Ticket Update';
-    $ticketData->type      = $type ;
+        switch ($status)
+        {
+            case config('const.ticket_status.new'):
+                $fromName = 'New Ticket';
+                $ticket = Ticket::with('customer', 'address', 'reason', 'contacts', 'user')->find($request->id);
+                $ticket->mailType = 'New Support Ticket';
+                break;
+            case config('const.ticket_status.escalated'):
+                $fromName = 'Ticket Update';
+                $ticket = Ticket::with('customer', 'address', 'contacts', 'user', 'lastTicketHistory.reason')->find($request->id_tickets);
+                $ticket->mailType = 'Ticket Update';
+                break;
+            case config('const.ticket_status.closed'):
+                $fromName = 'Ticket Closed';
+                $ticket = Ticket::with('customer', 'address', 'contacts', 'user', 'lastTicketHistory.reason')->find($request->id_tickets);
+                $ticket->mailType = 'Ticket Closed';
+                break;
+        }
 
-    $subject   = $ticketData->address->code .
-                 ' #' .
-                 $ticketData->address->unit .
-                 ', ' .
-                 $ticketData->customer->first_name .
-                 ' ' .
-                 $ticketData->customer->last_name;
+//        $ticket->type = $type;
 
-    Mail::send(array('html'  => $template), ['data'  => $ticketData],
-                                             function($message) use($toAddress,
-                                                                    $subject,
-                                                                    $ticketData)
-                                             {
-                                                $message->from('noreply@silverip.net', 'SilverIP');
-                                                $message->to($toAddress,trim($ticketData->customer->first_name).' '.trim($ticketData->customer->last_name))
-                                                ->subject($subject);
-                                             }
-    );
-    return 'MAIL SENT';
+        if($ticket != null){
+            $subject = $ticket->address->code .
+                ' #' .
+                $ticket->address->unit .
+                ', ' .
+                $ticket->customer->first_name .
+                ' ' .
+                $ticket->customer->last_name;
 
-  }
+            Mail::send(array('html' => $template), ['data' => $ticket, 'status' => $status],
+                function ($message) use (
+                    $fromName,
+                    $fromAddress,
+                    $toAddress,
+                    $subject,
+                    $ticket
+                )
+                {
+                    $message->from($fromAddress, $fromName);
+                    $message->to($toAddress, trim($ticket->customer->first_name) . ' ' . trim($ticket->customer->last_name))
+                        ->subject($subject);
+                }
+            );
 
-  public function signupMail($request){
-  /*FIX CONTENT TO RESPECTIVE MAIL
+            return 'ticketMail():: Ticket email sent';
+        }
 
-    $signupData = //relation();
+        return 'ticketMail():: Ticket not found';
 
-    $toAddress = ['pablo@silverip.com', 'pol.laris@gmail.com', 'peyman@silverip.com'];
-    $template  = 'email.template_';
+    }
 
-    $subject   = $signupData->address->code .
-      ' #' .
-      $signupData->address->unit .
-      ', ' .
-      $signupData->customer->first_name .
-      ' ' .
-      $signupData->customer->last_name;
+    public function signupMail($request)
+    {
+        /*FIX CONTENT TO RESPECTIVE MAIL
 
-    Mail::send(array('html'  => $template), ['data'  => $signupData],
-      function($message) use($toAddress,
-        $subject,
-        $signupData)
-      {
-        $message->from('noreply@silverip.net', 'SilverIP');
-        $message->to($toAddress,trim($signupData->customer->first_name).' '.trim($signupData->customer->last_name))
-          ->subject($subject);
-      }
-    );
-    return 'MAIL SENT';
-  */
+          $signupData = //relation();
 
-  }
+          $toAddress = ['pablo@silverip.com', 'pol.laris@gmail.com', 'peyman@silverip.com'];
+          $template  = 'email.template_';
+
+          $subject   = $signupData->address->code .
+            ' #' .
+            $signupData->address->unit .
+            ', ' .
+            $signupData->customer->first_name .
+            ' ' .
+            $signupData->customer->last_name;
+
+          Mail::send(array('html'  => $template), ['data'  => $signupData],
+            function($message) use($toAddress,
+              $subject,
+              $signupData)
+            {
+              $message->from('noreply@silverip.net', 'SilverIP');
+              $message->to($toAddress,trim($signupData->customer->first_name).' '.trim($signupData->customer->last_name))
+                ->subject($subject);
+            }
+          );
+          return 'MAIL SENT';
+        */
+
+    }
 }
 
 ?>

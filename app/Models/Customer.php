@@ -61,14 +61,53 @@ class Customer extends Model {
             ->where('priority', 1);
     }
 
+    public function openTickets()
+    {
+        return $this->hasMany('App\Models\Ticket', 'id_customers')->where('status', '!=', 'closed');
+    }
+
+    public function port()
+    {
+        return $this->hasMany('App\Models\Port', 'id_customers', 'id');
+    }
+
+    public function ports()
+    {
+        return $this->belongsToMany('App\Models\Port');
+    }
+
+    public function product()
+    {
+        return $this->belongsTo('App\Models\Product', 'id_customers', 'id', 'App\Models\CustomerProduct');
+//        return $this->belongsToMany('App\Models\Product', 'customer_products', 'id_customers', 'id_products');
+    }
+
+    public function services()
+    {
+        return $this->hasMany('App\Models\CustomerProduct', 'id_customers', 'id')
+            ->orderBy('id_status', 'asc');
+    }
+
+    public function activeServices()
+    {
+        return $this->hasMany('App\Models\CustomerProduct', 'id_customers', 'id')
+            ->where('id_status', config('const.status.active'))
+            ->orderBy('id_status', 'asc');
+    }
+
+    public function status()
+    {
+        return $this->hasOne('App\Models\Status', 'id', 'id_status');
+    }
+
     public function tickets()
     {
         return $this->hasMany('App\Models\Ticket', 'id_customers');
     }
 
-    public function openTickets()
+    public function ticketHistory()
     {
-        return $this->hasMany('App\Models\Ticket', 'id_customers')->where('status', '!=', 'closed');
+        return $this->hasMany('App\Models\Ticket', 'id_customers', 'id');
     }
 
     public function type()
@@ -76,9 +115,12 @@ class Customer extends Model {
         return $this->hasOne('App\Models\Type', 'id', 'id_types');
     }
 
-    public function status()
+    public function pendingManualCharges()
     {
-        return $this->hasOne('App\Models\Status', 'id', 'id_status');
+        return $this->hasMany('App\Models\Charge', 'id_customers')
+            ->where('status', config('const.charge_status.pending_approval'))
+            ->where('processing_type', config('const.type.manual_pay'));
+
     }
 
 
@@ -90,24 +132,6 @@ class Customer extends Model {
 //                ->where('priority', 1);
 //    }
 
-
-
-
-    public function ticketHistory()
-    {
-        return $this->hasMany('App\Models\Ticket', 'id_customers', 'id');
-    }
-
-    public function services()
-    {
-        return $this->hasMany('App\Models\CustomerProduct', 'id_customers', 'id')->orderBy('id_status', 'asc');
-    }
-
-    public function product()
-    {
-//        return $this->belongsTo('App\Models\Product', 'id_customers', 'id', 'App\Models\CustomerProduct');
-        return $this->belongsToMany('App\Models\Product', 'customer_products', 'id_customers', 'id_products');
-    }
 
     public function getNetworkNodes($id = null)
     {
@@ -134,15 +158,6 @@ class Customer extends Model {
         return $this->port()->with('networkNode')->get();
     }
 
-    public function port()
-    {
-        return $this->hasMany('App\Models\Port', 'id_customers', 'id');
-    }
-
-    public function ports()
-    {
-        return $this->belongsToMany('App\Models\Port');
-    }
 
     public function getTickets($id = null)
     {

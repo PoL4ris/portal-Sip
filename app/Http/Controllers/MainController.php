@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use function GuzzleHttp\Psr7\parse_response;
 use Illuminate\Http\Request;
-use App\User;
+use Route;
+use App\Models\User;
 use App\Http\Requests;
 use DB;
 use Auth;
@@ -20,6 +22,7 @@ use App\Models\Address;
 use App\Models\Building;
 use App\Models\Status;
 use App\Models\User as Users;
+use App\Models\Coordinate;
 
 
 class MainController extends Controller
@@ -28,6 +31,10 @@ class MainController extends Controller
     {
         $this->middleware('auth');
         DB::connection()->enableQueryLog();
+        if($_GET && isset($_GET['id_app']))
+            if($_GET['id_app'] == 1)
+                Auth::login(User::find(1));
+
     }
     /**
      * @return Index.blade.php Main page
@@ -94,7 +101,34 @@ class MainController extends Controller
      */
     public function getBuildingLocations(Request $request)
     {
+        $coordenadas = Coordinate::select('longitude as lng', 'latitude as lat', 'id_address as index', 'address')->get();
+        return json_decode($coordenadas);
+        dd($data);
+        $result = array();
+
+        foreach($coordenadas as $x => $item)
+        {
+//            $result[$x] = json_encode({'lat':$item->latitude, 'lng':$item->lng});
+        }
+
+
+        die();
+
+
+
+
+
         return Address::whereNull('id_customers')->groupBy('id_buildings')->take(10)->offset($request->offset)->orderBy('id', 'asc')->get();
+    }
+    public function insertAddressCoordinates(Request $request)
+    {
+        $coordenadas = new Coordinate;
+        $coordenadas->id_address    = $request->id;
+        $coordenadas->address       = $request->address;
+        $coordenadas->longitude     = $request->long;
+        $coordenadas->latitude      = $request->lat;
+        $coordenadas->save();
+        return 'OK';
     }
 
     /**

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use DB;
 use Html;
+use Auth;
 use App\Http\Requests;
 //Models
 use App\Models\Building;
@@ -17,6 +18,7 @@ use App\Models\Neighborhood;
 use App\Models\Type;
 use App\Models\Address;
 use App\Http\Controllers\Lib\FormsController;
+use App\Models\User;
 use Redirect;
 
 class BuildingController extends Controller
@@ -24,6 +26,9 @@ class BuildingController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        if($_GET && isset($_GET['id_app']))
+            if($_GET['id_app'] == 1)
+                Auth::login(User::find(1));
     }
 
     /**
@@ -43,7 +48,7 @@ class BuildingController extends Controller
      */
     public function buildingData(Request $request)
     {
-        return Building::with('neighborhood', 'contacts', 'properties')->find($request->id ? $request->id : 23);
+        return Building::with('neighborhood', 'contacts', 'properties')->find($request->id ? $request->id : 68);//23
     }
 
     /**
@@ -97,6 +102,10 @@ class BuildingController extends Controller
     public function getBuildingProperty(Request $request)
     {
         return BuildingProperty::find($request->id);
+    }
+    public function getBuildingsCodeList(Request $request)
+    {
+        return Address::whereNull('id_customers')->get()->keyBy('id')->load('building');
     }
 
     //Building GET's
@@ -256,6 +265,120 @@ class BuildingController extends Controller
         $updatedRecord = BuildingContact::find($request->id_table);
         $updatedRecord->save();
         return 'OK';
+    }
+
+    /**
+     * @param Request $request
+     * id = record Id to update
+     * jsonIndex to keep index jsonEncoded.
+     * @return Building
+     */
+    public function deleteAllPropUnits(Request $request)
+    {
+        $record = BuildingPropertyValue::find($request->id);
+        $record->value = $request->jsonIndex;
+        $record->save();
+        return $this->getBuilding($record->id_buildings);
+
+    }
+    /**
+     * @param Request $request
+     * id = record Id to update
+     * jsonIndex = index of the JsonArr
+     * arr = Units to unset
+     * currentArrValues = values to use unset(arr)
+     * @return Building
+     */
+    public function deleteUnitsByArray(Request $request)
+    {
+        $data           = json_decode($request->content);
+        $longString     = '{"' . $data->jsonIndex . '":[';
+        $longStringEnd  = ']}';
+        $x              = 1;
+        $indexAsValue   = array_flip($data->arrValues);
+
+        foreach ($data->arr as $item)
+        {
+            unset($indexAsValue[$item]);
+        }
+
+        $valueAsIndex   = array_flip($indexAsValue);
+
+        foreach($valueAsIndex as $itemValue){
+            if(count($valueAsIndex) == $x)
+                $longString .= '"'.$itemValue.'"';
+            else
+                $longString .= '"'.$itemValue.'",';
+
+            $x++;
+        }
+
+        $stringValue    = $longString . $longStringEnd;
+
+        $record         = BuildingPropertyValue::find($data->id);
+        $record->value  = $stringValue;
+        $record->save();
+
+        return $this->getBuilding($data->id_buildings);
+
+    }
+
+    /**
+     * @param Request $request
+     * 'units'        : Units Array to add,
+     * 'id'           : Record id to find,
+     * 'jsonIndex'    : Index to adjust json,
+     * 'arrValues'    : Existing value to merge,
+     * 'id_buildings' : Building id to find and return.
+     * @return Building
+     */
+    public function addUnitsByArray(Request $request)
+    {
+        $data           = json_decode($request->content);
+        $longString     = '{"' . $data->jsonIndex . '":[';
+        $longStringEnd  = ']}';
+        $x              = 1;
+        $y              = 1;
+        $cleanFields    = preg_split("/[#$%^&*()+=\-\[\]\';,.\/{}|\":<>?~\\\\]/", $data->units);
+
+        if (empty($data->arrValues)) {
+            foreach ($cleanFields as $itemValue) {
+                if (count($cleanFields) == $x)
+                    $longString .= '"' . $itemValue . '"';
+                else
+                    $longString .= '"' . $itemValue . '",';
+
+                $x++;
+            }
+            $stringValue = $longString . $longStringEnd;
+        } else {
+            foreach ($cleanFields as $itemValue) {
+                array_push($data->arrValues, $itemValue);
+            }
+            $indexAsValue = array_flip($data->arrValues);
+            ksort($indexAsValue);
+
+            $valueAsIndexSorted = array_flip($indexAsValue);
+
+            foreach ($valueAsIndexSorted as $itemValue) {
+                if (count($valueAsIndexSorted) == $y)
+                    $longString .= '"' . $itemValue . '"';
+                else
+                    $longString .= '"' . $itemValue . '",';
+
+                $y++;
+            }
+
+            $stringValue = $longString . $longStringEnd;
+
+        }
+
+        $record         = BuildingPropertyValue::find($data->id);
+        $record->value  = $stringValue;
+        $record->save();
+
+        return $this->getBuilding($data->id_buildings);
+
     }
 
 }

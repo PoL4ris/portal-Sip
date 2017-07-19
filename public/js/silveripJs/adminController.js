@@ -1,8 +1,7 @@
 //ADMIN
 app.controller('adminController',                   function($scope, $http, customerService, adminService, DTOptionsBuilder){
 
-
-
+  console.log('this is the admincontroller rawr');
 
   if(customerService.sideBarFlag) {
     $scope.sipTool(2);
@@ -18,10 +17,10 @@ app.controller('adminController',                   function($scope, $http, cust
     });
 
   $scope.editUser             = function(){
-    $scope.adminEditingUser = this.data;
+    $scope.adminEditingUser   = this.data;
   }
   $scope.generatePsw          = function(){
-    $scope.createdPsw = Math.random().toString(36).slice(-8);
+    $scope.createdPsw         = Math.random().toString(36).slice(-8);
   }
   $scope.resetPsw             = function(){
     $scope.createdPsw = null;
@@ -61,9 +60,9 @@ app.controller('adminController',                   function($scope, $http, cust
 
   }
   $scope.addNewUser           = function(){
-    $scope.newUserRequired = true;
-    $scope.adminEditingUser = null;
-    $scope.createdPsw = null;
+    $scope.newUserRequired    = true;
+    $scope.adminEditingUser   = null;
+    $scope.createdPsw         = null;
 
   }
   $scope.insertNewUser        = function(){
@@ -94,17 +93,17 @@ app.controller('adminController',                   function($scope, $http, cust
   };
   $scope.addNewProfile        = function(){
     $scope.getAdminApps();
-    $scope.editProfileData = null;
-    $scope.newProfile = true;
+    $scope.editProfileData    = null;
+    $scope.newProfile         = true;
   };
   $scope.profileCancel        = function(){
-    $scope.newProfile = false;
-    $scope.editProfileData = false;
+    $scope.newProfile         = false;
+    $scope.editProfileData    = false;
   };
   $scope.editProfile          = function(){
     $scope.getAdminApps();
-    $scope.newProfile = null;
-    $scope.editProfileData = this.data;
+    $scope.newProfile         = null;
+    $scope.editProfileData    = this.data;
   };
   $scope.submitNewProfile     = function(){
     var objects = getFormValues('admin-profile-form');
@@ -149,22 +148,22 @@ app.controller('adminController',                   function($scope, $http, cust
   }
   $scope.addNewApp            = function(){
     $scope.getAdminProfiles();
-    $scope.editAppData = null;
-    $scope.newApp = true;
+    $scope.editAppData        = null;
+    $scope.newApp             = true;
   };
   $scope.appCancel            = function(){
-    $scope.newApp = false;
-    $scope.editAppData = false;
-    $scope.selectedIcon = false;
+    $scope.newApp             = false;
+    $scope.editAppData        = false;
+    $scope.selectedIcon       = false;
   };
   $scope.setIconApp           = function(){
-    console.log(this.selectedIcon);
-    $scope.selectedIcon = this.selectedIcon;
+//    console.log(this.selectedIcon);
+    $scope.selectedIcon       = this.selectedIcon;
   };
   $scope.editApp              = function(){
     $scope.getAdminProfiles();
-    $scope.newApp = null;
-    $scope.editAppData = this.data;
+    $scope.newApp             = null;
+    $scope.editAppData        = this.data;
   };
   $scope.submitNewApp         = function(){
     var objects = getFormValues('admin-app-form');
@@ -175,6 +174,7 @@ app.controller('adminController',                   function($scope, $http, cust
     $http.post("insertNewApp", {params:{'objects' : objects}})
       .then(function (response) {
         $scope.adminApps = response.data;
+        $('#adminModalApps').modal('toggle');
         $scope.appCancel();
       });
   };
@@ -189,8 +189,8 @@ app.controller('adminController',                   function($scope, $http, cust
 
     $http.post("updateAdminApp", {params:{'objects' : objects}})
       .then(function (response) {
-
         $scope.adminApps = response.data;
+        $('#adminModalApps').modal('toggle');
         $scope.appCancel();
       });
   };
@@ -201,7 +201,7 @@ app.controller('adminController',                   function($scope, $http, cust
         $scope.adminApps = response.data;
       });
   };
-  $scope.positionUp         = function(){
+  $scope.positionUp           = function(){
     $http.post("getAppPositionUp", {params:{'record':this.data}})
       .then(function (response) {
         console.log('OK');
@@ -212,18 +212,18 @@ app.controller('adminController',                   function($scope, $http, cust
   $scope.getBldProperties     = function(){
     $http.post("getAdminBldProperties", {params:{'token':adminService.existeToken}})
       .then(function (response) {
-        $scope.bldProperties = response.data;
+        $scope.bldProperties  = response.data;
       });
   };
   $scope.addNewBldProp        = function(){
-    $scope.editBldPropData  = null;
-    $scope.newBldProp       = true;
+    $scope.editBldPropData    = null;
+    $scope.newBldProp         = true;
   };
   $scope.bldPropCancel        = function(){
-    $scope.newBldProp      = false;
-    $scope.editBldPropData = false;
+    $scope.newBldProp         = false;
+    $scope.editBldPropData    = false;
   };
-  $scope.submitNewApp         = function(){
+  $scope.submitNewBldProp     = function(){
     var objects = getFormValues('admin-bldprop-form');
 
     if(objects.property_name.length === 0 || objects.property_description.length === 0)
@@ -237,8 +237,8 @@ app.controller('adminController',                   function($scope, $http, cust
   };
   $scope.editBldProp          = function(){
     $scope.getAdminApps();
-    $scope.newBldProp = null;
-    $scope.editBldPropData = this.data;
+    $scope.newBldProp         = null;
+    $scope.editBldPropData    = this.data;
   };
 
 
@@ -261,9 +261,9 @@ app.controller('adminController',                   function($scope, $http, cust
   $scope.fontAwesomeArray = fontAwesomeArray;
 
   $scope.dtOptions = DTOptionsBuilder.newOptions().withDisplayLength(25).withOption('order', [1, 'asc']);
+
 });
 app.controller('adminPAppACont',                    function ($scope, $http){
-
   $http.post("getAppAccess", {params : {'id_profiles' : $scope.editProfileData.id, 'id_apps' : $scope.data.id}})
     .then(function (response) {
       $scope.dataCheck = response.data;
