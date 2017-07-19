@@ -254,7 +254,7 @@ class SIPBilling {
 
             $request['Token'] = $pm->account_number;
             $result['PaymentType'] = $pm->types;
-            $result['PaymentTypeDetails'] = ($pm->properties != '') ? json_decode($pm->properties, true)[0] : '';
+            $result['PaymentTypeDetails'] = ($pm->properties != '') ? json_decode($pm->properties, true) : '';
         } else {
             // Use the card number and details in the request
             if (isset($request['CardName']) == false) {

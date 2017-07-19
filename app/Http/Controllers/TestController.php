@@ -392,6 +392,10 @@ class TestController extends Controller
     public function generalTest()
     {
 
+        $pm = PaymentMethod::find(14331);
+        dd(json_decode($pm->properties, true));
+
+
         $building = Building::find(30);
 
         dd($building->activeInternetProducts);
