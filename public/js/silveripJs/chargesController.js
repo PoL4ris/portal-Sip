@@ -34,8 +34,9 @@ app.controller('chargesController', function ($scope, $http, customerService, ad
       if (ButtonPressed === "Yes") {
         $http.get('approveManualCharge', {params: {'IDs': {0:thisId}}})
           .then(function (response) {
-            console.log(response.data);
+//            console.log(response.data);
 //            $scope.chargesData = response.data;
+            $scope.chargesData = response.data['pending-charges'];
             $scope.getChargeStat();
             $.smallBox({
               title: "Action Confirmed!",
@@ -61,10 +62,10 @@ app.controller('chargesController', function ($scope, $http, customerService, ad
 
         $http.get('denyManualCharge', {params: {'IDs': {0:thisId}}})
           .then(function (response) {
-            $scope.chargesData = response.data;
+            $scope.chargesData = response.data['pending-charges'];
             $scope.getChargeStat();
             $.smallBox({
-              title: "Action Denied!",
+              title: "Charge Denied!",
               content: "<i class='fa fa-clock-o'></i> <i>3 seconds ago...</i>",
               color: "transparent",
               timeout: 6000
