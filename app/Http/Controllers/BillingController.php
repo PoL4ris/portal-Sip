@@ -181,7 +181,8 @@ class BillingController extends Controller {
     public function getPendingManualCharges()
     {
 
-        return Charge::where('status', config('const.charge_status.pending_approval'))
+        return Charge::with(['customer', 'address'])
+            ->where('status', config('const.charge_status.pending_approval'))
             ->where('processing_type', config('const.type.manual_pay'))
             ->get();
     }

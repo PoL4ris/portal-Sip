@@ -82,8 +82,8 @@
                             </label>
                         </div>
                     </td>
-                    <td class="{{charge.type == 'credit' ? 'style-refund' : 'style-charge'}}">{{charge.name ? charge.name : 'N/A'}}</td>
-                    <td>{{charge.address ? charge.address : 'N/A'}}</td>
+                    <td class="{{charge.type == 'credit' ? 'style-refund' : 'style-charge'}}">{{charge.customer.first_name ? charge.customer.first_name + ' ' + charge.customer.last_name : 'N/A'}}</td>
+                    <td>{{charge.address ? charge.address.code + ' #' + charge.address.unit : 'N/A'}}</td>
                     <td class="capital-first"><b>{{charge.type}}</b></td>
                     <td>${{charge.amount}}</td>
                     <td>{{charge.comment}}</td>
