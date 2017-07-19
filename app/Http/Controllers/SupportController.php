@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use Faker\Provider\DateTime;
 use Illuminate\Http\Request;
 use App\Http\Requests;
@@ -106,32 +107,14 @@ class SupportController extends Controller
                 $record[$k]['old'] = 'old-green';
             else
             {
-
-//            print $coma1 = new DateTime( $rec->toArray()['created_at']);
-//            print '<br>';
-//            print $cosoTemp = date("Y-m-d H:i:s", strtotime('now'));
-
-//            $interval = $cosoTemp->diff($coma1);
-//            print $interval;
-
-
-//            die();
-
-
-
-
-
                 $record[$k]['old'] = 'old';
+                $datetime1 = date_create($rec->toArray()['created_at']);
+                $datetime2 = date_create(date("Y-m-d H:i:s"));
+                $interval  = date_diff($datetime1, $datetime2);
+                $formated  = $interval->format('%H');
 
-//                $interval = $datetime1->diff($datetime2);
-
-//                print_r($rec['updated_at']);
-
-
-
-
-
-                $record[$k]['old-by'] = 'old';
+                if($formated > 0)
+                    $record[$k]['old_by'] = $formated . ' hours ago.';
             }
 
             if ($record[$k]['updated_at'] == null)
