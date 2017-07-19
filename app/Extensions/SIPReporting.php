@@ -9,6 +9,7 @@ use App\Models\ScheduledJob;
 use Carbon\Carbon;
 use DB;
 use Log;
+use DateTimeZone;
 
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Helper\ProgressBar;
@@ -267,7 +268,7 @@ class SIPReporting {
 //
 //        if ($dataType == 'monthly' || $dataType == 'master')
 //        {
-            return $carbonNow->diffInMonths($carbonDate) >= 1 ? 'active' : 'new';
+        return $carbonNow->diffInMonths($carbonDate) >= 1 ? 'active' : 'new';
 //        }
 //
 //        if ($dataType == 'annual')
@@ -278,15 +279,15 @@ class SIPReporting {
 //        return 'new';
     }
 
-    public function generateMrrReportJob()
+    public function runMrrReportJob()
     {
         $jobName = 'generate-mrr-report-job';
-        if ($this->isJobEnabled($jobName) == false)
-        {
-            Log::notice('Job: ' . $this->jobNames[$jobName] . ' is disabled');
-
-            return false;
-        }
+//        if ($this->isJobEnabled($jobName) == false)
+//        {
+//            Log::notice('Job: ' . $this->jobNames[$jobName] . ' is disabled');
+//
+//            return false;
+//        }
 
         $this->setJobStatus($jobName, 'running');
         Log::notice('Job: ' . $this->jobNames[$jobName] . ' starting ...');
@@ -298,10 +299,21 @@ class SIPReporting {
         $this->setJobStatus($jobName, 'stopped');
     }
 
+    protected function getActiveDataMonthsForBuilding($buildingCode)
+    {
+        return RetailRevenue::where('shortname', $buildingCode)
+            ->where('status', 'active')
+            ->get();
+    }
+
     protected function generateMrrReport()
     {
+        $month = '07';
+        $year = '2017';
+
         //mrr process
         $buildings = Building::where('type', '!=', 'commercial')
+//            ->where('alias', '235V')
             ->get();
 
 
@@ -331,10 +343,13 @@ class SIPReporting {
         $this->startProgressBar($buildings->count(), 'Generating MRR Reports');
         foreach ($buildings as $building)
         {
+//            $activeMonths = getActiveDataMonthsForBuilding($building->alias);
+
             $locid = $building->id;
             $shortname = $building->code;
-            $retailMrr = $this->getBuildingMrrData($shortname);
+            $retailMrr = $this->getBuildingMrrData($shortname, $month, $year);
 
+//dd($retailMrr);
             $buildingMrrTable = array();
             foreach ($retailMrr as $mrr)
             {
