@@ -253,20 +253,16 @@ app.controller('customerController',                function ($scope, $http, $st
     });
   };
   $scope.insertCustomerContact      = function (){
-    alert('disabled action.');
 
     var infoData = getFormValues('new-cct-form');
     infoData['id_customers'] = $scope.idCustomer;
 
-    console.log(infoData);
-    return;
-
-    $http.get("insertBuildingProperties", {params:infoData})
+    $http.get("insertContactInfo", {params:infoData})
       .then(function (response) {
-        $scope.bld = response.data;
+        $scope.customerContactsData = response.data.contacts;
       });
 
-    angular.element('#add-property-cancel').scope().fadeViews('bpv-container', 'new-form-function', 0, 'enable', 'add-property', 'add-property-cancel')
+    angular.element('#add-property-cancel').scope().fadeViews('bpv-container', 'new-form-function', 0, 'customer-contact', 'add-property', 'add-property-cancel')
     $('#new-bpv-form').trigger("reset");
   }
   //Product.html

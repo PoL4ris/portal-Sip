@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use Faker\Provider\DateTime;
 use Illuminate\Http\Request;
 use App\Http\Requests;
@@ -105,7 +106,16 @@ class SupportController extends Controller
             else if ($rec['updated_at'] <= $time12)
                 $record[$k]['old'] = 'old-green';
             else
+            {
                 $record[$k]['old'] = 'old';
+                $datetime1 = date_create($rec->toArray()['created_at']);
+                $datetime2 = date_create(date("Y-m-d H:i:s"));
+                $interval  = date_diff($datetime1, $datetime2);
+                $formated  = $interval->format('%H');
+
+                if($formated > 0)
+                    $record[$k]['old_by'] = $formated . ' hours ago.';
+            }
 
             if ($record[$k]['updated_at'] == null)
             {

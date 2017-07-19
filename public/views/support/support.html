@@ -76,7 +76,7 @@
                         ng-click="displayTicketResume(data.id, data.id_customers)"
                         data-toggle="modal"
                         data-target="#ticketModal">
-                        <div ng-bind-html="data.comment | limitTo:30"></div>
+                        <div ng-bind-html="data.comment | limitTo : 30"></div>
                         <!--{{data.comment | limitTo:letterLimit}}-->
                         <div id='ticket-{{ data.id }}' style="display: none;" class="ticket-comment-pop" ng-bind-html="data.comment"></div>
                     </td>
@@ -90,7 +90,7 @@
                         <label ng-if="data.old == 'old-red'">> 48Hrs</label>
                         <label ng-if="data.old == 'old-yellow'">> 24Hrs.</label>
                         <label ng-if="data.old == 'old-green'">> 12Hrs</label>
-                        <label ng-if="data.old == 'old'">Minutes ago</label>
+                        <label ng-if="data.old == 'old'">{{data.old_by ? data.old_by : 'Minutes ago'}}</label>
                     </td>
                 </tr>
                 </tbody>
@@ -206,7 +206,7 @@
                             </div>
                             <!--Comments-->
 
-                            <div class="col-lg-12 b-t-ddd no-padding-sides p-t-lg p-b-lg m-t-lg summary-ticket-container">
+                            <div class="col-lg-12 b-t-ddd no-padding-sides p-t-lg p-b-lg m-t-lg summary-ticket-container" ng-if="selectedTicket">
                                 <div>Summary:</div>
                                 <div ng-bind-html="selectedTicket.comment" class="comment-content m-b-md">{{selectedTicket.comment}}</div>
                             </div>

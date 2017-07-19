@@ -21,6 +21,7 @@ app.controller('supportController',                 function ($scope, $http, DTO
     $http.get("getNoneBillingTickets")
       .then(function (response) {
         $scope.supportData = response.data;
+        console.log(response.data);
         setLoading(0);
       });
   };
@@ -57,6 +58,7 @@ app.controller('supportController',                 function ($scope, $http, DTO
     $http.get("getTicketOpenTime")
       .then(function (response) {
         $scope.ticketOpenTime = response.data;
+
       });
   }
   $scope.letterLimit  = 40;
