@@ -98,8 +98,10 @@ class SIPReporting {
 
         $key = $mrr->Month . '-' . $mrr->Year;
         $decodedChargeDetails = json_decode($mrr->ChargeDetails, true);
-        if ( ! isset($decodedChargeDetails) || ! $decodedChargeDetails){
+        if ( ! isset($decodedChargeDetails) || ! $decodedChargeDetails)
+        {
             Log::debug('addSale(): received empty mrr record. skipping.');
+
             return $buildingMrrTable;
         }
 
@@ -172,8 +174,10 @@ class SIPReporting {
     //MRR Process
     public function updateRetailRevenueDBTable($locid, $shortname, $buildingMrrTable)
     {
-        if ( ! $buildingMrrTable || ! isset($buildingMrrTable)) {
+        if ( ! $buildingMrrTable || ! isset($buildingMrrTable))
+        {
             Log::debug('updateRetailRevenueDBTable(): received empty building mrr table. skipping.');
+
             return;
         }
 
@@ -232,12 +236,12 @@ class SIPReporting {
 //            ->where('alias', '125J')
 //                ->take(3)
             ->get();
-
+        Log::info('Generating MRR report for: ');
         foreach ($buildingLocation as $location)
         {
             $locid = $location->id;
             $shortname = $location->code;
-Log::info($shortname);
+            Log::info($shortname);
             $retailMrr = $this->getBuildingMrrData($shortname);
 
             $buildingMrrTable = array();
