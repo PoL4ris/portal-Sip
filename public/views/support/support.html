@@ -78,7 +78,8 @@
                         data-target="#ticketModal">
                         <div ng-bind-html="data.comment | limitTo : 30"></div>
                         <!--{{data.comment | limitTo:letterLimit}}-->
-                        <div id='ticket-{{ data.id }}' style="display: none;" class="ticket-comment-pop" ng-bind-html="data.comment"></div>
+                        <div id='ticket-{{ data.id }}' style="display: none;" class="ticket-comment-pop" >{{data.comment}}</div>
+                        <!--<div id='ticket-{{ data.id }}' style="display: none;" class="ticket-comment-pop" ng-bind-html="data.comment"></div>-->
                     </td>
 
                     <td>{{data.user_assigned.first_name ? (data.user_assigned.first_name) : 'AUTO' }}</td>
@@ -129,9 +130,9 @@
                                 </button>
                             </div>
                             <!--Default Info-->
-                            <div class="col-lg-3 no-padding-sides">
+                            <div class="col-lg-4 no-padding-sides">
                                 <div>Address</div>
-                                <small class="text-muted">{{selectedTicket.address.address}}</small>
+                                <small class="text-muted" ng-if="selectedTicket.address.address">{{selectedTicket.address.address}}, # {{selectedTicket.address.unit}}</small>
                             </div>
                             <div class="col-lg-3 no-padding-sides">
                                 <div>Tel</div>
@@ -141,7 +142,7 @@
                                 <div>Email</div>
                                 <small class="text-muted">{{selectedTicket.customer.email}}</small>
                             </div>
-                            <div class="col-lg-3 no-padding-sides">
+                            <div class="col-lg-2 no-padding-sides">
                                 <div>Status</div>
                                 <small class="text-muted capital-first">{{selectedTicket.status}}</small>
                             </div>

@@ -253,6 +253,33 @@ angular.module('app.charges',       ['ui.router']).config(function ($stateProvid
     })
 });
 
+
+
+
+
+angular.module('app.newcustomer',      ['ui.router']).config(function ($stateProvider) {
+  $stateProvider
+    .state('app.newcustomer', {
+      url:  '/newcustomer',
+      data: {
+        title: 'newcustomer'
+      },
+      views: {
+        "content@app": {
+          templateUrl: '/views/newcustomer.html',
+          controller: 'newcustomerAppController',
+        }
+      },
+      resolve: {
+        scripts: function (lazyScript) {
+          return lazyScript.register([
+            '/js/smart/build/vendor.ui.js'
+          ]);
+        }
+      }
+    })
+});
+
 angular.module('app.tech-schedule', ['ui.router']).config(function ($stateProvider) {
     $stateProvider
         .state('app.tech-schedule', {

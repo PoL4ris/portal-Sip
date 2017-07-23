@@ -311,8 +311,114 @@ app.controller('globalToolsCtl',                    function ($scope, $http, $co
         break;
     }
   }
-  $scope.convertDate          = function(valor){
+  $scope.convertDate          = function (valor){
     return new Date(valor);
+  }
+  $scope.copyClipboard        = function (id){
+    document.querySelector("#"+id).select();
+    // Copy to the clipboard
+    document.execCommand('copy');
+  }
+
+  $scope.validateField        = function (type){
+//    console.log('validate field | ' + type + ' | ' + this.validaMail);
+    switch (type)
+    {
+      case 'unit':
+        //MODEL = validaUnit
+        if(!this.validaUnit)
+        {
+          $scope.validateColors(event, false);
+          return;
+        }
+
+        var regex = /[aA-zZ0-9-_]+/g;
+        var reviewRegex = regex.test(this.validaUnit);
+        console.log(reviewRegex);
+
+        return;
+
+        if(reviewRegex && this.validaUnit.length >= 2)
+        {
+          $scope.validateColors(event, true);
+        }
+        else
+        {
+          $scope.validateColors(event, false);
+        }
+
+      break;
+      case 'email':
+        //MODEL = validaMail
+
+        if(!this.validaMail)
+        {
+          $scope.validateColors(event, false);
+          return;
+        }
+
+        var regex = /^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/g;
+        var reviewRegex = regex.test(this.validaMail);
+
+        if(reviewRegex)
+        {
+          $scope.validateColors(event, true);
+        }
+        else
+        {
+          $scope.validateColors(event, false);
+        }
+
+      break;
+      case 'name':
+        //MODEL = model['NAME'] as modelName ATTR
+
+        var modelName = $('#'+event.target.id).attr('modelname');
+
+        if(!this.model || !this.model[modelName])
+        {
+          $scope.validateColors(event, false);
+          return;
+        }
+
+        if(this.model[modelName].length >= 2)
+          $scope.validateColors(event, true);
+        else
+          $scope.validateColors(event, false);
+
+
+      break;
+      case 'tel':
+        //MODEL = validaTel
+
+        var regex = /\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/g;
+        var reviewRegex = regex.test(this.validaTel);
+
+
+        if(reviewRegex)
+        {
+          $scope.validateColors(event, true);
+        }
+        else
+          $scope.validateColors(event, false);
+
+//        console.log(reviewRegex);
+
+
+
+
+      break;
+    }
+  }
+  $scope.validateColors       = function (event, val){
+    if(val){
+      $('#' + event.target.id).css('border-color', '#00c853');
+      $('#' + event.target.id).attr('pass', true);
+    }
+    else{
+      $('#' + event.target.id).css('border-color', 'crimson');
+      $('#' + event.target.id).attr('pass', false);
+    }
   }
 
 

@@ -439,7 +439,7 @@ app.controller('customerInvoiceHistoryController',  function ($scope, $http){
   if(!$scope.invoiceData)
     $http.get("getInvoiceHistory", {params:{'id':$scope.idCustomer}})
       .then(function (response) {
-        console.log(response.data);
+//        console.log(response.data);
         $scope.invoiceData = response.data;
       });
 
@@ -456,7 +456,7 @@ app.controller('customerNetworkController',         function ($scope, $http){
   $http.get("getCustomerNetwork", {params:{'id':$scope.idCustomer}})
     .then(function (response) {
       $scope.customerNetwork = response.data[0];
-//      console.log($scope.customerNetwork);
+      console.log($scope.customerNetwork);
 
 
 
@@ -773,7 +773,7 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http){
       .then(function (response)
       {
         //$scope.paymentMethods = response.data;
-        console.log(response.data);
+//        console.log(response.data);
 
         if(response.data.RESPONSETEXT == 'RETURN ACCEPTED')
         {
@@ -820,7 +820,7 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http){
       .then(function (response)
       {
         //$scope.paymentMethods = response.data;
-        console.log(response.data);
+//        console.log(response.data);
         processing(0);
 
         $.smallBox({
@@ -858,7 +858,7 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http){
       .then(function (response)
       {
         //$scope.paymentMethods = response.data;
-        console.log(response.data);
+//        console.log(response.data);
         if(response.data.RESPONSETEXT == 'APPROVED')
         {
           $.smallBox({

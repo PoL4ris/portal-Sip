@@ -141,6 +141,9 @@
 .p-l-lg {
   padding-left: 15px;
 }
+.capitals{
+  text-transform: uppercase;
+}
 .ddd{
   border:1px dotted silver
 }
@@ -1170,6 +1173,61 @@ table.dataTable tbody tr {
 .transaction-result-box{
   clear: both;
 }
+
+.cn-customer {
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+.cn-customer .container {
+  background: white none repeat scroll 0 0;
+  padding-top: 20px;
+}
+.cn-customer .cn-title {
+  border-bottom: 1px solid #ddd;
+  color: #babbbd;
+  display: inline-block;
+  font-size: 20px;
+  margin-bottom: 35px;
+  width: 100%;
+}
+.cn-customer .cn-containers {
+  height: 70px;
+}
+.cn-customer .cn-containers label {
+  color: #7d7d7d;
+  font-size: 14px;
+  font-weight: inherit;
+  margin-bottom: 10px;
+}
+.cn-customer .cn-containers input {
+  -moz-border-bottom-colors: none;
+  -moz-border-left-colors: none;
+  -moz-border-right-colors: none;
+  -moz-border-top-colors: none;
+  border-color: currentcolor currentcolor #ddd;
+  border-image: none;
+  border-style: none none solid;
+  border-width: medium medium 1px;
+  margin-bottom: 10px;
+  width: 100%;
+  color: #006eb9;
+}
+.cn-customer .cn-containers input::placeholder{
+  color: #bfbfbf;
+}
+.cn-customer .cn-containers select {
+
+}
+#img-displayed img{
+  max-height: 150px;
+}
+.color-click{
+  color: #3276b1;
+}
+.clip-style:hover{
+  opacity:.7;
+}
+
+
 
 pre {
   margin: 30px;
