@@ -1211,7 +1211,8 @@ table.dataTable tbody tr {
   width: 100%;
   color: #006eb9;
 }
-.cn-customer .cn-containers input::placeholder{
+.cn-customer .cn-containers input::placeholder,
+.search-subnav-nc input::placeholder{
   color: #bfbfbf;
 }
 .cn-customer .cn-containers select {
@@ -1226,8 +1227,29 @@ table.dataTable tbody tr {
 .clip-style:hover{
   opacity:.7;
 }
+.search-subnav-nc{
+  margin-bottom: 10px;
+}
+.search-subnav-nc input{
+  width: 100%;
+  border: none;
+  font-size: 14px;
+  border-bottom: 1px solid #ddd;
+}
 
 
+.filter-bld-nc{
+  max-height: 150px;
+  overflow: auto;
+  color: #3276b1;
+}
+.filter-bld-nc div{
+  /*color: #3276b1;*/
+  cursor: pointer;
+}
+.filter-bld-nc div:hover{
+  opacity: .7;
+}
 
 pre {
   margin: 30px;

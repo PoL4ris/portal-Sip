@@ -435,21 +435,16 @@ angular.module('SmartAdmin.Forms').directive('smartFueluxWizard', function () {
       });
 
       wizard.on('finished.fu.wizard', function (e, data) {
-
-      console.log('me la pelas duro');
-      console.log($form);
-
         var formData = {};
         _.each($form.serializeArray(), function(field){
-
-      console.log('algo adentro de algo');
           formData[field.name] = field.value
         });
         if(typeof scope.smartWizardCallback() === 'function'){
           scope.smartWizardCallback()(formData)
         }
 
-        console.log(formData);
+        angular.element('.cn-customer').scope().verifyCForm(formData);
+
       });
     }
   }

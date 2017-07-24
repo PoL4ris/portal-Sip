@@ -332,13 +332,10 @@ app.controller('globalToolsCtl',                    function ($scope, $http, $co
           return;
         }
 
-        var regex = /[aA-zZ0-9-_]+/g;
+        var regex = /([~!@#$%^&*()+=`'/?{}|<>,.;:])/g;
         var reviewRegex = regex.test(this.validaUnit);
-        console.log(reviewRegex);
 
-        return;
-
-        if(reviewRegex && this.validaUnit.length >= 2)
+        if(!reviewRegex && this.validaUnit.length >= 2)
         {
           $scope.validateColors(event, true);
         }
@@ -346,6 +343,8 @@ app.controller('globalToolsCtl',                    function ($scope, $http, $co
         {
           $scope.validateColors(event, false);
         }
+
+
 
       break;
       case 'email':

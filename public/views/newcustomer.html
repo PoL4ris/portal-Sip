@@ -2,12 +2,8 @@
 
 
 <div class="col-lg-12 cn-customer">
-
-
     <div class="container">
         <div class="widget-body fuelux" data-smart-fuelux-wizard data-smart-wizard-callback="wizard2CompleteCallback">
-
-
             <div class="wizard">
                 <ul class="steps">
                     <li data-step="1" class="active"><span class="badge badge-info">1</span>Customer Info.<span class="chevron"></span></li>
@@ -23,14 +19,10 @@
                     </button>
                 </div>
             </div>
-
-
             <div class="step-content">
                 <form class="form-horizontal">
-
                     <div class="step-pane active" data-step="1">
                         <h3><strong>Step 1 </strong> - Main Customer Info.</h3>
-
                         <fieldset>
                             <div class="col-lg-6">
                                 <div class="row">
@@ -38,8 +30,8 @@
                                         <label for="" class="">First Name<span class="down-status">*</span></label>
                                         <input type="text"
                                                required
-                                               name="First Name"
-                                               ng-keyup="verifyCForm(); validateField('name')"
+                                               name="first_name"
+                                               ng-keyup="validateField('name')"
                                                ng-model="model['fname']"
                                                placeholder="First Name"
                                                modelname="fname"
@@ -49,8 +41,8 @@
                                         <label for="" class="">Last Name<span class="down-status">*</span></label>
                                         <input type="text"
                                                required
-                                               name="Last Name"
-                                               ng-keyup="verifyCForm(); validateField('name'); "
+                                               name="last_name"
+                                               ng-keyup="validateField('name'); "
                                                ng-model="model['lname']"
                                                placeholder="Last Name"
                                                modelname="lname"
@@ -62,29 +54,26 @@
                                                required
                                                name="email"
                                                placeholder="Email"
-                                               ng-keyup="verifyCForm(); validateField('email')"
+                                               ng-keyup="validateField('email')"
                                                ng-model="validaMail"
                                                id="cn-email">
                                     </div>
                                 </div>
                             </div>
-
                             <div class="col-lg-6">
                                 <div class="row">
                                     <div class="col-lg-12 cn-containers">
                                         <label for="">Default Status: <span class="up-status">Active</span></label>
                                     </div>
                                     <div class="col-lg-12 cn-containers">
-
-                                            <label for="" class="">Phone Contact<span class="down-status">*</span></label>
-                                            <input type="text"
-                                                   required
-                                                   name="contact_value"
-                                                   placeholder="Ex: 312-123-5533"
-                                                   ng-keyup="verifyCForm(); validateField('tel')"
-                                                   ng-model="validaTel"
-                                                   id="cn-tel">
-
+                                        <label for="" class="">Phone Contact<span class="down-status">*</span></label>
+                                        <input type="text"
+                                               required
+                                               name="contact_value"
+                                               placeholder="Ex: 312-123-5533"
+                                               ng-keyup="validateField('tel')"
+                                               ng-model="validaTel"
+                                               id="cn-tel">
                                     </div>
                                     <div class="col-lg-12 cn-containers">
                                         <label for="" class="">VIP</label>
@@ -93,18 +82,17 @@
                                 </div>
                             </div>
                         </fieldset>
-
                     </div>
-
                     <div class="step-pane" data-step="2">
                         <h3><strong>Step 2 </strong> - Location Info.</h3>
-                        <div class="col-lg-6">
+                        <div class="col-lg-4">
                             <div class="col-lg-12 cn-containers">
                                 <label for="" class="m-r-lg">Address<span class="down-status">*</span></label>
-                                <select name="Address" ng-change="setImageBuilding()" ng-model="selectedOption" required>
+                                <select ng-change="setImageBuilding(0)" ng-model="selectedOption" id="cn-select-address-opt">
                                     <option value="">Select Address</option>
                                     <option value="{{building.id}}" ng-repeat="building in buildingsData">{{building.code}} | {{building.name}}</option>
                                 </select>
+                                <input type="hidden" id="cn-address-value" name="address">
                             </div>
                             <div class="col-lg-12 cn-containers">
                                 <label for="" class="">Unit Number<span class="down-status">*</span></label>
@@ -121,38 +109,41 @@
                                 <input type="text" readonly name="" value="Chicago, IL, 60616">
                             </div>
                         </div>
-
-
-                        <div class="col-lg-6">
-                            <div class="col-lg-12 no-display" id="img-displayed">
+                        <div class="col-lg-8">
+                            <div class="col-lg-6 ">
+                                <div class="search-subnav-nc">
+                                    <input type="text"
+                                           placeholder="Filter Search"
+                                           ng-keyup="filterBldList(1)"
+                                           ng-model="filterBldListModel"
+                                           id="cn-filter"
+                                           class="color-click">
+                                </div>
+                                <div class="filter-bld-nc">
+                                    <div ng-repeat="filterBld in bldListResult" ng-click="setImageBuilding(1)" class="">
+                                        {{filterBld.code}} | {{filterBld.name}}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 no-display" id="img-displayed">
                                 <img src="{{selectedBuilding}}" alt="">
                             </div>
                         </div>
-
-
                     </div>
-
                     <div class="step-pane" data-step="3">
-                        <h3><strong>Step 3 </strong> - Wizard continued</h3>
+                        <h3><strong>Step 3 </strong> - Select Switch to select port.</h3>
                         <br>
                         <br>
 
-                        <h1 class="text-center text-primary"> This will be your Step 3 </h1>
+                        <h1 class="text-center text-primary"> Response lists. </h1>
                         <br>
                         <br>
                         <br>
                         <br>
                     </div>
-
-
                 </form>
             </div>
-
-
             <hr>
-
         </div>
     </div>
-
-
 </div>

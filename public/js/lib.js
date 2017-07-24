@@ -167,44 +167,83 @@ app.controller('newcustomerAppController', function($scope, $http, customerServi
       $scope.buildingsData = response.data
     })
 
-    $scope.setImageBuilding   = function (){
-      if(this.selectedOption == '')
+    $scope.setImageBuilding   = function (type){
+      var optionVal = null;
+      if(type == 0)
       {
-        $('#img-displayed').fadeOut();
-        return;
+        if(this.selectedOption == '')
+        {
+          $('#img-displayed').fadeOut();
+          return;
+        }
+
+        if($scope.buildingsData[this.selectedOption])
+          $scope.selectedBuilding = '/img/buildings/' + $scope.buildingsData[this.selectedOption].img_building;
+
+        $('#cn-filter').val('');
+        optionVal = this.selectedOption;
       }
-      $scope.selectedBuilding = '/img/buildings/' + $scope.buildingsData[this.selectedOption].img_building;
+      else
+      {
+        if(this.filterBld == '')
+        {
+          $('#img-displayed').fadeOut();
+          return;
+        }
+
+        $scope.selectedBuilding = '/img/buildings/' + this.filterBld.img_building;
+        $('#cn-filter').val(this.filterBld.code + ' | ' + this.filterBld.name);
+        $('#cn-select-address-opt').val('');
+        optionVal = this.filterBld.id;
+      }
+
+      $scope.bldListResult = null;
+      $('#cn-address-value').val(optionVal);
+      $('#cn-address-value').attr('pass', true);
       $('#img-displayed').fadeIn();
+
+      $scope.getSwitchInfo(optionVal);
+
     }
-    $scope.verifyCForm        = function (){
+
+    $scope.getSwitchInfo      = function (idBuilding) {
+
+      console.log('idBuilding | ' + idBuilding);
+      $scope.dummyInfo = {}
+
+    }
+    $scope.verifyCForm        = function (formData){
+
+
+
+    console.log(formData);
+    return;
 
       var fname = $('#cn-fname').attr('pass');
       var lname = $('#cn-lname').attr('pass');
       var email = $('#cn-email').attr('pass');
       var tel   = $('#cn-tel').attr('pass');
+      var bld   = $('#cn-address-value').attr('pass');
 
-      if(fname && lname && email && tel)
+      if(fname && lname && email && tel && bld)
       {
         console.log(fname + ' | ' + lname + ' | ' + email + ' | ' + tel);
-
       }
       else
         console.log('error');
-
-
-
-
     }
 
+  $scope.filterBldList              = function () {
+    $http.get("getFilterBld", {params: {'query': this.filterBldListModel}})
+      .then(function (response) {
+        $scope.bldListResult = response.data;
+      });
+  }
+
+
+
+
 });
-
-
-
-
-
-
-
-
 
 
 
