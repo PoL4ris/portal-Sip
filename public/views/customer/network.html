@@ -19,12 +19,9 @@
                          ng-click="getCoreData(customerNetwork.network_node.ip_address)"
                          data-toggle="modal"
                          data-target="#corStats">
-                        <!--<a href="" >-->
-                            <!--{{ customerNetwork.network_node.ip_address?customerNetwork.network_node.ip_address:'' }}-->
-                        <!--</a>-->
                         <input id="ip-clipboard-id" type="text" readonly="" value="{{ customerNetwork.network_node.ip_address?customerNetwork.network_node.ip_address:'' }}" class="color-click no-border">
                     </div>
-                    <div class="col-lg-4 no-padding-sides cursor-pointer clip-style" ng-click="copyClipboard('ip-clipboard-id')"><i class="fa fa-clipboard"></i> <small class="text-muted">Clipboard</small></div>
+                    <div class="col-lg-4 no-padding-sides cursor-pointer clip-style" ng-click="copyClipboard('ip-clipboard-id')"><i class="fa fa-clipboard"></i> <small class="text-muted">Copy</small></div>
 
                 </div>
                 <div class="field-data  col-lg-12 padding-5">
