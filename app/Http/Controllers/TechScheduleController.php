@@ -107,7 +107,7 @@ class TechScheduleController extends Controller {
                     $tablesetup[$x][$key] = ['type' => 'closed', 'tech' => $value['tech'], 'hour' => $x + $tableoffset];
                 } else
                 {
-                    $tablesetup[$x][$key] = ['type' => 'free', 'tech' => $value['tech'], 'hour' => $x + $tableoffset];
+                    $tablesetup[$x][$key] = ['type' => 'free', 'tech' => $value['tech'], 'hour' => $x + $tableoffset, 'date' => date_format($date,'Y/m/d')];
                 }
             }
 
@@ -331,6 +331,15 @@ class TechScheduleController extends Controller {
         $origin = json_decode($request['origin']);
         $destination = json_decode($request['destination']);
 
+        if (isset($destination->date))
+        {
+
+            $date = new DateTime($destination->date);
+        } else
+        {
+            $date = new DateTime('now');
+        }
+
         //remove $origin->tech and replace with destination->tech
         $event = $Calendar->service->events->get(Config::get('google.pending_appointment'), $origin->eventid);
 
@@ -347,6 +356,9 @@ class TechScheduleController extends Controller {
         $eventend = new DateTime($eventstart->format(DATE_RFC3339));
         $eventend->add($diff);
 
+        $eventstart->setDate($date->format('Y'),$date->format('m'),$date->format('d'));
+        $eventend->setDate($date->format('Y'),$date->format('m'),$date->format('d'));
+
         $start = new \Google_Service_Calendar_EventDateTime();
         $start->setTimeZone('America/Chicago');
         $start->setDateTime($eventstart->format(DATE_RFC3339));
@@ -357,6 +369,7 @@ class TechScheduleController extends Controller {
         $event->setStart($start);
         $event->setEnd($end);
         $event->setSummary($summary);
+
         $updateDescription = $event->getDescription();
 
         $today = new DateTime();

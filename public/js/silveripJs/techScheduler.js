@@ -7,11 +7,12 @@ app.controller('techschedulercontroller', function ($scope, $http, customerServi
 
     $scope.today = new Date();
     $scope.techscheduledate = $('.datepicker').val() != '' ? $('.datepicker').val() : (($scope.today.getMonth() + 1) + '/' + $scope.today.getDate() + '/' + $scope.today.getFullYear());
-
+    $scope.loadinganimation = true;
     $scope.renewtable = function (date) {
-        console.log('table is renewing');
-        $('.datepicker').val(date);  //repopulates date field
         $scope.loadinganimation = true;
+        console.log('table is renewing');
+        $(".datepicker").val(date);  //repopulates date field
+
         $http.get("/tech-schedule/generatetable", {
             params: {date: date}
         }).then(function (response) {
@@ -20,15 +21,18 @@ app.controller('techschedulercontroller', function ($scope, $http, customerServi
         });
     };
 
+    $scope.dateselected = function(date) {
+        angular.element('#techscheduledate').scope().techscheduledate = date;
+        angular.element('#techscheduledate').scope().loadinganimation = true;  //loadinganimation, for some reason not displaying
+        angular.element('#techscheduledate').scope().renewtable($scope.techscheduledate);
 
-    $('.datepicker').datepicker({
-        onSelect: function (date) {
-            $scope.techscheduledate = date;
-            console.log($scope.techscheduledate);
-            $scope.renewtable($scope.techscheduledate);
+    };
 
-        }
+    $(".datepicker").datepicker({
+        onSelect: $scope.dateselected
     });
+
+
 
     $scope.renewtable($scope.techscheduledate);
     $scope.selectaddress = '';
@@ -83,23 +87,36 @@ $scope.selectaddress = ui.item.address;
 
     $scope.dragAppointmentEnd = function (event, ui) {
         //and the info from the target cell
+        $scope.loadinganimation = true;
+        //console.log('start of drag end')
         var origininput = ui.draggable.find('input').val();
+        //console.log('origininput');
+       // console.log(origininput);
+       // console.log('destination');
+      //  console.log( $(this).find('input').val() );
+//make an ajax call with both of these value and then figure it out on the back end.
 
-//so make an ajax call with both of these value and then figure it out on the back end.
         $.ajax({
             type: "GET",
             url: '/tech-schedule/moveappointment',
             data: {origin: origininput, destination: $(this).find('input').val()},
             success: $scope.movedappointment,
         });
-        $scope.loadinganimation = true;
 
+      //  console.log('drag end');
+
+    };
+
+    $scope.parkAppointment = function (event, ui) {
+
+        $('.parking').html(ui.draggable);
+        console.log('parking');
     };
 
 
     $scope.populatetable = function (data) {
 // console.log(data);
-
+$scope.loadinganimation = true;
         $('.scheduletable').html("");
         $('.scheduletable').append('<tbody>');
         var row = '';  //building the table rows one line at a time.
@@ -180,7 +197,8 @@ $scope.selectaddress = ui.item.address;
                 snap: ".freeappointment",
                 snapMode: "inner",
                 revert: true,
-                containment: ".scheduletable",
+                helper: "clone",
+                containment: ".schedulecontainer",
                 cursor: "move",
                 refreshPositionsType: true,
             });
@@ -189,9 +207,15 @@ $scope.selectaddress = ui.item.address;
                 drop: $scope.dragAppointmentEnd,
                 hoverClass: "hovercss",
             });
-            $scope.loadinganimation = false;  //clear the loading animation.
-        });
 
+
+            $('.parking').droppable({
+                drop: $scope.parkAppointment,
+                hoverClass: "hovercss",
+            });
+            $scope.loadinganimation = false;
+        });
+          //clear the loading animation.
 //end drag and drop
     };
 
@@ -204,7 +228,7 @@ $scope.selectaddress = ui.item.address;
             data: {date: date},
             success: $scope.populatetable,
         });
-
+        $('.parking').html("to move an appointment to another day, first park it here.");
     };
 
 
@@ -235,17 +259,18 @@ $scope.selectaddress = ui.item.address;
                 document.getElementById("scheduleform").reset();
                 document.getElementById("buildingcode").style.backgroundColor = 'white';
                 $scope.selectaddress= '';
+
                 $scope.renewtable($scope.techscheduledate);
                 $scope.messages = response.data['htmlLink'];
                 console.log(response.data);
             }
         });
 
-        $scope.loadinganimation = false;
+
         return true;
     };
 
-    return;
+
 
 });
 
@@ -261,6 +286,7 @@ app.controller('tech-appointments', function ($scope, $http, customerService) {
     $scope.techalias = $scope.userDataAuth.alias;
 
     $scope.refresh = function () {
+        $scope.loadinganimation = true;
         $http.get('/tech-schedule/myappointments', {params: {tech: $scope.techalias}}).then(function (response) {
                 $scope.appointments = response.data;
                // console.log($scope.appointments);
@@ -270,7 +296,7 @@ app.controller('tech-appointments', function ($scope, $http, customerService) {
     };
 
     $scope.refresh();
-    $scope.loadinganimation = false;
+
 
 
     $scope.arguments = [];
@@ -296,5 +322,5 @@ app.controller('tech-appointments', function ($scope, $http, customerService) {
 
     };
 
-    return;
+
 });

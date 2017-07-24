@@ -13,7 +13,7 @@ class ChangeStatusToIntInChargesTable extends Migration
     public function up()
     {
         Schema::table('charges', function (Blueprint $table) {
-            $table->int('status')->nullable()->change();
+            $table->integer('status')->nullable()->change();
         });
     }
 
