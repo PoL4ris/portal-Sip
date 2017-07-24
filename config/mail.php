@@ -3,6 +3,11 @@
 return [
 
     /*
+     *  SilverIP support email receipient
+     */
+    'support-ticket-recipient'  => env('SUPPORT_TICKET_RECIPIENT'),
+
+    /*
     |--------------------------------------------------------------------------
     | Mail Driver
     |--------------------------------------------------------------------------

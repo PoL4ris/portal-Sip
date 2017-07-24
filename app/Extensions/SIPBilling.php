@@ -254,7 +254,7 @@ class SIPBilling {
 
             $request['Token'] = $pm->account_number;
             $result['PaymentType'] = $pm->types;
-            $result['PaymentTypeDetails'] = ($pm->properties != '') ? json_decode($pm->properties, true)[0] : '';
+            $result['PaymentTypeDetails'] = ($pm->properties != '') ? json_decode($pm->properties, true) : '';
         } else {
             // Use the card number and details in the request
             if (isset($request['CardName']) == false) {
@@ -335,13 +335,17 @@ class SIPBilling {
             }
         }
 
+        Log::info('processCC(): $request: ' . print_r($request, true));
+
         $ippayresult = array();
         $ipPayHandle = new IpPay();
 
         //process card - 0 is for test server, 1 for live server
         if ($this->testMode == true) {
+            Log::info('processCC(): Calling IpPay in test mode');
             $ippayresult = $ipPayHandle->process($request, 0);  // IPPay test server
         } else {
+            Log::info('processCC(): Calling IpPay in production mode');
             $ippayresult = $ipPayHandle->process($request, 1);  // IPPay live server
         }
 
@@ -385,6 +389,55 @@ class SIPBilling {
 
         Log::info('SIPBilling: Charge '.$response.': ' . "\n" . print_r($chargeResult,true));
         return $response;
+    }
+
+    public function chargeCustomer(Customer $customer, $amount = 0, $desc = 'SilverIP Comm', $orderNumber = false, $details = false) {
+
+        if($customer == null){
+            $result['TRANSACTIONID'] = '';   //Returns the unique tranaction ID
+            $result['ACTIONCODE'] = '900';     // 000 = Approved, else Denied
+            $result['APPROVAL'] = 'ERROR';
+            $result['CVV2'] = '';
+            $result['VERIFICATIONRESULT'] = '';
+            $result['RESPONSETEXT'] = 'ERROR';
+            $result['ADDRESSMATCH'] = '';
+            $result['ZIPMATCH'] = '';
+            $result['AVS'] = '';
+            $result['FAILED'] = 'Customer not found';
+            $result['ERRMSG'] = 'Customer not found';
+            $this->logChargeResult($result);
+            return $result;
+        }
+
+        $paymentMethod = $customer->defaultPaymentMethod;
+
+        if($paymentMethod == null){
+            $result['TRANSACTIONID'] = '';   //Returns the unique tranaction ID
+            $result['ACTIONCODE'] = '900';     // 000 = Approved, else Denied
+            $result['APPROVAL'] = 'ERROR';
+            $result['CVV2'] = '';
+            $result['VERIFICATIONRESULT'] = '';
+            $result['RESPONSETEXT'] = 'ERROR';
+            $result['ADDRESSMATCH'] = '';
+            $result['ZIPMATCH'] = '';
+            $result['AVS'] = '';
+            $result['FAILED'] = 'Payment method not found';
+            $result['ERRMSG'] = 'Payment method not found';
+            $this->logChargeResult($result);
+            return $result;
+        }
+
+        $xactionRequest = array();
+        if ($orderNumber != false) {
+            $xactionRequest['OrderNumber'] = $orderNumber;
+        }
+        $result = $this->processCC($xactionRequest, false, $amount, $desc, $paymentMethod);
+
+        $result['Comment'] = $customer->comment;
+        if(isset($result['FAILED']) == false){
+            $this->storeXaction($result, $customer, $paymentMethod->address, $paymentMethod,  $details);
+        }
+        return $result;
     }
 
     public function chargePaymentMethod($paymentMethodId, $amount = 0, $desc = 'SilverIP Comm', $orderNumber = false, $details = false) {
@@ -455,6 +508,52 @@ class SIPBilling {
         $result = $this->processCC($cardInfo, true, $amount, $desc, null, $address);
         if(isset($result['FAILED']) == false){
             $result['TransactionLogId'] = $this->storeXaction($result, null, $address, null,  $details);
+        }
+        return $result;
+    }
+
+    public function refundCustomer(Customer $customer, $amount = 0, $desc = 'SilverIP Comm', $details = false) {
+
+        if($customer == null){
+            $result['TRANSACTIONID'] = '';   //Returns the unique tranaction ID
+            $result['ACTIONCODE'] = '900';     // 000 = Approved, else Denied
+            $result['APPROVAL'] = 'ERROR';
+            $result['CVV2'] = '';
+            $result['VERIFICATIONRESULT'] = '';
+            $result['RESPONSETEXT'] = 'ERROR';
+            $result['ADDRESSMATCH'] = '';
+            $result['ZIPMATCH'] = '';
+            $result['AVS'] = '';
+            $result['FAILED'] = 'Customer not found';
+            $result['ERRMSG'] = 'Customer not found';
+            $this->logChargeResult($result);
+            return $result;
+        }
+
+        $paymentMethod = $customer->defaultPaymentMethod;
+
+        if($paymentMethod == null){
+            $result['TRANSACTIONID'] = '';   //Returns the unique tranaction ID
+            $result['ACTIONCODE'] = '900';     // 000 = Approved, else Denied
+            $result['APPROVAL'] = 'ERROR';
+            $result['CVV2'] = '';
+            $result['VERIFICATIONRESULT'] = '';
+            $result['RESPONSETEXT'] = 'ERROR';
+            $result['ADDRESSMATCH'] = '';
+            $result['ZIPMATCH'] = '';
+            $result['AVS'] = '';
+            $result['FAILED'] = 'Payment method not found';
+            $result['ERRMSG'] = 'Payment method not found';
+            $this->logChargeResult($result);
+            return $result;
+        }
+
+        $xactionRequest = ['TransactionType' => 'CREDIT'];
+        $result = $this->processCC($xactionRequest, false, $amount, $desc, $paymentMethod);
+
+        $result['Comment'] = $customer->comment;
+        if(isset($result['FAILED']) == false){
+            $this->storeXaction($result, $customer, $paymentMethod->address, $paymentMethod,  $details);
         }
         return $result;
     }

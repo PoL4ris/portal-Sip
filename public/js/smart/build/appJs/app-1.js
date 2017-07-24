@@ -193,7 +193,8 @@ var app = angular.module('app', [
   'app.tech-appointments',
   'app.dummyapp',
   'app.reports',
-  'app.charges'
+  'app.charges',
+  'app.newcustomer'
 ])
   .config(function ($provide, $httpProvider, RestangularProvider) {
 

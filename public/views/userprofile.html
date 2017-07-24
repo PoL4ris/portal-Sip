@@ -3,11 +3,11 @@
     <div class="col-lg-7 profile-css">
         <h2>USER PROFILE INFO</h2>
 
-        <div class="col-lg-1 img no-padding-sides"><img src="{{profileData.avatar}}" alt=""></div>
+        <div class="col-lg-1 img no-padding-sides"><img src="{{profileData.avatar?profileData.avatar:'/img/male.png'}}" alt="{{ profileData.first_name }}"></div>
         <div class="col-lg-6">
-            <p>First Name: <label for="">{{ profileData.first_name }}</label></p>
-            <p>Last Name: <label for="">{{ profileData.last_name }} </label></p>
-            <p>Username: <label for="">{{ profileData.email }} </label></p>
+            <p>First Name: <label >{{ profileData.first_name }}</label></p>
+            <p>Last Name: <label >{{ profileData.last_name }} </label></p>
+            <p>Username: <label >{{ profileData.email }} </label></p>
         </div>
         <div class="col-lg-5 no-padding-sides">
             <p>Social Access: <label>{{ profileData.social_access == 1 ? 'Yes' : 'No' }}</label></p>

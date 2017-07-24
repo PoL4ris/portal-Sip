@@ -21,6 +21,7 @@ app.controller('supportController',                 function ($scope, $http, DTO
     $http.get("getNoneBillingTickets")
       .then(function (response) {
         $scope.supportData = response.data;
+//        console.log(response.data);
         setLoading(0);
       });
   };
@@ -44,6 +45,7 @@ app.controller('supportController',                 function ($scope, $http, DTO
         setLoading(0);
       });
   };
+
   if(customerService.stateRoute == 'support'){
 
     if(customerService.sideBarFlag) {
@@ -56,10 +58,12 @@ app.controller('supportController',                 function ($scope, $http, DTO
     $http.get("getTicketOpenTime")
       .then(function (response) {
         $scope.ticketOpenTime = response.data;
+
       });
   }
-  $scope.letterLimit = 40;
-  $scope.dtOptions = DTOptionsBuilder.newOptions().withPaginationType('full_numbers').withDisplayLength(50).withOption('order', [8, 'desc']);
+  $scope.letterLimit  = 40;
+  $scope.dtOptions    = DTOptionsBuilder.newOptions().withPaginationType('full_numbers').withDisplayLength(50).withOption('order', [8, 'desc']);
+
   $scope.showFullComment                = function(id) {
     $('#ticket-' + id).fadeIn('slow');
   };
@@ -67,14 +71,15 @@ app.controller('supportController',                 function ($scope, $http, DTO
     $('#ticket-' + id).fadeOut('fast');
   };
   $scope.displayCustomerResume          = function (id){
-    $scope.stcid = id;
-    $scope.stcFlag = false;
+    $scope.stcid    = id;
+    $scope.stcFlag  = false;
     callMidView('Customer');
   };//NO se usará mas
   //MODAL DATA
   $scope.displayTicketResume            = function (id, idCustomer){
-    supportService.searchFlag = true;
+    supportService.searchFlag     = true;
     $scope.selectedCustomerTicket = null;
+    $scope.selectedTicket         = null;
     $scope.midTicketId = id;
     $scope.stcid       = idCustomer;
     $scope.stcFlag     = true;
@@ -144,8 +149,7 @@ app.controller('supportController',                 function ($scope, $http, DTO
   };
   $scope.submitForm                     = function (idForm) {
 
-    var infoData = getFormValues(idForm);
-
+    var infoData   = getFormValues(idForm);
     infoData['id'] = $scope.selectedTicket.id;
 
     $http.get("updateTicketDetails", {params:infoData})
@@ -155,22 +159,20 @@ app.controller('supportController',                 function ($scope, $http, DTO
   };
   $scope.submitFormUpdate               = function (idForm) {
 
-
     $('#onticket-update-btn').attr('disabled', true);
 
     var infoData = getFormValues(idForm);
+
     if (infoData.comment == ''){
       $('#onticket-update-btn').removeAttr('disabled');
       return;
     }
 
     $scope.loadingGif = true;
-
-    infoData['id'] = $scope.selectedTicket.id;
+    infoData['id']    = $scope.selectedTicket.id;
 
     $http.get("updateTicketHistory", {params:infoData})
       .then(function (response) {
-
 
         $scope.selectedTicket = response.data;
         $('#onticket-update-btn').removeAttr('disabled');
@@ -185,6 +187,9 @@ app.controller('supportController',                 function ($scope, $http, DTO
           iconSmall: "fa fa-thumbs-up bounce animated",
           timeout: 6000
         });
+
+        $('#ticketModal').modal('toggle');
+        $scope.refreshSupportContent();
 
         if(customerService.stateRoute == 'customers')
           angular.element('#ticket-history-repeat-id').scope().getTicketHistory();
@@ -220,7 +225,7 @@ app.controller('supportController',                 function ($scope, $http, DTO
 
     this.genericSearch   = null;
     $scope.genericSearch = null;
-    $scope.focusIndex = 0;
+    $scope.focusIndex    = 0;
     $scope.buscadorTicketModal();
   };
   $scope.setCustomerTicket              = function (){
@@ -288,8 +293,8 @@ app.controller('supportControllerTools',            function ($scope, $http) {
   $scope.buscador = function(side) {
     var query = {};
     if (side == 'center')
-      query = {'code': this.searchCenterCode?this.searchCenterCode:false,
-        'unit': this.searchCenterUnit?this.searchCenterUnit:false};
+      query = {'code': this.searchCenterCode ? this.searchCenterCode : false,
+               'unit': this.searchCenterUnit ? this.searchCenterUnit : false};
 
     if (query['code'] == false && query['unit'] == false)
     {
@@ -308,7 +313,7 @@ app.controller('supportControllerTools',            function ($scope, $http) {
   };
   $scope.updateCustomerTicketName = function () {
     var customerID =  warpol('#save-block-b').attr('idCustomerUpdate')
-    var ticketID = $scope.selectedTicket.id;
+    var ticketID   = $scope.selectedTicket.id;
 
     $http.get("updateTicketCustomerName", {params:{'id':ticketID, 'id_customers':customerID}})
       .then(function (response) {

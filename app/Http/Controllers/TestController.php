@@ -15,6 +15,8 @@ use App\Extensions\DataMigrationUtils;
 use DB;
 //use App\User;
 use App\Models\Customer;
+use App\Models\Charge;
+use App\Models\Invoice;
 use App\Models\Ticket;
 use App\Models\CustomerProduct;
 use App\Models\DataMigration;
@@ -140,100 +142,12 @@ class TestController extends Controller
     
     public function supportTest()
     {
+        $customer = new Customer;
+        $resultado = $customer->getTickets(7435);
 
 
-        //Dashboard data Working
-        $result = array();
-        $result['commercial'] = Building::where('type', 'like', '%commercial%')->count();
-        $result['retail']     = Building::where('type', 'not like', '%commercial%')->count();
-        $result['tickets']    = Ticket::where('status', '!=', 'closed')->count();
-        $ticketAverage        = DB::select('SELECT 
-                                              avg(TIMESTAMPDIFF(HOUR, created_at, updated_at)) as hours,
-                                              avg(TIMESTAMPDIFF(DAY, created_at, updated_at))  as days
-                                            FROM tickets
-                                              where updated_at > created_at
-                                              and status like "%closed%"')[0];
-        $result['avgHour']    = $ticketAverage->hours;
-        $result['avgDay']     = $ticketAverage->days;
-        return $result;
-
-
-
-
-
-        $data = Building::with('address', 'neighborhood', 'contacts')->find(68);
-        $data->properties = BuildingPropertyValue::join('building_properties',
-            'building_property_values.id_building_properties',
-            '=',
-            'building_properties.id')
-            ->where('building_property_values.id_buildings', '=', 68)
-            ->select('*', 'building_property_values.id as idBpv')
-            ->get();
-
-
-
-
-            dd($data->toArray());
-
-
-
-
-
-
-
-
-
-
-        $calendar   = new GoogleCalendar;
-        $date       = new DateTime ('05/22/2017');
-        $result = array();
-
-        //Rango de fecha 12 horas, de 8 am a 8pm
-        $scheduleRange          = $calendar->getScheduleRange(new DateTime ('05/22/2017'));
-        //Nombres de los Tecnicos [0]
-        $scheduledTechs         = $calendar->GetTechSchedule($date);
-
-        //Pending Appointments [0]
-        $pendingAppointments    = $calendar->GetPendingAppointments($date);
-        //Citas completadas
-        $completedAppointments  = $calendar->GetCompletedAppointments($date);
-        //Onsite Appts
-        $onsiteAppointments     = $calendar->GetOnsiteAppointments($date);
-
-
-        $result['total_events'] = count($pendingAppointments) + count($completedAppointments) + count($onsiteAppointments);
-        $result['pending']      = count($pendingAppointments);
-        $result['complete']     = count($completedAppointments) ;
-        $result['onsite']       = count($onsiteAppointments);
-
-        dd($result);
-
-
-//
-//
-//
-//
-
-
-
-
-//        $warpol = new TechScheduleController;
-//
-//        dd($warpol->GenerateTableSchedule());
-
-
-//    dd(User::with('accessApps', 'accessApps.apps')->find(1)->toArray());
-        $war = User::find(1)->accessApps->load('apps')->pluck('apps', 'apps.position')->sortBy('position');
-        dd($war);
-        $war = User::find(1);
-        $warpol = $war->accessApps->load('apps')->pluck('apps', 'apps.position')->sortBy('position');
-
-        dd(
-            $warpol
-//            $warpol->sortBy('position')->toArray()
-        );
-
-
+        dd( $resultado->toArray() );
+        die();
     }
 
     public function mail()
@@ -406,14 +320,34 @@ class TestController extends Controller
 //        $customer = Customer::find(4667);
 //        dd($customer->customerProducts);
 
+//        $charge = Charge::find(97);
+//        dd($charge);
+
+
+        $invoice = Invoice::find(97);
+        $invoiceDetails = $invoice->details();
+        $detailsCollection = collect($invoiceDetails);
+        $customerProductIds = $detailsCollection->pluck('customer_product_id')->toArray();
+        dd($customerProductIds);
+
+
+        $charges = $invoice->charges;
+        $details = $charges->pluck('details');
+        foreach($details as $chargeDetails){
+            dd(json_decode($chargeDetails, true));
+        }
+        dd($details);
+
+
         $billingHelper = new BillingHelper();
 
 //        $billingHelper->generateResidentialChargeRecords();
+        $billingHelper->invoicePendingCharges();
 
 //        dd($billingHelper->getCustomersWithChargableProducts(28));
 //        dd($billingHelper->getChargeableCustomerProductsByBuildingId(28));
 //        dd($billingHelper->getChargeableCustomerProducts2(null,28));
-        dd($billingHelper->invoicePendingCharges());
+//        dd($billingHelper->invoicePendingCharges());
 
 //        dd($billingHelper->generateResidentialInvoiceRecords());
         //        $billingHelper->processAutopayInvoices();
@@ -457,6 +391,10 @@ class TestController extends Controller
 
     public function generalTest()
     {
+
+        $pm = PaymentMethod::find(14331);
+        dd(json_decode($pm->properties, true));
+
 
         $building = Building::find(30);
 

@@ -1,0 +1,158 @@
+<hr>
+
+
+<div class="col-lg-12 cn-customer">
+
+
+    <div class="container">
+        <div class="widget-body fuelux" data-smart-fuelux-wizard data-smart-wizard-callback="wizard2CompleteCallback">
+
+
+            <div class="wizard">
+                <ul class="steps">
+                    <li data-step="1" class="active"><span class="badge badge-info">1</span>Customer Info.<span class="chevron"></span></li>
+                    <li data-step="2"><span class="badge">2</span>Address Info.<span class="chevron"></span></li>
+                    <li data-step="3"><span class="badge">3</span>Network Info.<span class="chevron"></span></li>
+                </ul>
+                <div class="actions">
+                    <button type="button" class="btn btn-sm btn-primary btn-prev">
+                        <i class="fa fa-arrow-left"></i>Prev
+                    </button>
+                    <button type="button" class="btn btn-sm btn-success btn-next" data-last="Finish" id="next-step-btn">
+                        Next<i class="fa fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+
+
+            <div class="step-content">
+                <form class="form-horizontal">
+
+                    <div class="step-pane active" data-step="1">
+                        <h3><strong>Step 1 </strong> - Main Customer Info.</h3>
+
+                        <fieldset>
+                            <div class="col-lg-6">
+                                <div class="row">
+                                    <div class="col-lg-12 cn-containers">
+                                        <label for="" class="">First Name<span class="down-status">*</span></label>
+                                        <input type="text"
+                                               required
+                                               name="First Name"
+                                               ng-keyup="verifyCForm(); validateField('name')"
+                                               ng-model="model['fname']"
+                                               placeholder="First Name"
+                                               modelname="fname"
+                                               id="cn-fname">
+                                    </div>
+                                    <div class="col-lg-12 cn-containers">
+                                        <label for="" class="">Last Name<span class="down-status">*</span></label>
+                                        <input type="text"
+                                               required
+                                               name="Last Name"
+                                               ng-keyup="verifyCForm(); validateField('name'); "
+                                               ng-model="model['lname']"
+                                               placeholder="Last Name"
+                                               modelname="lname"
+                                               id="cn-lname">
+                                    </div>
+                                    <div class="col-lg-12 cn-containers">
+                                        <label for="" class="">Email<span class="down-status">*</span></label>
+                                        <input type="text"
+                                               required
+                                               name="email"
+                                               placeholder="Email"
+                                               ng-keyup="verifyCForm(); validateField('email')"
+                                               ng-model="validaMail"
+                                               id="cn-email">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="row">
+                                    <div class="col-lg-12 cn-containers">
+                                        <label for="">Default Status: <span class="up-status">Active</span></label>
+                                    </div>
+                                    <div class="col-lg-12 cn-containers">
+
+                                            <label for="" class="">Phone Contact<span class="down-status">*</span></label>
+                                            <input type="text"
+                                                   required
+                                                   name="contact_value"
+                                                   placeholder="Ex: 312-123-5533"
+                                                   ng-keyup="verifyCForm(); validateField('tel')"
+                                                   ng-model="validaTel"
+                                                   id="cn-tel">
+
+                                    </div>
+                                    <div class="col-lg-12 cn-containers">
+                                        <label for="" class="">VIP</label>
+                                        <input type="text" name="vip" placeholder="Ex: Friend of Silver">
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+
+                    </div>
+
+                    <div class="step-pane" data-step="2">
+                        <h3><strong>Step 2 </strong> - Location Info.</h3>
+                        <div class="col-lg-6">
+                            <div class="col-lg-12 cn-containers">
+                                <label for="" class="m-r-lg">Address<span class="down-status">*</span></label>
+                                <select name="Address" ng-change="setImageBuilding()" ng-model="selectedOption" required>
+                                    <option value="">Select Address</option>
+                                    <option value="{{building.id}}" ng-repeat="building in buildingsData">{{building.code}} | {{building.name}}</option>
+                                </select>
+                            </div>
+                            <div class="col-lg-12 cn-containers">
+                                <label for="" class="">Unit Number<span class="down-status">*</span></label>
+                                <input type="text"
+                                       required
+                                       name="unit"
+                                       placeholder="Ex: 1252"
+                                       ng-model="validaUnit"
+                                       ng-keyup="validateField('unit')"
+                                       id="cn-unit">
+                            </div>
+                            <div class="col-lg-12 cn-containers">
+                                <label for="" class="">City, State, ZIP</label>
+                                <input type="text" readonly name="" value="Chicago, IL, 60616">
+                            </div>
+                        </div>
+
+
+                        <div class="col-lg-6">
+                            <div class="col-lg-12 no-display" id="img-displayed">
+                                <img src="{{selectedBuilding}}" alt="">
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                    <div class="step-pane" data-step="3">
+                        <h3><strong>Step 3 </strong> - Wizard continued</h3>
+                        <br>
+                        <br>
+
+                        <h1 class="text-center text-primary"> This will be your Step 3 </h1>
+                        <br>
+                        <br>
+                        <br>
+                        <br>
+                    </div>
+
+
+                </form>
+            </div>
+
+
+            <hr>
+
+        </div>
+    </div>
+
+
+</div>

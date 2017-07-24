@@ -119,10 +119,6 @@ app.controller('dropZoneController', function($scope, $http, customerService){
     }
 ])
 
-
-
-
-
 app.controller('dummyAppController', function ($scope, $http,customerService){
   if (customerService.sideBarFlag) {
     $scope.sipTool(2);
@@ -149,6 +145,58 @@ app.controller('dummyAppController', function ($scope, $http,customerService){
 
 
 
+
+
+
+app.controller('newcustomerAppController', function($scope, $http, customerService){
+  console.log('this is the newcustomerAppController');
+
+
+
+
+
+  if (customerService.sideBarFlag) {
+    $scope.sipTool(2);
+    customerService.sideBarFlag = false;
+  }
+
+  $scope.selectedBuilding = '/img/logoSmall.png';
+
+    $http.get("getBuildingsList")
+    .then(function (response) {
+      $scope.buildingsData = response.data
+    })
+
+    $scope.setImageBuilding   = function (){
+      if(this.selectedOption == '')
+      {
+        $('#img-displayed').fadeOut();
+        return;
+      }
+      $scope.selectedBuilding = '/img/buildings/' + $scope.buildingsData[this.selectedOption].img_building;
+      $('#img-displayed').fadeIn();
+    }
+    $scope.verifyCForm        = function (){
+
+      var fname = $('#cn-fname').attr('pass');
+      var lname = $('#cn-lname').attr('pass');
+      var email = $('#cn-email').attr('pass');
+      var tel   = $('#cn-tel').attr('pass');
+
+      if(fname && lname && email && tel)
+      {
+        console.log(fname + ' | ' + lname + ' | ' + email + ' | ' + tel);
+
+      }
+      else
+        console.log('error');
+
+
+
+
+    }
+
+});
 
 
 

@@ -133,44 +133,34 @@ class BillingController extends Controller {
         $billingHelper = new BillingHelper();
         $result = $billingHelper->updateManualChargeAmount($charge, $amount, $comment, $user->id);
 
-        return ['response'=>'OK', 'updated_data' => $this->getPendingManualCharges()];
+        return ['response' => 'OK', 'updated_data' => $this->getPendingManualCharges()];
     }
 
     public function approveManualCharge(Request $request)
     {
         $input = $request->all();
-        $chargeId = $input['id'];
+        $chargeInputJson = $input['IDs'];
+        $chargeIDArray = json_decode($chargeInputJson, true);
 
-        $charge = Charge::find($chargeId);
-        if ($charge == null)
-        {
-            Log::notice('BillingController::approveManualCharge(): Charge not found with id: ' . $chargeId);
-
-            return 'ERROR';
-        }
         $billingHelper = new BillingHelper();
-        $result = $billingHelper->approveManualCharge($charge);
+        $result = $billingHelper->approveManualChargeList($chargeIDArray, false);
 
-        return $this->getPendingManualCharges();
+        return ['pending-charges' => $this->getPendingManualCharges(),
+                'results'         => $result];
     }
 
     public function denyManualCharge(Request $request)
     {
 
         $input = $request->all();
-        $chargeId = $input['id'];
+        $chargeInputJson = $input['IDs'];
+        $chargeIDArray = json_decode($chargeInputJson, true);
 
-        $charge = Charge::find($chargeId);
-        if ($charge == null)
-        {
-            Log::notice('BillingController::denyManualCharge(): Charge not found with id: ' . $chargeId);
-
-            return 'ERROR';
-        }
         $billingHelper = new BillingHelper();
-        $result = $billingHelper->denyManualCharge($charge);
+        $result = $billingHelper->denyManualChargeList($chargeIDArray);
 
-        return $this->getPendingManualCharges();
+        return ['pending-charges' => $this->getPendingManualCharges(),
+                'results'         => $result];
     }
 
     public function getPendingManualChargesByCustomer(Request $request)
@@ -184,15 +174,45 @@ class BillingController extends Controller {
 
             return 'ERROR';
         }
+
         return $customer->pendingManualCharges;
     }
 
     public function getPendingManualCharges()
     {
 
-        return Charge::where('status', config('const.charge_status.pending_approval'))
-                      ->where('processing_type', config('const.type.manual_pay'))
-                      ->get();
+        return Charge::with(['customer', 'address'])
+            ->where('status', config('const.charge_status.pending_approval'))
+            ->where('processing_type', config('const.type.manual_pay'))
+            ->get();
+    }
+
+    /**
+     * @param Request $request
+     * Year
+     * Month
+     * @return mixed
+     */
+    public function getChargesAndInvoices(Request $request)
+    {
+        $result['year'] = isset($request->chAndInYear) ? $request->chAndInYear : Date('Y');
+        $result['month'] = isset($request->chAndInMonth) ? $request->chAndInMonth : Date('M');
+
+        if (count($request->all()) > 1)
+            $timeData = '"' . $result['year'] . '-' . $result['month'] . '-' . '0"';
+        else
+            $timeData = 'CURRENT_DATE()';
+
+        $result['charges'] = Charge::with('customer',
+            'address',
+            'invoices',
+            'user',
+            'productDetail.product')
+            ->whereRaw('YEAR(start_date)  = YEAR(' . $timeData . ')')
+            ->whereRaw('MONTH(start_date) = MONTH(' . $timeData . ')')
+            ->get();
+
+        return $result;
     }
 
     public function insertPaymentMethod(Request $request)

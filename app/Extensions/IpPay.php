@@ -2,6 +2,8 @@
 
 namespace App\Extensions;
 
+use Log;
+
 /***************************************************************
   This Module was created to send and receive information from the IPPay credit card processing servers
 
@@ -280,8 +282,8 @@ TPL;
 
             //Verify result or display connection problems
             if ($result == NULL) {
-                error_log('Error:');
-                error_log(curl_errno($ch) . " - " . curl_error($ch));
+                Log::debug('Error:');
+                Log::debug(curl_errno($ch) . " - " . curl_error($ch));
                 return false;
                 //                print "Error:<br>";
                 //                print curl_errno($ch) . " - " . curl_error($ch) . "<br>";
@@ -460,13 +462,13 @@ TPL;
         }
 
         //        if ($testbol == 0) {
-        error_log('IPPay:rawProcess(): $this->ipPayXML: ' . print_r($this->cleanXML, true));
+        Log::debug('IPPay:rawProcess(): $this->ipPayXML: ' . print_r($this->cleanXML, true));
         //        }
         $result = $this->sendHTTP($url, $this->ipPayXML);
 
         $this->rawParsing($result);
 
-        error_log('IPPay:rawProcess(): $this->xactionResult: ' . print_r($this->xactionResult, true));
+        Log::debug('IPPay:rawProcess(): $this->xactionResult: ' . print_r($this->xactionResult, true));
 
         return $this->rawXactionResult;
     }
@@ -596,6 +598,10 @@ TPL;
                 $this->xactionResult['ERRMSG'] = "TotalAmount required for all non-TOKENIZE transactions.";
                 return $this->xactionResult;
             } else {
+                if ($this->xactionInfo['TotalAmount'] <= 1) {
+                    $this->xactionResult['ERRMSG'] = "Bad dollar amount. TotalAmount must be greater than 0.";
+                    return $this->xactionResult;
+                }
                 // IMPORTANT:
                 // Amount should be passed to this class normally (unpadded or with cents .xx)
                 // We will pad it with 00 if the cents are not provided
@@ -604,11 +610,6 @@ TPL;
                     $this->xactionInfo['TotalAmount'] .= '00';
                 } else {
                     $this->xactionInfo['TotalAmount'] = str_replace('.', '', $this->xactionInfo['TotalAmount']);
-                }
-
-                if ($this->xactionInfo['TotalAmount'] <= 1) {
-                    $this->xactionResult['ERRMSG'] = "Bad dollar amount. TotalAmount must be greater than 0.";
-                    return $this->xactionResult;
                 }
             }
         } else {
@@ -646,7 +647,7 @@ TPL;
         }
 
 
-        error_log('IPPay:process(): $this->ipPayXML: ' . print_r($this->cleanXML, true));
+        Log::debug('IPPay:process(): $this->ipPayXML: ' . print_r($this->cleanXML, true));
         //        }
         $result = $this->sendHTTP($url, $this->ipPayXML);
 
@@ -654,7 +655,7 @@ TPL;
       $this->parsing($result);
 
         //        if ($testbol == 0) {
-        error_log('IPPay:process(): $this->xactionResult: ' . print_r($this->xactionResult, true));
+        Log::debug('IPPay:process(): $this->xactionResult: ' . print_r($this->xactionResult, true));
         //        }
 
         return $this->xactionResult;
@@ -835,7 +836,7 @@ TPL;
         //Finish XML with End tag once the XML has been populated by the array
         $this->ipPayXML .= "</JetPay>";
         //     $this->ipPayXML .= "</ippay>";
-        //    error_log('$this->ipPayXML: '.print_r($this->ipPayXML,true));
+        //    Log::debug('$this->ipPayXML: '.print_r($this->ipPayXML,true));
         //    
         // DEBUG ONLY - Uncomment to see what's being passed
         //    $errors = array();
@@ -844,9 +845,9 @@ TPL;
         //    throw new FormValidateException($errors);
         //     return array($url,$this->ipPayXML);
         //Send XML and URL to processing function and recieve response. See function sendHTTP
-        //        error_log('IPPay:charge(): $this->ipPayXML: '.print_r($this->ipPayXML,true));
+        //        Log::debug('IPPay:charge(): $this->ipPayXML: '.print_r($this->ipPayXML,true));
         $result = $this->sendHTTP($url, $this->ipPayXML);
-        //        error_log('IPPay:charge(): $result: '.print_r($result,true));
+        //        Log::debug('IPPay:charge(): $result: '.print_r($result,true));
         // DEBUG ONLY - Uncomment to see what's being passed
         //    $errors = array();
         //    $errors['field18'] = "Here is the result from ippay: \n".$result." \nAnd the XML that we pass to ippay: \n".$this->ipPayXML;
@@ -871,7 +872,7 @@ TPL;
         $vals = array();
         xml_parse_into_struct($xml_parser, $result, $vals);
 
-        //        error_log(print_r($vals,true));
+        //        Log::debug(print_r($vals,true));
 
         xml_parse($xml_parser, $result);
 
@@ -881,7 +882,7 @@ TPL;
         for ($i = 0; $i < count($vals); $i++) {
             if ($vals[$i]['tag'] != "IPPayResponse") {
                 if (!isset($vals[$i]['value'])) {
-                    //                    error_log('IPPay:parsing(): $vals[$i][\'value\'] not set: ' . print_r($result, true));
+                    //                    Log::debug('IPPay:parsing(): $vals[$i][\'value\'] not set: ' . print_r($result, true));
                     //                    $this->xactionResult[$vals[$i]['tag']] = '';
                     continue;
                 } else {
@@ -904,7 +905,7 @@ TPL;
         $vals = array();
         xml_parse_into_struct($xml_parser, $result, $vals);
 
-        //        error_log(print_r($vals,true));
+        //        Log::debug(print_r($vals,true));
 
         xml_parse($xml_parser, $result);
 
@@ -915,7 +916,7 @@ TPL;
             if ($vals[$i]['tag'] != "IPPayResponse") {
                 //            if ($vals[$i]['tag'] != "JETPAYRESPONSE") {
                 if (!isset($vals[$i]['value'])) {
-                    //                    error_log('IPPay:parsing(): $vals[$i][\'value\'] not set: ' . print_r($result, true));
+                    //                    Log::debug('IPPay:parsing(): $vals[$i][\'value\'] not set: ' . print_r($result, true));
                     $this->xactionResult[$vals[$i]['tag']] = '';
                     continue;
                 } else {

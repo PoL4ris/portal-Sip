@@ -40,7 +40,7 @@ class InvoicePendingCharges extends Command
     {
         $this->info('Starting invoice generation');
         $billingHelper = new BillingHelper();
-        $billingHelper->invoicePendingCharges();
+        $billingHelper->invoicePendingAutoPayCharges();
         $this->info('Done');
     }
 }

@@ -253,20 +253,16 @@ app.controller('customerController',                function ($scope, $http, $st
     });
   };
   $scope.insertCustomerContact      = function (){
-    alert('disabled action.');
 
     var infoData = getFormValues('new-cct-form');
     infoData['id_customers'] = $scope.idCustomer;
 
-    console.log(infoData);
-    return;
-
-    $http.get("insertBuildingProperties", {params:infoData})
+    $http.get("insertContactInfo", {params:infoData})
       .then(function (response) {
-        $scope.bld = response.data;
+        $scope.customerContactsData = response.data.contacts;
       });
 
-    angular.element('#add-property-cancel').scope().fadeViews('bpv-container', 'new-form-function', 0, 'enable', 'add-property', 'add-property-cancel')
+    angular.element('#add-property-cancel').scope().fadeViews('bpv-container', 'new-form-function', 0, 'customer-contact', 'add-property', 'add-property-cancel')
     $('#new-bpv-form').trigger("reset");
   }
   //Product.html
@@ -443,6 +439,7 @@ app.controller('customerInvoiceHistoryController',  function ($scope, $http){
   if(!$scope.invoiceData)
     $http.get("getInvoiceHistory", {params:{'id':$scope.idCustomer}})
       .then(function (response) {
+//        console.log(response.data);
         $scope.invoiceData = response.data;
       });
 
@@ -459,7 +456,7 @@ app.controller('customerNetworkController',         function ($scope, $http){
   $http.get("getCustomerNetwork", {params:{'id':$scope.idCustomer}})
     .then(function (response) {
       $scope.customerNetwork = response.data[0];
-//      console.log($scope.customerNetwork);
+      console.log($scope.customerNetwork);
 
 
 
@@ -711,6 +708,9 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http){
 
 
 
+
+
+
   //Temporal version to work with
   $scope.refundFunct        = function (){
 
@@ -735,15 +735,21 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http){
     $http.get("manualRefund", {params:objects})
       .then(function (response)
       {
-        console.log(response.data);
         processing(0);
+        $.smallBox({
+          title: "Transaction Completed!",
+          content: "<i class='fa fa-clock-o'></i> <i>3 seconds ago...</i>",
+          color: "transparent",
+          iconSmall: "fa fa-thumbs-up bounce animated",
+          timeout: 6000
+        });
+
+        $('#paymentManualRefound').modal('toggle');
+        $('#manual-charge-form').trigger("reset");
       });
 
 
   }
-
-
-
   $scope.refundFunctXXX        = function (){
     $scope.errorMsgPaymentMethods = null;
 
@@ -767,7 +773,7 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http){
       .then(function (response)
       {
         //$scope.paymentMethods = response.data;
-        console.log(response.data);
+//        console.log(response.data);
 
         if(response.data.RESPONSETEXT == 'RETURN ACCEPTED')
         {
@@ -792,9 +798,6 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http){
   };//working functin to refound.
 
 
-
-
-
   $scope.chargeFunct        = function (){
     $scope.errorMsgPaymentMethods = null;
 
@@ -817,8 +820,19 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http){
       .then(function (response)
       {
         //$scope.paymentMethods = response.data;
-        console.log(response.data);
+//        console.log(response.data);
         processing(0);
+
+        $.smallBox({
+          title: "Transaction Completed!",
+          content: "<i class='fa fa-clock-o'></i> <i>3 seconds ago...</i>",
+          color: "transparent",
+          iconSmall: "fa fa-thumbs-up bounce animated",
+          timeout: 6000
+        });
+
+        $('#paymentManualCharge').modal('toggle');
+        $('#manual-charge-form').trigger("reset");
 
       });
   }
@@ -844,7 +858,7 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http){
       .then(function (response)
       {
         //$scope.paymentMethods = response.data;
-        console.log(response.data);
+//        console.log(response.data);
         if(response.data.RESPONSETEXT == 'APPROVED')
         {
           $.smallBox({
@@ -866,7 +880,12 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http){
         $('#paymentManualCharge').modal('toggle');
         $('#manual-charge-form').trigger("reset");
       });
-  };
+  };//working functin to refound.
+
+
+
+
+
   $scope.prepareFields = function(){
     $('#manual-refund-form').trigger("reset");
     $('#manual-charge-form').trigger("reset");

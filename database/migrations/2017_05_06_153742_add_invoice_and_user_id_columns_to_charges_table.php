@@ -3,8 +3,8 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddInvoiceAndUserIdColumnsToChargesTable extends Migration
-{
+class AddInvoiceAndUserIdColumnsToChargesTable extends Migration {
+
     /**
      * Run the migrations.
      *
@@ -26,7 +26,8 @@ class AddInvoiceAndUserIdColumnsToChargesTable extends Migration
      */
     public function down()
     {
-        Schema::table('charges', function (Blueprint $table) {
+        Schema::table('charges', function (Blueprint $table)
+        {
             $table->dropColumn('id_invoices');
             $table->dropColumn('id_users');
         });

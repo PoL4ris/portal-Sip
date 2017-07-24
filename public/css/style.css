@@ -39,7 +39,7 @@
   background: rgba(255, 122, 122, 0.3) none repeat scroll 0 0 !important;
   border: 1px solid #ff7a7a;
 }
-.old-yellow {
+.old-yellow{
   background: rgba(224, 219, 10, 0.3) none repeat scroll 0 0 !important;
   border: 1px solid #e0db0a;
 }
@@ -141,9 +141,13 @@
 .p-l-lg {
   padding-left: 15px;
 }
+.capitals{
+  text-transform: uppercase;
+}
 .ddd{
   border:1px dotted silver
 }
+
 .size-50 {
   width: 50%;
 }
@@ -892,6 +896,7 @@ table.dataTable tbody tr {
   min-height: 100%;
   position: fixed;
   width: 200px;
+  /*border-right:1px solid #ddd;*/
 }
 .sub-nav .admin-sub-nav {
   padding: 10px;
@@ -1109,6 +1114,120 @@ table.dataTable tbody tr {
   top:-20px;
   left:0;
 }
+
+.ch-border{
+  border:2px solid red;
+  border-top:none;
+  border-bottom:none;
+  border-left:1px solid transparent;
+  border-right:1px solid transparent;
+}
+.ch-border-1{
+  border-left:3px solid;
+}
+.ch-pending, .ch-1{
+  /*background: rgba(224, 219, 10, 0.3) none repeat scroll 0 0 !important;*/
+  border-color: #e0db0a;
+}
+.ch-invoiced, .ch-2{
+  /*background: rgba(144, 224, 107, 0.3) none repeat scroll 0 0 !important;*/
+  border-color: #90e06b;
+}
+.ch-paid, .ch-3{
+  /*background: rgba(0, 134, 255, 0.3) none repeat scroll 0 0 !important;*/
+  border-color: #0086ff;
+}
+.ch-failed, .ch-4{
+  /*background: rgba(255, 122, 122, 0.3) none repeat scroll 0 0 !important;*/
+  border-color: #ff7a7a;
+}
+.ch-disabled, .ch-5{
+  /*background: rgba(250, 251, 252, 0.3) none repeat scroll 0 0 !important;*/
+  border-color: #000000;
+}
+.ch-pending-Approval, .ch-6{
+  /*background: rgba(255, 214, 0, 0.3) none repeat scroll 0 0 !important;*/
+  border-color: #ffd600;
+}
+.ch-denied, .ch-7{
+  /*background: rgba(255, 109, 0, 0.3) none repeat scroll 0 0 !important;*/
+  border-color: #ff6d00;
+}
+.ch-active-month{
+  border-bottom: 3px solid #0086ff;
+}
+.ch-active-year{
+  border-bottom: 3px solid #00c853;
+}
+.months-select-style{
+
+}
+.months-select-style:hover{
+  background: rgba(0, 134, 255, 0.17);
+}
+.align-smart-form-check{
+  display: inline-block;
+  top: -10px;
+  left: 15px;
+}
+.transaction-result-box{
+  clear: both;
+}
+
+.cn-customer {
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+.cn-customer .container {
+  background: white none repeat scroll 0 0;
+  padding-top: 20px;
+}
+.cn-customer .cn-title {
+  border-bottom: 1px solid #ddd;
+  color: #babbbd;
+  display: inline-block;
+  font-size: 20px;
+  margin-bottom: 35px;
+  width: 100%;
+}
+.cn-customer .cn-containers {
+  height: 70px;
+}
+.cn-customer .cn-containers label {
+  color: #7d7d7d;
+  font-size: 14px;
+  font-weight: inherit;
+  margin-bottom: 10px;
+}
+.cn-customer .cn-containers input {
+  -moz-border-bottom-colors: none;
+  -moz-border-left-colors: none;
+  -moz-border-right-colors: none;
+  -moz-border-top-colors: none;
+  border-color: currentcolor currentcolor #ddd;
+  border-image: none;
+  border-style: none none solid;
+  border-width: medium medium 1px;
+  margin-bottom: 10px;
+  width: 100%;
+  color: #006eb9;
+}
+.cn-customer .cn-containers input::placeholder{
+  color: #bfbfbf;
+}
+.cn-customer .cn-containers select {
+
+}
+#img-displayed img{
+  max-height: 150px;
+}
+.color-click{
+  color: #3276b1;
+}
+.clip-style:hover{
+  opacity:.7;
+}
+
+
 
 pre {
   margin: 30px;

@@ -183,7 +183,7 @@
                                             <td ng-init="resultDate = convertDate(history.created_at)" ng-if="history.created_at">{{resultDate | date : "MMM d, y h:mm a" }}</td>
                                             <td class="th-comment" height="100">{{history.comment}}</td>
                                             <td>{{history.status}}</td>
-                                            <td>{{dataUsersAssigned[history.id_users].alias}}</td>
+                                            <td>{{historyData.user.alias}}</td>
                                         </tr>
                                         </tbody>
                                     </table>

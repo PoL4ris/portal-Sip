@@ -1053,7 +1053,7 @@ nav ul li a {
     position: relative;
     width: 5px;
 }
-.cdg-color-down, .cdg-color-missing {
+.cdg-color-down, .cdg-color-missing{
     background: #ec6f69 none repeat scroll 0 0;
 }
 .cdg-color-up {

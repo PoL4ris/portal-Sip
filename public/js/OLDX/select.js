@@ -954,7 +954,28 @@
           focusser.bind("keydown", function(e){
 
             if (e.which === KEY.BACKSPACE) {
-              e.preventDefault();
+
+
+
+
+
+
+
+
+
+            ONCLICK="magnanimoPol(this);"...
+            function magnanimoPol(event){
+
+              event.preventDefault();
+            }
+
+
+
+
+
+
+
+
               e.stopPropagation();
               $select.select(undefined);
               scope.$apply();

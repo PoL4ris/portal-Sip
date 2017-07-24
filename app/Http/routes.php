@@ -119,12 +119,14 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('refundAmountAction',        'CustomerController@refundAmountAction');
     Route::get('chargeAmountAction',        'CustomerController@chargeAmountAction');
 
-    Route::get('manualRefund',             'BillingController@manualRefund');
-    Route::get('manualCharge',             'BillingController@manualCharge');
-    Route::get('updateManualCharge',      'BillingController@updateManualCharge');
-    Route::get('approveManualCharge',     'BillingController@approveManualCharge');
-    Route::get('denyManualCharge',        'BillingController@denyManualCharge');
-    Route::get('getPendingManualCharges', 'BillingController@getPendingManualCharges');
+    Route::get('manualRefund',              'BillingController@manualRefund');
+    Route::get('manualCharge',              'BillingController@manualCharge');
+    Route::get('updateManualCharge',        'BillingController@updateManualCharge');
+    Route::get('approveManualCharge',       'BillingController@approveManualCharge');
+    Route::get('denyManualCharge',          'BillingController@denyManualCharge');
+    Route::get('getPendingManualCharges',   'BillingController@getPendingManualCharges');
+
+    Route::get('getChargesAndInvoices',     'BillingController@getChargesAndInvoices');
 
     //UpdateCustomer
     Route::get('updateAddressTable',        'CustomerController@updateAddressTable');

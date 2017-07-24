@@ -291,7 +291,7 @@ class CustomerController extends Controller
      */
     public function getInvoiceHistory(Request $request)
     {
-        return Invoice::where('id_customers', $request->id)->get();
+        return Invoice::with('address')->where('id_customers', $request->id)->get();
     }
     /**
      * @param Request $request
@@ -617,12 +617,12 @@ class CustomerController extends Controller
     public function insertContactInfo(Request $request)
     {
         $newContact = new Contact;
-        $newContact->id_customers = $request->customerId;
-        $newContact->id_types = $request->typeId;
-        $newContact->value = $request->contactInfoVal;
+        $newContact->id_customers = $request->id_customers;
+        $newContact->id_types = $request->id_types;
+        $newContact->value = $request->value;
         $newContact->save();
 
-        return Customer::with('contacts')->find($request->customerId);
+        return Customer::with('contacts')->find($request->id_customers);
     }
     /**
      * @param Request $request
@@ -651,7 +651,7 @@ class CustomerController extends Controller
 
         //1 = new ticket
         //2 = update ticket
-        SendMail::ticketMail($newTicket, 1);
+        SendMail::ticketMail($newTicket, config('const.ticket_status.new'));
         return 'OK';
     }
     /**
