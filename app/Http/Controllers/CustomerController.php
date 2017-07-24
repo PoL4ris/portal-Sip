@@ -40,14 +40,19 @@ use SendMail;
  * @package App\Http\Controllers
  * Auth::user()->id = Logged User id.
  */
+class CustomerController extends Controller {
 
-class CustomerController extends Controller
-{
     protected $logType;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->middleware('auth');
         $this->logType = 'customer';
+    }
+
+    public function addCustomer(Request $request)
+    {
+        dd($request);
     }
 
     /**
@@ -60,32 +65,32 @@ class CustomerController extends Controller
     {
         $string = $request->querySearch;
         $select = "SELECT * FROM address INNER JOIN customers ON address.id_customers = customers.id ";
-        $limit  = ' limit 50';
-        $arrX   = array();
-        $arrY   = ' ';
+        $limit = ' limit 50';
+        $arrX = array();
+        $arrY = ' ';
         $whereFlag = false;
-        $pattern   = '/([0-9])\w+/';
+        $pattern = '/([0-9])\w+/';
         $stringArray = explode(' ', $string);
 
-        foreach($stringArray as $index => $item)
+        foreach ($stringArray as $index => $item)
         {
             preg_match($pattern, $item, $patternItemResult);
 
-            if(count($patternItemResult) == 0)
+            if (count($patternItemResult) == 0)
                 $arrX[$index] = " AND ( address.code like '%" . $item . "%' or address.unit like '%" . $item . "%' or customers.first_name like '%" . $item . "%' or customers.last_name like '%" . $item . "%' or customers.email like '%" . $item . "%')";
             else
             {
-                if($whereFlag)
-                    $arrX['where'] .= " AND (address.code like '%" .  $patternItemResult[0] . "%' OR address.unit like '%". $patternItemResult[0] . "%') ";
+                if ($whereFlag)
+                    $arrX['where'] .= " AND (address.code like '%" . $patternItemResult[0] . "%' OR address.unit like '%" . $patternItemResult[0] . "%') ";
                 else
                 {
                     $whereFlag = true;
-                    $arrX['where'] = " where (address.code like '%" .  $patternItemResult[0] . "%' OR address.unit like '%". $patternItemResult[0] . "%') ";
+                    $arrX['where'] = " where (address.code like '%" . $patternItemResult[0] . "%' OR address.unit like '%" . $patternItemResult[0] . "%') ";
                 }
             }
         }
 
-        if($whereFlag)
+        if ($whereFlag)
         {
             $tmpWhere = $arrX['where'];
             unset($arrX['where']);
@@ -93,11 +98,12 @@ class CustomerController extends Controller
 
         $arrY .= $whereFlag ? $tmpWhere : '';
 
-        foreach($arrX as $idx => $or)
+        foreach ($arrX as $idx => $or)
             $arrY .= $or;
 
         return DB::select($select . $arrY . $limit);
     }
+
     /**
      * @param Request $request
      * id = id_customers to get data.
@@ -107,17 +113,18 @@ class CustomerController extends Controller
     public function customersData(Request $request)
     {
         return Customer::with('addresses',
-                              'contacts',
-                              'type',
-                              'address.buildings',
-                              'address.buildings.neighborhood',
-                              'status',
-                              'status.type',
-                              'openTickets',
-                              'log',
-                              'log.user')
+            'contacts',
+            'type',
+            'address.buildings',
+            'address.buildings.neighborhood',
+            'status',
+            'status.type',
+            'openTickets',
+            'log',
+            'log.user')
             ->find($request->id);
     }
+
     /**
      * @param Request $request
      * id = id_customers to get Status.
@@ -127,8 +134,9 @@ class CustomerController extends Controller
     {
         return Customer::with('status')->find($request->id)['status'];
     }
+
     /**
-     * @param Request $request.
+     * @param Request $request .
      * id = id_customers
      * note = Note to add to customer;
      * @return Notes attached to this customer.
@@ -136,13 +144,14 @@ class CustomerController extends Controller
     public function insertCustomerNote(Request $request)
     {
         $note = new Note;
-        $note->comment      = $request->note;
-        $note->created_by   = Auth::user()->id;
+        $note->comment = $request->note;
+        $note->created_by = Auth::user()->id;
         $note->id_customers = $request->id;
         $note->save();
 
         return Note::where('id_customers', $request->id)->get();
     }
+
     /**
      * @param Request $request
      * id = id_customers to get all his notes.
@@ -152,6 +161,7 @@ class CustomerController extends Controller
     {
         return Note::where('id_customers', $request->id)->get();
     }
+
     /**
      * @param Request $request
      * id = id_customers to search info and reset password
@@ -161,11 +171,11 @@ class CustomerController extends Controller
     public function resetCustomerPassword(Request $request)
     {
         $customer = Customer::with('contact')->find($request->id);
-        $match    = preg_split('/[^0-9]+/', $customer->contact->value);
+        $match = preg_split('/[^0-9]+/', $customer->contact->value);
 
-        foreach($match as $item)
+        foreach ($match as $item)
         {
-            if(isset($result))
+            if (isset($result))
                 $result .= $item;
             else
                 $result = $item;
@@ -177,6 +187,7 @@ class CustomerController extends Controller
         //ADD ACTIVITY LOG HERE
         return ['response' => 'OK', 'password' => $result];
     }
+
     /**
      * @param Request $request
      * id = id_customers to get all contacts related to this customer.
@@ -186,6 +197,7 @@ class CustomerController extends Controller
     {
         return Customer::with('contacts')->find($request->id);
     }
+
     /**
      * @return Types of Contact:
      * Mobile Phone
@@ -198,6 +210,7 @@ class CustomerController extends Controller
     {
         return ContactType::get();
     }
+
     /**
      * @param Request $request
      * id = id_customers to get Default = 1,  Payment Method.
@@ -206,8 +219,10 @@ class CustomerController extends Controller
     public function getDefaultPaymentMethod(Request $request)
     {
         $customer = Customer::find($request->id);
+
         return ($customer->defaultPaymentMethod != null) ? [$customer->defaultPaymentMethod, $customer->defaultPaymentMethod->getProperties()] : [];
     }
+
     /**
      * @param Request $request
      * id = id_customers to get all Payment Methods of this Customer.
@@ -216,8 +231,10 @@ class CustomerController extends Controller
     public function getAllPaymentMethods(Request $request)
     {
         $customer = Customer::find($request->id);
+
         return $customer->allPaymentMethods;
     }
+
     /**
      * @param Request $request
      * id = Payment method id to set this as a default payment method
@@ -234,8 +251,8 @@ class CustomerController extends Controller
 
         // Deactivate other payment methods
         PaymentMethod::where('id_customers', $request->customerID)
-                     ->where('id', '!=', $request->id)
-                     ->update(['priority' => 0]);
+            ->where('id', '!=', $request->id)
+            ->update(['priority' => 0]);
 
         $newDefaultPm = $customer->defaultPaymentMethod;
 
@@ -248,6 +265,7 @@ class CustomerController extends Controller
 
         return $customer->allPaymentMethods;
     }
+
     /**
      * @param Request $request
      * id = id_customers to find all tickets related to.
@@ -258,6 +276,7 @@ class CustomerController extends Controller
     {
         return Customer::with('tickets')->find($request->id);
     }
+
     /**
      * @param Request $request
      * id = id_customers to get all ticket history.
@@ -266,8 +285,10 @@ class CustomerController extends Controller
     public function getTicketHistory(Request $request)
     {
         $customer = new Customer;
+
         return $customer->getTickets($request->id);
     }
+
     /**
      * getTicketHistoryNotes:
      */
@@ -275,6 +296,7 @@ class CustomerController extends Controller
     {
         return TicketNote::find($request->id);
     }//REMOVE FROM ROUTES TO BE ABLE TO REMOVE FROM HERE NOT IN USE ANYMORE.VERIFY THIS.
+
     /**
      * @param Request $request
      * id = id_reason to find in reasons table.
@@ -284,6 +306,7 @@ class CustomerController extends Controller
     {
         return Reason::find($request->id);
     }
+
     /**
      * @param Request $request
      * id = id_customers to get invoice huistory records.
@@ -293,6 +316,7 @@ class CustomerController extends Controller
     {
         return Invoice::with('address')->where('id_customers', $request->id)->get();
     }
+
     /**
      * @param Request $request
      * id = id_customers to get all billing transaction log.
@@ -302,6 +326,7 @@ class CustomerController extends Controller
     {
         return billingTransactionLog::where('id_customers', $request->id)->get();
     }
+
     /**
      * @param Request $request
      * id = id_customers to get Customer services.
@@ -311,6 +336,7 @@ class CustomerController extends Controller
     {
         return Customer::with('services')->find($request->id ? $request->id : $request->idCustomer);
     }
+
     /**
      * @param Request $request
      * id = id of customer product to get data of.
@@ -320,6 +346,7 @@ class CustomerController extends Controller
     {
         return CustomerProduct::with('product')->find($request->id);
     }
+
     /**
      * @param Request $request
      * id = id product to get status.
@@ -329,6 +356,7 @@ class CustomerController extends Controller
     {
         return CustomerProduct::with('status')->find($request->id);
     }
+
     /**
      * getCustomerBuilding
      */
@@ -340,10 +368,9 @@ class CustomerController extends Controller
         die();
 
 
-
-
         return CustomerProduct::with('status')->find($request->id);
     }
+
     /**
      * @param Request $request
      * id = id_customers to get network info
@@ -353,9 +380,11 @@ class CustomerController extends Controller
     {
         $customer = new Customer;
         $customer = Customer::find($request->id);
-        $netInfo  = $customer->getNetworkInfo();
+        $netInfo = $customer->getNetworkInfo();
+
         return $netInfo;
     }
+
     /**
      * @param $id
      * id = id product to get Port attached to the customer.
@@ -365,14 +394,17 @@ class CustomerController extends Controller
     {
         return CustomerProduct::with('port')->where('id_customers', $id)->get()[0]->id;
     }
+
     /**
      * getCustomerList
      */
-    public function getCustomerList ()//VERIFY USAGE, AND REMOVE FROM ROUTES, CUSTOMERCONTROLLER.PHP AND CUSTOMERCONTROLLER.JS->NG-CONTROLLER. VERIFY THIS.
+    public function getCustomerList()//VERIFY USAGE, AND REMOVE FROM ROUTES, CUSTOMERCONTROLLER.PHP AND CUSTOMERCONTROLLER.JS->NG-CONTROLLER. VERIFY THIS.
     {
         return Ticket::with('customer', 'address')->orderBy('created_at', 'asc')->where('id_customers', '!=', 1)->groupBy('id_customers')->take(100)->get();
+
         return Customer::all()->take(100);
     }
+
     /**
      * getCustomerList
      */
@@ -380,6 +412,7 @@ class CustomerController extends Controller
     {
         return Address::groupBy('id_buildings')->get();
     }
+
     /**
      * @param Request $request
      * id = id_customers to update.
@@ -391,7 +424,7 @@ class CustomerController extends Controller
      */
     public function updateAddressTable(Request $request)
     {
-        $newData    = array();
+        $newData = array();
         $hasHashtag = explode('#', $request->value);
 
         $newData[$request->field] = (count($hasHashtag) == 1) ? $hasHashtag[0] : $hasHashtag[1];
@@ -404,6 +437,7 @@ class CustomerController extends Controller
 
         return 'OK';
     }
+
     /**
      * @param Request $request
      * id = id_customers to update.
@@ -413,7 +447,7 @@ class CustomerController extends Controller
      */
     public function updateCustomersTable(Request $request)
     {
-        $params  = $request->all();
+        $params = $request->all();
         $newData = array();
         $newData[$params['field']] = $params['value'];
 
@@ -428,6 +462,7 @@ class CustomerController extends Controller
 
         return 'OK';
     }
+
     /**
      * @param Request $request
      * id = id contact to find and update.
@@ -442,9 +477,11 @@ class CustomerController extends Controller
         $record = Contact::find($request->id);
         $record->value = $request->value;
         $record->save();
+
         return 'OK';
 
     }
+
     /**
      * @param Request $request
      * id = id_customer to update record.
@@ -463,11 +500,12 @@ class CustomerController extends Controller
         $contactExist->value = $request->value;
         $contactExist->save();
 
-        ActivityLogs::add($this->logType, $request->id, 'update', 'updateContactsTable',  $contactExist, $newData, null, 'update-contact');
+        ActivityLogs::add($this->logType, $request->id, 'update', 'updateContactsTable', $contactExist, $newData, null, 'update-contact');
 
         return 'OK';
 
     }
+
     /**
      * @param Request $request
      * id = id_customers to find
@@ -477,6 +515,7 @@ class CustomerController extends Controller
     {
         return Customer::find($request->id);
     }
+
     /**
      * @param Request $request
      * idProduct = id product to get frequency.
@@ -491,12 +530,12 @@ class CustomerController extends Controller
         $expires = date("Y-m-d H:i:s", strtotime($when));
 
         $newData = new CustomerProduct();
-        $newData->id_customers   = $request->idCustomer;
-        $newData->id_products    = $request->idProduct;
-        $newData->id_status      = 1;
-        $newData->signed_up      = date("Y-m-d H:i:s");
-        $newData->expires        = $expires;
-        $newData->id_users       = Auth::user()->id;
+        $newData->id_customers = $request->idCustomer;
+        $newData->id_products = $request->idProduct;
+        $newData->id_status = 1;
+        $newData->signed_up = date("Y-m-d H:i:s");
+        $newData->expires = $expires;
+        $newData->id_users = Auth::user()->id;
         $newData->save();
 
         $relationData = Product::find($request->idProduct);
@@ -506,6 +545,7 @@ class CustomerController extends Controller
         return $this->getCustomerServices($request);
 
     }
+
     /**
      * @param $type
      * Array index to get proper frequency to add.
@@ -513,14 +553,16 @@ class CustomerController extends Controller
      */
     public function getTimeToAdd($type)
     {
-        $timeToAdd = array('annual'    => 'first day of next year',
-                           'monthly'   => 'first day of next month',
-                           'onetime'   => 'first day of next month',
-                           'Included'  => 'first day of next month',
-                           'included'  => 'first day of next month'
-                          );
+        $timeToAdd = array('annual'   => 'first day of next year',
+                           'monthly'  => 'first day of next month',
+                           'onetime'  => 'first day of next month',
+                           'Included' => 'first day of next month',
+                           'included' => 'first day of next month'
+        );
+
         return $timeToAdd[$type];
     }
+
     /**
      * @param Request $request
      * id = id_customers.
@@ -549,6 +591,7 @@ class CustomerController extends Controller
         return $this->getCustomerServices($request);
 
     }
+
     /**
      * @param Request $request
      * id = id_customers.
@@ -576,6 +619,7 @@ class CustomerController extends Controller
 
         return $this->getCustomerServices($request);
     }
+
     /**
      * @param Request $request
      * newId = new id product to update TO.
@@ -591,10 +635,10 @@ class CustomerController extends Controller
 
         $updateService = CustomerProduct::find($request->oldId);
         $updateService->id_products = $request->newId;
-        $updateService->signed_up   = date("Y-m-d H:i:s");
-        $updateService->expires     = $expires;
-        $updateService->id_users    = Auth::user()->id;
-        $updateService->id_status   = 1;
+        $updateService->signed_up = date("Y-m-d H:i:s");
+        $updateService->expires = $expires;
+        $updateService->id_users = Auth::user()->id;
+        $updateService->id_status = 1;
         $updateService->save();
 
         $newData = array();
@@ -607,6 +651,7 @@ class CustomerController extends Controller
         return 'OK';
 
     }
+
     /**
      * @param Request $request
      * customerId = id_customers to insert new Contact Info.
@@ -624,6 +669,7 @@ class CustomerController extends Controller
 
         return Customer::with('contacts')->find($request->id_customers);
     }
+
     /**
      * @param Request $request
      * id_customers = id_customers to add new ticket TO.
@@ -634,26 +680,28 @@ class CustomerController extends Controller
      */
     public function insertCustomerTicket(Request $request)
     {
-        $lastTicketId     = Ticket::max('id');
+        $lastTicketId = Ticket::max('id');
         $lastTicketNumber = Ticket::find($lastTicketId)->ticket_number;
-        $ticketNumber     = explode('ST-',$lastTicketNumber);
-        $ticketNumberCast = (int)$ticketNumber[1] + 1;
+        $ticketNumber = explode('ST-', $lastTicketNumber);
+        $ticketNumberCast = (int) $ticketNumber[1] + 1;
 
         $newTicket = new Ticket;
 
-        $newTicket->id_customers      = $request->id_customers;
-        $newTicket->ticket_number     = 'ST-' . $ticketNumberCast;
-        $newTicket->id_reasons        = $request->id_reasons;
-        $newTicket->comment           = $request->comment;
-        $newTicket->status            = $request->status;
-        $newTicket->id_users          = Auth::user()->id;
+        $newTicket->id_customers = $request->id_customers;
+        $newTicket->ticket_number = 'ST-' . $ticketNumberCast;
+        $newTicket->id_reasons = $request->id_reasons;
+        $newTicket->comment = $request->comment;
+        $newTicket->status = $request->status;
+        $newTicket->id_users = Auth::user()->id;
         $newTicket->save();
 
         //1 = new ticket
         //2 = update ticket
         SendMail::ticketMail($newTicket, config('const.ticket_status.new'));
+
         return 'OK';
     }
+
     /**
      * @param Request $request
      * type = pending to set.
@@ -664,17 +712,17 @@ class CustomerController extends Controller
     {
         //RECHECK
         return ActivityLog::with('user')
-                          ->where('type'    ,$request->type)
-                          ->where('id_type' ,$request->id_type)
-                          ->orderBy('id'    , 'desc')
-                          ->get();
+            ->where('type', $request->type)
+            ->where('id_type', $request->id_type)
+            ->orderBy('id', 'desc')
+            ->get();
     }
 
     public function refundAmountAction(Request $request)
     {
 
 
-        $customerInfo    = Customer::find($request->cid);
+        $customerInfo = Customer::find($request->cid);
         $customerAddress = Address::where('id_customers', $request->cid)->first();
         $customerInvoice = Invoice::where('id_customers', $request->cid)->first();
 
@@ -696,13 +744,15 @@ class CustomerController extends Controller
         $newCharge->comment = $request->desc;
 
         $newCharge->save();
+
         return 'OK';
     }
+
     public function chargeAmountAction(Request $request)
     {
 
 
-        $customerInfo    = Customer::find($request->cid);
+        $customerInfo = Customer::find($request->cid);
         $customerAddress = Address::where('id_customers', $request->cid)->first();
         $customerInvoice = Invoice::where('id_customers', $request->cid)->first();
 
@@ -728,6 +778,7 @@ class CustomerController extends Controller
 //        $newCharge->end_date    //??? ---> Last day of the next month????
 //        $newCharge->due_date      //??? ---> NO IDEA *******
         $newCharge->save();
+
         return 'OK';
     }
 }

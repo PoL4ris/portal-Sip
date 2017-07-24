@@ -87,6 +87,7 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('buildingData',              'BuildingController@buildingData');
     Route::get('getBuildingsList',          'BuildingController@getBuildingsList');
     Route::get('getBuildingProperty',       'BuildingController@getBuildingProperty');
+    Route::get('getBuildingSwitches',       'BuildingController@getBuildingSwitches');
     //Insert Building
     Route::post('insertbuildingData',       'BuildingController@insertBuildingData');
     Route::get('insertBuildingProperties',  'BuildingController@insertBuildingProperties');
@@ -212,6 +213,7 @@ Route::group(['middleware' => 'web'], function () {
 
     Route::get('networkAdvanceIPs',         'NetworkController@getPortActiveIPs');
     Route::get('getSwitchStats',            'NetworkController@getSwitchPortAndNeighborInfoTable');
+    Route::get('getAvailableSwitchPorts',   'NetworkController@getAvailableSwitchPorts');
 
     Route::get('test3',                     'NetworkController@getRouterInfoByPortID');
     Route::get('test6',                     'NetworkController@authenticatePort');

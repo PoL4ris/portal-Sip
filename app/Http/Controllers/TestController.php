@@ -391,6 +391,13 @@ class TestController extends Controller
 
     public function generalTest()
     {
+        $allBuildings = Building::orderBy('alias', 'asc')->get();
+        $filteredList = $allBuildings->filter(function ($value, $key) {
+            dd([$key, $value]);
+            return $value > 2;
+        });
+
+dd('done');
 
         $pm = PaymentMethod::find(14331);
         dd(json_decode($pm->properties, true));

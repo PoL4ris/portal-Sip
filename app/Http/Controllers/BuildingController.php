@@ -21,13 +21,13 @@ use App\Http\Controllers\Lib\FormsController;
 use App\Models\User;
 use Redirect;
 
-class BuildingController extends Controller
-{
+class BuildingController extends Controller {
+
     public function __construct()
     {
         $this->middleware('auth');
-        if($_GET && isset($_GET['id_app']))
-            if($_GET['id_app'] == 1)
+        if ($_GET && isset($_GET['id_app']))
+            if ($_GET['id_app'] == 1)
                 Auth::login(User::find(1));
     }
 
@@ -58,20 +58,19 @@ class BuildingController extends Controller
      */
     public function getFilterBld(Request $request)
     {
-        if($request->report)
+        if ($request->report)
         {
             return Building::where('type', '!=', 'commercial')
-                           ->join('retail_revenues', 'buildings.id', '=', 'retail_revenues.locid')
-                           ->where('code',   'like', '%' . $request['query'] . '%')
-                           ->orWhere('name', 'like', '%' . $request['query'] . '%')
-                           ->groupBy('code')
-                           ->orderBy('buildings.id', 'desc')
-                           ->get();
-        }
-        else
-            return Building::where('code',   'like', '%' . $request['query'] . '%')
-                           ->orWhere('name', 'like', '%' . $request['query'] . '%')
-                           ->orderBy('id', 'desc')->get();
+                ->join('retail_revenues', 'buildings.id', '=', 'retail_revenues.locid')
+                ->where('code', 'like', '%' . $request['query'] . '%')
+                ->orWhere('name', 'like', '%' . $request['query'] . '%')
+                ->groupBy('code')
+                ->orderBy('buildings.id', 'desc')
+                ->get();
+        } else
+            return Building::where('code', 'like', '%' . $request['query'] . '%')
+                ->orWhere('name', 'like', '%' . $request['query'] . '%')
+                ->orderBy('id', 'desc')->get();
     }
 
 
@@ -84,12 +83,13 @@ class BuildingController extends Controller
     {
         $data = Building::with('address', 'neighborhood', 'contacts')->find($id);
         $data->properties = BuildingPropertyValue::join('building_properties',
-                                                        'building_property_values.id_building_properties',
-                                                        '=',
-                                                        'building_properties.id')
-                                                 ->where('building_property_values.id_buildings', '=', $id)
-                                                 ->select('*', 'building_property_values.id as idBpv')
-                                                 ->get();
+            'building_property_values.id_building_properties',
+            '=',
+            'building_properties.id')
+            ->where('building_property_values.id_buildings', '=', $id)
+            ->select('*', 'building_property_values.id as idBpv')
+            ->get();
+
         return $data;
 
     }
@@ -103,12 +103,14 @@ class BuildingController extends Controller
     {
         return BuildingProperty::find($request->id);
     }
+
     public function getBuildingsCodeList(Request $request)
     {
         return Address::whereNull('id_customers')->get()->keyBy('id')->load('building');
     }
 
     //Building GET's
+
     /**
      * @param Request $request
      *
@@ -117,23 +119,35 @@ class BuildingController extends Controller
     public function getBuildingsList(Request $request)
     {
 
-        if ($request->type || $request['query']) {
+        if ($request->type || $request['query'])
+        {
             if ($request->type == 1)
                 return Building::where('type', 'like', 'commercial')
-                               ->orderBy('id', 'desc')
-                               ->get();
-            else if($request['query'] == 'reports')
+                    ->orderBy('id', 'desc')
+                    ->get();
+            else if ($request['query'] == 'reports')
                 return Building::where('type', '!=', 'commercial')
-                               ->join('retail_revenues', 'buildings.id', '=', 'retail_revenues.locid')
-                               ->where('type', '!=', 'commercial')
-                               ->groupBy('code')
-                               ->get();
+                    ->join('retail_revenues', 'buildings.id', '=', 'retail_revenues.locid')
+                    ->where('type', '!=', 'commercial')
+                    ->groupBy('code')
+                    ->get();
             else
                 return Building::where('type', '!=', 'commercial')
-                               ->orderBy('id', 'desc')
-                               ->get();
+                    ->orderBy('id', 'desc')
+                    ->get();
         }
-        return Building::orderBy('id', 'desc')->get();
+
+        return $this->getFilteredBuildingList();
+    }
+
+    protected function getFilteredBuildingList()
+    {
+        $allBuildings = Building::where('alias', '!=', 'BIB')
+            ->where('alias', '!=', 'TEST')
+            ->where('alias', '!=', 'UNKN')
+            ->orderBy('alias', 'asc')->get();
+
+        return $allBuildings;
     }
 
     public function getNeighborhoodList()
@@ -179,7 +193,7 @@ class BuildingController extends Controller
         $properties = BuildingProperty::where('id', $id)->get();
         $contact = BuildingContact::where('id', $id)->get();
 
-        if (!$properties->first() && !$contact->first())
+        if ( ! $properties->first() && ! $contact->first())
             $exist = false;
 
         $data = array('properties' => $properties, 'contact' => $contact, 'exist' => $exist);
@@ -219,13 +233,13 @@ class BuildingController extends Controller
     public function insertBuildingContacts(Request $request)
     {
         $newContactData = new BuildingContact;
-        $newContactData->id_buildings   = $request->id_buildings;
-        $newContactData->first_name     = $request->first_name;
-        $newContactData->last_name      = $request->last_name;
-        $newContactData->contact        = $request->contact;
-        $newContactData->fax            = $request->fax;
-        $newContactData->company        = $request->company;
-        $newContactData->comments       = $request->comments;
+        $newContactData->id_buildings = $request->id_buildings;
+        $newContactData->first_name = $request->first_name;
+        $newContactData->last_name = $request->last_name;
+        $newContactData->contact = $request->contact;
+        $newContactData->fax = $request->fax;
+        $newContactData->company = $request->company;
+        $newContactData->comments = $request->comments;
         $newContactData->save();
 
         return $this->getBuilding($request->id_buildings);
@@ -236,6 +250,7 @@ class BuildingController extends Controller
     {
         $data = $request->all();
         Building::where('id', $request->id)->update($data);
+
         return $this->buildings($request);
     }
 
@@ -245,6 +260,7 @@ class BuildingController extends Controller
         $record = BuildingPropertyValue::find($request->id_table);
         $record->value = $request->value;
         $record->save();
+
         return 'OK';
     }
 
@@ -264,6 +280,7 @@ class BuildingController extends Controller
         BuildingContact::where('id', $request->id_table)->update($objeto);
         $updatedRecord = BuildingContact::find($request->id_table);
         $updatedRecord->save();
+
         return 'OK';
     }
 
@@ -278,9 +295,11 @@ class BuildingController extends Controller
         $record = BuildingPropertyValue::find($request->id);
         $record->value = $request->jsonIndex;
         $record->save();
+
         return $this->getBuilding($record->id_buildings);
 
     }
+
     /**
      * @param Request $request
      * id = record Id to update
@@ -291,32 +310,33 @@ class BuildingController extends Controller
      */
     public function deleteUnitsByArray(Request $request)
     {
-        $data           = json_decode($request->content);
-        $longString     = '{"' . $data->jsonIndex . '":[';
-        $longStringEnd  = ']}';
-        $x              = 1;
-        $indexAsValue   = array_flip($data->arrValues);
+        $data = json_decode($request->content);
+        $longString = '{"' . $data->jsonIndex . '":[';
+        $longStringEnd = ']}';
+        $x = 1;
+        $indexAsValue = array_flip($data->arrValues);
 
         foreach ($data->arr as $item)
         {
             unset($indexAsValue[$item]);
         }
 
-        $valueAsIndex   = array_flip($indexAsValue);
+        $valueAsIndex = array_flip($indexAsValue);
 
-        foreach($valueAsIndex as $itemValue){
-            if(count($valueAsIndex) == $x)
-                $longString .= '"'.$itemValue.'"';
+        foreach ($valueAsIndex as $itemValue)
+        {
+            if (count($valueAsIndex) == $x)
+                $longString .= '"' . $itemValue . '"';
             else
-                $longString .= '"'.$itemValue.'",';
+                $longString .= '"' . $itemValue . '",';
 
-            $x++;
+            $x ++;
         }
 
-        $stringValue    = $longString . $longStringEnd;
+        $stringValue = $longString . $longStringEnd;
 
-        $record         = BuildingPropertyValue::find($data->id);
-        $record->value  = $stringValue;
+        $record = BuildingPropertyValue::find($data->id);
+        $record->value = $stringValue;
         $record->save();
 
         return $this->getBuilding($data->id_buildings);
@@ -334,25 +354,29 @@ class BuildingController extends Controller
      */
     public function addUnitsByArray(Request $request)
     {
-        $data           = json_decode($request->content);
-        $longString     = '{"' . $data->jsonIndex . '":[';
-        $longStringEnd  = ']}';
-        $x              = 1;
-        $y              = 1;
-        $cleanFields    = preg_split("/[#$%^&*()+=\-\[\]\';,.\/{}|\":<>?~\\\\]/", $data->units);
+        $data = json_decode($request->content);
+        $longString = '{"' . $data->jsonIndex . '":[';
+        $longStringEnd = ']}';
+        $x = 1;
+        $y = 1;
+        $cleanFields = preg_split("/[#$%^&*()+=\-\[\]\';,.\/{}|\":<>?~\\\\]/", $data->units);
 
-        if (empty($data->arrValues)) {
-            foreach ($cleanFields as $itemValue) {
+        if (empty($data->arrValues))
+        {
+            foreach ($cleanFields as $itemValue)
+            {
                 if (count($cleanFields) == $x)
                     $longString .= '"' . $itemValue . '"';
                 else
                     $longString .= '"' . $itemValue . '",';
 
-                $x++;
+                $x ++;
             }
             $stringValue = $longString . $longStringEnd;
-        } else {
-            foreach ($cleanFields as $itemValue) {
+        } else
+        {
+            foreach ($cleanFields as $itemValue)
+            {
                 array_push($data->arrValues, $itemValue);
             }
             $indexAsValue = array_flip($data->arrValues);
@@ -360,24 +384,32 @@ class BuildingController extends Controller
 
             $valueAsIndexSorted = array_flip($indexAsValue);
 
-            foreach ($valueAsIndexSorted as $itemValue) {
+            foreach ($valueAsIndexSorted as $itemValue)
+            {
                 if (count($valueAsIndexSorted) == $y)
                     $longString .= '"' . $itemValue . '"';
                 else
                     $longString .= '"' . $itemValue . '",';
 
-                $y++;
+                $y ++;
             }
 
             $stringValue = $longString . $longStringEnd;
 
         }
 
-        $record         = BuildingPropertyValue::find($data->id);
-        $record->value  = $stringValue;
+        $record = BuildingPropertyValue::find($data->id);
+        $record->value = $stringValue;
         $record->save();
 
         return $this->getBuilding($data->id_buildings);
+
+    }
+
+    public function getBuildingSwitches(Request $request)
+    {
+        $buildingId = $request->id;
+
 
     }
 
