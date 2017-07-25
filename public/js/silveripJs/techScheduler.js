@@ -21,9 +21,9 @@ app.controller('techschedulercontroller', function ($scope, $http, customerServi
         });
     };
 
-    $scope.dateselected = function(date) {
+    $scope.dateselected = function (date) {
         angular.element('#techscheduledate').scope().techscheduledate = date;
-        angular.element('#techscheduledate').scope().loadinganimation = true;  //loadinganimation, for some reason not displaying
+        angular.element('#techscheduledate').scope().loadinganimation = true;  //loadinganimation start
         angular.element('#techscheduledate').scope().renewtable($scope.techscheduledate);
 
     };
@@ -33,12 +33,11 @@ app.controller('techschedulercontroller', function ($scope, $http, customerServi
     });
 
 
-
     $scope.renewtable($scope.techscheduledate);
     $scope.selectaddress = '';
 
 
-    $scope.regioncolor=[];
+    $scope.regioncolor = [];
     $scope.regioncolor['0'] = 'black';
     $scope.regioncolor['1'] = 'purple';
     $scope.regioncolor['2'] = 'green';
@@ -49,13 +48,12 @@ app.controller('techschedulercontroller', function ($scope, $http, customerServi
     $scope.regioncolor['7'] = 'pink';
     $scope.regioncolor['8'] = 'brown';
 
-    $scope.selectcallback = function(elem,ui) {
-console.log(ui);
+    $scope.selectcallback = function (elem, ui) {
+        console.log(ui);
         document.getElementById("buildingcode").style.backgroundColor = $scope.regioncolor[ui.item.region];
-$scope.selectaddress = ui.item.address;
+        $scope.selectaddress = ui.item.address;
 
     };
-
 
 
     $scope.updatebuildingsearch = function () {
@@ -65,10 +63,15 @@ $scope.selectaddress = ui.item.address;
                 $scope.availableTags = [];
                 for (var i = 0; i < response.data.length; i++) {
 
-                   // $scope.availableTags.push(response.data[i]['code'] + ' - ' + response.data[i]['address']);
-                    $scope.availableTags.push({label: response.data[i]['code'] + ' - ' + response.data[i]['address'], value: response.data[i]['code'], address: response.data[i]['address'],region: response.data[i]['region']});
+                    // $scope.availableTags.push(response.data[i]['code'] + ' - ' + response.data[i]['address']);
+                    $scope.availableTags.push({
+                        label: response.data[i]['code'] + ' - ' + response.data[i]['address'],
+                        value: response.data[i]['code'],
+                        address: response.data[i]['address'],
+                        region: response.data[i]['region']
+                    });
                 }
-                if (! $('#buildingcode').val().length ){
+                if (!$('#buildingcode').val().length) {
                     $scope.selectaddress = '';
                     document.getElementById("buildingcode").style.backgroundColor = 'white';
                 }
@@ -91,9 +94,9 @@ $scope.selectaddress = ui.item.address;
         //console.log('start of drag end')
         var origininput = ui.draggable.find('input').val();
         //console.log('origininput');
-       // console.log(origininput);
-       // console.log('destination');
-      //  console.log( $(this).find('input').val() );
+        // console.log(origininput);
+        // console.log('destination');
+        //  console.log( $(this).find('input').val() );
 //make an ajax call with both of these value and then figure it out on the back end.
 
         $.ajax({
@@ -103,7 +106,7 @@ $scope.selectaddress = ui.item.address;
             success: $scope.movedappointment,
         });
 
-      //  console.log('drag end');
+        //  console.log('drag end');
 
     };
 
@@ -116,7 +119,7 @@ $scope.selectaddress = ui.item.address;
 
     $scope.populatetable = function (data) {
 // console.log(data);
-$scope.loadinganimation = true;
+        $scope.loadinganimation = true;
         $('.scheduletable').html("");
         $('.scheduletable').append('<tbody>');
         var row = '';  //building the table rows one line at a time.
@@ -127,7 +130,7 @@ $scope.loadinganimation = true;
         appointmentcolor['completed'] = 'green';
         appointmentcolor['pending'] = 'red';
         appointmentcolor['onsite'] = 'powerderblue';
-
+        appointmentcolor['problem'] = 'purple';
 
         row += '<thead><tr><th></th>';  //header columns. blank followed by the name of each tech scheduled.
         for (var hit = 0; hit < data['colums']; hit++) {
@@ -166,19 +169,22 @@ $scope.loadinganimation = true;
                             'tech': data[it1][it2]['tech']  //this pending appointment belongs to.
                         };
                         filler = '<div class="dragdiv"><input type="hidden" disabled="disabled" value=' + JSON.stringify(eventvalue) + '></input><a target="_blank" style="color:' + appointmentcolor['pending'] + ';" href=' + data[it1][it2]['appointment']['htmlLink'] + '>' + data[it1][it2]['appointment']['summary'] + '</a></div>';
-                            //+
-                            //'<!--div class="btn-group-xs"><a href="" style="border: solid green 1px; border-top-left-radius: 3px; border-bottom-left-radius: 3px; " class="">O</a><a href="" style="border: solid purple 1px; class="">P</a><a href="" style="border: solid brown 1px;" class="">C</a><a href="" style="border: solid brown 1px;" class="">R</a></div-->';
+                        //+
+                        //'<!--div class="btn-group-xs"><a href="" style="border: solid green 1px; border-top-left-radius: 3px; border-bottom-left-radius: 3px; " class="">O</a><a href="" style="border: solid purple 1px; class="">P</a><a href="" style="border: solid brown 1px;" class="">C</a><a href="" style="border: solid brown 1px;" class="">R</a></div-->';
                         break;
                     case 'onsite':
                         filler = '<a target="_blank" style="color:' + appointmentcolor['onsite'] + ';" href=' + data[it1][it2]['appointment']['htmlLink'] + '>' + data[it1][it2]['appointment']['summary'] + '</a>';
+                        break;
+                    case 'problem':
+                        filler = '<a target="_blank" style="color:' + appointmentcolor['problem'] + ';" href=' + data[it1][it2]['appointment']['htmlLink'] + '>' + data[it1][it2]['appointment']['summary'] + '</a>';
                         break;
                     default:
                         filler = '';
                         break;
                 }
-               // console.log(data[it1][it2]['region']);  //here is where we can set the border color around the entry to indicate region.
-                if(data[it1][it2]['region']) {
-                    row += "<td>" + filler + " <div style='background-color: " + $scope.regioncolor[ data[it1][it2]['region'] ] + "; width: 10px; height: 10px; position: relative; float: right; display: inline-block;'></div>" +'</td>';
+                // console.log(data[it1][it2]['region']);  //here is where we can set the border color around the entry to indicate region.
+                if (data[it1][it2]['region']) {
+                    row += "<td>" + filler + " <div style='background-color: " + $scope.regioncolor[data[it1][it2]['region']] + "; width: 10px; height: 10px; position: relative; float: right; display: inline-block;'></div>" + '</td>';
                 } else {
                     row += "<td>" + filler + '</td>';
                 }
@@ -215,7 +221,7 @@ $scope.loadinganimation = true;
             });
             $scope.loadinganimation = false;
         });
-          //clear the loading animation.
+        //clear the loading animation.
 //end drag and drop
     };
 
@@ -251,14 +257,14 @@ $scope.loadinganimation = true;
             params: submission,
         }).then(function (response) {
 
-            if ( !response.data['htmlLink']) {
+            if (!response.data['htmlLink']) {
                 $scope.errors = response.data;
                 return false;
             } else {
-                $scope.errors='';
+                $scope.errors = '';
                 document.getElementById("scheduleform").reset();
                 document.getElementById("buildingcode").style.backgroundColor = 'white';
-                $scope.selectaddress= '';
+                $scope.selectaddress = '';
 
                 $scope.renewtable($scope.techscheduledate);
                 $scope.messages = response.data['htmlLink'];
@@ -269,7 +275,6 @@ $scope.loadinganimation = true;
 
         return true;
     };
-
 
 
 });
@@ -289,14 +294,13 @@ app.controller('tech-appointments', function ($scope, $http, customerService) {
         $scope.loadinganimation = true;
         $http.get('/tech-schedule/myappointments', {params: {tech: $scope.techalias}}).then(function (response) {
                 $scope.appointments = response.data;
-               // console.log($scope.appointments);
+                // console.log($scope.appointments);
                 $scope.loadinganimation = false;
             }
         );
     };
 
     $scope.refresh();
-
 
 
     $scope.arguments = [];
