@@ -142,11 +142,8 @@ class TestController extends Controller
     
     public function supportTest()
     {
-        $customer = new Customer;
-        $resultado = $customer->getTickets(7435);
 
-
-        dd( $resultado->toArray() );
+        dd( Product::with('type')->orderBy('frequency', 'asc')->get()->take(10)->toArray() );
         die();
     }
 

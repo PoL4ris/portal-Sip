@@ -7,6 +7,7 @@
             <p ng-click="setView(1)">Profiles</p>
             <p ng-click="setView(2)">Apps</p>
             <p ng-click="setView(3)">Building Property</p>
+            <p ng-click="setView(4)">Products</p>
         </div>
     </div>
 
@@ -15,6 +16,7 @@
         <div ng-include="'/views/admin/profiles.html'"           id="admin-profiles-include"  ng-if="displayView == 'profiles'" ></div>
         <div ng-include="'/views/admin/apps.html'"               id="admin-apps-include"      ng-if="displayView == 'apps'"     ></div>
         <div ng-include="'/views/admin/bldProperties.html'"      id="admin-bprop-include"     ng-if="displayView == 'bprop'"    ></div>
+        <div ng-include="'/views/admin/products.html'"           id="admin-prod-include"      ng-if="displayView == 'prod'"    ></div>
     </article>
 </div>
 
