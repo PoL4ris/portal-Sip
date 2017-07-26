@@ -526,8 +526,13 @@ class CustomerController extends Controller {
     public function insertCustomerService(Request $request)
     {
         $when = $this->getTimeToAdd(Product::find($request->idProduct)->frequency);
+        $expires = null;
 
-        $expires = date("Y-m-d H:i:s", strtotime($when));
+        if ($when != null)
+        {
+            $expires = date("Y-m-d H:i:s", strtotime($when));
+        }
+
 
         $newData = new CustomerProduct();
         $newData->id_customers = $request->idCustomer;
@@ -553,11 +558,12 @@ class CustomerController extends Controller {
      */
     public function getTimeToAdd($type)
     {
-        $timeToAdd = array('annual'   => 'first day of next year',
-                           'monthly'  => 'first day of next month',
-                           'onetime'  => 'first day of next month',
-                           'Included' => 'first day of next month',
-                           'included' => 'first day of next month'
+        $timeToAdd = array('annual'        => 'first day of next year',
+                           'monthly'       => 'first day of next month',
+                           'onetime'       => 'first day of next month',
+                           'Included'      => 'first day of next month',
+                           'included'      => 'first day of next month',
+                           'complimentary' => null
         );
 
         return $timeToAdd[$type];
