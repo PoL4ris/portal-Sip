@@ -100,7 +100,8 @@ class Building extends Model {
 
     public function properties()
     {
-        return $this->hasMany('App\Models\BuildingPropertyValue', 'id_buildings');
+        return $this->hasMany('App\Models\BuildingPropertyValue', 'id_buildings')
+            ->orderBy('id_building_properties', 'asc');
     }
 
     public function getProperties()
