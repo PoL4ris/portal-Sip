@@ -9,4 +9,9 @@ class BuildingProduct extends Model
     public function product() {
         return $this->hasOne('App\Models\Product', 'id', 'id_products');
     }
+
+    public function building()
+    {
+        return $this->hasOne('App\Models\Building', 'id', 'id_buildings');
+    }
 }

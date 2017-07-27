@@ -57,7 +57,7 @@ Route::group(['middleware' => 'web'], function () {
     Route::post('getAppPositionDown',       'AdminController@getAppPositionDown');
     Route::post('getAppPositionUp',         'AdminController@getAppPositionUp');
     Route::post('getCharges',               'AdminController@getCharges');
-    Route::get('getChargesStats',          'AdminController@getChargesStats');
+    Route::get('getChargesStats',           'AdminController@getChargesStats');
     //PROFILE
     Route::get('getProfileInfo',            'AdminController@getProfileInfo');
     Route::get('updateProfileInfo',         'AdminController@updateProfileInfo');
@@ -164,9 +164,11 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('getBuildingProperties',     'BuildingController@getBuildingProperties');
     Route::get('getProducts',               'SupportController@getProducts');//new
     Route::get('getStatus',                 'MainController@getStatus');//new
+    Route::get('getTypes',                  'MainController@getTypes');//new
     Route::get('getBuildingLocations',      'MainController@getBuildingLocations');//new
     Route::get('insertAddressCoordinates',  'MainController@insertAddressCoordinates');//new
     Route::get('getBuildingsCodeList',      'BuildingController@getBuildingsCodeList');
+    Route::get('getProductUsedBy',          'BuildingController@getProductUsedBy');//new
 
     //LOGS
     Route::get('getCustomerLog',            'CustomerController@getCustomerLog');//new
@@ -187,14 +189,14 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('getCalendarDashboard',      'MainController@calendarDashboard');//new
 
     //REPORTCONTROLLER -> REFACTOR NAMES...
-    Route::get('reports/{code?}',           'ReportController@something');//new
-    Route::get('getDisplayRetailRevenue',   'ReportController@getDisplayRetailRevenue');//new
-    Route::get('getDisplayRetailRevenueDetails', 'ReportController@getDisplayRetailRevenueDetails');//new
-    Route::get('getDisplayRetailRevenueUnitDetails', 'ReportController@getDisplayRetailRevenueUnitDetails');//new
-    Route::get('getDisplayLocationStats',   'ReportController@getDisplayLocationStats');//new
+    Route::get('reports/{code?}',                       'ReportController@something');//new
+    Route::get('getDisplayRetailRevenue',               'ReportController@getDisplayRetailRevenue');//new
+    Route::get('getDisplayRetailRevenueDetails',        'ReportController@getDisplayRetailRevenueDetails');//new
+    Route::get('getDisplayRetailRevenueUnitDetails',    'ReportController@getDisplayRetailRevenueUnitDetails');//new
+    Route::get('getDisplayLocationStats',               'ReportController@getDisplayLocationStats');//new
 
 
-    Route::get('email/template_support_new_ticket',    'TestController@supportTest');//new
+    Route::get('email/template_support_new_ticket',     'TestController@supportTest');//new
 
     //MAILS
     Route::get('sendCustomerMail',          'MailController@sendCustomerMail');//new
