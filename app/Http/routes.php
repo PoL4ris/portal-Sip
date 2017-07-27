@@ -168,6 +168,7 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('getBuildingLocations',      'MainController@getBuildingLocations');//new
     Route::get('insertAddressCoordinates',  'MainController@insertAddressCoordinates');//new
     Route::get('getBuildingsCodeList',      'BuildingController@getBuildingsCodeList');
+    Route::get('getProductUsedBy',          'BuildingController@getProductUsedBy');//new
 
     //LOGS
     Route::get('getCustomerLog',            'CustomerController@getCustomerLog');//new

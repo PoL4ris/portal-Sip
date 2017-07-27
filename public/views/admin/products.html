@@ -89,6 +89,19 @@
                        class="size-100 p-l-md"
                        value="{{editProdData ? editProdData.amount : null}}">
 
+                <hr>
+
+                <div class="col-lg-12" ng-if="productUsedBy">
+                    <p>This product is used by : <b>{{productUsedBy.length}}</b>, Buildings.</p>
+                    <ul>
+
+                        <li ng-repeat="building in productUsedBy">{{building.building.code}} , {{building.building.name}}</li>
+                    </ul>
+
+
+                </div>
+
+
 
             </div>
             <!--ACTION BUTTONS-->

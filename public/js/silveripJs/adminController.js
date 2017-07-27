@@ -257,10 +257,12 @@ app.controller('adminController',                   function($scope, $http, cust
   $scope.addNewProd        = function(){
     $scope.editProdData    = null;
     $scope.newProd         = true;
+    $scope.productUsedBy   = false;
   };
   $scope.prodCancel        = function(){
     $scope.newProd         = false;
     $scope.editProdData    = false;
+    $scope.productUsedBy   = false;
   };
   $scope.editProd          = function(){
     $scope.newProd         = null;
@@ -269,11 +271,11 @@ app.controller('adminController',                   function($scope, $http, cust
   };
   $scope.getProductRels    = function(idProduct){
 
-//    $http.get("getTypes")
-//      .then(function (response) {
-//        console.log(response.data);
-//        $scope.typesList  = response.data;
-//      });
+    $http.get("getProductUsedBy", {params:{'id':idProduct.id}})
+      .then(function (response) {
+        $scope.productUsedBy  = response.data;
+      });
+
   }
 
 

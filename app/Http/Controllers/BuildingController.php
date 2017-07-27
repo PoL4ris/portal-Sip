@@ -13,6 +13,7 @@ use App\Models\Building;
 use App\Models\ServiceLocation;
 use App\Models\BuildingProperty;
 use App\Models\BuildingPropertyValue;
+use App\Models\BuildingProduct;
 use App\Models\BuildingContact;
 use App\Models\Neighborhood;
 use App\Models\Type;
@@ -204,6 +205,16 @@ class BuildingController extends Controller {
     public function getBuildingProperties()
     {
         return BuildingProperty::get();
+    }
+
+    /**
+     * @param Request $request
+     * Get Buildings using product.
+     * @return mixed
+     */
+    public function getProductUsedBy(Request $request)
+    {
+        return BuildingProduct::with('building')->where('id_products', $request->id)->get();
     }
 
     //Building Insert's
