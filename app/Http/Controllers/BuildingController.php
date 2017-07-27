@@ -422,6 +422,11 @@ class BuildingController extends Controller {
     {
         $buildingId = $request->id;
 
+        $building = Building::find($buildingId);
+        if($building != null){
+            return $building->switches;
+        }
+        return array();
 
     }
 
