@@ -206,12 +206,22 @@ app.controller('newcustomerAppController', function($scope, $http, customerServi
 
     }
 
+
     $scope.getSwitchInfo      = function (idBuilding) {
 
       console.log('idBuilding | ' + idBuilding);
-      $scope.dummyInfo = {}
+
+      $http.get("getBuildingSwitches", {params: {'id': idBuilding}})
+        .then(function (response) {
+          console.log(response.data);
+          $scope.dummyInfo  = response.data;
+        });
+
 
     }
+
+
+
     $scope.verifyCForm        = function (formData){
 
 
