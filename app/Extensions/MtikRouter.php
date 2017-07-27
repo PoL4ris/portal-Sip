@@ -99,7 +99,7 @@ class MtikRouter {
     public function getHostName($ip = NULL) {
         if (!isset($ip)) {
             if ($this->isSelected()) {
-                $ip = $this->router['IPAddress'];
+                $ip = $this->router['ip_address'];
             }
         }
 
@@ -123,7 +123,7 @@ class MtikRouter {
     public function getIpPoolRange($poolName, $ip = NULL) {
         if (!isset($ip)) {
             if ($this->isSelected()) {
-                $ip = $this->router['IPAddress'];
+                $ip = $this->router['ip_address'];
             }
         }
 
@@ -151,7 +151,7 @@ class MtikRouter {
     public function getIpPoolSize($poolName, $ip = NULL) {
         if (!isset($ip)) {
             if ($this->isSelected()) {
-                $ip = $this->router['IPAddress'];
+                $ip = $this->router['ip_address'];
             }
         }
 
@@ -183,7 +183,7 @@ class MtikRouter {
     public function getActiveDHCPLeaseCountByServer($serverName, $ip = NULL) {
         if (!isset($ip)) {
             if ($this->isSelected()) {
-                $ip = $this->router['IPAddress'];
+                $ip = $this->router['ip_address'];
             }
         }
 
@@ -221,7 +221,7 @@ class MtikRouter {
         //        error_log('Insde getActiveDHCPLeasesByServer($serverName): $serverName = '.$serverName);
         if (!isset($ip)) {
             if ($this->isSelected()) {
-                $ip = $this->router['IPAddress'];
+                $ip = $this->router['ip_address'];
             }
         }
 
@@ -262,7 +262,7 @@ class MtikRouter {
     public function getDHCPLeases($ip = NULL) {
         if (!isset($ip)) {
             if ($this->isSelected()) {
-                $ip = $this->router['IPAddress'];
+                $ip = $this->router['ip_address'];
             }
         }
 
@@ -286,7 +286,7 @@ class MtikRouter {
     public function reserveUserDHCPLeaseByID($id, $locCode, $unit, $routerIp = NULL) {
         if (!isset($routerIp)) {
             if ($this->isSelected()) {
-                $routerIp = $this->router['IPAddress'];
+                $routerIp = $this->router['ip_address'];
             }
         }
 
@@ -307,7 +307,7 @@ class MtikRouter {
     public function removeUserDHCPLeaseByID($id, $routerIp = NULL) {
         if (!isset($routerIp)) {
             if ($this->isSelected()) {
-                $routerIp = $this->router['IPAddress'];
+                $routerIp = $this->router['ip_address'];
             }
         }
 
@@ -325,7 +325,7 @@ class MtikRouter {
     public function disableUserDHCPLeaseByID($id, $routerIp = NULL) {
         if (!isset($routerIp)) {
             if ($this->isSelected()) {
-                $routerIp = $this->router['IPAddress'];
+                $routerIp = $this->router['ip_address'];
             }
         }
 
@@ -345,7 +345,7 @@ class MtikRouter {
     public function enableUserDHCPLeaseByID($id, $routerIp = NULL) {
         if (!isset($routerIp)) {
             if ($this->isSelected()) {
-                $routerIp = $this->router['IPAddress'];
+                $routerIp = $this->router['ip_address'];
             }
         }
 
@@ -363,7 +363,7 @@ class MtikRouter {
     public function resetUserMacAddress($mac) {
 
         if ($this->isSelected()) {
-            $ip = $this->router['IPAddress'];
+            $ip = $this->router['ip_address'];
             $API = new RouterOsAPI();
             if ($API->connect($ip, $this->username, $this->password)) {
 
@@ -388,7 +388,7 @@ class MtikRouter {
     public function authUserByMacAddress($mac) {
 
         if ($this->isSelected()) {
-            $ip = $this->router['IPAddress'];
+            $ip = $this->router['ip_address'];
             $API = new RouterOsAPI();
             if ($API->connect($ip, $this->username, $this->password)) {
                 $ipBindingArray = array();
@@ -415,7 +415,7 @@ class MtikRouter {
     public function disableUserDHCPLease($ip, $mac, $routerIp = NULL) {
         if (!isset($routerIp)) {
             if ($this->isSelected()) {
-                $routerIp = $this->router['IPAddress'];
+                $routerIp = $this->router['ip_address'];
             }
         }
 
@@ -444,7 +444,7 @@ class MtikRouter {
     public function enableUserDHCPLease($ip, $mac, $routerIp = NULL) {
         if (!isset($routerIp)) {
             if ($this->isSelected()) {
-                $routerIp = $this->router['IPAddress'];
+                $routerIp = $this->router['ip_address'];
             }
         }
 
@@ -596,6 +596,35 @@ class MtikRouter {
         }
         return $userIPInfo;
     }
+
+//    public function updateHotspotServerTarget($routerIp, $serverIp) {
+//
+//        if (!isset($routerIp)) {
+//            if ($this->isSelected()) {
+//                $routerIp = $this->router['ip_address'];
+//            }
+//        }
+//
+//        if (isset($routerIp)) {
+//            $API = new RouterOsAPI();
+//            if ($API->connect($routerIp, $this->username, $this->password)) {
+//
+//                $apiQueryArray = array();
+//                $apiQueryArray ["?address"] = $ip;
+//                $apiQueryArray ["?mac-address"] = strtoupper($mac);
+//
+//                $apiQueryResult = $API->comm("/ip/dhcp-server/lease/print", $apiQueryArray);
+//
+//                if (isset($apiQueryResult) && count($apiQueryResult) > 0) {
+//                    $ipBindingArray = array();
+//                    $ipBindingArray ['.id'] = $apiQueryResult[0]['.id'];
+//                    $apiSendResult = $API->comm('/ip/dhcp-server/lease/enable', $ipBindingArray);
+//                }
+//                $API->disconnect();
+//            }
+//        }
+//    }
+
 
     /*
      *  Returns the switch port info that the user is connected to 

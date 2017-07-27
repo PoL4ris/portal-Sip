@@ -39,13 +39,14 @@ use Mail;
 use Config;
 use Auth;
 use View;
+use Storage;
 use Carbon\Carbon;
 
 //use ActivityLogs;
 use Symfony\Component\Console\Helper\ProgressBar;
 
-class TestController extends Controller
-{
+class TestController extends Controller {
+
     public function __construct()
     {
         //        $this->middleware('auth');
@@ -139,14 +140,14 @@ class TestController extends Controller
 
         dd($ticket2);
     }
-    
+
     public function supportTest()
     {
         $customer = new Customer;
         $resultado = $customer->getTickets(7435);
 
 
-        dd( $resultado->toArray() );
+        dd($resultado->toArray());
         die();
     }
 
@@ -241,7 +242,8 @@ class TestController extends Controller
         $z = 0;
         $p = 0;
 
-        for ($p = 0; $z < $a; $p++) {
+        for ($p = 0; $z < $a; $p ++)
+        {
 
 
             //        print 'SERIE-->' . $p . '<br>';
@@ -249,7 +251,8 @@ class TestController extends Controller
             $y = $x;
             $x = $z;
 
-            if ($z % 2 == 0) {
+            if ($z % 2 == 0)
+            {
                 $b = $b + $z;
                 print '|----- <strong>' . $b . '</strong> -----|<br>';
             }
@@ -333,7 +336,8 @@ class TestController extends Controller
 
         $charges = $invoice->charges;
         $details = $charges->pluck('details');
-        foreach($details as $chargeDetails){
+        foreach ($details as $chargeDetails)
+        {
             dd(json_decode($chargeDetails, true));
         }
         dd($details);
@@ -389,11 +393,58 @@ class TestController extends Controller
         dd('done');
     }
 
+    protected function updateMtikHotspotTarget()
+    {
+
+    }
+
     public function generalTest()
     {
 
+        $mikrotiks = NetworkNode::where('id_types', config('const.type.router'))->get();
+//        dd($mikrotiks);
 
+        $loginFileContents = Storage::disk('local')->get('login.html');
 
+        foreach ($mikrotiks as $mikrotik)
+        {
+            config(['filesystems.disks.ftp.host' => $mikrotik->ip_address]);
+            config(['filesystems.disks.ftp.username' => 'admin']);
+            config(['filesystems.disks.ftp.password' => 'BigSeem']);
+
+            $loginFileExists = Storage::disk('ftp')->exists('hotspot/login.html');
+            if ($loginFileExists)
+            {
+                Storage::disk('ftp')->put('hotspot/login.html', $loginFileContents);
+                echo 'Updated ' . $mikrotik->host_name . '<br>';
+                continue;
+//                dd('Updated ' . $mikrotik->host_name);
+            }
+            echo 'Skipped ' . $mikrotik->host_name . '<br>';
+//            dd('Skipped ' . $mikrotik->host_name);
+        }
+
+        dd('done');
+//        $exists = Storage::disk('local')->exists('login.html');
+//
+//        config(['filesystems.disks.ftp.host' => '10.10.13.1']);
+//        config(['filesystems.disks.ftp.username' => 'admin']);
+//        config(['filesystems.disks.ftp.password' => 'BigSeem']);
+//
+//        $exists = Storage::disk('ftp')->exists('hotspot/login.html');
+//
+//        dd($exists);
+//
+//        $exists = Storage::disk('s3')->exists('file.jpg');
+//
+//        $contents = Storage::get('file.jpg');
+//
+//        Storage::put(
+//            'avatars/' . $user->id,
+//            file_get_contents($request->file('avatar')->getRealPath())
+//        );
+//
+//        Storage::copy('old/file1.jpg', 'new/file1.jpg');
 
 
 //        $allBuildings = Building::orderBy('alias', 'asc')->get();
@@ -407,6 +458,17 @@ class TestController extends Controller
 //        $pm = PaymentMethod::find(14331);
 //        dd(json_decode($pm->properties, true));
 //
+
+        $building = Building::find(1012);
+        $unitNumberMap = $building->getUnitNumbers();
+
+
+        $addressCollection = Address::where('id_buildings', 1012)
+            ->whereNull('id_customers')
+            ->get();
+
+        dd([$addressCollection->pluck('address', 'id'), $unitNumberMap]);
+
 
         $building = Building::find(68);
         dd($building->properties->pluck('id_building_properties'));
@@ -433,13 +495,13 @@ class TestController extends Controller
                 'products.frequency')
             ->groupby('products.name')
             ->get();
-dd($subbedProducts);
+        dd($subbedProducts);
 
         foreach ($subbedProducts as $product)
         {
             $subbedProductsArr[$product->id] = $product;
         }
-dd($subbedProductsArr);
+        dd($subbedProductsArr);
         foreach ($allProducts as $key => $product)
         {
             if (array_key_exists($key, $subbedProductsArr))
@@ -454,7 +516,6 @@ dd($subbedProductsArr);
         dd($subbedProducts);
 
 
-
         $building = Building::find(28);
 
         dd($building->allAddresses);
@@ -466,7 +527,7 @@ dd($subbedProductsArr);
         dd($lastTicketNumber);
 
         $ticketNumber = explode('ST-', $lastTicketNumber);
-        $ticketNumberCast = (int)$ticketNumber[1] + 1;
+        $ticketNumberCast = (int) $ticketNumber[1] + 1;
         $defaultUserId = 10;
 
         $newTicket = new Ticket;
@@ -515,7 +576,8 @@ dd($subbedProductsArr);
         dd($myProductPropertyValues->buildingProducts->pluck('product')); //->pluck('propertyValues'));
 
         $products;
-        $building->load(['buildingProducts.product' => function ($q) use (&$products) {
+        $building->load(['buildingProducts.product' => function ($q) use (&$products)
+        {
             $products = $q->with('propertyValues')->get(); //->unique();
         }]);
 
