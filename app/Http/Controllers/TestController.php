@@ -11,6 +11,7 @@ use App\Extensions\SIPSignup;
 use App\Extensions\SIPNetwork;
 use App\Extensions\BillingHelper;
 use App\Extensions\CiscoSwitch;
+use App\Extensions\MtikRouter;
 use App\Extensions\DataMigrationUtils;
 use DB;
 //use App\User;
@@ -39,6 +40,7 @@ use Mail;
 use Config;
 use Auth;
 use View;
+use Storage;
 use Carbon\Carbon;
 
 //use ActivityLogs;
@@ -389,6 +391,11 @@ class TestController extends Controller {
         dd('done');
     }
 
+    protected function updateMtikHotspotTarget()
+    {
+
+    }
+
     public function generalTest()
     {
 
@@ -400,12 +407,71 @@ class TestController extends Controller {
 
 
         $ciscoSwitch = new CiscoSwitch(['readCommunity'  => 'oomoomee',
-                                   'writeCommunity' => 'BigSeem']);
+                                        'writeCommunity' => 'BigSeem']);
 
         $portTypeRegEx = '/.*ethernet.*/i';
         $skipLabelPattern = ['/.*[uU]plink.*/i', '/.*[dD]ownlink.*/i'];
         $portLabels = $ciscoSwitch->getSnmpAllPortLabel('10.11.123.27', $portTypeRegEx, $skipLabelPattern);
         dd($portLabels);
+
+
+
+        $mikrotiks = NetworkNode::where('id_types', config('const.type.router'))->get();
+        dd($mikrotiks);
+
+        $serverIp = '108.160.193.70';
+        foreach ($mikrotiks as $mikrotik)
+        {
+            $serviceRouter = new MtikRouter(['ip_address' => $mikrotik->ip_address,
+                                             'username' => config('netmgmt.mikrotik.username'),
+                                             'password' => config('netmgmt.mikrotik.password')]);
+            $serviceRouter->updateHotspotServerTarget($mikrotik->ip_address, $serverIp);
+            echo 'Updated ' . $mikrotik->host_name . '<br>';
+//            dd('done');
+        }
+        dd('done');
+
+        $loginFileContents = Storage::disk('local')->get('login.html');
+
+        foreach ($mikrotiks as $mikrotik)
+        {
+            config(['filesystems.disks.ftp.host' => $mikrotik->ip_address]);
+            config(['filesystems.disks.ftp.username' => 'admin']);
+            config(['filesystems.disks.ftp.password' => 'BigSeem']);
+
+            $loginFileExists = Storage::disk('ftp')->exists('hotspot/login.html');
+            if ($loginFileExists)
+            {
+                Storage::disk('ftp')->put('hotspot/login.html', $loginFileContents);
+                echo 'Updated ' . $mikrotik->host_name . '<br>';
+                continue;
+//                dd('Updated ' . $mikrotik->host_name);
+            }
+            echo 'Skipped ' . $mikrotik->host_name . '<br>';
+//            dd('Skipped ' . $mikrotik->host_name);
+        }
+
+        dd('done');
+//        $exists = Storage::disk('local')->exists('login.html');
+//
+//        config(['filesystems.disks.ftp.host' => '10.10.13.1']);
+//        config(['filesystems.disks.ftp.username' => 'admin']);
+//        config(['filesystems.disks.ftp.password' => 'BigSeem']);
+//
+//        $exists = Storage::disk('ftp')->exists('hotspot/login.html');
+//
+//        dd($exists);
+//
+//        $exists = Storage::disk('s3')->exists('file.jpg');
+//
+//        $contents = Storage::get('file.jpg');
+//
+//        Storage::put(
+//            'avatars/' . $user->id,
+//            file_get_contents($request->file('avatar')->getRealPath())
+//        );
+//
+//        Storage::copy('old/file1.jpg', 'new/file1.jpg');
 
 //        $allBuildings = Building::orderBy('alias', 'asc')->get();
 //        $filteredList = $allBuildings->filter(function ($value, $key) {
@@ -418,6 +484,17 @@ class TestController extends Controller {
 //        $pm = PaymentMethod::find(14331);
 //        dd(json_decode($pm->properties, true));
 //
+
+        $building = Building::find(1012);
+        $unitNumberMap = $building->getUnitNumbers();
+
+
+        $addressCollection = Address::where('id_buildings', 1012)
+            ->whereNull('id_customers')
+            ->get();
+
+        dd([$addressCollection->pluck('address', 'id'), $unitNumberMap]);
+
 
         $building = Building::find(68);
         dd($building->properties->pluck('id_building_properties'));

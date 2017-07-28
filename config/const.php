@@ -69,7 +69,7 @@ return [
     ],
     'building_property'              => [
         'type'              => '1',
-        'units'             => '2',
+        'unit_numbers'      => '2',
         'service_type'      => '3',
         'contract_expires'  => '4',
         'mgmt_company'      => '5',
@@ -90,7 +90,6 @@ return [
         'directv'           => '20',
         'voip'              => '21',
         'services'          => '22',
-        'unit_numbers'      => '23',
         'units'             => '24',
         'backhauls'         => '25',
         'building_setup'    => '27',
