@@ -1242,6 +1242,9 @@ table.dataTable tbody tr {
   max-height: 150px;
   overflow: auto;
   color: #3276b1;
+  position: absolute;
+  background: white;
+  width: 100%;
 }
 .filter-bld-nc div{
   /*color: #3276b1;*/
@@ -1249,6 +1252,26 @@ table.dataTable tbody tr {
 }
 .filter-bld-nc div:hover{
   opacity: .7;
+}
+.switches-list, .products-list{
+  font-size: 13px;
+  padding: 1px 0;
+}
+.switches-list div, .products-list div{
+  cursor: pointer;
+}
+.switches-list div:hover, .products-list div:hover{
+  opacity: .7;
+}
+.unfocus-switch, .unfocus-service{
+  opacity: .7;
+}
+.selected-switch, .selected-service{
+  font-weight: bold;
+}
+.header-title{
+  font-size: 15px;
+  font-weight: bold;
 }
 
 pre {
