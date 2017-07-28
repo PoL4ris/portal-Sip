@@ -144,11 +144,8 @@ class TestController extends Controller {
 
     public function supportTest()
     {
-        $customer = new Customer;
-        $resultado = $customer->getTickets(7435);
 
-
-        dd($resultado->toArray());
+        dd(Product::with('type')->orderBy('frequency', 'asc')->get()->take(10)->toArray());
         die();
     }
 
@@ -402,6 +399,23 @@ class TestController extends Controller {
     public function generalTest()
     {
 
+        $switchIp = '10.11.123.27';
+        $skipLabelPattern = ['/.*[uU]plink.*/i', '/.*[dD]ownlink.*/i'];
+        $sipNetwork = new SIPNetwork();
+        dd($sipNetwork->getSwitchPortInfoTable($switchIp, $skipLabelPattern));
+
+
+
+        $ciscoSwitch = new CiscoSwitch(['readCommunity'  => 'oomoomee',
+                                        'writeCommunity' => 'BigSeem']);
+
+        $portTypeRegEx = '/.*ethernet.*/i';
+        $skipLabelPattern = ['/.*[uU]plink.*/i', '/.*[dD]ownlink.*/i'];
+        $portLabels = $ciscoSwitch->getSnmpAllPortLabel('10.11.123.27', $portTypeRegEx, $skipLabelPattern);
+        dd($portLabels);
+
+
+
         $mikrotiks = NetworkNode::where('id_types', config('const.type.router'))->get();
         dd($mikrotiks);
 
@@ -458,7 +472,6 @@ class TestController extends Controller {
 //        );
 //
 //        Storage::copy('old/file1.jpg', 'new/file1.jpg');
-
 
 //        $allBuildings = Building::orderBy('alias', 'asc')->get();
 //        $filteredList = $allBuildings->filter(function ($value, $key) {

@@ -13,6 +13,7 @@ use App\Models\Building;
 use App\Models\ServiceLocation;
 use App\Models\BuildingProperty;
 use App\Models\BuildingPropertyValue;
+use App\Models\BuildingProduct;
 use App\Models\BuildingContact;
 use App\Models\Neighborhood;
 use App\Models\Type;
@@ -49,7 +50,7 @@ class BuildingController extends Controller {
     public function buildingData(Request $request)
     {
         return Building::with('neighborhood', 'contacts', 'properties')
-            ->find($request->id ? $request->id : 68); //23
+            ->find($request->id ? $request->id : 35); //23
     }
 
     /**
@@ -205,6 +206,16 @@ class BuildingController extends Controller {
     public function getBuildingProperties()
     {
         return BuildingProperty::get();
+    }
+
+    /**
+     * @param Request $request
+     * Get Buildings using product.
+     * @return mixed
+     */
+    public function getProductUsedBy(Request $request)
+    {
+        return BuildingProduct::with('building')->where('id_products', $request->id)->get();
     }
 
     //Building Insert's
@@ -411,7 +422,11 @@ class BuildingController extends Controller {
     {
         $buildingId = $request->id;
 
-
+        $building = Building::find($buildingId);
+        if($building != null){
+            return $building->switches;
+        }
+        return array();
     }
 
 }

@@ -254,8 +254,16 @@ app.controller('buildingCtl',             function ($scope, $http, $stateParams,
 
 
   $scope.jsonPropertiesFix          = function (json) {
+
+
     var jsonParse          = JSON.parse(json);
     var jsonKey            = Object.keys(jsonParse)[0];
+    var multProp           = Object.keys(jsonParse).length;
+
+    if(multProp > 1)
+      multProp = true;
+    else
+      multProp = false;
 
     if(!jsonKey)
     {
@@ -270,6 +278,7 @@ app.controller('buildingCtl',             function ($scope, $http, $stateParams,
                               'arrLength'  : jsonLength,
                               'arrValues'  : jsonValues,
                               'rawData'    : jsonParse,
+                              'multProp'   : multProp,
                               'recordId'   : this.properData.idBpv ? this.properData.idBpv : this.properData.id
                              };
 
@@ -428,6 +437,19 @@ app.controller('getBuildingPropertyCtl',  function ($scope, $http){
       .then(function (response) {
         $scope.getBuildingProperty = response.data.name;
       });
+});
+
+
+app.controller('getBuildingByAddressId',  function ($scope, $http){
+
+  console.log($scope.dataContained);
+
+  $http.get("getBuildingByAddressId", {params: {'id': $scope.dataContained}})
+    .then(function (response) {
+      $scope.addressInfoContained = response.data;
+    });
+
+
 });
 //Building Side Bar
 app.controller('sideBldController',       function ($scope, $http, buildingService, $stateParams, customerService) {

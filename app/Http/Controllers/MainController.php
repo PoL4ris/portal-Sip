@@ -23,6 +23,7 @@ use App\Models\Building;
 use App\Models\Status;
 use App\Models\User as Users;
 use App\Models\Coordinate;
+use App\Models\Type;
 
 
 class MainController extends Controller
@@ -95,6 +96,13 @@ class MainController extends Controller
     public function getStatus()
     {
         return Status::all();
+    }
+    /**
+     * @return Types table data
+     */
+    public function getTypes()
+    {
+        return Type::all();
     }
     /**
      * @return List of all buildings for geoLoc GoogleMap

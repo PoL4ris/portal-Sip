@@ -8,7 +8,7 @@ app.controller('adminController',                   function($scope, $http, cust
     customerService.sideBarFlag = false;
   }
 
-  $scope.displayView = 'users';
+  $scope.displayView = 'prod';
 
   $http.post("getAdminUsers", {params:{'token':adminService.existeToken}})
     .then(function (response) {
@@ -240,6 +240,45 @@ app.controller('adminController',                   function($scope, $http, cust
     $scope.newBldProp         = null;
     $scope.editBldPropData    = this.data;
   };
+  //Products
+  $scope.getProducts          = function(){
+    $http.get("getProducts")
+      .then(function (response) {
+        $scope.productsList  = response.data;
+      });
+  };
+  $scope.getTypes          = function(){
+    $http.get("getTypes")
+      .then(function (response) {
+        console.log(response.data);
+        $scope.typesList  = response.data;
+      });
+  };
+  $scope.addNewProd        = function(){
+    $scope.editProdData    = null;
+    $scope.newProd         = true;
+    $scope.productUsedBy   = false;
+  };
+  $scope.prodCancel        = function(){
+    $scope.newProd         = false;
+    $scope.editProdData    = false;
+    $scope.productUsedBy   = false;
+  };
+  $scope.editProd          = function(){
+    $scope.newProd         = null;
+    $scope.editProdData    = this.product;
+    $scope.getProductRels(this.product);
+  };
+  $scope.getProductRels    = function(idProduct){
+
+    $http.get("getProductUsedBy", {params:{'id':idProduct.id}})
+      .then(function (response) {
+        $scope.productUsedBy  = response.data;
+      });
+
+  }
+
+
 
 
   $scope.setView              = function(id){
@@ -248,19 +287,24 @@ app.controller('adminController',                   function($scope, $http, cust
     //1 = Profiles
     //2 = Apps
     //3 = Building Properties
+    //4 = Products
     var views = {'0' : 'users',
                  '1' : 'profiles',
                  '2' : 'apps',
                  '3' : 'bprop',
+                 '4' : 'prod',
     }
     $scope.displayView = views[id];
   };
   $scope.getAdminProfiles();
   $scope.getAdminApps();
   $scope.getBldProperties();
+  $scope.getProducts();
+  $scope.getTypes();
   $scope.fontAwesomeArray = fontAwesomeArray;
 
   $scope.dtOptions = DTOptionsBuilder.newOptions().withDisplayLength(25).withOption('order', [1, 'asc']);
+  $scope.dtOptionsProd = DTOptionsBuilder.newOptions().withOption('order', [4, 'asc']);
 
 });
 app.controller('adminPAppACont',                    function ($scope, $http){

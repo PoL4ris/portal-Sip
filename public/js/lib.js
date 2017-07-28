@@ -206,12 +206,31 @@ app.controller('newcustomerAppController', function($scope, $http, customerServi
 
     }
 
+
     $scope.getSwitchInfo      = function (idBuilding) {
 
       console.log('idBuilding | ' + idBuilding);
-      $scope.dummyInfo = {}
+
+      $http.get("getBuildingSwitches", {params: {'id': idBuilding}})
+        .then(function (response) {
+          console.log(response.data);
+          $scope.buildingSwitches = response.data;
+        });
+
 
     }
+    $scope.getavailablePorts  = function(){
+      console.log();
+
+      $http.get("getAvailableSwitchPorts", {params: {'ip': this.switch.ip_address}})
+        .then(function (response) {
+          console.log(response.data);
+          $scope.switchAvailablePorts = response.data;
+        });
+    }
+
+
+
     $scope.verifyCForm        = function (formData){
 
 

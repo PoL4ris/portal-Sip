@@ -24,9 +24,10 @@
         <div class="col-lg-7 bld-box-info text-align-right">
             <p>{{buildingData.name}}</p>
             <p>{{buildingData.alias}}</p>
-            <p>{{buildingData.neighborhood.name}}</p>
+            <p>{{buildingData.neighborhood.name?buildingData.neighborhood:'N/A'}}</p>
             <p>{{buildingData.code}}</p>
             <p ng-init="resultDate = convertDate(buildingData.year_built)" ng-if="buildingData.year_built" >{{resultDate | date : "MMM d, y h:mm a" }}</p>
+            <p ng-if="!buildingData.year_built" >N/A</p>
             <p>{{buildingData.units}}</p>
             <p>{{buildingData.floors}}</p>
             <p>{{buildingData.type}}</p>
