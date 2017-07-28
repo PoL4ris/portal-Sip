@@ -88,6 +88,7 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('getBuildingsList',          'BuildingController@getBuildingsList');
     Route::get('getBuildingProperty',       'BuildingController@getBuildingProperty');
     Route::get('getBuildingSwitches',       'BuildingController@getBuildingSwitches');
+    Route::get('getBuildingByAddressId',    'BuildingController@getBuildingByAddressId');
     //Insert Building
     Route::post('insertbuildingData',       'BuildingController@insertBuildingData');
     Route::get('insertBuildingProperties',  'BuildingController@insertBuildingProperties');

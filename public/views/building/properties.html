@@ -50,31 +50,21 @@
 
 
 
-
-
-
-
-
-
-
-
                                 <a ng-init="arrayData = jsonPropertiesFix(properData.value)" ng-if="properData.id_building_properties == 2">
 
-                                    <!--{{arrayData.multProp}}-->
-
                                     <div ng-if="!arrayData.multProp">
-                                        <div class="col-lg-1 no-padding-sides  p-t-sm">
-                                            {{arrayData.arrLength ? arrayData.arrLength : 0}}
-                                        </div>
-                                        <div class="pull-right m-l-lg " title="Remove units" ng-if="unitsResultData">
-                                            <i class="btn btn-danger fa fa-times" data-toggle="modal" data-target="#propertyUnitsModalRemove"></i>
-                                        </div>
-                                        <div class="pull-right m-l-lg" title="Add units">
-                                            <i class="btn btn-success fa fa-plus" data-toggle="modal" data-target="#propertyUnitsModalAdd"></i>
-                                        </div>
-                                        <div class="pull-right no-padding-sides " alt="Download" title="Download" ng-if="unitsResultData">
-                                            <i class="btn btn-success fa fa-file-excel-o" ng-click="exportToCsv()"></i>
-                                        </div>
+                                    <div class="col-lg-1 no-padding-sides  p-t-sm">
+                                        {{arrayData.arrLength ? arrayData.arrLength : 0}}
+                                    </div>
+                                    <div class="pull-right m-l-lg " title="Remove units" ng-if="unitsResultData">
+                                        <i class="btn btn-danger fa fa-times" data-toggle="modal" data-target="#propertyUnitsModalRemove"></i>
+                                    </div>
+                                    <div class="pull-right m-l-lg" title="Add units">
+                                        <i class="btn btn-success fa fa-plus" data-toggle="modal" data-target="#propertyUnitsModalAdd"></i>
+                                    </div>
+                                    <div class="pull-right no-padding-sides " alt="Download" title="Download" ng-if="unitsResultData">
+                                        <i class="btn btn-success fa fa-file-excel-o" ng-click="exportToCsv()"></i>
+                                    </div>
                                     </div>
 
 
@@ -83,38 +73,45 @@
 
 
 
-                                    <!--<div ng-if="arrayData.multProp">-->
+                                    <div ng-if="arrayData.multProp">
 
 
-                                        <!--<div ng-repeat="dataContained in arrayData.rawData">-->
+                                        <div ng-repeat="(dataContained, indexContained) in arrayData.rawData" ng-controller="getBuildingByAddressId">
 
-                                            <!--<div>{{$index}} | {{dataContained}}</div>-->
+                                            <div>{{indexContained}} | {{dataContained}} ===> {{addressInfoContained}}</div>
 
-
-                                        <!--</div>-->
+                                        </div>
 
 
 
                                         <!--<div class="col-lg-1 no-padding-sides  p-t-sm">-->
-                                            <!--{{arrayData.arrLength ? arrayData.arrLength : 0}}-->
+                                        <!--{{arrayData.arrLength ? arrayData.arrLength : 0}}-->
                                         <!--</div>-->
                                         <!--<div class="pull-right m-l-lg " title="Remove units" ng-if="unitsResultData">-->
-                                            <!--<i class="btn btn-danger fa fa-times" data-toggle="modal" data-target="#propertyUnitsModalRemove"></i>-->
+                                        <!--<i class="btn btn-danger fa fa-times" data-toggle="modal" data-target="#propertyUnitsModalRemove"></i>-->
                                         <!--</div>-->
                                         <!--<div class="pull-right m-l-lg" title="Add units">-->
-                                            <!--<i class="btn btn-success fa fa-plus" data-toggle="modal" data-target="#propertyUnitsModalAdd"></i>-->
+                                        <!--<i class="btn btn-success fa fa-plus" data-toggle="modal" data-target="#propertyUnitsModalAdd"></i>-->
                                         <!--</div>-->
                                         <!--<div class="pull-right no-padding-sides " alt="Download" title="Download" ng-if="unitsResultData">-->
-                                            <!--<i class="btn btn-success fa fa-file-excel-o" ng-click="exportToCsv()"></i>-->
+                                        <!--<i class="btn btn-success fa fa-file-excel-o" ng-click="exportToCsv()"></i>-->
                                         <!--</div>-->
 
 
 
 
 
-                                    <!--</div>-->
+                                    </div>
 
                                 </a>
+
+
+
+
+
+
+
+
 
 
 
