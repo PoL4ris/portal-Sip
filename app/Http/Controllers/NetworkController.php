@@ -592,6 +592,11 @@ class NetworkController extends Controller {
 
     public function getAvailableSwitchPorts(Request $request)
     {
+        $input = $request->all();
+        $switchIp = $input['ip'];
+        $skipLabelPattern = ['/.*[uU]plink.*/i', '/.*[dD]ownlink.*/i'];
+        $sipNetwork = new SIPNetwork();
+        return $portInfoTable = $sipNetwork->getSwitchPortInfoTable($switchIp, $skipLabelPattern);
 
     }
 

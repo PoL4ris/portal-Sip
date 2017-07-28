@@ -44,8 +44,8 @@ use Carbon\Carbon;
 //use ActivityLogs;
 use Symfony\Component\Console\Helper\ProgressBar;
 
-class TestController extends Controller
-{
+class TestController extends Controller {
+
     public function __construct()
     {
         //        $this->middleware('auth');
@@ -139,11 +139,11 @@ class TestController extends Controller
 
         dd($ticket2);
     }
-    
+
     public function supportTest()
     {
 
-        dd( Product::with('type')->orderBy('frequency', 'asc')->get()->take(10)->toArray() );
+        dd(Product::with('type')->orderBy('frequency', 'asc')->get()->take(10)->toArray());
         die();
     }
 
@@ -238,7 +238,8 @@ class TestController extends Controller
         $z = 0;
         $p = 0;
 
-        for ($p = 0; $z < $a; $p++) {
+        for ($p = 0; $z < $a; $p ++)
+        {
 
 
             //        print 'SERIE-->' . $p . '<br>';
@@ -246,7 +247,8 @@ class TestController extends Controller
             $y = $x;
             $x = $z;
 
-            if ($z % 2 == 0) {
+            if ($z % 2 == 0)
+            {
                 $b = $b + $z;
                 print '|----- <strong>' . $b . '</strong> -----|<br>';
             }
@@ -330,7 +332,8 @@ class TestController extends Controller
 
         $charges = $invoice->charges;
         $details = $charges->pluck('details');
-        foreach($details as $chargeDetails){
+        foreach ($details as $chargeDetails)
+        {
             dd(json_decode($chargeDetails, true));
         }
         dd($details);
@@ -389,9 +392,20 @@ class TestController extends Controller
     public function generalTest()
     {
 
+        $switchIp = '10.11.123.27';
+        $skipLabelPattern = ['/.*[uU]plink.*/i', '/.*[dD]ownlink.*/i'];
+        $sipNetwork = new SIPNetwork();
+        dd($sipNetwork->getSwitchPortInfoTable($switchIp, $skipLabelPattern));
 
 
 
+        $ciscoSwitch = new CiscoSwitch(['readCommunity'  => 'oomoomee',
+                                   'writeCommunity' => 'BigSeem']);
+
+        $portTypeRegEx = '/.*ethernet.*/i';
+        $skipLabelPattern = ['/.*[uU]plink.*/i', '/.*[dD]ownlink.*/i'];
+        $portLabels = $ciscoSwitch->getSnmpAllPortLabel('10.11.123.27', $portTypeRegEx, $skipLabelPattern);
+        dd($portLabels);
 
 //        $allBuildings = Building::orderBy('alias', 'asc')->get();
 //        $filteredList = $allBuildings->filter(function ($value, $key) {
@@ -430,13 +444,13 @@ class TestController extends Controller
                 'products.frequency')
             ->groupby('products.name')
             ->get();
-dd($subbedProducts);
+        dd($subbedProducts);
 
         foreach ($subbedProducts as $product)
         {
             $subbedProductsArr[$product->id] = $product;
         }
-dd($subbedProductsArr);
+        dd($subbedProductsArr);
         foreach ($allProducts as $key => $product)
         {
             if (array_key_exists($key, $subbedProductsArr))
@@ -451,7 +465,6 @@ dd($subbedProductsArr);
         dd($subbedProducts);
 
 
-
         $building = Building::find(28);
 
         dd($building->allAddresses);
@@ -463,7 +476,7 @@ dd($subbedProductsArr);
         dd($lastTicketNumber);
 
         $ticketNumber = explode('ST-', $lastTicketNumber);
-        $ticketNumberCast = (int)$ticketNumber[1] + 1;
+        $ticketNumberCast = (int) $ticketNumber[1] + 1;
         $defaultUserId = 10;
 
         $newTicket = new Ticket;
@@ -512,7 +525,8 @@ dd($subbedProductsArr);
         dd($myProductPropertyValues->buildingProducts->pluck('product')); //->pluck('propertyValues'));
 
         $products;
-        $building->load(['buildingProducts.product' => function ($q) use (&$products) {
+        $building->load(['buildingProducts.product' => function ($q) use (&$products)
+        {
             $products = $q->with('propertyValues')->get(); //->unique();
         }]);
 

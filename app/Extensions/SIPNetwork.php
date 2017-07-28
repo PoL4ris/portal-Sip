@@ -425,7 +425,7 @@ class SIPNetwork {
         return $nodePropertyValue;
     }
 
-    public function getSwitchPortInfoTable($ip) {
+    public function getSwitchPortInfoTable($ip, $skipLabelPattern = []) {
 
         $switchPortInfoArray = array();
         $portTypeRegEx = '/.*ethernet.*/i';
@@ -436,7 +436,7 @@ class SIPNetwork {
             return $switchPortInfoArray;
         }
 
-        $portLabelArr = $ciscoSwitch->getSnmpAllPortLabel($ip, $portTypeRegEx);
+        $portLabelArr = $ciscoSwitch->getSnmpAllPortLabel($ip, $portTypeRegEx, $skipLabelPattern);
         if(isset($portLabelArr['error'])){
             return $switchPortInfoArray;
         }
@@ -463,6 +463,9 @@ class SIPNetwork {
 
         foreach ($portDescArr['response'] as $key => $desc) {
             $switchPortInfo = array();
+            if($skipLabelPattern != ''){
+
+            }
             $switchPortInfo['Name'] = $desc;
             $switchPortInfo['Label'] = isset($portLabelArr['response'][$key]) ? $portLabelArr['response'][$key] : '';
             $switchPortInfo['Status'] = isset($portOperStatusArr['response'][$key]) ? $portOperStatusArr['response'][$key] : '';
@@ -471,7 +474,7 @@ class SIPNetwork {
                  (($portSpeedArr['response'][$key] == '100000000') ? '100M' : '10M')) : '';
             $switchPortInfo['LastChange'] = isset($portLastChangeArr['response'][$key]) ? $portLastChangeArr['response'][$key] : '';
             $switchPortInfo['AdminStatus'] = ($portAdminStatusArr['response'][$key] == 'up') ? 'enabled' : 'disabled';
-            $switchPortInfoArray[] = $switchPortInfo;
+            $switchPortInfoArray[$key] = $switchPortInfo;
         }
         return $switchPortInfoArray;
     }
@@ -519,6 +522,7 @@ class SIPNetwork {
 
         return $switchPortInfoArray;
     }
+
 }
 
 ?>
