@@ -427,7 +427,6 @@ class BuildingController extends Controller {
             return $building->switches;
         }
         return array();
-
     }
 
 }
