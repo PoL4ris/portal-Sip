@@ -227,12 +227,28 @@ app.controller('newcustomerAppController', function($scope, $http, customerServi
   }
 
   $scope.getavailablePorts      = function (){
+    $scope.loadingPorts = false;
     var id = this.switch.id;
     $scope.ableDisableSwitches(id);
     $http.get("getAvailableSwitchPorts", {params: {'ip': this.switch.ip_address}})
       .then(function (response) {
         $scope.switchAvailablePorts = response.data;
+        $scope.loadingPorts = true;
       });
+  }
+
+  $scope.portSelected = function(){
+    console.log(this.index);
+    var initIndexId = this.index;
+
+    $('.init-ports').addClass('unfocus-ports');
+    $('.init-ports').removeClass('selected-port');
+    $('.init-ports i').fadeOut();
+    $('.port-index-' + initIndexId).removeClass('unfocus-ports');
+    $('.port-index-' + initIndexId).addClass('selected-port');
+    $('.port-index-' + initIndexId + ' i').fadeIn();
+
+    $('#cn-port').val(initIndexId);
   }
 
   $scope.ableDisableSwitches    = function (id){
@@ -269,6 +285,22 @@ app.controller('newcustomerAppController', function($scope, $http, customerServi
       .then(function (response) {
         $scope.bldListResult = response.data;
       });
+  }
+  $scope.filterName             = function(name) {
+
+    var result;
+    var case1 = name.split('GigabitEthernet');
+    var case2 = name.split('FastEthernet');
+
+    if(case1[1])
+      result = 'G.E : ' + case1[1];
+    else if(case2[1])
+      result = 'F.E : ' + case2[1];
+    else
+      result = name;
+
+      return result;
+
   }
 
 

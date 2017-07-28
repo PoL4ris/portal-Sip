@@ -1,6 +1,5 @@
 <hr>
 
-
 <div class="col-lg-12 cn-customer">
     <div class="container">
         <div class="widget-body fuelux" data-smart-fuelux-wizard data-smart-wizard-callback="wizard2CompleteCallback">
@@ -133,9 +132,7 @@
                     </div>
                     <div class="step-pane" data-step="3">
                         <h3><strong>Step 3 </strong> - Select Service.</h3>
-                        <br>
-                        <br>
-
+                        <br><br>
                         <div class="col-lg-8">
 
                             <div class="col-lg-4 header-title">Name</div>
@@ -155,45 +152,65 @@
                         </div>
                         <div class="col-lg-4">
                             <h2 class="text-center text-primary">Service Selected. </h2>
-                            <p>{{selectedServiceDisplay.name}}</p>
-                            <p>${{selectedServiceDisplay.amount}}.00,
-                                <span class="capital-first">{{selectedServiceDisplay.frequency}}</span>
-                            </p>
-                            <input type="hidden" id="nc-service" value="{{selectedServiceDisplay.id}}">
+                            <div class="selected-service-display" ng-if="selectedServiceDisplay">
+                                <p>{{selectedServiceDisplay.name}}</p>
+                                <p>${{selectedServiceDisplay.amount}}.00,
+                                    <span class="capital-first">{{selectedServiceDisplay.frequency}}</span>
+                                </p>
+                                <input type="hidden" id="nc-service" value="{{selectedServiceDisplay.id}}">
+                            </div>
                         </div>
-
-
-                        <br>
-                        <br>
-                        <br>
-                        <br>
+                        <div class="col-lg-12"><hr></div>
                     </div>
-                    <div class="step-pane" data-step="4">
-                        <h3><strong>Step 4 </strong> - Select Switch to select port.</h3>
-                        <br>
-                        <br>
+                    <div class="step-pane col-lg-12" data-step="4">
+                        <h3><strong>Step 4 </strong> - Select Switch to select port.
+                            <div class="pull-right">
+                                <label>Port</label>
+                                <br>
+                                <small class=" m-r-lg"> G.E : GigabitEthernet</small>
+                                <br>
+                                <small class=""> F.E : FastEthernet</small>
+                            </div>
+                            <div class="pull-right m-r-lg">
+                                <label>Status</label>
+                                <br>
+                                <small class="status-color-up-left-border m-r-lg"> UP</small>
+                                <br>
+                                <small class="status-color-down-left-border"> DOWN</small>
+                            </div>
+                        </h3>
+                        <br><br><br><br>
                         <div class="col-lg-3">
-                            <div ng-repeat="switch in buildingSwitches" class="switches-list">
+                            <div ng-repeat="switch in buildingSwitches" class="switches-list ">
                                 <div ng-click="getavailablePorts()" class="select-switch-{{switch.id}} switches-list">
                                     {{switch.host_name}}, {{switch.ip_address}}
                                 </div>
                             </div>
                         </div>
-                        <div class="col-lg-9 border">
-                            <div ng-repeat="ports in switchAvailablePorts">
-                                {{ports}}
+                        <div class="col-lg-9" ng-if="!switchAvailablePorts"></div>
+                        <div class="col-lg-9" ng-if="switchAvailablePorts">
+                            <input type="hidden" name="port" id="cn-port">
+                            <img src="/img/loading.gif" alt="" class="loading-gif-support" ng-if="!loadingPorts">
+                            <div class="row" ng-if="loadingPorts">
+                                <div ng-repeat="(index, ports) in switchAvailablePorts" ng-click="portSelected()" class="status-color-{{ports.Status}}-left-border col-lg-6 switches-list ports-list-format">
+                                    <div ng-init="cleanName = filterName(ports.Name)" ng-if="ports" class="init-ports port-index-{{index}}">
+                                        <span>{{cleanName}},</span>
+                                        <span>{{ports.Label?ports.Label:'N/A'}}, </span>
+                                        <span>{{ports.Speed}}, </span>
+                                        <span class="capital-first">{{ports.AdminStatus}}</span>
+                                        <i class="fa fa-check no-display status-type-1"></i>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+                        <div class="col-lg-12">
+                            <hr>
+                            <br><br>
+                        </div>
 
-                        <h1 class="text-center text-primary"> Response lists. </h1>
-                        <br>
-                        <br>
-                        <br>
-                        <br>
                     </div>
                 </form>
             </div>
-            <hr>
         </div>
     </div>
 </div>
