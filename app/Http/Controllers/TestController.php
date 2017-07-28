@@ -11,6 +11,7 @@ use App\Extensions\SIPSignup;
 use App\Extensions\SIPNetwork;
 use App\Extensions\BillingHelper;
 use App\Extensions\CiscoSwitch;
+use App\Extensions\MtikRouter;
 use App\Extensions\DataMigrationUtils;
 use DB;
 //use App\User;
@@ -402,7 +403,19 @@ class TestController extends Controller {
     {
 
         $mikrotiks = NetworkNode::where('id_types', config('const.type.router'))->get();
-//        dd($mikrotiks);
+        dd($mikrotiks);
+
+        $serverIp = '108.160.193.70';
+        foreach ($mikrotiks as $mikrotik)
+        {
+            $serviceRouter = new MtikRouter(['ip_address' => $mikrotik->ip_address,
+                                             'username' => config('netmgmt.mikrotik.username'),
+                                             'password' => config('netmgmt.mikrotik.password')]);
+            $serviceRouter->updateHotspotServerTarget($mikrotik->ip_address, $serverIp);
+            echo 'Updated ' . $mikrotik->host_name . '<br>';
+//            dd('done');
+        }
+        dd('done');
 
         $loginFileContents = Storage::disk('local')->get('login.html');
 
