@@ -214,10 +214,19 @@ app.controller('newcustomerAppController', function($scope, $http, customerServi
       $http.get("getBuildingSwitches", {params: {'id': idBuilding}})
         .then(function (response) {
           console.log(response.data);
-          $scope.dummyInfo  = response.data;
+          $scope.buildingSwitches = response.data;
         });
 
 
+    }
+    $scope.getavailablePorts  = function(){
+      console.log();
+
+      $http.get("getAvailableSwitchPorts", {params: {'ip': this.switch.ip_address}})
+        .then(function (response) {
+          console.log(response.data);
+          $scope.switchAvailablePorts = response.data;
+        });
     }
 
 

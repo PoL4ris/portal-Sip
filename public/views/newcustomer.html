@@ -134,6 +134,14 @@
                         <h3><strong>Step 3 </strong> - Select Switch to select port.</h3>
                         <br>
                         <br>
+                        <div ng-repeat="switch in buildingSwitches">
+                            <div ng-click="getavailablePorts()">
+                                {{switch.host_name}}, {{switch.ip_address}}
+                            </div>
+                        </div>
+                        <div ng-repeat="ports in switchAvailablePorts">
+                            {{ports}}
+                        </div>
 
                         <h1 class="text-center text-primary"> Response lists. </h1>
                         <br>
