@@ -1242,6 +1242,9 @@ table.dataTable tbody tr {
   max-height: 150px;
   overflow: auto;
   color: #3276b1;
+  position: absolute;
+  background: white;
+  width: 100%;
 }
 .filter-bld-nc div{
   /*color: #3276b1;*/
@@ -1249,6 +1252,35 @@ table.dataTable tbody tr {
 }
 .filter-bld-nc div:hover{
   opacity: .7;
+}
+.switches-list, .products-list{
+  font-size: 13px;
+  padding: 1px 0;
+}
+.switches-list div, .products-list div, init-ports{
+  cursor: pointer;
+}
+.switches-list div:hover, .products-list div:hover, init-ports:hover{
+  opacity: .7;
+}
+.unfocus-switch, .unfocus-service, .unfocus-ports{
+  opacity: .7;
+}
+.selected-switch, .selected-service, .selected-port{
+  font-weight: bold;
+}
+.header-title{
+  font-size: 15px;
+  font-weight: bold;
+}
+.ports-list-format{
+  margin-bottom: 10px;
+}
+.selected-service-display{
+  border-bottom: 1px solid green;
+  font-size: 16px;
+  margin-top: 20px;
+  text-align: center;
 }
 
 pre {

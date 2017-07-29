@@ -151,10 +151,6 @@ app.controller('dummyAppController', function ($scope, $http,customerService){
 app.controller('newcustomerAppController', function($scope, $http, customerService){
   console.log('this is the newcustomerAppController');
 
-
-
-
-
   if (customerService.sideBarFlag) {
     $scope.sipTool(2);
     customerService.sideBarFlag = false;
@@ -162,101 +158,149 @@ app.controller('newcustomerAppController', function($scope, $http, customerServi
 
   $scope.selectedBuilding = '/img/logoSmall.png';
 
-    $http.get("getBuildingsList")
-    .then(function (response) {
-      $scope.buildingsData = response.data
-    })
+  $http.get("getBuildingsList")
+  .then(function (response) {
+    $scope.buildingsData = response.data
+  })
 
-    $scope.setImageBuilding   = function (type){
-      var optionVal = null;
-      if(type == 0)
+  $scope.setImageBuilding       = function (type){
+    var optionVal = null;
+    if(type == 0)
+    {
+      if(this.selectedOption == '')
       {
-        if(this.selectedOption == '')
-        {
-          $('#img-displayed').fadeOut();
-          return;
-        }
-
-        if($scope.buildingsData[this.selectedOption])
-          $scope.selectedBuilding = '/img/buildings/' + $scope.buildingsData[this.selectedOption].img_building;
-
-        $('#cn-filter').val('');
-        optionVal = this.selectedOption;
-      }
-      else
-      {
-        if(this.filterBld == '')
-        {
-          $('#img-displayed').fadeOut();
-          return;
-        }
-
-        $scope.selectedBuilding = '/img/buildings/' + this.filterBld.img_building;
-        $('#cn-filter').val(this.filterBld.code + ' | ' + this.filterBld.name);
-        $('#cn-select-address-opt').val('');
-        optionVal = this.filterBld.id;
+        $('#img-displayed').fadeOut();
+        return;
       }
 
-      $scope.bldListResult = null;
-      $('#cn-address-value').val(optionVal);
-      $('#cn-address-value').attr('pass', true);
-      $('#img-displayed').fadeIn();
+      if($scope.buildingsData[this.selectedOption])
+        $scope.selectedBuilding = '/img/buildings/' + $scope.buildingsData[this.selectedOption].img_building;
 
-      $scope.getSwitchInfo(optionVal);
-
+      $('#cn-filter').val('');
+      optionVal = this.selectedOption;
     }
-
-
-    $scope.getSwitchInfo      = function (idBuilding) {
-
-      console.log('idBuilding | ' + idBuilding);
-
-      $http.get("getBuildingSwitches", {params: {'id': idBuilding}})
-        .then(function (response) {
-          console.log(response.data);
-          $scope.buildingSwitches = response.data;
-        });
-
-
-    }
-    $scope.getavailablePorts  = function(){
-      console.log();
-
-      $http.get("getAvailableSwitchPorts", {params: {'ip': this.switch.ip_address}})
-        .then(function (response) {
-          console.log(response.data);
-          $scope.switchAvailablePorts = response.data;
-        });
-    }
-
-
-
-    $scope.verifyCForm        = function (formData){
-
-
-
-    console.log(formData);
-    return;
-
-      var fname = $('#cn-fname').attr('pass');
-      var lname = $('#cn-lname').attr('pass');
-      var email = $('#cn-email').attr('pass');
-      var tel   = $('#cn-tel').attr('pass');
-      var bld   = $('#cn-address-value').attr('pass');
-
-      if(fname && lname && email && tel && bld)
+    else
+    {
+      if(this.filterBld == '')
       {
-        console.log(fname + ' | ' + lname + ' | ' + email + ' | ' + tel);
+        $('#img-displayed').fadeOut();
+        return;
       }
-      else
-        console.log('error');
+
+      $scope.selectedBuilding = '/img/buildings/' + this.filterBld.img_building;
+      $('#cn-filter').val(this.filterBld.code + ' | ' + this.filterBld.name);
+      $('#cn-select-address-opt').val('');
+      optionVal = this.filterBld.id;
     }
 
-  $scope.filterBldList              = function () {
+    $scope.bldListResult = null;
+    $('#cn-address-value').val(optionVal);
+    $('#cn-address-value').attr('pass', true);
+    $('#img-displayed').fadeIn();
+
+    $scope.getAvailableServices(optionVal);
+    $scope.getSwitchInfo(optionVal);
+
+  }
+  $scope.getAvailableServices   = function (idBuilding) {
+    $http.get("getAvailableServices", {params: {'id': idBuilding}})
+      .then(function (response) {
+        $scope.availableServices = response.data;
+      });
+  }
+  $scope.getSwitchInfo          = function (idBuilding) {
+    $http.get("getBuildingSwitches", {params: {'id': idBuilding}})
+      .then(function (response) {
+        $scope.buildingSwitches = response.data;
+      });
+  }
+
+  $scope.serviceSelected        = function (){
+    console.log('this is the new ===> serviceSelected');
+    var id = this.service.id;
+    $scope.selectedServiceDisplay = this.service.product;
+
+    $('.service-list').addClass('unfocus-service');
+    $('.service-list').removeClass('selected-service');
+    $('.select-service-' + id).removeClass('unfocus-service');
+    $('.select-service-' + id).addClass('selected-service');
+  }
+
+  $scope.getavailablePorts      = function (){
+    $scope.loadingPorts = false;
+    var id = this.switch.id;
+    $scope.ableDisableSwitches(id);
+    $http.get("getAvailableSwitchPorts", {params: {'ip': this.switch.ip_address}})
+      .then(function (response) {
+        $scope.switchAvailablePorts = response.data;
+        $scope.loadingPorts = true;
+      });
+  }
+
+  $scope.portSelected = function(){
+    console.log(this.index);
+    var initIndexId = this.index;
+
+    $('.init-ports').addClass('unfocus-ports');
+    $('.init-ports').removeClass('selected-port');
+    $('.init-ports i').fadeOut();
+    $('.port-index-' + initIndexId).removeClass('unfocus-ports');
+    $('.port-index-' + initIndexId).addClass('selected-port');
+    $('.port-index-' + initIndexId + ' i').fadeIn();
+
+    $('#cn-port').val(initIndexId);
+  }
+
+  $scope.ableDisableSwitches    = function (id){
+    $('.switches-list').addClass('unfocus-switch');
+    $('.switches-list').removeClass('selected-switch');
+    $('.select-switch-' + id).removeClass('unfocus-switch');
+    $('.select-switch-' + id).addClass('selected-switch');
+  }
+
+
+
+  $scope.verifyCForm            = function (formData){
+
+
+
+  console.log(formData);
+  return;
+
+    var fname = $('#cn-fname').attr('pass');
+    var lname = $('#cn-lname').attr('pass');
+    var email = $('#cn-email').attr('pass');
+    var tel   = $('#cn-tel').attr('pass');
+    var bld   = $('#cn-address-value').attr('pass');
+
+    if(fname && lname && email && tel && bld)
+    {
+      console.log(fname + ' | ' + lname + ' | ' + email + ' | ' + tel);
+    }
+    else
+      console.log('error');
+  }
+  $scope.filterBldList          = function () {
     $http.get("getFilterBld", {params: {'query': this.filterBldListModel}})
       .then(function (response) {
         $scope.bldListResult = response.data;
       });
+  }
+  $scope.filterName             = function(name) {
+
+    var result;
+    var case1 = name.split('GigabitEthernet');
+    var case2 = name.split('FastEthernet');
+
+    if(case1[1])
+      result = 'G.E : ' + case1[1];
+    else if(case2[1])
+      result = 'F.E : ' + case2[1];
+    else
+      result = name;
+
+      return result;
+
   }
 
 
