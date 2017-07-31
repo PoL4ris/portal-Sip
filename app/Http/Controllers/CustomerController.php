@@ -182,6 +182,7 @@ class CustomerController extends Controller {
         }
 
         $customer->password = bcrypt($result);
+        $customer->password_updated = 1;
         $customer->save();
 
         //ADD ACTIVITY LOG HERE
