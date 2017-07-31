@@ -716,7 +716,8 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http){
 
     $scope.errorMsgPaymentMethods = null;
 
-    var regex = /[^\w]/g
+//    var regex = /[^\w]/g
+    var regex = /[^.\w]/g
 
     var objects = getFormValues('manual-refund-form');
     objects['cid'] = $scope.idCustomer;
@@ -801,9 +802,14 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http){
   $scope.chargeFunct        = function (){
     $scope.errorMsgPaymentMethods = null;
 
-    var regex = /[^\w]/g
+    var regex = /[^.\w]/g
+
+
 
     var objects = getFormValues('manual-charge-form');
+//    console.log(regex.test(objects.amount));
+//
+//    return;
     objects['cid'] = $scope.idCustomer;
 
     if(!objects.cid || !objects.amount || !objects.desc)
