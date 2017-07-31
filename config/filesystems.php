@@ -45,37 +45,37 @@ return [
 
         'local' => [
             'driver' => 'local',
-            'root' => storage_path('app'),
+            'root'   => storage_path('app'),
         ],
 
         'public' => [
-            'driver' => 'local',
-            'root' => storage_path('app/public'),
+            'driver'     => 'local',
+            'root'       => storage_path('app/public'),
             'visibility' => 'public',
         ],
 
         's3' => [
             'driver' => 's3',
-            'key' => 'your-key',
+            'key'    => 'your-key',
             'secret' => 'your-secret',
             'region' => 'your-region',
             'bucket' => 'your-bucket',
         ],
 
-        'ftp' => [
-            'driver'   => 'ftp',
-            'host'     => 'ftp.example.com',
-            'port'     => 2121,
-            'username' => 'your-username',
-            'password' => 'your-password',
-
-            // Optional FTP Settings...
-
-            // 'root'     => '',
-            // 'passive'  => true,
-            // 'ssl'      => true,
-            // 'timeout'  => 30,
-        ],
+//        'ftp' => [
+//            'driver'   => 'ftp',
+//            'host'     => 'ftp.example.com',
+//            'username' => 'your-username',
+//            'password' => 'your-password',
+//
+//            // Optional FTP Settings...
+//
+//            'port'    => 2121,
+//            'passive' => true,
+//            // 'root'     => '',
+//            // 'ssl'      => true,
+//            // 'timeout'  => 30,
+//        ],
     ],
 
 ];

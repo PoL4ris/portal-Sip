@@ -399,57 +399,62 @@ class TestController extends Controller {
     public function generalTest()
     {
 
-        $switchIp = '10.11.123.27';
-        $skipLabelPattern = ['/.*[uU]plink.*/i', '/.*[dD]ownlink.*/i'];
-        $sipNetwork = new SIPNetwork();
-        dd($sipNetwork->getSwitchPortInfoTable($switchIp, $skipLabelPattern));
+//        $switchIp = '10.11.123.27';
+//        $skipLabelPattern = ['/.*[uU]plink.*/i', '/.*[dD]ownlink.*/i'];
+//        $sipNetwork = new SIPNetwork();
+//        dd($sipNetwork->getSwitchPortInfoTable($switchIp, $skipLabelPattern));
+//
+//
+//
+//        $ciscoSwitch = new CiscoSwitch(['readCommunity'  => 'oomoomee',
+//                                        'writeCommunity' => 'BigSeem']);
+//
+//        $portTypeRegEx = '/.*ethernet.*/i';
+//        $skipLabelPattern = ['/.*[uU]plink.*/i', '/.*[dD]ownlink.*/i'];
+//        $portLabels = $ciscoSwitch->getSnmpAllPortLabel('10.11.123.27', $portTypeRegEx, $skipLabelPattern);
+//        dd($portLabels);
 
+//        $mikrotiks = NetworkNode::where('id_types', config('const.type.router'))->get();
+//        dd($mikrotiks);
 
+//        $serverIp = '108.160.193.70';
+//        foreach ($mikrotiks as $mikrotik)
+//        {
+//            $serviceRouter = new MtikRouter(['ip_address' => $mikrotik->ip_address,
+//                                             'username' => config('netmgmt.mikrotik.username'),
+//                                             'password' => config('netmgmt.mikrotik.password')]);
+//            $serviceRouter->updateHotspotServerTarget($mikrotik->ip_address, $serverIp);
+//            echo 'Updated ' . $mikrotik->host_name . '<br>';
+////            dd('done');
+//        }
+//        dd('done');
 
-        $ciscoSwitch = new CiscoSwitch(['readCommunity'  => 'oomoomee',
-                                        'writeCommunity' => 'BigSeem']);
-
-        $portTypeRegEx = '/.*ethernet.*/i';
-        $skipLabelPattern = ['/.*[uU]plink.*/i', '/.*[dD]ownlink.*/i'];
-        $portLabels = $ciscoSwitch->getSnmpAllPortLabel('10.11.123.27', $portTypeRegEx, $skipLabelPattern);
-        dd($portLabels);
-
-
-
-        $mikrotiks = NetworkNode::where('id_types', config('const.type.router'))->get();
-        dd($mikrotiks);
-
-        $serverIp = '108.160.193.70';
-        foreach ($mikrotiks as $mikrotik)
-        {
-            $serviceRouter = new MtikRouter(['ip_address' => $mikrotik->ip_address,
-                                             'username' => config('netmgmt.mikrotik.username'),
-                                             'password' => config('netmgmt.mikrotik.password')]);
-            $serviceRouter->updateHotspotServerTarget($mikrotik->ip_address, $serverIp);
-            echo 'Updated ' . $mikrotik->host_name . '<br>';
-//            dd('done');
-        }
-        dd('done');
-
-        $loginFileContents = Storage::disk('local')->get('login.html');
-
-        foreach ($mikrotiks as $mikrotik)
-        {
-            config(['filesystems.disks.ftp.host' => $mikrotik->ip_address]);
-            config(['filesystems.disks.ftp.username' => 'admin']);
-            config(['filesystems.disks.ftp.password' => 'BigSeem']);
-
-            $loginFileExists = Storage::disk('ftp')->exists('hotspot/login.html');
-            if ($loginFileExists)
-            {
-                Storage::disk('ftp')->put('hotspot/login.html', $loginFileContents);
-                echo 'Updated ' . $mikrotik->host_name . '<br>';
-                continue;
-//                dd('Updated ' . $mikrotik->host_name);
-            }
-            echo 'Skipped ' . $mikrotik->host_name . '<br>';
-//            dd('Skipped ' . $mikrotik->host_name);
-        }
+////        $mikrotiks = NetworkNode::where('id', 1251)->get();
+//        $mikrotiks = NetworkNode::where('id_types', config('const.type.router'))->get();
+////        dd($mikrotiks);
+//
+//        $loginFileContents = Storage::disk('local')->get('login.html');
+//
+//        foreach ($mikrotiks as $mikrotik)
+//        {
+//            config(['filesystems.disks.ftp.host' => $mikrotik->ip_address]);
+//            config(['filesystems.disks.ftp.username' => 'admin']);
+//            config(['filesystems.disks.ftp.password' => 'BigSeem']);
+//
+//            $loginFileExists = Storage::disk('ftp')->exists('hotspot/login.html');
+//            if ($loginFileExists)
+//            {
+//                config(['filesystems.disks.ftp.host' => $mikrotik->ip_address]);
+//                config(['filesystems.disks.ftp.username' => 'admin']);
+//                config(['filesystems.disks.ftp.password' => 'BigSeem']);
+//                Storage::disk('ftp')->put('hotspot/login.html', $loginFileContents);
+//                echo 'Updated ' . $mikrotik->host_name . '<br>';
+//                continue;
+////                dd('Updated ' . $mikrotik->host_name);
+//            }
+//            echo 'Skipped ' . $mikrotik->host_name . '<br>';
+////            dd('Skipped ' . $mikrotik->host_name);
+//        }
 
         dd('done');
 //        $exists = Storage::disk('local')->exists('login.html');
