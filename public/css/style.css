@@ -1255,7 +1255,10 @@ table.dataTable tbody tr {
 }
 .switches-list, .products-list{
   font-size: 13px;
-  padding: 1px 0;
+  padding: 2px 0;
+}
+.products-list{
+  border-bottom: 1px dotted #ddd;
 }
 .switches-list div, .products-list div, init-ports{
   cursor: pointer;
@@ -1272,6 +1275,9 @@ table.dataTable tbody tr {
 .header-title{
   font-size: 15px;
   font-weight: bold;
+  background: rgba(0,0,0,.04);
+  margin-bottom: 5px;
+  padding: 3px 13px;
 }
 .ports-list-format{
   margin-bottom: 10px;
@@ -1282,8 +1288,93 @@ table.dataTable tbody tr {
   margin-top: 20px;
   text-align: center;
 }
-
+.verify-info-container {
+}
+.verify-info-container input {
+}
+.verify-info-container .bloque-a {
+  border-right: 1px dotted gray;
+  height: 230px;
+  margin-bottom: 20px;
+}
+.verify-info-container .bloque-a label {
+  color: rgba(0, 0, 0, 0.4);
+  display: inline-block;
+  font-size: 14px;
+  width: 20%;
+}
+.verify-info-container .bloque-a span {
+  border-left: medium none;
+  border-right: medium none;
+  border-top: medium none;
+  color: #333;
+  font-size: 14px;
+  padding: 0 5px 0 0;
+}
+.verify-info-container .bloque-a div span {
+}
+.verify-info-container .bloque-b {
+  border-right: 1px dotted gray;
+  height: 230px;
+  margin-bottom: 20px;
+}
+.verify-info-container .bloque-b label {
+  color: rgba(0, 0, 0, 0.4);
+  display: inline-block;
+  font-size: 14px;
+  width: 30%;
+}
+.verify-info-container .bloque-b span {
+  color: #333;
+  display: inline-block;
+  font-size: 14px;
+  padding: 0 5px 0 0;
+  width: auto;
+}
+.verify-info-container .bloque-b .img-cont {
+  margin-top: 20px;
+  text-align: center;
+}
+.verify-info-container .bloque-b .img-cont img {
+}
+.verify-info-container .bloque-c {
+  height: 230px;
+  margin-bottom: 20px;
+}
+.verify-info-container .bloque-c label {
+  color: rgba(0, 0, 0, 0.4);
+  display: inline-block;
+  font-size: 14px;
+  width: 20%;
+}
+.verify-info-container .bloque-c div span {
+}
+.form-status-ok {
+  border-bottom: 1px solid rgb(0, 200, 83);
+}
+.form-status-nook {
+  border-bottom: 1px solid crimson;
+}
+.verify-info-container .bloque-a .nc-name {
+  display: inline-block;
+  width: auto;
+}
+.verify-info-container .bloque-b .nc-csz {
+  display: inline-block;
+  width: auto;
+}
+.verify-info-container .bloque-c span {
+  color: #333;
+  display: inline-block;
+  font-size: 14px;
+  padding: 0 5px 0 0;
+  width: auto;
+}
+.verify-info-container .bloque-c .nc-serv {
+  float: right;
+  width: 80%;
+}
 pre {
-  margin: 30px;
   font-size: 10px;
+  margin: 30px;
 }

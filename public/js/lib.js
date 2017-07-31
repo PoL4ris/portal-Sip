@@ -165,6 +165,7 @@ app.controller('newcustomerAppController', function($scope, $http, customerServi
 
   $scope.setImageBuilding       = function (type){
     var optionVal = null;
+
     if(type == 0)
     {
       if(this.selectedOption == '')
@@ -173,11 +174,13 @@ app.controller('newcustomerAppController', function($scope, $http, customerServi
         return;
       }
 
-      if($scope.buildingsData[this.selectedOption])
-        $scope.selectedBuilding = '/img/buildings/' + $scope.buildingsData[this.selectedOption].img_building;
+      $scope.tmpDta = this.selectedOption.address;
+
+//      if($scope.buildingsData[this.selectedOption])
+        $scope.selectedBuilding = '/img/buildings/' + this.selectedOption.img_building;
 
       $('#cn-filter').val('');
-      optionVal = this.selectedOption;
+      optionVal = this.selectedOption.id;
     }
     else
     {
@@ -222,12 +225,15 @@ app.controller('newcustomerAppController', function($scope, $http, customerServi
 
     $('.service-list').addClass('unfocus-service');
     $('.service-list').removeClass('selected-service');
+    $('.service-list i').fadeOut();
     $('.select-service-' + id).removeClass('unfocus-service');
     $('.select-service-' + id).addClass('selected-service');
+    $('.select-service-' + id + ' i').fadeIn();
   }
 
   $scope.getavailablePorts      = function (){
     $scope.loadingPorts = false;
+    $scope.selectedSwitch = this.switch;
     var id = this.switch.id;
     $scope.ableDisableSwitches(id);
     $http.get("getAvailableSwitchPorts", {params: {'ip': this.switch.ip_address}})
@@ -240,6 +246,8 @@ app.controller('newcustomerAppController', function($scope, $http, customerServi
   $scope.portSelected = function(){
     console.log(this.index);
     var initIndexId = this.index;
+    $scope.portData = this.ports;
+    $scope.portIndex = this.index;
 
     $('.init-ports').addClass('unfocus-ports');
     $('.init-ports').removeClass('selected-port');
@@ -293,9 +301,9 @@ app.controller('newcustomerAppController', function($scope, $http, customerServi
     var case2 = name.split('FastEthernet');
 
     if(case1[1])
-      result = 'G.E : ' + case1[1];
+      result = 'Gi : ' + case1[1];
     else if(case2[1])
-      result = 'F.E : ' + case2[1];
+      result = 'Fa : ' + case2[1];
     else
       result = name;
 
