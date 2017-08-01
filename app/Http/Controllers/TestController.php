@@ -41,6 +41,7 @@ use Config;
 use Auth;
 use View;
 use Storage;
+use SendMail;
 use Carbon\Carbon;
 
 //use ActivityLogs;
@@ -399,8 +400,27 @@ class TestController extends Controller {
     public function generalTest()
     {
 
+        $invoices = Invoice::where('description', 'New Invoice')->where('processing_type', config('const.type.auto_pay'))->get();
+
+        foreach($invoices as $invoice){
+            $customer = $invoice->customer;
+//            dd([$invoice, $customer]);
+//            $customer = Customer::find(4667);
+            $emailInfo = ['fromName'    => 'SilverIP Customer Care',
+                          'fromAddress' => 'help@silverip.com',
+                          'toName'      => $customer->first_name . ' ' . $customer->last_name,
+                          'toAddress'   => $customer->email,
+                          'subject'     => 'SilverIP Billing VOIDED'];
+
+            $template = 'email.template_customer_notification';
+            $templateData = ['customer' => $customer];
+
+            SendMail::generalEmail($emailInfo, $template, $templateData);
+        }
 
 
+
+        dd('done');
 
         $sipBilling = new SIPBilling();
         $result = $sipBilling->voidTransaction('IP31070255HNDTXXQH'); //'IP31070250SIUWEQYE'); //'IP01080359GQIJMFGW');
@@ -416,9 +436,6 @@ class TestController extends Controller {
                     ->orWhere('due_date', '<=', $nowMysql)
                     ->orWhere('due_date', '');
             })
-
-
-
             ->take(5)
             ->get();
 

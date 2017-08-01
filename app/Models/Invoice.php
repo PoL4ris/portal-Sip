@@ -35,4 +35,9 @@ class Invoice extends Model {
     {
         return $this->hasOne('App\Models\Address', 'id', 'id_address');
     }
+
+    public function customer()
+    {
+        return $this->hasOne('App\Models\Customer', 'id', 'id_customers');
+    }
 }
