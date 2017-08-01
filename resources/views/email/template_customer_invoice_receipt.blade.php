@@ -73,7 +73,7 @@
                 <p class="p1">{{ ucfirst($lineItem['product_name']) }}</p>
             </td>
             <td>
-                <p class="p1">\\${{ number_format($lineItem['product_amount'], 2, '.', '') }}</p>
+                <p class="p1">${{ number_format($lineItem['product_amount'], 2, '.', '') }}</p>
             </td>
         </tr>
     @endforeach
@@ -92,7 +92,7 @@
     </tr>
     <tr>
         <td><p class="p1"><strong>Total Amount Charged</strong></p></td>
-        <td><p class="p1"><strong>\\${{ number_format($invoice->amount, 2, '.', '') }}</strong></p></td>
+        <td><p class="p1"><strong>${{ number_format($invoice->amount, 2, '.', '') }}</strong></p></td>
     </tr>
     <tr>
         <td>&nbsp;</td>

@@ -403,7 +403,7 @@ class TestController extends Controller {
 
 
         $sipBilling = new SIPBilling();
-        $result = $sipBilling->voidTransaction('IP01080238ZGWXRHBJ'); //'IP01080359GQIJMFGW');
+        $result = $sipBilling->voidTransaction('IP31070255HNDTXXQH'); //'IP31070250SIUWEQYE'); //'IP01080359GQIJMFGW');
         dd($result);
 
 

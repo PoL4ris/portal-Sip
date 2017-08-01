@@ -382,8 +382,12 @@ class SIPBilling {
         $request['TransactionType'] = $xactionType;
         $request['TerminalID'] = $this->testMode ? 'TESTTERMINAL' : 'SILVERIPC001';  // silverip unique account id
         $request['UDField1'] = $desc;
+
+        // IMPORTANT:
+        // Amount should be passed to this class normally (unpadded or with cents .xx)
+        // DO NOT add extra zeros as they will count towards the amomunt/price
         $request['TotalAmount'] = $totAmount;
-//        $request['TotalAmount'] = strstr($totAmount, '.') ? str_replace('.', '', $totAmount) : $totAmount . '00';
+
         //20 Charachtar Max - Appears on CC Statement - Default: SilverIP Comm
         $request['OrderNumber'] = isset($request['OrderNumber']) ? substr($request['OrderNumber'], 0, 20) : date('My') . ' Charges';
         // User defied feild - descripton of the charge, i.e. Signup
@@ -884,10 +888,10 @@ class SIPBilling {
         $request['TerminalID'] = $this->testMode ? 'TESTTERMINAL' : 'SILVERIPC001';  // silverip unique account id
         $request['TransactionID'] = $transactionId;
         $request['Approval'] = $transactionLog->approval;
-        $request['Token'] = $paymentMethod->account_number;
-        $request['CardExpMonth'] = $result['PaymentTypeDetails']['exp month'];
-        $request['CardExpyear'] = $result['PaymentTypeDetails']['exp year'];
-        $request['TotalAmount'] = 100;
+//        $request['Token'] = $paymentMethod->account_number;
+//        $request['CardExpMonth'] = $result['PaymentTypeDetails']['exp month'];
+//        $request['CardExpyear'] = $result['PaymentTypeDetails']['exp year'];
+//        $request['TotalAmount'] = '100';
 
 //dd($request);
         $ippayresult = array();
@@ -900,6 +904,8 @@ class SIPBilling {
         {
             $ippayresult = $ipPayHandle->process($request, 1);  //process card - 0 is for test server, 1 for live server
         }
+
+        return $ippayresult;
 
         $result['TRANSACTIONID'] = $ippayresult['TRANSACTIONID'];   //Returns the unique tranaction ID
         $result['ACTIONCODE'] = $ippayresult['ACTIONCODE'];     // 000 = Approved, else Denied

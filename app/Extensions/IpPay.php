@@ -485,6 +485,10 @@ TPL;
       $testbol: 0 = Test server, 1 = Production Server
      ***************************************************************/
 
+    // IMPORTANT:
+    // Amount should be passed to this class normally (unpadded or with cents .xx)
+    // We will pad it with 00 if the cents are not provided
+
     public function process($ccInfo, $testbol, $fields = NULL) {
 
         foreach ($ccInfo as $key => $value) {
@@ -527,8 +531,8 @@ TPL;
                     $this->xactionResult['ERRMSG'] = "No Approval Code supplied with VOID Transaction.";
                     return $this->xactionResult;
                 }
-                if (is_null($this->xactionInfo['CardNum'])) {
-                    $this->xactionResult['ERRMSG'] = "Card Number required with all VOID Transactions.";
+                if (is_null($this->xactionInfo['CardNum']) && is_null($this->xactionInfo['Token'])) {
+                    $this->xactionResult['ERRMSG'] = "Card Number or Token required with all VOID Transactions.";
                     return $this->xactionResult;
                 }
                 break;
@@ -593,7 +597,7 @@ TPL;
         }
 
 
-        if ($this->xactionInfo['TransactionType'] != 'TOKENIZE') {
+        if ($this->xactionInfo['TransactionType'] != 'TOKENIZE') {  // && $this->xactionInfo['TransactionType'] != 'VOID') {
             if (is_null($this->xactionInfo['TotalAmount'])) {
                 $this->xactionResult['ERRMSG'] = "TotalAmount required for all non-TOKENIZE transactions.";
                 return $this->xactionResult;
