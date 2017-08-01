@@ -788,4 +788,103 @@ class CustomerController extends Controller {
 
         return 'OK';
     }
+
+
+    public function insertNewCustomer(Request $request)
+    {
+
+//        print '<pre>';
+//        print_r($request->all());
+//        die();
+
+        //CUSTOMER
+        $newCustomer = new Customer;
+        $newCustomer->first_name = $request->customers_first_name;
+        $newCustomer->last_name  = $request->customers_last_name;
+        $newCustomer->email      = $request->customers_email;
+        $newCustomer->vip        = $request->customers_vip;
+        $newCustomer->id_status  = $request->customers_id_status;
+//        print_r($newCustomer);
+//        $newCustomer->save();
+
+        //CONTACT
+        $newContact = new Contact;
+        $newContact->id_customers = $newCustomer->id;
+        $newContact->id_types     = config('const.type.phone');
+        $newContact->value        = $request->contacts_value;
+//        print_r($newContact);
+//        $newContact->save();
+
+        //BUILDING
+        $locationData = Building::with('address')->find($request->building_id)->address;
+
+        $newAddress = new Address;
+        $newAddress->address = $locationData->address;
+        $newAddress->code    = $locationData->code;
+        $newAddress->unit    = $request->address_unit;
+        $newAddress->city    = $locationData->city;
+        $newAddress->zip     = $locationData->zip;
+        $newAddress->state   = $locationData->state;
+        $newAddress->id_customers = $newCustomer->id;
+        $newAddress->id_buildings = $request->building_id;
+//        print_r($newAddress);
+//        $newAddress->save();
+
+        //SERVICE
+        $when = $this->getTimeToAdd(Product::find($request->product_id)->frequency);
+        $expires = null;
+
+        if ($when != null)
+            $expires = date("Y-m-d H:i:s", strtotime($when));
+
+        $newService = new CustomerProduct();
+        $newService->id_customers = $newCustomer->id;
+        $newService->id_products  = $request->product_id;
+        $newService->id_status    = config('const.status.active');
+        $newService->signed_up    = date("Y-m-d H:i:s");
+        $newService->expires      = $expires;
+        $newService->id_users     = Auth::user()->id;
+//        print_r($newService);
+//        $newService->save();
+
+        dd('MISSING: ==>');
+        //SWITCH -> $request->switch_id;
+        //PORT   -> $request->port_id;
+
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

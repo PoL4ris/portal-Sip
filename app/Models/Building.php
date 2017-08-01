@@ -36,7 +36,7 @@ class Building extends Model {
 
     public function address()
     {
-        return $this->hasOne('App\Models\Address', 'id_buildings', 'id');
+        return $this->hasOne('App\Models\Address', 'id_buildings', 'id')->whereNull('id_customers');
     }
 
     public function allAddresses()

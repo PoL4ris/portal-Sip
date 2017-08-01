@@ -110,6 +110,7 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('insertCustomerNote',        'CustomerController@insertCustomerNote');//new
     Route::get('getCustomerNotes',          'CustomerController@getCustomerNotes');//new
     Route::get('resetCustomerPassword',     'CustomerController@resetCustomerPassword');//new
+    Route::get('insertNewCustomer',         'CustomerController@insertNewCustomer');//new
     //Customer Billing
     Route::get('refundAmount',              'BillingController@refund');
     Route::get('chargeAmount',              'BillingController@charge');

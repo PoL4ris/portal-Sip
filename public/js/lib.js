@@ -164,6 +164,7 @@ app.controller('newcustomerAppController', function($scope, $http, customerServi
   })
 
   $scope.setImageBuilding       = function (type){
+
     var optionVal = null;
 
     if(type == 0)
@@ -176,8 +177,17 @@ app.controller('newcustomerAppController', function($scope, $http, customerServi
 
       $scope.tmpDta = this.selectedOption.address;
 
-//      if($scope.buildingsData[this.selectedOption])
-        $scope.selectedBuilding = '/img/buildings/' + this.selectedOption.img_building;
+      //RESET VALUES
+      $scope.availableServices = false;
+      $scope.buildingSwitches = false;
+      $scope.switchAvailablePorts = false;
+      $scope.selectedServiceDisplay = false;
+      $scope.selectedSwitch = false;
+      $scope.portData = false;
+      $scope.portIndex = false;
+      //RESET VALUES
+
+      $scope.selectedBuilding = '/img/buildings/' + this.selectedOption.img_building;
 
       $('#cn-filter').val('');
       optionVal = this.selectedOption.id;
@@ -232,6 +242,12 @@ app.controller('newcustomerAppController', function($scope, $http, customerServi
   }
 
   $scope.getavailablePorts      = function (){
+
+    //RESET VALUES
+    $scope.portData = false;
+    $scope.portIndex = false;
+    //RESET VALUES
+
     $scope.loadingPorts = false;
     $scope.selectedSwitch = this.switch;
     var id = this.switch.id;
@@ -244,7 +260,7 @@ app.controller('newcustomerAppController', function($scope, $http, customerServi
   }
 
   $scope.portSelected = function(){
-    console.log(this.index);
+
     var initIndexId = this.index;
     $scope.portData = this.ports;
     $scope.portIndex = this.index;
@@ -270,23 +286,69 @@ app.controller('newcustomerAppController', function($scope, $http, customerServi
 
   $scope.verifyCForm            = function (formData){
 
+    var objects;
 
+    if(!formData)
+      objects = getFormValues('new-customer-form');
+    else
+      objects = formData;
 
-  console.log(formData);
-  return;
+    var mensajes = {
+                    'customers.first_name':'First Name missing.',
+                    'customers.last_name' :'Last Name missing',
+                    'customers.email'     :'Email missing or invalid format',
+                    'contacts.value'      :'Phone Number missing or invalid format',
 
-    var fname = $('#cn-fname').attr('pass');
-    var lname = $('#cn-lname').attr('pass');
-    var email = $('#cn-email').attr('pass');
-    var tel   = $('#cn-tel').attr('pass');
-    var bld   = $('#cn-address-value').attr('pass');
+                    'building.id'   :'Address missing',
+                    'address.unit'  :'Unit Number missing or invalid format',
 
-    if(fname && lname && email && tel && bld)
+                    'product.id'  :'Product missing',
+                    'switch.id'   :'Switch missing',
+                    'port.id'     :'Port missing',
+                    }
+
+    var pIni        = '<p class="required-fields-p">';
+    var pFin        = '</p>';
+    var requiredDiv = '<div class="req-div">Required:</div>';
+
+    var bloqueA     = ''; $scope.bA   = false;
+    var bloqueB     = ''; $scope.bB   = false;
+    var bloqueC     = ''; $scope.bC   = false;
+
+    for(var field in objects)
     {
-      console.log(fname + ' | ' + lname + ' | ' + email + ' | ' + tel);
+      if(objects[field])
+        continue;
+
+      if(field.split('.')[0] == 'customers' || field.split('.')[0] == 'contacts'){
+        bloqueA += pIni +  mensajes[field]  + pFin;
+        $scope.bA = true;
+      }
+      if(field.split('.')[0] == 'building' || field.split('.')[0] == 'address')
+      {
+        bloqueB += pIni +  mensajes[field]  + pFin;
+        $scope.bB = true;
+      }
+      if(field.split('.')[0] == 'product' || field.split('.')[0] == 'switch' || field.split('.')[0] == 'port' )
+      {
+        bloqueC += pIni +  mensajes[field]  + pFin;
+        $scope.bC = true;
+      }
+    }
+
+    $scope.bloqueA = $scope.bA ? (requiredDiv + bloqueA) : false;
+    $scope.bloqueB = $scope.bB ? (requiredDiv + bloqueB) : false;
+    $scope.bloqueC = $scope.bC ? (requiredDiv + bloqueC) : false;
+
+    if($scope.bloqueA || $scope.bloqueB || $scope.bloqueC)
+    {
+      console.log('ERROR MORTAL DE MORTALILANDIA');
+      $scope.sendNewCustomer(objects);
+      return false;
     }
     else
-      console.log('error');
+      console.log('INFO LISTA PARA ENVIAR A DONDE SEA');
+
   }
   $scope.filterBldList          = function () {
     $http.get("getFilterBld", {params: {'query': this.filterBldListModel}})
@@ -301,14 +363,22 @@ app.controller('newcustomerAppController', function($scope, $http, customerServi
     var case2 = name.split('FastEthernet');
 
     if(case1[1])
-      result = 'Gi : ' + case1[1];
+      result = 'Gi' + case1[1];
     else if(case2[1])
-      result = 'Fa : ' + case2[1];
+      result = 'Fa' + case2[1];
     else
       result = name;
 
       return result;
 
+  }
+
+
+  $scope.sendNewCustomer = function(objects){
+    $http.get("insertNewCustomer", {params:objects})
+      .then(function (response) {
+//        $scope.buildingsData = response.data
+      })
   }
 
 
