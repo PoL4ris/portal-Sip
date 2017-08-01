@@ -38,7 +38,7 @@ class GenerateCustomerCharges extends Command
      */
     public function handle()
     {
-        $this->info('Starting data migration');
+        $this->info('Generating customer charges');
         $billingHelper = new BillingHelper();
         $billingHelper->generateResidentialChargeRecords();
         $this->info('Done');

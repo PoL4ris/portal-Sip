@@ -66,6 +66,12 @@ class Building extends Model {
         return $this->hasMany('App\Models\BuildingProduct', 'id_buildings', 'id');
     }
 
+    public function activeBuildingProducts()
+    {
+        return $this->hasMany('App\Models\BuildingProduct', 'id_buildings', 'id')
+            ->where('id_status', config('const.status.active'));
+    }
+
     public function products()
     {
         return $this->hasMany('App\Models\BuildingProduct', 'id_buildings', 'id')->with('product');

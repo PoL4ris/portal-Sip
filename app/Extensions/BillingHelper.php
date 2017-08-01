@@ -45,7 +45,7 @@ class BillingHelper {
                 ->where('value', 'LIKE', '%Retail%')
                 ->orWhere('value', 'LIKE', '%Bulk%');
         }])
-            ->where('id', 4)// 28 is temporary for testing
+//            ->where('id', 4)// 28 is temporary for testing
             ->get();
 
         $count = 0;
@@ -245,10 +245,12 @@ class BillingHelper {
         return true;
     }
 
-    public function approveManualChargeList($chargeIds, $notifyViaEmail = false){
+    public function approveManualChargeList($chargeIds, $notifyViaEmail = false)
+    {
 
         $resultsArray = array();
-        foreach($chargeIds as $chargeId){
+        foreach ($chargeIds as $chargeId)
+        {
             $charge = Charge::find($chargeId);
             if ($charge == null)
             {
@@ -258,6 +260,7 @@ class BillingHelper {
             }
             $resultsArray[$chargeId] = $this->approveManualCharge($charge, $notifyViaEmail);
         }
+
         return $resultsArray;
     }
 
@@ -270,16 +273,19 @@ class BillingHelper {
         // $charge->processing_type = config('const.type.auto_pay');
         $charge->save();
 
-        $invoice =  $this->invoiceManualCharge($charge);
-        return $this->processInvoice($invoice, $notifyViaEmail);
+        $invoice = $this->invoiceManualCharge($charge);
+
+        return $this->processInvoice($invoice, true); //$notifyViaEmail);
 
 //        return true;
     }
 
-    public function denyManualChargeList($chargeIds){
+    public function denyManualChargeList($chargeIds)
+    {
 
         $resultsArray = array();
-        foreach($chargeIds as $chargeId){
+        foreach ($chargeIds as $chargeId)
+        {
             $charge = Charge::find($chargeId);
             if ($charge == null)
             {
@@ -289,6 +295,7 @@ class BillingHelper {
             }
             $resultsArray[$chargeId] = $this->denyManualCharge($charge);
         }
+
         return $resultsArray;
     }
 
@@ -555,16 +562,18 @@ class BillingHelper {
         $nowMysql = date("Y-m-d H:i:s");
         $invoices = Invoice::where('status', config('const.invoice_status.pending'))
             ->where('processing_type', config('const.type.auto_pay'))
-            ->where('due_date', 'is', 'NULL')
-            ->orWhere('due_date', '<=', $nowMysql)
-            ->orWhere('due_date', '')
-            ->chunk(100, function ($invoices)
+            ->where(function ($query) use ($nowMysql)
+            {
+                $query->where('due_date', 'is', 'NULL')
+                    ->orWhere('due_date', '<=', $nowMysql)
+                    ->orWhere('due_date', '');
+            })->chunk(100, function ($invoices)
             {
                 foreach ($invoices as $invoice)
                 {
-                    $this->processInvoice($invoice);
-                    dd('Done');
-                    break;
+                    $this->processInvoice($invoice, true);
+//                    dd('Done');
+//                    break;
                 }
             });
     }
@@ -600,13 +609,14 @@ class BillingHelper {
 
         $customer = Customer::find($invoice->id_customers);
 
-        if($invoice->amount > 0){
+        if ($invoice->amount > 0)
+        {
             $chargeResult = $billingService->chargeCustomer($customer, $invoice->amount, 'invoice_id: ' . $invoice->id, 'SilverIP Data', json_encode($chargeDetailsArray));
-        } else {
+        } else
+        {
 //            $chargeResult = $billingService->refundCustomer($customer, -1 * $invoice->amount, 'invoice_id: ' . $invoice->id, json_encode($chargeDetailsArray));
-            $chargeResult = $billingService->refundCustomer($customer, -1 * $invoice->amount, 'invoice', json_encode($chargeDetailsArray));
+            $chargeResult = $billingService->refundCustomer($customer, - 1 * $invoice->amount, 'invoice', json_encode($chargeDetailsArray));
         }
-
 
 
 //        $invoiceDetails = ($invoice->details != '') ? json_decode($invoice->details, true) : null;
@@ -1510,13 +1520,13 @@ class BillingHelper {
 
         $toAddress = ($this->testMode) ? 'peyman@silverip.com' : $customer->email;
 
-        $lineItems = ($invoice->details != '') ? json_decode($invoice->details, true) : array();
+        $lineItems = $invoice->details(); //($invoice->details != null && $invoice->details != '') ? json_decode($invoice->details, true) : array();
         $chargeDetails = array();
         $chargeDetails['TRANSACTIONId'] = $chargeResult['TRANSACTIONID'];
         $chargeDetails['PaymentType'] = $chargeResult['PaymentType'];
         $chargeDetails['PaymentTypeDetails'] = $chargeResult['PaymentTypeDetails'];
 
-        Mail::send(array('html' => $template), ['customer' => $customer, 'address' => $address, 'lineItems' => $lineItems, 'chargeDetails' => $chargeDetails], function ($message) use ($toAddress, $subject, $customer, $address, $lineItems, $chargeDetails)
+        Mail::send(array('html' => $template), ['invoice' => $invoice, 'customer' => $customer, 'address' => $address, 'lineItems' => $lineItems, 'chargeDetails' => $chargeDetails], function ($message) use ($toAddress, $subject, $customer, $address, $lineItems, $chargeDetails)
         {
             $message->from('help@silverip.com', 'SilverIP Customer Care');
             $message->to($toAddress, trim($customer->first_name) . ' ' . trim($customer->last_name))->subject($subject);

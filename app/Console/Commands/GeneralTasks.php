@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Extensions\DataMigrationUtils;
+use App\Extensions\BillingHelper;
 use Storage;
 use App\Models\NetworkNode;
 use FtpClient\FtpClient;
@@ -43,12 +44,16 @@ class GeneralTasks extends Command {
     public function handle()
     {
         $this->info('Starting general task');
-//        $dbMigrationUtil = new DataMigrationUtils(true);
+        $billingHelper = new BillingHelper();
+        $result = $billingHelper->processPendingAutopayInvoices();
+
+        //        $dbMigrationUtil = new DataMigrationUtils(true);
 //        $dbMigrationUtil->generalDatabaseTask();
-        $this->updateMikrotikHotspotLoginFiles();
+//        $this->updateMikrotikHotspotLoginFiles();
         $this->info('Done');
 
     }
+
 
     protected function updateMikrotikHotspotLoginFiles()
     {

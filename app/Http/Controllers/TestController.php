@@ -399,6 +399,51 @@ class TestController extends Controller {
     public function generalTest()
     {
 
+
+
+
+        $sipBilling = new SIPBilling();
+        $result = $sipBilling->voidTransaction('IP31070255HNDTXXQH'); //'IP31070250SIUWEQYE'); //'IP01080359GQIJMFGW');
+        dd($result);
+
+
+        $nowMysql = date("Y-m-d H:i:s");
+        $invoices = Invoice::where('status', config('const.invoice_status.pending'))
+            ->where('processing_type', config('const.type.auto_pay'))
+            ->where(function ($query) use ($nowMysql)
+            {
+                $query->where('due_date', 'is', 'NULL')
+                    ->orWhere('due_date', '<=', $nowMysql)
+                    ->orWhere('due_date', '');
+            })
+
+
+
+            ->take(5)
+            ->get();
+
+//        $queries = DB::getQueryLog();
+//        $last_query = end($queries);
+//        dd($last_query);
+
+        dd($invoices->pluck('processing_type'));
+
+
+        $building = Building::find(1012);
+
+        $products = null;
+        $building->load(['activeBuildingProducts.product' => function ($q) use (&$products)
+        {
+            $products = $q->with('propertyValues')->get(); //->unique();
+        }]);
+
+        // Filter out everythig except Internet products
+        $products = $products->where('id_types', config('const.type.internet'))
+            ->whereInLoose('frequency', ['included', 'monthly', 'annual']);
+
+        dd($products);
+        dd($building->activeBuildingProducts);
+
 //        $switchIp = '10.11.123.27';
 //        $skipLabelPattern = ['/.*[uU]plink.*/i', '/.*[dD]ownlink.*/i'];
 //        $sipNetwork = new SIPNetwork();
