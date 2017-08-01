@@ -555,9 +555,18 @@ class BillingHelper {
         $nowMysql = date("Y-m-d H:i:s");
         $invoices = Invoice::where('status', config('const.invoice_status.pending'))
             ->where('processing_type', config('const.type.auto_pay'))
-            ->where('due_date', 'is', 'NULL')
-            ->orWhere('due_date', '<=', $nowMysql)
-            ->orWhere('due_date', '')
+            ->where(function ($query) use ($nowMysql)
+            {
+                $query->where('due_date', 'is', 'NULL')
+                    ->orWhere('due_date', '<=', $nowMysql)
+                    ->orWhere('due_date', '');
+            })
+
+//        $invoices = Invoice::where('status', config('const.invoice_status.pending'))
+//            ->where('processing_type', config('const.type.auto_pay'))
+//            ->where('due_date', 'is', 'NULL')
+//            ->orWhere('due_date', '<=', $nowMysql)
+//            ->orWhere('due_date', '')
             ->chunk(100, function ($invoices)
             {
                 foreach ($invoices as $invoice)

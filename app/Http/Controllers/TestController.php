@@ -398,6 +398,27 @@ class TestController extends Controller {
 
     public function generalTest()
     {
+        $nowMysql = date("Y-m-d H:i:s");
+        $invoices = Invoice::where('status', config('const.invoice_status.pending'))
+            ->where('processing_type', config('const.type.auto_pay'))
+            ->where(function ($query) use ($nowMysql)
+            {
+                $query->where('due_date', 'is', 'NULL')
+                    ->orWhere('due_date', '<=', $nowMysql)
+                    ->orWhere('due_date', '');
+            })
+
+
+
+            ->take(5)
+            ->get();
+
+//        $queries = DB::getQueryLog();
+//        $last_query = end($queries);
+//        dd($last_query);
+
+        dd($invoices->pluck('processing_type'));
+
 
         $building = Building::find(1012);
 
@@ -409,7 +430,7 @@ class TestController extends Controller {
 
         // Filter out everythig except Internet products
         $products = $products->where('id_types', config('const.type.internet'))
-            ->whereInLoose('frequency', ['included', 'monthly','annual']);
+            ->whereInLoose('frequency', ['included', 'monthly', 'annual']);
 
         dd($products);
         dd($building->activeBuildingProducts);
