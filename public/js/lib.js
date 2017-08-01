@@ -342,12 +342,15 @@ app.controller('newcustomerAppController', function($scope, $http, customerServi
 
     if($scope.bloqueA || $scope.bloqueB || $scope.bloqueC)
     {
-      console.log('ERROR MORTAL DE MORTALILANDIA');
-      $scope.sendNewCustomer(objects);
+      console.log('ERROR ');
+//      $scope.sendNewCustomer(objects);
       return false;
     }
     else
-      console.log('INFO LISTA PARA ENVIAR A DONDE SEA');
+    {
+      $scope.sendNewCustomer(objects);
+      console.log('INFO LISTA');
+    }
 
   }
   $scope.filterBldList          = function () {
