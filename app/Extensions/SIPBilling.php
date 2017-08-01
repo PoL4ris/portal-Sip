@@ -317,7 +317,8 @@ class SIPBilling {
         $request['TransactionType'] = $xactionType;
         $request['TerminalID'] = $this->testMode ? 'TESTTERMINAL' : 'SILVERIPC001';  // silverip unique account id
         $request['UDField1'] = $desc;
-        $request['TotalAmount'] = $totAmount;
+//        $request['TotalAmount'] = $totAmount;
+        $request['TotalAmount'] = strstr($totAmount, '.') ?  str_replace('.', '', $totAmount) : $totAmount.'00';
         //20 Charachtar Max - Appears on CC Statement - Default: SilverIP Comm
         $request['OrderNumber'] = isset($request['OrderNumber']) ? substr($request['OrderNumber'], 0, 20) : date('My') . ' Charges';
         // User defied feild - descripton of the charge, i.e. Signup
@@ -676,7 +677,7 @@ class SIPBilling {
         $result['TotalAmount'] = strstr($transactionLog->amount, '.') ?  str_replace('.', '', $transactionLog->amount) : $transactionLog->amount.'00';
 
         if(isset($result['ERRMSG']) && $result['ERRMSG'] != null){
-            $this->storeXaction($result, $customer, $transactionLog->address, null,  $transactionLog->$details);
+            $this->storeXaction($result, $customer, $transactionLog->address, null,  $transactionLog->details);
         }
         $this->logChargeResult($result);
         return $result;
@@ -767,7 +768,7 @@ class SIPBilling {
         $result['TotalAmount'] = $transactionLog->amount;
 
         if(isset($result['ERRMSG']) && $result['ERRMSG'] != null){
-            $this->storeXaction($result, $customer, $transactionLog->address, null,  $transactionLog->$details);
+            $this->storeXaction($result, $customer, $transactionLog->address, null,  $transactionLog->details);
         }
         $this->logChargeResult($result);
         return $result;

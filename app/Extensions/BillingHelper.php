@@ -45,7 +45,7 @@ class BillingHelper {
                 ->where('value', 'LIKE', '%Retail%')
                 ->orWhere('value', 'LIKE', '%Bulk%');
         }])
-            ->where('id', 4)// 28 is temporary for testing
+//            ->where('id', 4)// 28 is temporary for testing
             ->get();
 
         $count = 0;
@@ -271,7 +271,7 @@ class BillingHelper {
         $charge->save();
 
         $invoice =  $this->invoiceManualCharge($charge);
-        return $this->processInvoice($invoice, $notifyViaEmail);
+        return $this->processInvoice($invoice, true); //$notifyViaEmail);
 
 //        return true;
     }
@@ -562,7 +562,7 @@ class BillingHelper {
             {
                 foreach ($invoices as $invoice)
                 {
-                    $this->processInvoice($invoice);
+                    $this->processInvoice($invoice, true);
                     dd('Done');
                     break;
                 }
@@ -1510,13 +1510,13 @@ class BillingHelper {
 
         $toAddress = ($this->testMode) ? 'peyman@silverip.com' : $customer->email;
 
-        $lineItems = ($invoice->details != '') ? json_decode($invoice->details, true) : array();
+        $lineItems = $invoice->details(); //($invoice->details != null && $invoice->details != '') ? json_decode($invoice->details, true) : array();
         $chargeDetails = array();
         $chargeDetails['TRANSACTIONId'] = $chargeResult['TRANSACTIONID'];
         $chargeDetails['PaymentType'] = $chargeResult['PaymentType'];
         $chargeDetails['PaymentTypeDetails'] = $chargeResult['PaymentTypeDetails'];
 
-        Mail::send(array('html' => $template), ['customer' => $customer, 'address' => $address, 'lineItems' => $lineItems, 'chargeDetails' => $chargeDetails], function ($message) use ($toAddress, $subject, $customer, $address, $lineItems, $chargeDetails)
+        Mail::send(array('html' => $template), ['invoice' => $invoice, 'customer' => $customer, 'address' => $address, 'lineItems' => $lineItems, 'chargeDetails' => $chargeDetails], function ($message) use ($toAddress, $subject, $customer, $address, $lineItems, $chargeDetails)
         {
             $message->from('help@silverip.com', 'SilverIP Customer Care');
             $message->to($toAddress, trim($customer->first_name) . ' ' . trim($customer->last_name))->subject($subject);

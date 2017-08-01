@@ -399,6 +399,21 @@ class TestController extends Controller {
     public function generalTest()
     {
 
+        $building = Building::find(1012);
+
+        $products = null;
+        $building->load(['activeBuildingProducts.product' => function ($q) use (&$products)
+        {
+            $products = $q->with('propertyValues')->get(); //->unique();
+        }]);
+
+        // Filter out everythig except Internet products
+        $products = $products->where('id_types', config('const.type.internet'))
+            ->whereInLoose('frequency', ['included', 'monthly','annual']);
+
+        dd($products);
+        dd($building->activeBuildingProducts);
+
 //        $switchIp = '10.11.123.27';
 //        $skipLabelPattern = ['/.*[uU]plink.*/i', '/.*[dD]ownlink.*/i'];
 //        $sipNetwork = new SIPNetwork();
