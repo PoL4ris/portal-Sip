@@ -1199,14 +1199,8 @@ table.dataTable tbody tr {
   margin-bottom: 10px;
 }
 .cn-customer .cn-containers input {
-  -moz-border-bottom-colors: none;
-  -moz-border-left-colors: none;
-  -moz-border-right-colors: none;
-  -moz-border-top-colors: none;
-  border-color: currentcolor currentcolor #ddd;
-  border-image: none;
-  border-style: none none solid;
-  border-width: medium medium 1px;
+  border:none;
+  border-bottom: 1px solid #ddd;
   margin-bottom: 10px;
   width: 100%;
   color: #006eb9;
@@ -1311,7 +1305,8 @@ table.dataTable tbody tr {
   font-size: 14px;
   padding: 0 5px 0 0;
 }
-.verify-info-container .bloque-a div span {
+.verify-info-container .bloque-a span.up-status{
+  color: #00c853;
 }
 .verify-info-container .bloque-b {
   border-right: 1px dotted gray;
@@ -1374,6 +1369,19 @@ table.dataTable tbody tr {
   float: right;
   width: 80%;
 }
+.req-div{
+  color: crimson;
+  font-size: 14px;
+  font-weight: bold;
+}
+.required-fields-p{
+  line-height: 0px;
+  color: #888;
+  font-size: 12px;
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
 pre {
   font-size: 10px;
   margin: 30px;

@@ -443,7 +443,7 @@ angular.module('SmartAdmin.Forms').directive('smartFueluxWizard', function () {
           scope.smartWizardCallback()(formData)
         }
 
-        angular.element('.cn-customer').scope().verifyCForm(formData);
+//        angular.element('.cn-customer').scope().verifyCForm(formData);
 
       });
     }
