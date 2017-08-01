@@ -398,6 +398,15 @@ class TestController extends Controller {
 
     public function generalTest()
     {
+
+
+
+
+        $sipBilling = new SIPBilling();
+        $result = $sipBilling->voidTransaction('IP01080238ZGWXRHBJ'); //'IP01080359GQIJMFGW');
+        dd($result);
+
+
         $nowMysql = date("Y-m-d H:i:s");
         $invoices = Invoice::where('status', config('const.invoice_status.pending'))
             ->where('processing_type', config('const.type.auto_pay'))
