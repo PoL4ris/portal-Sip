@@ -391,7 +391,7 @@ class BillingHelper {
         {
             $charges = Charge::where('status', config('const.charge_status.pending'))
                 ->where('processing_type', config('const.type.auto_pay'))
-                ->take(100)
+                ->take(20)
                 ->get();
 
             if ($charges->count() == 0)
@@ -404,6 +404,8 @@ class BillingHelper {
                 $invoice = $this->findOrCreateOpenInvoice($charge->id_customers, $charge->id_address);
                 $this->addChargeToInvoice($charge, $invoice);
             }
+
+            dd('done');
         }
     }
 
