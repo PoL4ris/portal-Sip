@@ -391,7 +391,7 @@ class BillingHelper {
         {
             $charges = Charge::where('status', config('const.charge_status.pending'))
                 ->where('processing_type', config('const.type.auto_pay'))
-                ->take(20)
+                ->take(100)
                 ->get();
 
             if ($charges->count() == 0)
@@ -404,8 +404,6 @@ class BillingHelper {
                 $invoice = $this->findOrCreateOpenInvoice($charge->id_customers, $charge->id_address);
                 $this->addChargeToInvoice($charge, $invoice);
             }
-
-            dd('done');
         }
     }
 
@@ -576,14 +574,14 @@ class BillingHelper {
                 $query->where('due_date', 'is', 'NULL')
                     ->orWhere('due_date', '<=', $nowMysql)
                     ->orWhere('due_date', '');
-            })->chunk(100, function ($invoices)
+            })->chunk(20, function ($invoices)
             {
                 foreach ($invoices as $invoice)
                 {
                     $this->processInvoice($invoice, true);
-//                    dd('Done');
 //                    break;
                 }
+                dd('Done');
             });
     }
 
