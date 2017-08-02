@@ -574,7 +574,7 @@ class BillingHelper {
                 $query->where('due_date', 'is', 'NULL')
                     ->orWhere('due_date', '<=', $nowMysql)
                     ->orWhere('due_date', '');
-            })->chunk(20, function ($invoices)
+            })->chunk(200, function ($invoices)
             {
                 foreach ($invoices as $invoice)
                 {
