@@ -21,7 +21,7 @@
 <p class='p2'></p>
 @if($chargeDetails['PaymentType'] == 'Credit Card')
     <p class='p1'>The credit card we have on file
-        @if(isset(chargeDetails['PaymentTypeDetails']) && isset(chargeDetails['PaymentTypeDetails']['last four']))
+        @if(isset($chargeDetails['PaymentTypeDetails']) && isset($chargeDetails['PaymentTypeDetails']['last four']))
             ending in {{ substr($chargeDetails['PaymentTypeDetails']['last four'], -4) }}
         @endif
             was declined for this month's charge. To update or change your card please login to the <a href="https://myaccount.silverip.net">MyAccount</a> portal.</p>
