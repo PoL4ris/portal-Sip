@@ -1502,6 +1502,10 @@ class BillingHelper {
     protected function sendChargeDeclienedEmail(Invoice $invoice, $chargeResult)
     {
         $template = 'email.template_customer_charge_declined';
+        if($chargeResult == null || isset($chargeResult['PaymentType']) == false){
+            Log::info('BillingHelper::sendChargeDeclienedEmail(): INFO: Did not send a declined email for invoice id=' . $invoice->id . ' due to missing credit card info.');
+            return false;
+        }
         if ($chargeResult['PaymentType'] == 'Credit Card')
         {
             $subject = 'NOTICE: Credit Card Declined';
