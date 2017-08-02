@@ -103,7 +103,7 @@ class TestController extends Controller {
         //        $result = $sipBilling->refundCC('1.00', 'testing refund', $customer);
         //        $result = $sipBilling->refundCCByTransID('IP28041017IARXFUSA', 'testing refund by trans id');
 
-        dd($result);
+//        dd($result);
     }
 
     public function testDBRelations()
@@ -400,23 +400,38 @@ class TestController extends Controller {
     public function generalTest()
     {
 
-        $invoices = Invoice::where('description', 'New Invoice')->where('processing_type', config('const.type.auto_pay'))->get();
+//        $billingHelper = new BillingHelper();
+//
+//        $invoice = Invoice::find(2955);
+////        dd($invoice);
+//        $billingHelper->processInvoice($invoice);
 
-        foreach($invoices as $invoice){
-            $customer = $invoice->customer;
-//            dd([$invoice, $customer]);
-//            $customer = Customer::find(4667);
-            $emailInfo = ['fromName'    => 'SilverIP Customer Care',
-                          'fromAddress' => 'help@silverip.com',
-                          'toName'      => $customer->first_name . ' ' . $customer->last_name,
-                          'toAddress'   => $customer->email,
-                          'subject'     => 'SilverIP Billing VOIDED'];
+        dd('done');
 
-            $template = 'email.template_customer_notification';
-            $templateData = ['customer' => $customer];
+//        $billingHelper->generateResidentialChargeRecords();
+        $billingHelper->generateChargeRecordsForCustomer(4667);
 
-            SendMail::generalEmail($emailInfo, $template, $templateData);
-        }
+        dd('done');
+
+//        $billingHelper->invoicePendingCharges();
+
+//        $invoices = Invoice::where('description', 'New Invoice')->where('processing_type', config('const.type.auto_pay'))->get();
+//
+//        foreach($invoices as $invoice){
+//            $customer = $invoice->customer;
+////            dd([$invoice, $customer]);
+////            $customer = Customer::find(4667);
+//            $emailInfo = ['fromName'    => 'SilverIP Customer Care',
+//                          'fromAddress' => 'help@silverip.com',
+//                          'toName'      => $customer->first_name . ' ' . $customer->last_name,
+//                          'toAddress'   => $customer->email,
+//                          'subject'     => 'SilverIP Billing VOIDED'];
+//
+//            $template = 'email.template_customer_notification';
+//            $templateData = ['customer' => $customer];
+//
+//            SendMail::generalEmail($emailInfo, $template, $templateData);
+//        }
 
 
 

@@ -60,6 +60,13 @@ class BillingHelper {
         return 'Generated ' . $count . ' charges and added them to the DB.';
     }
 
+    public function generateChargeRecordsForCustomer($customerId)
+    {
+        // Get list of chargeable products/services for the requested customer
+        $customerProducts = $this->getChargeableCustomerProductsByCustomerId($customerId);
+        $count = $this->addChargesForCustomerProducts($customerProducts);
+        Log::info('BillingHelper::generateChargeRecordsForCustomer(): Added charges for customer id=' . $customerId . ' to DB');
+    }
 
     public function getChargeableCustomerProductsByBuildingId($buildingId)
     {
@@ -578,7 +585,7 @@ class BillingHelper {
             });
     }
 
-    protected function processInvoice(Invoice $invoice, $notifyViaEmail = true)
+    public function processInvoice(Invoice $invoice, $notifyViaEmail = true)
     {
 
         if (isset($invoice) == false)
@@ -743,7 +750,6 @@ class BillingHelper {
 
         if ($updateChargeTimestampOnly == false)
         {
-
             $timestampMysql = null;
             if ($customerProduct->product->frequency == 'annual')
             {

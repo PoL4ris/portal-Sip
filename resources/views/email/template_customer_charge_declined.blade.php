@@ -20,7 +20,11 @@
 <p class='p1'>Dear {{ trim($customer->first_name) }} {{ trim($customer->last_name) }},</p>
 <p class='p2'></p>
 @if($chargeDetails['PaymentType'] == 'Credit Card')
-    <p class='p1'>The credit card we have on file ending in {{ substr($chargeDetails['PaymentTypeDetails']['last four'], -4) }} was declined for this month's charge. To update or change your card please login to the <a href="https://myaccount.silverip.net">MyAccount</a> portal.</p>
+    <p class='p1'>The credit card we have on file
+        @if(isset(chargeDetails['PaymentTypeDetails']) && isset(chargeDetails['PaymentTypeDetails']['last four']))
+            ending in {{ substr($chargeDetails['PaymentTypeDetails']['last four'], -4) }}
+        @endif
+            was declined for this month's charge. To update or change your card please login to the <a href="https://myaccount.silverip.net">MyAccount</a> portal.</p>
 @elseif($chargeDetails['PaymentType'] == 'Checking Account')
     <p class='p1'>We were unable to deduct your service charge from the checking account ending in {{ substr($chargeDetails['PaymentTypeDetails']['last four'], -4) }}. To update or change your card please login to the <a href="https://myaccount.silverip.net">MyAccount</a> portal.</p>
 @else
