@@ -400,7 +400,9 @@ class TestController extends Controller {
     public function generalTest()
     {
 
-//        $billingHelper = new BillingHelper();
+
+        $billingHelper = new BillingHelper();
+        dd($billingHelper->getChargeableCustomerProductsByCustomerId(4667));
 //
 //        $invoice = Invoice::find(2955);
 ////        dd($invoice);
