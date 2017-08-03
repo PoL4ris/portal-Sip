@@ -282,7 +282,7 @@ class BillingHelper {
 
         $invoice = $this->invoiceManualCharge($charge);
 
-        return $this->processInvoice($invoice, true); //$notifyViaEmail);
+        return $this->processInvoice($invoice, false); //$notifyViaEmail);
 
 //        return true;
     }
@@ -588,7 +588,6 @@ class BillingHelper {
 
     public function processInvoice(Invoice $invoice, $notifyViaEmail = true)
     {
-
         if (isset($invoice) == false)
         {
             Log::info('BillingHelper::processInvoice(): $invoice is not set!');
@@ -622,61 +621,32 @@ class BillingHelper {
             $chargeResult = $billingService->chargeCustomer($customer, $invoice->amount, 'invoice_id: ' . $invoice->id, 'SilverIP Data', json_encode($chargeDetailsArray));
         } else
         {
-//            $chargeResult = $billingService->refundCustomer($customer, -1 * $invoice->amount, 'invoice_id: ' . $invoice->id, json_encode($chargeDetailsArray));
             $chargeResult = $billingService->refundCustomer($customer, - 1 * $invoice->amount, 'invoice', json_encode($chargeDetailsArray));
         }
 
-
-//        $invoiceDetails = ($invoice->details != '') ? json_decode($invoice->details, true) : null;
-//        $customerProductIds = ($invoiceDetails != null) ? array_column($invoiceDetails, 'customer_product_id') : null;
         $transactionId = isset($chargeResult['TRANSACTIONID']) ? $chargeResult['TRANSACTIONID'] : null;
 
-        if ($chargeResult['RESPONSETEXT'] == 'APPROVED')
+        if ($chargeResult['RESPONSETEXT'] == 'APPROVED' || $chargeResult['RESPONSETEXT'] == 'RETURN ACCEPTED')
         {
-
-            Log::info('BillingHelper::processInvoice(): INFO: id: ' . $invoice->id_customers . ', ' . trim($customer->first_name) . ' ' . trim($customer->last_name) . ', $' . $invoice->amount . ', ' . 'invoice: ' . $invoice->id . " ... Approved\n");
+            Log::info('BillingHelper::processInvoice(): INFO: id: ' . $invoice->id_customers . ', ' . trim($customer->first_name) . ' ' . trim($customer->last_name) . ', $' . $invoice->amount . ', ' . 'invoice: ' . $invoice->id . " ... processed\n");
             $invoice->status = config('const.invoice_status.paid');
             $invoice->save();
             $this->updateInvoiceProductDates($invoice, false);
-
-//            if ($customerProductIds != null)
-//            {
-//                // Update the customer product/service's expiration and charge timestamps
-//                $updateCount = $this->updateCustomerProductDates($customerProductIds);
-//                error_log('BillingHelper::processInvoice(): INFO: Updated expiration dates for ' . $updateCount . ' products of invoice: ' . $invoice->id);
-//            } else
-//            {
-//                error_log('BillingHelper::processInvoice(): ERROR: Could not update expiration dates for invoice: ' . $invoice->id);
-//            }
-
-
             $this->logInvoice($invoice, 'processed', $transactionId);
+
             if ($notifyViaEmail)
             {
                 $this->sendInvoiceReceiptEmail($invoice, $chargeResult);
             }
 
-//            Invoice::destroy($invoice->id);
-
         } else
         {
 
-            Log::info('BillingHelper::processInvoice(): INFO: id: ' . $invoice->id_customers . ', ' . trim($customer->first_name) . ' ' . trim($customer->last_name) . ', $' . $invoice->amount . ', ' . 'invoice: ' . $invoice->id . " ... Declined\n");
+            Log::info('BillingHelper::processInvoice(): INFO: id: ' . $invoice->id_customers . ', ' . trim($customer->first_name) . ' ' . trim($customer->last_name) . ', $' . $invoice->amount . ', ' . 'invoice: ' . $invoice->id . " ... failed\n");
             $invoice->failed_charges_count ++;
             $invoice->save();
             $this->updateInvoiceProductDates($invoice, true);
             $this->logInvoice($invoice, 'failed', $transactionId);
-
-//            if ($customerProductIds != null)
-//            {
-//                // Update the customer product/service's charge timestamp only
-//
-//                $updateCount = $this->updateCustomerProductDates($customerProductIds, true);
-//                error_log('BillingHelper::processInvoice(): INFO: Updated failed count for ' . $updateCount . ' product(s) of invoice: ' . $invoice->id);
-//            } else
-//            {
-//                error_log('BillingHelper::processInvoice(): ERROR: Could not update failed counts for invoice: ' . $invoice->id);
-//            }
 
             /*** Create a ticket ***/
             if ($notifyViaEmail)
@@ -722,7 +692,7 @@ class BillingHelper {
 
         if (count($invoiceDetails) == 0)
         {
-            error_log('BillingHelper::processInvoice(): ERROR: invoice: ' . $invoice->id . ' has no products.');
+            Log::notice('BillingHelper::processInvoice(): NOTICE: invoice: ' . $invoice->id . ' has no products.');
 
             return false;
         }
@@ -738,7 +708,7 @@ class BillingHelper {
             $updateCount ++;
         }
 
-        Log::info('BillingHelper::processInvoice(): INFO: Updated expiration dates for ' . $updateCount . ' products of invoice: ' . $invoice->id);
+        Log::notice('BillingHelper::processInvoice(): INFO: Updated expiration dates for ' . $updateCount . ' products of invoice: ' . $invoice->id);
 
         return $updateCount;
     }
@@ -1503,8 +1473,10 @@ class BillingHelper {
     protected function sendChargeDeclienedEmail(Invoice $invoice, $chargeResult)
     {
         $template = 'email.template_customer_charge_declined';
-        if($chargeResult == null || isset($chargeResult['PaymentType']) == false){
+        if ($chargeResult == null || isset($chargeResult['PaymentType']) == false)
+        {
             Log::info('BillingHelper::sendChargeDeclienedEmail(): INFO: Did not send a declined email for invoice id=' . $invoice->id . ' due to missing credit card info.');
+
             return false;
         }
         if ($chargeResult['PaymentType'] == 'Credit Card')
