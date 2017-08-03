@@ -586,7 +586,32 @@ class BillingHelper {
             });
     }
 
-    public function processInvoice(Invoice $invoice, $notifyViaEmail = true)
+    public function processPendingAutopayInvoicesThatHaveUpdatedPaymentMethods()
+    {
+
+        while (true)
+        {
+
+            echo "Calling getPendingInvoicesWithUpdatedPaymentMethods()\n";
+            $invoices = $this->getPendingInvoicesWithUpdatedPaymentMethods();
+
+            if ($invoices->isEmpty())
+            {
+                break;
+            }
+            echo "Looping through invoices\n";
+            foreach ($invoices as $invoice)
+            {
+                $this->processInvoice($invoice, true, true);
+//                dd('done');
+            }
+        }
+
+        echo "Done looping through invoices\n";
+        return true;
+    }
+
+    public function processInvoice(Invoice $invoice, $notifyViaEmail = true, $notifyViaEmailOnlyIfPassed = false)
     {
         if (isset($invoice) == false)
         {
@@ -634,7 +659,7 @@ class BillingHelper {
             $this->updateInvoiceProductDates($invoice, false);
             $this->logInvoice($invoice, 'processed', $transactionId);
 
-            if ($notifyViaEmail)
+            if ($notifyViaEmail && $notifyViaEmailOnlyIfPassed)
             {
                 $this->sendInvoiceReceiptEmail($invoice, $chargeResult);
             }
@@ -649,7 +674,7 @@ class BillingHelper {
             $this->logInvoice($invoice, 'failed', $transactionId);
 
             /*** Create a ticket ***/
-            if ($notifyViaEmail)
+            if ($notifyViaEmail && $notifyViaEmailOnlyIfPassed == false)
             {
                 $this->sendChargeDeclienedEmail($invoice, $chargeResult);
             }
@@ -746,7 +771,47 @@ class BillingHelper {
         $customerProduct->save();
     }
 
+    public function getPendingInvoicesWithUpdatedPaymentMethods($take = 50)
+    {
+        // Get pending invoices
+        $invoices = Invoice::where('processing_type', config('const.type.auto_pay'))
+            ->where('status', config('const.invoice_status.pending'))
+            ->orderBy('updated_at', 'asc')
+            ->take($take)
+            ->get();
 
+        if ($invoices->isEmpty())
+        {
+            Log::notice('No pending invoices found.');
+
+            return $invoices;
+        }
+        // Remove invoices that don't have a valid customer
+        $invoices = $invoices->reject(function ($invoice, $key)
+        {
+            return $invoice->customer == null;
+        });
+
+        // Remove invoices that don't have a valid payment method
+        $invoices = $invoices->reject(function ($invoice, $key)
+        {
+            return $invoice->customer->defaultPaymentMethod == null || $invoice->customer->defaultPaymentMethod->updated_at == null;
+        });
+
+        // Remove invoices that don't have an updated payment method
+        $invoices = $invoices->reject(function ($invoice, $key)
+        {
+            $invoiceUpdatedAtCarbon = Carbon::createFromFormat('Y-m-d H:i:s', $invoice->updated_at, 'America/Chicago');
+            $pmUpdatedAtCarbon = Carbon::createFromFormat('Y-m-d H:i:s', $invoice->customer->defaultPaymentMethod->updated_at, 'America/Chicago');
+            $invoiceUpdatedAtUnixTimestamp = $invoiceUpdatedAtCarbon->timestamp;
+            $pmUpdatedAtCarbonUnixTimestamp = $pmUpdatedAtCarbon->timestamp;
+
+            return $invoiceUpdatedAtUnixTimestamp > $pmUpdatedAtCarbonUnixTimestamp;
+        });
+
+        return $invoices;
+
+    }
 
 
 

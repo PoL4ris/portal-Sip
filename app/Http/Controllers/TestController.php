@@ -400,8 +400,20 @@ class TestController extends Controller {
     public function generalTest()
     {
 
+//        $invoices = Invoice::where('processing_type', config('const.type.auto_pay'))
+//            ->where('status', config('const.invoice_status.pending'))
+//            ->take(1)
+//            ->first();
+//
+//        dd($invoices->customer->defaultPaymentMethod);
 
         $billingHelper = new BillingHelper();
+
+        $billingHelper->processPendingAutopayInvoicesThatHaveUpdatedPaymentMethods();
+        dd('done');
+
+        dd($billingHelper->getPendingInvoicesWithUpdatedPaymentMethods());
+
         dd($billingHelper->getChargeableCustomerProductsByCustomerId(4667));
 //
 //        $invoice = Invoice::find(2955);
@@ -434,7 +446,6 @@ class TestController extends Controller {
 //
 //            SendMail::generalEmail($emailInfo, $template, $templateData);
 //        }
-
 
 
         dd('done');

@@ -44,8 +44,8 @@ class GeneralTasks extends Command {
     public function handle()
     {
         $this->info('Starting general task');
-        $billingHelper = new BillingHelper();
-        $result = $billingHelper->processPendingAutopayInvoices();
+//        $billingHelper = new BillingHelper();
+//        $result = $billingHelper->processPendingAutopayInvoices();
 
         //        $dbMigrationUtil = new DataMigrationUtils(true);
 //        $dbMigrationUtil->generalDatabaseTask();

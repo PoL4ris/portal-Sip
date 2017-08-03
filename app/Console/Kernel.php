@@ -21,6 +21,8 @@ class Kernel extends ConsoleKernel {
         Commands\GeneralTasks::class,
         Commands\GenerateCustomerCharges::class,
         Commands\InvoicePendingCharges::class,
+        Commands\ProcessPendingAutoPayInvoices::class,
+        Commands\ProcessPendingInvoicesWithUpdatedPaymentMethods::class,
         Commands\GenerateMrrReport::class,
     ];
 
