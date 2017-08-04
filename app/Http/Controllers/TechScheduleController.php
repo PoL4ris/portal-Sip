@@ -12,6 +12,7 @@ use App\Models\Buildings;
 use App\Models\Address;
 use Validator;
 use Config;
+use Illuminate\Http\Response;
 
 class TechScheduleController extends Controller {
 
@@ -46,12 +47,9 @@ class TechScheduleController extends Controller {
         $scheduledtechs = $Calendar->GetTechSchedule($date);  //exactly who is working and when
 
         $pendingAppointments = $Calendar->GetPendingAppointments($date);  //appointments!
-
         $completedAppointments = $Calendar->GetCompletedAppointments($date); //finished appointments.
-
-
         $onsiteAppointments = $Calendar->GetOnsiteAppointments($date);
-
+        $problemAppointments = $Calendar->GetProblemAppointments($date);
 
         $date1 = $schedulerange['start'];
         $date2 = $schedulerange['end'];
@@ -65,8 +63,8 @@ class TechScheduleController extends Controller {
         $tableoffset = (int) $date1->format('h');  //number of hours prior to start of listings.
         $techcount = count($scheduledtechs);  //also likely the number of columns
 
-        //initilize multidimensional array (damn you php for being a pain in the ass)
-        $tablesetup;
+        //initilize multidimensional array
+        $tablesetup = null;
         $tablesetup['rows'] = $tablelength;
         $tablesetup['colums'] = $techcount;
         $tablesetup['header'] = [];
@@ -109,7 +107,7 @@ class TechScheduleController extends Controller {
                     $tablesetup[$x][$key] = ['type' => 'closed', 'tech' => $value['tech'], 'hour' => $x + $tableoffset];
                 } else
                 {
-                    $tablesetup[$x][$key] = ['type' => 'free', 'tech' => $value['tech'], 'hour' => $x + $tableoffset];
+                    $tablesetup[$x][$key] = ['type' => 'free', 'tech' => $value['tech'], 'hour' => $x + $tableoffset, 'date' => date_format($date, 'Y/m/d')];
                 }
             }
 
@@ -129,16 +127,80 @@ class TechScheduleController extends Controller {
                 {
                     $hourofappointment = new DateTime($appt['appointment']->getStart()->getDateTime());
                     $hourofappointment = $hourofappointment->format('H') - $tableoffset;
-                    $tablesetup[$hourofappointment][$key] = ['type' => 'pending', 'appointment' => $appt['appointment'], 'hour' => $hourofappointment + $tableoffset, 'tech' => $tech, 'eventid' => (string) $appt['appointment']->getID()];
 
-                    //sadly we also need to figure the difference between the hour of the start of the appointment and the end.
+                    $summary = $appt['appointment']->getSummary();
+                    $bcode = explode(' ', $summary);
+                    $search = $bcode[1];
+                    $region = 0;
+                    $regionsearch = Address::whereNull('id_customers')->where('code', '=', $search)->get();
+                    //dd($regionsearch);
+                    if ( ! $regionsearch->isEmpty())
+                    {
+                        $region = $regionsearch->first();
+                        $region = $region->region;
+                    }
+
+
+                    $tablesetup[$hourofappointment][$key] = ['region' => $region, 'type' => 'pending', 'appointment' => $appt['appointment'], 'hour' => $hourofappointment + $tableoffset, 'tech' => $tech, 'eventid' => (string) $appt['appointment']->getID()];
+
+                    //figure the difference between the hour of the start of the appointment and the end.
                     $endhourofappointment = new DateTime($appt['appointment']->getEnd()->getDateTime());
                     $endhourofappointment = $endhourofappointment->format('H') - $tableoffset;
                     if ($endhourofappointment > $hourofappointment)
                     {
                         for ($z = 0; $z < $endhourofappointment - $hourofappointment; ++ $z)
                         {
-                            $tablesetup[$hourofappointment + $z][$key] = ['type' => 'pending', 'appointment' => $appt['appointment'], 'hour' => $hourofappointment + $tableoffset + $z, 'tech' => $tech, 'eventid' => (string) $appt['appointment']->getID()];
+                            $tablesetup[$hourofappointment + $z][$key] = ['region' => $region, 'type' => 'pending', 'appointment' => $appt['appointment'], 'hour' => $hourofappointment + $tableoffset + $z, 'tech' => $tech, 'eventid' => (string) $appt['appointment']->getID()];
+                        }
+                    }
+
+                }
+            }
+
+        }
+
+
+        //parse pending and add to table.
+        foreach ($problemAppointments as $appt)
+        {
+            //parse pending and add to table.
+            $tech = $appt['tech'];
+
+            //match tech with table key
+            foreach ($scheduledtechs as $key => $value)
+            {
+                if ($tech == $value['tech'])
+                {
+                    $hourofappointment = new DateTime($appt['appointment']->getStart()->getDateTime());
+                    if($hourofappointment > $datenow) {
+                        continue;
+                    }
+                    $hourofappointment = $hourofappointment->format('H') - $tableoffset;
+                    //$diff =$datenow->diff($hourofappointment);
+
+                    $summary = $appt['appointment']->getSummary();
+                    $bcode = explode(' ', $summary);
+                    $search = $bcode[1];
+                    $region = 0;
+                    $regionsearch = Address::whereNull('id_customers')->where('code', '=', $search)->get();
+                    //dd($regionsearch);
+                    if ( ! $regionsearch->isEmpty())
+                    {
+                        $region = $regionsearch->first();
+                        $region = $region->region;
+                    }
+
+
+                    $tablesetup[$hourofappointment][$key] = ['region' => $region, 'type' => 'problem', 'appointment' => $appt['appointment'], 'hour' => $hourofappointment + $tableoffset, 'tech' => $tech, 'eventid' => (string) $appt['appointment']->getID()];
+
+                    //figure the difference between the hour of the start of the appointment and the end.
+                    $endhourofappointment = new DateTime($appt['appointment']->getEnd()->getDateTime());
+                    $endhourofappointment = $endhourofappointment->format('H') - $tableoffset;
+                    if ($endhourofappointment > $hourofappointment)
+                    {
+                        for ($z = 0; $z < $endhourofappointment - $hourofappointment; ++ $z)
+                        {
+                            $tablesetup[$hourofappointment + $z][$key] = ['region' => $region, 'type' => 'problem', 'appointment' => $appt['appointment'], 'hour' => $hourofappointment + $tableoffset + $z, 'tech' => $tech, 'eventid' => (string) $appt['appointment']->getID()];
                         }
                     }
 
@@ -159,16 +221,28 @@ class TechScheduleController extends Controller {
                 {
                     $hourofappointment = new DateTime($appt['appointment']->getStart()->getDateTime());
                     $hourofappointment = $hourofappointment->format('H') - $tableoffset;
-                    $tablesetup[$hourofappointment][$key] = ['type' => 'completed', 'appointment' => $appt['appointment'], 'hour' => $hourofappointment + $tableoffset, 'tech' => $tech];
+                    $summary = $appt['appointment']->getSummary();
+                    $bcode = explode(' ', $summary);
+                    $search = $bcode[1];
+                    $region = 0;
+                    $regionsearch = Address::whereNull('id_customers')->where('code', '=', $search)->get();
+                    //dd($regionsearch);
+                    if ( ! $regionsearch->isEmpty())
+                    {
+                        $region = $regionsearch->first();
+                        $region = $region->region;
+                    }
 
-                    //sadly we also need to figure the difference between the hour of the start of the appointment and the end.
+                    $tablesetup[$hourofappointment][$key] = ['region' => $region, 'type' => 'completed', 'appointment' => $appt['appointment'], 'hour' => $hourofappointment + $tableoffset, 'tech' => $tech];
+
+                    //figure the difference between the hour of the start of the appointment and the end.
                     $endhourofappointment = new DateTime($appt['appointment']->getEnd()->getDateTime());
                     $endhourofappointment = $endhourofappointment->format('H') - $tableoffset;
                     if ($endhourofappointment > $hourofappointment)
                     {
                         for ($z = 0; $z < $endhourofappointment - $hourofappointment; ++ $z)
                         {
-                            $tablesetup[$hourofappointment + $z][$key] = ['type' => 'completed', 'appointment' => $appt['appointment'], 'hour' => $hourofappointment + $tableoffset + $z, 'tech' => $tech];
+                            $tablesetup[$hourofappointment + $z][$key] = ['region' => $region, 'type' => 'completed', 'appointment' => $appt['appointment'], 'hour' => $hourofappointment + $tableoffset + $z, 'tech' => $tech];
                         }
                     }
 
@@ -189,16 +263,28 @@ class TechScheduleController extends Controller {
                 {
                     $hourofappointment = new DateTime($appt['appointment']->getStart()->getDateTime());
                     $hourofappointment = $hourofappointment->format('H') - $tableoffset;
-                    $tablesetup[$hourofappointment][$key] = ['type' => 'onsite', 'appointment' => $appt['appointment'], 'hour' => $hourofappointment + $tableoffset, 'tech' => $tech];
+                    $summary = $appt['appointment']->getSummary();
+                    $bcode = explode(' ', $summary);
+                    $search = $bcode[1];
+                    $region = 0;
+                    $regionsearch = Address::whereNull('id_customers')->where('code', '=', $search)->get();
+                    //dd($regionsearch);
+                    if ( ! $regionsearch->isEmpty())
+                    {
+                        $region = $regionsearch->first();
+                        $region = $region->region;
+                    }
 
-                    //sadly we also need to figure the difference between the hour of the start of the appointment and the end.
+                    $tablesetup[$hourofappointment][$key] = ['region' => $region, 'type' => 'onsite', 'appointment' => $appt['appointment'], 'hour' => $hourofappointment + $tableoffset, 'tech' => $tech];
+
+                    //figure the difference between the hour of the start of the appointment and the end.
                     $endhourofappointment = new DateTime($appt['appointment']->getEnd()->getDateTime());
                     $endhourofappointment = $endhourofappointment->format('H') - $tableoffset;
                     if ($endhourofappointment > $hourofappointment)
                     {
                         for ($z = 0; $z < $endhourofappointment - $hourofappointment; ++ $z)
                         {
-                            $tablesetup[$hourofappointment + $z][$key] = ['type' => 'onsite', 'appointment' => $appt['appointment'], 'hour' => $hourofappointment + $tableoffset + $z, 'tech' => $tech];
+                            $tablesetup[$hourofappointment + $z][$key] = ['region' => $region, 'type' => 'onsite', 'appointment' => $appt['appointment'], 'hour' => $hourofappointment + $tableoffset + $z, 'tech' => $tech];
                         }
                     }
 
@@ -235,8 +321,7 @@ class TechScheduleController extends Controller {
         $search = $request->search;
 
         $locations = Address::whereNull('id_customers')
-            ->where(function ($query) use ($search)
-            {
+            ->where(function ($query) use ($search) {
                 $query->where('code', 'LIKE', '%' . $search . '%')
                     ->orWhere('address', 'LIKE', '%' . $search . '%');
             })
@@ -288,11 +373,19 @@ class TechScheduleController extends Controller {
         }
 
 
-
         $Calendar = new GoogleCalendar;
 
         $origin = json_decode($request['origin']);
         $destination = json_decode($request['destination']);
+
+        if (isset($destination->date))
+        {
+
+            $date = new DateTime($destination->date);
+        } else
+        {
+            $date = new DateTime('now');
+        }
 
         //remove $origin->tech and replace with destination->tech
         $event = $Calendar->service->events->get(Config::get('google.pending_appointment'), $origin->eventid);
@@ -310,6 +403,9 @@ class TechScheduleController extends Controller {
         $eventend = new DateTime($eventstart->format(DATE_RFC3339));
         $eventend->add($diff);
 
+        $eventstart->setDate($date->format('Y'), $date->format('m'), $date->format('d'));
+        $eventend->setDate($date->format('Y'), $date->format('m'), $date->format('d'));
+
         $start = new \Google_Service_Calendar_EventDateTime();
         $start->setTimeZone('America/Chicago');
         $start->setDateTime($eventstart->format(DATE_RFC3339));
@@ -320,10 +416,11 @@ class TechScheduleController extends Controller {
         $event->setStart($start);
         $event->setEnd($end);
         $event->setSummary($summary);
+
         $updateDescription = $event->getDescription();
 
         $today = new DateTime();
-        $updateDescription.= "\n" . Auth::user()->first_name . ' ' . Auth::user()->last_name . ' Rescheduled on: ' . $today->format('Y-m-d H:i:s') . ' for ' . (new DateTime( $start->getDateTime() ))->format('Y-m-d H:i:s') . "\n";
+        $updateDescription .= "\n" . Auth::user()->first_name . ' ' . Auth::user()->last_name . ' Rescheduled on: ' . $today->format('Y-m-d H:i:s') . ' for ' . (new DateTime($start->getDateTime()))->format('Y-m-d H:i:s') . "\n";
         $event->setDescription($updateDescription);
 
         $updatedEvent = $Calendar->service->events->update(Config::get('google.pending_appointment'), $origin->eventid, $event);
@@ -351,13 +448,11 @@ class TechScheduleController extends Controller {
 
         if ($validator->fails())
         {
-            return redirect('tech-schedule')
-                ->withErrors($validator)
-                ->withInput();
+            return $validator->errors()->all();
         }
 
         $Calendar = new GoogleCalendar;
-        //$onset = $Calendar->SetTechAppointment($username,$tech,$buildingcode,$unit,$service,$action,$customername,$customerphone,$appointmentdescription,$startTime,$endTime,$dtvaccount);
+        //$googleappointmentresult = $Calendar->SetTechAppointment($username,$tech,$buildingcode,$unit,$service,$action,$customername,$customerphone,$appointmentdescription,$startTime,$endTime,$dtvaccount);
         //dtv account number is optional.
 
         //first we need to figure out which techs were selected and for how long.
@@ -386,11 +481,13 @@ class TechScheduleController extends Controller {
 
         }
 
-        $search = $request->buildingcode;
-        $locations = Address::whereNull('id_customers')
-            ->where('code', '=', $search)
-            ->get();
-
+        if ($request->buildingcode)
+        {
+            $search = $request->buildingcode;
+            $locations = Address::whereNull('id_customers')
+                ->where('code', '=', $search)
+                ->get();
+        }
 
         foreach ($techlist as $key => $value)
         {
@@ -400,7 +497,7 @@ class TechScheduleController extends Controller {
             $endTime = new DateTime($request->techscheduledate);
             $endTime->setTime($value->end, 00, 00);
 
-            $onset = $Calendar->SetTechAppointment(
+            $googleappointmentresult = $Calendar->SetTechAppointment(
                 $request->username, //username
                 $key,  //technician name
                 $request->buildingcode,  //building code
@@ -412,14 +509,15 @@ class TechScheduleController extends Controller {
                 $request->appointmentdescription,  //appointment descrioption
                 $startTime,  //start time (dont' forget to set the date on the start and end times)
                 $endTime,  //end time
-                $locations[0]['address'],
+                $request->buildingaddress ? $request->buildingaddress : (count($locations) ? $locations[0]['address'] : null),
                 (isset($request->dtvaccount) && ($request->dtvaccount != '') ? $request->dtvaccount : null));  //dtv account number
-            //$onset is the newly created calendar appointment.
+
+            //$googleappointmentresult is the newly created calendar appointment.
         }
 
-        $request->session()->flash('alert-success', $onset->getSummary());
+        $request->session()->flash('alert-success', $googleappointmentresult->getSummary());
 
-        return redirect('/#/tech-schedule');
+        return \GuzzleHttp\json_encode($googleappointmentresult);
     }
 
 

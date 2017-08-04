@@ -1,17 +1,18 @@
 app.controller('techschedulercontroller', function ($scope, $http, customerService) {
 
-//    if (customerService.sideBarFlag) {
-//        $scope.sipTool(2);
-//        customerService.sideBarFlag = false;
-//    }
+    if (customerService.sideBarFlag) {
+        $scope.sipTool(2);
+        customerService.sideBarFlag = false;
+    }
 
     $scope.today = new Date();
     $scope.techscheduledate = $('.datepicker').val() != '' ? $('.datepicker').val() : (($scope.today.getMonth() + 1) + '/' + $scope.today.getDate() + '/' + $scope.today.getFullYear());
-
+    $scope.loadinganimation = true;
     $scope.renewtable = function (date) {
-        console.log('table is renewing');
-        $('.datepicker').val(date);  //repopulates date field
         $scope.loadinganimation = true;
+        console.log('table is renewing');
+        $(".datepicker").val(date);  //repopulates date field
+
         $http.get("/tech-schedule/generatetable", {
             params: {date: date}
         }).then(function (response) {
@@ -20,17 +21,40 @@ app.controller('techschedulercontroller', function ($scope, $http, customerServi
         });
     };
 
+    $scope.dateselected = function (date) {
+        angular.element('#techscheduledate').scope().techscheduledate = date;
+        angular.element('#techscheduledate').scope().loadinganimation = true;  //loadinganimation start
+        angular.element('#techscheduledate').scope().renewtable($scope.techscheduledate);
 
-    $('.datepicker').datepicker({
-        onSelect: function (date) {
-            $scope.techscheduledate = date;
-            console.log($scope.techscheduledate);
-            $scope.renewtable($scope.techscheduledate);
+    };
 
-        }
+    $(".datepicker").datepicker({
+        onSelect: $scope.dateselected
     });
 
+
     $scope.renewtable($scope.techscheduledate);
+    $scope.selectaddress = '';
+
+
+    $scope.regioncolor = [];
+    $scope.regioncolor['0'] = 'black';
+    $scope.regioncolor['1'] = 'purple';
+    $scope.regioncolor['2'] = 'green';
+    $scope.regioncolor['3'] = 'darkblue';
+    $scope.regioncolor['4'] = 'lightblue';
+    $scope.regioncolor['5'] = 'yellow';
+    $scope.regioncolor['6'] = 'red';
+    $scope.regioncolor['7'] = 'pink';
+    $scope.regioncolor['8'] = 'brown';
+
+    $scope.selectcallback = function (elem, ui) {
+        console.log(ui);
+        document.getElementById("buildingcode").style.backgroundColor = $scope.regioncolor[ui.item.region];
+        $scope.selectaddress = ui.item.address;
+
+    };
+
 
     $scope.updatebuildingsearch = function () {
         $scope.bcodesearchvariable = $('#buildingcode').val();
@@ -39,11 +63,23 @@ app.controller('techschedulercontroller', function ($scope, $http, customerServi
                 $scope.availableTags = [];
                 for (var i = 0; i < response.data.length; i++) {
 
-                    $scope.availableTags.push(response.data[i]['code'] + ' - ' + response.data[i]['address']);
+                    // $scope.availableTags.push(response.data[i]['code'] + ' - ' + response.data[i]['address']);
+                    $scope.availableTags.push({
+                        label: response.data[i]['code'] + ' - ' + response.data[i]['address'],
+                        value: response.data[i]['code'],
+                        address: response.data[i]['address'],
+                        region: response.data[i]['region']
+                    });
+                }
+                if (!$('#buildingcode').val().length) {
+                    $scope.selectaddress = '';
+                    document.getElementById("buildingcode").style.backgroundColor = 'white';
                 }
 
                 $("#buildingcode").autocomplete({
-                    source: $scope.availableTags
+                    source: $scope.availableTags,
+                    select: $scope.selectcallback,
+                    autoFocus: true
                 });
 
 
@@ -54,23 +90,36 @@ app.controller('techschedulercontroller', function ($scope, $http, customerServi
 
     $scope.dragAppointmentEnd = function (event, ui) {
         //and the info from the target cell
+        $scope.loadinganimation = true;
+        //console.log('start of drag end')
         var origininput = ui.draggable.find('input').val();
+        //console.log('origininput');
+        // console.log(origininput);
+        // console.log('destination');
+        //  console.log( $(this).find('input').val() );
+//make an ajax call with both of these value and then figure it out on the back end.
 
-//so make an ajax call with both of these value and then figure it out on the back end.
         $.ajax({
             type: "GET",
             url: '/tech-schedule/moveappointment',
             data: {origin: origininput, destination: $(this).find('input').val()},
             success: $scope.movedappointment,
         });
-        $scope.loadinganimation = true;
 
+        //  console.log('drag end');
+
+    };
+
+    $scope.parkAppointment = function (event, ui) {
+
+        $('.parking').html(ui.draggable);
+        console.log('parking');
     };
 
 
     $scope.populatetable = function (data) {
 // console.log(data);
-
+        $scope.loadinganimation = true;
         $('.scheduletable').html("");
         $('.scheduletable').append('<tbody>');
         var row = '';  //building the table rows one line at a time.
@@ -81,7 +130,7 @@ app.controller('techschedulercontroller', function ($scope, $http, customerServi
         appointmentcolor['completed'] = 'green';
         appointmentcolor['pending'] = 'red';
         appointmentcolor['onsite'] = 'powerderblue';
-
+        appointmentcolor['problem'] = 'purple';
 
         row += '<thead><tr><th></th>';  //header columns. blank followed by the name of each tech scheduled.
         for (var hit = 0; hit < data['colums']; hit++) {
@@ -112,25 +161,33 @@ app.controller('techschedulercontroller', function ($scope, $http, customerServi
                         filler = '<div class="freeappointment"><input type="checkbox" class="techtimeselect" name="selected[]" value=' + JSON.stringify(data[it1][it2]) + ' ng-model="selected"' + '></div>';
                         break;
                     case 'completed':
-                        filler = '<a style="color:' + appointmentcolor['completed'] + ';" href=' + data[it1][it2]['appointment']['htmlLink'] + '>' + data[it1][it2]['appointment']['summary'] + '</a>';
+                        filler = '<a target="_blank" style="color:' + appointmentcolor['completed'] + ';" href=' + data[it1][it2]['appointment']['htmlLink'] + '>' + data[it1][it2]['appointment']['summary'] + '</a>';
                         break;
                     case 'pending':
                         var eventvalue = {
                             'eventid': data[it1][it2]['eventid'],  //google cal event id provided on back end
                             'tech': data[it1][it2]['tech']  //this pending appointment belongs to.
                         };
-                        filler = '<div class="dragdiv"><input type="hidden" disabled="disabled" value=' + JSON.stringify(eventvalue) + '></input><a style="color:' + appointmentcolor['pending'] + ';" href=' + data[it1][it2]['appointment']['htmlLink'] + '>' + data[it1][it2]['appointment']['summary'] + '</a></div>';
+                        filler = '<div class="dragdiv"><input type="hidden" disabled="disabled" value=' + JSON.stringify(eventvalue) + '></input><a target="_blank" style="color:' + appointmentcolor['pending'] + ';" href=' + data[it1][it2]['appointment']['htmlLink'] + '>' + data[it1][it2]['appointment']['summary'] + '</a></div>';
+                        //+
+                        //'<!--div class="btn-group-xs"><a href="" style="border: solid green 1px; border-top-left-radius: 3px; border-bottom-left-radius: 3px; " class="">O</a><a href="" style="border: solid purple 1px; class="">P</a><a href="" style="border: solid brown 1px;" class="">C</a><a href="" style="border: solid brown 1px;" class="">R</a></div-->';
                         break;
                     case 'onsite':
-                        filler = '<a style="color:' + appointmentcolor['onsite'] + ';" href=' + data[it1][it2]['appointment']['htmlLink'] + '>' + data[it1][it2]['appointment']['summary'] + '</a>';
+                        filler = '<a target="_blank" style="color:' + appointmentcolor['onsite'] + ';" href=' + data[it1][it2]['appointment']['htmlLink'] + '>' + data[it1][it2]['appointment']['summary'] + '</a>';
+                        break;
+                    case 'problem':
+                        filler = '<a target="_blank" style="color:' + appointmentcolor['problem'] + ';" href=' + data[it1][it2]['appointment']['htmlLink'] + '>' + data[it1][it2]['appointment']['summary'] + '</a>';
                         break;
                     default:
                         filler = '';
                         break;
                 }
-
-                row += '<td>' + filler + '</td>';
-
+                // console.log(data[it1][it2]['region']);  //here is where we can set the border color around the entry to indicate region.
+                if (data[it1][it2]['region']) {
+                    row += "<td>" + filler + " <div style='background-color: " + $scope.regioncolor[data[it1][it2]['region']] + "; width: 10px; height: 10px; position: relative; float: right; display: inline-block;'></div>" + '</td>';
+                } else {
+                    row += "<td>" + filler + '</td>';
+                }
             }
             row += '</tr>';
             $('.scheduletable').find('tbody:last').append(row);
@@ -146,7 +203,8 @@ app.controller('techschedulercontroller', function ($scope, $http, customerServi
                 snap: ".freeappointment",
                 snapMode: "inner",
                 revert: true,
-                containment: ".scheduletable",
+                helper: "clone",
+                containment: ".schedulecontainer",
                 cursor: "move",
                 refreshPositionsType: true,
             });
@@ -155,9 +213,15 @@ app.controller('techschedulercontroller', function ($scope, $http, customerServi
                 drop: $scope.dragAppointmentEnd,
                 hoverClass: "hovercss",
             });
-            $scope.loadinganimation = false;  //clear the loading animation.
-        });
 
+
+            $('.parking').droppable({
+                drop: $scope.parkAppointment,
+                hoverClass: "hovercss",
+            });
+            $scope.loadinganimation = false;
+        });
+        //clear the loading animation.
 //end drag and drop
     };
 
@@ -170,7 +234,7 @@ app.controller('techschedulercontroller', function ($scope, $http, customerServi
             data: {date: date},
             success: $scope.populatetable,
         });
-
+        $('.parking').html("to move an appointment to another day, first park it here.");
     };
 
 
@@ -191,16 +255,27 @@ app.controller('techschedulercontroller', function ($scope, $http, customerServi
 
         $http.get("/tech-schedule/setappointment", {
             params: submission,
-        }).then(function () {
+        }).then(function (response) {
 
-            $scope.renewtable($scope.techscheduledate);
+            if (!response.data['htmlLink']) {
+                $scope.errors = response.data;
+                return false;
+            } else {
+                $scope.errors = '';
+                document.getElementById("scheduleform").reset();
+                document.getElementById("buildingcode").style.backgroundColor = 'white';
+                $scope.selectaddress = '';
+
+                $scope.renewtable($scope.techscheduledate);
+                $scope.messages = response.data['htmlLink'];
+                console.log(response.data);
+            }
         });
 
-        $scope.loadinganimation = false;
+
         return true;
     };
 
-    return;
 
 });
 
@@ -216,16 +291,16 @@ app.controller('tech-appointments', function ($scope, $http, customerService) {
     $scope.techalias = $scope.userDataAuth.alias;
 
     $scope.refresh = function () {
+        $scope.loadinganimation = true;
         $http.get('/tech-schedule/myappointments', {params: {tech: $scope.techalias}}).then(function (response) {
                 $scope.appointments = response.data;
-                console.log($scope.appointments);
+                // console.log($scope.appointments);
                 $scope.loadinganimation = false;
             }
         );
     };
 
     $scope.refresh();
-    $scope.loadinganimation = false;
 
 
     $scope.arguments = [];
@@ -243,6 +318,7 @@ app.controller('tech-appointments', function ($scope, $http, customerService) {
             {
                 params: $scope.arguments
             }).then(function (response) {
+                console.log(response);
                 $scope.refresh();
             }
         );
@@ -250,5 +326,5 @@ app.controller('tech-appointments', function ($scope, $http, customerService) {
 
     };
 
-    return;
+
 });
