@@ -47,7 +47,8 @@ class SendMail {
 
 //        $ticket->type = $type;
 
-        if($ticket != null){
+        if ($ticket != null)
+        {
             $subject = $ticket->address->code .
                 ' #' .
                 $ticket->address->unit .
@@ -108,6 +109,34 @@ class SendMail {
           return 'MAIL SENT';
         */
 
+    }
+
+    public function generalEmail($messageInfo, $template, $templateData)
+    {
+
+        $fromName = $messageInfo['fromName'];
+        $fromAddress = $messageInfo['fromAddress'];
+        $toName = $messageInfo['toName'];
+        $toAddress = $messageInfo['toAddress'];
+        $subject = $messageInfo['subject'];
+        $template = $template;
+
+        Mail::send(array('html' => $template), $templateData,
+            function ($message) use (
+                $fromName,
+                $fromAddress,
+                $toName,
+                $toAddress,
+                $subject
+            )
+            {
+                $message->from($fromAddress, $fromName);
+                $message->to($toAddress, $toName)
+                    ->subject($subject);
+            }
+        );
+
+        return 'generalEmail():: email sent';
     }
 }
 

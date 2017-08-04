@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Contracts\Auth\Access\Authorizable;
+//use Illuminate\Contracts\Auth\Access\Authorizable;
 use Illuminate\Http\Request;
-//Models
+/*
+ *  Models
+ */
 use App\Models\Note;
 use App\Models\Product;
-use App\Models\Support\Adminaccess;
 use App\Models\PaymentMethod;
-use App\Models\Customer\Customers;
 use App\Models\Customer;
 use App\Models\TicketNote;
 use App\Models\Reason;
@@ -20,14 +20,14 @@ use App\Models\Contact;
 use App\Models\BillingTransactionLog;
 use App\Models\Invoice;
 use App\Models\Building;
-use App\Models\NetworkNode;
+//use App\Models\NetworkNode;
 use App\Models\ContactType;
-use App\Models\Support\Ticketreasons;
 use App\Models\ActivityLog;
 use App\Models\Charge;
-//Controllers
-use App\Http\Controllers\NetworkController;
-//Extensions
+
+/*
+ * Extensions
+ */
 use DB;
 use Log;
 use Schema;
@@ -789,29 +789,30 @@ class CustomerController extends Controller {
         return 'OK';
     }
 
-
     public function insertNewCustomer(Request $request)
     {
 
-        print '<pre>';
-        print_r($request->all());
-        die();
+        dd('done');
+
+//        print '<pre>';
+//        print_r($request->all());
+//        die();
 
         //CUSTOMER
         $newCustomer = new Customer;
         $newCustomer->first_name = $request->customers_first_name;
-        $newCustomer->last_name  = $request->customers_last_name;
-        $newCustomer->email      = $request->customers_email;
-        $newCustomer->vip        = $request->customers_vip;
-        $newCustomer->id_status  = $request->customers_id_status;
+        $newCustomer->last_name = $request->customers_last_name;
+        $newCustomer->email = $request->customers_email;
+        $newCustomer->vip = $request->customers_vip;
+        $newCustomer->id_status = $request->customers_id_status;
 //        print_r($newCustomer);
 //        $newCustomer->save();
 
         //CONTACT
         $newContact = new Contact;
         $newContact->id_customers = $newCustomer->id;
-        $newContact->id_types     = config('const.type.phone');
-        $newContact->value        = $request->contacts_value;
+        $newContact->id_types = config('const.type.phone');
+        $newContact->value = $request->contacts_value;
 //        print_r($newContact);
 //        $newContact->save();
 
@@ -820,11 +821,11 @@ class CustomerController extends Controller {
 
         $newAddress = new Address;
         $newAddress->address = $locationData->address;
-        $newAddress->code    = $locationData->code;
-        $newAddress->unit    = $request->address_unit;
-        $newAddress->city    = $locationData->city;
-        $newAddress->zip     = $locationData->zip;
-        $newAddress->state   = $locationData->state;
+        $newAddress->code = $locationData->code;
+        $newAddress->unit = $request->address_unit;
+        $newAddress->city = $locationData->city;
+        $newAddress->zip = $locationData->zip;
+        $newAddress->state = $locationData->state;
         $newAddress->id_customers = $newCustomer->id;
         $newAddress->id_buildings = $request->building_id;
 //        print_r($newAddress);
@@ -839,11 +840,11 @@ class CustomerController extends Controller {
 
         $newService = new CustomerProduct();
         $newService->id_customers = $newCustomer->id;
-        $newService->id_products  = $request->product_id;
-        $newService->id_status    = config('const.status.active');
-        $newService->signed_up    = date("Y-m-d H:i:s");
-        $newService->expires      = $expires;
-        $newService->id_users     = Auth::user()->id;
+        $newService->id_products = $request->product_id;
+        $newService->id_status = config('const.status.active');
+        $newService->signed_up = date("Y-m-d H:i:s");
+        $newService->expires = $expires;
+        $newService->id_users = Auth::user()->id;
 //        print_r($newService);
 //        $newService->save();
 

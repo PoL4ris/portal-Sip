@@ -447,6 +447,7 @@ class SIPBilling {
     protected function logChargeResult($chargeResult)
     {
 
+        $type = 'Charge';
         $response = 'failed';
         if (isset($chargeResult['FAILED']) == true)
         {
@@ -460,9 +461,13 @@ class SIPBilling {
         } else if ($chargeResult['RESPONSETEXT'] == 'APPROVED' && $chargeResult['ACTIONCODE'] == '000')
         {
             $response = 'approved';
+        } else if ($chargeResult['RESPONSETEXT'] == 'RETURN ACCEPTED' && $chargeResult['ACTIONCODE'] == '000')
+        {
+            $type = 'Credit';
+            $response = 'processed';
         }
 
-        Log::info('SIPBilling: Charge ' . $response . ': ' . "\n" . print_r($chargeResult, true));
+        Log::info('SIPBilling: '.$type. ' ' . $response . ': ' . "\n" . print_r($chargeResult, true));
 
         return $response;
     }
