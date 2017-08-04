@@ -672,6 +672,7 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http){
 
   $http.get("getDefaultPaymentMethod", {params:{'id':$scope.stcid ? $scope.stcid : $scope.idCustomer}})
     .then(function (response) {
+      console.log(response.data);
       $scope.paymentData = response.data[0];
       $scope.pproperties = response.data[1];
       $scope.customerData.defaultPayment = $scope.paymentData;

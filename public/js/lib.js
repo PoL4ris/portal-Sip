@@ -148,7 +148,7 @@ app.controller('dummyAppController', function ($scope, $http,customerService){
 
 
 
-app.controller('newcustomerAppController', function($scope, $http, customerService){
+app.controller('newcustomerAppController', function($scope, $http, customerService, $state){
   console.log('this is the newcustomerAppController');
 
   if (customerService.sideBarFlag) {
@@ -259,7 +259,7 @@ app.controller('newcustomerAppController', function($scope, $http, customerServi
       });
   }
 
-  $scope.portSelected = function(){
+  $scope.portSelected           = function(){
 
     var initIndexId = this.index;
     $scope.portData = this.ports;
@@ -343,7 +343,9 @@ app.controller('newcustomerAppController', function($scope, $http, customerServi
     if($scope.bloqueA || $scope.bloqueB || $scope.bloqueC)
     {
       console.log('ERROR ');
-//      $scope.sendNewCustomer(objects);
+      $scope.loadingResponse = true;
+
+      $scope.sendNewCustomer(objects);//to test, comment to work correct.
       return false;
     }
     else
@@ -377,11 +379,65 @@ app.controller('newcustomerAppController', function($scope, $http, customerServi
   }
 
 
-  $scope.sendNewCustomer = function(objects){
+  $scope.sendNewCustomer        = function(objects){
+
+    if($scope.errorResponse)
+    {
+      $scope.triggerErrorMsg();
+      return;
+    }
+
+    $scope.loadingResponse = true;
+    var wapol = {'error':'This is the error msg'};
+
+    if(wapol.error)
+    {
+      $scope.errorResponse = wapol.error;
+      $scope.triggerErrorMsg();
+
+      return;
+    }
+
+
+
+
     $http.get("insertNewCustomer", {params:objects})
       .then(function (response) {
+        $scope.loadingResponse = true;
+
 //        $scope.buildingsData = response.data
       })
+  }
+  $scope.triggerErrorMsg = function(){
+    $('.error-message p').css('background', 'rgba(220, 20, 60, 0.42)');
+
+    setTimeout( function(){
+      $('.error-message p').css('background', 'white');
+      $('.error-message p').css('border', '2px solid rgba(220, 20, 60, 0.42)');
+      $('.error-message p').css('border-radius', '3px');
+    }  , 2500 );
+
+    $scope.loadingResponse = false;
+  }
+
+  $scope.resetFullForm          = function(){
+    $state.reload(
+      customerService.exist = true,
+      customerService.sideBarFlag = true,
+      customerService.rightView = false
+    );
+//    $route.reload();
+
+//    $('#new-customer-form').trigger("reset");
+//    $("input[type='hidden']").each(function(){
+//      $(this).reset();
+//    });
+//    $("input[type='text']").each(function(){
+//      $(this).reset();
+//    });
+//    $("select").each(function(){
+//      $(this).reset();
+//    });
   }
 
 

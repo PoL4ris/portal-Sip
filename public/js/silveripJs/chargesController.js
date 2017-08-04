@@ -285,7 +285,7 @@ app.controller('chargesController', function ($scope, $http, customerService, ad
         $scope.chargesAndInvoices       = response.data.charges;
         $scope.chargesAndInvoicesYear   = response.data.year;
         $scope.chargesAndInvoicesMonth  = response.data.month;
-
+        $scope
         adminService.chAndInMonth       = response.data.month
         adminService.chAndInYear        = response.data.year
       });

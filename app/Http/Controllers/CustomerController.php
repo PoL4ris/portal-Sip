@@ -793,9 +793,9 @@ class CustomerController extends Controller {
     public function insertNewCustomer(Request $request)
     {
 
-//        print '<pre>';
-//        print_r($request->all());
-//        die();
+        print '<pre>';
+        print_r($request->all());
+        die();
 
         //CUSTOMER
         $newCustomer = new Customer;

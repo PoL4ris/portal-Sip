@@ -1,6 +1,14 @@
 <hr>
+
+<div class="col-lg-12">
+    <button class="btn btn-danger" ng-click="resetFullForm()">PUSH THE RED BUTTON</button>
+</div>
+
 <div class="col-lg-12 cn-customer">
-    <div class="container">
+    <div class="container relative">
+        <div class="loading-bg" ng-if="loadingResponse">
+            <img src="/img/loading.gif" alt="" class="loading-gif-support" >
+        </div>
         <div class="widget-body fuelux" data-smart-fuelux-wizard data-smart-wizard-callback="wizard2CompleteCallback">
             <div class="wizard">
                 <ul class="steps">
@@ -11,7 +19,7 @@
                     <li data-step="5"><span class="badge">5</span>Summary<span class="chevron"></span></li>
                 </ul>
                 <div class="actions">
-                    <button type="button" class="btn btn-sm btn-primary btn-prev">
+                    <button type="button" class="btn btn-sm btn-primary btn-prev" >
                         <i class="fa fa-arrow-left"></i>Prev
                     </button>
                     <button type="button" class="btn btn-sm btn-success btn-next" data-last="Finish" id="next-step-btn" ng-click="verifyCForm()">
@@ -20,6 +28,7 @@
                 </div>
             </div>
             <div class="step-content">
+
                 <form class="form-horizontal" id="new-customer-form">
                     <!-- CUSTOMER INFO -->
                     <div class="step-pane active" data-step="1">
@@ -298,6 +307,11 @@
                         <div class="col-lg-4" ng-bind-html="bloqueA?bloqueA:''"></div>
                         <div class="col-lg-4" ng-bind-html="bloqueB?bloqueB:''"></div>
                         <div class="col-lg-4" ng-bind-html="bloqueC?bloqueC:''"></div>
+                        <div class="col-lg-12 p-b-lg error-message" ng-if="errorResponse">
+                            <hr>
+                            <p>{{errorResponse}}</p>
+                        </div>
+
                     </div>
                 </form>
             </div>
