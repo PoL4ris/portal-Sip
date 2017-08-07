@@ -46,10 +46,156 @@ class NetworkController extends Controller {
         $this->devModeRouterIP = config('netmgmt.devmode.routerip');
     }
 
+    public function getAdvSwitchPortStatus(Request $request)
+    {
+
+        $input = $request->all();
+        $portId = $input['portid'];
+        $port = Port::find($portId);
+
+        $errorResponse = false;
+
+        if ($port == null)
+        {
+            return 'ERROR';
+        }
+
+        $networkNode = $port->networkNode;
+        if ($networkNode == null)
+        {
+            return 'ERROR';
+        }
+
+        $switchIP = ($this->devMode) ? $this->devModeSwitchIP : $networkNode->ip_address;
+        $switchPort = $port->port_number;
+        $switchVendor = $networkNode->vendor;
+
+        if ($switchVendor == 'Cisco')
+        {
+            $switch = $this->getSwitchInstance();
+            $portStatus = array();
+
+            $portfastResponse = $switch->getSnmpPortfastStatus($switchIP, $switchPort);
+            $portfastStatus = isset($portfastResponse['error']) ? 'error' : $portfastResponse['response'];
+
+            if ($portfastStatus == '1' || $portfastStatus == 'true(1)')
+            {
+                $portStatus['portfast'] = 'Yes';
+            } else if ($portfastStatus != 'error')
+            {
+                $portStatus['portfast'] = 'No';
+            } else
+            {
+                $portStatus['portfast'] = $portfastStatus;
+            }
+
+            $portfastModeResponse = $switch->getSnmpPortfastMode($switchIP, $switchPort);
+            $portfastMode = isset($portfastModeResponse['error']) ? 'error' : $portfastModeResponse['response'];
+
+            if ($portfastMode == '1' || $portfastMode == 'enable(1)')
+            {
+                $portStatus['portfast-mode'] = 'Enabled';
+            } else if ($portfastMode == '2' || $portfastMode == 'disable(2)')
+            {
+                $portStatus['portfast-mode'] = 'Disabled';
+            } else if ($portfastMode == '3' || $portfastMode == 'trunk(3)')
+            {
+                $portStatus['portfast-mode'] = 'Enabled (Trunk)';
+            } else if ($portfastMode == '4' || $portfastMode == 'default(4)')
+            {
+                $portStatus['portfast-mode'] = 'Default';
+            } else
+            {
+                $portStatus['portfast-mode'] = $portfastMode;
+            }
+
+            $bpduGuardResponse = $switch->getSnmpBpduGuardStatus($switchIP, $switchPort);
+            $bpduGuardStatus = isset($bpduGuardResponse['error']) ? 'error' : $bpduGuardResponse['response'];
+
+            if ($bpduGuardStatus == '1' || $bpduGuardStatus == 'enable(1)')
+            {
+                $portStatus['bpdu-guard'] = 'Enabled';
+            } else if ($bpduGuardStatus == '2' || $bpduGuardStatus == 'disable(2)')
+            {
+                $portStatus['bpdu-guard'] = 'Disabled';
+            } else if ($bpduGuardStatus == '3' || $bpduGuardStatus == 'default(3)')
+            {
+                $portStatus['bpdu-guard'] = 'Default';
+            } else
+            {
+                $portStatus['bpdu-guard'] = $bpduGuardStatus;
+            }
+
+            $bpduFilterResponse = $switch->getSnmpBpduFilterStatus($switchIP, $switchPort);
+            $bpduFilterStatus = isset($bpduFilterResponse['error']) ? 'error' : $bpduFilterResponse['response'];
+
+            if ($bpduFilterStatus == '1' || $bpduFilterStatus == 'enable(1)')
+            {
+                $portStatus['bpdu-filter'] = 'Enabled';
+            } else if ($bpduFilterStatus == '2' || $bpduFilterStatus == 'disable(2)')
+            {
+                $portStatus['bpdu-filter'] = 'Disabled';
+            } else if ($bpduFilterStatus == '3' || $bpduFilterStatus == 'default(3)')
+            {
+                $portStatus['bpdu-filter'] = 'Default';
+            } else
+            {
+                $portStatus['bpdu-filter'] = $bpduFilterStatus;
+            }
+
+            return $portStatus;
+        } else
+        {
+            return 'ERROR';
+        }
+    }
+
     protected function getSwitchInstance()
     {
         return new CiscoSwitch(['readCommunity'  => $this->readCommunity,
                                 'writeCommunity' => $this->writeCommunity]);
+    }
+
+    public function recycleSwitchPort(Request $request)
+    {
+
+        $input = $request->all();
+        $portId = $input['portid'];
+
+        $port = Port::find($portId);
+        if ($port == null)
+        {
+            return 'ERROR';
+        }
+
+        $networkNode = $port->networkNode;
+        if ($networkNode == null)
+        {
+            return 'ERROR';
+        }
+
+        $switchIP = ($this->devMode) ? $this->devModeSwitchIP : $networkNode->ip_address;
+        $switchPort = $port->port_number;
+        $switchVendor = $networkNode->vendor;
+
+        $portRecyleStatus = false;
+
+        if ($switchVendor == 'Cisco')
+        {
+            $switch = $this->getSwitchInstance();
+            $portRecycleResponse = $switch->snmpPortRecycle($switchIP, $switchPort);
+            if ( ! isset($portRecycleResponse['error']))
+            {
+                $portRecyleStatus = $portRecycleResponse['response'];
+            }
+        }
+
+        if ($portRecyleStatus == true)
+        {
+            return $this->getSwitchPortStatus($request);
+        }
+
+        return 'ERROR';
     }
 
     public function getSwitchPortStatus(Request $request)
@@ -196,152 +342,6 @@ class NetworkController extends Controller {
         $portStatus['vlan'] = $portVlan;
 
         return $portStatus;
-    }
-
-    public function getAdvSwitchPortStatus(Request $request)
-    {
-
-        $input = $request->all();
-        $portId = $input['portid'];
-        $port = Port::find($portId);
-
-        $errorResponse = false;
-
-        if ($port == null)
-        {
-            return 'ERROR';
-        }
-
-        $networkNode = $port->networkNode;
-        if ($networkNode == null)
-        {
-            return 'ERROR';
-        }
-
-        $switchIP = ($this->devMode) ? $this->devModeSwitchIP : $networkNode->ip_address;
-        $switchPort = $port->port_number;
-        $switchVendor = $networkNode->vendor;
-
-        if ($switchVendor == 'Cisco')
-        {
-            $switch = $this->getSwitchInstance();
-            $portStatus = array();
-
-            $portfastResponse = $switch->getSnmpPortfastStatus($switchIP, $switchPort);
-            $portfastStatus = isset($portfastResponse['error']) ? 'error' : $portfastResponse['response'];
-
-            if ($portfastStatus == '1' || $portfastStatus == 'true(1)')
-            {
-                $portStatus['portfast'] = 'Yes';
-            } else if ($portfastStatus != 'error')
-            {
-                $portStatus['portfast'] = 'No';
-            } else
-            {
-                $portStatus['portfast'] = $portfastStatus;
-            }
-
-            $portfastModeResponse = $switch->getSnmpPortfastMode($switchIP, $switchPort);
-            $portfastMode = isset($portfastModeResponse['error']) ? 'error' : $portfastModeResponse['response'];
-
-            if ($portfastMode == '1' || $portfastMode == 'enable(1)')
-            {
-                $portStatus['portfast-mode'] = 'Enabled';
-            } else if ($portfastMode == '2' || $portfastMode == 'disable(2)')
-            {
-                $portStatus['portfast-mode'] = 'Disabled';
-            } else if ($portfastMode == '3' || $portfastMode == 'trunk(3)')
-            {
-                $portStatus['portfast-mode'] = 'Enabled (Trunk)';
-            } else if ($portfastMode == '4' || $portfastMode == 'default(4)')
-            {
-                $portStatus['portfast-mode'] = 'Default';
-            } else
-            {
-                $portStatus['portfast-mode'] = $portfastMode;
-            }
-
-            $bpduGuardResponse = $switch->getSnmpBpduGuardStatus($switchIP, $switchPort);
-            $bpduGuardStatus = isset($bpduGuardResponse['error']) ? 'error' : $bpduGuardResponse['response'];
-
-            if ($bpduGuardStatus == '1' || $bpduGuardStatus == 'enable(1)')
-            {
-                $portStatus['bpdu-guard'] = 'Enabled';
-            } else if ($bpduGuardStatus == '2' || $bpduGuardStatus == 'disable(2)')
-            {
-                $portStatus['bpdu-guard'] = 'Disabled';
-            } else if ($bpduGuardStatus == '3' || $bpduGuardStatus == 'default(3)')
-            {
-                $portStatus['bpdu-guard'] = 'Default';
-            } else
-            {
-                $portStatus['bpdu-guard'] = $bpduGuardStatus;
-            }
-
-            $bpduFilterResponse = $switch->getSnmpBpduFilterStatus($switchIP, $switchPort);
-            $bpduFilterStatus = isset($bpduFilterResponse['error']) ? 'error' : $bpduFilterResponse['response'];
-
-            if ($bpduFilterStatus == '1' || $bpduFilterStatus == 'enable(1)')
-            {
-                $portStatus['bpdu-filter'] = 'Enabled';
-            } else if ($bpduFilterStatus == '2' || $bpduFilterStatus == 'disable(2)')
-            {
-                $portStatus['bpdu-filter'] = 'Disabled';
-            } else if ($bpduFilterStatus == '3' || $bpduFilterStatus == 'default(3)')
-            {
-                $portStatus['bpdu-filter'] = 'Default';
-            } else
-            {
-                $portStatus['bpdu-filter'] = $bpduFilterStatus;
-            }
-
-            return $portStatus;
-        } else
-        {
-            return 'ERROR';
-        }
-    }
-
-    public function recycleSwitchPort(Request $request)
-    {
-
-        $input = $request->all();
-        $portId = $input['portid'];
-
-        $port = Port::find($portId);
-        if ($port == null)
-        {
-            return 'ERROR';
-        }
-
-        $networkNode = $port->networkNode;
-        if ($networkNode == null)
-        {
-            return 'ERROR';
-        }
-
-        $switchIP = ($this->devMode) ? $this->devModeSwitchIP : $networkNode->ip_address;
-        $switchPort = $port->port_number;
-        $switchVendor = $networkNode->vendor;
-
-        $portRecyleStatus = false;
-
-        if ($switchVendor == 'Cisco')
-        {
-            $switch = $this->getSwitchInstance();
-            $portRecycleResponse = $switch->snmpPortRecycle($switchIP, $switchPort);
-            if ( ! isset($portRecycleResponse['error']))
-            {
-                $portRecyleStatus = $portRecycleResponse['response'];
-            }
-        }
-
-        if ($portRecyleStatus == true)
-        {
-            return $this->getSwitchPortStatus($request);
-        }
-
-        return 'ERROR';
     }
 
     public function authenticatePort(Request $request)
@@ -614,7 +614,7 @@ class NetworkController extends Controller {
         }
 
         $running = 1;
-
+        $loopcount = 0;
         do
         {
             sleep(3);
@@ -634,42 +634,48 @@ class NetworkController extends Controller {
                     return 'no fonking clue';
                     break;
             }
+            if ($loopcount > 10)
+            {
+                return 'timeout';
+            }
         } while ($running == 1);
-
+        $loopcount = 0;
         do
         {
             sleep(3);
-            $running=0;
+            $running = 0;
             $currentAction = $ciscoSwitch->getSnmpTdrIfActionStatus($request->ip, $request->port);
             switch ($currentAction['response'])
             {
                 case 1:
                     // echo "results should be valid<br>";
-                    $running=0;
+                    $running = 0;
                     break;
                 case 2:
                     //  echo "failed reason unknown<br>";
-                    return 'something bad happened<br>';
+                    return 'Fail Unknown Reason';
                 case 3:
                     // echo "failed Resource Invalid<br>";
-                    return 'something bad happened<br>';
+                    return 'Fail Resource Invalid';
                 case 4:
                     // echo "failed Interal Error<br>";
-                    return 'something bad happened<br>';
+                    return 'Fail Internal Error';
                 case 5:
                     // echo "failed Test Already Running<br>";
                     sleep(2);
                     break;
                 case 6:
                     // echo 'Failed Interface Disabled<br>';
-                    return 'something bad happened';
+                    return 'Fail Interface Disabled';
                 default:
                     // echo 'This should never happen<br>';
-                    return 'super fail<br>';
+                    return 'Default Fail';
+            }
+            if ($loopcount > 10)
+            {
+                return 'timeout';
             }
         } while ($running == 1);
-
-
 
 
         $resultvalid = $ciscoSwitch->getSnmpTdrIfResultValid($request->ip, $request->port);
@@ -706,9 +712,11 @@ class NetworkController extends Controller {
                     $running = 1;
                     break;
             }
+            if ($loopcount > 10)
+            {
+                return 'timeout';
+            }
         } while ($running == 1);
-
-
 
 
         return $resultTable;
@@ -733,6 +741,7 @@ class NetworkController extends Controller {
         $switchIp = $input['ip'];
         $skipLabelPattern = ['/.*[uU]plink.*/i', '/.*[dD]ownlink.*/i'];
         $sipNetwork = new SIPNetwork();
+
         return $portInfoTable = $sipNetwork->getSwitchPortInfoTable($switchIp, $skipLabelPattern);
 
     }
