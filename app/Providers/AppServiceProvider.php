@@ -6,8 +6,8 @@ use Illuminate\Support\ServiceProvider;
 use App\Models\PaymentMethod;
 use App\Extensions\SIPBilling;
 
-class AppServiceProvider extends ServiceProvider
-{
+class AppServiceProvider extends ServiceProvider {
+
     /**
      * Bootstrap any application services.
      *
@@ -15,10 +15,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-         PaymentMethod::saving(function ($paymentMethod) {
-            $sipBilling = new SIPBilling;
-            return $sipBilling->updatePaymentMethod($paymentMethod, false);
-        });
+        PaymentMethod::saving(
+            function ($paymentMethod)
+            {
+                $sipBilling = new SIPBilling();
+
+                return $sipBilling->updatePaymentMethod($paymentMethod);
+            });
     }
 
     /**

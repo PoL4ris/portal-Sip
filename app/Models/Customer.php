@@ -76,6 +76,11 @@ class Customer extends Model {
         return $this->belongsToMany('App\Models\Port');
     }
 
+    public function customerPort()
+    {
+        return $this->hasMany('App\Models\CustomerPort', 'customer_id', 'id');
+    }
+
     public function product()
     {
         return $this->belongsTo('App\Models\Product', 'id_customers', 'id', 'App\Models\CustomerProduct');
@@ -154,10 +159,10 @@ class Customer extends Model {
             $id = $this->attributes['id'];
         }
 
-//        return $this->ports()->with('networkNodes')->get();
-        return $this->port()->with('networkNode')->get();
+//        return $this->port()->with('networkNode')->get();
+        $modelCollection = $this->customerPort()->with('portWithNetworkNode')->get();
+        return $modelCollection->pluck('portWithNetworkNode');
     }
-
 
     public function getTickets($id = null)
     {

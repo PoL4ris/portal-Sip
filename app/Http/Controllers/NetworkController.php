@@ -6,11 +6,6 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 
-// LEGACY MODELS - REMOVE
-use App\Models\DataServicePort;
-use App\Models\Network\networkNodes;
-
-// NEW MODELS
 use App\Models\Customer;
 use App\Models\NetworkNode;
 use App\Models\Port;
@@ -346,7 +341,6 @@ class NetworkController extends Controller {
 
     public function authenticatePort(Request $request)
     {
-
         $input = $request->all();
         $portId = $input['portid'];
 
@@ -365,12 +359,14 @@ class NetworkController extends Controller {
         $switchIP = ($this->devMode) ? $this->devModeSwitchIP : $networkNode->ip_address;
         $switchPort = $port->port_number;
         $switchVendor = $networkNode->vendor;
+
         $noAccessVlan = 6;
-
-        //        $routerNode = $this->getRouterByPortID($request->portid);
-        //        $routerIP = ($this->devMode) ? $this->devModeRouterIP : $routerNode->IPAddress;//ip_address
-        //        $noAccessVlan = $routerNode->NoAccessVLAN;
-
+        $signupRouter = $this->getSignupRouterByPort($port);
+        $signupVlan = $signupRouter->getProperty('signup vlan');
+        if ($signupVlan != null)
+        {
+            $noAccessVlan = $signupVlan;
+        }
 
         //        if (!isset($noAccessVlan) || $noAccessVlan == '') {
         //            $ipInfoArr = $this->getActiveLeasesOnPort($routerIP);
@@ -403,9 +399,21 @@ class NetworkController extends Controller {
         return 'ERROR';
     }
 
+    // TODO: This should be moved into an extension class
+    //
+    public function getSignupRouterByPort(Port $port)
+    {
+        $networkNode = $port->networkNode;
+        $networkNodeAddress = $networkNode->address;
+
+        return NetworkNode::where('id_address', $networkNodeAddress->id)
+            ->where('id_types', config('const.type.router'))
+            ->where('role', 'Master')
+            ->first();
+    }
+
     public function activatePort(Request $request)
     {
-
         $input = $request->all();
         $portId = $input['portid'];
 
@@ -596,6 +604,7 @@ class NetworkController extends Controller {
         $switchIp = $input['ip'];
         $skipLabelPattern = ['/.*[uU]plink.*/i', '/.*[dD]ownlink.*/i'];
         $sipNetwork = new SIPNetwork();
+
         return $portInfoTable = $sipNetwork->getSwitchPortInfoTable($switchIp, $skipLabelPattern);
 
     }

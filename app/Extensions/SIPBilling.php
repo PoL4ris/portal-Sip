@@ -134,6 +134,7 @@ class SIPBilling {
         {
             Log::info('SIPBilling::tokenize(): ERROR: Could not find a customer associated with the payment method you supplied');
             $pm->account_number = 'ERROR';
+            unset($pm->CCscode);
 
             return $pm;
         }
@@ -142,6 +143,7 @@ class SIPBilling {
         {
             Log::info('SIPBilling::tokenize(): ERROR: Could not find an address associated with the payment method you supplied');
             $pm->account_number = 'ERROR';
+            unset($pm->CCscode);
 
             return $pm;
         }
@@ -165,12 +167,13 @@ class SIPBilling {
         $ipPayHandle = new IpPay();
         $ippayresult = array();
 
-
         if ($this->testMode == true)
         {
+            Log::info('processCC(): Calling IpPay in test mode');
             $ippayresult = $ipPayHandle->process($request, 0);  //process card - 0 is for test server, 1 for live server	   		
         } else
         {
+            Log::info('processCC(): Calling IpPay in production mode');
             $ippayresult = $ipPayHandle->process($request, 1);  //process card - 0 is for test server, 1 for live server
         }
 
@@ -181,17 +184,35 @@ class SIPBilling {
         if (isset($ippayresult['TOKEN']))
         {
             $pm->account_number = $ippayresult['TOKEN'];
-            $pmPropertiesArr = json_decode($pm->properties);
+            $pmPropertiesArr = json_decode($pm->properties, true);
             $pmPropertiesArr['last four'] = 'XXXX-XXXX-XXXX-' . substr($pm->account_number, - 4);
             $pmPropertiesArr['card type'] = $pm->card_type;
             $pmPropertiesArr['exp month'] = $pm->exp_month;
             $pmPropertiesArr['exp year'] = $pm->exp_year;
             $pm->properties = json_encode($pmPropertiesArr);
 
+            $result['PaymentType'] = $pm->types;
+            $result['PaymentTypeDetails'] = ($pm->properties != '') ? json_decode($pm->properties, true) : '';
+            $result['TOKEN'] = $ippayresult['TOKEN'];
         } else
         {
             $pm->account_number = 'ERROR';
+            $result['FAILED'] = 'Failed to tokenize PaymentMethod.';
         }
+
+//        Log::info(print_r($ippayresult, true));
+
+        $result['TRANSACTIONID'] = $ippayresult['TRANSACTIONID'];   //Returns the unique tranaction ID
+        $result['ACTIONCODE'] = $ippayresult['ACTIONCODE'];     // 000 = Approved, else Denied
+        $result['APPROVAL'] = $ippayresult['APPROVAL'];
+        $result['VERIFICATIONRESULT'] = $ippayresult['VERIFICATIONRESULT'];
+        $result['RESPONSETEXT'] = $ippayresult['RESPONSETEXT'];    // Approved or Denied
+        $result['ADDRESSMATCH'] = $ippayresult['ADDRESSMATCH'];
+        $result['ZIPMATCH'] = $ippayresult['ZIPMATCH'];
+        $result['AVS'] = $ippayresult['AVS'];
+        $result['ERRMSG'] = $ippayresult['ERRMSG'];
+        $result['TransactionType'] = $request['TransactionType'];
+        $this->logChargeResult($result);
 
         // Store the transaction log in the database
         $ippayresult['TransactionType'] = $request['TransactionType'];
@@ -467,7 +488,7 @@ class SIPBilling {
             $response = 'processed';
         }
 
-        Log::info('SIPBilling: '.$type. ' ' . $response . ': ' . "\n" . print_r($chargeResult, true));
+        Log::info('SIPBilling: ' . $type . ' ' . $response . ': ' . "\n" . print_r($chargeResult, true));
 
         return $response;
     }
