@@ -1,78 +1,78 @@
-//Customer Controllers
 app.controller('customerControllerList',            function ($scope, $http){
-  $http.get("getCustomerList")
+//Customer Controllers
+    $http.get("getCustomerList")
     .then(function (response) {
       $scope.supportDataCustomer = response.data;
     });
 });
-app.controller('customerController',                function ($scope, $http, $stateParams, customerService, DTOptionsBuilder){
+app.controller('customerController',                function ($scope, $http, $stateParams, customerService, DTOptionsBuilder) {
 
 //   $scope.globalServiceLocationSide = null;
-  if(!customerService.rightView) {
-    customerService.rightView = true;
-    //     console.log('right');
-  }
-  else {
-    //console.log('left');
-    //SideBar verify if need to be there.
-    if(!customerService.sideBarFlag) {
-      $scope.sipTool(2);
-      customerService.sideBarFlag = true;
+    if (!customerService.rightView) {
+        customerService.rightView = true;
+        //     console.log('right');
     }
+    else {
+        //console.log('left');
+        //SideBar verify if need to be there.
+        if (!customerService.sideBarFlag) {
+            $scope.sipTool(2);
+            customerService.sideBarFlag = true;
+        }
 
-    customerService.leftView = true;
-    $scope.customerFlag      = true;
-    $scope.idCustomer        = Math.floor((Math.random() * (11656 - 11155 + 1) ) + 11155);
+        customerService.leftView = true;
+        $scope.customerFlag = true;
+        $scope.idCustomer = Math.floor((Math.random() * (11656 - 11155 + 1) ) + 11155);
 
-    if ($scope.stcid || $stateParams.id)
-      $scope.idCustomer = $scope.stcid ? $scope.stcid : $stateParams.id;
+        if ($scope.stcid || $stateParams.id)
+            $scope.idCustomer = $scope.stcid ? $scope.stcid : $stateParams.id;
 
 //         if (($(location).attr('href').split('http://silverip-portal.com/#/')[1]) == 'customers') {
 //             $scope.idCustomer = 501;
 //             $scope.buscadorFlag = true;
 //         }
 
-    //SET INPUT VALUE
-    $('#customerIdScope').val($scope.idCustomer);
+        //SET INPUT VALUE
+        $('#customerIdScope').val($scope.idCustomer);
 
-    $http.get("customersData", {params:{'id' : $scope.idCustomer}})
-      .then(function (response) {
-        customerService.customer = response.data;
-        $scope.customerData.customer = customerService.customer;
-        $scope.bld = $scope.customerData.customer.address;
-      });
-    $http.get("getContactTypes", {params:{'id':$scope.idCustomer}})
-      .then(function (response) {
-        $scope.contactTypes = response.data;
-      });
-    $http.get("getTableData", {params:{'table':'reasons'}})
-      .then(function (response) {
-        $scope.newTicketData = response.data;
-      });
-    $http.get("getStatus")//VERIFY HOW TO CREATE INDEX 0 ON THE SELECT OPTION X-EDIT
-      .then(function (response) {
-        $scope.customerTypes = response.data;
-        for(var obj in response.data ) {
-          $scope.customerTypes[obj]['value'] = response.data[obj].id;
-          $scope.customerTypes[obj]['text']  = response.data[obj].name;
-        }
-        $scope.customerData.statusList = $scope.customerTypes;
-      });
+        $http.get("customersData", {params: {'id': $scope.idCustomer}})
+            .then(function (response) {
+                customerService.customer = response.data;
+                $scope.customerData.customer = customerService.customer;
+                $scope.bld = $scope.customerData.customer.address;
+            });
+        $http.get("getContactTypes", {params: {'id': $scope.idCustomer}})
+            .then(function (response) {
+                $scope.contactTypes = response.data;
+            });
+        $http.get("getTableData", {params: {'table': 'reasons'}})
+            .then(function (response) {
+                $scope.newTicketData = response.data;
+            });
+        $http.get("getStatus")//VERIFY HOW TO CREATE INDEX 0 ON THE SELECT OPTION X-EDIT
+            .then(function (response) {
+                $scope.customerTypes = response.data;
+                for (var obj in response.data) {
+                    $scope.customerTypes[obj]['value'] = response.data[obj].id;
+                    $scope.customerTypes[obj]['text'] = response.data[obj].name;
+                }
+                $scope.customerData.statusList = $scope.customerTypes;
+            });
 
-    $scope.checkboxModel         = true;
-    $scope.checkboxModelA        = true;
-    $scope.animationsEnabled     = false;
-    $scope.currentServiceDisplay = '';
-  }
+        $scope.checkboxModel = true;
+        $scope.checkboxModelA = true;
+        $scope.animationsEnabled = false;
+        $scope.currentServiceDisplay = '';
+    }
 
-  //Reloads Data
-  $scope.getCustomerStatus          = function (id){
-    $http.get("getCustomerStatus", {params:{'id':id}})
-      .then(function (response) {
-        $scope.customerData.customer.status = response.data;
-      });
-  };
-  //----------TEMP DISABLED
+    //Reloads Data
+    $scope.getCustomerStatus = function (id) {
+        $http.get("getCustomerStatus", {params: {'id': id}})
+            .then(function (response) {
+                $scope.customerData.customer.status = response.data;
+            });
+    };
+    //----------TEMP DISABLED
 //     $scope.clearSearch                = function (){
 //         this.searchCustomer = '';
 //         $scope.buscador();
@@ -94,326 +94,424 @@ app.controller('customerController',                function ($scope, $http, $st
 //         return;
 //
 //     }
-  $scope.getAddressItems            = function (){
-    $http.get("getAddress")
-      .then(function (response) {
-        $scope.addressData = response.data;
-      });
-  };
-  $scope.getCustomerContactData     = function (){
-    $http.get("getCustomerContactData", {params:{'id':$scope.idCustomer}})
-      .then(function (response) {
-        $scope.customerContactsData = response.data.contacts;
-      });
-  }
-  $scope.getCustomerContactData();
-  $scope.submitForm                 = function (table) {
-    console.log('este' + table);
-    return;
-    var objects = $('#'+table+'-insert-form').serializeArray();
-    var infoData = {};
-
-
-    for(var obj in objects )
-    {
-      if(objects[obj]['value'] == 'err' || objects[obj]['value'] == '')
-      {
-        var tmp = objects[obj]['name'].split('id_');
-        console.log(tmp);
-        alert('Verify ' + (tmp[1]?tmp[1]:objects[obj]['name']) + ' Field');
+    $scope.getAddressItems = function () {
+        $http.get("getAddress")
+            .then(function (response) {
+                $scope.addressData = response.data;
+            });
+    };
+    $scope.getCustomerContactData = function () {
+        $http.get("getCustomerContactData", {params: {'id': $scope.idCustomer}})
+            .then(function (response) {
+                $scope.customerContactsData = response.data.contacts;
+            });
+    }
+    $scope.getCustomerContactData();
+    $scope.submitForm = function (table) {
+        console.log('este' + table);
         return;
-      }
+        var objects = $('#' + table + '-insert-form').serializeArray();
+        var infoData = {};
 
-      infoData[objects[obj]['name']] = objects[obj]['value'];
-    }
-    infoData['id_customers'] = $scope.customerData.id;
 
-    //     validator.startValidations;
+        for (var obj in objects) {
+            if (objects[obj]['value'] == 'err' || objects[obj]['value'] == '') {
+                var tmp = objects[obj]['name'].split('id_');
+                console.log(tmp);
+                alert('Verify ' + (tmp[1] ? tmp[1] : objects[obj]['name']) + ' Field');
+                return;
+            }
 
-    $http.get("insertCustomerTicket", {params:infoData})
-      .then(function (response) {
-        //         cancelForm();
-        if(response.data == 'OK')
-        {
-          document.getElementById(table+"-insert-form").reset();
-          notify({ message: 'New Ticket Created!', templateUrl:'/views/notify.html'} );
-
+            infoData[objects[obj]['name']] = objects[obj]['value'];
         }
-      });
+        infoData['id_customers'] = $scope.customerData.id;
 
-    //     callAdminView(infoData['table']);
-    //     notify({ message: 'Data inserted!', templateUrl:'/views/notify.html'} );
+        //     validator.startValidations;
 
-  };
-  $scope.submitNewTicketForm        = function (){
-    $('#create-customer-ticket').attr('disabled', true);
+        $http.get("insertCustomerTicket", {params: infoData})
+            .then(function (response) {
+                //         cancelForm();
+                if (response.data == 'OK') {
+                    document.getElementById(table + "-insert-form").reset();
+                    notify({message: 'New Ticket Created!', templateUrl: '/views/notify.html'});
+
+                }
+            });
+
+        //     callAdminView(infoData['table']);
+        //     notify({ message: 'Data inserted!', templateUrl:'/views/notify.html'} );
+
+    };
+    $scope.submitNewTicketForm = function () {
+        $('#create-customer-ticket').attr('disabled', true);
 
 
-    var infoData = getFormValues('new-ct-form');
+        var infoData = getFormValues('new-ct-form');
 
-    if(infoData.id_reasons == '' || infoData.status == '' || infoData.comment == ''){
-      $('#create-customer-ticket').removeAttr('disabled');
-      return;
-    }
-
-    $scope.loadingGif = true;
-
-    infoData['id_customers'] = $scope.idCustomer;
-
-    $http.get("insertCustomerTicket", {params:infoData})
-      .then(function (response) {
-        if(response.data == 'OK'){
-          $('#create-customer-ticket').removeAttr('disabled');
-          $scope.loadingGif = false;
-          $.smallBox({
-            title: "New Ticket Created!",
-            content: "<i class='fa fa-clock-o'></i> <i>2 seconds ago...</i>",
-            color: "#739E73",
-            iconSmall: "fa fa-thumbs-up bounce animated",
-            timeout: 6000
-          });
-          $('#new-ct-form').trigger("reset");
+        if (infoData.id_reasons == '' || infoData.status == '' || infoData.comment == '') {
+            $('#create-customer-ticket').removeAttr('disabled');
+            return;
         }
-      });
-  };
-  $scope.validate                   = function (value, table, field) {
-    var data = {};
-    data[field] = value;
-    data['id_customers'] = $scope.idCustomer;
 
-    $http.get("update" + table + "Table", {params:data})
-      .then(function (response) {
-        console.log('OK');
-      });
-  }
-  $scope.customerEditMode           = function (){
-    if ( $scope.checkboxModel == false)
-    {
-      $('.editable-text').fadeIn('slow');
-      $('.no-editable-text').css('display', 'none');
-    }
-    else
-    {
-      $('.no-editable-text').fadeIn('slow');
-      $('.editable-text').css('display', 'none');
-    }
-  };
-  $scope.customerEditMode();
-  $scope.contactEditMode            = function (){
-    if ( $scope.checkboxModelA == false)
-    {
-      console.log($scope.checkboxModelA);
-      $('.c-no-editable-text').fadeIn('slow');
-      $('.c-editable-text').css('display', 'none');
-      $scope.checkboxModelA = true;
-    }
-    else
-    {
-      console.log($scope.checkboxModelA);
-      $('.c-editable-text').fadeIn('slow');
-      $('.c-no-editable-text').css('display', 'none');
-      $scope.checkboxModelA = false;
-    }
-  };
-  $scope.updateContactInfo          = function (value, id){
-    var data = {};
-    data['id']    = id;
-    data['value'] = value;
-    $http.get("updateContactInfo", {params:data})
-      .then(function (response) {
-        console.log(response.data);
-      });
-  };
-  $scope.open                       = function (id, type){
+        $scope.loadingGif = true;
 
-    $scope.customerId = id;
-    $scope.type = type;
+        infoData['id_customers'] = $scope.idCustomer;
 
-    var modalInstance = $uibModal.open(
-      {
-        animation: $scope.animationsEnabled,
-        templateUrl: 'myContactInfoAdd.html',
-        controller: 'addContInfoController',
-        size: 'md',
-        resolve: {
-          customerId: function () {
-            return $scope.customerId;
-          },
-          mode: function (){
-            return $scope
-          }
+        $http.get("insertCustomerTicket", {params: infoData})
+            .then(function (response) {
+                if (response.data == 'OK') {
+                    $('#create-customer-ticket').removeAttr('disabled');
+                    $scope.loadingGif = false;
+                    $.smallBox({
+                        title: "New Ticket Created!",
+                        content: "<i class='fa fa-clock-o'></i> <i>2 seconds ago...</i>",
+                        color: "#739E73",
+                        iconSmall: "fa fa-thumbs-up bounce animated",
+                        timeout: 6000
+                    });
+                    $('#new-ct-form').trigger("reset");
+                }
+            });
+    };
+    $scope.validate = function (value, table, field) {
+        var data = {};
+        data[field] = value;
+        data['id_customers'] = $scope.idCustomer;
+
+        $http.get("update" + table + "Table", {params: data})
+            .then(function (response) {
+                console.log('OK');
+            });
+    }
+    $scope.customerEditMode = function () {
+        if ($scope.checkboxModel == false) {
+            $('.editable-text').fadeIn('slow');
+            $('.no-editable-text').css('display', 'none');
         }
-      });
+        else {
+            $('.no-editable-text').fadeIn('slow');
+            $('.editable-text').css('display', 'none');
+        }
+    };
+    $scope.customerEditMode();
+    $scope.contactEditMode = function () {
+        if ($scope.checkboxModelA == false) {
+            console.log($scope.checkboxModelA);
+            $('.c-no-editable-text').fadeIn('slow');
+            $('.c-editable-text').css('display', 'none');
+            $scope.checkboxModelA = true;
+        }
+        else {
+            console.log($scope.checkboxModelA);
+            $('.c-editable-text').fadeIn('slow');
+            $('.c-no-editable-text').css('display', 'none');
+            $scope.checkboxModelA = false;
+        }
+    };
+    $scope.updateContactInfo = function (value, id) {
+        var data = {};
+        data['id'] = id;
+        data['value'] = value;
+        $http.get("updateContactInfo", {params: data})
+            .then(function (response) {
+                console.log(response.data);
+            });
+    };
+    $scope.open = function (id, type) {
 
-    modalInstance.result.then(function () {}, function () {
-      //       if (type == 'services' || type == 'updateService')
-      //         $scope.cSrvCrlFun();
+        $scope.customerId = id;
+        $scope.type = type;
 
-      $log.info('Modal dismissed at: ' + new Date());
-    });
-  };
-  $scope.insertCustomerContact      = function (){
+        var modalInstance = $uibModal.open(
+            {
+                animation: $scope.animationsEnabled,
+                templateUrl: 'myContactInfoAdd.html',
+                controller: 'addContInfoController',
+                size: 'md',
+                resolve: {
+                    customerId: function () {
+                        return $scope.customerId;
+                    },
+                    mode: function () {
+                        return $scope
+                    }
+                }
+            });
 
-    var infoData = getFormValues('new-cct-form');
-    infoData['id_customers'] = $scope.idCustomer;
+        modalInstance.result.then(function () {
+        }, function () {
+            //       if (type == 'services' || type == 'updateService')
+            //         $scope.cSrvCrlFun();
 
-    $http.get("insertContactInfo", {params:infoData})
-      .then(function (response) {
-        $scope.customerContactsData = response.data.contacts;
-      });
-
-    angular.element('#add-property-cancel').scope().fadeViews('bpv-container', 'new-form-function', 0, 'customer-contact', 'add-property', 'add-property-cancel')
-    $('#new-bpv-form').trigger("reset");
-  }
-  //Product.html
-  $scope.addNewService              = function () {
-
-    if(!$scope.currentServiceDisplay)
-    {
-      $('.add-prod-select-color').css('border-color', 'red');
-      return;
-    }
-    $('.add-prod-select-color').css('border-color', 'inherit');
-
-    var mode = $scope.customerData.servicesMode;
-
-    if (mode == 'updateService')
-    {
-      $http.get("updateCustomerServices", {params:{'id' : $scope.idCustomer,'newId' : $scope.currentServiceDisplay.id, 'oldId' : $scope.customerData.serviceTmpId}})
-        .then(function (response) {
-          console.log("Service Added / Updated::OK");
-          $scope.availableServices();
+            $log.info('Modal dismissed at: ' + new Date());
         });
-      $('#myModalService').modal('toggle');
+    };
+    $scope.insertCustomerContact = function () {
+
+        var infoData = getFormValues('new-cct-form');
+        infoData['id_customers'] = $scope.idCustomer;
+
+        $http.get("insertContactInfo", {params: infoData})
+            .then(function (response) {
+                $scope.customerContactsData = response.data.contacts;
+            });
+
+        angular.element('#add-property-cancel').scope().fadeViews('bpv-container', 'new-form-function', 0, 'customer-contact', 'add-property', 'add-property-cancel')
+        $('#new-bpv-form').trigger("reset");
     }
-    else
-    {
-      $http.get("insertCustomerService", {params : {'idCustomer' : $scope.idCustomer,'idProduct' : $scope.currentServiceDisplay.id}})
-        .then(function (response) {
-          console.log("Service Added / Updated::OK");
-          $scope.availableServices();
-        });
-      $('#myModalService').modal('toggle');
-    }
-  };
-  $scope.setModeType                = function (modeType){
-    $scope.customerData.servicesMode = modeType;
-    $scope.customerData.serviceTmpId = this.service ? this.service.id : false;
-    $scope.currentServiceDisplay = null;
-    $scope.showingCurrent = null;
+    //Product.html
+    $scope.addNewService = function () {
 
-    $scope.getBldProducts();
-  };
-  $scope.getBldProducts             = function (){
-
-    $http.get("getAvailableServices", {params:{'id':$scope.customerData.customer.address.id_buildings}})
-      .then(function (response) {
-        $scope.customerData.availableServices = response.data;
-      });
-
-  };
-  $scope.serviceDataDisplay         = function (option) {
-    if(option)
-    {
-      $scope.serviceFlag = true;
-      $scope.currentServiceDisplay = this.customerProduct.product;
-      $scope.showingCurrent = this.service.product;
-    }
-    else
-    {
-      $scope.serviceFlag = false;
-      $scope.currentServiceDisplay = this.selectedItem.product;
-    }
-  };
-  //disable becaus its gone the button that triggers.
-  $scope.setInvoiceTab              = function (){
-    $('#invoice-payment-tab-link').trigger('click');
-  };
-
-
-  $scope.availableServices          = function (){
-    $http.get("getCustomerServices", {params:{'id':$scope.idCustomer}})
-      .then(function (response) {
-        $scope.customerData.customerServices = response.data;
-      });
-
-    $scope.resolveRouteFunction(null, $scope.idCustomer);
-  };
-  //addresses
-  $scope.clearAddressModal          = function (){
-    $('#mb-ca-edit').fadeOut();
-    $('#mb-ca-table').fadeIn();
-  }
-  $scope.editAddressModal           = function (action){
-    //  action = 1 EDIT
-    //  action = 0 CANCEL
-    if( action == 1)
-    {
-      console.log('aqui estamos ' + this.$index);
-      $('#mb-ca-table').fadeOut();
-      $('#mb-ca-edit').fadeIn();
-      $scope.indexOfToShow = this.$index;
-    }
-    else
-    {
-      console.log('aqui estamos ' + action);
-      $('#mb-ca-edit').fadeOut();
-      $('#mb-ca-table').fadeIn();
-    }
-  };
-  //ResetPassword
-  $scope.showConfirmPassword        = function (idProduct, status) {
-
-    $.SmartMessageBox({
-      title: "Please Confirm",
-      content: 'Should I reset this customer’s password?',
-      buttons: '[No][Yes]'
-    }, function (ButtonPressed) {
-      if (ButtonPressed === "Yes") {
-        $scope.resetPassword();
-      }
-      //       if (ButtonPressed === "No") {
-      //
-      //         $.smallBox({
-      //           title: "Callback function",
-      //           content: "<i class='fa fa-clock-o'></i> <i>You pressed No...</i>",
-      //           color: "#C46A69",
-      //           iconSmall: "fa fa-times fa-2x fadeInRight animated",
-      //           timeout: 4000
-      //         });
-      //       }
-
-    });
-  };
-  $scope.resetPassword              = function (){
-
-    $http.get("resetCustomerPassword", {params:{'id':$scope.idCustomer}})
-      .then(function (response){
-
-        if (response.data['response'] == 'OK')
-        {
-          $.smallBox({
-            title: "Password updated to " + response.data['password'],
-            content: "<i class='fa fa-clock-o'></i> <i>3 seconds ago...</i>",
-            color: "#739E73",
-            iconSmall: "fa fa-thumbs-up bounce animated",
-            timeout: 6000
-          });
+        if (!$scope.currentServiceDisplay) {
+            $('.add-prod-select-color').css('border-color', 'red');
+            return;
         }
+        $('.add-prod-select-color').css('border-color', 'inherit');
 
-      });
-  };
-  //Network
-  $scope.getCoreData = function (ip){
-    $scope.pLoad     = true;
-    $scope.pRecord   = ip;
-    $http.get("getSwitchStats", {params:{'ip':ip}})
-      .then(function (response) {
-        $scope.pLoad    = false;
-        $scope.pStatus  = response.data[0]
-        $scope.pInfo    = response.data[1]
-      });
-  }
+        var mode = $scope.customerData.servicesMode;
+
+        if (mode == 'updateService') {
+            $http.get("updateCustomerServices", {
+                params: {
+                    'id': $scope.idCustomer,
+                    'newId': $scope.currentServiceDisplay.id,
+                    'oldId': $scope.customerData.serviceTmpId
+                }
+            })
+                .then(function (response) {
+                    console.log("Service Added / Updated::OK");
+                    $scope.availableServices();
+                });
+            $('#myModalService').modal('toggle');
+        }
+        else {
+            $http.get("insertCustomerService", {
+                params: {
+                    'idCustomer': $scope.idCustomer,
+                    'idProduct': $scope.currentServiceDisplay.id
+                }
+            })
+                .then(function (response) {
+                    console.log("Service Added / Updated::OK");
+                    $scope.availableServices();
+                });
+            $('#myModalService').modal('toggle');
+        }
+    };
+    $scope.setModeType = function (modeType) {
+        $scope.customerData.servicesMode = modeType;
+        $scope.customerData.serviceTmpId = this.service ? this.service.id : false;
+        $scope.currentServiceDisplay = null;
+        $scope.showingCurrent = null;
+
+        $scope.getBldProducts();
+    };
+    $scope.getBldProducts = function () {
+
+        $http.get("getAvailableServices", {params: {'id': $scope.customerData.customer.address.id_buildings}})
+            .then(function (response) {
+                $scope.customerData.availableServices = response.data;
+            });
+
+    };
+    $scope.serviceDataDisplay = function (option) {
+        if (option) {
+            $scope.serviceFlag = true;
+            $scope.currentServiceDisplay = this.customerProduct.product;
+            $scope.showingCurrent = this.service.product;
+        }
+        else {
+            $scope.serviceFlag = false;
+            $scope.currentServiceDisplay = this.selectedItem.product;
+        }
+    };
+    //disable becaus its gone the button that triggers.
+    $scope.setInvoiceTab = function () {
+        $('#invoice-payment-tab-link').trigger('click');
+    };
+
+
+    $scope.availableServices = function () {
+        $http.get("getCustomerServices", {params: {'id': $scope.idCustomer}})
+            .then(function (response) {
+                $scope.customerData.customerServices = response.data;
+            });
+
+        $scope.resolveRouteFunction(null, $scope.idCustomer);
+    };
+    //addresses
+    $scope.clearAddressModal = function () {
+        $('#mb-ca-edit').fadeOut();
+        $('#mb-ca-table').fadeIn();
+    };
+    $scope.editAddressModal = function (action) {
+        //  action = 1 EDIT
+        //  action = 0 CANCEL
+        if (action == 1) {
+            console.log('aqui estamos ' + this.$index);
+            $('#mb-ca-table').fadeOut();
+            $('#mb-ca-edit').fadeIn();
+            $scope.indexOfToShow = this.$index;
+        }
+        else {
+            console.log('aqui estamos ' + action);
+            $('#mb-ca-edit').fadeOut();
+            $('#mb-ca-table').fadeIn();
+        }
+    };
+    //ResetPassword
+    $scope.showConfirmPassword = function (idProduct, status) {
+
+        $.SmartMessageBox({
+            title: "Please Confirm",
+            content: 'Should I reset this customer’s password?',
+            buttons: '[No][Yes]'
+        }, function (ButtonPressed) {
+            if (ButtonPressed === "Yes") {
+                $scope.resetPassword();
+            }
+            //       if (ButtonPressed === "No") {
+            //
+            //         $.smallBox({
+            //           title: "Callback function",
+            //           content: "<i class='fa fa-clock-o'></i> <i>You pressed No...</i>",
+            //           color: "#C46A69",
+            //           iconSmall: "fa fa-times fa-2x fadeInRight animated",
+            //           timeout: 4000
+            //         });
+            //       }
+
+        });
+    };
+    $scope.resetPassword = function () {
+
+        $http.get("resetCustomerPassword", {params: {'id': $scope.idCustomer}})
+            .then(function (response) {
+
+                if (response.data['response'] == 'OK') {
+                    $.smallBox({
+                        title: "Password updated to " + response.data['password'],
+                        content: "<i class='fa fa-clock-o'></i> <i>3 seconds ago...</i>",
+                        color: "#739E73",
+                        iconSmall: "fa fa-thumbs-up bounce animated",
+                        timeout: 6000
+                    });
+                }
+
+            });
+    };
+    //Network
+    $scope.getCoreData = function (ip) {
+        $scope.pLoad = true;
+        $scope.pRecord = ip;
+        $http.get("getSwitchStats", {params: {'ip': ip}})
+            .then(function (response) {
+                $scope.pLoad = false;
+                $scope.pStatus = response.data[0];
+                $scope.pInfo = response.data[1];
+            });
+    };
+
+    $scope.tdrData = null;
+
+    $scope.getTdrDiag = function (ip, port) {
+        console.log("kicking off diagnostic");
+        var diagBtn = $('#DiagBtn');
+        diagBtn.removeClass('btn-primary');
+        diagBtn.addClass('btn-danger');
+        $http.get("getTdrDataBySwitchIpAndPort", {params: {'ip': ip, 'port': port}})
+            .then(function (response) {
+                console.log('trying to display tdr, resonse from stringify follows');
+
+
+                console.log(response);
+                $scope.tdrData = response['data'];
+                tdrel = angular.element(document.querySelector('#tdrStatus'));
+                var diagBtn = $('#DiagBtn');
+                diagBtn.removeClass('btn-danger');
+                diagBtn.addClass('btn-primary');
+
+                console.log('end diagnostic');
+                //tdrel.html(response);
+            });
+    };
+
+    $scope.translateTdrChannel = function (channel) {
+        if (typeof channel != "undefined") {
+
+            switch (channel) {
+                case '1':
+                    return 'Open';
+                case '2':
+                    return 'A';
+                case '3':
+                    return 'B';
+                case '4':
+                    return 'C';
+                case '5':
+                    return 'D';
+                default:
+                    return 'Error';
+            }
+
+
+        } else {
+            return '';
+        }
+        return 'Error';
+    };
+
+    $scope.translateTdrLenAccuracytdrData = function (channel) {
+        if (typeof channel != "undefined") {
+
+            switch (channel) {
+                case '1':
+                    return 'Unknown';
+                case '2':
+                    return 'Meter';
+                case '3':
+                    return 'CentiMeter';
+                case '4':
+                    return 'KiloMeter';
+                default:
+                    return 'Error';
+            }
+
+
+        } else {
+            return '';
+        }
+        return 'Error';
+    };
+
+    $scope.translateTdrPairStatus = function (channel) {
+        if (typeof channel != "undefined") {
+
+            switch (channel) {
+                case '1':
+                    return 'Unknown';
+                case '2':
+                    return 'Ok';
+                case '3':
+                    return 'U/E';
+                case '4':
+                    return 'N/S';
+                case '5':
+                    return 'Open';
+                case '8':
+                    return 'Fail';
+                default:
+                    return 'Error';
+            }
+
+
+        } else {
+            return '';
+        }
+        return 'Error';
+    };
+
+
   $scope.pStInOptions = DTOptionsBuilder.newOptions().withDisplayLength(50);
 });
 app.controller('customerTicketHistoryController',   function ($scope, $http){
@@ -649,6 +747,7 @@ app.controller('customerNetworkController',         function ($scope, $http){
       }
     });
   };
+
 
 });
 app.controller('customerBuildingController',        function ($scope, $http){

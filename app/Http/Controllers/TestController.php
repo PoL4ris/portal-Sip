@@ -396,6 +396,144 @@ class TestController extends Controller {
 
     }
 
+
+    public function portTdrTest(Request $request)
+    {
+        $running = 0;
+
+        $ciscoSwitch = new CiscoSwitch(['readCommunity'  => 'oomoomee',
+                                        'writeCommunity' => 'BigSeem']);
+
+//        $portTypeRegEx = '/.*ethernet.*/i';
+//        $skipLabelPattern = ['/.*[uU]plink.*/i', '/.*[dD]ownlink.*/i'];
+//        $portLabels = $ciscoSwitch->getSnmpAllPortLabel('10.11.123.27', $portTypeRegEx, $skipLabelPattern);
+
+
+        $currentAction = $ciscoSwitch->getSnmpTdrIfAction($request->ip, $request->port);
+
+        switch ($currentAction['response'])
+        {
+            case '3':
+                //please wait test is already running
+                $running = 1;
+
+                return "please wait for current test to finish";
+                break;
+            case '4':
+                //test is not running, lets run test
+               // echo "starting snmp test<br>";
+                $ciscoSwitch->setSnmpTdrIfAction($request->ip, $request->port);
+                $running = 1;
+                break;
+            default:
+                //writable actions instead of current status, 1 is start 2 is clear last data
+                $running = 1;
+
+                return "writable action, shouldn't be happening right now";
+                break;
+        }
+
+        $running = 1;
+
+        do
+        {
+            sleep(3);
+            $currentAction = $ciscoSwitch->getSnmpTdrIfAction($request->ip, $request->port);
+            switch ($currentAction['response'])
+            {
+                case 3:
+                    $running = 1;
+                    sleep(1);
+                   // echo 'test is still running<br>';
+                    break;
+                case 4:
+                    $running = 0;
+                   // echo 'Test is NOT running now maybe have results?<br>';
+                    break;
+                default:
+                    return 'no fonking clue';
+                    break;
+            }
+        } while ($running == 1);
+
+        do
+        {
+            sleep(3);
+            $running=0;
+            $currentAction = $ciscoSwitch->getSnmpTdrIfActionStatus($request->ip, $request->port);
+            switch ($currentAction['response'])
+            {
+                case 1:
+                   // echo "results should be valid<br>";
+                    $running=0;
+                    break;
+                case 2:
+                  //  echo "failed reason unknown<br>";
+                    return 'something bad happened<br>';
+                case 3:
+                   // echo "failed Resource Invalid<br>";
+                    return 'something bad happened<br>';
+                case 4:
+                   // echo "failed Interal Error<br>";
+                    return 'something bad happened<br>';
+                case 5:
+                   // echo "failed Test Already Running<br>";
+                    sleep(2);
+                    break;
+                case 6:
+                   // echo 'Failed Interface Disabled<br>';
+                    return 'something bad happened';
+                default:
+                   // echo 'This should never happen<br>';
+                    return 'super fail<br>';
+            }
+        } while ($running == 1);
+
+
+
+
+        $resultvalid = $ciscoSwitch->getSnmpTdrIfResultValid($request->ip, $request->port);
+        $running = 1;
+        $loopcount = 0;
+        $resultTable = [];
+        do
+        {
+            switch ($resultvalid['response'])
+            {
+                case '1':
+                    //success ready to display
+                    //echo 'test results? <br>';
+                    $running = 0;
+                    $resultTable['channel'] = $ciscoSwitch->getSnmpTdrIfResultPairChannel($request->ip, $request->port);
+                    $resultTable['length'] = $ciscoSwitch->getSnmpTdrIfResultPairLength($request->ip, $request->port);
+                    $resultTable['lenAccuracy'] = $ciscoSwitch->getSnmpTdrIfResultPairLenAccuracy($request->ip, $request->port);
+                    $resultTable['faultDistance'] = $ciscoSwitch->getSnmpTdrIfResultPairDistToFault($request->ip, $request->port);
+                    $resultTable['pairStatus'] = $ciscoSwitch->getSnmpTdrIfResultPairStatus($request->ip, $request->port);
+                    $resultTable['lenUnit'] = $ciscoSwitch->getSnmpTdrIfResultPairLengthUnit($request->ip, $request->port);
+                    //dd($pairChannel, $pairLength, $pairLengthAccuracy, $distanceToFault, $pairStatus, $lengthUnit);
+
+                    break;
+
+                default:
+                    sleep(2);
+                    if ($loopcount > 10)
+                    {
+                        return 'timeout';
+                    }
+                    $loopcount ++;
+                   // echo 'test is running still? Result not Yet Valid. <br>';
+                    $resultvalid = $ciscoSwitch->getSnmpTdrIfResultValid($request->ip, $request->port);
+                    $running = 1;
+                    break;
+            }
+        } while ($running == 1);
+
+
+
+
+        return $resultTable;
+    }
+
     public function generalTest()
     {
 

@@ -36,7 +36,7 @@ class CiscoSwitch {
     const ifPortFastMode = '1.3.6.1.4.1.9.9.82.1.9.3.1.3'; // 1: enabled, 2: disabled, 3: enable for trunk, 4: default
     const ifbpduGuard = '1.3.6.1.4.1.9.9.82.1.9.3.1.4'; // 1: enabled, 2: disabled, 3: default
     const ifbpduFilter = '1.3.6.1.4.1.9.9.82.1.9.3.1.5'; // 1: enabled, 2: disabled, 3: default
-    const ifModeOper = '1.3.6.1.4.1.9.9.151.1.1.1.1.2'; // 1: routed, 2: switchport 
+    const ifModeOper = '1.3.6.1.4.1.9.9.151.1.1.1.1.2'; // 1: routed, 2: switchport
     //    const ifswitchportMode = '1.3.6.1.4.1.9.5.1.9.3.1.8.1'; // 1: trunk, 2: not trunk (use bridge index not ifindex)
     const ifswitchportMode = '1.3.6.1.4.1.9.9.46.1.6.1.1.13'; // 1 or 5: trunk, 2: not trunk (use ifIndex)
     const trunk = 1;
@@ -91,6 +91,20 @@ class CiscoSwitch {
     //        5:notPresent
     //        6:notFunctioning
     const ciscoFlashFileName = '1.3.6.1.4.1.9.9.10.1.1.4.2.1.1.5';     // Walk this to see files on the flash://
+
+    const ccdTdrIfTable = '.1.3.6.1.4.1.9.9.390.1.2.1';
+    const ccdTdrIfAction = '.1.3.6.1.4.1.9.9.390.1.2.1.1.1';
+    const ccdTdrIfActionStatus = '.1.3.6.1.4.1.9.9.390.1.2.1.1.2';
+    const ccdTdrIfLastTestTime = '.1.3.6.1.4.1.9.9.390.1.2.1.1.3';
+    const ccdTdrIfResultValid = '.1.3.6.1.4.1.9.9.390.1.2.1.1.4';
+    // not valid const ccdTdrIfResultTable = '.1.3.6.1.4.1.9.9.390.1.2.2';
+    const ccdTdrIfResultPairChannel = '.1.3.6.1.4.1.9.9.390.1.2.2.1.2';
+    const ccdTdrIfResultPairLength = '.1.3.6.1.4.1.9.9.390.1.2.2.1.3';
+    const ccdTdrIfResultPairLenAccuracy = '.1.3.6.1.4.1.9.9.390.1.2.2.1.4';
+    const ccdTdrIfResultPairDistToFault = '.1.3.6.1.4.1.9.9.390.1.2.2.1.5';
+    const ccdTdrIfResultPairDistAccuracy = '.1.3.6.1.4.1.9.9.390.1.2.2.1.6';
+    const ccdTdrIfResultPairLengthUnit = '.1.3.6.1.4.1.9.9.390.1.2.2.1.7';
+    const ccdTdrIfResultPairStatus = '.1.3.6.1.4.1.9.9.390.1.2.2.1.8';
 
     protected $readCommunity = '';
     protected $writeCommunity = '';
@@ -422,6 +436,141 @@ class CiscoSwitch {
 
         return $this->getSnmpIndexValueByPort($ip, $portNum, $isIdx, self::ifPortFastMode, true, true, true);
     }
+
+
+/*TDR Stuff*/
+
+    public function getSnmpTdrIfActionStatus($ip, $portNum, $isIdx = false)
+    {
+//        succeeded(1),
+//                   failedDueToUnknownReason(2),
+//                   failedDueToResourceUnavailable(3),
+//                   failedDueToInternalError(4),
+//                   failedDueToTestAlreadyRunning(5),
+//                   failedDueToInterfaceDisabled(6)
+
+        return $this->getSnmpIndexValueByPort($ip, $portNum, $isIdx, self::ccdTdrIfActionStatus, false, true, true);
+    }
+
+    public function setSnmpTdrIfAction($ip,$portNum, $value = 1, $isIdx = false,$timeout = 30000, $retries = 3) {
+
+        return $this->setSnmpIndexValueByPort($ip, $portNum, $isIdx, $useBridgeIndex = false, self::ccdTdrIfAction, 'i', $value, $timeout, $retries);
+    }
+
+    public function getSnmpTdrIfResultPairChannel($ip, $portNum, $isIdx = false)
+{
+/*    The status of the cable pair.
+ The channels that the cable pair is connected to.
+'other' -- none of the following.
+'channelA' -- channel A. 2
+'channelB' -- channel B. 3
+'channelC' -- channel C. 4
+'channelD' -- channel D. 5
+*/
+
+$result = $this->getSnmpIndexValueByPort($ip, $portNum, $isIdx, self::ccdTdrIfResultPairChannel , false, false, true);
+    return $result;
+}
+
+    public function getSnmpTdrIfResultPairDistToFault($ip, $portNum, $isIdx = false)
+    {
+        /*
+        The distance to the fault point of the cable pair.
+A value of -1 indicates this value is invalid.
+The unit of this value is indicated by
+ccdTdrIfResultPairLengthUnit of the same cable pair.
+        */
+
+        $result = $this->getSnmpIndexValueByPort($ip, $portNum, $isIdx, self::ccdTdrIfResultPairDistToFault , false, false, true);
+        return $result;
+    }
+
+    public function getSnmpTdrIfResultPairStatus($ip, $portNum, $isIdx = false)
+    {
+        /*
+The status of the cable pair.
+'unknown'      --  none of the  following.
+'terminated'   --  the pair is properly terminated at the
+remote end.
+'notCompleted' --  the test on this pair is not completed.
+'notSupported' --  the test on this pair is not supported.
+'open'         --  the pair is open.
+        */
+
+        $result = $this->getSnmpIndexValueByPort($ip, $portNum, $isIdx, self::ccdTdrIfResultPairStatus , false, false, true);
+        return $result;
+    }
+
+    public function getSnmpTdrIfResultPairLengthUnit($ip, $portNum, $isIdx = false)
+    {
+
+        /*
+         *  The measurement unit on the length or the distance to fault
+point for the cable pair.
+'unknown' 1 -- none of the following.
+'meter' 2 -- the unit is meter.
+'centimeter' 3-- the unit is centimeter.
+'kilometer' 4-- the unit is kilometer.
+        */
+        $result = $this->getSnmpIndexValueByPort($ip, $portNum, $isIdx, self::ccdTdrIfResultPairLengthUnit , false, false, true);
+        return $result;
+    }
+
+    public function getSnmpTdrIfResultPairLength($ip, $portNum, $isIdx = false)
+    {
+        /*
+        The length of the cable pair. A value of -1 indicates
+the length value is invalid. The unit of this value
+is indicated by ccdTdrIfResultPairLengthUnit of the same
+cable pair.
+        */
+
+        $result = $this->getSnmpIndexValueByPort($ip, $portNum, $isIdx, self::ccdTdrIfResultPairLength , false, false, true);
+        return $result;
+    }
+
+    public function getSnmpTdrIfResultPairLenAccuracy($ip, $portNum, $isIdx = false)
+    {
+        /*
+The length accuracy of the cable pair. This value
+should be added to and deducted from the value of
+ccdTdrIfResultPairLength of the same cable pair to
+form the upper and lower range of the cable pair length.
+A value of -1 indicates the length accuracy value
+is invalid. The unit of this value is indicated by
+ccdTdrIfResultPairLengthUnit of the same cable pair.
+        */
+
+        $result = $this->getSnmpIndexValueByPort($ip, $portNum, $isIdx, self::ccdTdrIfResultPairLenAccuracy , false, false, true);
+        return $result;
+    }
+
+    public function getSnmpTdrIfAction($ip, $portNum, $isIdx = false) {
+//        'start' -- start the TDR test on the interface.
+//
+//        'clear' -- clear all the TDR test results on the interface.
+//                   After this action is executed on an interface,
+//                   the object value of ccdTdrIfResultValid for the
+//                                                               corresponding interface will be false(2).
+//
+//        'running' -- the TDR test is currently running on the
+//                   interface. This value is a read-only value
+//        and can not be set on the interface.
+//
+//        'notRunning' -- the TDR test is currently not running
+//                   on the interface. This value is a read-only
+//                   value and can not be set on the interface."
+        return $this->getSnmpIndexValueByPort($ip, $portNum, $isIdx, self::ccdTdrIfAction, false, true, true);
+    }
+
+    public function getSnmpTdrIfResultValid ($ip, $portNum, $isIdx = false) {
+
+        return $this->getSnmpIndexValueByPort($ip, $portNum, $isIdx, self::ccdTdrIfResultValid, false, true, true);
+
+    }
+
+
+/*End TDR Stuff*/
 
     public function getSnmpBpduGuardStatus($ip, $portNum, $isIdx = false)
     {

@@ -213,6 +213,7 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('networkRecyclePort',        'NetworkController@recycleSwitchPort');
     Route::get('networkSignUp',             'NetworkController@authenticatePort');
     Route::get('networkActivate',           'NetworkController@activatePort');
+    Route::get('getTdrDataBySwitchIpAndPort', 'NetworkController@portTdrTest');
 
     Route::get('networkAdvanceIPs',         'NetworkController@getPortActiveIPs');
     Route::get('getSwitchStats',            'NetworkController@getSwitchPortAndNeighborInfoTable');
@@ -257,4 +258,5 @@ Route::group(['middleware' => 'web'], function () {
         'as' =>     'auth/google',
         'uses' =>   'Auth\AuthController@getSocialHandle'
     ]);
+
 });
