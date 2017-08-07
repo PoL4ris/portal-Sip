@@ -124,17 +124,17 @@ class BuildingController extends Controller {
         if ($request->type || $request['query'])
         {
             if ($request->type == 1)
-                return Building::where('type', 'like', 'commercial')
+                return Building::with('address')->where('type', 'like', 'commercial')
                     ->orderBy('id', 'desc')
                     ->get();
             else if ($request['query'] == 'reports')
-                return Building::where('type', '!=', 'commercial')
+                return Building::with('address')->where('type', '!=', 'commercial')
                     ->join('retail_revenues', 'buildings.id', '=', 'retail_revenues.locid')
                     ->where('type', '!=', 'commercial')
                     ->groupBy('code')
                     ->get();
             else
-                return Building::where('type', '!=', 'commercial')
+                return Building::with('address')->where('type', '!=', 'commercial')
                     ->orderBy('id', 'desc')
                     ->get();
         }
@@ -144,7 +144,7 @@ class BuildingController extends Controller {
 
     protected function getFilteredBuildingList()
     {
-        $allBuildings = Building::where('alias', '!=', 'BIB')
+        $allBuildings = Building::with('address')->where('alias', '!=', 'BIB')
             ->where('alias', '!=', 'TEST')
             ->where('alias', '!=', 'UNKN')
             ->orderBy('alias', 'asc')->get();

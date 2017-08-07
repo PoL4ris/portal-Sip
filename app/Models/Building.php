@@ -36,7 +36,7 @@ class Building extends Model {
 
     public function address()
     {
-        return $this->hasOne('App\Models\Address', 'id_buildings', 'id');
+        return $this->hasOne('App\Models\Address', 'id_buildings', 'id')->whereNull('id_customers');
     }
 
     public function allAddresses()
@@ -64,6 +64,12 @@ class Building extends Model {
     public function buildingProducts()
     {
         return $this->hasMany('App\Models\BuildingProduct', 'id_buildings', 'id');
+    }
+
+    public function activeBuildingProducts()
+    {
+        return $this->hasMany('App\Models\BuildingProduct', 'id_buildings', 'id')
+            ->where('id_status', config('const.status.active'));
     }
 
     public function products()

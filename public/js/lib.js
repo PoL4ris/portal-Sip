@@ -148,7 +148,7 @@ app.controller('dummyAppController', function ($scope, $http,customerService){
 
 
 
-app.controller('newcustomerAppController', function($scope, $http, customerService){
+app.controller('newcustomerAppController', function($scope, $http, customerService, $state){
   console.log('this is the newcustomerAppController');
 
   if (customerService.sideBarFlag) {
@@ -164,7 +164,9 @@ app.controller('newcustomerAppController', function($scope, $http, customerServi
   })
 
   $scope.setImageBuilding       = function (type){
+
     var optionVal = null;
+
     if(type == 0)
     {
       if(this.selectedOption == '')
@@ -173,11 +175,22 @@ app.controller('newcustomerAppController', function($scope, $http, customerServi
         return;
       }
 
-      if($scope.buildingsData[this.selectedOption])
-        $scope.selectedBuilding = '/img/buildings/' + $scope.buildingsData[this.selectedOption].img_building;
+      $scope.tmpDta = this.selectedOption.address;
+
+      //RESET VALUES
+      $scope.availableServices = false;
+      $scope.buildingSwitches = false;
+      $scope.switchAvailablePorts = false;
+      $scope.selectedServiceDisplay = false;
+      $scope.selectedSwitch = false;
+      $scope.portData = false;
+      $scope.portIndex = false;
+      //RESET VALUES
+
+      $scope.selectedBuilding = '/img/buildings/' + this.selectedOption.img_building;
 
       $('#cn-filter').val('');
-      optionVal = this.selectedOption;
+      optionVal = this.selectedOption.id;
     }
     else
     {
@@ -222,12 +235,21 @@ app.controller('newcustomerAppController', function($scope, $http, customerServi
 
     $('.service-list').addClass('unfocus-service');
     $('.service-list').removeClass('selected-service');
+    $('.service-list i').fadeOut();
     $('.select-service-' + id).removeClass('unfocus-service');
     $('.select-service-' + id).addClass('selected-service');
+    $('.select-service-' + id + ' i').fadeIn();
   }
 
   $scope.getavailablePorts      = function (){
+
+    //RESET VALUES
+    $scope.portData = false;
+    $scope.portIndex = false;
+    //RESET VALUES
+
     $scope.loadingPorts = false;
+    $scope.selectedSwitch = this.switch;
     var id = this.switch.id;
     $scope.ableDisableSwitches(id);
     $http.get("getAvailableSwitchPorts", {params: {'ip': this.switch.ip_address}})
@@ -237,9 +259,11 @@ app.controller('newcustomerAppController', function($scope, $http, customerServi
       });
   }
 
-  $scope.portSelected = function(){
-    console.log(this.index);
+  $scope.portSelected           = function(){
+
     var initIndexId = this.index;
+    $scope.portData = this.ports;
+    $scope.portIndex = this.index;
 
     $('.init-ports').addClass('unfocus-ports');
     $('.init-ports').removeClass('selected-port');
@@ -262,23 +286,74 @@ app.controller('newcustomerAppController', function($scope, $http, customerServi
 
   $scope.verifyCForm            = function (formData){
 
+    var objects;
 
+    if(!formData)
+      objects = getFormValues('new-customer-form');
+    else
+      objects = formData;
 
-  console.log(formData);
-  return;
+    var mensajes = {
+                    'customers.first_name':'First Name missing.',
+                    'customers.last_name' :'Last Name missing',
+                    'customers.email'     :'Email missing or invalid format',
+                    'contacts.value'      :'Phone Number missing or invalid format',
 
-    var fname = $('#cn-fname').attr('pass');
-    var lname = $('#cn-lname').attr('pass');
-    var email = $('#cn-email').attr('pass');
-    var tel   = $('#cn-tel').attr('pass');
-    var bld   = $('#cn-address-value').attr('pass');
+                    'building.id'   :'Address missing',
+                    'address.unit'  :'Unit Number missing or invalid format',
 
-    if(fname && lname && email && tel && bld)
+                    'product.id'  :'Product missing',
+                    'switch.id'   :'Switch missing',
+                    'port.id'     :'Port missing',
+                    }
+
+    var pIni        = '<p class="required-fields-p">';
+    var pFin        = '</p>';
+    var requiredDiv = '<div class="req-div">Required:</div>';
+
+    var bloqueA     = ''; $scope.bA   = false;
+    var bloqueB     = ''; $scope.bB   = false;
+    var bloqueC     = ''; $scope.bC   = false;
+
+    for(var field in objects)
     {
-      console.log(fname + ' | ' + lname + ' | ' + email + ' | ' + tel);
+      if(objects[field])
+        continue;
+
+      if(field.split('.')[0] == 'customers' || field.split('.')[0] == 'contacts'){
+        bloqueA += pIni +  mensajes[field]  + pFin;
+        $scope.bA = true;
+      }
+      if(field.split('.')[0] == 'building' || field.split('.')[0] == 'address')
+      {
+        bloqueB += pIni +  mensajes[field]  + pFin;
+        $scope.bB = true;
+      }
+      if(field.split('.')[0] == 'product' || field.split('.')[0] == 'switch' || field.split('.')[0] == 'port' )
+      {
+        bloqueC += pIni +  mensajes[field]  + pFin;
+        $scope.bC = true;
+      }
+    }
+
+    $scope.bloqueA = $scope.bA ? (requiredDiv + bloqueA) : false;
+    $scope.bloqueB = $scope.bB ? (requiredDiv + bloqueB) : false;
+    $scope.bloqueC = $scope.bC ? (requiredDiv + bloqueC) : false;
+
+    if($scope.bloqueA || $scope.bloqueB || $scope.bloqueC)
+    {
+      console.log('ERROR ');
+      $scope.loadingResponse = true;
+
+      $scope.sendNewCustomer(objects);//to test, comment to work correct.
+      return false;
     }
     else
-      console.log('error');
+    {
+      $scope.sendNewCustomer(objects);
+      console.log('INFO LISTA');
+    }
+
   }
   $scope.filterBldList          = function () {
     $http.get("getFilterBld", {params: {'query': this.filterBldListModel}})
@@ -293,14 +368,76 @@ app.controller('newcustomerAppController', function($scope, $http, customerServi
     var case2 = name.split('FastEthernet');
 
     if(case1[1])
-      result = 'G.E : ' + case1[1];
+      result = 'Gi' + case1[1];
     else if(case2[1])
-      result = 'F.E : ' + case2[1];
+      result = 'Fa' + case2[1];
     else
       result = name;
 
       return result;
 
+  }
+
+
+  $scope.sendNewCustomer        = function(objects){
+
+    if($scope.errorResponse)
+    {
+      $scope.triggerErrorMsg();
+      return;
+    }
+
+    $scope.loadingResponse = true;
+    var wapol = {'error':'This is the error msg'};
+
+    if(wapol.error)
+    {
+      $scope.errorResponse = wapol.error;
+      $scope.triggerErrorMsg();
+
+      return;
+    }
+
+
+
+
+    $http.get("insertNewCustomer", {params:objects})
+      .then(function (response) {
+        $scope.loadingResponse = true;
+
+//        $scope.buildingsData = response.data
+      })
+  }
+  $scope.triggerErrorMsg = function(){
+    $('.error-message p').css('background', 'rgba(220, 20, 60, 0.42)');
+
+    setTimeout( function(){
+      $('.error-message p').css('background', 'white');
+      $('.error-message p').css('border', '2px solid rgba(220, 20, 60, 0.42)');
+      $('.error-message p').css('border-radius', '3px');
+    }  , 2500 );
+
+    $scope.loadingResponse = false;
+  }
+
+  $scope.resetFullForm          = function(){
+    $state.reload(
+      customerService.exist = true,
+      customerService.sideBarFlag = true,
+      customerService.rightView = false
+    );
+//    $route.reload();
+
+//    $('#new-customer-form').trigger("reset");
+//    $("input[type='hidden']").each(function(){
+//      $(this).reset();
+//    });
+//    $("input[type='text']").each(function(){
+//      $(this).reset();
+//    });
+//    $("select").each(function(){
+//      $(this).reset();
+//    });
   }
 
 

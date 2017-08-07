@@ -247,29 +247,44 @@ app.controller('adminController',                   function($scope, $http, cust
         $scope.productsList  = response.data;
       });
   };
-  $scope.getTypes          = function(){
+  $scope.getTypes             = function(){
     $http.get("getTypes")
       .then(function (response) {
         console.log(response.data);
-        $scope.typesList  = response.data;
+        var typesList = [];
+        for(var x in response.data){
+
+          var rec = response.data[x];
+          if(rec.id == 7 || rec.id == 8 || rec.id == 9 || rec.id == 10 || rec.id == 13 || rec.id == 14)
+          {
+            continue;
+          }
+          else
+          {
+            typesList.push(rec);
+          }
+        }
+        console.log(typesList);
+        $scope.typesList  = typesList;
+
       });
   };
-  $scope.addNewProd        = function(){
+  $scope.addNewProd           = function(){
     $scope.editProdData    = null;
     $scope.newProd         = true;
     $scope.productUsedBy   = false;
   };
-  $scope.prodCancel        = function(){
+  $scope.prodCancel           = function(){
     $scope.newProd         = false;
     $scope.editProdData    = false;
     $scope.productUsedBy   = false;
   };
-  $scope.editProd          = function(){
+  $scope.editProd             = function(){
     $scope.newProd         = null;
     $scope.editProdData    = this.product;
     $scope.getProductRels(this.product);
   };
-  $scope.getProductRels    = function(idProduct){
+  $scope.getProductRels       = function(idProduct){
 
     $http.get("getProductUsedBy", {params:{'id':idProduct.id}})
       .then(function (response) {

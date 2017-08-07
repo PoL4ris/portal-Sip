@@ -1,62 +1,52 @@
 <hr>
 
+<div class="col-lg-12">
+    <button class="btn btn-danger" ng-click="resetFullForm()">PUSH THE RED BUTTON</button>
+</div>
+
 <div class="col-lg-12 cn-customer">
-    <div class="container">
+    <div class="container relative">
+        <div class="loading-bg" ng-if="loadingResponse">
+            <img src="/img/loading.gif" alt="" class="loading-gif-support" >
+        </div>
         <div class="widget-body fuelux" data-smart-fuelux-wizard data-smart-wizard-callback="wizard2CompleteCallback">
             <div class="wizard">
                 <ul class="steps">
-                    <li data-step="1" class="active"><span class="badge badge-info">1</span>Customer Info.<span class="chevron"></span></li>
-                    <li data-step="2"><span class="badge">2</span>Address Info.<span class="chevron"></span></li>
-                    <li data-step="3"><span class="badge">3</span>Service Info.<span class="chevron"></span></li>
-                    <li data-step="4"><span class="badge">4</span>Network Info.<span class="chevron"></span></li>
+                    <li data-step="1" class="active"><span class="badge badge-info">1</span>Contact Info<span class="chevron"></span></li>
+                    <li data-step="2"><span class="badge">2</span>Address Info<span class="chevron"></span></li>
+                    <li data-step="3"><span class="badge">3</span>Service Info<span class="chevron"></span></li>
+                    <li data-step="4"><span class="badge">4</span>Network Info<span class="chevron"></span></li>
+                    <li data-step="5"><span class="badge">5</span>Summary<span class="chevron"></span></li>
                 </ul>
                 <div class="actions">
-                    <button type="button" class="btn btn-sm btn-primary btn-prev">
+                    <button type="button" class="btn btn-sm btn-primary btn-prev" >
                         <i class="fa fa-arrow-left"></i>Prev
                     </button>
-                    <button type="button" class="btn btn-sm btn-success btn-next" data-last="Finish" id="next-step-btn">
+                    <button type="button" class="btn btn-sm btn-success btn-next" data-last="Finish" id="next-step-btn" ng-click="verifyCForm()">
                         Next<i class="fa fa-arrow-right"></i>
                     </button>
                 </div>
             </div>
             <div class="step-content">
-                <form class="form-horizontal">
+
+                <form class="form-horizontal" id="new-customer-form">
+                    <!-- CUSTOMER INFO -->
                     <div class="step-pane active" data-step="1">
-                        <h3><strong>Step 1 </strong> - Main Customer Info.</h3>
+                        <h3><strong>Step 1 </strong> - Contact Information</h3>
                         <fieldset>
                             <div class="col-lg-6">
                                 <div class="row">
                                     <div class="col-lg-12 cn-containers">
                                         <label for="" class="">First Name<span class="down-status">*</span></label>
-                                        <input type="text"
-                                               required
-                                               name="first_name"
-                                               ng-keyup="validateField('name')"
-                                               ng-model="model['fname']"
-                                               placeholder="First Name"
-                                               modelname="fname"
-                                               id="cn-fname">
+                                        <input type="text" ng-keyup="validateField('name', $event)" ng-model="model['fname']" placeholder="First Name" modelname="fname" id="cn-fname">
                                     </div>
                                     <div class="col-lg-12 cn-containers">
                                         <label for="" class="">Last Name<span class="down-status">*</span></label>
-                                        <input type="text"
-                                               required
-                                               name="last_name"
-                                               ng-keyup="validateField('name'); "
-                                               ng-model="model['lname']"
-                                               placeholder="Last Name"
-                                               modelname="lname"
-                                               id="cn-lname">
+                                        <input type="text" ng-keyup="validateField('name', $event); " ng-model="model['lname']" placeholder="Last Name" modelname="lname" id="cn-lname">
                                     </div>
                                     <div class="col-lg-12 cn-containers">
-                                        <label for="" class="">Email<span class="down-status">*</span></label>
-                                        <input type="text"
-                                               required
-                                               name="email"
-                                               placeholder="Email"
-                                               ng-keyup="validateField('email')"
-                                               ng-model="validaMail"
-                                               id="cn-email">
+                                        <label for="" class="">VIP</label>
+                                        <input type="text" placeholder="Ex: Friend of Silver" ng-model="validVip">
                                     </div>
                                 </div>
                             </div>
@@ -66,61 +56,48 @@
                                         <label for="">Default Status: <span class="up-status">Active</span></label>
                                     </div>
                                     <div class="col-lg-12 cn-containers">
-                                        <label for="" class="">Phone Contact<span class="down-status">*</span></label>
-                                        <input type="text"
-                                               required
-                                               name="contact_value"
-                                               placeholder="Ex: 312-123-5533"
-                                               ng-keyup="validateField('tel')"
-                                               ng-model="validaTel"
-                                               id="cn-tel">
+                                        <label for="" class="">Phone Number<span class="down-status">*</span></label>
+                                        <input type="text" placeholder="Ex: 312-123-5533" ng-keyup="validateField('tel', $event)" ng-model="validaTel" id="cn-tel">
                                     </div>
                                     <div class="col-lg-12 cn-containers">
-                                        <label for="" class="">VIP</label>
-                                        <input type="text" name="vip" placeholder="Ex: Friend of Silver">
+                                        <label for="" class="">Email<span class="down-status">*</span></label>
+                                        <input type="text" placeholder="Email" ng-keyup="validateField('email', $event)" ng-model="validaMail" id="cn-email">
                                     </div>
+
                                 </div>
                             </div>
                         </fieldset>
                     </div>
+                    <!-- ADDRESS INFO -->
                     <div class="step-pane" data-step="2">
-                        <h3><strong>Step 2 </strong> - Location Info.</h3>
+                        <h3><strong>Step 2 </strong> - Location Information</h3>
                         <div class="col-lg-4">
                             <div class="col-lg-12 cn-containers">
                                 <label for="" class="m-r-lg">Address<span class="down-status">*</span></label>
-                                <select ng-change="setImageBuilding(0)" ng-model="selectedOption" id="cn-select-address-opt">
+                                <select ng-change="setImageBuilding(0)"
+                                        ng-model="selectedOption"
+                                        ng-options="(building.code + ' | ' +building.name) for building in buildingsData track by building.id"
+                                        id="cn-select-address-opt">
                                     <option value="">Select Address</option>
-                                    <option value="{{building.id}}" ng-repeat="building in buildingsData">{{building.code}} | {{building.name}}</option>
+                                    <option value="{{building.id}}">{{building.code}} | {{building.name}}</option>
                                 </select>
-                                <input type="hidden" id="cn-address-value" name="address">
                             </div>
                             <div class="col-lg-12 cn-containers">
                                 <label for="" class="">Unit Number<span class="down-status">*</span></label>
-                                <input type="text"
-                                       required
-                                       name="unit"
-                                       placeholder="Ex: 1252"
-                                       ng-model="validaUnit"
-                                       ng-keyup="validateField('unit')"
-                                       id="cn-unit">
+                                <input type="text" placeholder="Ex: 1252" ng-model="validaUnit" ng-keyup="validateField('unit',$event)" id="cn-unit">
                             </div>
                             <div class="col-lg-12 cn-containers">
                                 <label for="" class="">City, State, ZIP</label>
-                                <input type="text" readonly name="" value="Chicago, IL, 60616">
+                                <input type="text" ng-if="tmpDta" readonly value="{{tmpDta.city}}, {{tmpDta.state}}, {{tmpDta.zip}}">
                             </div>
                         </div>
                         <div class="col-lg-8">
                             <div class="col-lg-6 ">
                                 <div class="search-subnav-nc">
-                                    <input type="text"
-                                           placeholder="Filter Search"
-                                           ng-keyup="filterBldList(1)"
-                                           ng-model="filterBldListModel"
-                                           id="cn-filter"
-                                           class="color-click">
+                                    <input type="text" placeholder="Filter Search" ng-keyup="filterBldList(1)" ng-model="filterBldListModel" id="cn-filter" class="color-click">
                                 </div>
                                 <div class="filter-bld-nc">
-                                    <div ng-repeat="filterBld in bldListResult" ng-click="setImageBuilding(1)" class="">
+                                    <div ng-repeat="filterBld in bldListResult" ng-click="setImageBuilding(1)">
                                         {{filterBld.code}} | {{filterBld.name}}
                                     </div>
                                 </div>
@@ -130,8 +107,9 @@
                             </div>
                         </div>
                     </div>
+                    <!-- SERVICE INFO -->
                     <div class="step-pane" data-step="3">
-                        <h3><strong>Step 3 </strong> - Select Service.</h3>
+                        <h3><strong>Step 3 </strong> - Service Information</h3>
                         <br><br>
                         <div class="col-lg-8">
 
@@ -146,30 +124,35 @@
                                 <div class="col-lg-4">{{service.product.name}}</div>
                                 <div class="col-lg-2">${{service.product.amount}}.00</div>
                                 <div class="col-lg-2 capital-first">{{service.product.frequency}}</div>
-                                <div class="col-lg-4">{{service.id_status =='1'?'Active':'Disabled'}}</div>
+                                <div class="col-lg-4">
+                                    {{service.id_status =='1'?'Active':'Disabled'}}
+                                    <i class="fa fa-check no-display status-type-1"></i>
+                                </div>
                             </div>
 
                         </div>
                         <div class="col-lg-4">
-                            <h2 class="text-center text-primary">Service Selected. </h2>
+                            <h2 class="text-center text-primary">Selected Service: </h2>
                             <div class="selected-service-display" ng-if="selectedServiceDisplay">
                                 <p>{{selectedServiceDisplay.name}}</p>
                                 <p>${{selectedServiceDisplay.amount}}.00,
                                     <span class="capital-first">{{selectedServiceDisplay.frequency}}</span>
                                 </p>
-                                <input type="hidden" id="nc-service" value="{{selectedServiceDisplay.id}}">
                             </div>
                         </div>
-                        <div class="col-lg-12"><hr></div>
+                        <div class="col-lg-12">
+                            <hr>
+                        </div>
                     </div>
+                    <!-- NETWORK INFO -->
                     <div class="step-pane col-lg-12" data-step="4">
-                        <h3><strong>Step 4 </strong> - Select Switch to select port.
+                        <h3><strong>Step 4 </strong> - Network & Port Information
                             <div class="pull-right">
                                 <label>Port</label>
                                 <br>
-                                <small class=" m-r-lg"> G.E : GigabitEthernet</small>
+                                <small class=" m-r-lg"> Gi : Gigabit Ethernet</small>
                                 <br>
-                                <small class=""> F.E : FastEthernet</small>
+                                <small class=""> Fa : Fast Ethernet</small>
                             </div>
                             <div class="pull-right m-r-lg">
                                 <label>Status</label>
@@ -181,22 +164,24 @@
                         </h3>
                         <br><br><br><br>
                         <div class="col-lg-3">
+                            <h4>Switch List:</h4>
                             <div ng-repeat="switch in buildingSwitches" class="switches-list ">
                                 <div ng-click="getavailablePorts()" class="select-switch-{{switch.id}} switches-list">
-                                    {{switch.host_name}}, {{switch.ip_address}}
+                                    {{switch.host_name}}, <b>{{switch.ip_address}}</b>
                                 </div>
                             </div>
                         </div>
                         <div class="col-lg-9" ng-if="!switchAvailablePorts"></div>
                         <div class="col-lg-9" ng-if="switchAvailablePorts">
-                            <input type="hidden" name="port" id="cn-port">
                             <img src="/img/loading.gif" alt="" class="loading-gif-support" ng-if="!loadingPorts">
                             <div class="row" ng-if="loadingPorts">
-                                <div ng-repeat="(index, ports) in switchAvailablePorts" ng-click="portSelected()" class="status-color-{{ports.Status}}-left-border col-lg-6 switches-list ports-list-format">
+                                <div ng-repeat="(index, ports) in switchAvailablePorts"
+                                     ng-click="portSelected()"
+                                     class="status-color-{{ports.Status}}-left-border col-lg-6 switches-list ports-list-format">
                                     <div ng-init="cleanName = filterName(ports.Name)" ng-if="ports" class="init-ports port-index-{{index}}">
                                         <span>{{cleanName}},</span>
-                                        <span>{{ports.Label?ports.Label:'N/A'}}, </span>
-                                        <span>{{ports.Speed}}, </span>
+                                        <span>{{ports.Label?ports.Label+',':''}} </span>
+                                        <span ng-if="ports.Status == 'up'">{{ports.Speed}}, </span>
                                         <span class="capital-first">{{ports.AdminStatus}}</span>
                                         <i class="fa fa-check no-display status-type-1"></i>
                                     </div>
@@ -206,6 +191,125 @@
                         <div class="col-lg-12">
                             <hr>
                             <br><br>
+                        </div>
+                    </div>
+                    <!-- VERIFY INFO -->
+                    <div class="step-pane" data-step="5">
+                        <h3><strong>Step 5 </strong> - Verify All Information</h3>
+                        <div class="row">
+                            <div class="container verify-info-container">
+                                <div class="col-lg-4 bloque-a">
+                                    <input type="text" hidden name="customers.first_name" value="{{model['fname']}}" required readonly>
+                                    <input type="text" hidden name="customers.last_name" value="{{model['lname']}}" required readonly>
+                                    <input type="text" hidden name="customers.id_status" value="1" required readonly>
+                                    <input type="text" hidden name="customers.email" value="{{validaMail}}" required readonly>
+                                    <input type="text" hidden name="contacts.value" value="{{validaTel}}" required readonly>
+                                    <input type="text" hidden name="customers.vip" value="{{validVip?validVip:' '}}" readonly>
+
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <label>Name:</label>
+                                            <div class="nc-name">
+                                                <span>{{model['fname']}}</span>
+                                                <span>{{model['lname']}}</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-12">
+                                            <label for="">Status</label>
+                                            <span class="up-status">Active</span>
+                                        </div>
+
+                                        <div class="col-lg-12">
+                                            <label for="">Mail:</label>
+                                            <span>{{validaMail}}</span>
+                                        </div>
+                                        <div class="col-lg-12">
+                                            <label for="">Phone:</label>
+                                            <span>{{validaTel}}</span>
+                                        </div>
+                                        <div class="col-lg-12">
+                                            <label for="">VIP:</label>
+                                            <span>{{validVip?validVip:' '}}</span>
+                                        </div>
+
+                                    </div>
+
+
+                                </div>
+
+                                <div class="col-lg-4 bloque-b">
+                                    <input type="text" hidden name="building.id" value="{{selectedOption.id}}" required readonly>
+                                    <input type="text" hidden name="address.unit" value="{{validaUnit}}" required readonly>
+                                    <input type="text" hidden value="{{tmpDta.city}}" readonly>
+                                    <input type="text" hidden value="{{tmpDta.state}}" readonly>
+                                    <input type="text" hidden value="{{tmpDta.zip}}" readonly>
+
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <label for="">Address:</label>
+                                            <span ng-if="tmpDta">{{tmpDta.code}} | {{tmpDta.address}}</span>
+                                        </div>
+                                        <div class="col-lg-12">
+                                            <label for="">Unit #:</label>
+                                            <span>{{validaUnit}}</span>
+                                        </div>
+                                        <div class="col-lg-12">
+                                            <label for="">City, State, Zip:</label>
+                                            <div class="nc-csz" ng-if="tmpDta">
+                                                <span>{{tmpDta.city}}, </span>
+                                                <span>{{tmpDta.state}}, </span>
+                                                <span>{{tmpDta.zip}}</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-12 img-cont">
+                                            <img src="{{selectedBuilding}}" alt="" style="max-height: 100px;">
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="col-lg-4 bloque-c">
+                                    <input type="text" hidden name="product.id" value="{{selectedServiceDisplay.id}}">
+                                    <input type="text" hidden name="switch.id" value="{{selectedSwitch.id}}">
+                                    <input type="text" hidden name="port.id" value="{{portIndex}}">
+
+                                    <div class="row">
+                                        <div class="col-lg-12 m-b-lg">
+                                            <label for="">Service:</label>
+                                            <div class="nc-serv" ng-if="selectedServiceDisplay">
+                                                <span>{{selectedServiceDisplay.name}}, ${{selectedServiceDisplay.amount}}.00</span><br>
+                                                <span class=" capital-first">{{selectedServiceDisplay.frequency}}</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-12 m-b-lg">
+                                            <label for="">Switch:</label>
+                                            <span ng-if="selectedSwitch">{{selectedSwitch.host_name}}, <b>{{selectedSwitch.ip_address}}</b></span>
+                                        </div>
+                                        <div class="col-lg-12">
+                                            <label for="">Port:</label>
+                                            <div class="nc-serv">
+                                                <span class="status-color-{{portData.Status}}-left-border">{{portData.Name}}</span><br>
+                                                <span ng-if="portData.Status == 'up'">{{portData.Label?portData.Label:''}}</span><br>
+                                                <span>{{portData.Speed}}</span><br>
+                                                <span>{{portData.AdminStatus}}</span>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+
+
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="col-lg-4" ng-bind-html="bloqueA?bloqueA:''"></div>
+                        <div class="col-lg-4" ng-bind-html="bloqueB?bloqueB:''"></div>
+                        <div class="col-lg-4" ng-bind-html="bloqueC?bloqueC:''"></div>
+                        <div class="col-lg-12 p-b-lg error-message" ng-if="errorResponse">
+                            <hr>
+                            <p>{{errorResponse}}</p>
                         </div>
 
                     </div>

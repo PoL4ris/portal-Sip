@@ -320,15 +320,18 @@ app.controller('globalToolsCtl',                    function ($scope, $http, $co
     document.execCommand('copy');
   }
 
-  $scope.validateField        = function (type){
+  $scope.validateField        = function (type, $event){
 //    console.log('validate field | ' + type + ' | ' + this.validaMail);
+//    console.log($event);
+//    return;
+
     switch (type)
     {
       case 'unit':
         //MODEL = validaUnit
         if(!this.validaUnit)
         {
-          $scope.validateColors(event, false);
+          $scope.validateColors($event, false);
           return;
         }
 
@@ -337,11 +340,11 @@ app.controller('globalToolsCtl',                    function ($scope, $http, $co
 
         if(!reviewRegex && this.validaUnit.length >= 2)
         {
-          $scope.validateColors(event, true);
+          $scope.validateColors($event, true);
         }
         else
         {
-          $scope.validateColors(event, false);
+          $scope.validateColors($event, false);
         }
 
 
@@ -352,7 +355,7 @@ app.controller('globalToolsCtl',                    function ($scope, $http, $co
 
         if(!this.validaMail)
         {
-          $scope.validateColors(event, false);
+          $scope.validateColors($event, false);
           return;
         }
 
@@ -361,29 +364,30 @@ app.controller('globalToolsCtl',                    function ($scope, $http, $co
 
         if(reviewRegex)
         {
-          $scope.validateColors(event, true);
+          $scope.validateColors($event, true);
         }
         else
         {
-          $scope.validateColors(event, false);
+          $scope.validateColors($event, false);
         }
 
       break;
       case 'name':
         //MODEL = model['NAME'] as modelName ATTR
 
-        var modelName = $('#'+event.target.id).attr('modelname');
+
+        var modelName = $('#'+$event.target.id).attr('modelname');
 
         if(!this.model || !this.model[modelName])
         {
-          $scope.validateColors(event, false);
+          $scope.validateColors($event, false);
           return;
         }
 
         if(this.model[modelName].length >= 2)
-          $scope.validateColors(event, true);
+          $scope.validateColors($event, true);
         else
-          $scope.validateColors(event, false);
+          $scope.validateColors($event, false);
 
 
       break;
@@ -396,10 +400,10 @@ app.controller('globalToolsCtl',                    function ($scope, $http, $co
 
         if(reviewRegex)
         {
-          $scope.validateColors(event, true);
+          $scope.validateColors($event, true);
         }
         else
-          $scope.validateColors(event, false);
+          $scope.validateColors($event, false);
 
 //        console.log(reviewRegex);
 
@@ -411,11 +415,13 @@ app.controller('globalToolsCtl',                    function ($scope, $http, $co
   }
   $scope.validateColors       = function (event, val){
     if(val){
-      $('#' + event.target.id).css('border-color', '#00c853');
+      $('#' + event.target.id).css('border-bottom', '1px solid #00c853');
+      $('#' + event.target.id).css('-moz-border-bottom-colors', '#00c853');
       $('#' + event.target.id).attr('pass', true);
     }
     else{
-      $('#' + event.target.id).css('border-color', 'crimson');
+      $('#' + event.target.id).css('border-bottom', '1px solid crimson');
+      $('#' + event.target.id).css('-moz-border-bottom-colors', 'crimson');
       $('#' + event.target.id).attr('pass', false);
     }
   }

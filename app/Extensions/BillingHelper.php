@@ -45,7 +45,7 @@ class BillingHelper {
                 ->where('value', 'LIKE', '%Retail%')
                 ->orWhere('value', 'LIKE', '%Bulk%');
         }])
-            ->where('id', 4)// 28 is temporary for testing
+//            ->where('id', 4)// 28 is temporary for testing
             ->get();
 
         $count = 0;
@@ -60,6 +60,13 @@ class BillingHelper {
         return 'Generated ' . $count . ' charges and added them to the DB.';
     }
 
+    public function generateChargeRecordsForCustomer($customerId)
+    {
+        // Get list of chargeable products/services for the requested customer
+        $customerProducts = $this->getChargeableCustomerProductsByCustomerId($customerId);
+        $count = $this->addChargesForCustomerProducts($customerProducts);
+        Log::info('BillingHelper::generateChargeRecordsForCustomer(): Added charges for customer id=' . $customerId . ' to DB');
+    }
 
     public function getChargeableCustomerProductsByBuildingId($buildingId)
     {
@@ -245,10 +252,12 @@ class BillingHelper {
         return true;
     }
 
-    public function approveManualChargeList($chargeIds, $notifyViaEmail = false){
+    public function approveManualChargeList($chargeIds, $notifyViaEmail = false)
+    {
 
         $resultsArray = array();
-        foreach($chargeIds as $chargeId){
+        foreach ($chargeIds as $chargeId)
+        {
             $charge = Charge::find($chargeId);
             if ($charge == null)
             {
@@ -258,6 +267,7 @@ class BillingHelper {
             }
             $resultsArray[$chargeId] = $this->approveManualCharge($charge, $notifyViaEmail);
         }
+
         return $resultsArray;
     }
 
@@ -270,16 +280,19 @@ class BillingHelper {
         // $charge->processing_type = config('const.type.auto_pay');
         $charge->save();
 
-        $invoice =  $this->invoiceManualCharge($charge);
-        return $this->processInvoice($invoice, $notifyViaEmail);
+        $invoice = $this->invoiceManualCharge($charge);
+
+        return $this->processInvoice($invoice, false); //$notifyViaEmail);
 
 //        return true;
     }
 
-    public function denyManualChargeList($chargeIds){
+    public function denyManualChargeList($chargeIds)
+    {
 
         $resultsArray = array();
-        foreach($chargeIds as $chargeId){
+        foreach ($chargeIds as $chargeId)
+        {
             $charge = Charge::find($chargeId);
             if ($charge == null)
             {
@@ -289,6 +302,7 @@ class BillingHelper {
             }
             $resultsArray[$chargeId] = $this->denyManualCharge($charge);
         }
+
         return $resultsArray;
     }
 
@@ -555,23 +569,50 @@ class BillingHelper {
         $nowMysql = date("Y-m-d H:i:s");
         $invoices = Invoice::where('status', config('const.invoice_status.pending'))
             ->where('processing_type', config('const.type.auto_pay'))
-            ->where('due_date', 'is', 'NULL')
-            ->orWhere('due_date', '<=', $nowMysql)
-            ->orWhere('due_date', '')
-            ->chunk(100, function ($invoices)
+            ->where('failed_charges_count', 0)
+            ->where(function ($query) use ($nowMysql)
+            {
+                $query->where('due_date', 'is', 'NULL')
+                    ->orWhere('due_date', '<=', $nowMysql)
+                    ->orWhere('due_date', '');
+            })->chunk(200, function ($invoices)
             {
                 foreach ($invoices as $invoice)
                 {
-                    $this->processInvoice($invoice);
-                    dd('Done');
-                    break;
+                    $this->processInvoice($invoice, true);
+//                    break;
                 }
+                dd('Done');
             });
     }
 
-    protected function processInvoice(Invoice $invoice, $notifyViaEmail = true)
+    public function processPendingAutopayInvoicesThatHaveUpdatedPaymentMethods()
     {
 
+        while (true)
+        {
+
+            echo "Calling getPendingInvoicesWithUpdatedPaymentMethods()\n";
+            $invoices = $this->getPendingInvoicesWithUpdatedPaymentMethods();
+
+            if ($invoices->isEmpty())
+            {
+                break;
+            }
+            echo "Looping through invoices\n";
+            foreach ($invoices as $invoice)
+            {
+                $this->processInvoice($invoice, true, true);
+//                dd('done');
+            }
+        }
+
+        echo "Done looping through invoices\n";
+        return true;
+    }
+
+    public function processInvoice(Invoice $invoice, $notifyViaEmail = true, $notifyViaEmailOnlyIfPassed = false)
+    {
         if (isset($invoice) == false)
         {
             Log::info('BillingHelper::processInvoice(): $invoice is not set!');
@@ -600,68 +641,40 @@ class BillingHelper {
 
         $customer = Customer::find($invoice->id_customers);
 
-        if($invoice->amount > 0){
+        if ($invoice->amount > 0)
+        {
             $chargeResult = $billingService->chargeCustomer($customer, $invoice->amount, 'invoice_id: ' . $invoice->id, 'SilverIP Data', json_encode($chargeDetailsArray));
-        } else {
-//            $chargeResult = $billingService->refundCustomer($customer, -1 * $invoice->amount, 'invoice_id: ' . $invoice->id, json_encode($chargeDetailsArray));
-            $chargeResult = $billingService->refundCustomer($customer, -1 * $invoice->amount, 'invoice', json_encode($chargeDetailsArray));
+        } else
+        {
+            $chargeResult = $billingService->refundCustomer($customer, - 1 * $invoice->amount, 'invoice', json_encode($chargeDetailsArray));
         }
 
-
-
-//        $invoiceDetails = ($invoice->details != '') ? json_decode($invoice->details, true) : null;
-//        $customerProductIds = ($invoiceDetails != null) ? array_column($invoiceDetails, 'customer_product_id') : null;
         $transactionId = isset($chargeResult['TRANSACTIONID']) ? $chargeResult['TRANSACTIONID'] : null;
 
-        if ($chargeResult['RESPONSETEXT'] == 'APPROVED')
+        if ($chargeResult['RESPONSETEXT'] == 'APPROVED' || $chargeResult['RESPONSETEXT'] == 'RETURN ACCEPTED')
         {
-
-            Log::info('BillingHelper::processInvoice(): INFO: id: ' . $invoice->id_customers . ', ' . trim($customer->first_name) . ' ' . trim($customer->last_name) . ', $' . $invoice->amount . ', ' . 'invoice: ' . $invoice->id . " ... Approved\n");
+            Log::info('BillingHelper::processInvoice(): INFO: id: ' . $invoice->id_customers . ', ' . trim($customer->first_name) . ' ' . trim($customer->last_name) . ', $' . $invoice->amount . ', ' . 'invoice: ' . $invoice->id . " ... processed\n");
             $invoice->status = config('const.invoice_status.paid');
             $invoice->save();
             $this->updateInvoiceProductDates($invoice, false);
-
-//            if ($customerProductIds != null)
-//            {
-//                // Update the customer product/service's expiration and charge timestamps
-//                $updateCount = $this->updateCustomerProductDates($customerProductIds);
-//                error_log('BillingHelper::processInvoice(): INFO: Updated expiration dates for ' . $updateCount . ' products of invoice: ' . $invoice->id);
-//            } else
-//            {
-//                error_log('BillingHelper::processInvoice(): ERROR: Could not update expiration dates for invoice: ' . $invoice->id);
-//            }
-
-
             $this->logInvoice($invoice, 'processed', $transactionId);
-            if ($notifyViaEmail)
+
+            if ($notifyViaEmail && $notifyViaEmailOnlyIfPassed)
             {
                 $this->sendInvoiceReceiptEmail($invoice, $chargeResult);
             }
 
-//            Invoice::destroy($invoice->id);
-
         } else
         {
 
-            Log::info('BillingHelper::processInvoice(): INFO: id: ' . $invoice->id_customers . ', ' . trim($customer->first_name) . ' ' . trim($customer->last_name) . ', $' . $invoice->amount . ', ' . 'invoice: ' . $invoice->id . " ... Declined\n");
+            Log::info('BillingHelper::processInvoice(): INFO: id: ' . $invoice->id_customers . ', ' . trim($customer->first_name) . ' ' . trim($customer->last_name) . ', $' . $invoice->amount . ', ' . 'invoice: ' . $invoice->id . " ... failed\n");
             $invoice->failed_charges_count ++;
             $invoice->save();
             $this->updateInvoiceProductDates($invoice, true);
             $this->logInvoice($invoice, 'failed', $transactionId);
 
-//            if ($customerProductIds != null)
-//            {
-//                // Update the customer product/service's charge timestamp only
-//
-//                $updateCount = $this->updateCustomerProductDates($customerProductIds, true);
-//                error_log('BillingHelper::processInvoice(): INFO: Updated failed count for ' . $updateCount . ' product(s) of invoice: ' . $invoice->id);
-//            } else
-//            {
-//                error_log('BillingHelper::processInvoice(): ERROR: Could not update failed counts for invoice: ' . $invoice->id);
-//            }
-
             /*** Create a ticket ***/
-            if ($notifyViaEmail)
+            if ($notifyViaEmail && $notifyViaEmailOnlyIfPassed == false)
             {
                 $this->sendChargeDeclienedEmail($invoice, $chargeResult);
             }
@@ -704,7 +717,7 @@ class BillingHelper {
 
         if (count($invoiceDetails) == 0)
         {
-            error_log('BillingHelper::processInvoice(): ERROR: invoice: ' . $invoice->id . ' has no products.');
+            Log::notice('BillingHelper::processInvoice(): NOTICE: invoice: ' . $invoice->id . ' has no products.');
 
             return false;
         }
@@ -720,7 +733,7 @@ class BillingHelper {
             $updateCount ++;
         }
 
-        Log::info('BillingHelper::processInvoice(): INFO: Updated expiration dates for ' . $updateCount . ' products of invoice: ' . $invoice->id);
+        Log::notice('BillingHelper::processInvoice(): INFO: Updated expiration dates for ' . $updateCount . ' products of invoice: ' . $invoice->id);
 
         return $updateCount;
     }
@@ -733,7 +746,6 @@ class BillingHelper {
 
         if ($updateChargeTimestampOnly == false)
         {
-
             $timestampMysql = null;
             if ($customerProduct->product->frequency == 'annual')
             {
@@ -759,7 +771,47 @@ class BillingHelper {
         $customerProduct->save();
     }
 
+    public function getPendingInvoicesWithUpdatedPaymentMethods($take = 50)
+    {
+        // Get pending invoices
+        $invoices = Invoice::where('processing_type', config('const.type.auto_pay'))
+            ->where('status', config('const.invoice_status.pending'))
+            ->orderBy('updated_at', 'asc')
+            ->take($take)
+            ->get();
 
+        if ($invoices->isEmpty())
+        {
+            Log::notice('No pending invoices found.');
+
+            return $invoices;
+        }
+        // Remove invoices that don't have a valid customer
+        $invoices = $invoices->reject(function ($invoice, $key)
+        {
+            return $invoice->customer == null;
+        });
+
+        // Remove invoices that don't have a valid payment method
+        $invoices = $invoices->reject(function ($invoice, $key)
+        {
+            return $invoice->customer->defaultPaymentMethod == null || $invoice->customer->defaultPaymentMethod->updated_at == null;
+        });
+
+        // Remove invoices that don't have an updated payment method
+        $invoices = $invoices->reject(function ($invoice, $key)
+        {
+            $invoiceUpdatedAtCarbon = Carbon::createFromFormat('Y-m-d H:i:s', $invoice->updated_at, 'America/Chicago');
+            $pmUpdatedAtCarbon = Carbon::createFromFormat('Y-m-d H:i:s', $invoice->customer->defaultPaymentMethod->updated_at, 'America/Chicago');
+            $invoiceUpdatedAtUnixTimestamp = $invoiceUpdatedAtCarbon->timestamp;
+            $pmUpdatedAtCarbonUnixTimestamp = $pmUpdatedAtCarbon->timestamp;
+
+            return $invoiceUpdatedAtUnixTimestamp > $pmUpdatedAtCarbonUnixTimestamp;
+        });
+
+        return $invoices;
+
+    }
 
 
 
@@ -1486,6 +1538,12 @@ class BillingHelper {
     protected function sendChargeDeclienedEmail(Invoice $invoice, $chargeResult)
     {
         $template = 'email.template_customer_charge_declined';
+        if ($chargeResult == null || isset($chargeResult['PaymentType']) == false)
+        {
+            Log::info('BillingHelper::sendChargeDeclienedEmail(): INFO: Did not send a declined email for invoice id=' . $invoice->id . ' due to missing credit card info.');
+
+            return false;
+        }
         if ($chargeResult['PaymentType'] == 'Credit Card')
         {
             $subject = 'NOTICE: Credit Card Declined';
@@ -1510,13 +1568,13 @@ class BillingHelper {
 
         $toAddress = ($this->testMode) ? 'peyman@silverip.com' : $customer->email;
 
-        $lineItems = ($invoice->details != '') ? json_decode($invoice->details, true) : array();
+        $lineItems = $invoice->details(); //($invoice->details != null && $invoice->details != '') ? json_decode($invoice->details, true) : array();
         $chargeDetails = array();
         $chargeDetails['TRANSACTIONId'] = $chargeResult['TRANSACTIONID'];
         $chargeDetails['PaymentType'] = $chargeResult['PaymentType'];
         $chargeDetails['PaymentTypeDetails'] = $chargeResult['PaymentTypeDetails'];
 
-        Mail::send(array('html' => $template), ['customer' => $customer, 'address' => $address, 'lineItems' => $lineItems, 'chargeDetails' => $chargeDetails], function ($message) use ($toAddress, $subject, $customer, $address, $lineItems, $chargeDetails)
+        Mail::send(array('html' => $template), ['invoice' => $invoice, 'customer' => $customer, 'address' => $address, 'lineItems' => $lineItems, 'chargeDetails' => $chargeDetails], function ($message) use ($toAddress, $subject, $customer, $address, $lineItems, $chargeDetails)
         {
             $message->from('help@silverip.com', 'SilverIP Customer Care');
             $message->to($toAddress, trim($customer->first_name) . ' ' . trim($customer->last_name))->subject($subject);

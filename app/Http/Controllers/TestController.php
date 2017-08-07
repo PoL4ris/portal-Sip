@@ -41,6 +41,7 @@ use Config;
 use Auth;
 use View;
 use Storage;
+use SendMail;
 use Carbon\Carbon;
 
 //use ActivityLogs;
@@ -102,7 +103,7 @@ class TestController extends Controller {
         //        $result = $sipBilling->refundCC('1.00', 'testing refund', $customer);
         //        $result = $sipBilling->refundCCByTransID('IP28041017IARXFUSA', 'testing refund by trans id');
 
-        dd($result);
+//        dd($result);
     }
 
     public function testDBRelations()
@@ -536,6 +537,95 @@ class TestController extends Controller {
 
     public function generalTest()
     {
+
+//        $invoices = Invoice::where('processing_type', config('const.type.auto_pay'))
+//            ->where('status', config('const.invoice_status.pending'))
+//            ->take(1)
+//            ->first();
+//
+//        dd($invoices->customer->defaultPaymentMethod);
+
+        $billingHelper = new BillingHelper();
+
+        $billingHelper->processPendingAutopayInvoicesThatHaveUpdatedPaymentMethods();
+        dd('done');
+
+        dd($billingHelper->getPendingInvoicesWithUpdatedPaymentMethods());
+
+        dd($billingHelper->getChargeableCustomerProductsByCustomerId(4667));
+//
+//        $invoice = Invoice::find(2955);
+////        dd($invoice);
+//        $billingHelper->processInvoice($invoice);
+
+        dd('done');
+
+//        $billingHelper->generateResidentialChargeRecords();
+        $billingHelper->generateChargeRecordsForCustomer(4667);
+
+        dd('done');
+
+//        $billingHelper->invoicePendingCharges();
+
+//        $invoices = Invoice::where('description', 'New Invoice')->where('processing_type', config('const.type.auto_pay'))->get();
+//
+//        foreach($invoices as $invoice){
+//            $customer = $invoice->customer;
+////            dd([$invoice, $customer]);
+////            $customer = Customer::find(4667);
+//            $emailInfo = ['fromName'    => 'SilverIP Customer Care',
+//                          'fromAddress' => 'help@silverip.com',
+//                          'toName'      => $customer->first_name . ' ' . $customer->last_name,
+//                          'toAddress'   => $customer->email,
+//                          'subject'     => 'SilverIP Billing VOIDED'];
+//
+//            $template = 'email.template_customer_notification';
+//            $templateData = ['customer' => $customer];
+//
+//            SendMail::generalEmail($emailInfo, $template, $templateData);
+//        }
+
+
+        dd('done');
+
+        $sipBilling = new SIPBilling();
+        $result = $sipBilling->voidTransaction('IP31070255HNDTXXQH'); //'IP31070250SIUWEQYE'); //'IP01080359GQIJMFGW');
+        dd($result);
+
+
+        $nowMysql = date("Y-m-d H:i:s");
+        $invoices = Invoice::where('status', config('const.invoice_status.pending'))
+            ->where('processing_type', config('const.type.auto_pay'))
+            ->where(function ($query) use ($nowMysql)
+            {
+                $query->where('due_date', 'is', 'NULL')
+                    ->orWhere('due_date', '<=', $nowMysql)
+                    ->orWhere('due_date', '');
+            })
+            ->take(5)
+            ->get();
+
+//        $queries = DB::getQueryLog();
+//        $last_query = end($queries);
+//        dd($last_query);
+
+        dd($invoices->pluck('processing_type'));
+
+
+        $building = Building::find(1012);
+
+        $products = null;
+        $building->load(['activeBuildingProducts.product' => function ($q) use (&$products)
+        {
+            $products = $q->with('propertyValues')->get(); //->unique();
+        }]);
+
+        // Filter out everythig except Internet products
+        $products = $products->where('id_types', config('const.type.internet'))
+            ->whereInLoose('frequency', ['included', 'monthly', 'annual']);
+
+        dd($products);
+        dd($building->activeBuildingProducts);
 
 //        $switchIp = '10.11.123.27';
 //        $skipLabelPattern = ['/.*[uU]plink.*/i', '/.*[dD]ownlink.*/i'];

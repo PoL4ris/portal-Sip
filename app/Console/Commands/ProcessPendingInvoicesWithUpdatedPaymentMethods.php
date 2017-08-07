@@ -5,21 +5,21 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use App\Extensions\BillingHelper;
 
-class GenerateCustomerCharges extends Command
+class ProcessPendingInvoicesWithUpdatedPaymentMethods extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'billing:generate-customer-charges';
+    protected $signature = 'billing:process-pending-invoices-with-updated-payments';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Generate charges for customer products';
+    protected $description = 'Rerun the pending invoices that updated their payment methods.';
 
     /**
      * Create a new command instance.
@@ -38,9 +38,9 @@ class GenerateCustomerCharges extends Command
      */
     public function handle()
     {
-        $this->info('Generating customer charges');
+        $this->info('Rerunning failed pending invoices');
         $billingHelper = new BillingHelper();
-        $billingHelper->generateResidentialChargeRecords();
+        $billingHelper->processPendingAutopayInvoicesThatHaveUpdatedPaymentMethods();
         $this->info('Done');
     }
 }

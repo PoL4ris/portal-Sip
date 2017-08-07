@@ -203,14 +203,18 @@ class BillingController extends Controller {
         else
             $timeData = 'CURRENT_DATE()';
 
-        $result['charges'] = Charge::with('customer',
+
+        $loadResults = Charge::with('customer',
             'address',
             'invoices',
             'user',
             'productDetail.product')
             ->whereRaw('YEAR(start_date)  = YEAR(' . $timeData . ')')
-            ->whereRaw('MONTH(start_date) = MONTH(' . $timeData . ')')
-            ->get();
+            ->whereRaw('MONTH(start_date) = MONTH(' . $timeData . ')');
+
+        $result['charges'] = $loadResults->take(50)->get();
+
+        $result['total_count'] = $loadResults->count();
 
         return $result;
     }
