@@ -143,8 +143,10 @@ class TestController extends Controller {
         dd($ticket2);
     }
 
-    public function supportTest()
+    public function supportTest(Request $request)
     {
+
+        return Customer::find($request->id);
 
         dd(Product::with('type')->orderBy('frequency', 'asc')->get()->take(10)->toArray());
         die();

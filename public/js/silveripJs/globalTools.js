@@ -210,6 +210,11 @@ app.controller('globalToolsCtl',                    function ($scope, $http, $co
 
     switch(e.which) {
       case 13: // ENTER
+
+        if ($("#admin-id-search-input").is(":focus")) {
+          $('.admin-id-search-input').trigger('click');
+        }
+
         if($scope.keyboardBtn)
           return;
 
@@ -426,7 +431,38 @@ app.controller('globalToolsCtl',                    function ($scope, $http, $co
     }
   }
 
+  $scope.idSearch = function(){
 
+
+    if(!this.adminSearch)
+    {
+      console.log('nananannanannananan');
+    }
+    else {
+    $http.get("getCustomerById", {params:{'id':this.adminSearch}})
+      .then(function (response) {
+
+        $scope.idCustomerResult = response.data;
+
+        if($scope.idCustomerResult)
+        {
+          $('#admin-id-search-input').val('');
+          window.location = '#/customers?id='+response.data.id
+        }
+        else
+        {
+          $('#admin-id-search-input').val('Customer not in the DB').css('color', 'crimson');
+          setTimeout( function(){
+            $('#admin-id-search-input').val('').css('color', 'inherit');
+          }  , 1000 );
+        }
+
+      });
+
+    }
+
+
+  }
 
 
 });
