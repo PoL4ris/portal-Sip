@@ -26,16 +26,16 @@ app.config(['$routeProvider', function ($routeProvider) {
     .otherwise("/404", {templateUrl: "/angularviews/partials/404.html", controller: "PageCtrl"});
 }]);
 
-app.directive('ngEnter', function () {
-    return function (scope, element, attrs) {
-        element.bind("keydown keypress", function (event) {
-            if(event.which === 13) {
-                scope.$apply(function (){
-                    scope.$eval(attrs.ngEnter);
-                });
-
-                event.preventDefault();
-            }
-        });
-    };
-});
+//app.directive('ngEnter', function () {
+//    return function (scope, element, attrs) {
+//        element.bind("keydown keypress", function (event) {
+//            if(event.which === 13) {
+//                scope.$apply(function (){
+//                    scope.$eval(attrs.ngEnter);
+//                });
+//
+//                event.preventDefault();
+//            }
+//        });
+//    };
+//});

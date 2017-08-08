@@ -210,10 +210,11 @@ app.controller('globalToolsCtl',                    function ($scope, $http, $co
 
     switch(e.which) {
       case 13: // ENTER
+        console.log('this is enter');
 
-        if ($("#admin-id-search-input").is(":focus")) {
-          $('.admin-id-search-input').trigger('click');
-        }
+//        if ($("#admin-id-search-input").is(":focus")) {
+//          $('.admin-id-search-input').trigger('click');
+//        }
 
         if($scope.keyboardBtn)
           return;
@@ -231,6 +232,8 @@ app.controller('globalToolsCtl',                    function ($scope, $http, $co
         e.stopPropagation();
         break;
       case 38: // ARROW UP
+
+      console.log('this is up');
         if($scope.customerSearchResult)
         {
           $scope.keyboardBtn = true;
@@ -432,11 +435,11 @@ app.controller('globalToolsCtl',                    function ($scope, $http, $co
   }
 
   $scope.idSearch = function(){
-
+//    console.log('this is idSearch');
 
     if(!this.adminSearch)
     {
-      console.log('nananannanannananan');
+      console.log('emptyString');
     }
     else {
     $http.get("getCustomerById", {params:{'id':this.adminSearch}})
@@ -465,6 +468,26 @@ app.controller('globalToolsCtl',                    function ($scope, $http, $co
   }
 
 
+}).directive('ngEnter', function () {
+  return function (scope, element, attrs) {
+
+//  console.log(element);
+
+    element.bind("keydown keypress", function (event) {
+
+
+//      console.log('element.bind');
+      if(event.which === 13) {
+//        console.log('event 13');
+        scope.$apply(function (){
+          console.log(this.target);
+          scope.$eval(attrs.ngEnter);
+        });
+
+        event.preventDefault();
+      }
+    });
+  };
 });
 function gToolsxEdit(value, field, id, idContainer, table, model){
      console.log(id + ' <--|--id|:: '+  value+ ' <--|--value|:: ' +  field + ' <--|--field|:: ' +  table + ' <--|--table|:: '+  idContainer + ' <--|--idContainer|');
