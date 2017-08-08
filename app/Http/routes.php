@@ -57,6 +57,7 @@ Route::group(['middleware' => 'web'], function () {
     Route::post('getAppPositionDown',       'AdminController@getAppPositionDown');
     Route::post('getAppPositionUp',         'AdminController@getAppPositionUp');
     Route::post('getCharges',               'AdminController@getCharges');
+    Route::post('insertNewProduct',         'AdminController@insertNewProduct');
     Route::get('getChargesStats',           'AdminController@getChargesStats');
     //PROFILE
     Route::get('getProfileInfo',            'AdminController@getProfileInfo');
@@ -172,6 +173,7 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('insertAddressCoordinates',  'MainController@insertAddressCoordinates');//new
     Route::get('getBuildingsCodeList',      'BuildingController@getBuildingsCodeList');
     Route::get('getProductUsedBy',          'BuildingController@getProductUsedBy');//new
+    Route::get('getProductProperties',      'AdminController@getProductProperties');//new
 
     //LOGS
     Route::get('getCustomerLog',            'CustomerController@getCustomerLog');//new

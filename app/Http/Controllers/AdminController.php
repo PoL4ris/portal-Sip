@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ProductPropertyValue;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 //Laravel
@@ -17,6 +18,7 @@ use App\Models\App;
 use App\Models\AccessApp;
 use App\Models\BuildingProperty;
 use App\Models\Charge;
+use App\Models\Product;
 
 
 /**
@@ -321,6 +323,43 @@ class AdminController extends Controller
 
         return $this->getAdminBldProperties();
     }
+
+
+
+    public function insertNewProduct(Request $request){
+        $data = $request->params['objects'];
+
+        $product = new Product;
+        $product->name          = $data['name'];
+        $product->description   = $data['description'];
+        $product->id_types      = $data['id_types'];
+        $product->amount        = $data['amount'];
+        $product->frequency     = $data['frequency'];
+        $product->save();
+
+        if(!$data['skipProperties'])
+          for($x = 1; $x <= 5; $x++)
+            {
+                $productPropertyVal = new ProductPropertyValue;
+                $productPropertyVal->id_products = $product->id;
+                $productPropertyVal->id_product_properties = $x;
+                $productPropertyVal->value = $data['pp'.$x];
+                $productPropertyVal->save();
+            }
+
+        return Product::with('type')->get();
+    }
+
+    public function getProductProperties(Request $request){
+//        dd($request->id);
+
+
+        return ProductPropertyValue::where('id_products',$request->id)->get();
+    }
+
+
+
+
     /**
      * Creates form from table requested.
      * Not in use for the moment.

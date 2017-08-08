@@ -154,6 +154,9 @@
 .size-100 {
   width: 100%;
 }
+.size-80 {
+  width: 80%;
+}
 .size-85 {
   width: 85% !important;
 }
@@ -1422,7 +1425,9 @@ table.dataTable tbody tr {
   position: absolute;
   width: 40px;
 }
-
+.admin-id-search{
+  width: 25%;
+}
 pre {
   font-size: 10px;
   margin: 30px;

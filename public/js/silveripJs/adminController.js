@@ -283,12 +283,66 @@ app.controller('adminController',                   function($scope, $http, cust
     $scope.newProd         = null;
     $scope.editProdData    = this.product;
     $scope.getProductRels(this.product);
+    $scope.setProperties();
   };
   $scope.getProductRels       = function(idProduct){
 
     $http.get("getProductUsedBy", {params:{'id':idProduct.id}})
       .then(function (response) {
         $scope.productUsedBy  = response.data;
+      });
+
+  }
+  $scope.submitNewProd        = function(){
+
+    var objects = getFormValues('admin-prod-form');
+    var regex   = /[^.\w]/g;
+
+    console.log(objects);
+
+    if(regex.test(objects.amount)){
+      $('#product-amount').css('border', '2px solid crimson')
+       return;
+    }
+    else
+      $('#product-amount').css('border', '1px solid #ddd');
+
+    if(!$scope.setPropertiesFlag)
+    {
+      objects.skipProperties = true;
+      if(objects.name.length === 0 || objects.id_types.length === 0 || objects.frequency.length === 0 || objects.amount.length === 0)
+        return;
+    }
+    else
+    {
+      objects.skipProperties = false;
+      if(objects.name.length === 0   || objects.id_types.length === 0 || objects.frequency.length === 0 ||
+         objects.amount.length === 0 || objects.pp1.length === 0 || objects.pp2.length === 0 ||
+         objects.pp3.length === 0    || objects.pp4.length === 0 || objects.pp5.length === 0)
+        return;
+    }
+
+    $http.post("insertNewProduct", {params:{'objects' : objects}})
+      .then(function (response) {
+        $scope.productsList  = response.data;
+      });
+
+  };
+  $scope.setProperties        = function(){
+    $scope.setPropertiesFlag  = !$scope.setPropertiesFlag;
+    if($scope.editProdData)
+      $scope.getProductProperties();
+  }
+  $scope.getProductProperties = function(){
+    console.log($scope.editProdData);
+    $http.get("getProductProperties", {params:{'id':$scope.editProdData.id}})
+      .then(function (response) {
+
+
+        console.log(response.data);
+
+
+
       });
 
   }
