@@ -7,6 +7,7 @@ use App\Extensions\DataMigrationUtils;
 use App\Extensions\BillingHelper;
 use Storage;
 use App\Models\NetworkNode;
+use App\Models\CustomerPort;
 use FtpClient\FtpClient;
 use FtpClient\FtpException;
 
@@ -44,20 +45,23 @@ class GeneralTasks extends Command {
     public function handle()
     {
         $this->info('Starting general task');
+
+//        $this->cleanupBadCustomerPorts();
+
 //        $billingHelper = new BillingHelper();
 //        $result = $billingHelper->processPendingAutopayInvoices();
-
-        //        $dbMigrationUtil = new DataMigrationUtils(true);
+//        $dbMigrationUtil = new DataMigrationUtils(true);
 //        $dbMigrationUtil->generalDatabaseTask();
 //        $this->updateMikrotikHotspotLoginFiles();
+
         $this->info('Done');
 
     }
 
-
     protected function updateMikrotikHotspotLoginFiles()
     {
         echo 'exiting';
+
         return true;
 
         $mikrotiks = NetworkNode::where('id_types', config('const.type.router'))->get();
@@ -77,7 +81,8 @@ class GeneralTasks extends Command {
                 $ftp->login('admin', 'BigSeem');
                 $ftp->pasv(true);
 
-                if($this->fileExists($ftp, $remoteFile) == false){
+                if ($this->fileExists($ftp, $remoteFile) == false)
+                {
                     echo 'failed: file not found' . "\n";
                     continue;
                 }
@@ -103,5 +108,87 @@ class GeneralTasks extends Command {
         }
 
         return false;
+    }
+
+    protected function cleanupBadCustomerPorts()
+    {
+        // Records processed count
+        $recordsProcessed = 0;
+        $badPorts = 0;
+
+        // Total record count
+        $totalRecords = CustomerPort::count();
+
+        $runQuery = function ($startingId, $recordsPerCycle)
+        {
+            return CustomerPort::where('id', '>', $startingId)
+                ->orderBy('id', 'asc')
+                ->take($recordsPerCycle)
+                ->get();
+        };
+
+        $recordsPerCycle = 50;
+        $startingId = 14391; // 0
+
+        echo 'Checking '. $totalRecords .' records ... '."\n";
+
+        while (true)
+        {
+
+            $customerPorts = $runQuery($startingId, $recordsPerCycle);
+
+            if ($customerPorts->count() == 0)
+            {
+                break;
+            }
+
+            foreach ($customerPorts as $customerPort)
+            {
+
+                $customer = $customerPort->customer;
+                if($customer == null){
+                    echo 'CustomerPort: ' . $customerPort->id . ' is missing a customer'."\n";
+                    $badPorts ++;
+                    $startingId = $customerPort->id;
+                    CustomerPort::destroy($customerPort->id);
+                    $recordsProcessed ++;
+                    continue;
+                }
+                $customerAddress = $customer->address;
+
+                $port = $customerPort->port;
+                if($customer == null){
+                    echo 'CustomerPort: ' . $customerPort->id . ' is missing a port'."\n";
+                    $badPorts ++;
+                    $startingId = $customerPort->id;
+                    CustomerPort::destroy($customerPort->id);
+                    $recordsProcessed ++;
+                    continue;
+                }
+                $portAddress = $port->address;
+
+                if ($portAddress == null)
+                {
+                    echo 'CustomerPort: ' . $customerPort->id . ' is missing an address'."\n";
+                    CustomerPort::destroy($customerPort->id);
+                    $badPorts ++;
+                } else if ($customerAddress != null && $portAddress->code != $customerAddress->code)
+                {
+                    echo 'CustomerPort: ' . $customerPort->id . ' does not match'."\n";
+                    CustomerPort::destroy($customerPort->id);
+                    $badPorts ++;
+                }
+
+                // Do some accounting
+                $startingId = $customerPort->id;
+                $recordsProcessed ++;
+            }
+
+            // Update the progress bar
+//            $this->advanceProgressBar(0, $dataMigration->records_processed);
+            usleep(500000);
+        }
+
+        echo $badPorts . ' out of ' . $recordsProcessed . ' were bad'."\n";
     }
 }

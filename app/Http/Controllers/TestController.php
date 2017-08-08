@@ -20,6 +20,7 @@ use App\Models\Charge;
 use App\Models\Invoice;
 use App\Models\Ticket;
 use App\Models\CustomerProduct;
+use App\Models\CustomerPort;
 use App\Models\DataMigration;
 use App\Models\Address;
 use App\Models\BuildingPropertyValue;
@@ -401,6 +402,34 @@ class TestController extends Controller {
 
     public function generalTest()
     {
+
+
+//        $customer = Customer::find(4648);
+//
+//        $customerPorts = $customer->customerPort;
+//
+//        foreach ($customerPorts as $customerPort)
+//        {
+//            $customerAddress = $customerPort->customer->address;
+//            $portAddress = $customerPort->port->address;
+//            if ($portAddress->code != $customerAddress->code)
+//            {
+//                echo 'CustomerPort: ' . $customerPort->id . ' does not match<br>';
+//            }
+//        }
+
+        dd('done');
+
+//        dd([$customerAddress, $portAddress]);
+//        dd($customer->getNetworkInfo());
+
+//        $customerPort = $customer->customerPort->first();
+
+
+        dd($customerPort->portWithNetworkNode);
+        dd($customerPort->networkNode);
+
+        dd($customer->getNetworkInfo());
 
 //        $invoices = Invoice::where('processing_type', config('const.type.auto_pay'))
 //            ->where('status', config('const.invoice_status.pending'))
