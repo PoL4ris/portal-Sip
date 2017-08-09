@@ -16,6 +16,9 @@ class SIPCustomer {
 
     public function addNewCustomer($firstName, $lastName, $email, $vip = '')
     {
+//        if($firstName == '' || $lastName == '' || $email == ''){
+//            return ['error' => ]
+//        }
         $customer = new Customer;
         $customer->first_name = $firstName;
         $customer->last_name = $lastName;
@@ -94,6 +97,20 @@ class SIPCustomer {
      */
     public function getTimeToAdd($type)
     {
+        $timeToAdd = array('annual'        => 'first day of next year',
+                           'monthly'       => 'first day of next month',
+                           'onetime'       => 'first day of next month',
+                           'Included'      => 'first day of next month',
+                           'included'      => 'first day of next month',
+                           'complimentary' => null
+        );
+
+        return $timeToAdd[$type];
+    }
+
+    public function getNextProductExpirationTimestamp(Product $product)
+    {
+//        $product->frequency
         $timeToAdd = array('annual'        => 'first day of next year',
                            'monthly'       => 'first day of next month',
                            'onetime'       => 'first day of next month',

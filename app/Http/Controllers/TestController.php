@@ -400,8 +400,19 @@ class TestController extends Controller {
 
     }
 
-    public function generalTest()
+    public function generalTest(Request $request)
     {
+
+        $input = $request->all();
+
+//        $customers = Customer::where('id_status', config('const.status.active'))->simplePaginate(5);
+        $customers = Customer::where('id_status', config('const.status.active'))->paginate(5);
+
+        dd([$customers, $input]);
+        $customerNames = $customers->pluck( 'last_name', 'first_name');
+        dd($customerNames);
+
+
 
 
 //        $customer = Customer::find(4648);
