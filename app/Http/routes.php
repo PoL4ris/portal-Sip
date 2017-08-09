@@ -54,6 +54,7 @@ Route::group(['middleware' => 'web'], function () {
     Route::post('updateAdminApp',           'AdminController@updateAdminApp');
     Route::post('getAdminBldProperties',    'AdminController@getAdminBldProperties');
     Route::post('insertNewBldProperty',     'AdminController@insertNewBldProperty');
+    Route::post('updateBldProperty',        'AdminController@updateBldProperty');
     Route::post('getAppPositionDown',       'AdminController@getAppPositionDown');
     Route::post('getAppPositionUp',         'AdminController@getAppPositionUp');
     Route::post('getCharges',               'AdminController@getCharges');
@@ -174,7 +175,6 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('insertAddressCoordinates',  'MainController@insertAddressCoordinates');//new
     Route::get('getBuildingsCodeList',      'BuildingController@getBuildingsCodeList');
     Route::get('getProductUsedBy',          'BuildingController@getProductUsedBy');//new
-    Route::get('getProductProperties',      'AdminController@getProductProperties');//new
 
     //LOGS
     Route::get('getCustomerLog',            'CustomerController@getCustomerLog');//new

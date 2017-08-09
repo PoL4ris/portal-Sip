@@ -8,7 +8,7 @@ app.controller('adminController',                   function($scope, $http, cust
     customerService.sideBarFlag = false;
   }
 
-  $scope.displayView = 'prod';
+  $scope.displayView = 'users';
 
   $http.post("getAdminUsers", {params:{'token':adminService.existeToken}})
     .then(function (response) {
@@ -240,6 +240,23 @@ app.controller('adminController',                   function($scope, $http, cust
     $scope.newBldProp         = null;
     $scope.editBldPropData    = this.data;
   };
+  $scope.updateBldProp        = function(){
+
+    var objects = getFormValues('admin-bldprop-form');
+
+    if(objects.property_name.length === 0 || objects.property_description.length === 0)
+      return;
+
+    objects.id = $scope.editBldPropData.id;
+
+    $http.post("updateBldProperty", {params:{'objects' : objects}})
+      .then(function (response) {
+        $scope.bldProperties = response.data;
+        $scope.bldPropCancel();
+      });
+
+
+  };
   //Products
   $scope.getProducts          = function(){
     $http.get("getProducts")
@@ -331,6 +348,7 @@ app.controller('adminController',                   function($scope, $http, cust
     $http.post("insertNewProduct", {params:{'objects' : objects}})
       .then(function (response) {
         $scope.productsList  = response.data;
+        $scope.prodCancel();
       });
 
   };
@@ -357,29 +375,21 @@ app.controller('adminController',                   function($scope, $http, cust
     else
     {
       objects.skipProperties = false;
-      if(objects.name.length === 0   || objects.id_types.length === 0 || objects.frequency.length === 0 ||
-        objects.amount.length === 0 || objects.pp1.length === 0 || objects.pp2.length === 0 ||
-        objects.pp3.length === 0    || objects.pp4.length === 0 || objects.pp5.length === 0)
+      if(objects.name.length  === 0  || objects.id_types.length === 0   || objects.frequency.length === 0   ||
+        objects.amount.length === 0  || objects.pp1.length      === 0   || objects.pp2.length       === 0   ||
+        objects.pp3.length    === 0  || objects.pp4.length      === 0   || objects.pp5.length       === 0)
         return;
     }
 
-    console.log('function tu update product');
-    console.log(objects);
-//    return;
-
     objects.id = $scope.editProdData.id;
-
 
     $http.post("updateProduct", {params:{'objects' : objects}})
       .then(function (response) {
-//        $scope.productsList  = response.data;
+        $scope.productsList  = response.data;
+        $scope.prodCancel();
       });
   };
-
-
-
-
-
+  //General Actions
   $scope.setView              = function(id){
     //Views:
     //0 = Users
@@ -402,8 +412,8 @@ app.controller('adminController',                   function($scope, $http, cust
   $scope.getTypes();
   $scope.fontAwesomeArray = fontAwesomeArray;
 
-  $scope.dtOptions = DTOptionsBuilder.newOptions().withDisplayLength(25).withOption('order', [1, 'asc']);
-  $scope.dtOptionsProd = DTOptionsBuilder.newOptions().withOption('order', [4, 'asc']);
+  $scope.dtOptions        = DTOptionsBuilder.newOptions().withDisplayLength(25).withOption('order', [1, 'asc']);
+  $scope.dtOptionsProd    = DTOptionsBuilder.newOptions().withOption('order', [5, 'desc']);
 
 });
 app.controller('adminPAppACont',                    function ($scope, $http){

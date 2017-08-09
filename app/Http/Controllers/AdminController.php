@@ -315,23 +315,25 @@ class AdminController extends Controller
      * @return List of Building Properties.
      */
     public function insertNewBldProperty(Request $request){
+
         $data = $request->params['objects'];
-        $user = new BuildingProperty;
-        $user->name         = $data['property_name'];
-        $user->description  = $data['property_description'];
-        $user->save();
+
+        $newBldProperty = new BuildingProperty;
+        $newBldProperty->name         = $data['property_name'];
+        $newBldProperty->description  = $data['property_description'];
+        $newBldProperty->save();
 
         return $this->getAdminBldProperties();
     }
 
     public function updateBldProperty(Request $request){
 
-    //THIS SHOULD UPDATE BuildingProperty...... incomplete.
         $data = $request->params['objects'];
-        $user = new BuildingProperty;
-        $user->name         = $data['property_name'];
-        $user->description  = $data['property_description'];
-        $user->save();
+
+        $bldProperty = BuildingProperty::find($data['id']);
+        $bldProperty->name         = $data['property_name'];
+        $bldProperty->description  = $data['property_description'];
+        $bldProperty->save();
 
         return $this->getAdminBldProperties();
     }
@@ -359,38 +361,45 @@ class AdminController extends Controller
                 $productPropertyVal->save();
             }
 
-        return Product::with('type')->get();
+        return Product::with('type', 'propertyValues')->get();
     }
 
     public function updateProduct(Request $request)
     {
         $data = $request->params['objects'];
-        dd($request->all());
+
         $updateProduct = Product::find($data['id']);
-        $updateProduct->name = $data['name'];
+        $updateProduct->name        = $data['name'];
         $updateProduct->description = $data['description'];
-        $updateProduct->id_types = $data['id_types'];
-        $updateProduct->amount = $data['amount'];
-        $updateProduct->frequency = $data['frequency'];
+        $updateProduct->id_types    = $data['id_types'];
+        $updateProduct->amount      = $data['amount'];
+        $updateProduct->frequency   = $data['frequency'];
         $updateProduct->save();
 
-
-        //algo por aqui
-
         if(!$data['skipProperties'])
-            for($x = 1; $x <= 5; $x++)
-            {
-                $productPropertyVal = new ProductPropertyValue;
-                $productPropertyVal->id_products = $product->id;
-                $productPropertyVal->id_product_properties = $x;
-                $productPropertyVal->value = $data['pp'.$x];
-                $productPropertyVal->save();
-            }
-    }
-
-//maybe move this function to other place.
-    public function getProductProperties(Request $request){
-        return ProductPropertyValue::with('properties')->where('id_products',$request->id)->get();
+        {
+            //data-service-download
+            $productPropertyVal1 = ProductPropertyValue::where('id_products',$data['id'])->where('id_product_properties', 1)->first();
+            $productPropertyVal1->value = $data['pp1'];
+            $productPropertyVal1->save();
+            //data-service-upload
+            $productPropertyVal1 = ProductPropertyValue::where('id_products',$data['id'])->where('id_product_properties', 2)->first();
+            $productPropertyVal1->value = $data['pp2'];
+            $productPropertyVal1->save();
+            //service-title
+            $productPropertyVal1 = ProductPropertyValue::where('id_products',$data['id'])->where('id_product_properties', 3)->first();
+            $productPropertyVal1->value = $data['pp3'];
+            $productPropertyVal1->save();
+            //service-slogans
+            $productPropertyVal1 = ProductPropertyValue::where('id_products',$data['id'])->where('id_product_properties', 4)->first();
+            $productPropertyVal1->value = $data['pp4'];
+            $productPropertyVal1->save();
+            //data-service-delivery
+            $productPropertyVal1 = ProductPropertyValue::where('id_products',$data['id'])->where('id_product_properties', 5)->first();
+            $productPropertyVal1->value = $data['pp5'];
+            $productPropertyVal1->save();
+        }
+        return Product::with('type', 'propertyValues')->get();
     }
 
 
