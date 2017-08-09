@@ -111,9 +111,9 @@
                                placeholder="Data download speed in Mbps Ex: 30"
                                name="pp1"
                                class="p-l-md size-100"
-                               id="a"
+                               id="data-service-download"
                                required
-                               value="{{editProdData ? editProdData.amount : null}}">
+                               value="{{editProdData ? editProdData.property_values[0].value : null}}">
                         <hr>
                     </div>
                     <div class="col-lg-6 ">
@@ -125,7 +125,7 @@
                                class="p-l-md size-100"
                                id="b"
                                required
-                               value="{{editProdData ? editProdData.amount : null}}">
+                               value="{{editProdData ? editProdData.property_values[1].value : null}}">
                         <hr>
                     </div>
                     <div class="col-lg-6 ">
@@ -137,7 +137,7 @@
                                class="p-l-md size-100"
                                id="c"
                                required
-                               value="{{editProdData ? editProdData.amount : null}}">
+                               value="{{editProdData ? editProdData.property_values[2].value : null}}">
                         <hr>
                     </div>
                     <div class="col-lg-6 ">
@@ -149,7 +149,7 @@
                                class="p-l-md size-100"
                                id="d"
                                required
-                               value="{{editProdData ? editProdData.amount : null}}">
+                               value="{{editProdData ? editProdData.property_values[3].value : null}}">
                         <hr>
                     </div>
                     <div class="col-lg-6 ">
@@ -160,7 +160,8 @@
                            name="pp5"
                            class="p-l-md size-100"
                            required
-                           id="e">
+                           id="e"
+                           value="{{editProdData ? editProdData.property_values[4].value : null}}">
                     <hr>
                 </div>
                 </div>
@@ -181,7 +182,7 @@
             <!--ACTION BUTTONS-->
             <div class="col-lg-12 m-t-lg">
                 <button class="btn btn-success pull-right" ng-if="!editProdData" ng-click="submitNewProd()">Submit Product</button>
-                <button class="btn btn-success pull-right" ng-if="editProdData" ng-click="updateAdminApp()">Update Product</button>
+                <button class="btn btn-success pull-right" ng-if="editProdData" ng-click="updateProduct()">Update Product</button>
             </div>
         </form>
     </div>

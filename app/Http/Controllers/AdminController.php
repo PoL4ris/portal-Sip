@@ -324,6 +324,18 @@ class AdminController extends Controller
         return $this->getAdminBldProperties();
     }
 
+    public function updateBldProperty(Request $request){
+
+    //THIS SHOULD UPDATE BuildingProperty...... incomplete.
+        $data = $request->params['objects'];
+        $user = new BuildingProperty;
+        $user->name         = $data['property_name'];
+        $user->description  = $data['property_description'];
+        $user->save();
+
+        return $this->getAdminBldProperties();
+    }
+
 
 
     public function insertNewProduct(Request $request){
@@ -350,11 +362,35 @@ class AdminController extends Controller
         return Product::with('type')->get();
     }
 
+    public function updateProduct(Request $request)
+    {
+        $data = $request->params['objects'];
+        dd($request->all());
+        $updateProduct = Product::find($data['id']);
+        $updateProduct->name = $data['name'];
+        $updateProduct->description = $data['description'];
+        $updateProduct->id_types = $data['id_types'];
+        $updateProduct->amount = $data['amount'];
+        $updateProduct->frequency = $data['frequency'];
+        $updateProduct->save();
+
+
+        //algo por aqui
+
+        if(!$data['skipProperties'])
+            for($x = 1; $x <= 5; $x++)
+            {
+                $productPropertyVal = new ProductPropertyValue;
+                $productPropertyVal->id_products = $product->id;
+                $productPropertyVal->id_product_properties = $x;
+                $productPropertyVal->value = $data['pp'.$x];
+                $productPropertyVal->save();
+            }
+    }
+
+//maybe move this function to other place.
     public function getProductProperties(Request $request){
-//        dd($request->id);
-
-
-        return ProductPropertyValue::where('id_products',$request->id)->get();
+        return ProductPropertyValue::with('properties')->where('id_products',$request->id)->get();
     }
 
 

@@ -58,6 +58,7 @@ Route::group(['middleware' => 'web'], function () {
     Route::post('getAppPositionUp',         'AdminController@getAppPositionUp');
     Route::post('getCharges',               'AdminController@getCharges');
     Route::post('insertNewProduct',         'AdminController@insertNewProduct');
+    Route::post('updateProduct',            'AdminController@updateProduct');
     Route::get('getChargesStats',           'AdminController@getChargesStats');
     //PROFILE
     Route::get('getProfileInfo',            'AdminController@getProfileInfo');

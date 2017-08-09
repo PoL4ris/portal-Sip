@@ -250,7 +250,7 @@ app.controller('adminController',                   function($scope, $http, cust
   $scope.getTypes             = function(){
     $http.get("getTypes")
       .then(function (response) {
-        console.log(response.data);
+
         var typesList = [];
         for(var x in response.data){
 
@@ -264,26 +264,34 @@ app.controller('adminController',                   function($scope, $http, cust
             typesList.push(rec);
           }
         }
-        console.log(typesList);
+
         $scope.typesList  = typesList;
 
       });
   };
   $scope.addNewProd           = function(){
-    $scope.editProdData    = null;
-    $scope.newProd         = true;
-    $scope.productUsedBy   = false;
+    $scope.editProdData      = null;
+    $scope.newProd           = true;
+    $scope.productUsedBy     = false;
+    $scope.setPropertiesFlag = false;
+
   };
   $scope.prodCancel           = function(){
-    $scope.newProd         = false;
-    $scope.editProdData    = false;
-    $scope.productUsedBy   = false;
+    $scope.newProd           = false;
+    $scope.editProdData      = false;
+    $scope.productUsedBy     = false;
+    $scope.setPropertiesFlag = false;
   };
   $scope.editProd             = function(){
     $scope.newProd         = null;
     $scope.editProdData    = this.product;
     $scope.getProductRels(this.product);
-    $scope.setProperties();
+
+    if($scope.editProdData.property_values.length > 0)
+      $scope.setPropertiesFlag = true;
+    else
+      $scope.setPropertiesFlag = false;
+
   };
   $scope.getProductRels       = function(idProduct){
 
@@ -297,8 +305,6 @@ app.controller('adminController',                   function($scope, $http, cust
 
     var objects = getFormValues('admin-prod-form');
     var regex   = /[^.\w]/g;
-
-    console.log(objects);
 
     if(regex.test(objects.amount)){
       $('#product-amount').css('border', '2px solid crimson')
@@ -330,22 +336,46 @@ app.controller('adminController',                   function($scope, $http, cust
   };
   $scope.setProperties        = function(){
     $scope.setPropertiesFlag  = !$scope.setPropertiesFlag;
-    if($scope.editProdData)
-      $scope.getProductProperties();
-  }
-  $scope.getProductProperties = function(){
-    console.log($scope.editProdData);
-    $http.get("getProductProperties", {params:{'id':$scope.editProdData.id}})
+  };
+  $scope.updateProduct        = function(){
+    var objects = getFormValues('admin-prod-form');
+    var regex   = /[^.\w]/g;
+
+    if(regex.test(objects.amount)){
+      $('#product-amount').css('border', '2px solid crimson')
+      return;
+    }
+    else
+      $('#product-amount').css('border', '1px solid #ddd');
+
+    if(!$scope.setPropertiesFlag)
+    {
+      objects.skipProperties = true;
+      if(objects.name.length === 0 || objects.id_types.length === 0 || objects.frequency.length === 0 || objects.amount.length === 0)
+        return;
+    }
+    else
+    {
+      objects.skipProperties = false;
+      if(objects.name.length === 0   || objects.id_types.length === 0 || objects.frequency.length === 0 ||
+        objects.amount.length === 0 || objects.pp1.length === 0 || objects.pp2.length === 0 ||
+        objects.pp3.length === 0    || objects.pp4.length === 0 || objects.pp5.length === 0)
+        return;
+    }
+
+    console.log('function tu update product');
+    console.log(objects);
+//    return;
+
+    objects.id = $scope.editProdData.id;
+
+
+    $http.post("updateProduct", {params:{'objects' : objects}})
       .then(function (response) {
-
-
-        console.log(response.data);
-
-
-
+//        $scope.productsList  = response.data;
       });
+  };
 
-  }
 
 
 

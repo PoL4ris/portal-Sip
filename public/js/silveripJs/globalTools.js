@@ -320,6 +320,7 @@ app.controller('globalToolsCtl',                    function ($scope, $http, $co
     }
   }
   $scope.convertDate          = function (valor){
+  console.log(valor);
     return new Date(valor);
   }
   $scope.copyClipboard        = function (id){

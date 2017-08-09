@@ -368,8 +368,6 @@ app.controller('buildingCtl',             function ($scope, $http, $stateParams,
 
   })
   .directive('buildingContactForm',       function () {
-
-
     return {
       restrict: 'E',
       replace: true,

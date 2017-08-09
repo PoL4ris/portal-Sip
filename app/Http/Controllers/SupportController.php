@@ -258,7 +258,7 @@ class SupportController extends Controller
      */
     public function getProducts()
     {
-        return Product::with('type')->get();
+        return Product::with('type', 'propertyValues')->get();
     }
 
     /**
