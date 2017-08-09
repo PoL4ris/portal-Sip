@@ -488,13 +488,18 @@ ccdTdrIfResultPairLengthUnit of the same cable pair.
     public function getSnmpTdrIfResultPairStatus($ip, $portNum, $isIdx = false)
     {
         /*
-The status of the cable pair.
-'unknown'      --  none of the  following.
-'terminated'   --  the pair is properly terminated at the
-remote end.
-'notCompleted' --  the test on this pair is not completed.
-'notSupported' --  the test on this pair is not supported.
-'open'         --  the pair is open.
+        "The status of the cable pair.
+
+        'unknown'      --  none of the  following.
+        'terminated'   --  the pair is properly terminated at the
+                          remote end.
+        'notCompleted' --  the test on this pair is not completed.
+        'notSupported' --  the test on this pair is not supported.
+        'open'         --  the pair is open.
+        'shorted'      --  the pair is shorted.
+        'impedanceMismatch' -- the impedance of the pair is mismatched.
+        'broken'       -- the pair is broken.
+        'indeterminate' -- the status of the pair is indeterminate."
         */
 
         $result = $this->getSnmpIndexValueByPort($ip, $portNum, $isIdx, self::ccdTdrIfResultPairStatus , false, false, true);

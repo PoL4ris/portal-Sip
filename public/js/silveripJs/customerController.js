@@ -493,13 +493,17 @@ app.controller('customerController',                function ($scope, $http, $st
                 case '2':
                     return 'Ok';
                 case '3':
-                    return 'U/E';
+                    return 'Incomplete';
                 case '4':
                     return 'N/S';
                 case '5':
                     return 'Open';
+                case '6':
+                    return 'Pair Impedance Mismatch';
+                case '7':
+                    return 'Broken';
                 case '8':
-                    return 'Fail';
+                    return 'Shorted';
                 default:
                     return 'Error';
             }

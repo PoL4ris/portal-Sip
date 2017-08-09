@@ -662,9 +662,10 @@ class NetworkController extends Controller {
                     // echo "failed Interal Error<br>";
                     return 'Fail Internal Error';
                 case 5:
-                    // echo "failed Test Already Running<br>";
+                    // echo "failed Test Already Running<br>"; this error seems to stay as this error, further calls do not update response
                     sleep(2);
-
+                    //$currentAction= $ciscoSwitch->getSnmpTdrIfActionStatus($request->ip, $request->port);
+                    $running = 0;  //it's failed not sure what to do. continue on the best we can.
                     break;
                 case 6:
                     // echo 'Failed Interface Disabled<br>';
