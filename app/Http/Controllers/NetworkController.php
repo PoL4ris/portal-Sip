@@ -643,8 +643,9 @@ class NetworkController extends Controller {
         do
         {
             sleep(3);
-            $running = 0;
+            $running = 1;
             $currentAction = $ciscoSwitch->getSnmpTdrIfActionStatus($request->ip, $request->port);
+            $loopcount++;
             switch ($currentAction['response'])
             {
                 case 1:
@@ -663,6 +664,7 @@ class NetworkController extends Controller {
                 case 5:
                     // echo "failed Test Already Running<br>";
                     sleep(2);
+
                     break;
                 case 6:
                     // echo 'Failed Interface Disabled<br>';
