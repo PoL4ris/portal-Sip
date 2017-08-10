@@ -1,1 +1,61 @@
-Manage services.
+Esto es nuevo aqui va la busqueda
+<hr>
+
+<div class="row">
+    <div class="col-lg-8 border2">
+        <p>Search for product</p>
+        <p>Tabla de resultados por aqui</p>
+        <input type="text"
+               class="size-100 no-padding-sides"
+               ng-model="productSearchModel"
+               id="somethingFunHere"
+               placeholder="Search For product by name"
+               ng-keyup="productSearch();rerender()">
+
+        <hr>
+        <div class="row" ng-if="productResultSearch">
+
+            <!---->
+            <div class="col-lg-12">
+                <b>
+                    <div class="col-lg-6">Product Name</div>
+                    <div class="col-lg-2">Frequency</div>
+                    <div class="col-lg-2">Created At</div>
+                    <div class="col-lg-2">Amount</div>
+                </b>
+            </div>
+
+
+            <div ng-repeat="resultSearch in productResultSearch" ng-click="prodIdsArray()" class="cursor-pointer col-lg-12 border3">
+                <!--<div class="col-lg-4">-->
+                <!--<label>({{resultSearch.id}}): </label>-->
+                <!--</div>-->
+                <div class="col-lg-6">
+                    <label>{{resultSearch.name}}</label>
+                </div>
+                <div class="col-lg-2">
+                    <label class="capital-first">{{resultSearch.frequency}}</label>
+                </div>
+                <div class="col-lg-2">
+                    <label ng-init="cAtData = convertDate(resultSearch.created_at)">{{cAtData | date : "MMM d, y" }}</label>
+                </div>
+                <div class="col-lg-2">
+                    <label>${{resultSearch.amount}}</label>
+                </div>
+            </div>
+
+            <!---->
+            <hr>
+        </div>
+
+        <button class="btn btn-success">Add Selected Products</button>
+
+
+    </div>
+
+    <div class="col-lg-4 border3">
+        <h4>Checkout por aqui</h4>
+        <p>Preview de Seleccionados.</p>
+    </div>
+
+</div>

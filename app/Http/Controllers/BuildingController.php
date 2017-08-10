@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
 use Illuminate\Http\Request;
 
 use DB;
@@ -49,8 +50,8 @@ class BuildingController extends Controller {
      */
     public function buildingData(Request $request)
     {
-        return Building::with('neighborhood', 'contacts', 'properties')
-            ->find($request->id ? $request->id : 29); //23
+        return Building::with('neighborhood', 'contacts', 'properties', 'activeBuildingProducts')
+            ->find($request->id ? $request->id : 29);
     }
 
     /**
@@ -427,6 +428,12 @@ class BuildingController extends Controller {
             return $building->switches;
         }
         return array();
+    }
+
+
+    public function productsSearch(Request $request)
+    {
+        return Product::where('name', 'like', '%' . $request['string'] . '%')->get();
     }
 
 }

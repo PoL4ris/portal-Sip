@@ -1,5 +1,5 @@
 //Building Controllers
-app.controller('buildingCtl',             function ($scope, $http, $stateParams, customerService, buildingService) {
+app.controller('buildingCtl',             function ($scope, $http, $stateParams, customerService, buildingService, DTOptionsBuilder) {
   console.log('bldContrl');
 
   //TMP HIDE AND SHOW SIDEBAR
@@ -38,27 +38,8 @@ app.controller('buildingCtl',             function ($scope, $http, $stateParams,
       $scope.propValuesList = response.data;
     });
 
-
-//verifyUse
-//     if (!$scope.sbid || !$stateParams.id) {
-//         $scope.SiteMenu = [];
-//         $http.get('buildings')
-//           .then(function (data){
-//             $scope.bldData = data.data;
-//             $scope.bld = $scope.bldData.building;
-//             //       $scope.offsetLimitFunction($scope.bldData.offset, $scope.bldData.limit);
-//         }), function (error){
-//             alert('Error');
-//         }
-//     }
-//     else {
-//       console.log($stateParams.id);
-//         $http.get("buildings", params + $scope.sbid ? $scope.sbid : $stateParams.id)
-//             .then(function (response) {
-//             $scope.bld = response.data;
-//         });
-//     }
-
+  $scope.dtOptions = DTOptionsBuilder.newOptions().withDisplayLength(5).withOption('order', [4, 'desc']);
+  $scope.dtOptionsResult = DTOptionsBuilder.newOptions().withOption('order', [4, 'desc']);
 
   $scope.displayBldData             = function (idBld) {
     $http.get("buildings/" + idBld)
@@ -251,8 +232,6 @@ app.controller('buildingCtl',             function ($scope, $http, $stateParams,
 
 
 
-
-
   $scope.jsonPropertiesFix          = function (json) {
 
 
@@ -300,12 +279,12 @@ app.controller('buildingCtl',             function ($scope, $http, $stateParams,
     hiddenElement.download = buildingService.building.name + ' ' + buildingService.building.code + ' Units.csv';
     hiddenElement.click();
 
-  }
+  };
 
   $scope.checkAllUnits              = function () {
     $('.units-checks').prop('checked', $('#check-uncheck').is(':checked'));
-  }
-  $scope.removePropUnits            = function(){
+  };
+  $scope.removePropUnits            = function () {
 
     var obj = getFormValues('units-form-container');
     var arr = Object.keys(obj).map(function (key) { return obj[key]; });
@@ -335,8 +314,8 @@ app.controller('buildingCtl',             function ($scope, $http, $stateParams,
           });
       }
 
-  }
-  $scope.addPropUnits               = function(){
+  };
+  $scope.addPropUnits               = function () {
 
     var units = getFormValues('add-units-comma-separated');
 
@@ -357,7 +336,31 @@ app.controller('buildingCtl',             function ($scope, $http, $stateParams,
         $('#add-units-comma-separated').trigger("reset");
       });
 
+  };
+
+
+
+
+  $scope.productSearch              = function (){
+//    console.log('this is the product search and the Model is : ' + this.productSearchModel);
+    if(!this.productSearchModel || this.productSearchModel.length === 0)
+    {
+      $scope.productResultSearch = true;
+      return;
+    }
+
+    $http.get("productsSearch", {params: {'string':this.productSearchModel}})
+      .then(function (response) {
+        console.log(response.data);
+        $scope.productResultSearch = response.data;
+      });
+  };
+
+  $scope.prodIdsArray = function(){
+    console.log('this is something ===> ' + this.resultSearch.id);
   }
+
+
 
 
 })

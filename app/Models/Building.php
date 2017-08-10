@@ -69,7 +69,7 @@ class Building extends Model {
     public function activeBuildingProducts()
     {
         return $this->hasMany('App\Models\BuildingProduct', 'id_buildings', 'id')
-            ->where('id_status', config('const.status.active'));
+            ->where('id_status', config('const.status.active'))->with('product');
     }
 
     public function products()

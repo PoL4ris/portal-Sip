@@ -84,6 +84,7 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('getGenericSearch',          'CustomerController@getGenericSearch');
     Route::get('getFilterBld',              'BuildingController@getFilterBld');
     Route::get('getCustomerById',           'TestController@supportTest');
+    Route::get('productsSearch',            'BuildingController@productsSearch');
     //GLOBAL SEARCH
     Route::get('getTicketsSearch',          'SupportController@getTicketsSearch');
     //Buildings & List

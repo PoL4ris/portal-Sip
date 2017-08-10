@@ -1,0 +1,23 @@
+
+<div class="filters-fixed-size">
+<table id="users-table" class="tablesorter table table-striped" datatable="ng" dt-options="dtOptions" >
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Product Name</th>
+        <th>Status</th>
+        <th>Amount</th>
+        <th>Frequency</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="producto in buildingData.active_building_products">
+        <td>{{producto.product.id}}</td>
+        <td>{{producto.product.name}}</td>
+        <td>{{producto.id_status == 1 ? 'Active' : 'Disabled'}}</td>
+        <td>${{producto.product.amount}}.00</td>
+        <td class="capital-first">{{producto.product.frequency}}</td>
+    </tr>
+    </tbody>
+</table>
+</div>
