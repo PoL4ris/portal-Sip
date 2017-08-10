@@ -463,8 +463,8 @@ class SIPNetwork {
 
         foreach ($portDescArr['response'] as $key => $desc) {
             $switchPortInfo = array();
-            if($skipLabelPattern != ''){
-
+            if(isset($portLabelArr['response'][$key]) == false){
+                continue;
             }
             $switchPortInfo['Name'] = $desc;
             $switchPortInfo['Label'] = isset($portLabelArr['response'][$key]) ? $portLabelArr['response'][$key] : '';
