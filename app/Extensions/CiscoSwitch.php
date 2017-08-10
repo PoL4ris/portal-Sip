@@ -106,6 +106,11 @@ class CiscoSwitch {
     const ccdTdrIfResultPairLengthUnit = '.1.3.6.1.4.1.9.9.390.1.2.2.1.7';
     const ccdTdrIfResultPairStatus = '.1.3.6.1.4.1.9.9.390.1.2.2.1.8';
 
+    const ccdIfInErrors = '.1.3.6.1.2.1.2.2.1.14';
+    const ccdIfCrcErrors = '1.3.6.1.4.1.9.2.2.1.1.12';
+
+
+
     protected $readCommunity = '';
     protected $writeCommunity = '';
 
@@ -438,7 +443,21 @@ class CiscoSwitch {
     }
 
 
-/*TDR Stuff*/
+/*Diagnostic Stuff*/
+
+    public function getIfInErrors($ip, $portNum, $isIdx = false)
+    {
+
+        return $this->getSnmpIndexValueByPort($ip, $portNum, $isIdx, self::ccdIfInErrors, false, true, true);
+
+    }
+
+    public function getIfCRCErrors($ip, $portNum, $isIdx = false)
+    {
+
+        return $this->getSnmpIndexValueByPort($ip, $portNum, $isIdx, self::ccdIfCrcErrors, false, true, true);
+
+    }
 
     public function getSnmpTdrIfActionStatus($ip, $portNum, $isIdx = false)
     {

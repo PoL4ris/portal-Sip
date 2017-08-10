@@ -699,6 +699,8 @@ class NetworkController extends Controller {
                     $resultTable['faultDistance'] = $ciscoSwitch->getSnmpTdrIfResultPairDistToFault($request->ip, $request->port);
                     $resultTable['pairStatus'] = $ciscoSwitch->getSnmpTdrIfResultPairStatus($request->ip, $request->port);
                     $resultTable['lenUnit'] = $ciscoSwitch->getSnmpTdrIfResultPairLengthUnit($request->ip, $request->port);
+                    $resultTable['inErrors'] = $ciscoSwitch->getIfInErrors($request->ip,$request->port); //this one is available always probably should be on its own button.
+                    $resultTable['crcErrors'] = $ciscoSwitch->getIfCRCErrors($request->ip,$request->port); //same as above
                     //dd($pairChannel, $pairLength, $pairLengthAccuracy, $distanceToFault, $pairStatus, $lengthUnit);
 
                     break;
