@@ -431,9 +431,39 @@ class BuildingController extends Controller {
     }
 
 
+
+
+
     public function productsSearch(Request $request)
     {
-        return Product::where('name', 'like', '%' . $request['string'] . '%')->get();
+        return Product::where('name', 'like', '%' . $request['string'] . '%')->paginate(10)->setPath('');
+    }
+    public function insertBuildingProducts(Request $request)
+    {
+        $data = $request->all();
+        $id_building = $data['id_buildings'];
+        $request->id = $id_building;
+
+        unset($data['id_buildings']);
+
+        foreach($data as $index => $item)
+        {
+            $verifyProd = BuildingProduct::where('id_buildings',$id_building)->where('id_products', $index)->first();
+            if(isset($verifyProd))
+                continue;
+            else
+            {
+                $newBldProduct = new BuildingProduct;
+                $newBldProduct->id_buildings = $id_building;
+                $newBldProduct->id_products  = $index;
+                $newBldProduct->id_status    = config('const.status.active');
+                $newBldProduct->save();
+            }
+        }
+
+
+        return Building::with('activeBuildingProducts')->find($id_building);
+
     }
 
 }

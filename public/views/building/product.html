@@ -1,22 +1,27 @@
-Esto es nuevo aqui va la busqueda
-<hr>
-
 <div class="row">
-    <div class="col-lg-8 border2">
-        <p>Search for product</p>
-        <p>Tabla de resultados por aqui</p>
-        <input type="text"
-               class="size-100 no-padding-sides"
-               ng-model="productSearchModel"
-               id="somethingFunHere"
-               placeholder="Search For product by name"
-               ng-keyup="productSearch();rerender()">
+    <div class="col-lg-8">
+        <h4>Search for product by Name</h4>
+        <hr>
+        <div class="relative">
+
+            <input type="text"
+                   class="size-100  padding-7"
+                   ng-model="productSearchModel"
+                   id="input-product-name"
+                   placeholder="Search For product by name"
+                   ng-keyup="productSearch()">
+            <div class="hoverinfo" ng-if="productResult">Showing: {{productResult.from}} to {{productResult.to}} of {{productResult.total}}</div>
+        </div>
+
 
         <hr>
-        <div class="row" ng-if="productResultSearch">
+        <div class="col-lg-12">
 
-            <!---->
-            <div class="col-lg-12">
+        </div>
+
+        <div class="row" ng-if="productLoading">
+
+            <div class="col-lg-12 b-b-ddd p-b-md m-b-md">
                 <b>
                     <div class="col-lg-6">Product Name</div>
                     <div class="col-lg-2">Frequency</div>
@@ -26,36 +31,72 @@ Esto es nuevo aqui va la busqueda
             </div>
 
 
-            <div ng-repeat="resultSearch in productResultSearch" ng-click="prodIdsArray()" class="cursor-pointer col-lg-12 border3">
-                <!--<div class="col-lg-4">-->
-                <!--<label>({{resultSearch.id}}): </label>-->
-                <!--</div>-->
-                <div class="col-lg-6">
-                    <label>{{resultSearch.name}}</label>
-                </div>
-                <div class="col-lg-2">
-                    <label class="capital-first">{{resultSearch.frequency}}</label>
-                </div>
-                <div class="col-lg-2">
-                    <label ng-init="cAtData = convertDate(resultSearch.created_at)">{{cAtData | date : "MMM d, y" }}</label>
-                </div>
-                <div class="col-lg-2">
-                    <label>${{resultSearch.amount}}</label>
-                </div>
-            </div>
+            <div ng-repeat="resultSearch in productResultSearch"
+                 ng-click="prodIdsArray()"
+                 class="cursor-pointer
+                        col-lg-12
+                        anim
+                        product-list-result
+                        service-id-{{resultSearch.id}}
+                        p-t-sm
+                        p-b-sm
+                        {{checkoutSelectedProducts[resultSearch.id]?'selected-product-active':''}}">
 
-            <!---->
-            <hr>
+                <div class="col-lg-6">
+                    <label class="cursor-pointer ">{{resultSearch.name}}</label>
+                </div>
+                <div class="col-lg-2">
+                    <label class="capital-first cursor-pointer">{{resultSearch.frequency}}</label>
+                </div>
+                <div class="col-lg-2">
+                    <label ng-init="cAtData = convertDate(resultSearch.created_at)" class="cursor-pointer">{{cAtData | date : "MMM d, y" }}</label>
+                </div>
+                <div class="col-lg-2">
+                    <label class="cursor-pointer">${{resultSearch.amount}}</label>
+                    <i class="fa fa-check up-status no-display pull-right"></i>
+                </div>
+
+            </div>
+        </div>
+        <div ng-if="!productLoading">
+            <img src="/img/loading.gif" alt="" class="loading-gif-support m-r-lg">
+        </div>
+        <hr>
+        <div class="col-lg-12">
+
+
+            <button type="button" class="btn btn-primary pull-left" ng-if="productResult.prev_page_url" ng-click="prevPage()">
+                <i class="fa fa-arrow-left"></i> Prev
+            </button>
+            <button type="button" class="btn btn-success pull-right" ng-if="productResult.next_page_url" ng-click="nextPage()">
+                Next <i class="fa fa-arrow-right"></i>
+            </button>
+
+        </div>
+        <hr>
+
+    </div>
+
+    <div class="col-lg-4">
+
+        <h4 class="text-center">Preview Selected Products.</h4>
+        <hr>
+
+        <div class="fixed-checkout-products-list">
+            <p ng-repeat="checkout in checkoutSelectedProducts" ng-if="checkoutSelectedProducts" class="b-b-ddd m-b-md padding-5">
+                {{checkout.name}}
+            </p>
         </div>
 
-        <button class="btn btn-success">Add Selected Products</button>
+        <div class="row" ng-if="productLargo > 0">
+            <div class="col-lg-12">
+                <b>{{productLargo}} Selected products</b>
+                <button class="btn btn-success pull-right" ng-click="submitNewProducts()">Add Selected Products</button>
+            </div>
 
+        </div>
 
     </div>
 
-    <div class="col-lg-4 border3">
-        <h4>Checkout por aqui</h4>
-        <p>Preview de Seleccionados.</p>
-    </div>
 
 </div>

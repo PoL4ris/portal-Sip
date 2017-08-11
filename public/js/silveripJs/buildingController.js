@@ -40,6 +40,8 @@ app.controller('buildingCtl',             function ($scope, $http, $stateParams,
 
   $scope.dtOptions = DTOptionsBuilder.newOptions().withDisplayLength(5).withOption('order', [4, 'desc']);
   $scope.dtOptionsResult = DTOptionsBuilder.newOptions().withOption('order', [4, 'desc']);
+  var checkoutSelectedProducts = {};
+
 
   $scope.displayBldData             = function (idBld) {
     $http.get("buildings/" + idBld)
@@ -341,24 +343,98 @@ app.controller('buildingCtl',             function ($scope, $http, $stateParams,
 
 
 
-  $scope.productSearch              = function (){
-//    console.log('this is the product search and the Model is : ' + this.productSearchModel);
+  $scope.productSearch              = function () {
+    $scope.productLoading = false;
     if(!this.productSearchModel || this.productSearchModel.length === 0)
     {
       $scope.productResultSearch = true;
+      $scope.productLoading = $scope.productResult = false;
       return;
     }
 
     $http.get("productsSearch", {params: {'string':this.productSearchModel}})
       .then(function (response) {
-        console.log(response.data);
-        $scope.productResultSearch = response.data;
+        $scope.productResultSearch = response.data.data;
+        $scope.productResult  = response.data;
+        $scope.productLoading = true;
+
       });
   };
-
-  $scope.prodIdsArray = function(){
-    console.log('this is something ===> ' + this.resultSearch.id);
+  $scope.prodIdsArray               = function () {
+  if(checkoutSelectedProducts[this.resultSearch.id])
+  {
+    delete checkoutSelectedProducts[this.resultSearch.id];
+    $('.service-id-' + this.resultSearch.id ).removeClass('selected-product-active');
   }
+  else
+  {
+    checkoutSelectedProducts[this.resultSearch.id] = this.resultSearch;
+    $('.service-id-' + this.resultSearch.id ).addClass('selected-product-active');
+  }
+  $scope.checkoutSelectedProducts = checkoutSelectedProducts;
+  $scope.productLargo = Object.keys(checkoutSelectedProducts).length;
+
+
+  };
+  $scope.nextPage                   = function () {
+
+    $scope.productLoading = false;
+
+    $http.get("productsSearch"+$scope.productResult.next_page_url, {params: {'string':this.productSearchModel}})
+      .then(function (response) {
+        $scope.productResultSearch = response.data.data;
+        $scope.productResult  = response.data;
+        $scope.productLoading = true;
+
+      });
+  };
+  $scope.prevPage                   = function () {
+
+    $scope.productLoading = false;
+
+    $http.get("productsSearch"+$scope.productResult.prev_page_url, {params: {'string':this.productSearchModel}})
+      .then(function (response) {
+        $scope.productResultSearch = response.data.data;
+        $scope.productResult  = response.data;
+        $scope.productLoading = true;
+      });
+  };
+  $scope.submitNewProducts          = function () {
+
+    $scope.checkoutSelectedProducts.id_buildings = $scope.buildingData.id;
+
+    $.SmartMessageBox({
+      title: "Please Confirm",
+      content: 'Add this Products to this Building?',
+      buttons: '[No][Yes]'
+    }, function (ButtonPressed) {
+      if (ButtonPressed === "Yes") {
+        $http.get("insertBuildingProducts", {params: $scope.checkoutSelectedProducts})
+          .then(function (response) {
+
+            $scope.buildingData.active_building_products = response.data.active_building_products;
+            //ResetValues
+            checkoutSelectedProducts = {};
+            $scope.checkoutSelectedProducts = checkoutSelectedProducts;
+            $('#input-product-name').val('');
+            $scope.productResult = $scope.productResultSearch = $scope.productLargo = $scope.productLoading = false;
+
+            //Notiff
+            $.smallBox({
+              title: "Products added",
+              content: "<i class='fa fa-clock-o'></i> <i>3 seconds ago...</i>",
+              color: "#739E73",
+              iconSmall: "fa fa-thumbs-up bounce animated",
+              timeout: 6000
+            });
+
+
+          });
+      }
+    });
+
+  }
+
 
 
 

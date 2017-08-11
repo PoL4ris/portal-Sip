@@ -63,6 +63,9 @@
 .header-dropdown-list {
   display: none;
 }
+.relative{
+  position:relative;
+}
 .display-none {
   display: none;
 }
@@ -359,7 +362,8 @@ Osk .new-form-blocks {
 .filters-fixed-size .dataTables_length, .filters-fixed-size .dataTables_filter, .support-table .dataTables_length, .support-table .dataTables_filter, .tickets-history-table .dataTables_length, .tickets-history-table .dataTables_filter, .billing-history-table .dataTables_length, .billing-history-table .dataTables_filter {
   width: 50%;
 }
-.support-table {
+.hide-filter-show .dataTables_length {
+  display: none;
 }
 .invoice-logo {
   float: left;
@@ -1430,6 +1434,38 @@ table.dataTable tbody tr {
 }
 .admin-id-search{
   width: 25%;
+}
+.product-list-result:nth-child(odd){
+  background: #f8f8f8;
+}
+.product-list-result:hover{
+  opacity:.7;
+}
+.product-list-result:hover label{
+  font-weight: bold;
+}
+
+.selected-product-active label{
+  font-weight: bold;
+}
+.selected-product-active i{
+  display: block;
+  position: relative;
+  top:5px;
+}
+.hoverinfo{
+  position: absolute;
+  font-size: 14px;
+  color: rgba(51, 51, 51, 0.54);
+  top: 8px;
+  font-style: italic;
+  right: 20px;
+}
+.fixed-checkout-products-list{
+  min-height: 460px;
+  overflow: auto;
+  max-height: 460px;
+  margin-bottom: 10px;
 }
 pre {
   font-size: 10px;

@@ -6,7 +6,7 @@ app.controller('chargesController', function ($scope, $http, customerService, ad
     customerService.sideBarFlag = false;
   }
 
-  $scope.displayView  = 'charges';
+  $scope.displayView  = 'pending';
   $scope.allMonths    = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   $scope.allYears     = ['2015', '2016', '2017', '2018', '2019'];
   $scope.dtOptions    = DTOptionsBuilder.newOptions().withDisplayLength(25);

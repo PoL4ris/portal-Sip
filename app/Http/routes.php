@@ -98,6 +98,7 @@ Route::group(['middleware' => 'web'], function () {
     Route::post('insertbuildingData',       'BuildingController@insertBuildingData');
     Route::get('insertBuildingProperties',  'BuildingController@insertBuildingProperties');
     Route::get('insertBuildingContacts',    'BuildingController@insertBuildingContacts');
+    Route::get('insertBuildingProducts',    'BuildingController@insertBuildingProducts');
     //Update Building
     Route::get('updateBuilding',            'BuildingController@updateBuilding');
     Route::get('updateBldPropValTable',     'BuildingController@updateBldPropValTable');
