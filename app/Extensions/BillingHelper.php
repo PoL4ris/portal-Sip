@@ -611,6 +611,28 @@ class BillingHelper {
         return true;
     }
 
+    public function rerunPendingAutopayInvoices()
+    {
+
+        $nowMysql = date("Y-m-d H:i:s");
+        Invoice::where('status', config('const.invoice_status.pending'))
+            ->where('processing_type', config('const.type.auto_pay'))
+            ->where(function ($query) use ($nowMysql)
+            {
+                $query->where('due_date', 'is', 'NULL')
+                    ->orWhere('due_date', '<=', $nowMysql)
+                    ->orWhere('due_date', '');
+            })->chunk(200, function ($invoices)
+            {
+                foreach ($invoices as $invoice)
+                {
+                    $this->processInvoice($invoice, true);
+//                    break;
+                }
+                dd('Done');
+            });
+    }
+
     public function processInvoice(Invoice $invoice, $notifyViaEmail = true, $notifyViaEmailOnlyIfPassed = false)
     {
         if (isset($invoice) == false)

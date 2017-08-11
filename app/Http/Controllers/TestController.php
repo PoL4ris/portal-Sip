@@ -9,6 +9,7 @@ use App\Http\Requests;
 use App\Extensions\SIPBilling;
 use App\Extensions\SIPSignup;
 use App\Extensions\SIPNetwork;
+use App\Extensions\SIPCustomer;
 use App\Extensions\BillingHelper;
 use App\Extensions\CiscoSwitch;
 use App\Extensions\MtikRouter;
@@ -402,6 +403,44 @@ class TestController extends Controller {
 
     public function generalTest(Request $request)
     {
+
+        $nowMysql = date("Y-m-d H:i:s");
+        $invoices = Invoice::where('status', config('const.invoice_status.pending'))
+            ->where('processing_type', config('const.type.auto_pay'))
+            ->where(function ($query) use ($nowMysql)
+            {
+                $query->where('due_date', 'is', 'NULL')
+                    ->orWhere('due_date', '<=', $nowMysql)
+                    ->orWhere('due_date', '');
+            })->get();
+
+        dd($invoices);
+
+        $switchPortInfoArray = array();
+        $portTypeRegEx = '/.*ethernet.*/i';
+//        $ciscoSwitch = $this->getSwitchInstance();
+        $ciscoSwitch = new CiscoSwitch(['readCommunity' => 'oomoomee',
+                         'writeCommunity' => 'BigSeem']);
+
+        $ip = '10.11.190.71';
+        $skipLabelPattern = ['/.*[uU]plink.*/i', '/.*[dD]ownlink.*/i', '/.*CORE.*/i', '/.*CCR.*/i', '/.*SWITCH.*/i', '/.*\-.*/i'];
+//        $skipLabelPattern =[];
+
+        $portDescArr = $ciscoSwitch->getSnmpAllPortDesc($ip, $portTypeRegEx);
+//        if(isset($portDescArr['error'])){
+//            return $switchPortInfoArray;
+//        }
+
+        $portLabelArr = $ciscoSwitch->getSnmpAllPortLabel($ip, $portTypeRegEx, $skipLabelPattern);
+//        if(isset($portLabelArr['error'])){
+//            return $switchPortInfoArray;
+//        }
+
+        dd([$portDescArr, $portLabelArr]);
+
+        $sipCustomer = new SIPCustomer();
+
+        dd($sipCustomer->addNewCustomer('', '', ''));
 
         $input = $request->all();
 

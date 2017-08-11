@@ -602,7 +602,7 @@ class NetworkController extends Controller {
     {
         $input = $request->all();
         $switchIp = $input['ip'];
-        $skipLabelPattern = ['/.*[uU]plink.*/i', '/.*[dD]ownlink.*/i'];
+        $skipLabelPattern = ['/.*[uU]plink.*/i', '/.*[dD]ownlink.*/i', '/.*CORE.*/i', '/.*CCR.*/i', '/.*SWITCH.*/i', '/.*\-.*/i'];
         $sipNetwork = new SIPNetwork();
 
         return $portInfoTable = $sipNetwork->getSwitchPortInfoTable($switchIp, $skipLabelPattern);
