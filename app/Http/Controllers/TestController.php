@@ -404,6 +404,18 @@ class TestController extends Controller {
     public function generalTest(Request $request)
     {
 
+        $nowMysql = date("Y-m-d H:i:s");
+        $invoices = Invoice::where('status', config('const.invoice_status.pending'))
+            ->where('processing_type', config('const.type.auto_pay'))
+            ->where(function ($query) use ($nowMysql)
+            {
+                $query->where('due_date', 'is', 'NULL')
+                    ->orWhere('due_date', '<=', $nowMysql)
+                    ->orWhere('due_date', '');
+            })->get();
+
+        dd($invoices);
+
         $switchPortInfoArray = array();
         $portTypeRegEx = '/.*ethernet.*/i';
 //        $ciscoSwitch = $this->getSwitchInstance();
