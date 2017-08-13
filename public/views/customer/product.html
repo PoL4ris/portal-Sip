@@ -8,7 +8,7 @@
                     <th>Service</th>
                     <th>Amount</th>
                     <th>Cycle</th>
-                    <th>Status</th>
+                    <!--<th>Status</th>-->
                     <th>Added</th>
                     <th>Expires</th>
                     <th colspan="2">Actions</th>
@@ -22,7 +22,7 @@
                     <td>{{ customerProduct.product.name }}</td>
                     <td>{{ customerProduct.product.amount | currency : "$" : 2 }}</td>
                     <td class="text-capitalize">{{ customerProduct.product.frequency }}</td>
-                    <td class="text-capitalize">{{ customerProductStatus.status.name }}</td>
+                    <!--<td class="text-capitalize">{{ customerProductStatus.status.name }}</td>-->
                     <td class="text-capitalize">{{ service.created_at | date : "shortDate" }}</td>
                     <td class="text-capitalize">{{ service.expires | date : "shortDate" }}</td>
                     <td class="prod-btns">

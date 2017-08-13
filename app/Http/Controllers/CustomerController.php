@@ -344,7 +344,7 @@ class CustomerController extends Controller {
         $customerArray = $customer->toArray();
         $updatedCustomerProducts = collect($customerArray['services'])->map(function ($customerProduct, $key) {
             $customerProduct['created_at'] = date('c', strtotime($customerProduct['created_at']));
-            $customerProduct['expires'] = date('c', strtotime($customerProduct['expires']));
+            $customerProduct['expires'] = ($customerProduct['expires'] != null && $customerProduct['expires'] != '') ? date('c', strtotime($customerProduct['expires'])) : $customerProduct['expires'];
             return $customerProduct;
         });
 
