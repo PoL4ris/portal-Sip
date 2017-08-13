@@ -18,22 +18,24 @@ class Charge extends Model {
     {
         return $this->hasOne('App\Models\Customer', 'id', 'id_customers');
     }
+
     public function address()
     {
         return $this->hasOne('App\Models\Address', 'id', 'id_address');
     }
-    public function invoices()
+
+    public function invoice()
     {
-        return $this->hasOne('App\Models\Invoice', 'id', 'id_invoices');
+        return $this->belongsTo('App\Models\Invoice', 'id_invoices');
     }
+
     public function user()
     {
         return $this->hasOne('App\Models\User', 'id', 'id_users');
     }
+
     public function productDetail()
     {
         return $this->hasOne('App\Models\CustomerProduct', 'id', 'id_customer_products');
     }
-
-
 }

@@ -9,6 +9,8 @@
                     <th>Amount</th>
                     <th>Cycle</th>
                     <th>Status</th>
+                    <th>Added</th>
+                    <th>Expires</th>
                     <th colspan="2">Actions</th>
                 </tr>
                 </thead>
@@ -18,9 +20,11 @@
                     class="bg-status-{{customerProductStatus.status.name}} bg-payment-{{ (service.amount_owed > 0) ? 'debt' : 'no-debt'}}">
 
                     <td>{{ customerProduct.product.name }}</td>
-                    <td>$ {{ customerProduct.product.amount }}.00</td>
+                    <td>{{ customerProduct.product.amount | currency : "$" : 2 }}</td>
                     <td class="text-capitalize">{{ customerProduct.product.frequency }}</td>
                     <td class="text-capitalize">{{ customerProductStatus.status.name }}</td>
+                    <td class="text-capitalize">{{ service.created_at | date : "shortDate" }}</td>
+                    <td class="text-capitalize">{{ service.expires | date : "shortDate" }}</td>
                     <td class="prod-btns">
                         <button class="btn fa btn-primary fa-eye modif-service-btn display-service-status-{{customerProductStatus.status.name}}"
                                 title="Edit Service"

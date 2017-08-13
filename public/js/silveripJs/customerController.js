@@ -1023,12 +1023,12 @@ app.controller('customerServicesController',        function ($scope, $http){
       $scope.customerData.customerServices = response.data;
     });
 
-  $scope.cSrvCrlFun       = function (){
-    $http.get("getCustomerServices", {params:{'id':$scope.idCustomer}})
-      .then(function (response) {
-        $scope.customerServices = response.data;
-      });
-  }
+  // $scope.cSrvCrlFun       = function (){
+  //   $http.get("getCustomerServices", {params:{'id':$scope.idCustomer}})
+  //     .then(function (response) {
+  //       $scope.customerServices = response.data;
+  //     });
+  // }
   $scope.showConfirm      = function (idProduct, status) {
 
     $.SmartMessageBox({

@@ -8,46 +8,37 @@ class CustomerProduct extends Model {
 
     public function address()
     {
-        return $this->hasOne('App\Models\Address', 'id', 'id_address');
+        return $this->belongsTo('App\Models\Address', 'id_address');
     }
 
     public function customer()
     {
-        return $this->hasOne('App\Models\Customer', 'id', 'id_customers');
-    }
-
-    public function port()
-    {
-        return $this->hasOne('App\Models\Port', 'id_customer_products', 'id');
+        return $this->belongsTo('App\Models\Customer', 'id_customers');
     }
 
     public function product()
     {
-        return $this->hasOne('App\Models\Product', 'id', 'id_products');
+        return $this->belongsTo('App\Models\Product', 'id_products');
     }
 
     public function status()
     {
-        return $this->hasOne('App\Models\Status', 'id', 'id_status');
+        return $this->belongsTo('App\Models\Status', 'id_status');
     }
 
+    public function activeCharge()
+    {
+        return $this->hasOne('App\Models\Charge', 'id_customer_products')
+            ->where(function ($query)
+            {
+                $query->where('charges.status', config('const.charge_status.pending'));
+//                    ->orWhere('charges.status', config('const.charge_status.invoiced'));
+            });
+    }
 
-//    public function building()
+    //    public function port()
 //    {
-////        return $this->hasManyThrough('App\Models\Building', 'App\Models\Address',
-////            'id_customers', ''
-//////            'App\Post', 'App\User',
-////            'country_id', 'user_id', 'id'
-////        );
-//        return $this->hasOne('App\Models\Product', 'id', 'id_products');
+//        return $this->hasOne('App\Models\Port', 'id_customer_products', 'id');
 //    }
-
-
-
-
-
-
-
-
 
 }

@@ -697,6 +697,15 @@ class CiscoSwitch {
                         unset($portIndexList[$key]);
                     }
                 }
+            } else if (strstr($switchModel, 'NK-C3'))
+            {
+                foreach ($portIndexList as $key => $value)
+                {
+                    if (strpos($key, 'Ethernet') !== 0)
+                    {
+                        unset($portIndexList[$key]);
+                    }
+                }
             }
         }
 
@@ -743,6 +752,9 @@ class CiscoSwitch {
                 } elseif (strstr($switchModel, 'WS-C6509'))
                 {
                     $portNamePrefix = 'GigabitEthernet';
+                } elseif (strstr($switchModel, 'NK-C3'))
+                {
+                    $portNamePrefix = 'Ethernet';
                 }
 
                 return $portNamePrefix;
