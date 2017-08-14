@@ -6,7 +6,7 @@ app.controller('chargesController', function ($scope, $http, customerService, ad
     customerService.sideBarFlag = false;
   }
 
-  $scope.displayView  = 'pending';
+  $scope.displayView  = 'charges';
   $scope.allMonths    = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   $scope.allYears     = ['2015', '2016', '2017', '2018', '2019'];
   $scope.dtOptions    = DTOptionsBuilder.newOptions()
@@ -310,7 +310,8 @@ app.controller('chargesController', function ($scope, $http, customerService, ad
         break;
       case 'empty':
         page = '?';
-        adminService.unit = adminService.amount = adminService.code = adminService.status = '';
+        adminService.unit = adminService.amount = adminService.code = '';
+        adminService.status = 2;
         $('#charges-filter-form-container').trigger('reset');
         break;
     }
