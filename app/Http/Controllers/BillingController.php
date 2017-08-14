@@ -206,7 +206,7 @@ class BillingController extends Controller {
 
         $loadResults = Charge::with('customer',
                                     'address',
-                                    'invoices',
+                                    'invoice',
                                     'user',
                                     'productDetail.product')
                              ->whereRaw('YEAR(start_date)  = YEAR(' . $timeData . ')')
