@@ -66,6 +66,9 @@
 .relative{
   position:relative;
 }
+.absolute{
+  position:absolute;
+}
 .display-none {
   display: none;
 }
@@ -403,7 +406,7 @@ table.dataTable tbody tr.customer-new-updated {
   font-weight: bold;
 }
 table.dataTable tbody tr.customer-new-updated td:first-child {
-  border-left: 2px solid red;
+  border-left: 8px solid red;
 }
 table.dataTable tbody tr {
   background: #f4f4f4 none repeat scroll 0 0;
@@ -1467,6 +1470,16 @@ table.dataTable tbody tr {
   max-height: 460px;
   margin-bottom: 10px;
 }
+.showing-paginate-label{
+  font-size: 14px;
+  color: rgba(51, 51, 51, 0.54);
+  font-style: italic;
+}
+.fixed-location-chargesandinvoices{
+
+}
+
+
 pre {
   font-size: 10px;
   margin: 30px;

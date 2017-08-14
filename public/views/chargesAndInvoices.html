@@ -1,5 +1,3 @@
-
-
 <div class="col-lg-12 no-padding-sides">
     <div class="col-lg-1 b-r-ddd btn months-select-style  {{(month == chargesAndInvoicesMonth || ($index+1) == chargesAndInvoicesMonth) ? 'ch-active-month' : 'regular-month'}}"
          ng-repeat="month in allMonths"
@@ -15,11 +13,59 @@
 </div>
 
 <div class="col-lg-12 p-t-lg p-b-lg bg-white white-shadow filters-fixed-size m-t-lg">
+    <form id="charges-filter-form-container">
+        <div class="col-lg-3">
+            <button class="btn btn-primary m-r-lg" ng-click="getCharges('empty')">Reset Filter</button>
+            <select name=""
+                    id=""
+                    ng-options="item as item.label for item in statusLabelArr track by item.id"
+                    ng-model="billingFilterStatus"
+                    ng-change="getCharges('status')"
+                    class="size-50">
+                <option value="">Select Option</option>
+            </select>
+        </div>
+        <div class="col-lg-3">
+            <div class="input-group input-group-sm ">
+                <input type="text" placeholder="Amount" class="form-control input-sm" enter-action="getCharges('amount')" ng-model="billingFilterAmount">
+                <div class="input-group-btn">
+                    <button type="submit" class="btn btn-danger" ng-click="getCharges('amount')">
+                        <i class="fa fa-fw fa-bullseye fa-lg"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="input-group input-group-sm ">
+                <input type="text" placeholder="Building" class="form-control input-sm" enter-action="getCharges('code')" ng-model="billingFilterCode">
+                <div class="input-group-btn">
+                    <button type="submit" class="btn btn-danger" ng-click="getCharges('code')">
+                        <i class="fa fa-fw fa-bullseye fa-lg"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="input-group input-group-sm ">
+                <input type="text" placeholder="Unit" class="form-control input-sm" enter-action="getCharges('unit')" ng-model="billingFilterUnit">
+                <div class="input-group-btn">
+                    <button type="submit" class="btn btn-danger" ng-click="getCharges('unit')">
+                        <i class="fa fa-fw fa-bullseye fa-lg"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+    <div class="col-lg-12 m-b-lg">
+        <hr>
+        <div class="showing-paginate-label">Showing: {{fullResponse.charges.from}} to {{fullResponse.charges.to}} of {{fullResponse.charges.total}}</div>
+    </div>
+
 
     <table id="myTable" class="tablesorter table table-striped" datatable="ng" dt-options="dtOptions">
         <thead>
         <tr>
-            <th>ID</th>
+            <!--<th>ID</th>-->
             <th>Type</th>
             <th>Customer</th>
             <th>Amount</th>
@@ -37,52 +83,46 @@
         <tbody>
         <tr ng-repeat="charge in chargesAndInvoices">
 
-            <td>{{charge.id}}</td>
-            <td class="capital-first ch-{{charge.status}} ch-border-1"><b>{{charge.type}}</b></td>
-            <td>
-                <a href="#/customers?id={{charge.customer.id}}">
-                    {{charge.customer.first_name + ' ' + charge.customer.last_name}}<br>
-                    {{charge.address.code}} Unit: {{charge.address.unit}}
-                </a>
-            </td>
+            <!--<td>{{charge.id}}</td>-->
+            <td class="capital-first ch-{{charge.status}} ch-border-1"><b>{{charge.type}}</b> ({{charge.id}})</td>
+
+            <td><a href="#/customers?id={{charge.customer.id}}">{{charge.customer.first_name + ' ' + charge.customer.last_name}}<br>{{charge.address.code}} Unit: {{charge.address.unit}}</a></td>
+
             <td>${{charge.amount}}</td>
+
             <td>{{charge.qty}}</td>
 
             <td ng-if="!charge.id_customer_products">N/A</td>
-            <td ng-if="charge.id_customer_products">
-                <i class="btn btn-primary fa fa-eye"
-                   ng-click="showProductDetail()"
-                   data-toggle="modal"
-                   data-target="#chandin-product"></i>
-            </td>
+            <td ng-if="charge.id_customer_products"><i class="btn btn-primary fa fa-eye" ng-click="showProductDetail()" data-toggle="modal" data-target="#chandin-product"></i></td>
 
             <td ng-if="!charge.id_invoices">N/A</td>
-            <td ng-if="charge.id_invoices">
-                <i class="btn btn-warning fa fa-file-pdf-o"
-                   ng-click="showInvoiceDetail()"
-                   data-toggle="modal"
-                   data-target="#chandin-invoice"></i>
-            </td>
+            <td ng-if="charge.id_invoices"><i class="btn btn-warning fa fa-file-pdf-o" ng-click="showInvoiceDetail()" data-toggle="modal" data-target="#chandin-invoice"></i></td>
 
             <td ng-init="statLabel = statusLabel(charge.status)" class="ch-{{statLabel}} capital-first ch-border ch-{{charge.status}}">{{statLabel}}</td>
 
             <td>{{charge.description}}</td>
-
             <td>{{charge.comment ? charge.comment : 'No Comments'}}</td>
-
 
             <td>
                 <label ng-init="resultDateSD = convertDate(charge.start_date)">{{ resultDateSD | date : "MMM d" }}</label> <b> - </b>
                 <label ng-init="resultDateED = convertDate(charge.end_date)"> {{ resultDateED | date : "MMM d" }}</label>
             </td>
-            <td ng-init="resultDateDD = convertDate(charge.due_date)"><b> {{ resultDateDD | date : "MMM d, y h:mm a" }}</b></td>
-            <td ng-init="resultDateCA = convertDate(charge.created_at)"><b>{{ resultDateCA | date : "MMM d y" }}</b></td>
+
+            <td ng-init="resultDateDD = convertDate(charge.due_date)"><b> {{ resultDateDD | date : "MMM d, y" }}</b></td>
+            <td ng-init="resultDateCA = convertDate(charge.created_at)"><b>{{ resultDateCA | date : "MMM d, y" }}</b></td>
 
 
         </tr>
         </tbody>
     </table>
 
+    <div>
+        <button class="btn btn-warning " ng-if="!fullResponse.charges.prev_page_url" disabled><i class="fa fa-arrow-left"></i> Prev</button>
+        <button class="btn btn-danger " ng-if="!fullResponse.charges.next_page_url" disabled>Next <i class="fa fa-arrow-right"></i></button>
+
+        <button class="btn btn-warning " ng-if="fullResponse.charges.prev_page_url" ng-click="getCharges(fullResponse.charges.prev_page_url)"><i class="fa fa-arrow-left"></i> Prev</button>
+        <button class="btn btn-danger " ng-if="fullResponse.charges.next_page_url" ng-click="getCharges(fullResponse.charges.next_page_url)">Next <i class="fa fa-arrow-right"></i></button>
+    </div>
 </div>
 
 

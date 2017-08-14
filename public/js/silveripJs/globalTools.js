@@ -468,20 +468,16 @@ app.controller('globalToolsCtl',                    function ($scope, $http, $co
   }
 
 
-}).directive('ngEnter', function () {
+}).directive('enterAction', function () {
   return function (scope, element, attrs) {
-
-//  console.log(element);
 
     element.bind("keydown keypress", function (event) {
 
 
-//      console.log('element.bind');
       if(event.which === 13) {
-//        console.log('event 13');
         scope.$apply(function (){
           console.log(this.target);
-          scope.$eval(attrs.ngEnter);
+          scope.$eval(attrs.enterAction);
         });
 
         event.preventDefault();

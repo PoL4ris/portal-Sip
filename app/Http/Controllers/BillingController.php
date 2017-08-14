@@ -195,27 +195,44 @@ class BillingController extends Controller {
      */
     public function getChargesAndInvoices(Request $request)
     {
-        $result['year'] = isset($request->chAndInYear) ? $request->chAndInYear : Date('Y');
-        $result['month'] = isset($request->chAndInMonth) ? $request->chAndInMonth : Date('M');
+        $result['year']  = isset($request->chAndInYear)  ? $request->chAndInYear  : Date('Y');
+        $result['month'] = isset($request->chAndInMonth) ? $request->chAndInMonth : Date('m');
+        $data = $request->all();
 
-        if (count($request->all()) > 1)
+        if (count($data) > 1)
             $timeData = '"' . $result['year'] . '-' . $result['month'] . '-' . '0"';
         else
             $timeData = 'CURRENT_DATE()';
 
-
         $loadResults = Charge::with('customer',
-            'address',
-            'invoices',
-            'user',
-            'productDetail.product')
-            ->whereRaw('YEAR(start_date)  = YEAR(' . $timeData . ')')
-            ->whereRaw('MONTH(start_date) = MONTH(' . $timeData . ')');
+                                    'address',
+                                    'invoices',
+                                    'user',
+                                    'productDetail.product')
+                             ->whereRaw('YEAR(start_date)  = YEAR(' . $timeData . ')')
+                             ->whereRaw('MONTH(start_date) = MONTH(' . $timeData . ')');
 
-        $result['charges'] = $loadResults->take(50)->get();
 
-        $result['total_count'] = $loadResults->count();
+        if(isset($data['status']))
+            $loadResults->where('status', $data['status']);
+        if(isset($data['amount']))
+            $loadResults->where('amount', 'like', '%' . $data['amount'] . '%');
+        if(isset($data['code']))
+        {
+            $code = $data['code'];
+            $loadResults->whereHas('address',  function($query) use ($code) {
+                $query->where('code', 'like', '%' . $code . '%');
+            });
+        }
+        if(isset($data['unit']))
+        {
+            $unit = $data['unit'];
+            $loadResults->whereHas('address',  function($query)  use ($unit) {
+                $query->where('unit', 'like', '%' . $unit . '%');
+            });
+        }
 
+        $result['charges'] = $loadResults->paginate(10)->setPath('');
         return $result;
     }
 

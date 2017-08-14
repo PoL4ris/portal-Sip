@@ -9,7 +9,21 @@ app.controller('chargesController', function ($scope, $http, customerService, ad
   $scope.displayView  = 'pending';
   $scope.allMonths    = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   $scope.allYears     = ['2015', '2016', '2017', '2018', '2019'];
-  $scope.dtOptions    = DTOptionsBuilder.newOptions().withDisplayLength(25);
+  $scope.dtOptions    = DTOptionsBuilder.newOptions()
+                                        .withDisplayLength(15)
+                                        .withOption('paging',     false)
+                                        .withOption('info',       false)
+                                        .withOption('order',      [11, 'desc'])
+                                        .withOption('searching',  false);
+//  $scope.dtOptions    = DTOptionsBuilder.newOptions().withDisplayLength(25);
+  $scope.statusLabelArr =  [
+    {id : 1, label:'Pending'},
+    {id : 2, label:'Invoiced'},
+    {id : 3, label:'Paid'},
+    {id : 4, label:'Failed'},
+    {id : 5, label:'Disabled'},
+    {id : 6, label:'Pending-Approval'},
+    {id : 7, label:'Denied'}];
 
   $http.get('getPendingManualCharges')
     .then(function (response) {
@@ -275,19 +289,40 @@ app.controller('chargesController', function ($scope, $http, customerService, ad
     processCheckFunct();
   }
   //Charges and invoices
-  $scope.getCharges           = function () {
+  $scope.getCharges           = function (page = '?') {
 
+    switch(page){
+      case 'status':
+        page = '?&';
+        adminService.status = this.billingFilterStatus.id ? this.billingFilterStatus.id : '';
+        break;
+      case 'amount':
+        page = '?&';
+        adminService.amount = this.billingFilterAmount ? this.billingFilterAmount : '';
+        break;
+      case 'code':
+        page = '?&';
+        adminService.code = this.billingFilterCode ? this.billingFilterCode : '';
+        break;
+      case 'unit':
+        page = '?&';
+        adminService.unit = this.billingFilterUnit ? this.billingFilterUnit : '';
+        break;
+      case 'empty':
+        page = '?';
+        adminService.unit = adminService.amount = adminService.code = adminService.status = '';
+        $('#charges-filter-form-container').trigger('reset');
+        break;
+    }
 
-    $http.get('getChargesAndInvoices', {params : adminService})
+    $http.get('getChargesAndInvoices' + page, {params : adminService})
       .then(function (response) {
-
-        console.log(response.data);
-        $scope.chargesAndInvoices       = response.data.charges;
-        $scope.chargesAndInvoicesYear   = response.data.year;
-        $scope.chargesAndInvoicesMonth  = response.data.month;
-        $scope
-        adminService.chAndInMonth       = response.data.month
-        adminService.chAndInYear        = response.data.year
+        $scope.chargesAndInvoices         =  response.data.charges.data;
+        $scope.chargesAndInvoicesYear     =  response.data.year;
+        $scope.chargesAndInvoicesMonth    =  response.data.month;
+        $scope.fullResponse               =  response.data;
+        adminService.chAndInMonth         =  response.data.month;
+        adminService.chAndInYear          =  response.data.year;
       });
   }
   $scope.showProductDetail    = function () {
