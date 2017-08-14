@@ -3015,14 +3015,18 @@ select[multiple].input-lg {
   background-image: none;
   border: 1px solid transparent;
   white-space: nowrap;
-  padding: 3px 3px;
-  font-size: 12px;
+  padding: 6px 12px;
+  font-size: 13px;
   line-height: 1.42857143;
   border-radius: 2px;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+}
+.btn-sm {
+  padding: 3px 3px;
+  font-size: 12px;
 }
 .btn:focus,
 .btn:active:focus,
