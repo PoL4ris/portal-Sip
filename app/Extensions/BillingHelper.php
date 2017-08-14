@@ -586,25 +586,23 @@ class BillingHelper {
         $perPage = 15;
         $totalInvoicesProcessed = 0;
 
-        $paginatedInvoices = $this->paginatePendingInvoicesWithUpdatedPaymentMethods();
-        $page = $paginatedInvoices->currentPage();
-
+        $paginatedInvoices = $this->paginatePendingInvoices();
+dd($paginatedInvoices);
         while (true)
         {
-            $invoices = $this->filterPendingInvoices($paginatedInvoices);
+            $invoices = $this->filterPendingInvoicesByUpdatedPaymentMethods($paginatedInvoices);
 
             foreach ($invoices as $invoice)
             {
                 $totalInvoicesProcessed ++;
-                $this->processInvoice($invoice, true, true);
+//                $this->processInvoice($invoice, true, true);
             }
 
             if ($paginatedInvoices->hasMorePages() == false)
             {
                 break;
             }
-            $page ++;
-            $paginatedInvoices = $this->paginatePendingInvoicesWithUpdatedPaymentMethods($perPage, $page);
+            $paginatedInvoices = $this->paginatePendingInvoices($perPage, $paginatedInvoices->currentPage()+1);
         }
 
         echo 'Processed ' . $totalInvoicesProcessed . ' invoices.' . "\n";
@@ -815,12 +813,11 @@ class BillingHelper {
         $customerProduct->save();
     }
 
-    public function paginatePendingInvoicesWithUpdatedPaymentMethods($perPage = 15, $page = null)
+    public function paginatePendingInvoices($perPage = 15, $page = null)
     {
         // Get pending invoices
         $invoices = Invoice::where('processing_type', config('const.type.auto_pay'))
-            ->where('status', config('const.invoice_status.pending'))
-            ->orderBy('id', 'asc');
+            ->where('status', config('const.invoice_status.pending'));
 
         if ($page == null)
         {
@@ -833,7 +830,7 @@ class BillingHelper {
         return $invoices;
     }
 
-    public function filterPendingInvoices($invoices)
+    public function filterPendingInvoicesByUpdatedPaymentMethods($invoices)
     {
         if ($invoices->isEmpty())
         {
@@ -846,14 +843,10 @@ class BillingHelper {
             return $invoice->customer == null;
         });
 
-//        Log::debug('Invoice count after customer check: ' . $invoices->count());
-
         // Remove invoices that don't have a valid payment method
         $invoices = $invoices->reject(function ($invoice, $key) {
             return $invoice->customer->defaultPaymentMethod == null || $invoice->customer->defaultPaymentMethod->updated_at == null;
         });
-
-//        Log::debug('Invoice count after payment method check: ' . $invoices->count());
 
         // Remove invoices that don't have an updated payment method
         $invoices = $invoices->reject(function ($invoice, $key) {
@@ -864,8 +857,6 @@ class BillingHelper {
 
             return $invoiceUpdatedAtUnixTimestamp > $pmUpdatedAtCarbonUnixTimestamp;
         });
-
-//        Log::debug('Invoice count after timestamp check: ' . $invoices->count());
 
         return $invoices;
     }

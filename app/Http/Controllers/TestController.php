@@ -511,9 +511,15 @@ class TestController extends Controller {
         $billingHelper = new BillingHelper();
 
 //        $billingHelper->processPendingAutopayInvoicesThatHaveUpdatedPaymentMethods();
-//        dd('done');
 
-        $invoices = $billingHelper->paginatePendingInvoicesWithUpdatedPaymentMethods();
+        $invoices = $billingHelper->paginatePendingInvoices();
+
+                $queries = DB::getQueryLog();
+                $last_query = end($queries);
+                dd($queries);
+
+
+
 
         dd($invoices->currentPage()); //->pluck('id'));
 
