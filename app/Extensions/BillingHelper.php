@@ -39,8 +39,7 @@ class BillingHelper {
     public function generateResidentialChargeRecords()
     {
         // Get residential buildings
-        $buildings = Building::with(['properties' => function ($query)
-        {
+        $buildings = Building::with(['properties' => function ($query) {
             $query->where('id_building_properties', config('const.building_property.service_type'))
                 ->where('value', 'LIKE', '%Retail%')
                 ->orWhere('value', 'LIKE', '%Bulk%');
@@ -99,15 +98,12 @@ class BillingHelper {
             ->where('customer_products.expires', '<=', $firstDayOfNextMonthMysql)
             // skip customer's product/service that are complimentary
             ->where('products.amount', '>', 0)
-            ->where(function ($query) use ($firstDayOfNextMonthMysql)
-            {
-                $query->where(function ($query2)
-                {
+            ->where(function ($query) use ($firstDayOfNextMonthMysql) {
+                $query->where(function ($query2) {
                     // Get 'onetime' products that have not been charged (status = 0)
                     $query2->where('customer_products.charge_status', '=', config('const.charge_status.none'))
                         ->where('products.frequency', '=', 'onetime');
-                })->orWhere(function ($query3) use ($firstDayOfNextMonthMysql)
-                {
+                })->orWhere(function ($query3) use ($firstDayOfNextMonthMysql) {
                     // Get 'monthly' and/or 'annual' products that have not been charged (status = 0 or 1 and an expired invoice date)
                     $query3->where('customer_products.charge_status', '<', config('const.charge_status.pending'))
                         ->where('products.frequency', '<>', 'onetime')
@@ -519,20 +515,14 @@ class BillingHelper {
         $invoice->save();
     }
 
-    protected function removeChargeFromInvoice(Charge $charge)
+    public function removeChargeFromInvoice(Charge $charge)
     {
 
-        if ($charge->id_invoices == null)
-        {
-            return true;
-        }
-
-        $invoice = Invoice::find($charge->id_invoices);
-
-        $charge->delete();
+        $invoice = $charge->invoice;
 
         if ($invoice != null)
         {
+            $charge->delete();
             $this->updateInvoiceAmount($invoice);
         }
 
@@ -555,7 +545,14 @@ class BillingHelper {
             }
         }
         $invoice->amount = number_format($total, 2);
-        $invoice->save();
+
+        if ($invoice->amount == 0)
+        {
+            $invoice->delete();
+        } else
+        {
+            $invoice->save();
+        }
     }
 
 
@@ -570,13 +567,11 @@ class BillingHelper {
         $invoices = Invoice::where('status', config('const.invoice_status.pending'))
             ->where('processing_type', config('const.type.auto_pay'))
             ->where('failed_charges_count', 0)
-            ->where(function ($query) use ($nowMysql)
-            {
+            ->where(function ($query) use ($nowMysql) {
                 $query->where('due_date', 'is', 'NULL')
                     ->orWhere('due_date', '<=', $nowMysql)
                     ->orWhere('due_date', '');
-            })->chunk(200, function ($invoices)
-            {
+            })->chunk(200, function ($invoices) {
                 foreach ($invoices as $invoice)
                 {
                     $this->processInvoice($invoice, true);
@@ -588,26 +583,30 @@ class BillingHelper {
 
     public function processPendingAutopayInvoicesThatHaveUpdatedPaymentMethods()
     {
+        $perPage = 15;
+        $totalInvoicesProcessed = 0;
 
+        $paginatedInvoices = $this->paginatePendingInvoices();
+dd($paginatedInvoices);
         while (true)
         {
+            $invoices = $this->filterPendingInvoicesByUpdatedPaymentMethods($paginatedInvoices);
 
-            echo "Calling getPendingInvoicesWithUpdatedPaymentMethods()\n";
-            $invoices = $this->getPendingInvoicesWithUpdatedPaymentMethods();
+            foreach ($invoices as $invoice)
+            {
+                $totalInvoicesProcessed ++;
+//                $this->processInvoice($invoice, true, true);
+            }
 
-            if ($invoices->isEmpty())
+            if ($paginatedInvoices->hasMorePages() == false)
             {
                 break;
             }
-            echo "Looping through invoices\n";
-            foreach ($invoices as $invoice)
-            {
-                $this->processInvoice($invoice, true, true);
-//                dd('done');
-            }
+            $paginatedInvoices = $this->paginatePendingInvoices($perPage, $paginatedInvoices->currentPage()+1);
         }
 
-        echo "Done looping through invoices\n";
+        echo 'Processed ' . $totalInvoicesProcessed . ' invoices.' . "\n";
+
         return true;
     }
 
@@ -617,13 +616,11 @@ class BillingHelper {
         $nowMysql = date("Y-m-d H:i:s");
         Invoice::where('status', config('const.invoice_status.pending'))
             ->where('processing_type', config('const.type.auto_pay'))
-            ->where(function ($query) use ($nowMysql)
-            {
+            ->where(function ($query) use ($nowMysql) {
                 $query->where('due_date', 'is', 'NULL')
                     ->orWhere('due_date', '<=', $nowMysql)
                     ->orWhere('due_date', '');
-            })->chunk(200, function ($invoices)
-            {
+            })->chunk(200, function ($invoices) {
                 foreach ($invoices as $invoice)
                 {
                     $this->processInvoice($invoice, true);
@@ -679,6 +676,7 @@ class BillingHelper {
             $invoice->status = config('const.invoice_status.paid');
             $invoice->save();
             $this->updateInvoiceProductDates($invoice, false);
+            $this->updateInvoiceChargeStatus($invoice, config('const.charge_status.paid'));
             $this->logInvoice($invoice, 'processed', $transactionId);
 
             if ($notifyViaEmail && $notifyViaEmailOnlyIfPassed)
@@ -760,9 +758,31 @@ class BillingHelper {
         return $updateCount;
     }
 
+    protected function updateInvoiceChargeStatus(Invoice $invoice, $status)
+    {
+        $charges = $invoice->charges;
+
+        if (count($charges) == 0)
+        {
+            Log::notice('BillingHelper::updateInvoiceChargeStatus(): NOTICE: invoice: ' . $invoice->id . ' has no charges.');
+
+            return false;
+        }
+
+        $updateCount = 0;
+        foreach ($charges as $charge)
+        {
+            $charge->status = $status;
+            $updateCount ++;
+        }
+
+        Log::notice('BillingHelper::processInvoice(): INFO: Updated the status of ' . $updateCount . ' charges in invoice: ' . $invoice->id . ' to ' . $status);
+
+        return $updateCount;
+    }
+
     protected function updateCustomerProductAttributes($customerProductId, $updateChargeTimestampOnly = false)
     {
-
         $customerProduct = CustomerProduct::find($customerProductId);
         $firstDayOfMonthTime = strtotime("first day of this month 00:00:00");
 
@@ -793,15 +813,25 @@ class BillingHelper {
         $customerProduct->save();
     }
 
-    public function getPendingInvoicesWithUpdatedPaymentMethods($take = 50)
+    public function paginatePendingInvoices($perPage = 15, $page = null)
     {
         // Get pending invoices
         $invoices = Invoice::where('processing_type', config('const.type.auto_pay'))
-            ->where('status', config('const.invoice_status.pending'))
-            ->orderBy('updated_at', 'asc')
-            ->take($take)
-            ->get();
+            ->where('status', config('const.invoice_status.pending'));
 
+        if ($page == null)
+        {
+            $invoices = $invoices->paginate($perPage);
+        } else
+        {
+            $invoices = $invoices->paginate($perPage, array('*'), 'page', $page);
+        }
+
+        return $invoices;
+    }
+
+    public function filterPendingInvoicesByUpdatedPaymentMethods($invoices)
+    {
         if ($invoices->isEmpty())
         {
             Log::notice('No pending invoices found.');
@@ -809,20 +839,17 @@ class BillingHelper {
             return $invoices;
         }
         // Remove invoices that don't have a valid customer
-        $invoices = $invoices->reject(function ($invoice, $key)
-        {
+        $invoices = $invoices->reject(function ($invoice, $key) {
             return $invoice->customer == null;
         });
 
         // Remove invoices that don't have a valid payment method
-        $invoices = $invoices->reject(function ($invoice, $key)
-        {
+        $invoices = $invoices->reject(function ($invoice, $key) {
             return $invoice->customer->defaultPaymentMethod == null || $invoice->customer->defaultPaymentMethod->updated_at == null;
         });
 
         // Remove invoices that don't have an updated payment method
-        $invoices = $invoices->reject(function ($invoice, $key)
-        {
+        $invoices = $invoices->reject(function ($invoice, $key) {
             $invoiceUpdatedAtCarbon = Carbon::createFromFormat('Y-m-d H:i:s', $invoice->updated_at, 'America/Chicago');
             $pmUpdatedAtCarbon = Carbon::createFromFormat('Y-m-d H:i:s', $invoice->customer->defaultPaymentMethod->updated_at, 'America/Chicago');
             $invoiceUpdatedAtUnixTimestamp = $invoiceUpdatedAtCarbon->timestamp;
@@ -832,7 +859,6 @@ class BillingHelper {
         });
 
         return $invoices;
-
     }
 
 
@@ -1596,8 +1622,7 @@ class BillingHelper {
         $chargeDetails['PaymentType'] = $chargeResult['PaymentType'];
         $chargeDetails['PaymentTypeDetails'] = $chargeResult['PaymentTypeDetails'];
 
-        Mail::send(array('html' => $template), ['invoice' => $invoice, 'customer' => $customer, 'address' => $address, 'lineItems' => $lineItems, 'chargeDetails' => $chargeDetails], function ($message) use ($toAddress, $subject, $customer, $address, $lineItems, $chargeDetails)
-        {
+        Mail::send(array('html' => $template), ['invoice' => $invoice, 'customer' => $customer, 'address' => $address, 'lineItems' => $lineItems, 'chargeDetails' => $chargeDetails], function ($message) use ($toAddress, $subject, $customer, $address, $lineItems, $chargeDetails) {
             $message->from('help@silverip.com', 'SilverIP Customer Care');
             $message->to($toAddress, trim($customer->first_name) . ' ' . trim($customer->last_name))->subject($subject);
         });
@@ -1642,15 +1667,12 @@ class BillingHelper {
             $queryBuilder = $queryBuilder->where('buildings.id', '=', $buildingId);
         }
 
-        $queryBuilder = $queryBuilder->where(function ($query) use ($firstDayofNextMonthMysql)
-        {
-            $query->where(function ($query2)
-            {
+        $queryBuilder = $queryBuilder->where(function ($query) use ($firstDayofNextMonthMysql) {
+            $query->where(function ($query2) {
                 // Get 'onetime' products that have not been invoiced (status = 0)
                 $query2->where('customer_products.invoice_status', '<', 1)
                     ->where('products.frequency', '=', 'onetime');
-            })->orWhere(function ($query3) use ($firstDayofNextMonthMysql)
-            {
+            })->orWhere(function ($query3) use ($firstDayofNextMonthMysql) {
                 // Get 'monthly' and/or 'annual' products that have not been invoiced (status = 0 or 1 and an expired invoice date)
                 $query3->where('customer_products.invoice_status', '<', 2)
                     ->where('products.frequency', '<>', 'onetime')

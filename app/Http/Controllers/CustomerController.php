@@ -24,6 +24,7 @@ use App\Models\Building;
 use App\Models\ContactType;
 use App\Models\ActivityLog;
 use App\Models\Charge;
+use App\Extensions\BillingHelper;
 
 /*
  * Extensions
@@ -335,7 +336,20 @@ class CustomerController extends Controller {
      */
     public function getCustomerServices(Request $request)//FIX IDCUSTOMER TO ID ON HTTP REQUEST.
     {
-        return Customer::with('services')->find($request->id ? $request->id : $request->idCustomer);
+        $customer = Customer::with('services')->find($request->id ? $request->id : $request->idCustomer);
+        if($customer == null){
+            return $customer;
+        }
+
+        $customerArray = $customer->toArray();
+        $updatedCustomerProducts = collect($customerArray['services'])->map(function ($customerProduct, $key) {
+            $customerProduct['created_at'] = date('c', strtotime($customerProduct['created_at']));
+            $customerProduct['expires'] = ($customerProduct['expires'] != null && $customerProduct['expires'] != '') ? date('c', strtotime($customerProduct['expires'])) : $customerProduct['expires'];
+            return $customerProduct;
+        });
+
+        $customerArray['services'] = $updatedCustomerProducts->toArray();
+        return $customerArray;
     }
 
     /**
@@ -588,6 +602,8 @@ class CustomerController extends Controller {
         $activeService->id_status = 2;
         $activeService->save();
 
+        $this->cancelActiveChargesForCustomerProduct($activeService);
+
         $newData = array();
         $newData['id_status'] = 2;
 
@@ -597,6 +613,20 @@ class CustomerController extends Controller {
 
         return $this->getCustomerServices($request);
 
+    }
+
+    protected function cancelActiveChargesForCustomerProduct(CustomerProduct $customerProduct)
+    {
+
+        $charge = $customerProduct->activeCharge;
+        if ($charge == null)
+        {
+            Log::info('cancelActiveChargesForCustomerProduct(): CustomerProduct id=' . $customerProduct->id . ' has no active charges.');
+
+            return false;
+        }
+        $billingHelper = new BillingHelper();
+        return $billingHelper->removeChargeFromInvoice($charge);
     }
 
     /**

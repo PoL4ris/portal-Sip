@@ -9,7 +9,7 @@ return [
         'closed'         => 'closed'
     ],
     'ticket_status'                  => [
-        'new' => 'new',
+        'new'       => 'new',
         'escalated' => 'escalated',
         'closed'    => 'closed'
     ],
@@ -59,13 +59,15 @@ return [
         'disabled'         => 5,
         'pending_approval' => 6,
         'denied'           => 7,
+        'cancelled'        => 8,
     ],
     'invoice_status'                 => [
-        'none'    => 0,
-        'open'    => 1,
-        'pending' => 2,
-        'paid'    => 3,
-        'failed'  => 4,
+        'none'      => 0,
+        'open'      => 1,
+        'pending'   => 2,
+        'paid'      => 3,
+        'failed'    => 4,
+        'cancelled' => 5,
     ],
     'building_property'              => [
         'type'              => '1',

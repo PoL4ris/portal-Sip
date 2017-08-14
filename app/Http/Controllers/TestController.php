@@ -404,55 +404,75 @@ class TestController extends Controller {
     public function generalTest(Request $request)
     {
 
-        $nowMysql = date("Y-m-d H:i:s");
-        $invoices = Invoice::where('status', config('const.invoice_status.pending'))
-            ->where('processing_type', config('const.type.auto_pay'))
-            ->where(function ($query) use ($nowMysql)
-            {
-                $query->where('due_date', 'is', 'NULL')
-                    ->orWhere('due_date', '<=', $nowMysql)
-                    ->orWhere('due_date', '');
-            })->get();
+//        $customer = Customer::with('services')->find(9992)->toArray();
+//
+//        dd(collect($customer['services']));
+//
+//        dd(date('c', strtotime('2010-05-29 01:17:35')));
+//        dd(date('Y-m-d\TH:i:s.v A', strtotime('2010-05-29 01:17:35')));
+//
+//
+//        $customerProduct =  CustomerProduct::find(9472);
+//        dd([$customerProduct, $customerProduct->product, $customerProduct->activeCharge]);
+//
+//        $charge = Charge::find(29);
+//        dd($charge->invoice);
+//
+//
+//        $nowMysql = date("Y-m-d H:i:s");
+//        $invoices = Invoice::where('status', config('const.invoice_status.pending'))
+//            ->where('processing_type', config('const.type.auto_pay'))
+//            ->where(function ($query) use ($nowMysql)
+//            {
+//                $query->where('due_date', 'is', 'NULL')
+//                    ->orWhere('due_date', '<=', $nowMysql)
+//                    ->orWhere('due_date', '');
+//            })->get();
+//
+//        dd($invoices);
 
-        dd($invoices);
-
-        $switchPortInfoArray = array();
-        $portTypeRegEx = '/.*ethernet.*/i';
-//        $ciscoSwitch = $this->getSwitchInstance();
-        $ciscoSwitch = new CiscoSwitch(['readCommunity' => 'oomoomee',
-                         'writeCommunity' => 'BigSeem']);
-
-        $ip = '10.11.190.71';
-        $skipLabelPattern = ['/.*[uU]plink.*/i', '/.*[dD]ownlink.*/i', '/.*CORE.*/i', '/.*CCR.*/i', '/.*SWITCH.*/i', '/.*\-.*/i'];
-//        $skipLabelPattern =[];
-
-        $portDescArr = $ciscoSwitch->getSnmpAllPortDesc($ip, $portTypeRegEx);
-//        if(isset($portDescArr['error'])){
-//            return $switchPortInfoArray;
-//        }
-
-        $portLabelArr = $ciscoSwitch->getSnmpAllPortLabel($ip, $portTypeRegEx, $skipLabelPattern);
-//        if(isset($portLabelArr['error'])){
-//            return $switchPortInfoArray;
-//        }
-
-        dd([$portDescArr, $portLabelArr]);
-
-        $sipCustomer = new SIPCustomer();
-
-        dd($sipCustomer->addNewCustomer('', '', ''));
-
-        $input = $request->all();
-
-//        $customers = Customer::where('id_status', config('const.status.active'))->simplePaginate(5);
-        $customers = Customer::where('id_status', config('const.status.active'))->paginate(5);
-
-        dd([$customers, $input]);
-        $customerNames = $customers->pluck( 'last_name', 'first_name');
-        dd($customerNames);
-
-
-
+//        $switchPortInfoArray = array();
+//        $portTypeRegEx = '/.*ethernet.*/i';
+////        $ciscoSwitch = $this->getSwitchInstance();
+//        $ciscoSwitch = new CiscoSwitch(['readCommunity' => 'oomoomee',
+//                         'writeCommunity' => 'BigSeem']);
+//
+////        $ip = '10.11.190.71';
+//        $ip = '10.15.215.254';
+//
+//        $skipLabelPattern = ['/.*[uU]plink.*/i', '/.*[dD]ownlink.*/i', '/.*CORE.*/i', '/.*CCR.*/i', '/.*SWITCH.*/i', '/.*\-.*/i'];
+////        $skipLabelPattern =[];
+//
+//        $response = $ciscoSwitch->getSnmpModelNumber($ip);
+//        dd($response);
+//
+//        $portDescArr = $ciscoSwitch->getSnmpAllPortDesc($ip, $portTypeRegEx);
+////        if(isset($portDescArr['error'])){
+////            return $switchPortInfoArray;
+////        }
+//
+//        $portLabelArr = $ciscoSwitch->getSnmpAllPortLabel($ip, $portTypeRegEx, $skipLabelPattern);
+////        if(isset($portLabelArr['error'])){
+////            return $switchPortInfoArray;
+////        }
+//
+//        dd([$portDescArr, $portLabelArr]);
+//
+//        $sipCustomer = new SIPCustomer();
+//
+//        dd($sipCustomer->addNewCustomer('', '', ''));
+//
+//        $input = $request->all();
+//
+////        $customers = Customer::where('id_status', config('const.status.active'))->simplePaginate(5);
+//        $customers = Customer::where('id_status', config('const.status.active'))->paginate(5);
+//
+//        dd([$customers, $input]);
+//        $customerNames = $customers->pluck( 'last_name', 'first_name');
+//        dd($customerNames);
+//
+//
+//
 
 //        $customer = Customer::find(4648);
 //
@@ -468,7 +488,7 @@ class TestController extends Controller {
 //            }
 //        }
 
-        dd('done');
+//        dd('done');
 
 //        dd([$customerAddress, $portAddress]);
 //        dd($customer->getNetworkInfo());
@@ -476,10 +496,10 @@ class TestController extends Controller {
 //        $customerPort = $customer->customerPort->first();
 
 
-        dd($customerPort->portWithNetworkNode);
-        dd($customerPort->networkNode);
-
-        dd($customer->getNetworkInfo());
+//        dd($customerPort->portWithNetworkNode);
+//        dd($customerPort->networkNode);
+//
+//        dd($customer->getNetworkInfo());
 
 //        $invoices = Invoice::where('processing_type', config('const.type.auto_pay'))
 //            ->where('status', config('const.invoice_status.pending'))
@@ -490,10 +510,31 @@ class TestController extends Controller {
 
         $billingHelper = new BillingHelper();
 
-        $billingHelper->processPendingAutopayInvoicesThatHaveUpdatedPaymentMethods();
-        dd('done');
+//        $billingHelper->processPendingAutopayInvoicesThatHaveUpdatedPaymentMethods();
 
-        dd($billingHelper->getPendingInvoicesWithUpdatedPaymentMethods());
+        $invoices = $billingHelper->paginatePendingInvoices();
+
+                $queries = DB::getQueryLog();
+                $last_query = end($queries);
+                dd($queries);
+
+
+
+
+        dd($invoices->currentPage()); //->pluck('id'));
+
+
+//    $results->count()
+//    $results->currentPage()
+//    $results->firstItem()
+//    $results->hasMorePages()
+//    $results->lastItem()
+//    $results->lastPage() (Not available when using simplePaginate)
+//    $results->nextPageUrl()
+//    $results->perPage()
+//    $results->previousPageUrl()
+//    $results->total() (Not available when using simplePaginate)
+//    $results->url($page)
 
         dd($billingHelper->getChargeableCustomerProductsByCustomerId(4667));
 //

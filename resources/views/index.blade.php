@@ -11,7 +11,8 @@
 
   <!-- #CSS Links -->
   <!-- Basic Styles -->
-  <link rel="stylesheet" type="text/css" media="screen" href="/css/smart/styles/css/bootstrap.min.css">
+  {{--<link rel="stylesheet" type="text/css" media="screen" href="/css/smart/styles/css/bootstrap.min.css">--}}
+  <link rel="stylesheet" type="text/css" media="screen" href="/css/smart/styles/css/bootstrap.css">
   <link rel="stylesheet" type="text/css" media="screen" href="/css/smart/styles/css/font-awesome.min.css">
 
   <!-- SmartAdmin Styles : Caution! DO NOT change the order -->

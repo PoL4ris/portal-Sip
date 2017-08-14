@@ -18,7 +18,7 @@
             <tr ng-repeat="billing in billingHistory" class="{{billing.response_text == 'DECLINED' ? 'bg-declined-payment' : '' }}">
                 <td ng-init="resultDate = convertDate(billing.created_at)">{{resultDate | date : "MMM d, y h:mm a" }}</td>
                 <td>{{ billing.transaction_type == 'TOKENIZE' ? 'CC UPDATE' : billing.transaction_type }}</td>
-                <td>{{ billing.amount }}</td>
+                <td>{{ billing.amount | currency : "$" : 2 }}</td>
                 <td>{{ billing.payment_mode }}</td>
                 <td>{{ billing.order_number }}</td>
                 <td>{{ billing.charge_description }}</td>
