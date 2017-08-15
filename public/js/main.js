@@ -239,7 +239,7 @@ angular.module('app.charges',       ['ui.router']).config(function ($stateProvid
       },
       views: {
         "content@app": {
-          templateUrl: '/views/billing.html',
+          templateUrl: '/views/billing/billing.html',
           controller: 'chargesController',
         }
       },

@@ -189,6 +189,7 @@ app.controller('globalToolsCtl',                    function ($scope, $http, $co
 //             }
 //             else
         $scope.customerSearchResult = response.data;
+        console.log(response.data.length);
       });
 
     return;

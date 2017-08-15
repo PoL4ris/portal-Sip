@@ -3,14 +3,15 @@
     <div class="sub-nav pull-left">
         <div class="admin-sub-nav">
             <p ng-click="setView(0)">Billing Approval</p>
-            <p ng-click="setView()">Invoices</p>
+            <p ng-click="setView(4)">Invoices</p>
             <p ng-click="setView(1)">Charges</p>
         </div>
     </div>
 
     <article class="workspace  null-article admin-app pull-left">
-        <div ng-include="'/views/charges.html'"             id="admin-profiles-include" ng-if="displayView == 'charges' && userDataAuth.id_profiles == 1"></div>
-        <div ng-include="'/views/chargesAndInvoices.html'"  id="admin-users-include"    ng-if="displayView == 'pending'"></div>
+        <div ng-include="'/views/billing/pendingRequests.html'" id="admin-profiles-include" ng-if="displayView == 'charges' && userDataAuth.id_profiles == 1"></div>
+        <div ng-include="'/views/billing/charges.html'"         id="admin-users-include"    ng-if="displayView == 'pending'"></div>
+        <div ng-include="'/views/billing/invoices.html'"        id="admin-users-includea"   ng-if="displayView == 'invoices'"></div>
     </article>
 
 </div>

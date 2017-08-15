@@ -119,7 +119,7 @@ app.controller('customerController',                function ($scope, $http, $st
       if(objects[obj]['value'] == 'err' || objects[obj]['value'] == '')
       {
         var tmp = objects[obj]['name'].split('id_');
-        console.log(tmp);
+//        console.log(tmp);
         alert('Verify ' + (tmp[1]?tmp[1]:objects[obj]['name']) + ' Field');
         return;
       }
@@ -202,14 +202,14 @@ app.controller('customerController',                function ($scope, $http, $st
   $scope.contactEditMode            = function (){
     if ( $scope.checkboxModelA == false)
     {
-      console.log($scope.checkboxModelA);
+//      console.log($scope.checkboxModelA);
       $('.c-no-editable-text').fadeIn('slow');
       $('.c-editable-text').css('display', 'none');
       $scope.checkboxModelA = true;
     }
     else
     {
-      console.log($scope.checkboxModelA);
+//      console.log($scope.checkboxModelA);
       $('.c-editable-text').fadeIn('slow');
       $('.c-no-editable-text').css('display', 'none');
       $scope.checkboxModelA = false;
@@ -221,7 +221,7 @@ app.controller('customerController',                function ($scope, $http, $st
     data['value'] = value;
     $http.get("updateContactInfo", {params:data})
       .then(function (response) {
-        console.log(response.data);
+//        console.log(response.data);
       });
   };
   $scope.open                       = function (id, type){
@@ -349,14 +349,14 @@ app.controller('customerController',                function ($scope, $http, $st
     //  action = 0 CANCEL
     if( action == 1)
     {
-      console.log('aqui estamos ' + this.$index);
+//      console.log('aqui estamos ' + this.$index);
       $('#mb-ca-table').fadeOut();
       $('#mb-ca-edit').fadeIn();
       $scope.indexOfToShow = this.$index;
     }
     else
     {
-      console.log('aqui estamos ' + action);
+//      console.log('aqui estamos ' + action);
       $('#mb-ca-edit').fadeOut();
       $('#mb-ca-table').fadeIn();
     }
@@ -439,10 +439,6 @@ app.controller('customerInvoiceHistoryController',  function ($scope, $http){
   if(!$scope.invoiceData)
     $http.get("getInvoiceHistory", {params:{'id':$scope.idCustomer}})
       .then(function (response) {
-
-        console.log('this is the getInvoiceHistory');
-        console.log(response.data);
-
         $scope.invoiceData = response.data;
       });
 
@@ -459,10 +455,7 @@ app.controller('customerNetworkController',         function ($scope, $http){
   $http.get("getCustomerNetwork", {params:{'id':$scope.idCustomer}})
     .then(function (response) {
       $scope.customerNetwork = response.data[0];
-      console.log($scope.customerNetwork);
-
-
-
+//      console.log($scope.customerNetwork);
       if(response.data.length > 0){
         networkServices(0, true);
       }
@@ -657,7 +650,7 @@ app.controller('customerNetworkController',         function ($scope, $http){
 app.controller('customerBuildingController',        function ($scope, $http){
 
   //   console.log($scope.customerData);
-  console.log('this is Entramos');
+//  console.log('this is Entramos');
 
   if($scope.customerData) {
     $http.get("buildings/" + $scope.customerData.address.id_buildings)
@@ -675,7 +668,7 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http){
 
   $http.get("getDefaultPaymentMethod", {params:{'id':$scope.stcid ? $scope.stcid : $scope.idCustomer}})
     .then(function (response) {
-      console.log(response.data);
+//      console.log(response.data);
       $scope.paymentData = response.data[0];
       $scope.pproperties = response.data[1];
       $scope.customerData.defaultPayment = $scope.paymentData;
@@ -1049,7 +1042,7 @@ app.controller('customerServicesController',        function ($scope, $http){
       }
       if (ButtonPressed === "No") {
 
-        console.log('dijo que no');
+//        console.log('dijo que no');
 
         $.smallBox({
           title: "Callback function",

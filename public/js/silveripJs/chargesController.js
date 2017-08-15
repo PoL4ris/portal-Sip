@@ -344,6 +344,7 @@ app.controller('chargesController', function ($scope, $http, customerService, ad
                  '1' : 'pending',
                  '2' : 'apps',
                  '3' : 'bprop',
+                 '4' : 'invoices',
     }
     $scope.displayView = views[id];
 

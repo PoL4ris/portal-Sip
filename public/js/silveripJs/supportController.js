@@ -253,6 +253,7 @@ app.controller('supportController',                 function ($scope, $http, DTO
   $scope.getTicketSearch                = function (){
 
     if(!this.genericSearch || this.genericSearch == ''){
+
       $scope.genericTicketSearchResult = null;
       return;
     }
