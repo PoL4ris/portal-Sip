@@ -15,17 +15,7 @@ use SebastianBergmann\Exporter\Exporter;
 
 $exporter = new Exporter;
 
-/*
-Exception Object &0000000078de0f0d000000002003a261 (
-    'message' => ''
-    'string' => ''
-    'code' => 0
-    'file' => '/home/sebastianbergmann/test.php'
-    'line' => 34
-    'trace' => Array &0 ()
-    'previous' => null
-)
-*/
+test.blade.php
 
 print $exporter->export(new Exception);
 ```

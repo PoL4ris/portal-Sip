@@ -25,7 +25,10 @@
                         <td>{{ invoice.failed_charges_count }}</td>
                         <td>{{ invoice.amount | currency : "$" : 2 }}</td>
                         <td>{{ invoice.bill_cycle_day }}</td>
-                        <td>{{ invoice.processing_type == 13 ? 'Autopay' : invoice.processing_type }}</td>
+
+                        <td ng-if="invoice.processing_type == 13">Autopay</td>
+                        <td ng-if="invoice.processing_type == 14">Manual Pay</td>
+
                         <td ng-init="resultDate = convertDate(invoice.due_date)">{{resultDate | date : "MMM d, y h:mm a" }}</td>
                         <!--<td>{{ invoice.due_date | limitTo : 10 }}</td>-->
 

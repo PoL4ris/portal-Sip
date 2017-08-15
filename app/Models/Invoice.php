@@ -40,4 +40,8 @@ class Invoice extends Model {
     {
         return $this->hasOne('App\Models\Customer', 'id', 'id_customers');
     }
+    public function types()
+    {
+        return $this->hasOne('App\Models\Customer', 'id', 'id_customers');
+    }
 }

@@ -84,7 +84,7 @@
                     </td>
 
                     <td>{{data.user_assigned.first_name ? (data.user_assigned.first_name) : 'AUTO' }}</td>
-                    <td ng-init="resultDate = convertDate(data.updated_at)">{{resultDate | date : "MMM d, y h:mm a" }}</td>
+                    <td ng-init="resultDate = convertDate(data.updated_at)">{{resultDate | date : "shortDate" }}</td>
 
 
                     <td class="{{data.old}}">

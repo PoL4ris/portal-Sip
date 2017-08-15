@@ -439,7 +439,10 @@ app.controller('customerInvoiceHistoryController',  function ($scope, $http){
   if(!$scope.invoiceData)
     $http.get("getInvoiceHistory", {params:{'id':$scope.idCustomer}})
       .then(function (response) {
-//        console.log(response.data);
+
+        console.log('this is the getInvoiceHistory');
+        console.log(response.data);
+
         $scope.invoiceData = response.data;
       });
 

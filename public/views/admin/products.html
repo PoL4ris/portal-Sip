@@ -1,9 +1,8 @@
 <div class="col-lg-12">
-    <button class="btn btn-primary" ng-click="addNewProd()" ng-if="!newProd"><i class="fa fa-plus"></i> Add New Product</button>
-    <button class="btn btn-danger" ng-click="prodCancel()" ng-if="newProd"><i class="fa fa-times"></i> Cancel</button>
+    <button class="btn btn-primary" ng-click="addNewProd()" data-toggle="modal" data-target="#adminModalProd"><i class="fa fa-plus"></i> Add New Product</button>
 </div>
 
-<div class="col-lg-7 white-shadow m-t-lg bg-white padding-10">
+<div class="col-lg-12 white-shadow m-t-lg bg-white padding-10">
     <div class="admin-workspace animated fadeInLeft">
         <div class="m-t-lg">
             <table id="users-table" class="tablesorter table table-striped" datatable="ng" dt-options="dtOptionsProd" ng-if="adminUsers">
@@ -25,10 +24,8 @@
                     <td>{{product.type.name}}</td>
                     <td>{{product.amount}}</td>
                     <td>{{product.frequency}}</td>
-                    <td ng-init="cAtData = convertDate(product.created_at)">
-                        {{cAtData | date : "MMM d, y" }}
-                    </td>
-                    <td><i class="btn btn-success fa fa-pencil" ng-click="editProd()"></i></td>
+                    <td ng-init="cAtData = convertDate(product.created_at)">{{cAtData | date : "MMM d, y" }}</td>
+                    <td><i class="btn btn-success fa fa-pencil" ng-click="editProd()" data-toggle="modal" data-target="#adminModalProd"></i></td>
                 </tr>
                 </tbody>
             </table>
@@ -37,155 +34,182 @@
 </div>
 
 
-<!--FORM-->
-<div class="col-lg-5" ng-if="newProd || editProdData">
-    <div class="row">
-        <form class="animated fadeInRight" id="admin-prod-form">
-            <!--APP DATA-->
-            <div class="col-lg-12">
-                <label>Name <span class="down-status">*</span></label>
-                <br>
 
-                <input type="text"
-                       placeholder="Product Name Ex: 100 Mbps - Annual ($330.00)"
-                       name="name"
-                       class="size-100 p-l-md"
-                       value="{{editProdData ? editProdData.name : null}}"
-                       required>
-                <hr>
-                <label>Description</label>
-                <br>
-                <input type="text"
-                       placeholder="Description"
-                       name="description"
-                       class="size-100 p-l-md"
-                       value="{{editProdData ? editProdData.description : null}}">
-                <hr>
-                <div class="col-lg-6 no-padding-sides">
-                    <label>Type <span class="down-status">*</span></label>
-                    <br>
-                    <select name="id_types">
-                        <option value="" ng-if="!editProdData">Select Type</option>
-                        <option ng-if="editProdData" value="{{editProdData.id_types}}">{{typesList[editProdData.id_types].name}}</option>
-                        <option value="{{item.id}}" ng-repeat="item in typesList">{{item.name}}</option>
-                    </select>
+
+
+<!-- MODAL PRODUCT FORM -->
+<div class="modal fade" id="adminModalProd" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-ticket-size">
+        <div class="modal-content">
+            <form id="admin-app-form">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <span ng-if="editProdData">Edit Product</span>
+                    <span ng-if="!editProdData">New Product Info</span>
                 </div>
+                <div class="modal-body">
+                    <div class="wrapper-sm">
+                        <div class="row">
 
-                <div class="col-lg-6 no-padding-sides">
-                    <label>Frequency <span class="down-status">*</span></label>
-                    <br>
-                    <select name="frequency">
-                        <option value="" ng-if="!editProdData">Select Frequency</option>
-                        <option ng-if="editProdData" value="{{editProdData.frequency}}">{{editProdData.frequency}}</option>
-                        <option ng-if="editProdData || newProd" value="annual"> Annual</option>
-                        <option ng-if="editProdData || newProd" value="complimentary"> Complimentary</option>
-                        <option ng-if="editProdData || newProd" value="included"> Included</option>
-                        <option ng-if="editProdData || newProd" value="monthly"> Monthly</option>
-                        <option ng-if="editProdData || newProd" value="onetime"> One-time</option>
-                    </select>
-                </div>
-                <br>
+                            <!--SOMETHING HERE-->
 
-                <hr>
+                            <form class="animated fadeInRight" id="admin-prod-form">
+                                <!--APP DATA-->
+                                <div class="col-lg-12">
+                                    <label>Name <span class="down-status">*</span></label>
+                                    <br>
 
-                <label>Amount <span class="down-status">*</span></label>
-                <br>
-                <input type="text"
-                       placeholder="Set amount with no comas or signs"
-                       name="amount"
-                       required
-                       class="size-100 p-l-md"
-                       id="product-amount"
-                       value="{{editProdData ? editProdData.amount : null}}">
+                                    <input type="text"
+                                           placeholder="Product Name Ex: 100 Mbps - Annual ($330.00)"
+                                           name="name"
+                                           class="size-100 p-l-md"
+                                           value="{{editProdData ? editProdData.name : null}}"
+                                           required>
+                                    <hr>
+                                    <label>Description</label>
+                                    <br>
+                                    <input type="text"
+                                           placeholder="Description"
+                                           name="description"
+                                           class="size-100 p-l-md"
+                                           value="{{editProdData ? editProdData.description : null}}">
+                                    <hr>
+                                    <div class="col-lg-6 no-padding-sides">
+                                        <label>Type <span class="down-status">*</span></label>
+                                        <br>
+                                        <select name="id_types">
+                                            <option value="" ng-if="!editProdData">Select Type</option>
+                                            <option ng-if="editProdData" value="{{editProdData.id_types}}">{{typesList[editProdData.id_types].name}}</option>
+                                            <option value="{{item.id}}" ng-repeat="item in typesList">{{item.name}}</option>
+                                        </select>
+                                    </div>
 
-                <hr>
-                <p ng-if="!setPropertiesFlag">Set Properties; Internet services require properties. <i class="fa fa-plus btn btn-primary pull-right" ng-click="setProperties();"></i></p>
-                <p ng-if="setPropertiesFlag">Set Properties; Phone, Cable run, Activation fee dont require this.<i class="fa fa-times btn btn-danger pull-right" ng-click="setProperties();"></i></p>
-                <hr>
+                                    <div class="col-lg-6 no-padding-sides">
+                                        <label>Frequency <span class="down-status">*</span></label>
+                                        <br>
+                                        <select name="frequency">
+                                            <option value="" ng-if="!editProdData">Select Frequency</option>
+                                            <option ng-if="editProdData" value="{{editProdData.frequency}}">{{editProdData.frequency}}</option>
+                                            <option ng-if="editProdData || newProd" value="annual"> Annual</option>
+                                            <option ng-if="editProdData || newProd" value="complimentary"> Complimentary</option>
+                                            <option ng-if="editProdData || newProd" value="included"> Included</option>
+                                            <option ng-if="editProdData || newProd" value="monthly"> Monthly</option>
+                                            <option ng-if="editProdData || newProd" value="onetime"> One-time</option>
+                                        </select>
+                                    </div>
+                                    <br>
 
-                <div class="row" ng-if="setPropertiesFlag">
-                    <div class="col-lg-6 ">
-                        <label>Data Service Download  <i class="fa fa-arrow-down up-status m-l-lg"></i></label>
-                        <br>
-                        <input type="text"
-                               placeholder="Data download speed in Mbps Ex: 30"
-                               name="pp1"
-                               class="p-l-md size-100"
-                               id="data-service-download"
-                               required
-                               value="{{editProdData ? editProdData.property_values[0].value : null}}">
-                        <hr>
+                                    <hr>
+
+                                    <label>Amount <span class="down-status">*</span></label>
+                                    <br>
+                                    <input type="text"
+                                           placeholder="Set amount with no comas or signs"
+                                           name="amount"
+                                           required
+                                           class="size-100 p-l-md"
+                                           id="product-amount"
+                                           value="{{editProdData ? editProdData.amount : null}}">
+
+                                    <hr>
+                                    <p ng-if="!setPropertiesFlag">Set Properties; Internet services require properties. <i class="fa fa-plus btn btn-primary pull-right" ng-click="setProperties();"></i></p>
+                                    <p ng-if="setPropertiesFlag">Set Properties; Phone, Cable run, Activation fee dont require this.<i class="fa fa-times btn btn-danger pull-right" ng-click="setProperties();"></i></p>
+                                    <hr>
+
+                                    <div class="row" ng-if="setPropertiesFlag">
+                                        <div class="col-lg-6 ">
+                                            <label>Data Service Download  <i class="fa fa-arrow-down up-status m-l-lg"></i></label>
+                                            <br>
+                                            <input type="text"
+                                                   placeholder="Data download speed in Mbps Ex: 30"
+                                                   name="pp1"
+                                                   class="p-l-md size-100"
+                                                   id="data-service-download"
+                                                   required
+                                                   value="{{editProdData ? editProdData.property_values[0].value : null}}">
+                                            <hr>
+                                        </div>
+                                        <div class="col-lg-6 ">
+                                            <label>Data Service Upload <i class="fa fa-arrow-up up-status m-l-lg"></i></label>
+                                            <br>
+                                            <input type="text"
+                                                   placeholder="Data upload speed in Mbps Ex: 30"
+                                                   name="pp2"
+                                                   class="p-l-md size-100"
+                                                   id="b"
+                                                   required
+                                                   value="{{editProdData ? editProdData.property_values[1].value : null}}">
+                                            <hr>
+                                        </div>
+                                        <div class="col-lg-6 ">
+                                            <label>Service Title </label>
+                                            <br>
+                                            <input type="text"
+                                                   placeholder="Title displayed on Signup page Ex: 30Mbps"
+                                                   name="pp3"
+                                                   class="p-l-md size-100"
+                                                   id="c"
+                                                   required
+                                                   value="{{editProdData ? editProdData.property_values[2].value : null}}">
+                                            <hr>
+                                        </div>
+                                        <div class="col-lg-6 ">
+                                            <label>Service Slogans </label>
+                                            <br>
+                                            <input type="text"
+                                                   placeholder="Ex: Fast web,Download music,Stream movies"
+                                                   name="pp4"
+                                                   class="p-l-md size-100"
+                                                   id="d"
+                                                   required
+                                                   value="{{editProdData ? editProdData.property_values[3].value : null}}">
+                                            <hr>
+                                        </div>
+                                        <div class="col-lg-6 ">
+                                            <label>Data Service Delivery</label>
+                                            <br>
+                                            <input type="text"
+                                                   placeholder="Data delivery method Ex: Ethernet"
+                                                   name="pp5"
+                                                   class="p-l-md size-100"
+                                                   required
+                                                   id="e"
+                                                   value="{{editProdData ? editProdData.property_values[4].value : null}}">
+                                            <hr>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-lg-12" ng-if="productUsedBy">
+                                        <p>This product is used by : <b>{{productUsedBy.length}}</b>, Buildings.</p>
+                                        <ul>
+
+                                            <li ng-repeat="building in productUsedBy">{{building.building.code}} , {{building.building.name}}</li>
+                                        </ul>
+
+
+                                    </div>
+
+
+                                </div>
+                                <!--ACTION BUTTONS-->
+                                <div class="col-lg-12 m-t-lg">
+                                    <button class="btn btn-success pull-right" ng-if="!editProdData" ng-click="submitNewProd()">Submit Product</button>
+                                    <button class="btn btn-success pull-right" ng-if="editProdData" ng-click="updateProduct()">Update Product</button>
+                                </div>
+                            </form>
+
+                            <!--SOMETHING HERE-->
+                        </div>
                     </div>
-                    <div class="col-lg-6 ">
-                        <label>Data Service Upload <i class="fa fa-arrow-up up-status m-l-lg"></i></label>
-                        <br>
-                        <input type="text"
-                               placeholder="Data upload speed in Mbps Ex: 30"
-                               name="pp2"
-                               class="p-l-md size-100"
-                               id="b"
-                               required
-                               value="{{editProdData ? editProdData.property_values[1].value : null}}">
-                        <hr>
-                    </div>
-                    <div class="col-lg-6 ">
-                        <label>Service Title </label>
-                        <br>
-                        <input type="text"
-                               placeholder="Title displayed on Signup page Ex: 30Mbps"
-                               name="pp3"
-                               class="p-l-md size-100"
-                               id="c"
-                               required
-                               value="{{editProdData ? editProdData.property_values[2].value : null}}">
-                        <hr>
-                    </div>
-                    <div class="col-lg-6 ">
-                        <label>Service Slogans </label>
-                        <br>
-                        <input type="text"
-                               placeholder="Ex: Fast web,Download music,Stream movies"
-                               name="pp4"
-                               class="p-l-md size-100"
-                               id="d"
-                               required
-                               value="{{editProdData ? editProdData.property_values[3].value : null}}">
-                        <hr>
-                    </div>
-                    <div class="col-lg-6 ">
-                    <label>Data Service Delivery</label>
-                    <br>
-                    <input type="text"
-                           placeholder="Data delivery method Ex: Ethernet"
-                           name="pp5"
-                           class="p-l-md size-100"
-                           required
-                           id="e"
-                           value="{{editProdData ? editProdData.property_values[4].value : null}}">
-                    <hr>
                 </div>
-                </div>
+                <div class="modal-footer">
 
-
-                <div class="col-lg-12" ng-if="productUsedBy">
-                    <p>This product is used by : <b>{{productUsedBy.length}}</b>, Buildings.</p>
-                    <ul>
-
-                        <li ng-repeat="building in productUsedBy">{{building.building.code}} , {{building.building.name}}</li>
-                    </ul>
-
+                    <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="prodCancel()">Cancel</button>
 
                 </div>
-
-
-            </div>
-            <!--ACTION BUTTONS-->
-            <div class="col-lg-12 m-t-lg">
-                <button class="btn btn-success pull-right" ng-if="!editProdData" ng-click="submitNewProd()">Submit Product</button>
-                <button class="btn btn-success pull-right" ng-if="editProdData" ng-click="updateProduct()">Update Product</button>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
-    <button class="btn btn-danger" ng-click="prodCancel()" ng-if="editProdData"><i class="fa fa-times"></i> Cancel</button>
 </div>
-<!--END FORM-->
+<!-- END MODAL MODAL PRODUCT FORM -->
