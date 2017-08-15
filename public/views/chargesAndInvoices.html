@@ -22,15 +22,15 @@
                     ng-model="billingFilterStatus"
                     ng-change="getCharges('status')"
                     class="size-50">
-                <option value="">Select Option</option>
+                <option value="">Select Status</option>
             </select>
         </div>
         <div class="col-lg-3">
             <div class="input-group input-group-sm ">
                 <input type="text" placeholder="Amount" class="form-control input-sm" enter-action="getCharges('amount')" ng-model="billingFilterAmount">
                 <div class="input-group-btn">
-                    <button type="submit" class="btn btn-danger" ng-click="getCharges('amount')">
-                        <i class="fa fa-fw fa-bullseye fa-lg"></i>
+                    <button type="submit" class="btn btn-primary" ng-click="getCharges('amount')">
+                        <i class="fa fa-fw fa-filter fa-lg"></i>
                     </button>
                 </div>
             </div>
@@ -39,8 +39,8 @@
             <div class="input-group input-group-sm ">
                 <input type="text" placeholder="Building" class="form-control input-sm" enter-action="getCharges('code')" ng-model="billingFilterCode">
                 <div class="input-group-btn">
-                    <button type="submit" class="btn btn-danger" ng-click="getCharges('code')">
-                        <i class="fa fa-fw fa-bullseye fa-lg"></i>
+                    <button type="submit" class="btn btn-primary" ng-click="getCharges('code')">
+                        <i class="fa fa-fw fa-filter fa-lg"></i>
                     </button>
                 </div>
             </div>
@@ -49,8 +49,8 @@
             <div class="input-group input-group-sm ">
                 <input type="text" placeholder="Unit" class="form-control input-sm" enter-action="getCharges('unit')" ng-model="billingFilterUnit">
                 <div class="input-group-btn">
-                    <button type="submit" class="btn btn-danger" ng-click="getCharges('unit')">
-                        <i class="fa fa-fw fa-bullseye fa-lg"></i>
+                    <button type="submit" class="btn btn-primary" ng-click="getCharges('unit')">
+                        <i class="fa fa-fw fa-filter fa-lg"></i>
                     </button>
                 </div>
             </div>
@@ -76,17 +76,18 @@
             <th>Description</th>
             <th>Comment</th>
             <th>Period</th>
-            <th>Due Date</th>
-            <th>Created On</th>
+            <th>Due On</th>
+            <th>Added</th>
         </tr>
         </thead>
         <tbody>
         <tr ng-repeat="charge in chargesAndInvoices">
 
             <!--<td>{{charge.id}}</td>-->
-            <td class="capital-first ch-{{charge.status}} ch-border-1"><b>{{charge.type}}</b> ({{charge.id}})</td>
+            <td class="capital-first ch-{{charge.status}} " ng-if="charge.type == 'credit'"><b><i>{{charge.type}}</i></b></td>
+            <td class="capital-first ch-{{charge.status}} " ng-if="charge.type != 'credit'">{{charge.type}}</td>
 
-            <td><a href="#/customers?id={{charge.customer.id}}">{{charge.customer.first_name + ' ' + charge.customer.last_name}}<br>{{charge.address.code}} Unit: {{charge.address.unit}}</a></td>
+            <td><a href="#/customers?id={{charge.customer.id}}">{{charge.customer.first_name + ' ' + charge.customer.last_name}}<br>{{charge.address.code}} #{{charge.address.unit}}</a></td>
 
             <td>${{charge.amount}}</td>
 
@@ -98,7 +99,7 @@
             <td ng-if="!charge.id_invoices">N/A</td>
             <td ng-if="charge.id_invoices"><i class="btn btn-warning fa fa-file-pdf-o" ng-click="showInvoiceDetail()" data-toggle="modal" data-target="#chandin-invoice"></i></td>
 
-            <td ng-init="statLabel = statusLabel(charge.status)" class="ch-{{statLabel}} capital-first ch-border ch-{{charge.status}}">{{statLabel}}</td>
+            <td ng-init="statLabel = statusLabel(charge.status)" class="ch-{{statLabel}} capital-first ch-border-1 ch-{{charge.status}}">{{statLabel}}</td>
 
             <td>{{charge.description}}</td>
             <td>{{charge.comment ? charge.comment : 'No Comments'}}</td>
@@ -108,8 +109,8 @@
                 <label ng-init="resultDateED = convertDate(charge.end_date)"> {{ resultDateED | date : "MMM d" }}</label>
             </td>
 
-            <td ng-init="resultDateDD = convertDate(charge.due_date)"><b> {{ resultDateDD | date : "MMM d, y" }}</b></td>
-            <td ng-init="resultDateCA = convertDate(charge.created_at)"><b>{{ resultDateCA | date : "MMM d, y" }}</b></td>
+            <td ng-init="resultDateDD = convertDate(charge.due_date)"><b> {{ resultDateDD | date : "shortDate" }}</b></td>
+            <td ng-init="resultDateCA = convertDate(charge.created_at)"><b>{{ resultDateCA | date : "shortDate" }}</b></td>
 
 
         </tr>

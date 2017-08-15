@@ -8,7 +8,7 @@ app.controller('adminController',                   function($scope, $http, cust
     customerService.sideBarFlag = false;
   }
 
-  $scope.displayView = 'prod';
+  $scope.displayView = 'users';
 
   $http.post("getAdminUsers", {params:{'token':adminService.existeToken}})
     .then(function (response) {

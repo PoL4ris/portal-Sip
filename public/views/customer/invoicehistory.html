@@ -29,7 +29,7 @@
                         <td ng-if="invoice.processing_type == 13">Autopay</td>
                         <td ng-if="invoice.processing_type == 14">Manual Pay</td>
 
-                        <td ng-init="resultDate = convertDate(invoice.due_date)">{{resultDate | date : "MMM d, y h:mm a" }}</td>
+                        <td ng-init="resultDate = convertDate(invoice.due_date)">{{resultDate | date : "shortDate" }}</td>
                         <!--<td>{{ invoice.due_date | limitTo : 10 }}</td>-->
 
                         <!--<td>{{ billing.action_code }}</td>-->

@@ -48,8 +48,8 @@
                     <th>Address</th>
                     <th>Type</th>
                     <th>Amount</th>
-                    <th>Comment</th>
-                    <th>Request Date</th>
+                    <th>Agent Notes</th>
+                    <th>Requested At</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -82,7 +82,11 @@
                             </label>
                         </div>
                     </td>
-                    <td class="{{charge.type == 'credit' ? 'style-refund' : 'style-charge'}}">{{charge.customer.first_name ? charge.customer.first_name + ' ' + charge.customer.last_name : 'N/A'}}</td>
+                    <td class="{{charge.type == 'credit' ? 'style-refund' : 'style-charge'}}">
+                        <a href="#/customers?id={{charge.customer.id}}">
+                            {{charge.customer.first_name ? charge.customer.first_name + ' ' + charge.customer.last_name : 'N/A'}}
+                        </a>
+                    </td>
                     <td>{{charge.address ? charge.address.code + ' #' + charge.address.unit : 'N/A'}}</td>
                     <td class="capital-first"><b>{{charge.type}}</b></td>
                     <td>${{charge.amount}}</td>
