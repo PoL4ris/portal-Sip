@@ -64,10 +64,10 @@ app.controller('supportController',                 function ($scope, $http, DTO
   $scope.letterLimit  = 40;
   $scope.dtOptions    = DTOptionsBuilder.newOptions().withPaginationType('full_numbers').withDisplayLength(50).withOption('order', [8, 'desc']);
 
-  $scope.showFullComment                = function(id) {
+  $scope.showFullComment                = function (id) {
     $('#ticket-' + id).fadeIn('slow');
   };
-  $scope.hideFullComment                = function(id) {
+  $scope.hideFullComment                = function (id) {
     $('#ticket-' + id).fadeOut('fast');
   };
   $scope.displayCustomerResume          = function (id){
@@ -267,7 +267,7 @@ app.controller('supportController',                 function ($scope, $http, DTO
 
     return;
   };
-  $scope.cleanTicketSearch              = function(){
+  $scope.cleanTicketSearch              = function (){
     $('#support-ticket-search-form').trigger('reset');
     $scope.genericTicketSearchResult = null;
   };

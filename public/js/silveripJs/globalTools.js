@@ -30,7 +30,7 @@ app.controller('globalToolsCtl',                    function ($scope, $http, $co
       $('#arrowChange').removeClass("fa-arrow-circle-left");
     }
   };
-  $scope.singleUpdateXedit    = function(id, value, field, table, routeFunction) {
+  $scope.singleUpdateXedit    = function (id, value, field, table, routeFunction) {
 
     console.log('singleUpdateXedit -> globalTools function to send xedit update');
     console.log('Function singleUpdateXedit---> with routeFunction ---' + routeFunction);
@@ -329,6 +329,10 @@ app.controller('globalToolsCtl',                    function ($scope, $http, $co
     document.execCommand('copy');
   }
 
+  $scope.safeHtml = function (valor){
+    return $sce.trustAsHtml(valor);
+  }
+
   $scope.validateField        = function (type, $event){
 //    console.log('validate field | ' + type + ' | ' + this.validaMail);
 //    console.log($event);
@@ -469,7 +473,8 @@ app.controller('globalToolsCtl',                    function ($scope, $http, $co
   }
 
 
-}).directive('enterAction', function () {
+})
+.directive('enterAction', function () {
   return function (scope, element, attrs) {
 
     element.bind("keydown keypress", function (event) {

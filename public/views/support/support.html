@@ -77,10 +77,16 @@
                         ng-click="displayTicketResume(data.id, data.id_customers)"
                         data-toggle="modal"
                         data-target="#ticketModal">
-                        <!--<div ng-bind-html="data.comment | limitTo : 30"></div>-->
-                        {{data.comment | limitTo:letterLimit}}
-                        <div id='ticket-{{ data.id }}' style="display: none;" class="ticket-comment-pop" >{{data.comment}}</div>
-                        <!--<div id='ticket-{{ data.id }}' style="display: none;" class="ticket-comment-pop" ng-bind-html="data.comment"></div>-->
+                        <div ng-bind-html="data.comment | limitTo : 30"></div>
+                        <!--{{data.comment | limitTo:letterLimit}}-->
+                        <!--<div id='ticket-{{ data.id }}' style="display: none;" class="ticket-comment-pop" ></div>-->
+                        <div id='ticket-{{ data.id }}'
+                             style="display: none;"
+                             class="ticket-comment-pop"
+                             ng-if="data.comment"
+                             ng-init="safeHtmlValue = safeHtml(data.comment)"
+                             ng-bind-html="safeHtmlValue">
+                        </div>
                     </td>
 
                     <td>{{data.user_assigned.first_name ? (data.user_assigned.first_name) : 'AUTO' }}</td>
@@ -211,7 +217,12 @@
 
                             <div class="col-lg-12 b-t-ddd no-padding-sides p-t-lg p-b-lg m-t-lg summary-ticket-container" ng-if="selectedTicket">
                                 <div>Summary:</div>
-                                <div ng-bind-html="selectedTicket.comment" class="comment-content m-b-md">{{selectedTicket.comment}}</div>
+                                <div
+                                     ng-if="selectedTicket.comment"
+                                     ng-init="safeHtmlValue = safeHtml(selectedTicket.comment)"
+                                     ng-bind-html="safeHtmlValue"
+                                     class="comment-content m-b-md">
+                                </div>
                             </div>
 
                             <!--Info Left Block-->
@@ -263,7 +274,7 @@
                                         <tbody>
                                         <tr ng-repeat="history in selectedTicket.ticket_history_full" ng-controller="supportTicketHistory">
                                             <td ng-init="resultDate = convertDate(history.created_at)" ng-if="history.created_at">{{resultDate | date : "MMM d, y h:mm a" }}</td>
-                                            <td class="th-comment" height="100" ng-bind-html="history.comment"></td>
+                                            <td class="th-comment" height="100" ng-init="safeHtmlValue = safeHtml(history.comment)" ng-bind-html="safeHtmlValue" ></td>
                                             <td>{{history.status}}</td>
                                             <td>{{historyData.user.alias}}</td>
                                         </tr>
