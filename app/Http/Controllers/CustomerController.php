@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 /*
  *  Models
  */
+
 use App\Models\Note;
 use App\Models\Product;
 use App\Models\PaymentMethod;
@@ -29,6 +30,7 @@ use App\Extensions\BillingHelper;
 /*
  * Extensions
  */
+
 use DB;
 use Log;
 use Schema;
@@ -337,7 +339,8 @@ class CustomerController extends Controller {
     public function getCustomerServices(Request $request)//FIX IDCUSTOMER TO ID ON HTTP REQUEST.
     {
         $customer = Customer::with('services')->find($request->id ? $request->id : $request->idCustomer);
-        if($customer == null){
+        if ($customer == null)
+        {
             return $customer;
         }
 
@@ -345,10 +348,12 @@ class CustomerController extends Controller {
         $updatedCustomerProducts = collect($customerArray['services'])->map(function ($customerProduct, $key) {
             $customerProduct['created_at'] = date('c', strtotime($customerProduct['created_at']));
             $customerProduct['expires'] = ($customerProduct['expires'] != null && $customerProduct['expires'] != '') ? date('c', strtotime($customerProduct['expires'])) : $customerProduct['expires'];
+
             return $customerProduct;
         });
 
         $customerArray['services'] = $updatedCustomerProducts->toArray();
+
         return $customerArray;
     }
 
@@ -552,7 +557,7 @@ class CustomerController extends Controller {
         $newData = new CustomerProduct();
         $newData->id_customers = $request->idCustomer;
         $newData->id_products = $request->idProduct;
-        $newData->id_status = 1;
+        $newData->id_status = config('const.status.active');
         $newData->signed_up = date("Y-m-d H:i:s");
         $newData->expires = $expires;
         $newData->id_users = Auth::user()->id;
@@ -598,14 +603,16 @@ class CustomerController extends Controller {
      */
     public function disableCustomerServices(Request $request)
     {
+        $customer = Customer::find($request->id);
         $activeService = CustomerProduct::find($request->idService);
-        $activeService->id_status = 2;
+        $activeService->id_status = config('const.status.disabled');
         $activeService->save();
 
         $this->cancelActiveChargesForCustomerProduct($activeService);
+        $this->cancelActiveInvoicesForCustomer($customer);
 
         $newData = array();
-        $newData['id_status'] = 2;
+        $newData['id_status'] = config('const.status.disabled');
 
         $relationData = Product::find($activeService->id_products);
 
@@ -626,8 +633,30 @@ class CustomerController extends Controller {
             return false;
         }
         $billingHelper = new BillingHelper();
+
         return $billingHelper->removeChargeFromInvoice($charge);
     }
+
+    protected function cancelActiveInvoicesForCustomer(Customer $customer)
+    {
+
+        $firstDayOfMonthTime = strtotime("first day of this month 00:00:00");
+        $timestampMysql = date('Y-m-d H:i:s', $firstDayOfMonthTime);
+
+        $pendingInvoices = $customer->pendingAutoPayInvoicesOnOrAfterTimestamp($timestampMysql);
+        $billingHelper = new BillingHelper();
+
+        $count = 0;
+        foreach ($pendingInvoices as $invoice)
+        {
+            $billingHelper->markInvoiceAsCancelled($invoice);
+            $count ++;
+        }
+        Log::info('cancelActiveInvoicesForCustomer(): Cancelled ' . $count . ' invoices for customer id=' . $customer->id);
+
+        return true;
+    }
+
 
     /**
      * @param Request $request
@@ -644,11 +673,11 @@ class CustomerController extends Controller {
     public function activeCustomerServices(Request $request)
     {
         $activeService = CustomerProduct::find($request->idService);
-        $activeService->id_status = 1;
+        $activeService->id_status = config('const.status.active');
         $activeService->save();
 
         $newData = array();
-        $newData['id_status'] = 1;
+        $newData['id_status'] = config('const.status.active');
 
         $relationData = Product::find($activeService->id_products);
 
@@ -675,7 +704,7 @@ class CustomerController extends Controller {
         $updateService->signed_up = date("Y-m-d H:i:s");
         $updateService->expires = $expires;
         $updateService->id_users = Auth::user()->id;
-        $updateService->id_status = 1;
+        $updateService->id_status = config('const.status.active');
         $updateService->save();
 
         $newData = array();
@@ -755,69 +784,69 @@ class CustomerController extends Controller {
             ->get();
     }
 
-    public function refundAmountAction(Request $request)
-    {
-
-
-        $customerInfo = Customer::find($request->cid);
-        $customerAddress = Address::where('id_customers', $request->cid)->first();
-        $customerInvoice = Invoice::where('id_customers', $request->cid)->first();
-
-        $newCharge = new Charge;
-        $newCharge->name = $customerInfo->first_name . ' ' . $customerInfo->last_name;
-        $newCharge->address = $customerAddress->address;
-//        $newCharge->description = 'New Charge';       //?? always the same?
+//    public function refundAmountAction(Request $request)
+//    {
+//
+//
+//        $customerInfo = Customer::find($request->cid);
+//        $customerAddress = Address::where('id_customers', $request->cid)->first();
+//        $customerInvoice = Invoice::where('id_customers', $request->cid)->first();
+//
+//        $newCharge = new Charge;
+//        $newCharge->name = $customerInfo->first_name . ' ' . $customerInfo->last_name;
+//        $newCharge->address = $customerAddress->address;
+////        $newCharge->description = 'New Charge';       //?? always the same?
+////        $newCharge->description = 'Current Amount owed : $ ' . $customerInvoice->amount;//?? always the same?
+////        $newCharge->details
+//        $newCharge->amount = $request->amount;
+////        $newCharge->qty
+//        $newCharge->id_customers = $request->cid;
+////        $newCharge->id_customer_products
+//        $newCharge->id_address = $customerAddress->id;
+//        $newCharge->id_invoices = $customerInvoice->id;
+//        $newCharge->id_users = Auth::user()->id;
+//        $newCharge->status = config('const.charge_status.pending_approval');
+//        $newCharge->type = 'Refund';
+//        $newCharge->comment = $request->desc;
+//
+//        $newCharge->save();
+//
+//        return 'OK';
+//    }
+//
+//    public function chargeAmountAction(Request $request)
+//    {
+//
+//
+//        $customerInfo = Customer::find($request->cid);
+//        $customerAddress = Address::where('id_customers', $request->cid)->first();
+//        $customerInvoice = Invoice::where('id_customers', $request->cid)->first();
+//
+//        $newCharge = new Charge;
+//        $newCharge->name = $customerInfo->first_name . ' ' . $customerInfo->last_name;
+//        $newCharge->address = $customerAddress->address;
+////        $newCharge->description = 'New Charge';       //?? always the same?
 //        $newCharge->description = 'Current Amount owed : $ ' . $customerInvoice->amount;//?? always the same?
-//        $newCharge->details
-        $newCharge->amount = $request->amount;
-//        $newCharge->qty
-        $newCharge->id_customers = $request->cid;
-//        $newCharge->id_customer_products
-        $newCharge->id_address = $customerAddress->id;
-        $newCharge->id_invoices = $customerInvoice->id;
-        $newCharge->id_users = Auth::user()->id;
-        $newCharge->status = 777;//Default for MANUAL (refound)
-        $newCharge->type = 'Refund';
-        $newCharge->comment = $request->desc;
-
-        $newCharge->save();
-
-        return 'OK';
-    }
-
-    public function chargeAmountAction(Request $request)
-    {
-
-
-        $customerInfo = Customer::find($request->cid);
-        $customerAddress = Address::where('id_customers', $request->cid)->first();
-        $customerInvoice = Invoice::where('id_customers', $request->cid)->first();
-
-        $newCharge = new Charge;
-        $newCharge->name = $customerInfo->first_name . ' ' . $customerInfo->last_name;
-        $newCharge->address = $customerAddress->address;
-//        $newCharge->description = 'New Charge';       //?? always the same?
-        $newCharge->description = 'Current Amount owed : $ ' . $customerInvoice->amount;//?? always the same?
-//        $newCharge->details
-        $newCharge->amount = $request->amount;
-//        $newCharge->qty
-        $newCharge->id_customers = $request->cid;
-//        $newCharge->id_customer_products
-        $newCharge->id_address = $customerAddress->id;
-        $newCharge->id_invoices = $customerInvoice->id;
-        $newCharge->id_users = Auth::user()->id;
-        $newCharge->status = 778;//Default for MANUAL (charge)
-        $newCharge->type = 'Charge';
-        $newCharge->comment = $request->desc;
-        $newCharge->bill_cycle_day = 1; //Default for 1fay of the month
-//        $newCharge->processing_type // ??? ---> NO IDEA *******
-//        $newCharge->start_date    //??? ---> First day of the next month????
-//        $newCharge->end_date    //??? ---> Last day of the next month????
-//        $newCharge->due_date      //??? ---> NO IDEA *******
-        $newCharge->save();
-
-        return 'OK';
-    }
+////        $newCharge->details
+//        $newCharge->amount = $request->amount;
+////        $newCharge->qty
+//        $newCharge->id_customers = $request->cid;
+////        $newCharge->id_customer_products
+//        $newCharge->id_address = $customerAddress->id;
+//        $newCharge->id_invoices = $customerInvoice->id;
+//        $newCharge->id_users = Auth::user()->id;
+//        $newCharge->status = config('const.charge_status.pending_approval');
+//        $newCharge->type = 'Charge';
+//        $newCharge->comment = $request->desc;
+//        $newCharge->bill_cycle_day = 1; //Default for 1fay of the month
+////        $newCharge->processing_type // ??? ---> NO IDEA *******
+////        $newCharge->start_date    //??? ---> First day of the next month????
+////        $newCharge->end_date    //??? ---> Last day of the next month????
+////        $newCharge->due_date      //??? ---> NO IDEA *******
+//        $newCharge->save();
+//
+//        return 'OK';
+//    }
 
     public function insertNewCustomer(Request $request)
     {

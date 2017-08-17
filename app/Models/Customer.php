@@ -63,7 +63,7 @@ class Customer extends Model {
 
     public function openTickets()
     {
-        return $this->hasMany('App\Models\Ticket', 'id_customers')->where('status', '!=', 'closed');
+        return $this->hasMany('App\Models\Ticket', 'id_customers')->where('status', '!=', config('const.ticket_status.closed'));
     }
 
     public function port()
@@ -128,9 +128,39 @@ class Customer extends Model {
 
     }
 
+    public function invoices()
+    {
+        return $this->hasMany('App\Models\Invoice', 'id_customers');
+    }
 
+    public function pendingInvoices()
+    {
+        return $this->hasMany('App\Models\Invoice', 'id_customers')
+            ->where('invoices.status', config('const.invoice_status.pending'));
+    }
 
+    public function pendingManualPayInvoices()
+    {
+        return $this->hasMany('App\Models\Invoice', 'id_customers')
+            ->where('invoices.processing_type', config('const.type.manual_pay'))
+            ->where('invoices.status', config('const.invoice_status.pending'));
+    }
 
+    public function pendingAutoPayInvoices()
+    {
+        return $this->hasMany('App\Models\Invoice', 'id_customers')
+            ->where('invoices.processing_type', config('const.type.auto_pay'))
+            ->where('invoices.status', config('const.invoice_status.pending'));
+    }
+
+    public function pendingAutoPayInvoicesOnOrAfterTimestamp($timestamp)
+    {
+        return $this->hasMany('App\Models\Invoice', 'id_customers')
+            ->where('invoices.processing_type', config('const.type.auto_pay'))
+            ->where('invoices.status', config('const.invoice_status.pending'))
+            ->where('invoices.due_date', '>=', $timestamp)
+            ->get();
+    }
 
 //    public function payment() {
 //        return $this->hasOne('App\Models\PaymentMethod', 'id_customers')
@@ -161,6 +191,7 @@ class Customer extends Model {
 
 //        return $this->port()->with('networkNode')->get();
         $modelCollection = $this->customerPort()->with('portWithNetworkNode')->get();
+
         return $modelCollection->pluck('portWithNetworkNode');
     }
 

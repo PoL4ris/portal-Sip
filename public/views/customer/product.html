@@ -25,8 +25,8 @@
                     <!--<td class="text-capitalize">{{ customerProductStatus.status.name }}</td>-->
                     <td class="text-capitalize">{{ service.created_at | date : "shortDate" }}</td>
                     <td class="text-capitalize">{{ service.expires | date : "shortDate" }}</td>
-                    <td class="prod-btns">
-                        <button class="btn-sm btn fa btn-primary fa-eye modif-service-btn display-service-status-{{customerProductStatus.status.name}}"
+                    <td class="prod-btns btn-sm">
+                        <button class="btn fa btn-primary fa-eye modif-service-btn display-service-status-{{customerProductStatus.status.name}}"
                                 title="Edit Service"
                                 ng-click="setModeType('updateService'); serviceDataDisplay(true)"
                                 data-toggle="modal"
@@ -34,12 +34,12 @@
                         </button>
 
                         <button ng-if="customerProductStatus.status.name != 'disabled'"
-                                class="btn-sm btn fa fa-times action-confirm btn-dark"
+                                class="btn fa fa-times action-confirm btn-dark"
                                 ng-click="showConfirm(customerProduct.id, 'disable')"
                                 title="Cancel Service">
                         </button>
                         <button ng-if="customerProductStatus.status.name == 'disabled'"
-                                class="btn-sm btn fa fa-check action-confirm btn-success"
+                                class="btn fa fa-check action-confirm btn-success"
                                 ng-click="showConfirm(customerProduct.id, 'active')"
                                 title="Active Service">
                         </button>

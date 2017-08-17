@@ -125,8 +125,8 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('setDefaultPaymentMethod',   'CustomerController@setDefaultPaymentMethod');
     Route::get('getDefaultPaymentMethod',   'CustomerController@getDefaultPaymentMethod');
 
-    Route::get('refundAmountAction',        'CustomerController@refundAmountAction');
-    Route::get('chargeAmountAction',        'CustomerController@chargeAmountAction');
+//    Route::get('refundAmountAction',        'CustomerController@refundAmountAction');
+//    Route::get('chargeAmountAction',        'CustomerController@chargeAmountAction');
 
     Route::get('manualRefund',              'BillingController@manualRefund');
     Route::get('manualCharge',              'BillingController@manualCharge');

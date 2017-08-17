@@ -77,7 +77,7 @@ class SupportController extends Controller
                                 'userAssigned',
                                 'address',
                                 'contacts')
-                         ->where('status', '!=', config('const.status.closed'))
+                         ->where('status', '!=', config('const.ticket_status.closed'))
                          ->get();
 
         $result = $this->getOldTimeTicket($records);
@@ -141,7 +141,7 @@ class SupportController extends Controller
                                'contacts')
                         ->where('id_reasons', '!=', config('const.reason.billing'))
                         ->where('id_reasons', '!=', config('const.reason.internal_billing'))
-                        ->where('status', '!=', config('const.status.closed'))
+                        ->where('status', '!=', config('const.ticket_status.closed'))
                         ->orderBy('updated_at', 'desc')
                         ->get();
 
@@ -163,7 +163,7 @@ class SupportController extends Controller
                                'userAssigned',
                                'address',
                                'contacts')
-                        ->where('status', '!=', config('const.status.closed'))
+                        ->where('status', '!=', config('const.ticket_status.closed'))
                         ->where(function ($query) {
                                     $query->where('id_reasons',   config('const.reason.billing'))
                                           ->orWhere('id_reasons', config('const.reason.internal_billing'));
@@ -190,7 +190,7 @@ class SupportController extends Controller
                                'address',
                                'contacts')
                          ->where('id_users', Auth::user()->id)
-                         ->where('status', '!=', config('const.status.closed'))
+                         ->where('status', '!=', config('const.ticket_status.closed'))
                          ->orderBy('updated_at', 'desc')
                          ->get();
 
@@ -219,20 +219,20 @@ class SupportController extends Controller
         $time48 = date("Y-m-d H:i:s", strtotime('-48 hours'));
 
         $old48  = Ticket::where('updated_at', '<=', $time48)
-                        ->where('status', '!=', 'closed')
+                        ->where('status', '!=', config('const.ticket_status.closed'))
                         ->count();
 
         $old24  = Ticket::where('updated_at', '<=', $time24)
                         ->where('updated_at', '>=', $time48)
-                        ->where('status', '!=', 'closed')
+                        ->where('status', '!=', config('const.ticket_status.closed'))
                         ->count();
 
         $old12  = Ticket::where('updated_at', '<=', $time12)
                         ->where('updated_at', '>=', $time24)
-                        ->where('status', '!=', 'closed')
+                        ->where('status', '!=', config('const.ticket_status.closed'))
                         ->count();
 
-        $old    = Ticket::where('status', '!=', 'closed')->count();
+        $old    = Ticket::where('status', '!=', config('const.ticket_status.closed'))->count();
 
         $result['old48'] = $old48;
         $result['old24'] = $old24;

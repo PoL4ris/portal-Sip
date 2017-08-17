@@ -404,6 +404,14 @@ class TestController extends Controller {
     public function generalTest(Request $request)
     {
 
+        $firstDayOfMonthTime = strtotime("first day of this month 00:00:00");
+        $timestampMysql = date('Y-m-d H:i:s', $firstDayOfMonthTime);
+
+        dd($timestampMysql);
+
+        $customer = Customer::find(2460);
+        dd($customer->pendingAutoPayInvoicesOnOrAfterTimestamp($timestampMysql)->get());
+
 //        $customer = Customer::with('services')->find(9992)->toArray();
 //
 //        dd(collect($customer['services']));
