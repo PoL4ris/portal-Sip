@@ -126,16 +126,9 @@
                             <!--Name-->
                             <div class="col-lg-12 no-padding-sides m-b-lg">
                                 <label><strong> {{selectedTicket.customer.first_name + ' ' + selectedTicket.customer.last_name}}</strong></label>
-                                <button class="btn btn-primary pull-right"
-                                        ng-click="editFormByType('block-b', 1)"
-                                        id="block-b">
-                                    Change Customer
-                                </button>
-                                <button class="btn btn-success pull-right no-display m-r-lg"
-                                        ng-click="editFormByType('block-b', 1); updateCustomerOnTicket();"
-                                        id="save-block-b">
-                                    Update
-                                </button>
+                                <button class="btn btn-danger pull-right"         ng-click="changeCustFlag()" ng-if="changeCustomerFlag">Cancel</button>
+                                <button class="btn btn-primary pull-right"        ng-click="changeCustFlag()" ng-if="!changeCustomerFlag">Change Customer</button>
+                                <button class="btn btn-success pull-right m-r-lg" ng-click="changeCustFlag(); updateCustomerOnTicket();" ng-if="changeCustomerFlag">Update</button>
                             </div>
                             <!--Default Info-->
                             <div class="col-lg-4 no-padding-sides">
@@ -164,8 +157,11 @@
                                 <input type="hidden" readonly value="{{selectedTicket.id}}" name="id_ticket">
                             </form>
                             <div ng-include="'/views/genericSearch.html'"
-                                 class="header-search main-search stc-search no-display"
-                                 id="block-b-search"></div>
+                                 class="header-search main-search stc-search"
+                                 ng-if="changeCustomerFlag"
+                                 id="block-b-search">
+                            </div>
+
                             <!--Details Info-->
                             <div class="col-lg-12 no-padding-sides m-t-lg m-b-sm bg-gray p-b-lg">
                                 <form id="form-1-ticket">
@@ -173,15 +169,26 @@
 
                                         <button class="btn m-b-xs w-xs btn-primary btn-edit ticket-right pull-right m-t-sm m-b-sm"
                                                 id="block-a"
-                                                ng-click="editFormByType('block-a')">
+                                                ng-if="!editDetailsFlag"
+                                                ng-click="editDetFlag()">
                                             Edit
                                         </button>
+                                        <button class="btn m-b-xs w-xs btn-danger btn-edit ticket-right pull-right m-t-sm m-b-sm"
+                                                id="block-a"
+                                                ng-if="editDetailsFlag"
+                                                ng-click="editDetFlag()">
+                                            Cancel
+                                        </button>
+
                                         <button type="submit"
-                                                class="btn m-b-xs w-xs btn-primary save-btn ticket-right ticket-right-save no-display pull-right m-t-sm m-b-sm m-r-lg"
+                                                class="btn m-b-xs w-xs btn-primary save-btn ticket-right ticket-right-save pull-right m-t-sm m-b-sm m-r-lg"
                                                 id="save-block-a"
-                                                ng-click="submitForm('form-1-ticket'); editFormByType('block-a')">
+                                                ng-if="editDetailsFlag"
+                                                ng-click="submitForm('form-1-ticket'); editDetFlag()">
                                             Save
                                         </button>
+
+
                                     </div>
                                     <div class="col-lg-3 no-padding-sides">
                                         <div>Ticket ID</div>
@@ -190,7 +197,7 @@
                                     <div class="col-lg-3 no-padding-sides">
                                         <div>Issue</div>
                                         <small class="text-muted" class="block-a-label">{{selectedTicket.reason.short_description}}</small>
-                                        <select name="id_reasons" class="block-a-edit form-control no-display">
+                                        <select name="id_reasons" class="block-a-edit form-control" ng-if="editDetailsFlag">
                                             <option value="{{selectedTicket.reason.id}}">{{selectedTicket.reason.short_description}}</option>
                                             <option ng-repeat="desc in dataReasons" value="{{desc.id}}">{{desc.short_description}}</option>
                                         </select>
@@ -198,7 +205,7 @@
                                     <div class="col-lg-3 no-padding-sides">
                                         <div>Status</div>
                                         <small class="text-muted capital-first">{{selectedTicket.status}}</small>
-                                        <select name="status" class="block-a-edit form-control no-display">
+                                        <select name="status" class="block-a-edit form-control " ng-if="editDetailsFlag">
                                             <option value="Escalated">Escalated</option>
                                             <option value="Closed">Closed</option>
                                         </select>
@@ -206,7 +213,7 @@
                                     <div class="col-lg-3 no-padding-sides">
                                         <div>Assigned to</div>
                                         <small class="text-muted">{{selectedTicket.user_assigned.first_name ? selectedTicket.user_assigned.first_name : 'Not Set'}}</small>
-                                        <select name="id_users_assigned" class="block-a-edit form-control no-display">
+                                        <select name="id_users_assigned" class="block-a-edit form-control" ng-if="editDetailsFlag">
                                             <option value="{{selectedTicket.user_assigned.id}}">{{selectedTicket.user_assigned.first_name}}</option>
                                             <option ng-repeat="usersAssigned in dataUsersAssigned" value="{{usersAssigned.id}}">{{usersAssigned.first_name}}</option>
                                         </select>

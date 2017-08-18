@@ -6,7 +6,6 @@ app.controller('customerControllerList',            function ($scope, $http){
     });
 });
 app.controller('customerController',                function ($scope, $http, $stateParams, customerService, DTOptionsBuilder){
-
 //   $scope.globalServiceLocationSide = null;
   if(!customerService.rightView) {
     customerService.rightView = true;
@@ -415,6 +414,17 @@ app.controller('customerController',                function ($scope, $http, $st
       });
   }
   $scope.pStInOptions = DTOptionsBuilder.newOptions().withDisplayLength(50);
+
+  //STATUS CHANGE
+  $scope.activeServiceDisplay       = function(){
+  $('.satus-color-borders').addClass('no-border');
+  $('.status-color-'+this.statusLabe.name).removeClass('no-border');
+  $scope.disableStatusActive = false;
+  if(this.statusLabe.name == 'disabled')
+  {
+    $scope.disableStatusActive = true;
+  }
+  }
 });
 app.controller('customerTicketHistoryController',   function ($scope, $http){
   $scope.getTicketHistory = function () {
@@ -433,13 +443,15 @@ app.controller('customerTicketHistoryController',   function ($scope, $http){
 
   $scope.getTicketHistory();
 });
-app.controller('customerInvoiceHistoryController',  function ($scope, $http){
+app.controller('customerInvoiceHistoryController',  function ($scope, $http, customerService){
   //   console.log($scope.customerData);
 
   if(!$scope.invoiceData)
     $http.get("getInvoiceHistory", {params:{'id':$scope.idCustomer}})
       .then(function (response) {
         $scope.invoiceData = response.data;
+        $scope.customerData.invoices = response.data;
+        console.log($scope.customerData);
       });
 
   $scope.setInvoiceData = function (){
@@ -455,7 +467,7 @@ app.controller('customerNetworkController',         function ($scope, $http){
   $http.get("getCustomerNetwork", {params:{'id':$scope.idCustomer}})
     .then(function (response) {
       $scope.customerNetwork = response.data[0];
-//      console.log($scope.customerNetwork);
+      $scope.customerData.customerNetwork = response.data[0];
       if(response.data.length > 0){
         networkServices(0, true);
       }

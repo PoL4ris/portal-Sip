@@ -119,35 +119,8 @@ app.controller('dropZoneController', function($scope, $http, customerService){
     }
 ])
 
-app.controller('dummyAppController', function ($scope, $http,customerService){
-  if (customerService.sideBarFlag) {
-    $scope.sipTool(2);
-    customerService.sideBarFlag = false;
-  }
 
-
-
-
-//  $http.get('renderViewUno')
-//    .then(function(response){
-//      console.log(response.data);
-//      $scope.htmlLoco = response.data;
-//      $scope.trustedInputHtml = $sce.trustAsHtml(response.data);
-//
-//    });
-
-
-
-
-
-});
-
-
-
-
-
-
-
+//New customer controller working
 app.controller('newcustomerAppController', function($scope, $http, customerService, $state){
   console.log('this is the newcustomerAppController');
 
@@ -444,6 +417,116 @@ app.controller('newcustomerAppController', function($scope, $http, customerServi
 
 
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+app.controller('dummyAppController', function ($scope, $http, customerService, generalService, $stateParams){
+  if (customerService.sideBarFlag) {
+    $scope.sipTool(2);
+    customerService.sideBarFlag = false;
+  }
+
+//  $scope.tmpArr = [];
+
+
+  $scope.addToTabArray = function(id){
+
+
+
+    if(generalService.customerArray[id])
+      return;
+
+    generalService.customerArray[id] = id;
+
+
+
+
+
+
+    $scope.tabsArray = generalService.customerArray;
+    console.log(generalService.customerArray);
+    console.log($stateParams);
+
+
+    /*
+    * .state('book1', {
+        parent: 'books',
+        views: {
+            'bookDetails@books': {
+                 templateUrl: 'book1.html',
+                 controller: 'BookOneController'
+             }
+        }
+    })
+
+
+
+    * */
+
+  };
+
+
+
+
+
+
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
