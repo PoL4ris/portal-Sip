@@ -880,7 +880,7 @@ nav ul li a {
     border-top: 5px solid #ff6d00;
     padding-top: 5px;
 }
-.new #status-select {
+.new #status-select, .new-status {
     color: #0086ff;
 }
 .status-color-new {
