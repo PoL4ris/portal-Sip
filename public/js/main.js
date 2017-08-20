@@ -50,6 +50,7 @@ angular.module('app.customers',     ['ui.router']).config(function ($stateProvid
   $stateProvider
     .state('app.customers', {
       url:  '/customers?{id:int}',
+      params: { cache: null },
       data: {
         title: 'Customers'
       },
@@ -252,7 +253,28 @@ angular.module('app.charges',       ['ui.router']).config(function ($stateProvid
       }
     })
 });
-
+angular.module('app.warp',          ['ui.router']).config(function ($stateProvider) {
+  $stateProvider
+    .state('app.warp', {
+      url:  '/warp',
+      data: {
+        title: 'Warp'
+      },
+      views: {
+        "content@app": {
+          templateUrl: '/views/warp.html',
+          controller:  'dummyAppController',
+        }
+      },
+      resolve: {
+        scripts: function (lazyScript) {
+          return lazyScript.register([
+            '/js/smart/build/vendor.ui.js'
+          ]);
+        }
+      }
+    })
+});
 
 
 
@@ -352,7 +374,8 @@ app.factory('adminService',     function () {
 });
 app.factory('generalService',   function () {
   return {
-    exist: true
+    exist: true,
+    customerArray : {}
   };
 });
 

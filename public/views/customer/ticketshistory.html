@@ -21,12 +21,20 @@
                     <td class="first-td" ng-click="displayTicketResume(ticket.id, ticket.id_customers)" data-toggle="modal" data-target="#ticketModal">{{ ticket.ticket_number }}</td>
                     <td ng-init="ticketDateA = convertDate(ticket.created_at)">{{ ticketDateA | date : "MMM d, y h:mm a" }}</td>
                     <td>{{ ticket.reason}}</td>
-                    <td ng-mouseover="showFullComment(ticket.id)" style="position: relative;"
-                        ng-mouseleave="hideFullComment(ticket.id)" ng-if="ticket.comment"
-                        ng-click="displayTicketResume(ticket.id, ticket.id_customers)" data-toggle="modal" data-target="#ticketModal">
-                        {{ ticket.comment | limitTo : letterLimit }}...
-                        <div id='ticket-{{ ticket.id }}' style="display: none;" class="ticket-comment-pop" ng-bind-html="ticket.comment"></div>
+
+                    <td ng-mouseover="showFullComment(ticket.id)"
+                        style="position: relative;"
+                        ng-mouseleave="hideFullComment(ticket.id)"
+                        ng-if="ticket.comment"
+                        ng-click="displayTicketResume(ticket.id, ticket.id_customers)"
+                        data-toggle="modal"
+                        data-target="#ticketModal">
+                        {{ticket.comment | limitTo : letterLimit}}
+                        <div id='ticket-{{ ticket.id }}' style="display: none;" class="ticket-comment-pop"
+                             ng-init="safeHtmlValue = safeHtml(ticket.comment)"
+                             ng-bind-html="safeHtmlValue | limitTo : letterLimit"></div>
                     </td>
+
                     <td ng-if="!ticket.comment"> No Comment</td>
                     <td class="capital-first">{{ ticket.status }}</td>
                     <td ng-init="ticketDateB = convertDate(ticket.updated_at)">{{ ticketDateB | date : "MMM d, y h:mm a" }}</td>
@@ -85,13 +93,21 @@
                                         <div class="pull-left m-t-md">Details:</div>
                                         <button class="btn m-b-xs w-xs btn-primary btn-edit ticket-right pull-right m-t-sm m-b-sm"
                                                 id="block-a"
-                                                ng-click="editFormByType('block-a')">
+                                                ng-if="!editDetailsFlag"
+                                                ng-click="editDetFlag()">
                                             Edit
                                         </button>
+                                        <button class="btn m-b-xs w-xs btn-danger btn-edit ticket-right pull-right m-t-sm m-b-sm"
+                                                id="block-a"
+                                                ng-if="editDetailsFlag"
+                                                ng-click="editDetFlag()">
+                                            Cancel
+                                        </button>
                                         <button type="submit"
-                                                class="btn m-b-xs w-xs btn-primary save-btn ticket-right ticket-right-save no-display pull-right m-t-sm m-b-sm m-r-lg"
+                                                class="btn m-b-xs w-xs btn-primary save-btn ticket-right ticket-right-save pull-right m-t-sm m-b-sm m-r-lg"
                                                 id="save-block-a"
-                                                ng-click="submitForm('form-1-ticket'); editFormByType('block-a')">
+                                                ng-if="editDetailsFlag"
+                                                ng-click="submitForm('form-1-ticket'); editDetFlag()">
                                             Save
                                         </button>
                                     </div>
@@ -102,7 +118,7 @@
                                     <div class="col-lg-3 no-padding-sides">
                                         <div>Issue</div>
                                         <small class="text-muted" class="block-a-label">{{selectedTicket.reason.short_description}}</small>
-                                        <select name="id_reasons" class="block-a-edit form-control no-display">
+                                        <select name="id_reasons" class="block-a-edit form-control " ng-if="editDetailsFlag">
                                             <option value="{{selectedTicket.reason.id}}">{{selectedTicket.reason.short_description}}</option>
                                             <option ng-repeat="desc in dataReasons" value="{{desc.id}}">{{desc.short_description}}</option>
                                         </select>
@@ -110,7 +126,7 @@
                                     <div class="col-lg-3 no-padding-sides">
                                         <div>Status</div>
                                         <small class="text-muted">{{selectedTicket.status}}</small>
-                                        <select name="status" class="block-a-edit form-control no-display">
+                                        <select name="status" class="block-a-edit form-control " ng-if="editDetailsFlag">
                                             <option value="Escalated">Escalated</option>
                                             <option value="Closed">Closed</option>
                                         </select>
@@ -118,7 +134,7 @@
                                     <div class="col-lg-3 no-padding-sides">
                                         <div>Assigned to</div>
                                         <small class="text-muted">{{selectedTicket.user_assigned.first_name ? selectedTicket.user_assigned.first_name : 'Not Set'}}</small>
-                                        <select name="id_users_assigned" class="block-a-edit form-control no-display">
+                                        <select name="id_users_assigned" class="block-a-edit form-control " ng-if="editDetailsFlag">
                                             <option value="{{selectedTicket.user_assigned.id}}">{{selectedTicket.user_assigned.first_name}}</option>
                                             <option ng-repeat="usersAssigned in dataUsersAssigned" value="{{usersAssigned.id}}">{{usersAssigned.first_name}}</option>
                                         </select>

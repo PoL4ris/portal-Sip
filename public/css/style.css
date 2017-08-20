@@ -175,6 +175,9 @@
 .caps {
   text-transform: uppercase;
 }
+.btn-slim{
+  padding:0;
+}
 .no-b-tbl {
   border-bottom: medium none;
   border-left: medium none;

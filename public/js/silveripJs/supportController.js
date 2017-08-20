@@ -64,10 +64,10 @@ app.controller('supportController',                 function ($scope, $http, DTO
   $scope.letterLimit  = 40;
   $scope.dtOptions    = DTOptionsBuilder.newOptions().withPaginationType('full_numbers').withDisplayLength(50).withOption('order', [8, 'desc']);
 
-  $scope.showFullComment                = function(id) {
+  $scope.showFullComment                = function (id) {
     $('#ticket-' + id).fadeIn('slow');
   };
-  $scope.hideFullComment                = function(id) {
+  $scope.hideFullComment                = function (id) {
     $('#ticket-' + id).fadeOut('fast');
   };
   $scope.displayCustomerResume          = function (id){
@@ -80,6 +80,8 @@ app.controller('supportController',                 function ($scope, $http, DTO
     supportService.searchFlag     = true;
     $scope.selectedCustomerTicket = null;
     $scope.selectedTicket         = null;
+    $scope.changeCustomerFlag     = false;
+    $scope.editDetailsFlag        = false;
     $scope.midTicketId = id;
     $scope.stcid       = idCustomer;
     $scope.stcFlag     = true;
@@ -87,6 +89,10 @@ app.controller('supportController',                 function ($scope, $http, DTO
     $scope.getTicketInfo();
     $scope.getReasons();
     $scope.getUsers();
+
+    $('#customer-global-search-id').trigger('reset');
+    $('#form-1-ticket').trigger('reset');
+    $('#form-2-ticket').trigger('reset');
   };
   $scope.getTicketInfo                  = function () {
     $http.get("getTicketInfo", {params:{'ticketId':$scope.midTicketId}})
@@ -107,7 +113,13 @@ app.controller('supportController',                 function ($scope, $http, DTO
         $scope.dataUsersAssigned = response.data;
       });
   };
-  $scope.editFormByType                 = function (id, specialLabel = 0) {
+  $scope.changeCustFlag                 = function (){
+    $scope.changeCustomerFlag = !$scope.changeCustomerFlag;
+  };
+  $scope.editDetFlag                = function(){
+    $scope.editDetailsFlag = !$scope.editDetailsFlag;
+  };
+  $scope.editFormByType                 = function (id, specialLabel = 0) { //obsoleta
     /*  specialLabel
     * 0 => Edit/Cancel
     * 1 => Change Customer/Cancel
@@ -126,7 +138,6 @@ app.controller('supportController',                 function ($scope, $http, DTO
 
       if (id == 'block-b')
         $('#block-b-search').fadeOut();
-
     }
     else
     {
@@ -246,6 +257,9 @@ app.controller('supportController',                 function ($scope, $http, DTO
             $scope.supportData = response.data;
           });
 
+        $('#generic-search-input').trigger('reset').val('');
+//        console.log('loco');
+        $scope.editFormByType('block-b', 1);
       });
 
   };
@@ -267,7 +281,7 @@ app.controller('supportController',                 function ($scope, $http, DTO
 
     return;
   };
-  $scope.cleanTicketSearch              = function(){
+  $scope.cleanTicketSearch              = function (){
     $('#support-ticket-search-form').trigger('reset');
     $scope.genericTicketSearchResult = null;
   };
@@ -328,7 +342,7 @@ app.controller('supportControllerTools',            function ($scope, $http) {
       $scope.displayTicketResume(ticketID);
 
   }
-  $scope.editFormByType = function (id) {
+  $scope.editFormByTypeXXX = function (id) {
 
 //    tempTicketID = id;
 
