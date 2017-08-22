@@ -5,6 +5,8 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use App\Extensions\DataMigrationUtils;
 use App\Extensions\BillingHelper;
+use App\Extensions\MtikRouter;
+use Illuminate\Support\Facades\File;
 use Storage;
 use App\Models\NetworkNode;
 use App\Models\CustomerPort;
@@ -47,9 +49,13 @@ class GeneralTasks extends Command {
     {
         $this->info('Starting general task');
 
-        $this->sendMassEmail();
+//        $this->sendMassEmail();
+//        $this->rebootMikrotik();
+
+//        $this->uploadMikrotikPackageFiles();
 
 //        $this->cleanupBadCustomerPorts();
+
 //        $billingHelper = new BillingHelper();
 //        $result = $billingHelper->processPendingAutopayInvoices();
 //        $dbMigrationUtil = new DataMigrationUtils(true);
@@ -102,6 +108,96 @@ class GeneralTasks extends Command {
         }
     }
 
+    protected function uploadMikrotikPackageFiles()
+    {
+        $mikrotiks = NetworkNode::where('id_types', config('const.type.router'))->get();
+//            ->where('role', 'Transit')->get();
+//        $mikrotiks = NetworkNode::where('id', 800)->get();
+
+//        dd($mikrotiks->pluck('host_name'));
+
+        $uniqueMikrotiks = $mikrotiks->unique('ip_address');
+
+        foreach ($uniqueMikrotiks as $mikrotik)
+        {
+            $serviceRouter = new MtikRouter(['ip_address' => $mikrotik->ip_address,
+                                             'username'   => config('netmgmt.mikrotik.username'),
+                                             'password'   => config('netmgmt.mikrotik.password')]);
+            $softwareVersion = $serviceRouter->getSoftwareVersion($mikrotik->ip_address);
+            $architecture = $serviceRouter->getArchitecture($mikrotik->ip_address);
+
+            // Skip non-CCR architectures
+            if ($architecture != 'tile')
+            {
+                continue;
+            }
+
+            // Skip CCRs that already have 6.40.1
+            if (preg_match('/6\.40\.1.*/', $softwareVersion) === 1)
+            {
+                continue;
+            }
+
+            echo 'Uploading files to ' . $mikrotik->host_name . ' (' . $mikrotik->ip_address . '): ';
+
+            try
+            {
+                $ftp = new FtpClient();
+                $ftp->connect($mikrotik->ip_address, false, 2121);
+                $ftp->login('admin', 'BigSeem');
+                $ftp->pasv(true);
+
+                $directory = storage_path('app/mikrotik_firmware/all_packages-tile-6.40.1');
+                $packageFiles = File::allFiles($directory);
+
+                foreach ($packageFiles as $packageFile)
+                {
+
+
+                    $localFile = $packageFile->getPathname();
+                    $remoteFile = $packageFile->getFilename();
+
+                    $xferSuccessful = $ftp->put($remoteFile, $localFile, FTP_BINARY);
+                    if ($xferSuccessful)
+                    {
+                        echo '.';
+                    } else
+                    {
+                        echo '!';
+                    }
+                }
+                echo "  done\n";
+            } catch (FtpException $e)
+            {
+                echo 'failed: ' . $e->getMessage() . "\n";
+            }
+        }
+    }
+
+    protected function rebootMikrotik()
+    {
+//        $mikrotiks = NetworkNode::where('id_types', config('const.type.router'))->get();
+//            ->where('role', 'Transit')->get();
+        $mikrotiks = NetworkNode::where('id', 1117)->get();
+
+        dd($mikrotiks->pluck('host_name'));
+
+        $uniqueMikrotiks = $mikrotiks->unique('ip_address');
+
+        foreach ($uniqueMikrotiks as $mikrotik)
+        {
+            $serviceRouter = new MtikRouter(['ip_address' => $mikrotik->ip_address,
+                                             'username'   => config('netmgmt.mikrotik.username'),
+                                             'password'   => config('netmgmt.mikrotik.password')]);
+
+            echo 'Rebooting ' . $mikrotik->host_name . ' (' . $mikrotik->ip_address . '): ';
+
+            $serviceRouter->reboot($mikrotik->ip_address);
+
+            echo "  done\n";
+        }
+    }
+
     protected function fileExists($ftp, $file)
     {
         if ($ftp->size($file) != - 1)
@@ -121,7 +217,8 @@ class GeneralTasks extends Command {
         // Total record count
         $totalRecords = CustomerPort::count();
 
-        $runQuery = function ($startingId, $recordsPerCycle) {
+        $runQuery = function ($startingId, $recordsPerCycle)
+        {
             return CustomerPort::where('id', '>', $startingId)
                 ->orderBy('id', 'asc')
                 ->take($recordsPerCycle)
@@ -131,7 +228,7 @@ class GeneralTasks extends Command {
         $recordsPerCycle = 50;
         $startingId = 14391; // 0
 
-        echo 'Checking ' . $totalRecords . ' records ... ' . "\n";
+        echo 'Checking '. $totalRecords .' records ... '."\n";
 
         while (true)
         {
@@ -147,9 +244,8 @@ class GeneralTasks extends Command {
             {
 
                 $customer = $customerPort->customer;
-                if ($customer == null)
-                {
-                    echo 'CustomerPort: ' . $customerPort->id . ' is missing a customer' . "\n";
+                if($customer == null){
+                    echo 'CustomerPort: ' . $customerPort->id . ' is missing a customer'."\n";
                     $badPorts ++;
                     $startingId = $customerPort->id;
                     CustomerPort::destroy($customerPort->id);
@@ -159,9 +255,8 @@ class GeneralTasks extends Command {
                 $customerAddress = $customer->address;
 
                 $port = $customerPort->port;
-                if ($customer == null)
-                {
-                    echo 'CustomerPort: ' . $customerPort->id . ' is missing a port' . "\n";
+                if($customer == null){
+                    echo 'CustomerPort: ' . $customerPort->id . ' is missing a port'."\n";
                     $badPorts ++;
                     $startingId = $customerPort->id;
                     CustomerPort::destroy($customerPort->id);
@@ -172,12 +267,12 @@ class GeneralTasks extends Command {
 
                 if ($portAddress == null)
                 {
-                    echo 'CustomerPort: ' . $customerPort->id . ' is missing an address' . "\n";
+                    echo 'CustomerPort: ' . $customerPort->id . ' is missing an address'."\n";
                     CustomerPort::destroy($customerPort->id);
                     $badPorts ++;
                 } else if ($customerAddress != null && $portAddress->code != $customerAddress->code)
                 {
-                    echo 'CustomerPort: ' . $customerPort->id . ' does not match' . "\n";
+                    echo 'CustomerPort: ' . $customerPort->id . ' does not match'."\n";
                     CustomerPort::destroy($customerPort->id);
                     $badPorts ++;
                 }
@@ -192,75 +287,21 @@ class GeneralTasks extends Command {
             usleep(500000);
         }
 
-        echo $badPorts . ' out of ' . $recordsProcessed . ' were bad' . "\n";
+        echo $badPorts . ' out of ' . $recordsProcessed . ' were bad'."\n";
     }
 
     protected function sendMassEmail()
     {
 
+        /**
+         * Test email contact list
+         */
         $managersContactInfo = [['first_name' => 'Peyman', 'last_name' => 'Pourkermani', 'email' => 'peyman@pourkermani.com']];
 
-//        $managersContactInfoOLD = [
-//            ['Firstname' => 'Judy', 'Lastname' => 'Pierson', 'Email' => '1400museumpark@gmail.com'],
-//            ['Firstname' => 'Marcy', 'Lastname' => 'Juarez', 'Email' => 'M.Juarez@dkcondo.com'],
-//            ['Firstname' => 'Leslie', 'Lastname' => 'Dyenson', 'Email' => 'L.Dyenson@DKCondo.co'],
-//            ['Firstname' => 'Edison', 'Lastname' => 'Giles', 'Email' => 'egiles@lmsnet.com'],
-//            ['Firstname' => 'Aislinn', 'Lastname' => 'Pulley', 'Email' => 'apulley@lmsnet.com'],
-//            ['Firstname' => 'Cindy', 'Lastname' => 'Schulz', 'Email' => 'c.schulz@dkcondo.com'],
-//            ['Firstname' => 'Denise', 'Lastname' => 'Savino', 'Email' => 'manager125@communityspecialists.net'],
-//            ['Firstname' => 'Michael', 'Lastname' => 'Dailey', 'Email' => 'Mdailey@lmsnet.com'],
-//            ['Firstname' => 'Flo', 'Lastname' => 'Roberson', 'Email' => 'mplmanager@sudlerchicago.com'],
-//            ['Firstname' => 'Warren', 'Lastname' => 'Powell', 'Email' => 'wpowell@advantage-management.com'],
-//            ['Firstname' => 'Kirk', 'Lastname' => 'Sullivan', 'Email' => 'k.sullivan@dkcondo.com'],
-//            ['Firstname' => 'Bobby', 'Lastname' => 'Kennedy', 'Email' => 'Bobby@buildinggroup.com'],
-//            ['Firstname' => 'Amy', 'Lastname' => 'Eickhoff', 'Email' => 'Aeickhoff@lmsnet.com'],
-//            ['Firstname' => 'Joni', 'Lastname' => 'Hoffer', 'Email' => 'jhoffer@lmsnet.com'],
-//            ['Firstname' => 'Deborah', 'Lastname' => 'Romero', 'Email' => 'D.Romero@DKCondo.com'],
-//            ['Firstname' => 'Yvette', 'Lastname' => 'Lafrenere', 'Email' => 'ylafrenere@communityspecialists.net'],
-//            ['Firstname' => 'April', 'Lastname' => 'Daly', 'Email' => 'A.Daly@dkcondo.com'],
-//            ['Firstname' => 'Shirley', 'Lastname' => 'Feldman', 'Email' => 'S.Feldman@dkcondo.com'],
-//            ['Firstname' => 'Cherie', 'Lastname' => 'Schmidt', 'Email' => '125east@museumpark.net'],
-//            ['Firstname' => 'Nanci', 'Lastname' => 'Gonzalez', 'Email' => 'N.Gonzalez@dkcondo.com'],
-//            ['Firstname' => 'Kathleen', 'Lastname' => 'Dormin', 'Email' => 'k.dormin@dkcondo.com'],
-//            ['Firstname' => 'Sharon', 'Lastname' => 'McAndrews', 'Email' => 's.mcandrews@dkcondo.com'],
-//            ['Firstname' => 'Kim', 'Lastname' => 'Pinson', 'Email' => 'k.pinson@dkcondo.com'],
-//            ['Firstname' => 'Brent', 'Lastname' => 'Lehr', 'Email' => 'blehr@amli.com'],
-//            ['Firstname' => 'Jermeise', 'Lastname' => 'Steele', 'Email' => 'j.steele@dkcondo.com'],
-//            ['Firstname' => 'Jake', 'Lastname' => 'Larman', 'Email' => 'larman@privateholding.com'],
-//            ['Firstname' => 'Zalina', 'Lastname' => 'Jones', 'Email' => 'zalina.jones@fsresidential.com'],
-//            ['Firstname' => 'Holly', 'Lastname' => 'Foley', 'Email' => 'hfoley@lmsnet.com'],
-//            ['Firstname' => 'Stephanie', 'Lastname' => 'Skelley', 'Email' => 'stephanie.skelley@associa.us'],
-//            ['Firstname' => 'Mollie', 'Lastname' => 'Johnstone', 'Email' => 'mjohnstone@habitat.com'],
-//            ['Firstname' => 'Carly', 'Lastname' => 'Sweeney', 'Email' => 'csweeney@resideliving.com'],
-//            ['Firstname' => 'Gayle', 'Lastname' => 'Lang', 'Email' => 'gl@phoenixrisinggroup.com'],
-//            ['Firstname' => 'Mavis', 'Lastname' => 'Mather', 'Email' => 'm.mather@dkcondo.com'],
-//            ['Firstname' => 'David', 'Lastname' => 'Westveer', 'Email' => 'david@westwardmanagement.com'],
-//            ['Firstname' => 'Jaime', 'Lastname' => 'Sartin', 'Email' => 'j.sartin@dkcondo.com'],
-//            ['Firstname' => 'Heather', 'Lastname' => 'McHenry', 'Email' => 'heather.mchenry@related.com'],
-//            ['Firstname' => 'Christina', 'Lastname' => 'Hannigan', 'Email' => 'joffreytowermgr@sudlerchicago.com'],
-//            ['Firstname' => 'Jake', 'Lastname' => 'Larman', 'Email' => 'larman@privateholding.com'],
-//            ['Firstname' => 'Kathy', 'Lastname' => 'Weinstein', 'Email' => 'kweinstein@lms.net'],
-//            ['Firstname' => 'Jennifer', 'Lastname' => 'Bastidas', 'Email' => 'jennifer.bastidas@related.com'],
-//            ['Firstname' => 'Donna', 'Lastname' => 'Ciota', 'Email' => 'donna.ciota@associa.us'],
-//            ['Firstname' => 'Sharron', 'Lastname' => 'Healy', 'Email' => 'shealy@peakproperties.biz'],
-//            ['Firstname' => 'Teena', 'Lastname' => 'Lorie', 'Email' => 'teena@buildinggroup.com'],
-//            ['Firstname' => 'Austin', 'Lastname' => 'Arkush', 'Email' => 'AustinA@westwardmanagement.com'],
-//            ['Firstname' => 'Sandy', 'Lastname' => 'Albecker', 'Email' => 'sandy@enlan.com'],
-//            ['Firstname' => 'Sarah', 'Lastname' => 'Florie', 'Email' => 'S.Florie@DKCondo.com'],
-//            ['Firstname' => 'Lily', 'Lastname' => 'Godow', 'Email' => 'lgodow@burnhampointechicago.com'],
-//            ['Firstname' => 'Edin', 'Lastname' => 'Dzafic', 'Email' => 'manager@hermitagehuron.com'],
-//            ['Firstname' => 'Jennifer', 'Lastname' => 'Taylor', 'Email' => 'jtaylor@forthgrp.com'],
-//            ['Firstname' => 'Serina', 'Lastname' => 'Brancato', 'Email' => 's.brancato@dkcondo.com'],
-//            ['Firstname' => 'Katharine', 'Lastname' => 'Rousseve', 'Email' => 'k.rousseve@dkcondo.com'],
-//            ['Firstname' => 'Linda', 'Lastname' => 'Ivery', 'Email' => '235wvanburenmgr@sudlerchicago.com'],
-//            ['Firstname' => 'Kaitlin', 'Lastname' => 'McLearen', 'Email' => '900@amli.com'],
-//            ['Firstname' => 'Yvette', 'Lastname' => 'Young', 'Email' => '1700mgr@sudlerchicago.com'],
-//            ['Firstname' => 'Mary', 'Lastname' => 'Wolf', 'Email' => 'm.wolf@dkcondo.com'],
-//            ['Firstname' => 'Steve', 'Lastname' => 'Schantz', 'Email' => 'stevetschantz@gmail.com'],
-//            ['Firstname' => 'Tricia', 'Lastname' => 'Conway', 'Email' => 'tconway@communityspecialists.net'],
-//            ['Firstname' => 'Property', 'Lastname' => 'Manager', 'Email' => 'mgrlakeside@sudlerchicago.com']];
 
-
+        /**
+         * Production email contact list
+         */
 //        $managersContactInfo = [
 //            ['first_name' => 'Judy', 'last_name' => 'Pierson', 'email' => '1400museumpark@gmail.com'],
 //            ['first_name' => 'Marcy', 'last_name' => 'Juarez', 'email' => 'M.Juarez@dkcondo.com'],
@@ -333,18 +374,20 @@ class GeneralTasks extends Command {
 
         foreach ($managersContactInfo as $contactInfo)
         {
-//            dd([$contactInfo]);
-
             $emailInfo = ['fromName'    => 'SilverIP Customer Care',
                           'fromAddress' => 'help@silverip.com',
                           'toName'      => $contactInfo['first_name'] . ' ' . $contactInfo['last_name'],
                           'toAddress'   => $contactInfo['email'],
-                          'subject'     => 'SilverIP Maintenance Window'];
+//                          'subject'     => 'SilverIP Maintenance Window'];
+                          'subject'     => 'COMPLETED: SilverIP Network Maintenance'];
+//                          'subject'     => 'EXTENDED: SilverIP Network Maintenance'];
 
-            $template = 'email.template_manager_notification';
+//            $template = 'email.template_manager_notification';
+            $template = 'email.template_maintenance_window_complete';
+//            $template = 'email.template_maintenance_window_extended';
             $templateData = ['manager' => $contactInfo];
 
-            echo 'Sending to "' . $contactInfo['first_name'] . ' ' . $contactInfo['last_name']. '" <'.$contactInfo['email'].'>   ...   ';
+            echo 'Sending to "' . $contactInfo['first_name'] . ' ' . $contactInfo['last_name'] . '" <' . $contactInfo['email'] . '>   ...   ';
             SendMail::generalEmail($emailInfo, $template, $templateData);
             echo "done\n";
         }

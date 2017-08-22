@@ -42,7 +42,9 @@ use Mail;
 use Config;
 use Auth;
 use View;
-use Storage;
+//use Storage;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 use SendMail;
 use Carbon\Carbon;
 
@@ -404,13 +406,47 @@ class TestController extends Controller {
     public function generalTest(Request $request)
     {
 
-        $firstDayOfMonthTime = strtotime("first day of this month 00:00:00");
-        $timestampMysql = date('Y-m-d H:i:s', $firstDayOfMonthTime);
+//        $directory = 'mikrotik_firmware/all_packages-tile-6.40.1';
+//        $files = File::allFiles(storage_path('app/'.$directory));
+//
+//        foreach($files as $file){
+//            echo $file->getPathname().'/'.$file->getFilename()  .'<br>';
+//        }
+//
+        dd('done');
+////        $files = Storage::disk('local')->allFiles($directory);
+//
+////        dd(Storage::disk('local')->files('mikrotik_firmware/all_packages-tile-6.40.1'));
+//
+//        dd($files);
+//
+//        $mikrotik = NetworkNode::where('ip_address', '10.10.13.1')->first();
+////        dd($mikrotik);
 
-        dd($timestampMysql);
+        $serviceRouter = new MtikRouter(['ip_address' => $mikrotik->ip_address,
+                                         'username'   => config('netmgmt.mikrotik.username'),
+                                         'password'   => config('netmgmt.mikrotik.password')]);
+        $softwareversion = $serviceRouter->getSoftwareVersion($mikrotik->ip_address);
+        $architecture = $serviceRouter->getArchitecture($mikrotik->ip_address);
 
-        $customer = Customer::find(2460);
-        dd($customer->pendingAutoPayInvoicesOnOrAfterTimestamp($timestampMysql)->get());
+        dd([$softwareversion, $architecture]);
+
+//            dd('done');
+//        $mikrotiks = NetworkNode::where('id_types', config('const.type.router'))->get();
+//        dd($mikrotiks);
+
+//        $serverIp = '108.160.193.70';
+//        foreach ($mikrotiks as $mikrotik)
+//        {
+//            $serviceRouter = new MtikRouter(['ip_address' => $mikrotik->ip_address,
+//                                             'username' => config('netmgmt.mikrotik.username'),
+//                                             'password' => config('netmgmt.mikrotik.password')]);
+//            $serviceRouter->updateHotspotServerTarget($mikrotik->ip_address, $serverIp);
+//            echo 'Updated ' . $mikrotik->host_name . '<br>';
+////            dd('done');
+//        }
+//        dd('done');
+
 
 //        $customer = Customer::with('services')->find(9992)->toArray();
 //
@@ -525,8 +561,6 @@ class TestController extends Controller {
                 $queries = DB::getQueryLog();
                 $last_query = end($queries);
                 dd($queries);
-
-
 
 
         dd($invoices->currentPage()); //->pluck('id'));
