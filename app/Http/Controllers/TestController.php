@@ -42,7 +42,9 @@ use Mail;
 use Config;
 use Auth;
 use View;
-use Storage;
+//use Storage;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 use SendMail;
 use Carbon\Carbon;
 
@@ -404,6 +406,48 @@ class TestController extends Controller {
     public function generalTest(Request $request)
     {
 
+//        $directory = 'mikrotik_firmware/all_packages-tile-6.40.1';
+//        $files = File::allFiles(storage_path('app/'.$directory));
+//
+//        foreach($files as $file){
+//            echo $file->getPathname().'/'.$file->getFilename()  .'<br>';
+//        }
+//
+        dd('done');
+////        $files = Storage::disk('local')->allFiles($directory);
+//
+////        dd(Storage::disk('local')->files('mikrotik_firmware/all_packages-tile-6.40.1'));
+//
+//        dd($files);
+//
+//        $mikrotik = NetworkNode::where('ip_address', '10.10.13.1')->first();
+////        dd($mikrotik);
+
+        $serviceRouter = new MtikRouter(['ip_address' => $mikrotik->ip_address,
+                                         'username'   => config('netmgmt.mikrotik.username'),
+                                         'password'   => config('netmgmt.mikrotik.password')]);
+        $softwareversion = $serviceRouter->getSoftwareVersion($mikrotik->ip_address);
+        $architecture = $serviceRouter->getArchitecture($mikrotik->ip_address);
+
+        dd([$softwareversion, $architecture]);
+
+//            dd('done');
+//        $mikrotiks = NetworkNode::where('id_types', config('const.type.router'))->get();
+//        dd($mikrotiks);
+
+//        $serverIp = '108.160.193.70';
+//        foreach ($mikrotiks as $mikrotik)
+//        {
+//            $serviceRouter = new MtikRouter(['ip_address' => $mikrotik->ip_address,
+//                                             'username' => config('netmgmt.mikrotik.username'),
+//                                             'password' => config('netmgmt.mikrotik.password')]);
+//            $serviceRouter->updateHotspotServerTarget($mikrotik->ip_address, $serverIp);
+//            echo 'Updated ' . $mikrotik->host_name . '<br>';
+////            dd('done');
+//        }
+//        dd('done');
+
+
 //        $customer = Customer::with('services')->find(9992)->toArray();
 //
 //        dd(collect($customer['services']));
@@ -514,11 +558,9 @@ class TestController extends Controller {
 
         $invoices = $billingHelper->paginatePendingInvoices();
 
-                $queries = DB::getQueryLog();
-                $last_query = end($queries);
-                dd($queries);
-
-
+        $queries = DB::getQueryLog();
+        $last_query = end($queries);
+        dd($queries);
 
 
         dd($invoices->currentPage()); //->pluck('id'));
@@ -580,8 +622,7 @@ class TestController extends Controller {
         $nowMysql = date("Y-m-d H:i:s");
         $invoices = Invoice::where('status', config('const.invoice_status.pending'))
             ->where('processing_type', config('const.type.auto_pay'))
-            ->where(function ($query) use ($nowMysql)
-            {
+            ->where(function ($query) use ($nowMysql) {
                 $query->where('due_date', 'is', 'NULL')
                     ->orWhere('due_date', '<=', $nowMysql)
                     ->orWhere('due_date', '');
@@ -599,8 +640,7 @@ class TestController extends Controller {
         $building = Building::find(1012);
 
         $products = null;
-        $building->load(['activeBuildingProducts.product' => function ($q) use (&$products)
-        {
+        $building->load(['activeBuildingProducts.product' => function ($q) use (&$products) {
             $products = $q->with('propertyValues')->get(); //->unique();
         }]);
 
@@ -626,20 +666,6 @@ class TestController extends Controller {
 //        $portLabels = $ciscoSwitch->getSnmpAllPortLabel('10.11.123.27', $portTypeRegEx, $skipLabelPattern);
 //        dd($portLabels);
 
-//        $mikrotiks = NetworkNode::where('id_types', config('const.type.router'))->get();
-//        dd($mikrotiks);
-
-//        $serverIp = '108.160.193.70';
-//        foreach ($mikrotiks as $mikrotik)
-//        {
-//            $serviceRouter = new MtikRouter(['ip_address' => $mikrotik->ip_address,
-//                                             'username' => config('netmgmt.mikrotik.username'),
-//                                             'password' => config('netmgmt.mikrotik.password')]);
-//            $serviceRouter->updateHotspotServerTarget($mikrotik->ip_address, $serverIp);
-//            echo 'Updated ' . $mikrotik->host_name . '<br>';
-////            dd('done');
-//        }
-//        dd('done');
 
 ////        $mikrotiks = NetworkNode::where('id', 1251)->get();
 //        $mikrotiks = NetworkNode::where('id_types', config('const.type.router'))->get();
@@ -819,8 +845,7 @@ class TestController extends Controller {
         dd($myProductPropertyValues->buildingProducts->pluck('product')); //->pluck('propertyValues'));
 
         $products;
-        $building->load(['buildingProducts.product' => function ($q) use (&$products)
-        {
+        $building->load(['buildingProducts.product' => function ($q) use (&$products) {
             $products = $q->with('propertyValues')->get(); //->unique();
         }]);
 

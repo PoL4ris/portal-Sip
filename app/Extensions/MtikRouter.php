@@ -764,7 +764,92 @@ class MtikRouter {
         return false;
     }
 
+    public function getSoftwareVersion($ip = null)
+    {
+        if ( ! isset($ip))
+        {
+            if ($this->isSelected())
+            {
+                $ip = $this->router['ip_address'];
+            }
+        }
 
+        if (isset($ip))
+        {
+            $API = new RouterOsAPI();
+            if (isset($this->router['debug']) && $this->router['debug'] == true)
+            {
+                $API->debug = true;
+            }
+
+            if ($API->connect($ip, $this->username, $this->password))
+            {
+                $apiQueryResult = $API->comm('/system/resource/print');
+                $API->disconnect();
+                if (isset($apiQueryResult) && count($apiQueryResult) > 0)
+                {
+                    return $apiQueryResult[0]['version'];
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public function getArchitecture($ip = null)
+    {
+        if ( ! isset($ip))
+        {
+            if ($this->isSelected())
+            {
+                $ip = $this->router['ip_address'];
+            }
+        }
+
+        if (isset($ip))
+        {
+            $API = new RouterOsAPI();
+            if (isset($this->router['debug']) && $this->router['debug'] == true)
+            {
+                $API->debug = true;
+            }
+
+            if ($API->connect($ip, $this->username, $this->password))
+            {
+                $apiQueryResult = $API->comm('/system/resource/print');
+                $API->disconnect();
+                if (isset($apiQueryResult) && count($apiQueryResult) > 0)
+                {
+                    return $apiQueryResult[0]['architecture-name'];
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public function reboot($routerIp = null)
+    {
+        if ( ! isset($routerIp))
+        {
+            if ($this->isSelected())
+            {
+                $routerIp = $this->router['ip_address'];
+            }
+        }
+
+        if (isset($routerIp))
+        {
+            $API = new RouterOsAPI();
+            if ($API->connect($routerIp, $this->username, $this->password))
+            {
+//                $ipBindingArray = array();
+//                $ipBindingArray ['.id'] = $id;
+                $apiQueryResult = $API->comm('/system/reboot');
+                $API->disconnect();
+            }
+        }
+    }
     /*
      *  Returns the switch port info that the user is connected to 
      *  (based on the user's $ip and/or $mac)
