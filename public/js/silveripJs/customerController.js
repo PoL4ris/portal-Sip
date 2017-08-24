@@ -427,21 +427,34 @@ app.controller('customerController',                function ($scope, $http, $st
   }
   $scope.updateCustomerStatus       = function (){
 
-    var infoData = getFormValues('customer-status-form-update');
-    infoData['id'] = customerService.customer.id;
 
-    /*
-     * status-service-check: "on",
-     * status-invoice-check: "on",
-     * status-network-check: "on",
-     * id: 4667
-     * */
+    $.SmartMessageBox({
+      title: "Please Confirm",
+      content: 'Should I confirm this action?',
+      buttons: '[No][Yes]'
+    }, function (ButtonPressed) {
+      if (ButtonPressed === "Yes") {
+
+        var infoData = getFormValues('customer-status-form-update');
+        infoData['id'] = customerService.customer.id;
+
+        /*
+         * status-service-check: "on",
+         * status-invoice-check: "on",
+         * status-network-check: "on",
+         * id: 4667
+         * */
 
 
-    $http.get("updateCustomerStatus", {params: infoData})
-      .then(function (response) {
-        console.log(response.json);
-      });
+        $http.get("updateCustomerStatus", {params: infoData})
+          .then(function (response) {
+            console.log(response.json);
+          });
+      }
+    });
+
+
+
 
 
 //    console.log(infoData);
