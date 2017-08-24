@@ -117,11 +117,15 @@
 
 
                     <p class="col-lg-4 col-md-4 no-padding-sides"><strong>Status:</strong></p>
-                    <p class="col-lg-4 col-md-4 no-padding-sides  capital-first" ng-if="customerTypes"><b>{{customerData.customer.status.name}}</b></p>
+                    <p class="col-lg-8 col-md-8 no-padding-sides  capital-first" ng-if="customerTypes">
+                        <b>{{customerData.customer.status.name}}</b>
+                        <i class="fa fa-pencil cursor-pointer new-status m-l-lg" data-toggle="modal" data-target="#customerStatusModal"></i>
+                        <label class="m-l-sm new-status  cursor-pointer" data-toggle="modal" data-target="#customerStatusModal" ng-click="activeServiceDisplay(customerData.customer.status.name)">Modify</label>
+                    </p>
 
-                    <div class="col-lg-12 text-center btn btn-warning btn-slim cursor-pointer"data-toggle="modal" data-target="#customerStatusModal">
-                        <i class="fa fa-pencil"></i> Change Status
-                    </div>
+                    <!--<div class="col-lg-12 text-center btn btn-warning btn-slim cursor-pointer"data-toggle="modal" data-target="#customerStatusModal">-->
+                        <!--<i class="fa fa-pencil"></i> Change Status-->
+                    <!--</div>-->
 
                 </div>
                 <div class="col-lg-12 col-md-12 no-padding-sides">
@@ -309,11 +313,9 @@
                     &times;
                 </button>
                 <h4 class="modal-title">
-                    {{customerData.customer.first_name + ' ' + customerData.customer.last_name}} current Status:
-                        <span class="capitals">{{customerData.customer.status.name}}</span>
+                    Account Status: <span class=" {{customerData.customer.status.name == 'active'? 'up-status': 'down-status'}}">{{customerData.customer.status.name == 'active' ? 'Active' : 'Disabled'}}</span>
                 </h4>
             </div>
-
 
 
             <div class="modal-body">
@@ -321,71 +323,159 @@
                     <div class="row">
                         <div class="col-lg-12">
                             <!--***********************************************-->
-                            <div class="col-lg-3">Set New Status:</div>
+                            <!--<div class="col-lg-2">-->
+                                <!--<p class="set-title-p">Change Status:</p>-->
+                            <!--</div>-->
                             <div class="col-lg-9">
-                                <div class="row">
-                                    <div class="col-lg-3 capitals cursor-pointer no-border status-color-{{statusLabe.name}} satus-color-borders"
-                                         ng-repeat="statusLabe in customerData.statusList" ng-click="activeServiceDisplay()">
-                                        {{statusLabe.name}}
+
+                                <!--<div class="capital-first status-identif-{{statusLabe}} size-100px satus-color-borders m-r-lg btn btn-primary {{statusLabe == customerData.customer.status.name ? 'selected' : ''}}"-->
+                                     <!--ng-click="activeServiceDisplay()"-->
+                                     <!--ng-repeat="statusLabe in statusArrayConstant.status"-->
+                                     <!--ng-if="statusLabe == 'active' || statusLabe == 'disabled'">-->
+                                    <!--{{statusLabe}}-->
+                                <!--</div>-->
+
+
+
+
+
+
+                                <div class="btn btn-{{customerData.customer.status.name == 'active' ? 'danger' : 'success'}}" ng-click="activeServiceDisplay()" ng-if="!disableStatusActive">
+                                        {{customerData.customer.status.name == 'active' ? 'Disable Account' : 'Activate Account'}}
+                                </div>
+                                <div class="btn btn-{{customerData.customer.status.name == 'active' ? 'danger' : 'success'}}" ng-click="activeServiceDisplay()" ng-if="disableStatusActive" disabled="">
+                                        {{customerData.customer.status.name == 'active' ? 'Disable Account' : 'Activate Account'}}
+                                </div>
+
+
+
+                                <!--<div ng-if="disableStatusActive" class="btn btn-success" ng-click="activeServiceDisplay('active')">Activate Account</div>-->
+
+
+
+
+
+
+
+                            </div>
+
+
+                            <div class="col-lg-12 m-t-lg"></div>
+
+                            <form id="customer-status-form-update">
+
+
+                            <div class="col-lg-8 b-r-ddd">
+                                <div class="col-lg-12">
+                                    <div class="down-status m-b-lg p-title-status p-l-lg">
+                                        <span class="{{disableStatusActive?'':'bg-status-disabled'}} anim">The next Services will be disabled if you continue this action</span>
+                                        <div class="check-status-action smart-form" ng-if="disableStatusActive">
+                                            <label class="checkbox">
+                                                <input type="checkbox" name="status-service-check" checked="checked">
+                                                <i></i>
+                                            </label>
+                                        </div>
+                                        <!--TRUE/FALSE-->
+                                        <div class="check-status-action smart-form desactivado" ng-if="!disableStatusActive">
+                                            <label class="checkbox">
+                                                <input type="checkbox" name="status-service-check" checked="checked" disabled>
+                                                <i></i>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-12"
+                                             ng-repeat="service in customerData.customerServices.services"
+                                             ng-controller="serviceProductController">
+                                            <div class="record-description" ng-if="customerProduct.product.frequency == 'monthly' || customerProduct.product.frequency == 'annual' || customerProduct.product.frequency == 'included'">
+                                                <div class="row">
+                                                    <label class=""><b>Product : </b>{{ customerProduct.product.name }} </label>
+                                                    <label class="text-capitalize"><b>Expires :</b> {{ service.expires | date : "shortDate" }}</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row"><div class="col-lg-12"><hr></div></div>
+
+                                <div class="col-lg-12">
+                                    <div class="down-status m-b-lg p-l-lg">
+                                        <span class="{{disableStatusActive?'':'bg-status-disabled'}} anim">The next Invoices will be removed if you continue this action</span>
+                                        <div class="check-status-action smart-form" ng-if="disableStatusActive">
+                                            <label class="checkbox">
+                                                <input type="checkbox" name="status-invoice-check" checked="checked">
+                                                <i></i>
+                                            </label>
+                                        </div>
+                                        <!--TRUE/FALSE-->
+                                        <div class="check-status-action smart-form desactivado" ng-if="!disableStatusActive">
+                                            <label class="checkbox">
+                                                <input type="checkbox" name="status-invoice-check" checked="checked" disabled>
+                                                <i></i>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-12" ng-repeat="invoiceItem in customerData.invoices">
+                                            <label class="m-r-sm"><b>Status : </b>{{ statusArrayConstant.status[invoiceItem.status] }}</label>
+                                            <label class="m-r-sm"><b>Amount : </b>{{invoiceItem.amount | currency : '$' : 2}}</label>
+                                            <label class="m-r-sm" ng-if="invoiceItem.processing_type == 13"><b>Processing Type : </b>Autopay</label>
+                                            <label class="m-r-sm" ng-if="invoiceItem.processing_type == 14"><b>Processing Type : </b>Manual Pay</label>
+                                            <label ng-init="resultDate = convertDate(invoiceItem.due_date)"><b>Due Date : </b>{{resultDate | date : "shortDate" }}</label>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-
-
-                            <div class="col-lg-12"><hr></div>
-
-
-                            <div class="col-lg-8" ng-if="disableStatusActive">
-                                <h5 class="text-capitalize down-status">The next Services will be disabled if you continue this action</h5>
-                                <div class="row">
-                                    <div class="col-lg-12" ng-repeat="service in customerData.customerServices.services" ng-controller="serviceProductController">
-                                        <label class="m-r-sm">{{ customerProduct.product.name }} </label>
-                                        <!--<label>{{ customerProduct.product.amount | currency : "$" : 2 }}</label>-->
-                                        <!--<label class="text-capitalize">{{ customerProduct.product.frequency }}</label>-->
-                                        <!--<label class="text-capitalize">{{ service.created_at | date : "shortDate" }}</label>-->
-                                        <label class="text-capitalize"><b>Expires :</b>{{ service.expires | date : "shortDate" }}</label>
+                            <div class="col-lg-4">
+                                <div class="col-lg-12 m-b-lg ">
+                                    <div class=" down-status m-b-lg p-l-lg">
+                                        <span class="{{disableStatusActive?'':'bg-status-disabled'}} anim">Send port to SignUp</span>
+                                        <div class="check-status-action smart-form" ng-if="disableStatusActive">
+                                            <label class="checkbox">
+                                                <input type="checkbox" name="status-network-check" checked="checked">
+                                                <i></i>
+                                            </label>
+                                        </div>
+                                        <!--TRUE/FALSE-->
+                                        <div class="check-status-action smart-form desactivado" ng-if="!disableStatusActive">
+                                            <label class="checkbox">
+                                                <input type="checkbox" name="status-network-check" checked="checked" disabled>
+                                                <i></i>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <p><b>Port : </b>{{ customerData.customerNetwork.port_number }}</p>
+                                            <p><b>IP Address : </b>{{ customerData.customerNetwork.network_node.ip_address }}</p>
+                                            <p><b>MAC Address : </b>{{ customerData.customerNetwork.network_node.mac_address }}</p>
+                                            <p><b>Model : </b>{{ customerData.customerNetwork.network_node.model}}</p>
+                                            <!--<p><b>Properties : </b>{{ customerData.customerNetwork.network_node.properties}}</p>-->
+                                            <p><b>Vendor : </b>{{ customerData.customerNetwork.network_node.vendor}}</p>
+                                        </div>
                                     </div>
                                 </div>
+                                <!--<div class="col-lg-12  smart-form">-->
+                                    <!--<div class=" down-status  m-b-lg p-l-lg">-->
+                                        <!--<span class="{{disableStatusActive?'':'bg-status-disabled'}} anim">Send to SignUp</span>-->
+                                        <!--<div class="check-status-action smart-form" ng-if="disableStatusActive">-->
+                                            <!--<label class="checkbox">-->
+                                                <!--<input type="checkbox" name="status-signup-check" checked="checked">-->
+                                                <!--<i></i>-->
+                                            <!--</label>-->
+                                        <!--</div>-->
+                                        <!--&lt;!&ndash;TRUE/FALSE&ndash;&gt;-->
+                                        <!--<div class="check-status-action smart-form desactivado" ng-if="!disableStatusActive">-->
+                                            <!--<label class="checkbox">-->
+                                                <!--<input type="checkbox" name="status-signup-check" checked="checked" disabled>-->
+                                                <!--<i class="bg-status-disabled"></i>-->
+                                            <!--</label>-->
+                                        <!--</div>-->
+                                    <!--</div>-->
+                                <!--</div>-->
                             </div>
-
-                            <div class="col-lg-4" ng-if="disableStatusActive">
-                                <h5 class="text-capitalize down-status">The Network info to be disabled</h5>
-                                <div class="row">
-                                    <div class="col-lg-12" >
-                                        <p> <b>Port : </b>{{ customerData.customerNetwork.port_number }}</p>
-                                        <p> <b>IP Address : </b>{{ customerData.customerNetwork.network_node.ip_address }}</p>
-                                        <p> <b>MAC Address : </b>{{ customerData.customerNetwork.network_node.mac_address }}</p>
-                                        <p> <b>Model : </b>{{ customerData.customerNetwork.network_node.model}}</p>
-                                        <p> <b>Properties : </b>{{ customerData.customerNetwork.network_node.properties}}</p>
-                                        <p> <b>Vendor : </b>{{ customerData.customerNetwork.network_node.vendor}}</p>
-
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-8" ng-if="disableStatusActive">
-                                <h5 class="text-capitalize down-status">The next Invoices will be removed if you continue this action</h5>
-                                <div class="row">
-                                    <div class="col-lg-12" ng-repeat="invoiceItem in customerData.invoices">
-                                        <label class="m-r-sm"><b>Status : </b>{{invoiceItem.status}}</label>
-                                        <label class="m-r-sm"><b>Amount : </b>{{invoiceItem.amount | currency : '$' : 2}}</label>
-                                        <label class="m-r-sm" ng-if="invoiceItem.processing_type == 13"><b>Processing Type : </b>Autopay</label>
-                                        <label class="m-r-sm" ng-if="invoiceItem.processing_type == 14"><b>Processing Type : </b>Manual Pay</label>
-                                        <label ng-init="resultDate = convertDate(invoiceItem.due_date)"><b>Due Date : </b>{{resultDate | date : "shortDate" }}</label>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-4 smart-form">
-                                <h5 class="text-capitalize new-status ">Send to SignUp</h5>
-                                <label class="checkbox">
-                                    <input type="checkbox" name="stsup" checked="checked">
-                                    <i></i>
-                                </label>
-
-
-                            </div>
-
+                            </form>
                             <!--***********************************************-->
                         </div>
                     </div>
@@ -394,6 +484,10 @@
 
 
             <div class="modal-footer">
+                <button type="button" class="btn btn-success"  ng-if="disableStatusActive" ng-click="updateCustomerStatus()">
+                <!--<button type="button" class="btn btn-success" data-dismiss="modal" ng-if="disableStatusActive" ng-click="updateCustomerStatus()">-->
+                    Apply
+                </button>
                 <button type="button" class="btn btn-danger" data-dismiss="modal">
                     Cancel
                 </button>

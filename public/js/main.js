@@ -354,7 +354,8 @@ app.factory('customerService',  function () {
   return {
     exist: true,
     sideBarFlag: true,
-    rightView: false
+    rightView: false,
+    statusArrayConstant : constArray,
   };
 });
 app.factory('buildingService',  function () {
@@ -375,7 +376,9 @@ app.factory('adminService',     function () {
 app.factory('generalService',   function () {
   return {
     exist: true,
-    customerArray : {}
+    customerArray : {},
+    statusArrayConstant : constArray,
+
   };
 });
 
