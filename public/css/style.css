@@ -118,7 +118,7 @@
   border-top: 1px solid #ddd;
 }
 .b-r-ddd {
-  border-top: 1px solid #ddd;
+  border-right: 1px solid #ddd;
 }
 .p-t-lg {
   padding-top: 15px;
@@ -156,7 +156,9 @@
 .ddd{
   border:1px dotted silver
 }
-
+.size-100px{
+  width: 100px;
+}
 .size-50 {
   width: 50%;
 }
@@ -174,6 +176,9 @@
 }
 .caps {
   text-transform: uppercase;
+}
+.desactivado{
+  opacity: .5;
 }
 .btn-slim{
   padding:0;
@@ -205,9 +210,6 @@
 }
 .text-center {
   text-align: center;
-}
-.b-r-ddd {
-  border-right: 1px solid #ddd;
 }
 .float-left {
   float: left;
@@ -1481,7 +1483,21 @@ table.dataTable tbody tr {
 .fixed-location-chargesandinvoices{
 
 }
-
+.check-status-action{
+  float: right;
+  width: 19px;
+  height: 22px;
+  position: absolute;
+  left: 0px;
+  top: -3px;
+}
+.set-title-p{
+  position: relative;
+  top:10px;
+}
+.p-title-status{
+  /*padding-left: 25px;*/
+}
 
 pre {
   font-size: 10px;

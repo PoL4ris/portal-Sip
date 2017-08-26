@@ -912,6 +912,19 @@ class CustomerController extends Controller {
         //PORT   -> $request->port_id;
 
     }
+
+    public function updateCustomerStatus(Request $request)
+    {
+        dd($request->all());
+
+        /*
+         * status-service-check: "on",
+         * status-invoice-check: "on",
+         * status-network-check: "on",
+         * id: 4667
+         * */
+
+    }
 }
 
 

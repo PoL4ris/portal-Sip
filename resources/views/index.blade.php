@@ -149,6 +149,7 @@ Possible attributes
 <script src="/js/calendar.js"></script>
 <script src="/js/sidebar.js"></script>
 <script src="/js/silveripJs/icons.js"></script>
+<script src="/js/silveripJs/const.js"></script>
 <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"></script>
 
 

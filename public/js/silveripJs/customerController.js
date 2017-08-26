@@ -7,6 +7,7 @@ app.controller('customerControllerList',            function ($scope, $http){
 });
 app.controller('customerController',                function ($scope, $http, $stateParams, customerService, DTOptionsBuilder){
 //   $scope.globalServiceLocationSide = null;
+  console.log(customerService);
   if(!customerService.rightView) {
     customerService.rightView = true;
     //     console.log('right');
@@ -62,6 +63,7 @@ app.controller('customerController',                function ($scope, $http, $st
     $scope.checkboxModelA        = true;
     $scope.animationsEnabled     = false;
     $scope.currentServiceDisplay = '';
+    $scope.statusArrayConstant   = customerService.statusArrayConstant;
   }
 
   //Reloads Data
@@ -416,14 +418,47 @@ app.controller('customerController',                function ($scope, $http, $st
   $scope.pStInOptions = DTOptionsBuilder.newOptions().withDisplayLength(50);
 
   //STATUS CHANGE
-  $scope.activeServiceDisplay       = function(){
-  $('.satus-color-borders').addClass('no-border');
-  $('.status-color-'+this.statusLabe.name).removeClass('no-border');
-  $scope.disableStatusActive = false;
-  if(this.statusLabe.name == 'disabled')
-  {
+  $scope.activeServiceDisplay       = function (defaultValue = null) {
+
     $scope.disableStatusActive = true;
+
+    if (defaultValue)
+      $scope.disableStatusActive = false;
   }
+  $scope.updateCustomerStatus       = function (){
+
+
+    $.SmartMessageBox({
+      title: "Please Confirm",
+      content: 'Should I confirm this action?',
+      buttons: '[No][Yes]'
+    }, function (ButtonPressed) {
+      if (ButtonPressed === "Yes") {
+
+        var infoData = getFormValues('customer-status-form-update');
+        infoData['id'] = customerService.customer.id;
+
+        /*
+         * status-service-check: "on",
+         * status-invoice-check: "on",
+         * status-network-check: "on",
+         * id: 4667
+         * */
+
+
+        $http.get("updateCustomerStatus", {params: infoData})
+          .then(function (response) {
+            console.log(response.json);
+          });
+      }
+    });
+
+
+
+
+
+//    console.log(infoData);
+
   }
 });
 app.controller('customerTicketHistoryController',   function ($scope, $http){

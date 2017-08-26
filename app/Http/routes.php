@@ -143,6 +143,7 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('updateContactsTable',       'CustomerController@updateContactsTable');
     Route::get('updateContactInfo',         'CustomerController@updateContactInfo');
     Route::get('insertContactInfo',         'CustomerController@insertContactInfo');
+    Route::get('updateCustomerStatus',      'CustomerController@updateCustomerStatus');
     //New Ticket
     Route::get('insertCustomerTicket',      'CustomerController@insertCustomerTicket');
     Route::get('customersData',             'CustomerController@customersData');
