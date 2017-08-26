@@ -406,6 +406,8 @@ class TestController extends Controller {
     public function generalTest(Request $request)
     {
 
+        dd(storage_path('app'));
+
 //        $directory = 'mikrotik_firmware/all_packages-tile-6.40.1';
 //        $files = File::allFiles(storage_path('app/'.$directory));
 //

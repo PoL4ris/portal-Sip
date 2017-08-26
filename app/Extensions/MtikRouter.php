@@ -757,6 +757,7 @@ class MtikRouter {
                 $apiCommandResult = $API->comm('/ip/hotspot/walled-garden/ip/add', $commandOptionsArray);
 
                 $API->disconnect();
+
                 return true;
             }
         }
@@ -850,6 +851,52 @@ class MtikRouter {
             }
         }
     }
+
+    public function runCommand($routerIp, $command, $commandOptions = [])
+    {
+        $apiCommandResult = ['response' => false];
+
+        if ( ! isset($routerIp))
+        {
+            if ($this->isSelected())
+            {
+                $routerIp = $this->router['ip_address'];
+            }
+        }
+
+        if (isset($routerIp) == false)
+        {
+            $apiCommandResult['error'] = 'Missing router IP';
+
+            return $apiCommandResult;
+        }
+
+        $API = new RouterOsAPI();
+        if ($API->connect($routerIp, $this->username, $this->password))
+        {
+            $commandOptionsArray = array();
+            foreach ($commandOptions as $optionKey => $optionValue)
+            {
+                $commandOptionsArray [$optionKey] = $optionValue;
+            }
+
+            if (empty($commandOptionsArray))
+            {
+                $apiCommandResult['response'] = $API->comm($command);
+            } else
+            {
+                $apiCommandResult['response'] = $API->comm($command, $commandOptionsArray);
+            }
+
+            $API->disconnect();
+        } else
+        {
+            $apiCommandResult['error'] = 'Could not connect to router';
+        }
+
+        return $apiCommandResult;
+    }
+
     /*
      *  Returns the switch port info that the user is connected to 
      *  (based on the user's $ip and/or $mac)

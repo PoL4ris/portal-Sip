@@ -131,5 +131,4 @@ return [
         'internal_billing'      => '29',
         'move_in_howto_connect' => '30'
     ],
-
 ];
