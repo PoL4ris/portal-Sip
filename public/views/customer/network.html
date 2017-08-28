@@ -150,7 +150,12 @@
                         <div id="crcErrors" class="field-data col-lg-12 padding-5">
                             {{ (tdrData['crcErrors']['response'] > 0) ? "CRC Error Count: " + tdrData['crcErrors']['response'] : "No CRC Errors"}}
                         </div>
+                        <div id="cdsBindingsTable" class="field-data col-lg-12 padding-5" ng-repeat="(a,b) in tdrData['Bindings']">
+                                   dhcp {{a+1}}---> {{ b[0] }} : {{ b[1] }}
+                        </div>
+
                     </div>
+
                 </div>
             </div>
 

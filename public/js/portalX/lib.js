@@ -330,7 +330,7 @@ app.controller('customerNetworkController',         function ($scope, $http, $md
   $http.get("getCustomerNetwork", {params:{'id':$scope.customerData.id}})
     .then(function (response) {
       $scope.customerNetwork = response.data[0];
-      console.log($scope.customerNetwork);
+
     });
 
   $scope.networkServices = function (service)

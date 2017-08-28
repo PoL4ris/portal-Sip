@@ -108,8 +108,7 @@ class CiscoSwitch {
 
     const ccdIfInErrors = '.1.3.6.1.2.1.2.2.1.14';
     const ccdIfCrcErrors = '1.3.6.1.4.1.9.2.2.1.1.12';
-
-
+     const cdsBindingsIpAddress = '.1.3.6.1.4.1.9.9.380.1.4.1.1.4';
 
     protected $readCommunity = '';
     protected $writeCommunity = '';
@@ -445,6 +444,17 @@ class CiscoSwitch {
 
 /*Diagnostic Stuff*/
 
+    public function getCdsBindingsIpAddressVlan($ip, $vlan, $isIdx = false)
+    {
+    return $this->getSnmpIndexValueByVlan($ip, $vlan, $isIdx, self::cdsBindingsIpAddress, false, false, false);
+
+    }
+
+    public function getcdsBindingsIpAddress($ip, $portNum, $isIdx = false)
+    {
+        return $this->getSnmpIndexValueByPort($ip, $portNum, $isIdx, self::cdsBindingsIpAddress, false, true, true);
+    }
+
     public function getIfInErrors($ip, $portNum, $isIdx = false)
     {
 
@@ -458,6 +468,8 @@ class CiscoSwitch {
         return $this->getSnmpIndexValueByPort($ip, $portNum, $isIdx, self::ccdIfCrcErrors, false, true, true);
 
     }
+
+
 
     public function getSnmpTdrIfActionStatus($ip, $portNum, $isIdx = false)
     {
@@ -1320,6 +1332,28 @@ ccdTdrIfResultPairLengthUnit of the same cable pair.
         } else
         {
             $response = $this->snmp2_real_walk($ip, $this->readCommunity, $oid . '.' . $portIndex);
+        }
+        if ( ! isset($response['error']) && $formatResponse)
+        {
+            $response['response'] = $this->formatSnmpResponse($response['response']);
+        }
+
+        return $response;
+    }
+
+    protected function getSnmpIndexValueByVlan($ip, $vlan, $isIdx = false, $oid, $useSnmpGet = false, $formatResponse = false)
+    {
+
+        $portIndexResponse = array();
+
+
+        $response = array();
+        if ($useSnmpGet)
+        {
+            $response = $this->snmp2_real_walk($ip, $this->readCommunity, $oid . '.' . $vlan, true);
+        } else
+        {
+            $response = $this->snmp2_real_walk($ip, $this->readCommunity, $oid . '.' . $vlan);
         }
         if ( ! isset($response['error']) && $formatResponse)
         {

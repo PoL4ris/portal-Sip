@@ -415,6 +415,7 @@ app.controller('customerController',                function ($scope, $http, $st
     $scope.tdrData = null;
 
     $scope.getTdrDiag = function (ip, port) {
+
         console.log("kicking off diagnostic");
         var diagBtn = $('#DiagBtn');
         diagBtn.removeClass('btn-primary');
@@ -432,7 +433,7 @@ app.controller('customerController',                function ($scope, $http, $st
                 diagBtn.addClass('btn-primary');
 
                 console.log('end diagnostic');
-                //tdrel.html(response);
+
             });
     };
 
@@ -558,7 +559,7 @@ app.controller('customerNetworkController',         function ($scope, $http){
   $http.get("getCustomerNetwork", {params:{'id':$scope.idCustomer}})
     .then(function (response) {
       $scope.customerNetwork = response.data[0];
-      console.log($scope.customerNetwork);
+      //console.log($scope.customerNetwork);
 
 
 
@@ -775,7 +776,7 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http){
 
   $http.get("getDefaultPaymentMethod", {params:{'id':$scope.stcid ? $scope.stcid : $scope.idCustomer}})
     .then(function (response) {
-      console.log(response.data);
+   //   console.log(response.data);
       $scope.paymentData = response.data[0];
       $scope.pproperties = response.data[1];
       $scope.customerData.defaultPayment = $scope.paymentData;

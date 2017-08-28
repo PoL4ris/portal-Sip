@@ -701,7 +701,32 @@ class NetworkController extends Controller {
                     $resultTable['lenUnit'] = $ciscoSwitch->getSnmpTdrIfResultPairLengthUnit($request->ip, $request->port);
                     $resultTable['inErrors'] = $ciscoSwitch->getIfInErrors($request->ip,$request->port); //this one is available always probably should be on its own button.
                     $resultTable['crcErrors'] = $ciscoSwitch->getIfCRCErrors($request->ip,$request->port); //same as above
-                    //dd($pairChannel, $pairLength, $pairLengthAccuracy, $distanceToFault, $pairStatus, $lengthUnit);
+                    $resultTable['vlan'] = $ciscoSwitch->getSnmpPortVlanAssignment($request->ip, $request->port);
+                    $resultTable['wonk'] = $ciscoSwitch->getCdsBindingsIpAddressVlan($request->ip,$resultTable['vlan']['response'][0]);
+                    $resultTable['Bindings'] = [];
+                    if(!isset($resultTable['wonk']['response']['error']))
+                    {
+                        foreach ($resultTable['wonk']['response'] as $key => $value)
+                        {
+
+                            $expand = explode(' ', $value);
+                            $ip = [];
+                            foreach ($expand as $element)
+                            {
+                                array_push($ip, hexdec($element));
+                            }
+                            $ip = $ip[1] . '.' . $ip[2] . '.' . $ip[3] . '.' . $ip[4];
+
+                            $expand = explode('.', $key);
+                            $mac = dechex($expand[10]) . ':' . dechex($expand[11]) . ':' . dechex($expand[12]) . ':' . dechex($expand[13]) . ':' . dechex($expand[14]) . ':' . dechex($expand[15]);
+
+                            array_push($resultTable['Bindings'], [$mac, $ip]);
+
+
+                        }
+                    }
+                    //$resultTable['ipaddr'] = $ciscoSwitch->getcdsBindingsIpAddress($request->ip,$request->port);
+
 
                     break;
 
