@@ -168,7 +168,7 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('getCustomerList',           'CustomerController@getCustomerList');
     Route::get('getTicketOpenTime',         'SupportController@getTicketOpenTime');
     Route::get('getAvailableServices',      'SupportController@getAvailableServices');
-    Route::get('getContactTypes',           'CustomerController@getContactTypes');
+    Route::get('getContactTypes',           'CustomerController@getContactTypes');//stop using on customercontroller
     Route::get('getAddress',                'CustomerController@getAddress');
     Route::get('getBuildingProperties',     'BuildingController@getBuildingProperties');
     Route::get('getProducts',               'SupportController@getProducts');//new

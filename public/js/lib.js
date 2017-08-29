@@ -456,47 +456,40 @@ app.controller('newcustomerAppController', function($scope, $http, customerServi
 
 
 app.controller('dummyAppController', function ($scope, $http, customerService, generalService, $stateParams){
-  if (customerService.sideBarFlag) {
-    $scope.sipTool(2);
-    customerService.sideBarFlag = false;
-  }
+//  if (customerService.sideBarFlag) {
+//    $scope.sipTool(2);
+//    customerService.sideBarFlag = false;
+//  }
 
-//  $scope.tmpArr = [];
-
+$scope.somethingHere = function()
+{
+  var id = '88888';
+//  return '/views/'+id+'.html';
+//  console.log('/views/customers.html?id=' + id);
+  return '/views/customers.html?id=88888';
+}
+//  console.log(generalService);
 
   $scope.addToTabArray = function(id){
 
 
-
-    if(generalService.customerArray[id])
+    if(customerService.customerArray[id])
       return;
 
-    generalService.customerArray[id] = id;
+    customerService.customerArray[id] = id;
+    customerService.lastRequestedId = id;
+    $scope.tabsArray = customerService.customerArray;
+    generalService.rightView = true;
 
 
 
 
+    $scope.customerServiceData =  customerService.tabs;
 
 
-    $scope.tabsArray = generalService.customerArray;
-    console.log(generalService.customerArray);
-    console.log($stateParams);
+    console.log($scope.customerServiceData);
 
 
-    /*
-    * .state('book1', {
-        parent: 'books',
-        views: {
-            'bookDetails@books': {
-                 templateUrl: 'book1.html',
-                 controller: 'BookOneController'
-             }
-        }
-    })
-
-
-
-    * */
 
   };
 

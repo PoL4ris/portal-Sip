@@ -1,6 +1,6 @@
 <div ng-controller="FormXeditableCtrl">
     <div ng-controller="FormPluginsCtrl">
-        <div class="widget-body" id="customers-gTools">
+        <div class="widget-body" id="customers-gTools-{{uniqueIdIndex}}">
             <h2 class="col-lg-12 col-md-12 col-sm-12 no-margin no-padding-sides">
                 <p class="float-left">
                     <a href=""
@@ -11,12 +11,13 @@
                        data-original-title="First Name Value"
                        record-field="first_name"
                        smart-xeditable
-                       data-ng-model="customerData.customer.first_name"
-                       record-id="{{customerData.customer.id}}"
+                       data-ng-model="customerServiceData[uniqueIdIndex].info.first_name"
+                       record-id="{{customerServiceData[uniqueIdIndex].info.id}}"
                        data-type="text"
                        record-idContainer="customers"
                        data-placement="right"
-                       class="editable editable-click"> {{customerData.customer.first_name ? customerData.customer.first_name : '...'}}
+                       class="editable editable-click">
+                        {{customerServiceData[uniqueIdIndex].info.first_name ? customerServiceData[uniqueIdIndex].info.first_name : '...'}}
                     </a>
                 </p>
                 <p class="float-left p-l-md">
@@ -28,34 +29,33 @@
                        data-original-title="Last Name Value"
                        record-field="last_name"
                        smart-xeditable
-                       data-ng-model="customerData.customer.last_name"
-                       record-id="{{customerData.customer.id}}"
+                       data-ng-model="customerServiceData[uniqueIdIndex].info.last_name"
+                       record-id="{{customerServiceData[uniqueIdIndex].info.id}}"
                        data-type="text"
                        record-idContainer="customers"
                        data-placement="right"
-                       class="editable editable-click"> {{customerData.customer.last_name?customerData.customer.last_name:'...'}}
+                       class="editable editable-click">
+                        {{customerServiceData[uniqueIdIndex].info.last_name ? customerServiceData[uniqueIdIndex].info.last_name:'...'}}
                     </a>
                 </p>
-                <p class="float-left p-l-md">
-                    ({{ customerData.customer.id }})
-                </p>
-                <!--<div ng-if="customerData.customer.vip" class="float-left m-l-md vip-class" title="VIP : {{customerData.customer.vip}}"><i class="fa fa-star"></i></div>-->
-                <div ng-if="customerData.customer.vip" class="float-left m-l-md vip-class" title="VIP : {{customerData.customer.vip}}"><label>{{customerData.customer.vip}}</label></div>
+
+                <p class="float-left p-l-md">({{ customerServiceData[uniqueIdIndex].info.id }})</p>
+
+                <div ng-if="customerServiceData[uniqueIdIndex].info.vip" class="float-left m-l-md vip-class">
+                    <label>{{customerServiceData[uniqueIdIndex].info.vip}}</label>
+                </div>
 
             </h2>
-
-
-
             <div class="customer-info-card">
                 <div class="col-lg-12 col-md-12 no-padding-sides m-t-lg">
                     <p class="col-lg-4 col-md-4 no-padding-sides"><strong>Address:</strong></p>
 
-                    <p class="col-lg-6 col-md-6 no-padding-sides address-bld-img-hover">{{customerData.customer.address.address ? customerData.customer.address.address : 'Not Set'}}</p>
+                    <p class="col-lg-6 col-md-6 no-padding-sides address-bld-img-hover">{{customerServiceData[uniqueIdIndex].info.address.address ? customerServiceData[uniqueIdIndex].info.address.address : 'Not Set'}}</p>
 
                     <div class="no-display">
-                        <img src="/img/buildings/{{bld.img_building ? bld.img_building : bld.buildings.img_building}}"
-                             alt="{{customerData.customer.address.address}}"
-                             title="{{customerData.customer.address.address}}">
+                        <img src="/img/buildings/{{customerServiceData[uniqueIdIndex].info.address.buildings.img_building}}"
+                             alt="{{customerServiceData[uniqueIdIndex].info.address.address}}"
+                             title="{{customerServiceData[uniqueIdIndex].info.address.address}}">
                     </div>
 
 
@@ -68,13 +68,14 @@
                            data-options="editableOptions"
                            data-original-title="Set Value"
                            record-field="unit"
+                           record-index="{{uniqueIdIndex}}"
                            smart-xeditable
-                           data-ng-model="customerData.customer.address.unit"
-                           record-id="{{customerData.customer.address.id}}"
+                           data-ng-model="customerServiceData[uniqueIdIndex].info.address.unit"
+                           record-id="{{customerServiceData[uniqueIdIndex].info.address.id}}"
                            data-type="text"
                            record-idContainer="customers"
                            data-placement="right"
-                           class="editable editable-click"># {{customerData.customer.address.unit ? customerData.customer.address.unit : 'Not Set'}}
+                           class="editable editable-click"># {{customerServiceData[uniqueIdIndex].info.address.unit ? customerServiceData[uniqueIdIndex].info.address.unit : 'Not Set'}}
                         </a>
                     </p>
 
@@ -82,14 +83,14 @@
                 <div class="col-lg-12 col-md-12 no-padding-sides">
                     <p class="col-lg-4 col-md-4 no-padding-sides"></p>
                     <p class="col-lg-6 col-md-6 no-padding-sides">
-                        {{customerData.customer.address.city ? customerData.customer.address.city : 'Not Set'}},
-                        {{customerData.customer.address.state ? customerData.customer.address.state : 'Not Set'}}
-                        {{customerData.customer.address.zip ? customerData.customer.address.zip : 'Not Set'}}
+                        {{customerServiceData[uniqueIdIndex].info.address.city ? customerServiceData[uniqueIdIndex].info.address.city : 'Not Set'}},
+                        {{customerServiceData[uniqueIdIndex].info.address.state ? customerServiceData[uniqueIdIndex].info.address.state : 'Not Set'}}
+                        {{customerServiceData[uniqueIdIndex].info.address.zip ? customerServiceData[uniqueIdIndex].info.address.zip : 'Not Set'}}
                     </p>
                 </div>
                 <div class="col-lg-12 col-md-12 no-padding-sides m-t-lg">
                     <p class="col-lg-4 col-md-4 no-padding-sides"><strong>Signed At:</strong></p>
-                    <p class="col-lg-4 col-md-4 no-padding-sides" ng-init="resultDate = convertDate(customerData.customer.signedup_at)" ng-if="customerData.customer">
+                    <p class="col-lg-4 col-md-4 no-padding-sides" ng-init="resultDate = convertDate(customerServiceData[uniqueIdIndex].info.signedup_at)" ng-if="customerServiceData[uniqueIdIndex].info">
                         <b>{{resultDate | date : "MMM d, y" }}</b>
                     </p>
                 </div>
@@ -104,12 +105,12 @@
                            data-original-title="Set Value"
                            record-field="email"
                            smart-xeditable
-                           data-ng-model="customerData.customer.email"
-                           record-id="{{customerData.customer.id}}"
+                           data-ng-model="customerServiceData[uniqueIdIndex].info.email"
+                           record-id="{{customerServiceData[uniqueIdIndex].info.id}}"
                            data-type="text"
                            record-idContainer="customers"
                            data-placement="right"
-                           class="editable editable-click">{{customerData.customer.email?customerData.customer.email:'Not Set'}}
+                           class="editable editable-click">{{customerServiceData[uniqueIdIndex].info.email ? customerServiceData[uniqueIdIndex].info.email : 'Not Set'}}
                         </a>
                     </p>
                 </div>
@@ -117,34 +118,35 @@
 
 
                     <p class="col-lg-4 col-md-4 no-padding-sides"><strong>Status:</strong></p>
-                    <p class="col-lg-8 col-md-8 no-padding-sides  capital-first" ng-if="customerTypes">
-                        <b>{{customerData.customer.status.name}}</b>
+                    <p class="col-lg-8 col-md-8 no-padding-sides capital-first">
+                        <b>{{customerServiceData[uniqueIdIndex].info.status.name}}</b>
                         <i class="fa fa-pencil cursor-pointer new-status m-l-lg" data-toggle="modal" data-target="#customerStatusModal"></i>
-                        <label class="m-l-sm new-status  cursor-pointer" data-toggle="modal" data-target="#customerStatusModal" ng-click="activeServiceDisplay(customerData.customer.status.name)">Modify</label>
+                        <label class="m-l-sm new-status  cursor-pointer" data-toggle="modal" data-target="#customerStatusModal-{{uniqueIdIndex}}"
+                               ng-click="activeServiceDisplay(customerServiceData[uniqueIdIndex].info.status.name)">Modify</label>
                     </p>
 
                     <!--<div class="col-lg-12 text-center btn btn-warning btn-slim cursor-pointer"data-toggle="modal" data-target="#customerStatusModal">-->
-                        <!--<i class="fa fa-pencil"></i> Change Status-->
+                    <!--<i class="fa fa-pencil"></i> Change Status-->
                     <!--</div>-->
 
                 </div>
                 <div class="col-lg-12 col-md-12 no-padding-sides">
                     <p class="col-lg-4 col-md-4 no-padding-sides"><strong>Location:</strong></p>
-                    <p class="col-lg-8 col-md-8 no-padding-sides">{{bld.name ? bld.name:bld.buildings.name}} ({{bld.code ? bld.code : bld.buildings.code}})</p>
+                    <p class="col-lg-8 col-md-8 no-padding-sides">{{customerServiceData[uniqueIdIndex].info.address.buildings.name}} ({{ customerServiceData[uniqueIdIndex].info.address.buildings.code}})</p>
                 </div>
-                <div ng-repeat="contacto in customerData.customer.contacts">
+                <div ng-repeat="contacto in customerServiceData[uniqueIdIndex].info.contacts">
                     <div class="col-lg-12 col-md-12 no-padding-sides">
-                        <p class="col-lg-4 col-md-4 no-padding-sides"><strong>{{contactTypes[contacto.id_types - 1].name}}:</strong></p>
+                        <p class="col-lg-4 col-md-4 no-padding-sides"><strong>{{statusArrayConstant.contact_type[contacto.id_types]}}:</strong></p>
                         <p class="col-lg-4 col-md-4 no-padding-sides">{{contacto.value}}</p>
                     </div>
                 </div>
                 <div class="col-lg-12 col-md-12 no-padding-sides">
                     <br>
                     <p>
-                        <strong>{{bld.type ?bld.type : bld.buildings.type}}</strong>
-                        in <strong>{{bld.neighborhood.name ? bld.neighborhood.name : bld.buildings.neighborhood.name}}</strong>
-                        with <strong>{{bld.floors ? bld.floors : bld.buildings.floors}}</strong> floors
-                        and <strong>{{bld.units ? bld.units : bld.buildings.units}}</strong> units
+                        <strong>{{customerServiceData[uniqueIdIndex].info.address.buildings.type}}</strong>
+                        <!--in <strong>{{bld.neighborhood.name ? bld.neighborhood.name : bld.buildings.neighborhood.name}}</strong>-->
+                        with <strong>{{customerServiceData[uniqueIdIndex].info.address.buildings.floors}}</strong> floors
+                        and <strong>{{customerServiceData[uniqueIdIndex].info.address.buildings.units}}</strong> units
                     </p>
 
                     <!--<p class="float-left size-50"><strong>Neighborhood:</strong></p>-->
@@ -162,17 +164,27 @@
                 </div>
                 <div class="col-lg-12 col-md-12 no-padding-sides">
                     <p class=" m-t-md m-b-lg">
-                        <i class="fa fa-map-marker "></i> {{customerData.customer.addresses.length}}
-                        <label ng-if="customerData.customer.addresses.length == 1"> address found on this account</label>
-                        <label ng-if="customerData.customer.addresses.length != 1"> addresses found on this account</label>
+                        <i class="fa fa-map-marker "></i> {{customerServiceData[uniqueIdIndex].info.addresses.length}}
+                        <label ng-if="customerServiceData[uniqueIdIndex].info.addresses.length == 1"> address found on this account</label>
+                        <label ng-if="customerServiceData[uniqueIdIndex].info.addresses.length != 1"> addresses found on this account</label>
                         <!--<label class="sm-view-action-btn" data-toggle="modal" data-target="#customerAddressesModal" ng-click="clearAddressModal()">...</label>-->
-                        <button class="btn btn-primary m-l-lg" ng-click="clearAddressModal()" data-toggle="modal" data-target="#customerAddressesModal">View</button>
+                        <button class="btn btn-primary m-l-lg" ng-click="clearAddressModal()" data-toggle="modal" data-target="#customerAddressesModal-{{uniqueIdIndex}}">View</button>
                     </p>
 
                 </div>
                 <div class="col-lg-12 col-md-12 no-padding-sides">
                     <div class="col-lg-5 col-md-5 no-padding-sides">
-                        <button id="c-c-i-e" class="float-left btn btn-primary" ng-click="toggleDisabled('c-c-i-e');">
+                        <button id="c-c-i-e-{{uniqueIdIndex}}"
+                                class="float-left btn btn-danger"
+                                ng-click="toggleDisabled(uniqueIdIndex);"
+                                ng-if="!customerServiceData[uniqueIdIndex].xEditMainInfo">
+                            <i class="fa fa fa-times"></i> Cancel
+                        </button>
+
+                        <button id="c-c-i-e-{{uniqueIdIndex}}"
+                                class="float-left btn btn-primary"
+                                ng-click="toggleDisabled(uniqueIdIndex);"
+                                ng-if="customerServiceData[uniqueIdIndex].xEditMainInfo">
                             <i class="fa fa-pencil"></i> Edit customer
                         </button>
                     </div>
@@ -189,7 +201,7 @@
 
 
 <!--MODAL-->
-<div class="modal fade cus-add-mod" id="customerAddressesModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade cus-add-mod" id="customerAddressesModal-{{uniqueIdIndex}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
 
@@ -197,7 +209,7 @@
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
                     &times;
                 </button>
-                <h4 class="modal-title" id="myModalServiceLabel">{{customerData.customer.first_name + ' ' + customerData.customer.last_name}} Addresses</h4>
+                <h4 class="modal-title" id="myModalServiceLabel">{{customerServiceData[uniqueIdIndex].info.first_name + ' ' + customerServiceData[uniqueIdIndex].info.last_name}} Addresses</h4>
             </div>
             <!--modal-body-customer-addresses-table-->
             <div class="modal-body" id="mb-ca-table">
@@ -220,7 +232,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr ng-repeat="addrs in customerData.customer.addresses">
+                                <tr ng-repeat="addrs in customerServiceData[uniqueIdIndex].info.addresses">
                                     <td>{{addrs.id}}</td>
                                     <td class="addr-th">{{addrs.address}}</td>
                                     <td>{{addrs.code}}</td>
@@ -248,31 +260,31 @@
                             <form action="">
                                 <p class="col-lg-5">
                                     <label class="col-lg-4">Address:</label>
-                                    <input class="col-lg-8" type="text" placeholder="New Address" value="{{customerData.customer.addresses[indexOfToShow].address}}">
+                                    <input class="col-lg-8" type="text" placeholder="New Address" value="{{customerServiceData[uniqueIdIndex].info.addresses[indexOfToShow].address}}">
                                 </p>
                                 <p class="col-lg-3">
                                     <label class="col-lg-4">Code:</label>
-                                    <input class="col-lg-8" type="text" placeholder="New Code" value="{{customerData.customer.addresses[indexOfToShow].code}}">
+                                    <input class="col-lg-8" type="text" placeholder="New Code" value="{{customerServiceData[uniqueIdIndex].info.addresses[indexOfToShow].code}}">
                                 </p>
                                 <p class="col-lg-4">
                                     <label class="col-lg-4">Unit:</label>
-                                    <input class="col-lg-8" type="text" placeholder="New Code" value="{{customerData.customer.addresses[indexOfToShow].unit}}">
+                                    <input class="col-lg-8" type="text" placeholder="New Code" value="{{customerServiceData[uniqueIdIndex].info.addresses[indexOfToShow].unit}}">
                                 </p>
                                 <p class="col-lg-5">
                                     <label class="col-lg-4">City:</label>
-                                    <input class="col-lg-8" type="text" placeholder="New Code" value="{{customerData.customer.addresses[indexOfToShow].city}}">
+                                    <input class="col-lg-8" type="text" placeholder="New Code" value="{{customerServiceData[uniqueIdIndex].info.addresses[indexOfToShow].city}}">
                                 </p>
                                 <p class="col-lg-3">
                                     <label class="col-lg-4">ZIP:</label>
-                                    <input class="col-lg-8" type="text" placeholder="New Code" value="{{customerData.customer.addresses[indexOfToShow].zip}}">
+                                    <input class="col-lg-8" type="text" placeholder="New Code" value="{{customerServiceData[uniqueIdIndex].info.addresses[indexOfToShow].zip}}">
                                 </p>
                                 <p class="col-lg-4">
                                     <label class="col-lg-4">State:</label>
-                                    <input class="col-lg-8" type="text" placeholder="New Code" value="{{customerData.customer.addresses[indexOfToShow].state}}">
+                                    <input class="col-lg-8" type="text" placeholder="New Code" value="{{customerServiceData[uniqueIdIndex].info.addresses[indexOfToShow].state}}">
                                 </p>
                                 <p class="col-lg-5">
                                     <label class="col-lg-4">Country:</label>
-                                    <input class="col-lg-8" type="text" placeholder="New Code" value="{{customerData.customer.addresses[indexOfToShow].country}}">
+                                    <input class="col-lg-8" type="text" placeholder="New Code" value="{{customerServiceData[uniqueIdIndex].info.addresses[indexOfToShow].country}}">
                                 </p>
                                 <div class="float-right">
                                     <button class="btn btn-primary">Update</button>
@@ -300,11 +312,8 @@
 <!--END MODAL-->
 
 
-
-
-
 <!--STATUS MODAL-->
-<div class="modal fade cus-add-mod" id="customerStatusModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade cus-add-mod" id="customerStatusModal-{{uniqueIdIndex}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
 
@@ -313,7 +322,7 @@
                     &times;
                 </button>
                 <h4 class="modal-title">
-                    Account Status: <span class=" {{customerData.customer.status.name == 'active'? 'up-status': 'down-status'}}">{{customerData.customer.status.name == 'active' ? 'Active' : 'Disabled'}}</span>
+                    Account Status: <span class=" {{customerServiceData[uniqueIdIndex].info.status.name == 'active'? 'up-status': 'down-status'}}">{{customerServiceData[uniqueIdIndex].info.status.name == 'active' ? 'Active' : 'Disabled'}}</span>
                 </h4>
             </div>
 
@@ -324,37 +333,27 @@
                         <div class="col-lg-12">
                             <!--***********************************************-->
                             <!--<div class="col-lg-2">-->
-                                <!--<p class="set-title-p">Change Status:</p>-->
+                            <!--<p class="set-title-p">Change Status:</p>-->
                             <!--</div>-->
                             <div class="col-lg-9">
 
                                 <!--<div class="capital-first status-identif-{{statusLabe}} size-100px satus-color-borders m-r-lg btn btn-primary {{statusLabe == customerData.customer.status.name ? 'selected' : ''}}"-->
-                                     <!--ng-click="activeServiceDisplay()"-->
-                                     <!--ng-repeat="statusLabe in statusArrayConstant.status"-->
-                                     <!--ng-if="statusLabe == 'active' || statusLabe == 'disabled'">-->
-                                    <!--{{statusLabe}}-->
+                                <!--ng-click="activeServiceDisplay()"-->
+                                <!--ng-repeat="statusLabe in statusArrayConstant.status"-->
+                                <!--ng-if="statusLabe == 'active' || statusLabe == 'disabled'">-->
+                                <!--{{statusLabe}}-->
                                 <!--</div>-->
 
 
-
-
-
-
                                 <div class="btn btn-{{customerData.customer.status.name == 'active' ? 'danger' : 'success'}}" ng-click="activeServiceDisplay()" ng-if="!disableStatusActive">
-                                        {{customerData.customer.status.name == 'active' ? 'Disable Account' : 'Activate Account'}}
+                                    {{customerData.customer.status.name == 'active' ? 'Disable Account' : 'Activate Account'}}
                                 </div>
                                 <div class="btn btn-{{customerData.customer.status.name == 'active' ? 'danger' : 'success'}}" ng-click="activeServiceDisplay()" ng-if="disableStatusActive" disabled="">
-                                        {{customerData.customer.status.name == 'active' ? 'Disable Account' : 'Activate Account'}}
+                                    {{customerData.customer.status.name == 'active' ? 'Disable Account' : 'Activate Account'}}
                                 </div>
-
 
 
                                 <!--<div ng-if="disableStatusActive" class="btn btn-success" ng-click="activeServiceDisplay('active')">Activate Account</div>-->
-
-
-
-
-
 
 
                             </div>
@@ -365,116 +364,121 @@
                             <form id="customer-status-form-update">
 
 
-                            <div class="col-lg-8 b-r-ddd">
-                                <div class="col-lg-12">
-                                    <div class="down-status m-b-lg p-title-status p-l-lg">
-                                        <span class="{{disableStatusActive?'':'bg-status-disabled'}} anim">The next Services will be disabled if you continue this action</span>
-                                        <div class="check-status-action smart-form" ng-if="disableStatusActive">
-                                            <label class="checkbox">
-                                                <input type="checkbox" name="status-service-check" checked="checked">
-                                                <i></i>
-                                            </label>
+                                <div class="col-lg-8 b-r-ddd">
+                                    <div class="col-lg-12">
+                                        <div class="down-status m-b-lg p-title-status p-l-lg">
+                                            <span class="{{disableStatusActive?'':'bg-status-disabled'}} anim">The next Services will be disabled if you continue this action</span>
+                                            <div class="check-status-action smart-form" ng-if="disableStatusActive">
+                                                <label class="checkbox">
+                                                    <input type="checkbox" name="status-service-check" checked="checked">
+                                                    <i></i>
+                                                </label>
+                                            </div>
+                                            <!--TRUE/FALSE-->
+                                            <div class="check-status-action smart-form desactivado" ng-if="!disableStatusActive">
+                                                <label class="checkbox">
+                                                    <input type="checkbox" name="status-service-check" checked="checked" disabled>
+                                                    <i></i>
+                                                </label>
+                                            </div>
                                         </div>
-                                        <!--TRUE/FALSE-->
-                                        <div class="check-status-action smart-form desactivado" ng-if="!disableStatusActive">
-                                            <label class="checkbox">
-                                                <input type="checkbox" name="status-service-check" checked="checked" disabled>
-                                                <i></i>
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-lg-12"
-                                             ng-repeat="service in customerData.customerServices.services"
-                                             ng-controller="serviceProductController">
-                                            <div class="record-description" ng-if="customerProduct.product.frequency == 'monthly' || customerProduct.product.frequency == 'annual' || customerProduct.product.frequency == 'included'">
-                                                <div class="row">
-                                                    <label class=""><b>Product : </b>{{ customerProduct.product.name }} </label>
-                                                    <label class="text-capitalize"><b>Expires :</b> {{ service.expires | date : "shortDate" }}</label>
+                                        <div class="row">
+                                            <div class="col-lg-12"
+                                                 ng-repeat="service in customerData.customerServices.services"
+                                                 ng-controller="serviceProductController">
+                                                <div class="record-description"
+                                                     ng-if="customerProduct.product.frequency == 'monthly' || customerProduct.product.frequency == 'annual' || customerProduct.product.frequency == 'included'">
+                                                    <div class="row">
+                                                        <label class=""><b>Product : </b>{{ customerProduct.product.name }} </label>
+                                                        <label class="text-capitalize"><b>Expires :</b> {{ service.expires | date : "shortDate" }}</label>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
 
-                                <div class="row"><div class="col-lg-12"><hr></div></div>
-
-                                <div class="col-lg-12">
-                                    <div class="down-status m-b-lg p-l-lg">
-                                        <span class="{{disableStatusActive?'':'bg-status-disabled'}} anim">The next Invoices will be removed if you continue this action</span>
-                                        <div class="check-status-action smart-form" ng-if="disableStatusActive">
-                                            <label class="checkbox">
-                                                <input type="checkbox" name="status-invoice-check" checked="checked">
-                                                <i></i>
-                                            </label>
-                                        </div>
-                                        <!--TRUE/FALSE-->
-                                        <div class="check-status-action smart-form desactivado" ng-if="!disableStatusActive">
-                                            <label class="checkbox">
-                                                <input type="checkbox" name="status-invoice-check" checked="checked" disabled>
-                                                <i></i>
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-lg-12" ng-repeat="invoiceItem in customerData.invoices">
-                                            <label class="m-r-sm"><b>Status : </b>{{ statusArrayConstant.status[invoiceItem.status] }}</label>
-                                            <label class="m-r-sm"><b>Amount : </b>{{invoiceItem.amount | currency : '$' : 2}}</label>
-                                            <label class="m-r-sm" ng-if="invoiceItem.processing_type == 13"><b>Processing Type : </b>Autopay</label>
-                                            <label class="m-r-sm" ng-if="invoiceItem.processing_type == 14"><b>Processing Type : </b>Manual Pay</label>
-                                            <label ng-init="resultDate = convertDate(invoiceItem.due_date)"><b>Due Date : </b>{{resultDate | date : "shortDate" }}</label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-4">
-                                <div class="col-lg-12 m-b-lg ">
-                                    <div class=" down-status m-b-lg p-l-lg">
-                                        <span class="{{disableStatusActive?'':'bg-status-disabled'}} anim">Send port to SignUp</span>
-                                        <div class="check-status-action smart-form" ng-if="disableStatusActive">
-                                            <label class="checkbox">
-                                                <input type="checkbox" name="status-network-check" checked="checked">
-                                                <i></i>
-                                            </label>
-                                        </div>
-                                        <!--TRUE/FALSE-->
-                                        <div class="check-status-action smart-form desactivado" ng-if="!disableStatusActive">
-                                            <label class="checkbox">
-                                                <input type="checkbox" name="status-network-check" checked="checked" disabled>
-                                                <i></i>
-                                            </label>
-                                        </div>
-                                    </div>
                                     <div class="row">
                                         <div class="col-lg-12">
-                                            <p><b>Port : </b>{{ customerData.customerNetwork.port_number }}</p>
-                                            <p><b>IP Address : </b>{{ customerData.customerNetwork.network_node.ip_address }}</p>
-                                            <p><b>MAC Address : </b>{{ customerData.customerNetwork.network_node.mac_address }}</p>
-                                            <p><b>Model : </b>{{ customerData.customerNetwork.network_node.model}}</p>
-                                            <!--<p><b>Properties : </b>{{ customerData.customerNetwork.network_node.properties}}</p>-->
-                                            <p><b>Vendor : </b>{{ customerData.customerNetwork.network_node.vendor}}</p>
+                                            <hr>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-12">
+                                        <div class="down-status m-b-lg p-l-lg">
+                                            <span class="{{disableStatusActive?'':'bg-status-disabled'}} anim">The next Invoices will be removed if you continue this action</span>
+                                            <div class="check-status-action smart-form" ng-if="disableStatusActive">
+                                                <label class="checkbox">
+                                                    <input type="checkbox" name="status-invoice-check" checked="checked">
+                                                    <i></i>
+                                                </label>
+                                            </div>
+                                            <!--TRUE/FALSE-->
+                                            <div class="check-status-action smart-form desactivado" ng-if="!disableStatusActive">
+                                                <label class="checkbox">
+                                                    <input type="checkbox" name="status-invoice-check" checked="checked" disabled>
+                                                    <i></i>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-12" ng-repeat="invoiceItem in customerData.invoices">
+                                                <label class="m-r-sm"><b>Status : </b>{{ statusArrayConstant.status[invoiceItem.status] }}</label>
+                                                <label class="m-r-sm"><b>Amount : </b>{{invoiceItem.amount | currency : '$' : 2}}</label>
+                                                <label class="m-r-sm" ng-if="invoiceItem.processing_type == 13"><b>Processing Type : </b>Autopay</label>
+                                                <label class="m-r-sm" ng-if="invoiceItem.processing_type == 14"><b>Processing Type : </b>Manual Pay</label>
+                                                <label ng-init="resultDate = convertDate(invoiceItem.due_date)"><b>Due Date : </b>{{resultDate | date : "shortDate" }}</label>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                <!--<div class="col-lg-12  smart-form">-->
+                                <div class="col-lg-4">
+                                    <div class="col-lg-12 m-b-lg ">
+                                        <div class=" down-status m-b-lg p-l-lg">
+                                            <span class="{{disableStatusActive?'':'bg-status-disabled'}} anim">Send port to SignUp</span>
+                                            <div class="check-status-action smart-form" ng-if="disableStatusActive">
+                                                <label class="checkbox">
+                                                    <input type="checkbox" name="status-network-check" checked="checked">
+                                                    <i></i>
+                                                </label>
+                                            </div>
+                                            <!--TRUE/FALSE-->
+                                            <div class="check-status-action smart-form desactivado" ng-if="!disableStatusActive">
+                                                <label class="checkbox">
+                                                    <input type="checkbox" name="status-network-check" checked="checked" disabled>
+                                                    <i></i>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                <p><b>Port : </b>{{ customerData.customerNetwork.port_number }}</p>
+                                                <p><b>IP Address : </b>{{ customerData.customerNetwork.network_node.ip_address }}</p>
+                                                <p><b>MAC Address : </b>{{ customerData.customerNetwork.network_node.mac_address }}</p>
+                                                <p><b>Model : </b>{{ customerData.customerNetwork.network_node.model}}</p>
+                                                <!--<p><b>Properties : </b>{{ customerData.customerNetwork.network_node.properties}}</p>-->
+                                                <p><b>Vendor : </b>{{ customerData.customerNetwork.network_node.vendor}}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--<div class="col-lg-12  smart-form">-->
                                     <!--<div class=" down-status  m-b-lg p-l-lg">-->
-                                        <!--<span class="{{disableStatusActive?'':'bg-status-disabled'}} anim">Send to SignUp</span>-->
-                                        <!--<div class="check-status-action smart-form" ng-if="disableStatusActive">-->
-                                            <!--<label class="checkbox">-->
-                                                <!--<input type="checkbox" name="status-signup-check" checked="checked">-->
-                                                <!--<i></i>-->
-                                            <!--</label>-->
-                                        <!--</div>-->
-                                        <!--&lt;!&ndash;TRUE/FALSE&ndash;&gt;-->
-                                        <!--<div class="check-status-action smart-form desactivado" ng-if="!disableStatusActive">-->
-                                            <!--<label class="checkbox">-->
-                                                <!--<input type="checkbox" name="status-signup-check" checked="checked" disabled>-->
-                                                <!--<i class="bg-status-disabled"></i>-->
-                                            <!--</label>-->
-                                        <!--</div>-->
+                                    <!--<span class="{{disableStatusActive?'':'bg-status-disabled'}} anim">Send to SignUp</span>-->
+                                    <!--<div class="check-status-action smart-form" ng-if="disableStatusActive">-->
+                                    <!--<label class="checkbox">-->
+                                    <!--<input type="checkbox" name="status-signup-check" checked="checked">-->
+                                    <!--<i></i>-->
+                                    <!--</label>-->
                                     <!--</div>-->
-                                <!--</div>-->
-                            </div>
+                                    <!--&lt;!&ndash;TRUE/FALSE&ndash;&gt;-->
+                                    <!--<div class="check-status-action smart-form desactivado" ng-if="!disableStatusActive">-->
+                                    <!--<label class="checkbox">-->
+                                    <!--<input type="checkbox" name="status-signup-check" checked="checked" disabled>-->
+                                    <!--<i class="bg-status-disabled"></i>-->
+                                    <!--</label>-->
+                                    <!--</div>-->
+                                    <!--</div>-->
+                                    <!--</div>-->
+                                </div>
                             </form>
                             <!--***********************************************-->
                         </div>
@@ -484,8 +488,8 @@
 
 
             <div class="modal-footer">
-                <button type="button" class="btn btn-success"  ng-if="disableStatusActive" ng-click="updateCustomerStatus()">
-                <!--<button type="button" class="btn btn-success" data-dismiss="modal" ng-if="disableStatusActive" ng-click="updateCustomerStatus()">-->
+                <button type="button" class="btn btn-success" ng-if="disableStatusActive" ng-click="updateCustomerStatus()">
+                    <!--<button type="button" class="btn btn-success" data-dismiss="modal" ng-if="disableStatusActive" ng-click="updateCustomerStatus()">-->
                     Apply
                 </button>
                 <button type="button" class="btn btn-danger" data-dismiss="modal">

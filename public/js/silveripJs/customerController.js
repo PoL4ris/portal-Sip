@@ -5,50 +5,73 @@ app.controller('customerControllerList',            function ($scope, $http){
       $scope.supportDataCustomer = response.data;
     });
 });
-app.controller('customerController',                function ($scope, $http, $stateParams, customerService, DTOptionsBuilder){
-//   $scope.globalServiceLocationSide = null;
-  console.log(customerService);
-  if(!customerService.rightView) {
-    customerService.rightView = true;
-    //     console.log('right');
+app.controller('customerController',                function ($scope, $http, $stateParams, customerService, DTOptionsBuilder, generalService){
+
+
+  if(!generalService.rightView) {
+    generalService.rightView = true;
   }
   else {
-    //console.log('left');
-    //SideBar verify if need to be there.
-    if(!customerService.sideBarFlag) {
+
+    if(generalService.sideBarFlag) {
       $scope.sipTool(2);
-      customerService.sideBarFlag = true;
+      generalService.sideBarFlag = false;
     }
 
-    customerService.leftView = true;
-    $scope.customerFlag      = true;
-    $scope.idCustomer        = Math.floor((Math.random() * (11656 - 11155 + 1) ) + 11155);
+    generalService.leftView   = true;
+    $scope.customerFlag       = false;
 
-    if ($scope.stcid || $stateParams.id)
-      $scope.idCustomer = $scope.stcid ? $scope.stcid : $stateParams.id;
+    // ID Customer, Main ID!!!
+    $scope.idCustomer         = $stateParams.id ? $stateParams.id : (customerService.lastRequestedId ? customerService.lastRequestedId : 88888);
 
-//         if (($(location).attr('href').split('http://silverip-portal.com/#/')[1]) == 'customers') {
-//             $scope.idCustomer = 501;
-//             $scope.buscadorFlag = true;
-//         }
+    if(!$scope.uniqueIdIndex)
+      $scope.uniqueIdIndex    = $scope.idCustomer;
+
+
+    customerService.tabs[$scope.uniqueIdIndex]                = {};
+//    customerService.tabs[$scope.idCustomer].info              = {};
+//    customerService.tabs[$scope.idCustomer].customerServices  = {};
+//    customerService.tabs[$scope.idCustomer].customerNetwork   = {};
+    customerService.tabs[$scope.idCustomer].xEditMainInfo     = true;
+    customerService.tabs[$scope.idCustomer].xEditContactInfo     = true;
+//    return;
 
     //SET INPUT VALUE
-    $('#customerIdScope').val($scope.idCustomer);
+    //$('#customerIdScope').val($scope.idCustomer);
+    //customerServiceData[uniqueIdIndex]
 
-    $http.get("customersData", {params:{'id' : $scope.idCustomer}})
+
+
+
+
+
+    $http.get("customersData", {params: {'id': $scope.idCustomer}})
       .then(function (response) {
-        customerService.customer = response.data;
-        $scope.customerData.customer = customerService.customer;
-        $scope.bld = $scope.customerData.customer.address;
+
+        customerService.customer                      = response.data;
+        customerService.tabs[$scope.idCustomer].info  = response.data;
+        $scope.customerData.customer                  = customerService.customer;
+
+        //for customer view and to adapt tabs structure.
+        if(!$scope.customerServiceData)
+          $scope.customerServiceData =  customerService.tabs;
+
       });
-    $http.get("getContactTypes", {params:{'id':$scope.idCustomer}})
-      .then(function (response) {
-        $scope.contactTypes = response.data;
-      });
-    $http.get("getTableData", {params:{'table':'reasons'}})
-      .then(function (response) {
-        $scope.newTicketData = response.data;
-      });
+
+
+
+
+//    $http.get("getTableData", {params: {'table': 'reasons'}})
+//      .then(function (response) {
+//        $scope.newTicketData = response.data;
+//        customerService.tabs[$scope.idCustomer].newTicketData = response.data;
+//      });
+
+
+
+
+
+
     $http.get("getStatus")//VERIFY HOW TO CREATE INDEX 0 ON THE SELECT OPTION X-EDIT
       .then(function (response) {
         $scope.customerTypes = response.data;
@@ -63,7 +86,16 @@ app.controller('customerController',                function ($scope, $http, $st
     $scope.checkboxModelA        = true;
     $scope.animationsEnabled     = false;
     $scope.currentServiceDisplay = '';
-    $scope.statusArrayConstant   = customerService.statusArrayConstant;
+//    $scope.statusArrayConstant   = customerService.statusArrayConstant;
+
+
+
+
+
+//    console.log($scope.customerData);
+    console.log(customerService);
+
+
   }
 
   //Reloads Data
@@ -147,25 +179,26 @@ app.controller('customerController',                function ($scope, $http, $st
 
   };
   $scope.submitNewTicketForm        = function (){
-    $('#create-customer-ticket').attr('disabled', true);
+    $('#create-customer-ticket-' + $scope.idCustomer).attr('disabled', true);
 
 
-    var infoData = getFormValues('new-ct-form');
+    var infoData = getFormValues('new-ct-form-' + $scope.idCustomer);
 
     if(infoData.id_reasons == '' || infoData.status == '' || infoData.comment == ''){
-      $('#create-customer-ticket').removeAttr('disabled');
+      $('#create-customer-ticket-' + $scope.idCustomer).removeAttr('disabled');
       return;
     }
 
-    $scope.loadingGif = true;
+    customerService.tabs[$scope.idCustomer].loadingGif = true;
+//    $scope.loadingGif = true;
 
     infoData['id_customers'] = $scope.idCustomer;
 
     $http.get("insertCustomerTicket", {params:infoData})
       .then(function (response) {
         if(response.data == 'OK'){
-          $('#create-customer-ticket').removeAttr('disabled');
-          $scope.loadingGif = false;
+          $('#create-customer-ticket-' + $scope.idCustomer).removeAttr('disabled');
+          customerService.tabs[$scope.idCustomer].loadingGif = false;
           $.smallBox({
             title: "New Ticket Created!",
             content: "<i class='fa fa-clock-o'></i> <i>2 seconds ago...</i>",
@@ -173,7 +206,7 @@ app.controller('customerController',                function ($scope, $http, $st
             iconSmall: "fa fa-thumbs-up bounce animated",
             timeout: 6000
           });
-          $('#new-ct-form').trigger("reset");
+          $('#new-ct-form-' + $scope.idCustomer).trigger("reset");
         }
       });
   };
@@ -269,77 +302,91 @@ app.controller('customerController',                function ($scope, $http, $st
   //Product.html
   $scope.addNewService              = function () {
 
-    if(!$scope.currentServiceDisplay)
+    if(!customerService.tabs[$scope.idCustomer].currentServiceDisplay)
+//    if(!$scope.currentServiceDisplay)//rm
     {
       $('.add-prod-select-color').css('border-color', 'red');
       return;
     }
     $('.add-prod-select-color').css('border-color', 'inherit');
 
-    var mode = $scope.customerData.servicesMode;
+//    var mode = $scope.customerData.servicesMode;//rm
+    var mode = customerService.tabs[$scope.idCustomer].servicesMode;
 
     if (mode == 'updateService')
     {
-      $http.get("updateCustomerServices", {params:{'id' : $scope.idCustomer,'newId' : $scope.currentServiceDisplay.id, 'oldId' : $scope.customerData.serviceTmpId}})
+      $http.get("updateCustomerServices", {params:{'id'    : $scope.idCustomer,
+                                                   'newId' : customerService.tabs[$scope.idCustomer].currentServiceDisplay.id,
+                                                   'oldId' : customerService.tabs[$scope.idCustomer].serviceTmpId}})
         .then(function (response) {
           console.log("Service Added / Updated::OK");
           $scope.availableServices();
         });
-      $('#myModalService').modal('toggle');
+      $('#myModalService-'+$scope.idCustomer).modal('toggle');
     }
     else
     {
-      $http.get("insertCustomerService", {params : {'idCustomer' : $scope.idCustomer,'idProduct' : $scope.currentServiceDisplay.id}})
+      $http.get("insertCustomerService", {params : {'idCustomer'  : $scope.idCustomer,
+                                                    'idProduct'   : customerService.tabs[$scope.idCustomer].currentServiceDisplay.id}})
         .then(function (response) {
           console.log("Service Added / Updated::OK");
           $scope.availableServices();
         });
-      $('#myModalService').modal('toggle');
+      $('#myModalService-'+$scope.idCustomer).modal('toggle');
     }
   };
   $scope.setModeType                = function (modeType){
-    $scope.customerData.servicesMode = modeType;
-    $scope.customerData.serviceTmpId = this.service ? this.service.id : false;
-    $scope.currentServiceDisplay = null;
-    $scope.showingCurrent = null;
+    customerService.tabs[$scope.idCustomer].servicesMode    = modeType;
+    customerService.tabs[$scope.idCustomer].serviceTmpId    = this.service ? this.service.id : false;
+    customerService.tabs[$scope.idCustomer].showingCurrent  = null;
+    customerService.tabs[$scope.idCustomer].currentServiceDisplay = null;
 
     $scope.getBldProducts();
   };
   $scope.getBldProducts             = function (){
 
-    $http.get("getAvailableServices", {params:{'id':$scope.customerData.customer.address.id_buildings}})
+    $http.get("getAvailableServices", {params : {'id' : customerService.tabs[$scope.idCustomer].info.address.id_buildings}})
       .then(function (response) {
-        $scope.customerData.availableServices = response.data;
+        $scope.customerData.availableServices = response.data;//rm
+        customerService.tabs[$scope.idCustomer].availableServices     = response.data;
       });
 
   };
   $scope.serviceDataDisplay         = function (option) {
+//  return;
     if(option)
     {
-      $scope.serviceFlag = true;
-      $scope.currentServiceDisplay = this.customerProduct.product;
-      $scope.showingCurrent = this.service.product;
+//      $scope.serviceFlag = true;
+//      $scope.currentServiceDisplay = this.customerProduct.product;
+//      $scope.showingCurrent = this.service.product;
+
+      customerService.tabs[$scope.idCustomer].serviceFlag = true;
+      customerService.tabs[$scope.idCustomer].currentServiceDisplay = this.service.product;
+      customerService.tabs[$scope.idCustomer].showingCurrent = this.service;
     }
     else
     {
-      $scope.serviceFlag = false;
-      $scope.currentServiceDisplay = this.selectedItem.product;
+//      $scope.serviceFlag = false;
+//      $scope.currentServiceDisplay = this.selectedItem.product;
+
+      customerService.tabs[$scope.idCustomer].serviceFlag = false;
+      customerService.tabs[$scope.idCustomer].currentServiceDisplay = this.selectedItem.product;
     }
   };
-  //disable becaus its gone the button that triggers.
-  $scope.setInvoiceTab              = function (){
-    $('#invoice-payment-tab-link').trigger('click');
-  };
-
-
   $scope.availableServices          = function (){
     $http.get("getCustomerServices", {params:{'id':$scope.idCustomer}})
       .then(function (response) {
-        $scope.customerData.customerServices = response.data;
+        $scope.customerData.customerServices = response.data;//rm
+        customerService.tabs[$scope.idCustomer].customerServices = response.data;
       });
 
     $scope.resolveRouteFunction(null, $scope.idCustomer);
   };
+  //disabled because its gone the button that triggers.
+  $scope.setInvoiceTab              = function (){
+    $('#invoice-payment-tab-link').trigger('click');
+  };
+
   //addresses
   $scope.clearAddressModal          = function (){
     $('#mb-ca-edit').fadeOut();
@@ -385,7 +432,7 @@ app.controller('customerController',                function ($scope, $http, $st
       //       }
 
     });
-  };
+  };//ok
   $scope.resetPassword              = function (){
 
     $http.get("resetCustomerPassword", {params:{'id':$scope.idCustomer}})
@@ -403,19 +450,27 @@ app.controller('customerController',                function ($scope, $http, $st
         }
 
       });
-  };
+  };//ok
   //Network
   $scope.getCoreData = function (ip){
-    $scope.pLoad     = true;
-    $scope.pRecord   = ip;
+//    $scope.pLoad     = true;
+//    $scope.pRecord   = ip;
+
+    customerService.tabs[$scope.idCustomer].pLoad     = true;
+    customerService.tabs[$scope.idCustomer].pRecord   = ip;
     $http.get("getSwitchStats", {params:{'ip':ip}})
       .then(function (response) {
-        $scope.pLoad    = false;
-        $scope.pStatus  = response.data[0]
-        $scope.pInfo    = response.data[1]
+//        $scope.pLoad    = false;
+//        $scope.pStatus  = response.data[0]
+//        $scope.pInfo    = response.data[1]
+
+        customerService.tabs[$scope.idCustomer].pLoad    = false;
+        customerService.tabs[$scope.idCustomer].pStatus  = response.data[0];
+        customerService.tabs[$scope.idCustomer].pInfo    = response.data[1];
       });
   }
   $scope.pStInOptions = DTOptionsBuilder.newOptions().withDisplayLength(50);
+//  customerService.tabs[$scope.idCustomer].pStInOptions = DTOptionsBuilder.newOptions().withDisplayLength(50);
 
   //STATUS CHANGE
   $scope.activeServiceDisplay       = function (defaultValue = null) {
@@ -486,7 +541,7 @@ app.controller('customerInvoiceHistoryController',  function ($scope, $http, cus
       .then(function (response) {
         $scope.invoiceData = response.data;
         $scope.customerData.invoices = response.data;
-        console.log($scope.customerData);
+//        console.log($scope.customerData);
       });
 
   $scope.setInvoiceData = function (){
@@ -495,14 +550,15 @@ app.controller('customerInvoiceHistoryController',  function ($scope, $http, cus
   };
 
 });
-app.controller('customerNetworkController',         function ($scope, $http){
-
-  // console.log('esto es  : customerNetworkController con el id de -- > ' + $scope.idCustomer);
+//Network.html
+app.controller('customerNetworkController',         function ($scope, $http, customerService){
 
   $http.get("getCustomerNetwork", {params:{'id':$scope.idCustomer}})
     .then(function (response) {
       $scope.customerNetwork = response.data[0];
       $scope.customerData.customerNetwork = response.data[0];
+      customerService.tabs[$scope.idCustomer].customerNetwork  = response.data[0];
+
       if(response.data.length > 0){
         networkServices(0, true);
       }
@@ -516,106 +572,211 @@ app.controller('customerNetworkController',         function ($scope, $http){
   function networkServices (service, flagService) {
 
     var routes = ['networkCheckStatus',
-      'netwokAdvancedInfo',
-      'networkAdvanceIPs',
-      'networkRecyclePort',
-      '4',
-      'networkSignUp',
-      'networkActivate'];
+                  'netwokAdvancedInfo',
+                  'networkAdvanceIPs',
+                  'networkRecyclePort',
+                  '4',
+                  'networkSignUp',
+                  'networkActivate'];
 
-    $('.network-functions').addClass('disabled');
+    $('.network-functions-' + $scope.idCustomer).addClass('disabled');
 
-    var service = service;
-    var portID = $scope.customerNetwork.id;
-    var customerID = $scope.idCustomer;
-    var dataSend = {'portid':portID, 'id':customerID};
+    var service     = service;
+    var portID      = customerService.tabs[$scope.idCustomer].customerNetwork.id;
+    var customerID  = $scope.idCustomer;
+    var dataSend    = {'portid' : portID, 'id' : customerID};
+//    var portID  = $scope.customerNetwork.id;
 
-//         console.log(service);
-//         console.log(portID);
-//         console.log(customerID);
-//         console.log(dataSend);
+//    console.log(service);
+//    console.log(portID);
+//    console.log(customerID);
+//    console.log(dataSend);
+
+    $http.get(routes[service], {params : dataSend})
+      .then(function (response) {
+
+        customerService.tabs[$scope.idCustomer].networkServices = response.data;
+
+        if (response.data == 'ERROR')
+          alert(response.data);
+
+        $.each(response.data,function(i, item) {
+          $('#' + i + '-' + $scope.idCustomer).html(item);
+        });
+
+        service = 1;
+
+        $http.get(routes[service], {params : dataSend})
+          .then(function (response) {
+            $.each(response.data,function(i, item)
+            {
+              $('#' + i + '-' + $scope.idCustomer).html(item);
+            });
+          });
+
+
+
+        //                 service = 2;
+        //                 $.ajax(
+        //                     {type:"GET",
+        //                      url:"/" + routes[service],
+        //                      data:dataSend,
+        //                      success: function(data)
+        //                      {
+        //                          //                 $('#IPs').notify('IPs Array.');
+        //
+        ////                          if(!flagService)
+        ////                          {
+        ////                              $.smallBox({
+        ////                                  title: "IPs Array.",
+        ////                                  content: "<i class='fa fa-clock-o'></i> <i>2 seconds ago...</i>",
+        ////                                  color: "#739E73",
+        ////                                  iconSmall: "fa fa-thumbs-up bounce animated",
+        ////                                  timeout: 6000
+        ////                              });
+        ////                          }
+        //
+        $('.network-functions-' + $scope.idCustomer).removeClass('disabled');
+        //                          //                   $.each(data,function(i, item)
+        //                          //                   {
+        //                          //                     $('#' + i).html(item);
+        //                          //                   });
+        //                      }
+        //                     }
+        //                 );
+        $('.network-functions-' + $scope.idCustomer).removeClass('disabled');
+
+
+
+
+
+
+
+
+
+
+      });
 
 
     //AJAX request
-    $.ajax(
-      {type:"GET",
-        url:"/" + routes[service],
-        data:dataSend,
-        success: function(data) {
-
-          $scope.customerData.networkServices = data;
-
-          if (data == 'ERROR')
-            alert(data);
-
-          $.each(data,function(i, item) {
-            $('#' + i).html(item);
-          });
-
-          service = 1;
-          $.ajax(
-            {type:"GET",
-              url:"/" + routes[service],
-              data:dataSend,
-              success: function(data)
-              {
-                $.each(data,function(i, item)
-                {
-                  $('#' + i).html(item);
-                });
-              }
-            }
-          );
-
-          //                 service = 2;
-          //                 $.ajax(
-          //                     {type:"GET",
-          //                      url:"/" + routes[service],
-          //                      data:dataSend,
-          //                      success: function(data)
-          //                      {
-          //                          //                 $('#IPs').notify('IPs Array.');
-          //
-          ////                          if(!flagService)
-          ////                          {
-          ////                              $.smallBox({
-          ////                                  title: "IPs Array.",
-          ////                                  content: "<i class='fa fa-clock-o'></i> <i>2 seconds ago...</i>",
-          ////                                  color: "#739E73",
-          ////                                  iconSmall: "fa fa-thumbs-up bounce animated",
-          ////                                  timeout: 6000
-          ////                              });
-          ////                          }
-          //
-          $('.network-functions').removeClass('disabled');
-          //                          //                   $.each(data,function(i, item)
-          //                          //                   {
-          //                          //                     $('#' + i).html(item);
-          //                          //                   });
-          //                      }
-          //                     }
-          //                 );
-          $('.network-functions').removeClass('disabled');
-        }
-      }
-    );
+//    $.ajax(
+//      {type:"GET",
+//        url:"/" + routes[service],
+//        data:dataSend,
+//        success: function(data) {
+//
+//          $scope.customerData.networkServices = data;
+//
+//          if (data == 'ERROR')
+//            alert(data);
+//
+//          $.each(data,function(i, item) {
+//            $('#' + i).html(item);
+//          });
+//
+//          service = 1;
+//          $.ajax(
+//            {type:"GET",
+//              url:"/" + routes[service],
+//              data:dataSend,
+//              success: function(data)
+//              {
+//                $.each(data,function(i, item)
+//                {
+//                  $('#' + i).html(item);
+//                });
+//              }
+//            }
+//          );
+//
+//          //                 service = 2;
+//          //                 $.ajax(
+//          //                     {type:"GET",
+//          //                      url:"/" + routes[service],
+//          //                      data:dataSend,
+//          //                      success: function(data)
+//          //                      {
+//          //                          //                 $('#IPs').notify('IPs Array.');
+//          //
+//          ////                          if(!flagService)
+//          ////                          {
+//          ////                              $.smallBox({
+//          ////                                  title: "IPs Array.",
+//          ////                                  content: "<i class='fa fa-clock-o'></i> <i>2 seconds ago...</i>",
+//          ////                                  color: "#739E73",
+//          ////                                  iconSmall: "fa fa-thumbs-up bounce animated",
+//          ////                                  timeout: 6000
+//          ////                              });
+//          ////                          }
+//          //
+//          $('.network-functions').removeClass('disabled');
+//          //                          //                   $.each(data,function(i, item)
+//          //                          //                   {
+//          //                          //                     $('#' + i).html(item);
+//          //                          //                   });
+//          //                      }
+//          //                     }
+//          //                 );
+//          $('.network-functions').removeClass('disabled');
+//        }
+//      }
+//    );
 
     if (service == 5) {
-      $('.access-type-net').removeClass('btn-danger ');
-      $('.access-type-net').addClass('btn-info');
-      $('.access-type-net').html('Activate');
-      $('.access-type-net').attr('type','6');
-      $('#acces-network-id').html('signup');
+      $('.access-type-net-'  + $scope.idCustomer).removeClass('btn-danger ');
+      $('.access-type-net-'  + $scope.idCustomer).addClass('btn-info');
+      $('.access-type-net-'  + $scope.idCustomer).html('Activate');
+      $('.access-type-net-'  + $scope.idCustomer).attr('type', '6');
+      $('#acces-network-id-' + $scope.idCustomer).html('signup');
     }
-    else if ( service == 6 ) {
-      $('.access-type-net').removeClass('btn-info')
-      $('.access-type-net').addClass('btn-danger')
-      $('.access-type-net').html('Send to Signup');
-      $('.access-type-net').attr('type','5');
-      $('#acces-network-id').html('yes');
+    else if (service == 6) {
+      $('.access-type-net-'  + $scope.idCustomer).removeClass('btn-info')
+      $('.access-type-net-'  + $scope.idCustomer).addClass('btn-danger')
+      $('.access-type-net-'  + $scope.idCustomer).html('Send to Signup');
+      $('.access-type-net-'  + $scope.idCustomer).attr('type', '5');
+      $('#acces-network-id-' + $scope.idCustomer).html('yes');
     }
 
   };
+  $scope.smartModEg1        = function (event) {
+    //     console.log($(this).attr('type'));
+    var elementId     = event.target.id;
+
+    var service       = $('#'+elementId).attr('type');
+    var portID        = $('#'+elementId).attr('portid');
+    var serviceID     = $('#'+elementId).attr('serviceid');
+    var serviceStatus = $('#'+elementId).attr('displaystatus');
+    var routeID       = $('#'+elementId).attr('route');
+
+    if(service == 3)
+      var txtMsg = 'Should I recycle this customer’s port?';
+    if(service == 5)
+      var txtMsg = 'Are you sure you want to send this customer to the signup page?';
+    if(service == 6)
+      var txtMsg = 'Are you sure you want to active this customer?';
+
+//    console.log('Inside smartModEg1(): ');
+//    console.log('service='+service);
+//    console.log('portID='+portID);
+//    console.log('serviceID='+serviceID);
+//    console.log('serviceStatus='+serviceStatus);
+
+    $.SmartMessageBox({
+      title: "Please Confirm",
+      content: txtMsg,
+      buttons: '[No][Yes]'
+    }, function (ButtonPressed) {
+      if (ButtonPressed === "Yes") {
+        if(portID)
+          networkServices(service); // Recycle port, send to signup, activate, etc
+        else if(serviceID)
+          servicesInfoUpdate(serviceID, serviceStatus, routeID); // ??
+
+      }
+    });
+  };
+
+
 
   //PENDING
   function servicesInfoUpdate (serviceID, serviceStatus, routeID) {
@@ -656,44 +817,10 @@ app.controller('customerNetworkController',         function ($scope, $http){
       }
     );
   };
-  $scope.smartModEg1        = function (event) {
-    //     console.log($(this).attr('type'));
-    var elementId = event.target.id;
-    var service       = $('#'+elementId).attr('type');
-    var portID        = $('#'+elementId).attr('portid');
-    var serviceID     = $('#'+elementId).attr('serviceid');
-    var serviceStatus = $('#'+elementId).attr('displaystatus');
-    var routeID       = $('#'+elementId).attr('route');
 
-    if(service == 3)
-      var txtMsg = 'Should I recycle this customer’s port?';
-    if(service == 5)
-      var txtMsg = 'Are you sure you want to send this customer to the signup page?';
-    if(service == 6)
-      var txtMsg = 'Are you sure you want to active this customer?';
-
-    console.log('Inside smartModEg1(): ');
-    console.log('service='+service);
-    console.log('portID='+portID);
-    console.log('serviceID='+serviceID);
-    console.log('serviceStatus='+serviceStatus);
-
-    $.SmartMessageBox({
-      title: "Please Confirm",
-      content: txtMsg,
-      buttons: '[No][Yes]'
-    }, function (ButtonPressed) {
-      if (ButtonPressed === "Yes") {
-        if(portID)
-          networkServices(service); // Recycle port, send to signup, activate, etc
-        else if(serviceID)
-          servicesInfoUpdate(serviceID, serviceStatus, routeID); // ??
-
-      }
-    });
-  };
 
 });
+
 app.controller('customerBuildingController',        function ($scope, $http){
 
   //   console.log($scope.customerData);
@@ -1059,11 +1186,13 @@ app.controller('addPaymentMethodController',        function ($scope, $http){
 
 
 });
-app.controller('customerServicesController',        function ($scope, $http){
 
+//Product.html
+app.controller('customerServicesController',        function ($scope, $http, customerService){
   $http.get("getCustomerServices", {params:{'id':$scope.idCustomer}})
     .then(function (response) {
-      $scope.customerData.customerServices = response.data;
+      $scope.customerData.customerServices = response.data;//rm
+      customerService.tabs[$scope.idCustomer].customerServices = response.data;
     });
 
   // $scope.cSrvCrlFun       = function (){
@@ -1105,48 +1234,62 @@ app.controller('customerServicesController',        function ($scope, $http){
   $scope.disableService   = function (id){
     $http.get("disableCustomerServices", {params:{'id':$scope.idCustomer, 'idService':id}})
       .then(function (response) {
-        $scope.customerServices = response.data;
+        $scope.customerServices = response.data;//rm
+        customerService.tabs[$scope.idCustomer].customerServices = response.data;
         $scope.availableServices();
       });
   }
   $scope.activeService    = function (id){
     $http.get("activeCustomerServices", {params:{'id':$scope.idCustomer, 'idService':id}})
       .then(function (response) {
-        $scope.customerServices = response.data;
+        $scope.customerServices = response.data;//rm
+        customerService.tabs[$scope.idCustomer].customerServices = response.data;
         $scope.availableServices();
       });
   }
 
 });
-app.controller('serviceProductController',          function ($scope, $http){
+//not in use anymore. ex product.html
+app.controller('serviceProductController',          function ($scope, $http, customerService){
 
+//  console.log(customerService.tabs[$scope.idCustomer].products);
+//  console.log($scope.service);
+  return;
   //   console.log($scope.service.id);
   $http.get("getCustomerProduct", {params:{'id':$scope.service.id}})
     .then(function (response) {
       $scope.customerProduct = response.data;
+
+//      console.log($scope.customerProduct);
+      customerService.tabs[$scope.idCustomer].products[$scope.service.id] = response.data;
     });
 
-  $http.get("getCustomerProductType", {params:{'id':$scope.service.id}})
+  $http.get("getCustomerProductType", {params:{'id':$scope.service.id}})//ya no se usara.
     .then(function (response) {
       $scope.customerProductStatus = response.data;
+//      console.log(response.data);
     });
 
 });
-app.controller('customerNotesController',           function ($scope, $http){
 
-  $http.get("getCustomerNotes", {params:{'id':$scope.idCustomer}})
+
+app.controller('customerNotesController',           function ($scope, $http, customerService){
+
+  $http.get("getCustomerNotes", {params : {'id' : $scope.idCustomer}})
     .then(function (response) {
-      $scope.customerNotes = response.data;
+//      $scope.customerNotes = response.data;//rm
+      customerService.tabs[$scope.idCustomer].customerNotes = response.data;
     });
 
   $scope.newNote = function(){
-    var content = $('#textarea-note-customer').val();
+    var content = $('#textarea-note-customer-' + $scope.idCustomer).val();
     if(content)
     {
       $http.get("insertCustomerNote", {params:{'id':$scope.idCustomer, 'note':content}})
         .then(function (response) {
-          $scope.customerNotes = response.data;
-          $('#c-n-f').trigger("reset");
+//          $scope.customerNotes = response.data;//rm
+          customerService.tabs[$scope.idCustomer].customerNotes = response.data;
+          $('#c-n-f-' + $scope.idCustomer).trigger("reset");
         });
     }
     else
@@ -1185,13 +1328,13 @@ app.controller('customerBillingHistoryController',  function ($scope, $http, $ui
 });
 app.controller('customersHomeController',           function ($scope, $http, customerService){
 
-  if(customerService.stateRoute == 'customershome'){
-
-    if(customerService.sideBarFlag) {
-      $scope.sipTool(2);
-      customerService.sideBarFlag = false;
-    }
-  }
+//  if(customerService.stateRoute == 'customershome'){
+//
+//    if(customerService.sideBarFlag) {
+//      $scope.sipTool(2);
+//      customerService.sideBarFlag = false;
+//    }
+//  }
 
 
   //SEARCH CUSTOMER HOME

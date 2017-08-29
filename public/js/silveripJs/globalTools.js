@@ -6,6 +6,9 @@ app.controller('globalToolsCtl',                    function ($scope, $http, $co
   $scope.sipToolLeft    = false;
   $scope.sipToolRight   = true;
   $scope.focusIndex     = 0;
+  $scope.statusArrayConstant = generalService.statusArrayConstant;
+
+//  console.log($scope.statusArrayConstant);
 
 
 
@@ -39,7 +42,7 @@ app.controller('globalToolsCtl',                    function ($scope, $http, $co
     if(generalService.stateRoute == 'buildings')
       mainId = buildingService.building.id;
     else
-      mainId = customerService.customer.id;
+      mainId = id;
 
     var data = {};
     data['id']        = mainId;
@@ -304,6 +307,13 @@ app.controller('globalToolsCtl',                    function ($scope, $http, $co
   }
   $scope.xEditVisual          = function (valor, id){
 
+    customerService.tabs[id].xEditMainInfo = valor;
+    customerService.tabs[id].xEditContactInfo = valor;
+    return;
+
+
+
+
     switch (id)
     {
       case 'c-c-i-e':
@@ -491,9 +501,9 @@ app.controller('globalToolsCtl',                    function ($scope, $http, $co
     });
   };
 });
-function gToolsxEdit(value, field, id, idContainer, table, model){
-     console.log(id + ' <--|--id|:: '+  value+ ' <--|--value|:: ' +  field + ' <--|--field|:: ' +  table + ' <--|--table|:: '+  idContainer + ' <--|--idContainer|');
-  angular.element('#' + idContainer + '-gTools').scope().singleUpdateXedit(id, value, field, table, model);
+function gToolsxEdit(value, field, id, idContainer, table, model, index = null){
+  console.log(id + ' <--|--id|:: '+  value+ ' <--|--value|:: ' +  field + ' <--|--field|:: ' +  table + ' <--|--table|:: '+  idContainer + ' <--|--idContainer|'+  model + ' <--|--model|'+  index + ' <--|--index|');
+  angular.element('#' + idContainer + '-gTools-' + (index ? index : id)).scope().singleUpdateXedit(id, value, field, table, model, index);
 }
 function getFormValues(id){
   var objects = $('#' + id).serializeArray();

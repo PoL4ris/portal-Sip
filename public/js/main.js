@@ -50,7 +50,7 @@ angular.module('app.customers',     ['ui.router']).config(function ($stateProvid
   $stateProvider
     .state('app.customers', {
       url:  '/customers?{id:int}',
-      params: { cache: null },
+      params: { cache: false },
       data: {
         title: 'Customers'
       },
@@ -66,8 +66,9 @@ angular.module('app.customers',     ['ui.router']).config(function ($stateProvid
       },
       resolve: {
         scripts: function (lazyScript, customerService, generalService) {
-          customerService.stateRoute = 'customers';
-          generalService.stateRoute  = 'customers';
+          customerService.stateRoute  = 'customers';
+          generalService.stateRoute   = 'customers';
+          generalService.sideBarFlag  = true;
           return lazyScript.register([
             '/js/smart/build/vendor.ui.js'
           ]);
@@ -355,7 +356,10 @@ app.factory('customerService',  function () {
     exist: true,
     sideBarFlag: true,
     rightView: false,
-    statusArrayConstant : constArray,
+    statusArrayConstant : constArray,//remove.
+    tabs: {},
+    customerArray : {},
+
   };
 });
 app.factory('buildingService',  function () {
@@ -376,8 +380,9 @@ app.factory('adminService',     function () {
 app.factory('generalService',   function () {
   return {
     exist: true,
-    customerArray : {},
     statusArrayConstant : constArray,
+    sideBarFlag: false,
+    rightView: false,
 
   };
 });
