@@ -314,6 +314,20 @@ app.controller('globalToolsCtl',                    function ($scope, $http, $co
 
 
 
+
+    //id es # y en contacto es un string que es el nombre del id,
+    //usar un nombre dinamico
+    //calcular el id de otro metodo
+    //unificar id's
+    //pensar como cambiar el id o el registro sin afectar el resto.
+    //maybe hacer un case para cada caso del xEdit.
+
+
+
+
+
+
+
     switch (id)
     {
       case 'c-c-i-e':
