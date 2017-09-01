@@ -404,14 +404,14 @@ class TestController extends Controller
 
 //        $chargeQuery = Charge::where('status',2)->where('dues_date','2017-09-01 00:00:00');
 
-        $billingHelper = new BillingHelper();
+//        $billingHelper = new BillingHelper();
 
-        $customerProducts = CustomerProduct::whereIn('id', [20030, 20031])->get();
+//        $customerProducts = CustomerProduct::whereIn('id', [20030, 20031])->get();
 //        dd($customerProducts);
 
-        foreach ($customerProducts as $customerProduct) {
-            $billingHelper->createChargeForCustomerProduct($customerProduct);
-        }
+//        foreach ($customerProducts as $customerProduct) {
+//            $billingHelper->createChargeForCustomerProduct($customerProduct);
+//        }
 
 
         dd('done');

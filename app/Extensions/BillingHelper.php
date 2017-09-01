@@ -527,24 +527,27 @@ class BillingHelper
      * Invoice processing functions
      */
 
-    public function processPendingAutopayInvoices()
+    public function processPendingAutopayInvoices($records = 200)
     {
 
         $nowMysql = date("Y-m-d H:i:s");
-        $invoices = Invoice::where('status', config('const.invoice_status.pending'))
+        Invoice::where('status', config('const.invoice_status.pending'))
             ->where('processing_type', config('const.type.auto_pay'))
             ->where('failed_charges_count', 0)
             ->where(function ($query) use ($nowMysql) {
                 $query->where('due_date', 'is', 'NULL')
                     ->orWhere('due_date', '<=', $nowMysql)
                     ->orWhere('due_date', '');
-            })->chunk(200, function ($invoices) {
+            })->chunk($records, function ($invoices) use ($records) {
                 foreach ($invoices as $invoice) {
                     $this->processInvoice($invoice, true);
-//                    break;
                 }
-                dd('Done');
+
+                if ($records > 0) {
+                    return true;
+                }
             });
+        return true;
     }
 
     public function processPendingAutopayInvoicesThatHaveUpdatedPaymentMethods()
