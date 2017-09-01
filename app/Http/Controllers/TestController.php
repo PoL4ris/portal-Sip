@@ -49,7 +49,8 @@ use Carbon\Carbon;
 //use ActivityLogs;
 use Symfony\Component\Console\Helper\ProgressBar;
 
-class TestController extends Controller {
+class TestController extends Controller
+{
 
     public function __construct()
     {
@@ -245,8 +246,7 @@ class TestController extends Controller {
         $z = 0;
         $p = 0;
 
-        for ($p = 0; $z < $a; $p ++)
-        {
+        for ($p = 0; $z < $a; $p++) {
 
 
             //        print 'SERIE-->' . $p . '<br>';
@@ -254,8 +254,7 @@ class TestController extends Controller {
             $y = $x;
             $x = $z;
 
-            if ($z % 2 == 0)
-            {
+            if ($z % 2 == 0) {
                 $b = $b + $z;
                 print '|----- <strong>' . $b . '</strong> -----|<br>';
             }
@@ -339,8 +338,7 @@ class TestController extends Controller {
 
         $charges = $invoice->charges;
         $details = $charges->pluck('details');
-        foreach ($details as $chargeDetails)
-        {
+        foreach ($details as $chargeDetails) {
             dd(json_decode($chargeDetails, true));
         }
         dd($details);
@@ -406,17 +404,19 @@ class TestController extends Controller {
 
 //        $chargeQuery = Charge::where('status',2)->where('dues_date','2017-09-01 00:00:00');
 
-//        $billingHelper = new BillingHelper();
+        $billingHelper = new BillingHelper();
 
-        $customerProducts = CustomerProduct::whereIn('id',[20030,20031])->get();
-        dd($customerProducts);
+        $customerProducts = CustomerProduct::whereIn('id', [20030, 20031])->get();
+//        dd($customerProducts);
 
-//        $billingHelper->createChargeForCustomerProduct();
+        foreach ($customerProducts as $customerProduct) {
+            $billingHelper->createChargeForCustomerProduct($customerProduct);
+        }
 
-//        dd('done');
+
+        dd('done');
 
 //        $billingHelper->updateCustomerProductChargeStatus();
-
 
 
 //        $customer = Customer::with('services')->find(9992)->toArray();
@@ -529,11 +529,9 @@ class TestController extends Controller {
 
         $invoices = $billingHelper->paginatePendingInvoices();
 
-                $queries = DB::getQueryLog();
-                $last_query = end($queries);
-                dd($queries);
-
-
+        $queries = DB::getQueryLog();
+        $last_query = end($queries);
+        dd($queries);
 
 
         dd($invoices->currentPage()); //->pluck('id'));
@@ -595,8 +593,7 @@ class TestController extends Controller {
         $nowMysql = date("Y-m-d H:i:s");
         $invoices = Invoice::where('status', config('const.invoice_status.pending'))
             ->where('processing_type', config('const.type.auto_pay'))
-            ->where(function ($query) use ($nowMysql)
-            {
+            ->where(function ($query) use ($nowMysql) {
                 $query->where('due_date', 'is', 'NULL')
                     ->orWhere('due_date', '<=', $nowMysql)
                     ->orWhere('due_date', '');
@@ -614,8 +611,7 @@ class TestController extends Controller {
         $building = Building::find(1012);
 
         $products = null;
-        $building->load(['activeBuildingProducts.product' => function ($q) use (&$products)
-        {
+        $building->load(['activeBuildingProducts.product' => function ($q) use (&$products) {
             $products = $q->with('propertyValues')->get(); //->unique();
         }]);
 
@@ -755,18 +751,14 @@ class TestController extends Controller {
             ->get();
         dd($subbedProducts);
 
-        foreach ($subbedProducts as $product)
-        {
+        foreach ($subbedProducts as $product) {
             $subbedProductsArr[$product->id] = $product;
         }
         dd($subbedProductsArr);
-        foreach ($allProducts as $key => $product)
-        {
-            if (array_key_exists($key, $subbedProductsArr))
-            {
+        foreach ($allProducts as $key => $product) {
+            if (array_key_exists($key, $subbedProductsArr)) {
                 $allProducts[$key]['Total'] = $subbedProductsArr[$key]->Total;
-            } else
-            {
+            } else {
                 $allProducts[$key]['Total'] = 0;
             }
         }
@@ -785,7 +777,7 @@ class TestController extends Controller {
         dd($lastTicketNumber);
 
         $ticketNumber = explode('ST-', $lastTicketNumber);
-        $ticketNumberCast = (int) $ticketNumber[1] + 1;
+        $ticketNumberCast = (int)$ticketNumber[1] + 1;
         $defaultUserId = 10;
 
         $newTicket = new Ticket;
@@ -834,8 +826,7 @@ class TestController extends Controller {
         dd($myProductPropertyValues->buildingProducts->pluck('product')); //->pluck('propertyValues'));
 
         $products;
-        $building->load(['buildingProducts.product' => function ($q) use (&$products)
-        {
+        $building->load(['buildingProducts.product' => function ($q) use (&$products) {
             $products = $q->with('propertyValues')->get(); //->unique();
         }]);
 
