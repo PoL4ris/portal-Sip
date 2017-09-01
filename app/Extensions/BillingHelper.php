@@ -18,7 +18,8 @@ use Mail;
 use Log;
 use Carbon\Carbon;
 
-class BillingHelper {
+class BillingHelper
+{
 
     private $testMode = true;
     private $passcode = '$2y$10$igbvfItrwUkvitqONf4FkebPyD0hhInH.Be4ztTaAUlxGQ4yaJd1K';
@@ -48,8 +49,7 @@ class BillingHelper {
             ->get();
 
         $count = 0;
-        foreach ($buildings as $building)
-        {
+        foreach ($buildings as $building) {
             // Get list of chargeable products/services for the requested building
             $customerProducts = $this->getChargeableCustomerProductsByBuildingId($building->id);
             $count = $this->addChargesForCustomerProducts($customerProducts);
@@ -117,16 +117,14 @@ class BillingHelper {
     protected function addChargesForCustomerProducts($customerProducts)
     {
         $count = 0;
-        foreach ($customerProducts as $customerProduct)
-        {
+        foreach ($customerProducts as $customerProduct) {
             $result = $this->createChargeForCustomerProduct($customerProduct);
-            if ($result == false)
-            {
+            if ($result == false) {
                 continue;
             }
             // Uncomment this when ready to run a real or production test
-//            $this->updateCustomerProductChargeStatus($customerProduct);
-            $count ++;
+            $this->updateCustomerProductChargeStatus($customerProduct);
+            $count++;
         }
 
         return $count;
@@ -145,8 +143,7 @@ class BillingHelper {
             ->where('start_date', $dateRange['startDate'])
             ->where('end_date', $dateRange['endDate'])->first();
 
-        if ($charge != null)
-        {
+        if ($charge != null) {
             Log::info('Charge already exists. Customer id: ' . $customerProduct->id_customers .
                 ' for product id: ' . $customerProduct->id_products .
                 ' for date range: ' . $dateRange['startDate'] . ' - ' . $dateRange['endDate']);
@@ -157,29 +154,29 @@ class BillingHelper {
         Charge::create([
 //                        'name'                 => trim($customer->first_name, "\x20,\xC2,\xA0") . ' ' . trim($customer->last_name, "\x20,\xC2,\xA0"),
 //                        'address'              => $this->getFormattedAddress($address),
-            'description'          => 'New Charge',
-            'details'              => json_encode(array('customer_product_id'     => $customerProduct->id,
-                                                        'customer_product_status' => $customerProduct->id_status,
-                                                        'product_id'              => $customerProduct->id_products,
-                                                        'product_name'            => $product->name,
-                                                        'product_desc'            => $product->description,
-                                                        'product_amount'          => $product->amount,
-                                                        'product_frequency'       => $product->frequency,
-                                                        'product_type'            => $product->type
+            'description' => 'New Charge',
+            'details' => json_encode(array('customer_product_id' => $customerProduct->id,
+                'customer_product_status' => $customerProduct->id_status,
+                'product_id' => $customerProduct->id_products,
+                'product_name' => $product->name,
+                'product_desc' => $product->description,
+                'product_amount' => $product->amount,
+                'product_frequency' => $product->frequency,
+                'product_type' => $product->type
             )),
-            'amount'               => number_format($product->amount, 2),
-            'qty'                  => 1,
-            'id_customers'         => $customerProduct->id_customers,
+            'amount' => number_format($product->amount, 2),
+            'qty' => 1,
+            'id_customers' => $customerProduct->id_customers,
             'id_customer_products' => $customerProduct->id,
-            'id_address'           => $customerProduct->id_address,
-            'id_users'             => $userId,
-            'status'               => config('const.charge_status.pending'),
-            'type'                 => config('const.charge_type.charge'),
-            'bill_cycle_day'       => '1',
-            'processing_type'      => config('const.type.auto_pay'),  // auto_pay, manual_pay
-            'start_date'           => $dateRange['startDate'],
-            'end_date'             => $dateRange['endDate'],
-            'due_date'             => date("Y-m-d H:i:s", strtotime("first day of next month  00:00:00"))
+            'id_address' => $customerProduct->id_address,
+            'id_users' => $userId,
+            'status' => config('const.charge_status.pending'),
+            'type' => config('const.charge_type.charge'),
+            'bill_cycle_day' => '1',
+            'processing_type' => config('const.type.auto_pay'),  // auto_pay, manual_pay
+            'start_date' => $dateRange['startDate'],
+            'end_date' => $dateRange['endDate'],
+            'due_date' => date("Y-m-d H:i:s", strtotime("first day of next month  00:00:00"))
         ]);
 
         return true;
@@ -189,18 +186,18 @@ class BillingHelper {
     {
         $address = $customer->address;
 
-        Charge::create(['description'     => 'Manual Charge',
-                        'amount'          => number_format($amount, 2),
-                        'qty'             => 1,
-                        'id_customers'    => $customer->id,
-                        'id_address'      => $address->id,
-                        'id_users'        => $userId,
-                        'status'          => config('const.charge_status.pending_approval'),
-                        'type'            => config('const.charge_type.charge'),
-                        'comment'         => $comment,
-                        'bill_cycle_day'  => '1',
-                        'processing_type' => config('const.type.manual_pay'),  // auto_pay, manual_pay
-                        'due_date'        => date("Y-m-d H:i:s", strtotime("first day of next month  00:00:00"))
+        Charge::create(['description' => 'Manual Charge',
+            'amount' => number_format($amount, 2),
+            'qty' => 1,
+            'id_customers' => $customer->id,
+            'id_address' => $address->id,
+            'id_users' => $userId,
+            'status' => config('const.charge_status.pending_approval'),
+            'type' => config('const.charge_type.charge'),
+            'comment' => $comment,
+            'bill_cycle_day' => '1',
+            'processing_type' => config('const.type.manual_pay'),  // auto_pay, manual_pay
+            'due_date' => date("Y-m-d H:i:s", strtotime("first day of next month  00:00:00"))
         ]);
 
         return true;
@@ -210,18 +207,18 @@ class BillingHelper {
     {
         $address = $customer->address;
 
-        Charge::create(['description'     => 'Manual Refund',
-                        'amount'          => number_format($amount, 2),
-                        'qty'             => 1,
-                        'id_customers'    => $customer->id,
-                        'id_address'      => $address->id,
-                        'id_users'        => $userId,
-                        'status'          => config('const.charge_status.pending_approval'),
-                        'type'            => config('const.charge_type.credit'),
-                        'comment'         => $comment,
-                        'bill_cycle_day'  => '1',
-                        'processing_type' => config('const.type.manual_pay'),  // auto_pay, manual_pay
-                        'due_date'        => date("Y-m-d H:i:s", strtotime("first day of next month  00:00:00"))
+        Charge::create(['description' => 'Manual Refund',
+            'amount' => number_format($amount, 2),
+            'qty' => 1,
+            'id_customers' => $customer->id,
+            'id_address' => $address->id,
+            'id_users' => $userId,
+            'status' => config('const.charge_status.pending_approval'),
+            'type' => config('const.charge_type.credit'),
+            'comment' => $comment,
+            'bill_cycle_day' => '1',
+            'processing_type' => config('const.type.manual_pay'),  // auto_pay, manual_pay
+            'due_date' => date("Y-m-d H:i:s", strtotime("first day of next month  00:00:00"))
         ]);
 
         return true;
@@ -252,11 +249,9 @@ class BillingHelper {
     {
 
         $resultsArray = array();
-        foreach ($chargeIds as $chargeId)
-        {
+        foreach ($chargeIds as $chargeId) {
             $charge = Charge::find($chargeId);
-            if ($charge == null)
-            {
+            if ($charge == null) {
                 $resultsArray[$chargeId] = ['ERRMSG' => 'Charge not found'];
                 Log::notice('BillingController::approveManualChargeList(): Charge not found with id: ' . $chargeId);
                 continue;
@@ -287,11 +282,9 @@ class BillingHelper {
     {
 
         $resultsArray = array();
-        foreach ($chargeIds as $chargeId)
-        {
+        foreach ($chargeIds as $chargeId) {
             $charge = Charge::find($chargeId);
-            if ($charge == null)
-            {
+            if ($charge == null) {
                 $resultsArray[$chargeId] = ['ERRMSG' => 'Charge not found'];
                 Log::notice('BillingController::denyManualChargeList(): Charge not found with id: ' . $chargeId);
                 continue;
@@ -317,19 +310,18 @@ class BillingHelper {
 
     protected function getProductChargeDates($product)
     {
-        if ($product->frequency == 'monthly')
-        {
+        if ($product->frequency == 'monthly') {
             return ['startDate' => date("Y-m-d H:i:s", strtotime("first day of next month  00:00:00")),
-                    'endDate'   => date("Y-m-d H:i:s", strtotime("last day of next month  00:00:00"))];
+                'endDate' => date("Y-m-d H:i:s", strtotime("last day of next month  00:00:00"))];
 
-        } elseif ($product->frequency == 'annual')
-        {
+        } elseif ($product->frequency == 'annual') {
             return ['startDate' => date("Y-m-d H:i:s", strtotime("first day of next month  00:00:00")),
-                    'endDate'   => date("Y-m-d H:i:s", strtotime("first day of next month next year  00:00:00"))];
-        } else
-        {
-            return ['startDate' => date("Y-m-d H:i:s", strtotime("now")),
-                    'endDate'   => date("Y-m-d H:i:s", strtotime("now"))];
+                'endDate' => date("Y-m-d H:i:s", strtotime("first day of next month next year  00:00:00"))];
+        } else {
+//            return ['startDate' => date("Y-m-d H:i:s", strtotime("now")),
+//            'endDate'   => date("Y-m-d H:i:s", strtotime("now"))];
+            return ['startDate' => date("Y-m-d H:i:s", strtotime("first day of next month  00:00:00")),
+                'endDate' => null];
         }
     }
 
@@ -337,8 +329,7 @@ class BillingHelper {
     {
 
         $formattedAddress = $address->address;
-        if (trim($address->unit != ''))
-        {
+        if (trim($address->unit != '')) {
             $formattedAddress .= "\n" . 'Apt ' . $address->unit;
         }
 
@@ -352,12 +343,10 @@ class BillingHelper {
         $firstDayOfMonthTime = strtotime("first day of this month 00:00:00");
 
         $timestampMysql = null;
-        if ($customerProduct->product->frequency == 'annual')
-        {
+        if ($customerProduct->product->frequency == 'annual') {
             // Set the next chargeable date to next year for annual products
             $timestampMysql = date('Y-m-d H:i:s', strtotime('+1 year', $firstDayOfMonthTime));
-        } elseif ($customerProduct->product->frequency == 'monthly')
-        {
+        } elseif ($customerProduct->product->frequency == 'monthly') {
             // Set the next chargeable date to next month for monthly products
             $timestampMysql = date('Y-m-d H:i:s', strtotime('+1 month', $firstDayOfMonthTime));
         }
@@ -383,20 +372,17 @@ class BillingHelper {
 
     public function invoicePendingAutoPayCharges()
     {
-        while (true)
-        {
+        while (true) {
             $charges = Charge::where('status', config('const.charge_status.pending'))
                 ->where('processing_type', config('const.type.auto_pay'))
                 ->take(100)
                 ->get();
 
-            if ($charges->count() == 0)
-            {
+            if ($charges->count() == 0) {
                 break;
             }
 
-            foreach ($charges as $charge)
-            {
+            foreach ($charges as $charge) {
                 $invoice = $this->findOrCreateOpenInvoice($charge->id_customers, $charge->id_address);
                 $this->addChargeToInvoice($charge, $invoice);
             }
@@ -407,8 +393,7 @@ class BillingHelper {
     {
         $invoice = Invoice::firstOrCreate(['id_customers' => $customerId, 'id_address' => $addressId, 'status' => config('const.invoice_status.open')]);
 
-        if ($invoice->description == null)
-        {
+        if ($invoice->description == null) {
             $invoice->description = 'New Invoice';
         }
 //        if ($invoice->name == null)
@@ -419,17 +404,14 @@ class BillingHelper {
 //        {
 //            $invoice->address = $this->getCustomerAddress($addressId);
 //        }
-        if ($invoice->bill_cycle_day == null)
-        {
+        if ($invoice->bill_cycle_day == null) {
             $invoice->bill_cycle_day = '1';
         }
-        if ($invoice->processing_type == null)
-        {
+        if ($invoice->processing_type == null) {
             $invoice->processing_type = config('const.type.auto_pay'); // 13 = Autopay, 14 = Manual Pay
         }
 
-        if ($invoice->due_date == null)
-        {
+        if ($invoice->due_date == null) {
             $firstDayOfNextMonthTime = strtotime("first day of next month  00:00:00");
             $firstDayOfNextMonthMysql = date("Y-m-d H:i:s", $firstDayOfNextMonthTime);
             $invoice->due_date = $firstDayOfNextMonthMysql;
@@ -442,21 +424,17 @@ class BillingHelper {
     {
         $invoice = Invoice::create(['id_customers' => $customerId, 'id_address' => $addressId, 'status' => config('const.invoice_status.open')]);
 
-        if ($invoice->description == null)
-        {
+        if ($invoice->description == null) {
             $invoice->description = 'New Manual Invoice';
         }
-        if ($invoice->bill_cycle_day == null)
-        {
+        if ($invoice->bill_cycle_day == null) {
             $invoice->bill_cycle_day = '1';
         }
-        if ($invoice->processing_type == null)
-        {
+        if ($invoice->processing_type == null) {
             $invoice->processing_type = config('const.type.manual_pay'); // 13 = Autopay, 14 = Manual Pay
         }
 
-        if ($invoice->due_date == null)
-        {
+        if ($invoice->due_date == null) {
             $firstDayOfNextMonthTime = strtotime("first day of next month  00:00:00");
             $firstDayOfNextMonthMysql = date("Y-m-d H:i:s", $firstDayOfNextMonthTime);
             $invoice->due_date = $firstDayOfNextMonthMysql;
@@ -472,8 +450,7 @@ class BillingHelper {
     protected function getCustomerName($customerId)
     {
         $customer = Customer::find($customerId);
-        if ($customer != null)
-        {
+        if ($customer != null) {
             return trim($customer->first_name, "\x20,\xC2,\xA0") . ' ' . trim($customer->last_name, "\x20,\xC2,\xA0");
         }
 
@@ -483,11 +460,9 @@ class BillingHelper {
     protected function getCustomerAddress($addressId)
     {
         $address = Address::find($addressId);
-        if ($address != null)
-        {
+        if ($address != null) {
             $addressString = trim($address->address);
-            if (trim($address->unit != ''))
-            {
+            if (trim($address->unit != '')) {
                 $addressString .= "\n" . 'Apt ' . $address->unit;
             }
             $addressString .= "\n" . trim($address->city) . ', ' . trim($address->state) . ' ' . trim($address->zip);
@@ -505,11 +480,9 @@ class BillingHelper {
         $charge->status = config('const.charge_status.invoiced');
         $charge->save();
 
-        if ($charge->type == config('const.charge_type.charge'))
-        {
+        if ($charge->type == config('const.charge_type.charge')) {
             $invoice->amount += number_format($charge->amount, 2);
-        } else
-        {
+        } else {
             $invoice->amount -= number_format($charge->amount, 2);
         }
         $invoice->save();
@@ -520,8 +493,7 @@ class BillingHelper {
 
         $invoice = $charge->invoice;
 
-        if ($invoice != null)
-        {
+        if ($invoice != null) {
             $charge->delete();
             $this->updateInvoiceAmount($invoice);
         }
@@ -534,23 +506,18 @@ class BillingHelper {
         $charges = $invoice->charges;
 
         $total = 0;
-        foreach ($charges as $charge)
-        {
-            if ($charge->id_types != config('const.charge_type.charge'))
-            {
+        foreach ($charges as $charge) {
+            if ($charge->id_types != config('const.charge_type.charge')) {
                 $total -= $charge->amount;
-            } else
-            {
+            } else {
                 $total += $charge->amount;
             }
         }
         $invoice->amount = number_format($total, 2);
 
-        if ($invoice->amount == 0)
-        {
+        if ($invoice->amount == 0) {
             $invoice->delete();
-        } else
-        {
+        } else {
             $invoice->save();
         }
     }
@@ -572,8 +539,7 @@ class BillingHelper {
                     ->orWhere('due_date', '<=', $nowMysql)
                     ->orWhere('due_date', '');
             })->chunk(200, function ($invoices) {
-                foreach ($invoices as $invoice)
-                {
+                foreach ($invoices as $invoice) {
                     $this->processInvoice($invoice, true);
 //                    break;
                 }
@@ -587,22 +553,19 @@ class BillingHelper {
         $totalInvoicesProcessed = 0;
 
         $paginatedInvoices = $this->paginatePendingInvoices();
-dd($paginatedInvoices);
-        while (true)
-        {
+        dd($paginatedInvoices);
+        while (true) {
             $invoices = $this->filterPendingInvoicesByUpdatedPaymentMethods($paginatedInvoices);
 
-            foreach ($invoices as $invoice)
-            {
-                $totalInvoicesProcessed ++;
+            foreach ($invoices as $invoice) {
+                $totalInvoicesProcessed++;
 //                $this->processInvoice($invoice, true, true);
             }
 
-            if ($paginatedInvoices->hasMorePages() == false)
-            {
+            if ($paginatedInvoices->hasMorePages() == false) {
                 break;
             }
-            $paginatedInvoices = $this->paginatePendingInvoices($perPage, $paginatedInvoices->currentPage()+1);
+            $paginatedInvoices = $this->paginatePendingInvoices($perPage, $paginatedInvoices->currentPage() + 1);
         }
 
         echo 'Processed ' . $totalInvoicesProcessed . ' invoices.' . "\n";
@@ -621,8 +584,7 @@ dd($paginatedInvoices);
                     ->orWhere('due_date', '<=', $nowMysql)
                     ->orWhere('due_date', '');
             })->chunk(200, function ($invoices) {
-                foreach ($invoices as $invoice)
-                {
+                foreach ($invoices as $invoice) {
                     $this->processInvoice($invoice, true);
 //                    break;
                 }
@@ -632,15 +594,13 @@ dd($paginatedInvoices);
 
     public function processInvoice(Invoice $invoice, $notifyViaEmail = true, $notifyViaEmailOnlyIfPassed = false)
     {
-        if (isset($invoice) == false)
-        {
+        if (isset($invoice) == false) {
             Log::info('BillingHelper::processInvoice(): $invoice is not set!');
 
             return ['ERRMSG' => 'Invalid is empty!'];
         }
 
-        if ($invoice->amount == 0)
-        {
+        if ($invoice->amount == 0) {
             Log::info('BillingHelper::processInvoice(): ERROR: Invalid invoice amount: ' . $invoice->amount);
 
             return ['ERRMSG' => 'Invalid invoice amount: ' . $invoice->amount];
@@ -652,26 +612,22 @@ dd($paginatedInvoices);
         $details = $charges->pluck('details');
 
         $chargeDetailsArray = array();
-        foreach ($details as $chargeDetails)
-        {
+        foreach ($details as $chargeDetails) {
             $chargeDetailsArray[] = json_decode($chargeDetails, true);
         }
 
 
         $customer = Customer::find($invoice->id_customers);
 
-        if ($invoice->amount > 0)
-        {
+        if ($invoice->amount > 0) {
             $chargeResult = $billingService->chargeCustomer($customer, $invoice->amount, 'invoice_id: ' . $invoice->id, 'SilverIP Data', json_encode($chargeDetailsArray));
-        } else
-        {
-            $chargeResult = $billingService->refundCustomer($customer, - 1 * $invoice->amount, 'invoice', json_encode($chargeDetailsArray));
+        } else {
+            $chargeResult = $billingService->refundCustomer($customer, -1 * $invoice->amount, 'invoice', json_encode($chargeDetailsArray));
         }
 
         $transactionId = isset($chargeResult['TRANSACTIONID']) ? $chargeResult['TRANSACTIONID'] : null;
 
-        if ($chargeResult['RESPONSETEXT'] == 'APPROVED' || $chargeResult['RESPONSETEXT'] == 'RETURN ACCEPTED')
-        {
+        if ($chargeResult['RESPONSETEXT'] == 'APPROVED' || $chargeResult['RESPONSETEXT'] == 'RETURN ACCEPTED') {
             Log::info('BillingHelper::processInvoice(): INFO: id: ' . $invoice->id_customers . ', ' . trim($customer->first_name) . ' ' . trim($customer->last_name) . ', $' . $invoice->amount . ', ' . 'invoice: ' . $invoice->id . " ... processed\n");
             $invoice->status = config('const.invoice_status.paid');
             $invoice->save();
@@ -679,23 +635,20 @@ dd($paginatedInvoices);
             $this->updateInvoiceChargeStatus($invoice, config('const.charge_status.paid'));
             $this->logInvoice($invoice, 'processed', $transactionId);
 
-            if ($notifyViaEmail && $notifyViaEmailOnlyIfPassed)
-            {
+            if ($notifyViaEmail && $notifyViaEmailOnlyIfPassed) {
                 $this->sendInvoiceReceiptEmail($invoice, $chargeResult);
             }
 
-        } else
-        {
+        } else {
 
             Log::info('BillingHelper::processInvoice(): INFO: id: ' . $invoice->id_customers . ', ' . trim($customer->first_name) . ' ' . trim($customer->last_name) . ', $' . $invoice->amount . ', ' . 'invoice: ' . $invoice->id . " ... failed\n");
-            $invoice->failed_charges_count ++;
+            $invoice->failed_charges_count++;
             $invoice->save();
             $this->updateInvoiceProductDates($invoice, true);
             $this->logInvoice($invoice, 'failed', $transactionId);
 
             /*** Create a ticket ***/
-            if ($notifyViaEmail && $notifyViaEmailOnlyIfPassed == false)
-            {
+            if ($notifyViaEmail && $notifyViaEmailOnlyIfPassed == false) {
                 $this->sendChargeDeclienedEmail($invoice, $chargeResult);
             }
             //            if ($testRun == false) {
@@ -735,8 +688,7 @@ dd($paginatedInvoices);
 
         $invoiceDetails = $invoice->details();
 
-        if (count($invoiceDetails) == 0)
-        {
+        if (count($invoiceDetails) == 0) {
             Log::notice('BillingHelper::processInvoice(): NOTICE: invoice: ' . $invoice->id . ' has no products.');
 
             return false;
@@ -746,11 +698,10 @@ dd($paginatedInvoices);
         $customerProductIds = $detailsCollection->pluck('customer_product_id');
 
         $updateCount = 0;
-        foreach ($customerProductIds as $customerProductId)
-        {
+        foreach ($customerProductIds as $customerProductId) {
 
             $this->updateCustomerProductAttributes($customerProductId, $updateChargeTimestampOnly);
-            $updateCount ++;
+            $updateCount++;
         }
 
         Log::notice('BillingHelper::processInvoice(): INFO: Updated expiration dates for ' . $updateCount . ' products of invoice: ' . $invoice->id);
@@ -762,18 +713,16 @@ dd($paginatedInvoices);
     {
         $charges = $invoice->charges;
 
-        if (count($charges) == 0)
-        {
+        if (count($charges) == 0) {
             Log::notice('BillingHelper::updateInvoiceChargeStatus(): NOTICE: invoice: ' . $invoice->id . ' has no charges.');
 
             return false;
         }
 
         $updateCount = 0;
-        foreach ($charges as $charge)
-        {
+        foreach ($charges as $charge) {
             $charge->status = $status;
-            $updateCount ++;
+            $updateCount++;
         }
 
         Log::notice('BillingHelper::processInvoice(): INFO: Updated the status of ' . $updateCount . ' charges in invoice: ' . $invoice->id . ' to ' . $status);
@@ -786,19 +735,15 @@ dd($paginatedInvoices);
         $customerProduct = CustomerProduct::find($customerProductId);
         $firstDayOfMonthTime = strtotime("first day of this month 00:00:00");
 
-        if ($updateChargeTimestampOnly == false)
-        {
+        if ($updateChargeTimestampOnly == false) {
             $timestampMysql = null;
-            if ($customerProduct->product->frequency == 'annual')
-            {
+            if ($customerProduct->product->frequency == 'annual') {
                 // Set the next expiration date to next year for annual plans
                 $dateExpires = date('Y-m-d H:i:s', strtotime('+1 year', $firstDayOfMonthTime));
-            } elseif ($customerProduct->product->frequency == 'monthly')
-            {
+            } elseif ($customerProduct->product->frequency == 'monthly') {
                 // Set the next expiration date to next month for monthly plans
                 $dateExpires = date('Y-m-d H:i:s', strtotime('+1 month', $firstDayOfMonthTime));
-            } else
-            {
+            } else {
                 // Mark "onetime" purchases with a 2 to indicate "paid" status so they won't be charged again
                 $customerProduct->invoice_status = config('const.invoice_status.paid');
                 $dateExpires = date('Y-m-d H:i:s');
@@ -819,11 +764,9 @@ dd($paginatedInvoices);
         $invoices = Invoice::where('processing_type', config('const.type.auto_pay'))
             ->where('status', config('const.invoice_status.pending'));
 
-        if ($page == null)
-        {
+        if ($page == null) {
             $invoices = $invoices->paginate($perPage);
-        } else
-        {
+        } else {
             $invoices = $invoices->paginate($perPage, array('*'), 'page', $page);
         }
 
@@ -832,8 +775,7 @@ dd($paginatedInvoices);
 
     public function filterPendingInvoicesByUpdatedPaymentMethods($invoices)
     {
-        if ($invoices->isEmpty())
-        {
+        if ($invoices->isEmpty()) {
             Log::notice('No pending invoices found.');
 
             return $invoices;
@@ -1417,13 +1359,11 @@ dd($paginatedInvoices);
         $recordList = $this->getInvoiceableCustomerProductsByBuildingId($buildingId);
 
         // Go through the list and process the info
-        foreach ($recordList as $record)
-        {
+        foreach ($recordList as $record) {
 
             $cid = $record->customer_id;
 
-            if ( ! isset($customerInvoiceTable[$cid]))
-            {
+            if (!isset($customerInvoiceTable[$cid])) {
                 // This is the first time we are seeing this customer so create a new record in the table for them
                 $customerInvoiceTable[$cid] = array();
                 $customerInvoiceTable[$cid]['details'] = array();
@@ -1434,12 +1374,12 @@ dd($paginatedInvoices);
             $customerInvoiceTable[$cid]['amount'] += $record->product_amount;
             $customerInvoiceTable[$cid]['details'][] = array(
                 'customer_product_id' => $record->id,
-                'product_id'          => $record->id_products,
-                'product_name'        => $record->product_name,
-                'product_desc'        => $record->product_desc,
-                'product_amount'      => $record->product_amount,
-                'product_frequency'   => $record->product_frequency,
-                'product_type'        => $record->product_type
+                'product_id' => $record->id_products,
+                'product_name' => $record->product_name,
+                'product_desc' => $record->product_desc,
+                'product_amount' => $record->product_amount,
+                'product_frequency' => $record->product_frequency,
+                'product_type' => $record->product_type
             );
         }
 
@@ -1450,8 +1390,7 @@ dd($paginatedInvoices);
     {
 
         $count = 0;
-        foreach ($invoiceDataTable as $cid => $data)
-        {
+        foreach ($invoiceDataTable as $cid => $data) {
 
             $customer = Customer::find($cid);
             $address_id = $data['record']->address_id;
@@ -1464,8 +1403,7 @@ dd($paginatedInvoices);
             $invoice = new Invoice;
             $invoice->name = trim($customer->first_name) . ' ' . trim($customer->last_name);
             $invoice->address = trim($address->address);
-            if (trim($address->unit != ''))
-            {
+            if (trim($address->unit != '')) {
                 $invoice->address .= "\n" . 'Apt ' . $address->unit;
             }
             $invoice->address .= "\n" . trim($address->city) . ', ' . trim($address->state) . ' ' . trim($address->zip);
@@ -1487,15 +1425,14 @@ dd($paginatedInvoices);
             // Create a list of all the customer products that were just invoiced
             $lineItems = $data['details'];
             $customerProductIds = array();
-            foreach ($lineItems as $item)
-            {
+            foreach ($lineItems as $item) {
                 $customerProductIds[] = $item['customer_product_id'];
             }
 
             // Update the invoice status and invoice date of the customer products that were just invoiced
             $this->updateCustomerProductInvoiceStatus($customerProductIds);
 
-            $count ++;
+            $count++;
         }
 
         return $count;
@@ -1508,19 +1445,15 @@ dd($paginatedInvoices);
         $firstDayofMonthTime = strtotime("first day of this month 00:00:00");
         $firstDayofMonthMysql = date("Y-m-d H:i:s", $firstDayofMonthTime);
 
-        foreach ($customerProductIds as $customerProductId)
-        {
+        foreach ($customerProductIds as $customerProductId) {
             $customerProduct = CustomerProduct::find($customerProductId);
-            if ($customerProduct->product->frequency == 'annual')
-            {
+            if ($customerProduct->product->frequency == 'annual') {
                 // Set the next invoiceable date to next year for annual products
                 $timestampMysql = date('Y-m-d H:i:s', strtotime('+1 year', $firstDayofMonthTime));
-            } elseif ($customerProduct->product->frequency == 'monthly')
-            {
+            } elseif ($customerProduct->product->frequency == 'monthly') {
                 // Set the next invoiceable date to next month for monthly products
                 $timestampMysql = date('Y-m-d H:i:s', strtotime('+1 month', $firstDayofMonthTime));
-            } else
-            {
+            } else {
                 $timestampMysql = '0000-00-00 00:00:00';
             }
 
@@ -1537,27 +1470,22 @@ dd($paginatedInvoices);
 
         $firstDayOfMonth = mktime(0, 0, 0, date("m"), '01', date("Y"));
         $update_count = 0;
-        foreach ($customerProductIds as $customerProductId)
-        {
+        foreach ($customerProductIds as $customerProductId) {
 
             $customerProduct = CustomerProduct::find($customerProductId);
 
-            if ($updateChargeTimestampOnly == false)
-            {
+            if ($updateChargeTimestampOnly == false) {
 
                 $dateExpires = '';
                 $chargeFreq = $customerProduct->product->frequency;
 
-                if ($chargeFreq == 'monthly')
-                {
+                if ($chargeFreq == 'monthly') {
                     // Set the next expiration date to next month for monthly plans
                     $dateExpires = date('Y-m-d H:i:s', strtotime('+1 month', $firstDayOfMonth));
-                } else if ($chargeFreq == 'annual')
-                {
+                } else if ($chargeFreq == 'annual') {
                     // Set the next expiration date to next year for annual plans
                     $dateExpires = date('Y-m-d H:i:s', strtotime('+1 year', $firstDayOfMonth));
-                } else
-                {
+                } else {
                     // Mark "onetime" purchases with a 2 to indicate "paid" status so they won't be charged again
                     $customerProduct->invoice_status = '2';
                     $dateExpires = date('Y-m-d H:i:s');
@@ -1570,7 +1498,7 @@ dd($paginatedInvoices);
 
             $customerProduct->last_charged = date('Y-m-d H:i:s');
             $customerProduct->save();
-            $update_count ++;
+            $update_count++;
         }
 
         return $update_count;
@@ -1586,20 +1514,16 @@ dd($paginatedInvoices);
     protected function sendChargeDeclienedEmail(Invoice $invoice, $chargeResult)
     {
         $template = 'email.template_customer_charge_declined';
-        if ($chargeResult == null || isset($chargeResult['PaymentType']) == false)
-        {
+        if ($chargeResult == null || isset($chargeResult['PaymentType']) == false) {
             Log::info('BillingHelper::sendChargeDeclienedEmail(): INFO: Did not send a declined email for invoice id=' . $invoice->id . ' due to missing credit card info.');
 
             return false;
         }
-        if ($chargeResult['PaymentType'] == 'Credit Card')
-        {
+        if ($chargeResult['PaymentType'] == 'Credit Card') {
             $subject = 'NOTICE: Credit Card Declined';
-        } elseif ($chargeResult['PaymentType'] == 'Checking Account')
-        {
+        } elseif ($chargeResult['PaymentType'] == 'Checking Account') {
             $subject = 'NOTICE: ACH Declined';
-        } else
-        {
+        } else {
             $subject = 'NOTICE: Charge Declined';
         }
         $this->sendInvoiceResponseEmail($invoice, $chargeResult, $subject, $template);
@@ -1657,13 +1581,11 @@ dd($paginatedInvoices);
             // skip customer's product/service that are complimentary
             ->where('products.amount', '>', 0);
 
-        if ($customerId != null)
-        {
+        if ($customerId != null) {
             $queryBuilder = $queryBuilder->where('customers.id', '=', $customerId);
         }
 
-        if ($buildingId != null)
-        {
+        if ($buildingId != null) {
             $queryBuilder = $queryBuilder->where('buildings.id', '=', $buildingId);
         }
 
@@ -1699,8 +1621,7 @@ dd($paginatedInvoices);
 
         $issue = $newTicketIssue;
 
-        if ($issue != '' && $newTicketDetails != '' && $newTicketStatus != '')
-        {
+        if ($issue != '' && $newTicketDetails != '' && $newTicketStatus != '') {
 
             //SQL INSERT TICKET
             $ticketItemArray = array();
@@ -1711,16 +1632,14 @@ dd($paginatedInvoices);
             $ticketNumberSql = "SELECT TicketNumber AS ticket_id FROM supportTickets where TID in (SELECT max(TID) FROM supportTickets)";
             $maxTnumberRes = mysql_query($ticketNumberSql) or die(mysql_error());
             $rowTnumber = mysql_fetch_array($maxTnumberRes);
-            if ($rowTnumber['ticket_id'])
-            {
+            if ($rowTnumber['ticket_id']) {
                 $maxTNumberArr = explode("-", $rowTnumber['ticket_id']);
                 $maxTNumber = $maxTNumberArr[1] + 1;
                 $ticketNumber = 'ST-' . $maxTNumber;
             }
 
             $ticketItemArray[] = "`TicketNumber` = '" . $ticketNumber . "'";
-            if ($vendorTID != '')
-            {
+            if ($vendorTID != '') {
                 $ticketItemArray[] = "`VendorTID` = '" . $vendorTID . "'";
             }
             $ticketItemArray[] = "`RID` = '" . $issue . "'";
@@ -1742,8 +1661,7 @@ dd($paginatedInvoices);
             $result = mysql_query($strSQL);
             $ticketID = mysql_insert_id();
 
-            if ($sendEmail)
-            {
+            if ($sendEmail) {
                 $reasonInfoSql = "SELECT * FROM supportTicketReasons WHERE `RID` = '" . $issue . "'";
                 $reasonInfoRes = mysql_query($reasonInfoSql) or die(mysql_error());
                 $reasonInfoRow = mysql_fetch_array($reasonInfoRes);
@@ -1753,26 +1671,21 @@ dd($paginatedInvoices);
                 $mail_config ['emailHeader'] = 'New Support Ticket';
                 $mail_config ['fields']['Ticket Status'] = ucfirst($newTicketStatus);
 
-                if ($newTicketCID == '0')
-                {
+                if ($newTicketCID == '0') {
                     $mail_config ['fields']['Name'] = 'Unknown';
-                } else
-                {
+                } else {
                     $mail_config ['fields']['Name'] = $customerInfo['Firstname'] . ' ' . $customerInfo['Lastname'];
                 }
 
                 $mail_config ['fields']['Ticket'] = '<a href="https://admin.silverip.net/customerinfo/browser_detect.php?tid=' . $ticketID . '">' . $ticketNumber . '</a>';
                 $mail_config ['fields']['Timestamp'] = date("g:i a M j, Y ", strtotime($currTimestamp));
-                if (trim($customerInfo['Address']) != '')
-                {
+                if (trim($customerInfo['Address']) != '') {
                     $mail_config ['fields']['Address'] = $customerInfo['Address'] . ', #' . $customerInfo['Unit'];
                 }
-                if (trim($customerInfo['Tel']) != '')
-                {
+                if (trim($customerInfo['Tel']) != '') {
                     $mail_config ['fields']['Phone'] = $customerInfo['Tel'];
                 }
-                if (trim($customerInfo['Email']) != '')
-                {
+                if (trim($customerInfo['Email']) != '') {
                     $mail_config ['fields']['Email'] = $customerInfo['Email'];
                 }
 
