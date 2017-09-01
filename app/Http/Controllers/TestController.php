@@ -404,6 +404,21 @@ class TestController extends Controller {
     public function generalTest(Request $request)
     {
 
+//        $chargeQuery = Charge::where('status',2)->where('dues_date','2017-09-01 00:00:00');
+
+//        $billingHelper = new BillingHelper();
+
+        $customerProducts = CustomerProduct::whereIn('id',[20030,20031])->get();
+        dd($customerProducts);
+
+//        $billingHelper->createChargeForCustomerProduct();
+
+//        dd('done');
+
+//        $billingHelper->updateCustomerProductChargeStatus();
+
+
+
 //        $customer = Customer::with('services')->find(9992)->toArray();
 //
 //        dd(collect($customer['services']));

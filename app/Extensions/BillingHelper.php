@@ -336,7 +336,7 @@ class BillingHelper
         return $formattedAddress . "\n" . trim($address->city) . ', ' . trim($address->state) . ' ' . trim($address->zip);
     }
 
-    protected function updateCustomerProductChargeStatus($customerProduct)
+    public function updateCustomerProductChargeStatus($customerProduct)
     {
 
         // Default to the first day of the month
@@ -803,707 +803,6 @@ class BillingHelper
         return $invoices;
     }
 
-
-
-//    protected function changeOpenInvoicesToPending()
-//    {
-//
-//        DB::table('invoices')
-//            ->where('id_status', config('const.invoice_status.open'))
-//            ->update(['id_status' => config('const.invoice_status.pending')]);
-//
-//    }
-//
-//    public function processPendingInvoices()
-//    {
-//        while (true)
-//        {
-//            $invoices = Invoice::where('status', config('const.invoice_status.pending'))
-//                ->take(100)
-//                ->get();
-//
-//            if ($invoices->count() == 0)
-//            {
-//                break;
-//            }
-//
-//            foreach ($invoices as $invoice)
-//            {
-//                $invoice = $this->chargePendingInvoice($invoice);
-////                $this->addChargeToInvoice($charge, $invoice);
-//            }
-//        }
-//    }
-//
-//    public function chargePendingInvoice(Invoice $invoice){
-//
-//
-//    }
-
-
-//    protected function getChargeableCustomerProducts($customerId = null, $buildingId = null)
-//    {
-//
-//        // First day of next month to check expirations against
-//        $firstDayofNextMonthMysql = date("Y-m-d H:i:s", strtotime("first day of next month 00:00:00"));
-//
-//        $queryBuilder = Customer::join('customer_products', 'id_customers', '=', 'customers.id')
-//            ->join('products', 'customer_products.id_products', '=', 'products.id')
-//            ->join('address', 'address.id_customers', '=', 'customers.id')
-//            ->join('buildings', 'address.id_buildings', '=', 'buildings.id')
-//            // customer MUST be active
-//            ->where('customers.id_status', '=', config('const.status.active'))
-//            // the customer's product/service MUST be active
-//            ->where('customer_products.id_status', '=', config('const.status.active'))
-//            // customer's product/service MUST be expiring before the first day of next month
-//            ->where('customer_products.expires', '<=', $firstDayofNextMonthMysql)
-//            // skip customer's product/service that are complimentary
-//            ->where('products.amount', '>', 0);
-//
-//        if ($customerId != null)
-//        {
-//            $queryBuilder = $queryBuilder->where('customers.id', '=', $customerId);
-//        }
-//
-//        if ($buildingId != null)
-//        {
-//            $queryBuilder = $queryBuilder->where('buildings.id', '=', $buildingId);
-//        }
-//
-//        $queryBuilder = $queryBuilder->where(function ($query) use ($firstDayofNextMonthMysql)
-//        {
-//            $query->where(function ($query2)
-//            {
-//                // Get 'onetime' products that have not been invoiced (status = 0)
-//                $query2->where('customer_products.charge_status', '<', 1)
-//                    ->where('products.frequency', '=', 'onetime');
-//            })->orWhere(function ($query3) use ($firstDayofNextMonthMysql)
-//            {
-//                // Get 'monthly' and/or 'annual' products that have not been invoiced (status = 0 or 1 and an expired invoice date)
-//                $query3->where('customer_products.charge_status', '<', 2)
-//                    ->where('products.frequency', '<>', 'onetime')
-//                    ->where('products.frequency', '<>', 'included')
-//                    ->where('customer_products.next_charge_date', '<', $firstDayofNextMonthMysql);
-//            });
-//        });
-//
-//        return $queryBuilder
-//            ->get(array('customers.id as customer_id'
-//            , 'buildings.id as building_id'
-//            , 'address.id as address_id'
-//            , 'products.id as product_id'
-//            , 'customers.first_name'
-//            , 'customers.last_name'
-//            , 'address.address as address'
-//            , 'address.unit as unit'
-//            , 'address.city as city'
-//            , 'address.zip as zip'
-//            , 'address.state as state'
-//            , 'buildings.nickname as building_code'
-//            , 'products.name as product_name'
-//            , 'products.description as product_desc'
-//            , 'products.amount as product_amount'
-//            , 'products.frequency as product_frequency'
-//            , 'products.id_types as product_type'
-//            , 'customer_products.*'));
-//    }
-
-//    protected function addChargesToDatabase($chargeTable)
-//    {
-//
-//        $firstDayofThisMonthTime = strtotime("first day of this month  00:00:00");
-//        $lastDayofThisMonthTime = strtotime("last day of this month  00:00:00");
-//        $firstDayofThisMonthMysql = date("Y-m-d H:i:s", $firstDayofThisMonthTime);
-//        $lastDayofThisMonthMysql = date("Y-m-d H:i:s", $lastDayofThisMonthTime);
-//
-//        $firstDayofNextMonthTime = strtotime("first day of next month  00:00:00");
-//        $firstDayofNextMonthMysql = date("Y-m-d H:i:s", $firstDayofNextMonthTime);
-//        $lastDayofNextMonthTime = strtotime("last day of next month  00:00:00");
-//        $lastDayofNextMonthMysql = date("Y-m-d H:i:s", $lastDayofNextMonthTime);
-//        $startDate = '';
-//        $endDate = '';
-//        $count = 0;
-//        foreach ($chargeTable as $chargeable)
-//        {
-//
-//            $address = $chargeable['address'];
-//            if (trim($chargeable['unit'] != ''))
-//            {
-//                $chargeable['address'] .= "\n" . 'Apt ' . $chargeable['unit'];
-//            }
-//            $address .= "\n" . trim($chargeable['city']) . ', ' . trim($chargeable['state']) . ' ' . trim($chargeable['zip']);
-//
-//            if ($chargeable['product_frequency'] == 'monthly')
-//            {
-//
-//                $startDate = $firstDayofNextMonthMysql;
-//                $endDate = $lastDayofNextMonthMysql;
-//
-//            } elseif ($chargeable['product_frequency'] == 'annual')
-//            {
-//                $startDate = $firstDayofNextMonthMysql;
-//                $endDate = $lastDayofNextMonthMysql;
-//            } else
-//            {
-//
-//            }
-//
-//
-//            Charge::create(['name'            => trim($chargeable['first_name']) . ' ' . trim($chargeable['last_name']),
-//                            'address'         => $address,
-//                            'description'     => 'New Charge',
-//                            'details'         => json_encode(array('customer_product_id' => $chargeable['id'],
-//                                                                   'product_id'          => $chargeable['id_products'],
-//                                                                   'product_name'        => $chargeable['product_name'],
-//                                                                   'product_desc'        => $chargeable['product_desc'],
-//                                                                   'product_amount'      => $chargeable['product_amount'],
-//                                                                   'product_frequency'   => $chargeable['product_frequency'],
-//                                                                   'product_type'        => $chargeable['product_type']
-//                            )),
-//                            'amount'          => (strpos($chargeable['product_amount'], '.') === false) ? $chargeable['product_amount'] . '.00' : $chargeable['product_amount'],
-//                            'qty'             => 1,
-//                            'id_customers'    => $chargeable['customer_id'],
-//                            'id_products'     => $chargeable['product_id'],
-//                            'id_address'      => $chargeable['address_id'],
-//                            'status'          => 'pending',
-//                            'type'            => 'charge',
-//                            'bill_cycle_day'  => '1',
-//                            'processing_type' => config('const.type.auto_pay'),  // auto_pay, manual_pay
-//                            'start_date'      => $startDate,
-//                            'end_date'        => $endDate,
-//                            'due_date'        => $firstDayofNextMonthMysql,
-//
-//            ]);
-//
-//
-////            if ( ! isset($customerChargeTable[$cid]))
-////            {
-////                // This is the first time we are seeing this customer so create a new record in the table for them
-////                $customerChargeTable[$cid] = array();
-////                $customerChargeTable[$cid]['details'] = array();
-////                $customerChargeTable[$cid]['amount'] = 0;
-////                $customerChargeTable[$cid]['record'] = $record;
-////            }
-////
-////            $customerChargeTable[$cid]['amount'] += $record->product_amount;
-////            $customerChargeTable[$cid]['details'][] = array(
-////                'customer_product_id' => $record->id,
-////                'product_id'          => $record->id_products,
-////                'product_name'        => $record->product_name,
-////                'product_desc'        => $record->product_desc,
-////                'product_amount'      => $record->product_amount,
-////                'product_frequency'   => $record->product_frequency,
-////                'product_type'        => $record->product_type
-////            );
-////
-////
-////            $customer = Customer::find($cid);
-////            $address_id = $data['record']->address_id;
-////            $address = Address::find($address_id);
-////
-////            $firstDayofNextMonthTime = strtotime("first day of next month  00:00:00");
-////            $firstDayofNextMonthMysql = date("Y-m-d H:i:s", $firstDayofNextMonthTime);
-////
-////            // Create a new invoice model and fill it up with data then save it
-////            $invoice = new Invoice;
-////            $invoice->name = trim($customer->first_name) . ' ' . trim($customer->last_name);
-////            $invoice->address = trim($address->address);
-////            if (trim($address->unit != ''))
-////            {
-////                $invoice->address .= "\n" . 'Apt ' . $address->unit;
-////            }
-////            $invoice->address .= "\n" . trim($address->city) . ', ' . trim($address->state) . ' ' . trim($address->zip);
-////            $invoice->description = "New Invoice";
-////            $invoice->details = json_encode($data['details']);
-////            $invoice->amount = (strpos($data['amount'], '.') === false) ? $data['amount'] . '.00' : $data['amount'];
-////            $invoice->id_customers = $cid;
-////            $invoice->id_address = $address_id;
-////            $invoice->status = 'pending';
-////            $invoice->failed_charges_count = 0;
-////            $invoice->bill_cycle_day = '1';
-////            $invoice->processing_type = '13';  // 13 = Autopay, 14 = Manual Pay
-////            $invoice->due_date = $firstDayofNextMonthMysql;
-////            $invoice->save();
-////
-////            // Log this event in the invoice log table
-////            $this->logInvoice($invoice, 'generated');
-////
-////            // Create a list of all the customer products that were just invoiced
-////            $lineItems = $data['details'];
-////            $customerProductIds = array();
-////            foreach ($lineItems as $item)
-////            {
-////                $customerProductIds[] = $item['customer_product_id'];
-////            }
-////
-////            // Update the invoice status and invoice date of the customer products that were just invoiced
-////            $this->updateCustomerProductInvoiceStatus($customerProductIds);
-////
-////            $count ++;
-//        }
-//
-//        return $count;
-//    }
-
-//    protected function generateBuildingChargeDataTable($buildingId)
-//    {
-//
-//        // Create a table with charge information
-//        $customerChargeTable = array();
-//
-//        // Get list of chargeable products/services for the requested building
-//        $recordList = $this->getChargeableCustomerProductsByBuildingId($buildingId);
-//
-//        // Go through the list and process the info
-//        foreach ($recordList as $record)
-//        {
-//
-//            $cid = $record->customer_id;
-//
-//            if ( ! isset($customerChargeTable[$cid]))
-//            {
-//                // This is the first time we are seeing this customer so create a new record in the table for them
-//                $customerChargeTable[$cid] = array();
-//                $customerChargeTable[$cid]['details'] = array();
-//                $customerChargeTable[$cid]['amount'] = 0;
-//                $customerChargeTable[$cid]['record'] = $record;
-//            }
-//
-//            $customerChargeTable[$cid]['amount'] += $record->product_amount;
-//            $customerChargeTable[$cid]['details'][] = array(
-//                'customer_product_id' => $record->id,
-//                'product_id'          => $record->id_products,
-//                'product_name'        => $record->product_name,
-//                'product_desc'        => $record->product_desc,
-//                'product_amount'      => $record->product_amount,
-//                'product_frequency'   => $record->product_frequency,
-//                'product_type'        => $record->product_type
-//            );
-//        }
-//
-//        return $customerChargeTable;
-//    public function getCustomersWithChargableProducts($buildingId = null)
-//    {
-//        // First day of next month to check expirations against
-//        $firstDayOfNextMonthMysql = date("Y-m-d H:i:s", strtotime("first day of next month 00:00:00"));
-//
-////        $customers = Customer::with('customerProducts', 'product', 'address')
-//        // customer MUST be active
-//        $customers = Customer::where('id_status', config('const.status.active'))
-//            ->whereHas('customerProducts', function ($query) use ($firstDayOfNextMonthMysql)
-//            {
-//                // the customer's product/service MUST be active
-//                $query->where('id_status', '=', config('const.status.active'))
-//                    // customer's product/service MUST be expiring before the first day of next month
-//                    ->where('expires', '<=', $firstDayOfNextMonthMysql);
-//            })
-//            ->whereHas('product', function ($query)
-//            {
-//                // skip customer's product/service that are complimentary
-//                $query->where('amount', '>', 0);
-//            })
-//            ->whereHas('address', function ($query) use ($buildingId)
-//            {
-//                // skip customer's product/service that are complimentary
-//                $query->where('id_buildings', $buildingId);
-//            });
-////            ->where(function ($query) use ($firstDayOfNextMonthMysql)
-////            {
-////                $query->where(function ($query2)
-////                {
-////                    // Get 'onetime' products that have not been invoiced (status = 0)
-////                    $query2->whereHas('product', function ($productQuery)
-////                    {
-////                        $productQuery->where('frequency', '=', 'onetime');
-////                    })
-////                        ->whereHas('customerProducts', function ($customerProductQuery)
-////                        {
-////                            $customerProductQuery->where('charge_status', '<', 1);
-////                        });
-////
-////                })->orWhere(function ($query3) use ($firstDayOfNextMonthMysql)
-////                {
-////                    // Get 'monthly' and/or 'annual' products that have not been invoiced (status = 0 or 1 and an expired invoice date)
-////                    $query3->whereHas('product', function ($productQuery)
-////                    {
-////                        $productQuery->where('frequency', '<>', 'onetime')
-////                            ->where('frequency', '<>', 'included');
-////                    })
-////                        ->whereHas('customerProducts', function ($customerProductQuery) use ($firstDayOfNextMonthMysql)
-////                        {
-////                            $customerProductQuery->where('charge_status', '<', 2)
-////                                ->where('next_charge_date', '<', $firstDayOfNextMonthMysql);
-////                        });
-////                });
-////            });
-//        return $customers->get();
-//    }
-
-//    }
-
-//    public function getChargeableCustomerProductsByBuildingId($buildingId)
-//    {
-//        return $this->getChargeableCustomerProducts(null, $buildingId);
-//    }
-//
-//    public function getChargeableCustomerProductsByCustomerId($customerId)
-//    {
-//        return $this->getChargeableCustomerProducts($customerId);
-//    }
-
-//    protected function getChargeableCustomerProductsOld($customerId = null, $buildingId = null)
-//    {
-//
-//        // First day of next month to check expirations against
-//        $firstDayofNextMonthMysql = date("Y-m-d H:i:s", strtotime("first day of next month 00:00:00"));
-//
-//        $queryBuilder = Customer::join('customer_products', 'id_customers', '=', 'customers.id')
-//            ->join('products', 'customer_products.id_products', '=', 'products.id')
-//            ->join('address', 'address.id_customers', '=', 'customers.id')
-//            ->join('buildings', 'address.id_buildings', '=', 'buildings.id')
-//            // customer MUST be active
-//            ->where('customers.id_status', '=', config('const.status.active'))
-//            // the customer's product/service MUST be active
-//            ->where('customer_products.id_status', '=', config('const.status.active'))
-//            // customer's product/service MUST be expiring before the first day of next month
-//            ->where('customer_products.expires', '<=', $firstDayofNextMonthMysql)
-//            // skip customer's product/service that are complimentary
-//            ->where('products.amount', '>', 0);
-//
-//        if ($customerId != null)
-//        {
-//            $queryBuilder = $queryBuilder->where('customers.id', '=', $customerId);
-//        }
-//
-//        if ($buildingId != null)
-//        {
-//            $queryBuilder = $queryBuilder->where('buildings.id', '=', $buildingId);
-//        }
-//
-//        $queryBuilder = $queryBuilder->where(function ($query) use ($firstDayofNextMonthMysql)
-//        {
-//            $query->where(function ($query2)
-//            {
-//                // Get 'onetime' products that have not been invoiced (status = 0)
-//                $query2->where('customer_products.charge_status', '<', 1)
-//                    ->where('products.frequency', '=', 'onetime');
-//            })->orWhere(function ($query3) use ($firstDayofNextMonthMysql)
-//            {
-//                // Get 'monthly' and/or 'annual' products that have not been invoiced (status = 0 or 1 and an expired invoice date)
-//                $query3->where('customer_products.charge_status', '<', 2)
-//                    ->where('products.frequency', '<>', 'onetime')
-//                    ->where('products.frequency', '<>', 'included')
-//                    ->where('customer_products.next_charge_date', '<', $firstDayofNextMonthMysql);
-//            });
-//        });
-//
-//        return $queryBuilder
-//            ->get(array('customers.id as customer_id'
-//            , 'buildings.id as building_id'
-//            , 'address.id as address_id'
-//            , 'products.id as product_id'
-//            , 'customers.first_name'
-//            , 'customers.last_name'
-//            , 'address.address as address'
-//            , 'address.unit as unit'
-//            , 'address.city as city'
-//            , 'address.zip as zip'
-//            , 'address.state as state'
-//            , 'buildings.nickname as building_code'
-//            , 'products.name as product_name'
-//            , 'products.description as product_desc'
-//            , 'products.amount as product_amount'
-//            , 'products.frequency as product_frequency'
-//            , 'products.id_types as product_type'
-//            , 'customer_products.*'));
-//    }
-
-//    public function getChargeableCustomerProducts2($customerId = null, $buildingId = null)
-//    {
-//
-//        // First day of next month to check expirations against
-//        $firstDayOfNextMonthMysql = date("Y-m-d H:i:s", strtotime("first day of next month 00:00:00"));
-//
-////        $building = Building::find($buildingId);
-////        $buildingAddress = $building->address;
-//
-//        CustomerProduct::with('customer', 'product', 'address')
-//            ->whereHas('customer', function ($query)
-//            {
-//                // customer MUST be active
-//                $query->where('id_status', config('const.status.active'));
-//            })
-//            ->whereHas('product', function ($query)
-//            {
-//                // skip customer's product/service that are complimentary
-//                $query->where('amount', '>', 0);
-//            })
-//            ->whereHas('address', function ($query) use ($buildingId)
-//            {
-//                // skip customer's product/service that are complimentary
-//                $query->where('id_buildings', $buildingId);
-//            })
-//            // the customer's product/service MUST be active
-//            ->where('id_status', '=', config('const.status.active'))
-//            // customer's product/service MUST be expiring before the first day of next month
-//            ->where('expires', '<=', $firstDayOfNextMonthMysql)
-//            ->where(function ($query) use ($firstDayOfNextMonthMysql)
-//            {
-//                $query->where(function ($query2)
-//                {
-//                    // Get 'onetime' products that have not been invoiced (status = 0)
-//                    $query2->whereHas('product', function ($productQuery)
-//                    {
-//                        $productQuery->where('frequency', '=', 'onetime');
-//                    })
-//                        ->where('charge_status', '<', 1);
-//
-//                })->orWhere(function ($query3) use ($firstDayOfNextMonthMysql)
-//                {
-//                    // Get 'monthly' and/or 'annual' products that have not been invoiced (status = 0 or 1 and an expired invoice date)
-//                    $query3->whereHas('product', function ($productQuery)
-//                    {
-//                        $productQuery->where('frequency', '<>', 'onetime')
-//                            ->where('frequency', '<>', 'included');
-//                    })
-//                        ->where('charge_status', '<', 2)
-//                        ->where('next_charge_date', '<', $firstDayOfNextMonthMysql);
-//                });
-//            });
-//
-//
-////        CustomerProduct::with([
-////            'customer' => function ($query)
-////            {
-////                // customer MUST be active
-////                $query->where('id_status', config('const.status.active'));
-////            },
-////            'product'  => function ($query)
-////            {
-////                // skip customer's product/service that are complimentary
-////                $query->where('amount', '>', 0);
-////            },
-////            'building' => function ($query) use ($buildingId)
-////            {
-////                // skip customer's product/service that are complimentary
-////                $query->where('id', $buildingId);
-////            },
-////            'address'
-////        ])
-////            // the customer's product/service MUST be active
-////            ->where('id_status', '=', config('const.status.active'))
-////            // customer's product/service MUST be expiring before the first day of next month
-////            ->where('expires', '<=', $firstDayofNextMonthMysql);
-//
-//    }
-
-
-//    public function generateResidentialChargeRecordsOLD()
-//    {
-//
-//        // Get residential buildings
-//        $buildings = Building::with(['properties' => function ($query)
-//        {
-//            $query->where('id_building_properties', config('const.building_property.service_type'))
-//                ->where('value', 'Retail')
-//                ->orWhere('value', 'Bulk');
-//        }])
-//            ->where('id', 28)->get();
-//
-//        $count = 0;
-//
-//        foreach ($buildings as $building)
-//        {
-//            $invoiceDataTable = $this->generateBuildingInvoiceDataTable($building->id);
-//            $count = $this->addInvoicesToDatabase($invoiceDataTable);
-//            error_log('BillingHelper::generateInvoiceRecords(): Added invoices for ' . $building->nickname . ' to DB');
-//        }
-//
-//        return 'Generated ' . $count . ' invoices and added them to the DB.';
-//
-//    }
-
-//    public function generateResidentialInvoiceRecords()
-//    {
-//
-//        // Get residential buildings
-//        $buildings = Building::with(['properties' => function ($query)
-//        {
-//            $query->where('id_building_properties', config('const.building_property.service_type'))
-//                ->where('value', 'Retail')
-//                ->orWhere('value', 'Bulk');
-//        }])
-//            ->where('id', 28)->get();
-//
-//        $count = 0;
-//
-//        foreach ($buildings as $building)
-//        {
-//            $invoiceDataTable = $this->generateBuildingInvoiceDataTable($building->id);
-//            $count = $this->addInvoicesToDatabase($invoiceDataTable);
-//            error_log('BillingHelper::generateInvoiceRecords(): Added invoices for ' . $building->nickname . ' to DB');
-//        }
-//
-//        return 'Generated ' . $count . ' invoices and added them to the DB.';
-//
-//    }
-
-
-    protected function generateBuildingInvoiceDataTable($buildingId)
-    {
-
-        // Create an invoice info table
-        $customerInvoiceTable = array();
-
-        // Get list of invoiceable products/services for the requested building
-        $recordList = $this->getInvoiceableCustomerProductsByBuildingId($buildingId);
-
-        // Go through the list and process the info
-        foreach ($recordList as $record) {
-
-            $cid = $record->customer_id;
-
-            if (!isset($customerInvoiceTable[$cid])) {
-                // This is the first time we are seeing this customer so create a new record in the table for them
-                $customerInvoiceTable[$cid] = array();
-                $customerInvoiceTable[$cid]['details'] = array();
-                $customerInvoiceTable[$cid]['amount'] = 0;
-                $customerInvoiceTable[$cid]['record'] = $record;
-            }
-
-            $customerInvoiceTable[$cid]['amount'] += $record->product_amount;
-            $customerInvoiceTable[$cid]['details'][] = array(
-                'customer_product_id' => $record->id,
-                'product_id' => $record->id_products,
-                'product_name' => $record->product_name,
-                'product_desc' => $record->product_desc,
-                'product_amount' => $record->product_amount,
-                'product_frequency' => $record->product_frequency,
-                'product_type' => $record->product_type
-            );
-        }
-
-        return $customerInvoiceTable;
-    }
-
-    protected function addInvoicesToDatabase($invoiceDataTable)
-    {
-
-        $count = 0;
-        foreach ($invoiceDataTable as $cid => $data) {
-
-            $customer = Customer::find($cid);
-            $address_id = $data['record']->address_id;
-            $address = Address::find($address_id);
-
-            $firstDayofNextMonthTime = strtotime("first day of next month  00:00:00");
-            $firstDayofNextMonthMysql = date("Y-m-d H:i:s", $firstDayofNextMonthTime);
-
-            // Create a new invoice model and fill it up with data then save it
-            $invoice = new Invoice;
-            $invoice->name = trim($customer->first_name) . ' ' . trim($customer->last_name);
-            $invoice->address = trim($address->address);
-            if (trim($address->unit != '')) {
-                $invoice->address .= "\n" . 'Apt ' . $address->unit;
-            }
-            $invoice->address .= "\n" . trim($address->city) . ', ' . trim($address->state) . ' ' . trim($address->zip);
-            $invoice->description = "New Invoice";
-            $invoice->details = json_encode($data['details']);
-            $invoice->amount = (strpos($data['amount'], '.') === false) ? $data['amount'] . '.00' : $data['amount'];
-            $invoice->id_customers = $cid;
-            $invoice->id_address = $address_id;
-            $invoice->status = 'pending';
-            $invoice->failed_charges_count = 0;
-            $invoice->bill_cycle_day = '1';
-            $invoice->processing_type = '13';  // 13 = Autopay, 14 = Manual Pay
-            $invoice->due_date = $firstDayofNextMonthMysql;
-            $invoice->save();
-
-            // Log this event in the invoice log table
-            $this->logInvoice($invoice, 'generated');
-
-            // Create a list of all the customer products that were just invoiced
-            $lineItems = $data['details'];
-            $customerProductIds = array();
-            foreach ($lineItems as $item) {
-                $customerProductIds[] = $item['customer_product_id'];
-            }
-
-            // Update the invoice status and invoice date of the customer products that were just invoiced
-            $this->updateCustomerProductInvoiceStatus($customerProductIds);
-
-            $count++;
-        }
-
-        return $count;
-    }
-
-    protected function updateCustomerProductInvoiceStatus($customerProductIds = array())
-    {
-
-        // Default to the first day of the month
-        $firstDayofMonthTime = strtotime("first day of this month 00:00:00");
-        $firstDayofMonthMysql = date("Y-m-d H:i:s", $firstDayofMonthTime);
-
-        foreach ($customerProductIds as $customerProductId) {
-            $customerProduct = CustomerProduct::find($customerProductId);
-            if ($customerProduct->product->frequency == 'annual') {
-                // Set the next invoiceable date to next year for annual products
-                $timestampMysql = date('Y-m-d H:i:s', strtotime('+1 year', $firstDayofMonthTime));
-            } elseif ($customerProduct->product->frequency == 'monthly') {
-                // Set the next invoiceable date to next month for monthly products
-                $timestampMysql = date('Y-m-d H:i:s', strtotime('+1 month', $firstDayofMonthTime));
-            } else {
-                $timestampMysql = '0000-00-00 00:00:00';
-            }
-
-            $customerProduct->next_invoice_date = $timestampMysql;
-            $customerProduct->invoice_status = '1';
-            $customerProduct->amount_owed += $customerProduct->product->amount;
-            $customerProduct->save();
-        }
-    }
-
-
-    protected function updateCustomerProductDates($customerProductIds = array(), $updateChargeTimestampOnly = false)
-    {
-
-        $firstDayOfMonth = mktime(0, 0, 0, date("m"), '01', date("Y"));
-        $update_count = 0;
-        foreach ($customerProductIds as $customerProductId) {
-
-            $customerProduct = CustomerProduct::find($customerProductId);
-
-            if ($updateChargeTimestampOnly == false) {
-
-                $dateExpires = '';
-                $chargeFreq = $customerProduct->product->frequency;
-
-                if ($chargeFreq == 'monthly') {
-                    // Set the next expiration date to next month for monthly plans
-                    $dateExpires = date('Y-m-d H:i:s', strtotime('+1 month', $firstDayOfMonth));
-                } else if ($chargeFreq == 'annual') {
-                    // Set the next expiration date to next year for annual plans
-                    $dateExpires = date('Y-m-d H:i:s', strtotime('+1 year', $firstDayOfMonth));
-                } else {
-                    // Mark "onetime" purchases with a 2 to indicate "paid" status so they won't be charged again
-                    $customerProduct->invoice_status = '2';
-                    $dateExpires = date('Y-m-d H:i:s');
-                }
-
-                $customerProduct->expires = $dateExpires;
-                $customerProduct->renewed_at = date('Y-m-d H:i:s');
-                $customerProduct->amount_owed -= $customerProduct->product->amount;
-            }
-
-            $customerProduct->last_charged = date('Y-m-d H:i:s');
-            $customerProduct->save();
-            $update_count++;
-        }
-
-        return $update_count;
-    }
-
     protected function sendInvoiceReceiptEmail(Invoice $invoice, $chargeResult)
     {
         $subject = 'Service Charge Receipt: ' . date('F') . ' ' . date('Y');
@@ -1552,70 +851,7 @@ class BillingHelper
         });
     }
 
-    public function getInvoiceableCustomerProductsByBuildingId($building_id)
-    {
-        return $this->getInvoiceableCustomerProducts(null, $building_id);
-    }
-
-    public function getInvoiceableCustomerProductsByCustomerId($customer_id)
-    {
-        return $this->getInvoiceableCustomerProducts($customer_id);
-    }
-
-    protected function getInvoiceableCustomerProducts($customerId = null, $buildingId = null)
-    {
-
-        // First day of next month to check expirations against
-        $firstDayofNextMonthMysql = date("Y-m-d H:i:s", strtotime("first day of next month 00:00:00"));
-
-        $queryBuilder = Customer::join('customer_products', 'id_customers', '=', 'customers.id')
-            ->join('products', 'customer_products.id_products', '=', 'products.id')
-            ->join('address', 'address.id_customers', '=', 'customers.id')
-            ->join('buildings', 'address.id_buildings', '=', 'buildings.id')
-            // customer MUST be active
-            ->where('customers.id_status', '=', '2')
-            // the customer's product/service MUST be active
-            ->where('customer_products.id_status', '=', '3')
-            // customer's product/service MUST be expiring before the first day of next month
-            ->where('customer_products.expires', '<=', $firstDayofNextMonthMysql)
-            // skip customer's product/service that are complimentary
-            ->where('products.amount', '>', 0);
-
-        if ($customerId != null) {
-            $queryBuilder = $queryBuilder->where('customers.id', '=', $customerId);
-        }
-
-        if ($buildingId != null) {
-            $queryBuilder = $queryBuilder->where('buildings.id', '=', $buildingId);
-        }
-
-        $queryBuilder = $queryBuilder->where(function ($query) use ($firstDayofNextMonthMysql) {
-            $query->where(function ($query2) {
-                // Get 'onetime' products that have not been invoiced (status = 0)
-                $query2->where('customer_products.invoice_status', '<', 1)
-                    ->where('products.frequency', '=', 'onetime');
-            })->orWhere(function ($query3) use ($firstDayofNextMonthMysql) {
-                // Get 'monthly' and/or 'annual' products that have not been invoiced (status = 0 or 1 and an expired invoice date)
-                $query3->where('customer_products.invoice_status', '<', 2)
-                    ->where('products.frequency', '<>', 'onetime')
-                    ->where('products.frequency', '<>', 'included')
-                    ->where('customer_products.next_invoice_date', '<', $firstDayofNextMonthMysql);
-            });
-        });
-
-        return $queryBuilder
-            ->get(array('customers.id as customer_id'
-            , 'buildings.id as building_id'
-            , 'address.id as address_id'
-            , 'buildings.nickname as building_code'
-            , 'products.name as product_name'
-            , 'products.description as product_desc'
-            , 'products.amount as product_amount'
-            , 'products.frequency as product_frequency'
-            , 'products.id_types as product_type'
-            , 'customer_products.*'));
-    }
-
+//    TODO: Need to update this and use it when invoices are declined
     protected function createTicket($newTicketCID, $newTicketIssue, $newTicketDetails, $newTicketStatus, $AdminUser_ID, $sendEmail = false, $vendorTID = '')
     {
 
@@ -1715,4 +951,224 @@ class BillingHelper
 
         return false;
     }
+
+//    protected function generateBuildingInvoiceDataTable($buildingId)
+//    {
+//
+//        // Create an invoice info table
+//        $customerInvoiceTable = array();
+//
+//        // Get list of invoiceable products/services for the requested building
+//        $recordList = $this->getInvoiceableCustomerProductsByBuildingId($buildingId);
+//
+//        // Go through the list and process the info
+//        foreach ($recordList as $record) {
+//
+//            $cid = $record->customer_id;
+//
+//            if (!isset($customerInvoiceTable[$cid])) {
+//                // This is the first time we are seeing this customer so create a new record in the table for them
+//                $customerInvoiceTable[$cid] = array();
+//                $customerInvoiceTable[$cid]['details'] = array();
+//                $customerInvoiceTable[$cid]['amount'] = 0;
+//                $customerInvoiceTable[$cid]['record'] = $record;
+//            }
+//
+//            $customerInvoiceTable[$cid]['amount'] += $record->product_amount;
+//            $customerInvoiceTable[$cid]['details'][] = array(
+//                'customer_product_id' => $record->id,
+//                'product_id' => $record->id_products,
+//                'product_name' => $record->product_name,
+//                'product_desc' => $record->product_desc,
+//                'product_amount' => $record->product_amount,
+//                'product_frequency' => $record->product_frequency,
+//                'product_type' => $record->product_type
+//            );
+//        }
+//
+//        return $customerInvoiceTable;
+//    }
+//
+//    protected function addInvoicesToDatabase($invoiceDataTable)
+//    {
+//
+//        $count = 0;
+//        foreach ($invoiceDataTable as $cid => $data) {
+//
+//            $customer = Customer::find($cid);
+//            $address_id = $data['record']->address_id;
+//            $address = Address::find($address_id);
+//
+//            $firstDayofNextMonthTime = strtotime("first day of next month  00:00:00");
+//            $firstDayofNextMonthMysql = date("Y-m-d H:i:s", $firstDayofNextMonthTime);
+//
+//            // Create a new invoice model and fill it up with data then save it
+//            $invoice = new Invoice;
+//            $invoice->name = trim($customer->first_name) . ' ' . trim($customer->last_name);
+//            $invoice->address = trim($address->address);
+//            if (trim($address->unit != '')) {
+//                $invoice->address .= "\n" . 'Apt ' . $address->unit;
+//            }
+//            $invoice->address .= "\n" . trim($address->city) . ', ' . trim($address->state) . ' ' . trim($address->zip);
+//            $invoice->description = "New Invoice";
+//            $invoice->details = json_encode($data['details']);
+//            $invoice->amount = (strpos($data['amount'], '.') === false) ? $data['amount'] . '.00' : $data['amount'];
+//            $invoice->id_customers = $cid;
+//            $invoice->id_address = $address_id;
+//            $invoice->status = 'pending';
+//            $invoice->failed_charges_count = 0;
+//            $invoice->bill_cycle_day = '1';
+//            $invoice->processing_type = '13';  // 13 = Autopay, 14 = Manual Pay
+//            $invoice->due_date = $firstDayofNextMonthMysql;
+//            $invoice->save();
+//
+//            // Log this event in the invoice log table
+//            $this->logInvoice($invoice, 'generated');
+//
+//            // Create a list of all the customer products that were just invoiced
+//            $lineItems = $data['details'];
+//            $customerProductIds = array();
+//            foreach ($lineItems as $item) {
+//                $customerProductIds[] = $item['customer_product_id'];
+//            }
+//
+//            // Update the invoice status and invoice date of the customer products that were just invoiced
+//            $this->updateCustomerProductInvoiceStatus($customerProductIds);
+//
+//            $count++;
+//        }
+//
+//        return $count;
+//    }
+//
+//    protected function updateCustomerProductInvoiceStatus($customerProductIds = array())
+//    {
+//
+//        // Default to the first day of the month
+//        $firstDayofMonthTime = strtotime("first day of this month 00:00:00");
+//        $firstDayofMonthMysql = date("Y-m-d H:i:s", $firstDayofMonthTime);
+//
+//        foreach ($customerProductIds as $customerProductId) {
+//            $customerProduct = CustomerProduct::find($customerProductId);
+//            if ($customerProduct->product->frequency == 'annual') {
+//                // Set the next invoiceable date to next year for annual products
+//                $timestampMysql = date('Y-m-d H:i:s', strtotime('+1 year', $firstDayofMonthTime));
+//            } elseif ($customerProduct->product->frequency == 'monthly') {
+//                // Set the next invoiceable date to next month for monthly products
+//                $timestampMysql = date('Y-m-d H:i:s', strtotime('+1 month', $firstDayofMonthTime));
+//            } else {
+//                $timestampMysql = '0000-00-00 00:00:00';
+//            }
+//
+//            $customerProduct->next_invoice_date = $timestampMysql;
+//            $customerProduct->invoice_status = '1';
+//            $customerProduct->amount_owed += $customerProduct->product->amount;
+//            $customerProduct->save();
+//        }
+//    }
+//
+//    protected function updateCustomerProductDates($customerProductIds = array(), $updateChargeTimestampOnly = false)
+//    {
+//
+//        $firstDayOfMonth = mktime(0, 0, 0, date("m"), '01', date("Y"));
+//        $update_count = 0;
+//        foreach ($customerProductIds as $customerProductId) {
+//
+//            $customerProduct = CustomerProduct::find($customerProductId);
+//
+//            if ($updateChargeTimestampOnly == false) {
+//
+//                $dateExpires = '';
+//                $chargeFreq = $customerProduct->product->frequency;
+//
+//                if ($chargeFreq == 'monthly') {
+//                    // Set the next expiration date to next month for monthly plans
+//                    $dateExpires = date('Y-m-d H:i:s', strtotime('+1 month', $firstDayOfMonth));
+//                } else if ($chargeFreq == 'annual') {
+//                    // Set the next expiration date to next year for annual plans
+//                    $dateExpires = date('Y-m-d H:i:s', strtotime('+1 year', $firstDayOfMonth));
+//                } else {
+//                    // Mark "onetime" purchases with a 2 to indicate "paid" status so they won't be charged again
+//                    $customerProduct->invoice_status = '2';
+//                    $dateExpires = date('Y-m-d H:i:s');
+//                }
+//
+//                $customerProduct->expires = $dateExpires;
+//                $customerProduct->renewed_at = date('Y-m-d H:i:s');
+//                $customerProduct->amount_owed -= $customerProduct->product->amount;
+//            }
+//
+//            $customerProduct->last_charged = date('Y-m-d H:i:s');
+//            $customerProduct->save();
+//            $update_count++;
+//        }
+//
+//        return $update_count;
+//    }
+//
+//    public function getInvoiceableCustomerProductsByBuildingId($building_id)
+//    {
+//        return $this->getInvoiceableCustomerProducts(null, $building_id);
+//    }
+//
+//    public function getInvoiceableCustomerProductsByCustomerId($customer_id)
+//    {
+//        return $this->getInvoiceableCustomerProducts($customer_id);
+//    }
+//
+//    protected function getInvoiceableCustomerProducts($customerId = null, $buildingId = null)
+//    {
+//
+//        // First day of next month to check expirations against
+//        $firstDayofNextMonthMysql = date("Y-m-d H:i:s", strtotime("first day of next month 00:00:00"));
+//
+//        $queryBuilder = Customer::join('customer_products', 'id_customers', '=', 'customers.id')
+//            ->join('products', 'customer_products.id_products', '=', 'products.id')
+//            ->join('address', 'address.id_customers', '=', 'customers.id')
+//            ->join('buildings', 'address.id_buildings', '=', 'buildings.id')
+//            // customer MUST be active
+//            ->where('customers.id_status', '=', '2')
+//            // the customer's product/service MUST be active
+//            ->where('customer_products.id_status', '=', '3')
+//            // customer's product/service MUST be expiring before the first day of next month
+//            ->where('customer_products.expires', '<=', $firstDayofNextMonthMysql)
+//            // skip customer's product/service that are complimentary
+//            ->where('products.amount', '>', 0);
+//
+//        if ($customerId != null) {
+//            $queryBuilder = $queryBuilder->where('customers.id', '=', $customerId);
+//        }
+//
+//        if ($buildingId != null) {
+//            $queryBuilder = $queryBuilder->where('buildings.id', '=', $buildingId);
+//        }
+//
+//        $queryBuilder = $queryBuilder->where(function ($query) use ($firstDayofNextMonthMysql) {
+//            $query->where(function ($query2) {
+//                // Get 'onetime' products that have not been invoiced (status = 0)
+//                $query2->where('customer_products.invoice_status', '<', 1)
+//                    ->where('products.frequency', '=', 'onetime');
+//            })->orWhere(function ($query3) use ($firstDayofNextMonthMysql) {
+//                // Get 'monthly' and/or 'annual' products that have not been invoiced (status = 0 or 1 and an expired invoice date)
+//                $query3->where('customer_products.invoice_status', '<', 2)
+//                    ->where('products.frequency', '<>', 'onetime')
+//                    ->where('products.frequency', '<>', 'included')
+//                    ->where('customer_products.next_invoice_date', '<', $firstDayofNextMonthMysql);
+//            });
+//        });
+//
+//        return $queryBuilder
+//            ->get(array('customers.id as customer_id'
+//            , 'buildings.id as building_id'
+//            , 'address.id as address_id'
+//            , 'buildings.nickname as building_code'
+//            , 'products.name as product_name'
+//            , 'products.description as product_desc'
+//            , 'products.amount as product_amount'
+//            , 'products.frequency as product_frequency'
+//            , 'products.id_types as product_type'
+//            , 'customer_products.*'));
+//    }
+
+
 }
