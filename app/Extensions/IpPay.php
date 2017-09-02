@@ -616,7 +616,7 @@ TPL;
                     $this->xactionInfo['TotalAmount'] = str_replace('.', '', $this->xactionInfo['TotalAmount']);
                 }
             }
-            if ($this->xactionInfo['TransactionType'] != 'VOID'){
+            if ($this->xactionInfo['TransactionType'] == 'VOID'){
                 unset($this->xactionInfo['OrderNumber']);
             }
 
