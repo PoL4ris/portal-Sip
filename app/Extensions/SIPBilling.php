@@ -1066,6 +1066,131 @@ class SIPBilling {
         return $result;
     }
 
+    public function refundTransactionOld($transactionId, $amount, $desc = 'SilverIP Comm', $details = false)
+    {
+
+        $transactionLog = BillingTransactionLogOld::where('TransactionID', $transactionId)
+            ->first();
+
+        // Gather the IPPay response in the following array
+        $result = array();
+
+        if ($transactionLog == null)
+        {
+            $result['TRANSACTIONID'] = '';   //Returns the unique tranaction ID
+            $result['ACTIONCODE'] = '900';     // 000 = Approved, else Denied
+            $result['APPROVAL'] = 'ERROR';
+            $result['CVV2'] = '';
+            $result['VERIFICATIONRESULT'] = '';
+            $result['RESPONSETEXT'] = 'ERROR';
+            $result['ADDRESSMATCH'] = '';
+            $result['ZIPMATCH'] = '';
+            $result['AVS'] = '';
+            $result['FAILED'] = 'Transaction not found';
+            $this->logChargeResult($result);
+
+            return $result;
+        }
+
+        $customer = CustomerOld::find($transactionLog->CID);
+
+        if ($customer == null)
+        {
+            $result['TRANSACTIONID'] = '';   //Returns the unique tranaction ID
+            $result['ACTIONCODE'] = '900';     // 000 = Approved, else Denied
+            $result['APPROVAL'] = 'ERROR';
+            $result['CVV2'] = '';
+            $result['VERIFICATIONRESULT'] = '';
+            $result['RESPONSETEXT'] = 'ERROR';
+            $result['ADDRESSMATCH'] = '';
+            $result['ZIPMATCH'] = '';
+            $result['AVS'] = '';
+            $result['FAILED'] = 'Customer not found';
+            $this->logChargeResult($result);
+
+            return $result;
+        }
+
+        $ccToken = $customer->CCtoken;
+
+        if ($ccToken == null || $ccToken == '')
+        {
+            $result['TRANSACTIONID'] = '';   //Returns the unique tranaction ID
+            $result['ACTIONCODE'] = '900';     // 000 = Approved, else Denied
+            $result['APPROVAL'] = 'ERROR';
+            $result['CVV2'] = '';
+            $result['VERIFICATIONRESULT'] = '';
+            $result['RESPONSETEXT'] = 'ERROR';
+            $result['ADDRESSMATCH'] = '';
+            $result['ZIPMATCH'] = '';
+            $result['AVS'] = '';
+            $result['FAILED'] = 'CC Token empty';
+            $result['ERRMSG'] = 'CC Token empty';
+            $this->logChargeResult($result);
+
+            return $result;
+        }
+
+        $result['Token'] = $ccToken;
+
+        // Create an array to pass to IPPay for processing
+        $request = array();
+        $request['TransactionType'] = 'CREDIT';
+        $request['TerminalID'] = $this->testMode ? 'TESTTERMINAL' : 'SILVERIPC001';  // silverip unique account id
+        $request['Token'] = $ccToken;
+        $request['OrderNumber'] = 'Sep-2017 Refund';
+        $request['TotalAmount'] = $transactionLog->Amount;
+        $request['UDField1'] = 'SilverIP Comm';
+
+        $ippayresult = array();
+        $ipPayHandle = new IpPay();
+
+        Log::info('SIPBilling: '.print_r($request,true));
+
+        if ($this->testMode == true)
+        {
+            $ippayresult = $ipPayHandle->process($request, 0);  //process card - 0 is for test server, 1 for live server
+        } else
+        {
+            $ippayresult = $ipPayHandle->process($request, 1);  //process card - 0 is for test server, 1 for live server
+        }
+
+        return $ippayresult;
+
+        $result['TRANSACTIONID'] = $ippayresult['TRANSACTIONID'];   //Returns the unique tranaction ID
+        $result['ACTIONCODE'] = $ippayresult['ACTIONCODE'];     // 000 = Approved, else Denied
+        $result['APPROVAL'] = $ippayresult['APPROVAL'];
+        $result['RESPONSETEXT'] = $ippayresult['RESPONSETEXT'];    // Approved or Denied
+        $result['TransactionType'] = $request['TransactionType'];
+//        $result['Comment'] = $customer->comment;
+        $result['TotalAmount'] = strstr($transactionLog->Amount, '.') ? str_replace('.', '', $transactionLog->Amount) : $transactionLog->Amount . '00';
+
+//        if (isset($result['ERRMSG']) && $result['ERRMSG'] != null)
+//        {
+//            $this->storeXaction($result, $customer, $transactionLog->address, null, $transactionLog->details);
+//        }
+        $this->logChargeResult($result);
+
+        return $result;
+
+
+
+
+
+
+
+        $xactionRequest = ['TransactionType' => 'CREDIT'];
+        $result = $this->processCC($xactionRequest, false, $transactionLog->Amount, $desc, $paymentMethod);
+
+        $result['Comment'] = $customer->comment;
+        if (isset($result['FAILED']) == false)
+        {
+            $this->storeXaction($result, $customer, $paymentMethod->address, $paymentMethod, $details);
+        }
+
+        return $result;
+    }
+
     public function forceCreditCard($transactionId, PaymentMethod $pm, $amount)
     {
 
