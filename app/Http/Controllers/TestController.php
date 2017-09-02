@@ -406,7 +406,7 @@ class TestController extends Controller
         $oldTransactions = BillingTransactionLogOld::where('OrderNumber','LIKE', '%Sep-2017 Charges%')
             ->where('ResponseText','LIKE','APPROVED')
             ->get()
-            ->acount();
+            ->count();
 
 dd($oldTransactions);
 dd('done');
