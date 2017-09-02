@@ -296,7 +296,7 @@ class GeneralTasks extends Command
 
         foreach ($oldTransactions as $oldTransaction) {
             $sipBilling->refundTransactionOld($oldTransaction->TransactionID);
-            break;
+//            break;
         }
 
     }
