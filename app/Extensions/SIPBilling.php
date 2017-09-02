@@ -1066,7 +1066,7 @@ class SIPBilling {
         return $result;
     }
 
-    public function refundTransactionOld($transactionId, $amount, $desc = 'SilverIP Comm', $details = false)
+    public function refundTransactionOld($transactionId, $desc = 'SilverIP Comm')
     {
 
         $transactionLog = BillingTransactionLogOld::where('TransactionID', $transactionId)
@@ -1140,7 +1140,7 @@ class SIPBilling {
         $request['Token'] = $ccToken;
         $request['OrderNumber'] = 'Sep-2017 Refund';
         $request['TotalAmount'] = $transactionLog->Amount;
-        $request['UDField1'] = 'SilverIP Comm';
+        $request['UDField1'] = $desc;
 
         $ippayresult = array();
         $ipPayHandle = new IpPay();
