@@ -16,11 +16,12 @@
 <body>
 <p class='p1'><strong><img src="http://www.silverip.com/silverip-tiny-logo-clear.png" alt=" SilverIP Communications"
                            width="165" height="70"></strong><br>
-<p class='p1'>Dear {{ trim($customer->FirstName) }} {{ trim($customer->LastName) }},</p>
+<p class='p1'>Dear {{ trim($customer->Firstname) }} {{ trim($customer->Lastname) }},</p>
 <p class='p2'></p>
 <p class='p1'>Please be advised that a refund in the amount of ${{ $amount }} was applied to our account.</p>
 <p class='p4'></p>
 <p class='p3'>We sincerely apologize for any inconvenience this may have caused,</p>
+<p class='p1'>
 <p class='p1'>
     <font face="Avenir, serif">
         <font color="#063dcc"><font style="font-size:9pt" size="2"><b>_______________________________________</b></font></font><br/>

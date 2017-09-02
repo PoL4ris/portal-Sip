@@ -1179,7 +1179,9 @@ class SIPBilling
         $transactionLog->save();
         $this->storeXactionOld($result, $transactionLog, 'Sep-2017 Refunds', 'Sep Charge Refunded');
 
-        $this->sendRefundEmail($customer, $transactionLog);
+        if($customer->Email != ''){
+            $this->sendRefundEmail($customer, $transactionLog);
+        }
 
         return $ippayresult;
     }
