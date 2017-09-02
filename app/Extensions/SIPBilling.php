@@ -1036,6 +1036,8 @@ class SIPBilling {
         $ippayresult = array();
         $ipPayHandle = new IpPay();
 
+        Log::info('SIPBilling: '.print_r($request,true));
+
         if ($this->testMode == true)
         {
             $ippayresult = $ipPayHandle->process($request, 0);  //process card - 0 is for test server, 1 for live server

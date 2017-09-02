@@ -651,7 +651,7 @@ TPL;
         }
 
 
-        Log::debug('IPPay:process(): $this->ipPayXML: ' . print_r($this->cleanXML, true));
+        Log::info('IPPay:process(): $this->ipPayXML: ' . print_r($this->cleanXML, true));
         //        }
         $result = $this->sendHTTP($url, $this->ipPayXML);
 
