@@ -7,6 +7,8 @@ use App\Models\Customer;
 use App\Models\Address;
 use App\Models\PaymentMethod;
 use App\Models\BillingTransactionLog;
+use App\Models\Legacy\BillingTransactionLogOld;
+use App\Models\Legacy\CustomerOld;
 use Hash;
 use DB;
 use Log;
