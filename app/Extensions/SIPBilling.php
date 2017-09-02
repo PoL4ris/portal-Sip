@@ -1030,7 +1030,7 @@ class SIPBilling {
         $request['Token'] = $ccToken;
 //        $request['CardExpMonth'] = $result['PaymentTypeDetails']['exp month'];
 //        $request['CardExpyear'] = $result['PaymentTypeDetails']['exp year'];
-//        $request['TotalAmount'] = '100';
+        $request['TotalAmount'] = $transactionLog->Amount;
 
 //dd($request);
         $ippayresult = array();
