@@ -1017,7 +1017,7 @@ class SIPBilling {
             return $result;
         }
 
-        $request['Token'] = $ccToken;
+        $result['Token'] = $ccToken;
 //        $result['PaymentType'] = $paymentMethod->types;
 //        $result['PaymentTypeDetails'] = ($paymentMethod->properties != '') ? json_decode($paymentMethod->properties, true) : '';
 
@@ -1027,7 +1027,7 @@ class SIPBilling {
         $request['TerminalID'] = $this->testMode ? 'TESTTERMINAL' : 'SILVERIPC001';  // silverip unique account id
         $request['TransactionID'] = $transactionId;
         $request['Approval'] = $transactionLog->Approval;
-//        $request['Token'] = $paymentMethod->account_number;
+        $request['Token'] = $ccToken;
 //        $request['CardExpMonth'] = $result['PaymentTypeDetails']['exp month'];
 //        $request['CardExpyear'] = $result['PaymentTypeDetails']['exp year'];
 //        $request['TotalAmount'] = '100';
