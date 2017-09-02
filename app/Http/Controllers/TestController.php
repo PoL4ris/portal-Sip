@@ -403,7 +403,8 @@ class TestController extends Controller
     public function generalTest(Request $request)
     {
 
-        $oldTransactions = BillingTransactionLogOld::where('OrderNumber','LIKE', '%Sep-2017 Charges%')
+        $oldTransaction = BillingTransactionLogOld::where('OrderNumber', 'Sep-2017 Charges')
+            ->where('ChargeDescription', 'Sep Service Charge')
             ->where('ResponseText','LIKE','APPROVED')
             ->first();
 //            ->get();
@@ -411,11 +412,11 @@ class TestController extends Controller
 
         $sipBilling = new SIPBilling();
 //        $result = $sipBilling->voidTransactionOld('IP01091219KZLLRWJR');
-        $result = $sipBilling->refundTransactionOld('IP01091219KZLLRWJR');
+        $result = $sipBilling->refundTransactionOld($oldTransaction->TransactionID);
         dd($result);
 
 
-dd($oldTransactions);
+//dd($oldTransactions);
 dd('done');
 
 //        $chargeQuery = Charge::where('status',2)->where('dues_date','2017-09-01 00:00:00');
