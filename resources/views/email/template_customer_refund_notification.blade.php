@@ -18,7 +18,7 @@
                            width="165" height="70"></strong><br>
 <p class='p1'>Dear {{ trim($customer->Firstname) }} {{ trim($customer->Lastname) }},</p>
 <p class='p2'></p>
-<p class='p1'>Please be advised that a refund in the amount of ${{ $amount }} was applied to your account.</p>
+<p class='p1'>Please be advised that a refund in the amount of ${{ $amount }} was applied to your account for yesterday's wrongful charge.</p>
 <p class='p4'></p>
 <p class='p3'>We sincerely apologize for any inconvenience this may have caused,</p>
 <p class='p1'>
