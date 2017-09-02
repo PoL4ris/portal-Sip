@@ -1219,10 +1219,10 @@ class SIPBilling
 
         $emailInfo = ['fromName' => 'SilverIP Customer Care',
             'fromAddress' => 'help@silverip.com',
-//            'toName' => $customer->FirstName . ' ' . $customer->LastName,
-//            'toAddress' => $customer->Email,
-            'toName' => 'Peyman Pourkermani',
-            'toAddress' => 'peyman@pourkermani.com',
+            'toName' => $customer->FirstName . ' ' . $customer->LastName,
+            'toAddress' => $customer->Email,
+//            'toName' => 'Peyman Pourkermani',
+//            'toAddress' => 'peyman@pourkermani.com',
             'subject' => 'Refund Issued'];
 
         $template = 'email.template_customer_refund_notification';
