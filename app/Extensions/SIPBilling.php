@@ -12,6 +12,7 @@ use App\Models\Legacy\CustomerOld;
 use Hash;
 use DB;
 use Log;
+use Mail;
 
 class SIPBilling
 {
