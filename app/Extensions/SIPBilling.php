@@ -1178,6 +1178,8 @@ class SIPBilling
         $transactionLog->save();
         $this->storeXactionOld($result, $transactionLog, 'Sep-2017 Refunds', 'Sep Charge Refunded');
 
+        $this->sendRefundEmail($customer, $transactionLog);
+
         return $ippayresult;
     }
 
@@ -1194,6 +1196,7 @@ class SIPBilling
         $xactionLog->PaymentMode = $oldTransactionLog->PaymentMode;
         $xactionLog->OrderNumber = $newOrderNumber;
         $xactionLog->ChargeDescription = $desc;
+        $xactionLog->ChargeDetails = $oldTransactionLog->ChargeDetails;
 
         $xactionLog->ActionCode = $xactionResult['ACTIONCODE'];
         $xactionLog->Approval = ($xactionResult['ACTIONCODE'] == '900') ? 'ERROR' : $xactionResult['APPROVAL'];
@@ -1208,6 +1211,23 @@ class SIPBilling
         return $xactionLog;
     }
 
+    public function sendRefundEmail(CustomerOld $customer, $transactionLog)
+    {
+
+        $emailInfo = ['fromName' => 'SilverIP Customer Care',
+            'fromAddress' => 'help@silverip.com',
+//            'toName' => $customer->FirstName . ' ' . $customer->LastName,
+//            'toAddress' => $customer->Email,
+            'toName' => 'Peyman Pourkermani',
+            'toAddress' => 'peyman@pourkermani.com',
+            'subject' => 'Refund Issued'];
+
+        $template = 'email.template_customer_refund_notification';
+        $templateData = ['customer' => $customer, 'amount' => $transactionLog->Amount];
+
+
+        SendMail::generalEmail($emailInfo, $template, $templateData);
+    }
 
 }
 
