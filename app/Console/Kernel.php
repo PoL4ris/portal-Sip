@@ -61,11 +61,11 @@ class Kernel extends ConsoleKernel {
             ->withoutOverlapping()
             ->sendOutputTo(config('joblogs.generate-mrr-report-job-log'));
 
-        $events[] = $schedule->command('billing:process-pending-invoices')
-            ->name('billing:process-pending-invoices')
-            ->everyThirtyMinutes()
-            ->withoutOverlapping()
-            ->sendOutputTo(config('joblogs.process-pending-invoices-log'));
+//        $events[] = $schedule->command('billing:process-pending-invoices')
+//            ->name('billing:process-pending-invoices')
+//            ->everyThirtyMinutes()
+//            ->withoutOverlapping()
+//            ->sendOutputTo(config('joblogs.process-pending-invoices-log'));
 
         /**
          *  Leave the code below alone. It updates job timestamps and status

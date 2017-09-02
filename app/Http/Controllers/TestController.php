@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\BuildingTicket;
+use App\Models\Legacy\BillingTransactionLogOld;
 use App\Models\TicketHistory;
 use Illuminate\Http\Request;
 use App\Http\Requests;
@@ -401,6 +402,14 @@ class TestController extends Controller
 
     public function generalTest(Request $request)
     {
+
+        $oldTransactions = BillingTransactionLogOld::where('OrderNumber','LIKE', '%Sep-2017 Charges%')
+            ->where('ResponseText','LIKE','APPROVED')
+            ->get()
+            ->acount();
+
+dd($oldTransactions);
+dd('done');
 
 //        $chargeQuery = Charge::where('status',2)->where('dues_date','2017-09-01 00:00:00');
 
