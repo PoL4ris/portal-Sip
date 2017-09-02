@@ -405,8 +405,14 @@ class TestController extends Controller
 
         $oldTransactions = BillingTransactionLogOld::where('OrderNumber','LIKE', '%Sep-2017 Charges%')
             ->where('ResponseText','LIKE','APPROVED')
-            ->get()
-            ->count();
+            ->first();
+//            ->get();
+//            ->count();
+
+        $sipBilling = new SIPBilling();
+        $result = $sipBilling->voidTransactionOld('IP01091219KZLLRWJR'); 
+        dd($result);
+
 
 dd($oldTransactions);
 dd('done');
