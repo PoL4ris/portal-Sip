@@ -11,8 +11,10 @@ use App\Models\CustomerPort;
 use FtpClient\FtpClient;
 use FtpClient\FtpException;
 use SendMail;
+use App\Models\Legacy\BillingTransactionLogOld;
 
-class GeneralTasks extends Command {
+class GeneralTasks extends Command
+{
 
     /**
      * The name and signature of the console command.
@@ -47,8 +49,9 @@ class GeneralTasks extends Command {
     {
         $this->info('Starting general task');
 
-        $this->sendMassEmail();
+        $this->refundSeptemberDoubleCharges();
 
+//        $this->sendMassEmail();
 //        $this->cleanupBadCustomerPorts();
 //        $billingHelper = new BillingHelper();
 //        $result = $billingHelper->processPendingAutopayInvoices();
@@ -72,31 +75,26 @@ class GeneralTasks extends Command {
         $localFile = storage_path('app/login.html');
         $remoteFile = 'hotspot/login.html';
 
-        foreach ($mikrotiks as $mikrotik)
-        {
+        foreach ($mikrotiks as $mikrotik) {
             echo 'Updating ' . $mikrotik->host_name . '(' . $mikrotik->ip_address . '): ';
 
-            try
-            {
+            try {
                 $ftp = new FtpClient();
                 $ftp->connect($mikrotik->ip_address, false, 2121);
                 $ftp->login('admin', 'BigSeem');
                 $ftp->pasv(true);
 
-                if ($this->fileExists($ftp, $remoteFile) == false)
-                {
+                if ($this->fileExists($ftp, $remoteFile) == false) {
                     echo 'failed: file not found' . "\n";
                     continue;
                 }
 
                 $xferSuccessful = $ftp->put($remoteFile, $localFile, FTP_BINARY);
-                if ($xferSuccessful)
-                {
+                if ($xferSuccessful) {
                     echo "ok\n";
                     continue;
                 }
-            } catch (FtpException $e)
-            {
+            } catch (FtpException $e) {
                 echo 'failed: ' . $e->getMessage() . "\n";
             }
         }
@@ -104,8 +102,7 @@ class GeneralTasks extends Command {
 
     protected function fileExists($ftp, $file)
     {
-        if ($ftp->size($file) != - 1)
-        {
+        if ($ftp->size($file) != -1) {
             return true;
         }
 
@@ -133,58 +130,51 @@ class GeneralTasks extends Command {
 
         echo 'Checking ' . $totalRecords . ' records ... ' . "\n";
 
-        while (true)
-        {
+        while (true) {
 
             $customerPorts = $runQuery($startingId, $recordsPerCycle);
 
-            if ($customerPorts->count() == 0)
-            {
+            if ($customerPorts->count() == 0) {
                 break;
             }
 
-            foreach ($customerPorts as $customerPort)
-            {
+            foreach ($customerPorts as $customerPort) {
 
                 $customer = $customerPort->customer;
-                if ($customer == null)
-                {
+                if ($customer == null) {
                     echo 'CustomerPort: ' . $customerPort->id . ' is missing a customer' . "\n";
-                    $badPorts ++;
+                    $badPorts++;
                     $startingId = $customerPort->id;
                     CustomerPort::destroy($customerPort->id);
-                    $recordsProcessed ++;
+                    $recordsProcessed++;
                     continue;
                 }
                 $customerAddress = $customer->address;
 
                 $port = $customerPort->port;
-                if ($customer == null)
-                {
+                if ($customer == null) {
                     echo 'CustomerPort: ' . $customerPort->id . ' is missing a port' . "\n";
-                    $badPorts ++;
+                    $badPorts++;
                     $startingId = $customerPort->id;
                     CustomerPort::destroy($customerPort->id);
-                    $recordsProcessed ++;
+                    $recordsProcessed++;
                     continue;
                 }
                 $portAddress = $port->address;
 
-                if ($portAddress == null)
-                {
+                if ($portAddress == null) {
                     echo 'CustomerPort: ' . $customerPort->id . ' is missing an address' . "\n";
                     CustomerPort::destroy($customerPort->id);
-                    $badPorts ++;
-                } else if ($customerAddress != null && $portAddress->code != $customerAddress->code)
-                {
+                    $badPorts++;
+                } else if ($customerAddress != null && $portAddress->code != $customerAddress->code) {
                     echo 'CustomerPort: ' . $customerPort->id . ' does not match' . "\n";
                     CustomerPort::destroy($customerPort->id);
-                    $badPorts ++;
+                    $badPorts++;
                 }
 
                 // Do some accounting
                 $startingId = $customerPort->id;
-                $recordsProcessed ++;
+                $recordsProcessed++;
             }
 
             // Update the progress bar
@@ -277,20 +267,34 @@ class GeneralTasks extends Command {
             ['first_name' => 'Amy', 'last_name' => 'Wukotich', 'email' => 'awukotich@peakproperties.biz']];
 
 
-        foreach ($managersContactInfo as $contactInfo)
-        {
-            $emailInfo = ['fromName'    => 'SilverIP Customer Care',
-                          'fromAddress' => 'help@silverip.com',
-                          'toName'      => $contactInfo['first_name'] . ' ' . $contactInfo['last_name'],
-                          'toAddress'   => $contactInfo['email'],
-                          'subject'     => 'SilverIP Maintenance Window'];
+        foreach ($managersContactInfo as $contactInfo) {
+            $emailInfo = ['fromName' => 'SilverIP Customer Care',
+                'fromAddress' => 'help@silverip.com',
+                'toName' => $contactInfo['first_name'] . ' ' . $contactInfo['last_name'],
+                'toAddress' => $contactInfo['email'],
+                'subject' => 'SilverIP Maintenance Window'];
 
             $template = 'email.template_manager_notification';
             $templateData = ['manager' => $contactInfo];
 
-            echo 'Sending to "' . $contactInfo['first_name'] . ' ' . $contactInfo['last_name']. '" <'.$contactInfo['email'].'>   ...   ';
+            echo 'Sending to "' . $contactInfo['first_name'] . ' ' . $contactInfo['last_name'] . '" <' . $contactInfo['email'] . '>   ...   ';
             SendMail::generalEmail($emailInfo, $template, $templateData);
             echo "done\n";
         }
+    }
+
+    public function refundSeptemberDoubleCharges()
+    {
+        $oldTransactions = BillingTransactionLogOld::where('OrderNumber', 'Sep-2017 Charges')
+            ->where('ChargeDescription', 'Sep Service Charge')
+            ->where('ResponseText', 'LIKE', 'APPROVED')
+            ->get();
+
+        $sipBilling = new SIPBilling();
+
+        foreach ($oldTransactions as $oldTransaction) {
+            $sipBilling->refundTransactionOld($oldTransaction->TransactionID);
+        }
+
     }
 }

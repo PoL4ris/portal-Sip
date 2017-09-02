@@ -403,17 +403,17 @@ class TestController extends Controller
     public function generalTest(Request $request)
     {
 
-        $oldTransaction = BillingTransactionLogOld::where('OrderNumber', 'Sep-2017 Charges')
-            ->where('ChargeDescription', 'Sep Service Charge')
-            ->where('ResponseText','LIKE','APPROVED')
-            ->first();
+//        $oldTransaction = BillingTransactionLogOld::where('OrderNumber', 'Sep-2017 Charges')
+//            ->where('ChargeDescription', 'Sep Service Charge')
+//            ->where('ResponseText','LIKE','APPROVED')
+//            ->first();
 //            ->get();
 //            ->count();
 
-        $sipBilling = new SIPBilling();
+//        $sipBilling = new SIPBilling();
 //        $result = $sipBilling->voidTransactionOld('IP01091219KZLLRWJR');
-        $result = $sipBilling->refundTransactionOld($oldTransaction->TransactionID);
-        dd($result);
+//        $result = $sipBilling->refundTransactionOld($oldTransaction->TransactionID);
+//        dd($result);
 
 
 //dd($oldTransactions);
