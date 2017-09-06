@@ -38,6 +38,12 @@ app.controller('customerController',                function ($scope, $http, $st
 
     //SET INPUT VALUE
     //$('#customerIdScope').val($scope.idCustomer);
+
+
+
+
+    //============================================
+    //THIS IS THE IMPORTANT FOR THE VIEW EN EL FRONT
     //customerServiceData[uniqueIdIndex]
 
 
@@ -533,18 +539,22 @@ app.controller('customerTicketHistoryController',   function ($scope, $http){
 
   $scope.getTicketHistory();
 });
+//invoicehistory.html
 app.controller('customerInvoiceHistoryController',  function ($scope, $http, customerService){
-  //   console.log($scope.customerData);
 
-  if(!$scope.invoiceData)
+//  if(!$scope.invoiceData)
     $http.get("getInvoiceHistory", {params:{'id':$scope.idCustomer}})
       .then(function (response) {
         $scope.invoiceData = response.data;
         $scope.customerData.invoices = response.data;
+        customerService.tabs[$scope.idCustomer].invoiceData = response.data;
 //        console.log($scope.customerData);
       });
 
   $scope.setInvoiceData = function (){
+
+    console.log('this is the locotrocholoco');
+
     $scope.modalInvoice         = this.invoice;
     $scope.modalInvoice.details = $scope.parJson($scope.modalInvoice.details);
   };
@@ -1296,13 +1306,15 @@ app.controller('customerNotesController',           function ($scope, $http, cus
       return;
   }
 });
-app.controller('customerBillingHistoryController',  function ($scope, $http, $uibModal, $log, DTOptionsBuilder){
+app.controller('customerBillingHistoryController',  function ($scope, $http, $uibModal, $log, DTOptionsBuilder, customerService){
 
   $http.get("getBillingHistory", {params:{'id':$scope.idCustomer}})
     .then(function (response) {
-      $scope.billingHistory = response.data;
+      $scope.billingHistory = response.data;//rm
+      customerService.tabs[$scope.idCustomer].billingHistory = response.data;
     });
 
+  //no se si esta en uso VERIFY USAGE CANT FIND ANY.
   $scope.open = function (){
     $scope.customerId = $scope.idCustomer;
 

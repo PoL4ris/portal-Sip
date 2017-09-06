@@ -1,5 +1,5 @@
-<div>
-    <div class="col-lg-12 billing-history-table" ng-controller="customerInvoiceHistoryController">
+
+<div class="col-lg-12 billing-history-table" ng-controller="customerInvoiceHistoryController">
         <div id="customer-view-0">
             <div class="panel panel-default no-border table-container animated fadeInLeft">
                 <table id="myTables" class="tablesorter table" datatable="ng">
@@ -11,33 +11,27 @@
                         <th>Billing Day</th>
                         <th>Type</th>
                         <th>Due Date</th>
-
-                        <!--<th>ActCode</th>-->
-                        <!--<th>Trans ID</th>-->
-                        <!--<th>Trans Status</th>-->
-
                         <th>Invoice</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr ng-repeat="invoice in invoiceData">
-                        <td class="capital-first">{{ statusArrayConstant.status[invoice.status] }}</td>
+                        <td class="capital-first">{{ invoice.status }}</td>
                         <td>{{ invoice.failed_charges_count }}</td>
                         <td>{{ invoice.amount | currency : "$" : 2 }}</td>
                         <td>{{ invoice.bill_cycle_day }}</td>
 
-                        <td ng-if="invoice.processing_type == 13">Autopay</td>
-                        <td ng-if="invoice.processing_type == 14">Manual Pay</td>
+                        <td>{{ statusArrayConstant.type[invoice.processing_type] }}</td>
 
                         <td ng-init="resultDate = convertDate(invoice.due_date)">{{resultDate | date : "shortDate" }}</td>
-                        <!--<td>{{ invoice.due_date | limitTo : 10 }}</td>-->
 
+                        <!--<td>{{ invoice.due_date | limitTo : 10 }}</td>-->
                         <!--<td>{{ billing.action_code }}</td>-->
                         <!--<td>{{ billing.transaction_id }}</td>-->
                         <!--<td>{{ billing.response_text }}</td>-->
 
                         <td>
-                            <p ng-click="setInvoiceData()" data-toggle="modal" data-target="#myModal" class="text-center">
+                            <p ng-click="setInvoiceData()" data-toggle="modal" data-target="#invoicesModal-{{uniqueIdIndex}}" class="text-center">
                                 <i class="fa fa-file-pdf-o"></i>
                             </p>
                         </td>
@@ -49,7 +43,7 @@
 
 
         <!--MODAL-->
-        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" ng-if="modalInvoice">
+        <div class="modal fade" id="invoicesModal-{{uniqueIdIndex}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -117,11 +111,3 @@
             </div>
         </div>
     </div>
-</div>
-
-
-<!--<div class="col-lg-12">{{modalInvoice}} aqui viene todo</div>-->
-<!--<hr>-->
-<!--<pre>-->
-<!--{{modalInvoice | json}}-->
-<!--</pre>-->
