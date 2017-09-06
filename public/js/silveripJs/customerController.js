@@ -921,12 +921,14 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http, cus
   //Temporal version to work with
   $scope.refundFunct        = function (){
 
-    $scope.errorMsgPaymentMethods = null;
+    $scope.errorMsgPaymentMethods = null;//rm
+    customerService.tabs[$scope.idCustomer].errorMsgPaymentMethods = null;
 
-//    var regex = /[^\w]/g
+//    var regex = /[^\w]/g         //rm
     var regex = /[^.\w]/g
 
-    var objects = getFormValues('manual-refund-form');
+//    var objects = getFormValues('manual-refund-form');//rm
+    var objects = getFormValues('manual-refund-form-' + $scope.idCustomer);
     objects['cid'] = $scope.idCustomer;
 
 
@@ -934,7 +936,8 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http, cus
       return;
 
     if(regex.test(objects.amount)){
-      $scope.errorMsgPaymentMethods = 'Verify the amount.';
+      $scope.errorMsgPaymentMethods = 'Verify the amount.';//rm
+      customerService.tabs[$scope.idCustomer].errorMsgPaymentMethods  = 'Verify the amount.';
       return;
     }
 
@@ -952,78 +955,34 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http, cus
           timeout: 6000
         });
 
-        $('#paymentManualRefound').modal('toggle');
-        $('#manual-charge-form').trigger("reset");
+//        $('#paymentManualRefound').modal('toggle');
+//        $('#manual-charge-form').trigger("reset");
+
+        $('#paymentManualRefound-' + $scope.idCustomer).modal('toggle');
+        $('#manual-charge-form-'   + $scope.idCustomer).trigger("reset");
       });
 
 
   }
-  $scope.refundFunctXXX        = function (){
-    $scope.errorMsgPaymentMethods = null;
 
-    var regex = /[^\w]/g
-
-    var objects = getFormValues('manual-refund-form');
-    objects['cid'] = $scope.idCustomer;
-
-
-    if(!objects.cid || !objects.amount || !objects.desc)
-      return;
-
-    if(regex.test(objects.amount)){
-      $scope.errorMsgPaymentMethods = 'Verify the amount.';
-      return;
-    }
-
-    processing(1);
-
-    $http.get("refundAmount", {params:objects})
-      .then(function (response)
-      {
-        //$scope.paymentMethods = response.data;
-//        console.log(response.data);
-
-        if(response.data.RESPONSETEXT == 'RETURN ACCEPTED')
-        {
-          $.smallBox({
-            title: "Return Accepted!",
-            content: "<i class='fa fa-clock-o'></i> <i>3 seconds ago...</i>",
-            color: "transparent",
-            iconSmall: "fa fa-thumbs-up bounce animated",
-            timeout: 6000
-          });
-        }
-        else{
-          processing(0);
-          $scope.errorMsgPaymentMethods = response.data.ERRMSG;
-          return;
-        }
-
-        processing(0);
-        $('#paymentManualRefound').modal('toggle');
-        $('#manual-refund-form').trigger("reset");
-      });
-  };//working functin to refound.
 
 
   $scope.chargeFunct        = function (){
-    $scope.errorMsgPaymentMethods = null;
+    $scope.errorMsgPaymentMethods = null;//rm
+    customerService.tabs[$scope.idCustomer].errorMsgPaymentMethods  = null;
 
     var regex = /[^.\w]/g
 
+    var objects = getFormValues('manual-charge-form-' + $scope.idCustomer);
 
-
-    var objects = getFormValues('manual-charge-form');
-//    console.log(regex.test(objects.amount));
-//
-//    return;
     objects['cid'] = $scope.idCustomer;
 
     if(!objects.cid || !objects.amount || !objects.desc)
       return;
 
     if(regex.test(objects.amount)){
-      $scope.errorMsgPaymentMethods = 'Verify the amount.';
+      $scope.errorMsgPaymentMethods = 'Verify the amount.';//rm
+      customerService.tabs[$scope.idCustomer].errorMsgPaymentMethods= 'Verify the amount.';
       return;
     }
 
@@ -1032,8 +991,7 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http, cus
     $http.get("manualCharge", {params:objects})
       .then(function (response)
       {
-        //$scope.paymentMethods = response.data;
-//        console.log(response.data);
+
         processing(0);
 
         $.smallBox({
@@ -1044,56 +1002,16 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http, cus
           timeout: 6000
         });
 
-        $('#paymentManualCharge').modal('toggle');
-        $('#manual-charge-form').trigger("reset");
+//        $('#paymentManualCharge').modal('toggle');
+//        $('#manual-charge-form').trigger("reset");
+
+        $('#paymentManualCharge-' + $scope.idCustomer).modal('toggle');
+        $('#manual-charge-form-'  + $scope.idCustomer).trigger("reset");
 
       });
   }
-  $scope.chargeFunctXXX        = function (){
-    $scope.errorMsgPaymentMethods = null;
 
-    var regex = /[^\w]/g
 
-    var objects = getFormValues('manual-charge-form');
-    objects['cid'] = $scope.idCustomer;
-
-    if(!objects.cid || !objects.amount || !objects.desc)
-      return;
-
-    if(regex.test(objects.amount)){
-      $scope.errorMsgPaymentMethods = 'Verify the amount.';
-      return;
-    }
-
-    processing(1);
-
-    $http.get("chargeAmount", {params:objects})
-      .then(function (response)
-      {
-        //$scope.paymentMethods = response.data;
-//        console.log(response.data);
-        if(response.data.RESPONSETEXT == 'APPROVED')
-        {
-          $.smallBox({
-            title: "Transaction Approved!",
-            content: "<i class='fa fa-clock-o'></i> <i>3 seconds ago...</i>",
-            color: "transparent",
-            iconSmall: "fa fa-thumbs-up bounce animated",
-            timeout: 6000
-          });
-          //$scope.closeTransparentBGManual();
-        }
-        else{
-          processing(0);
-          $scope.errorMsgPaymentMethods = response.data.ERRMSG;
-          return;
-        }
-
-        processing(0);
-        $('#paymentManualCharge').modal('toggle');
-        $('#manual-charge-form').trigger("reset");
-      });
-  };//working functin to refound.
 
 
 
@@ -1103,25 +1021,37 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http, cus
     $('#manual-refund-form').trigger("reset");
     $('#manual-charge-form').trigger("reset");
     $scope.errorMsgPaymentMethods = null;
+    customerService.tabs[$scope.idCustomer].errorMsgPaymentMethods  = null;
   };
   $scope.editPaymentMethod  = function (flag){
 
     if(flag){
-      $scope.editPaymentFlag = false;
-      $scope.editPaymentValues = null;
+      $scope.editPaymentFlag   = false;//rm
+      $scope.editPaymentValues = null;//rm
+
+      customerService.tabs[$scope.idCustomer].editPaymentFlag   = false;
+      customerService.tabs[$scope.idCustomer].editPaymentValues = null;
+
     }
     else{
-      $scope.editPaymentFlag = true;
-      $scope.editPaymentValues = this.payment;
+      $scope.editPaymentFlag   = true;//rm
+      $scope.editPaymentValues = this.payment;//rm
+
+      customerService.tabs[$scope.idCustomer].editPaymentFlag   = true;
+      customerService.tabs[$scope.idCustomer].editPaymentValues = this.payment;
     }
 
-    $('#paymentMethodModal').trigger("reset");
+    $('#paymentMethodModal-' + $scope.idCustomer).trigger("reset");
   };
   function processing(status){
-    if(status == 1)
-      $scope.something = true;
-    else
-      $scope.something = false;
+    if(status == 1){
+      $scope.something = true;//rm
+      customerService.tabs[$scope.idCustomer].something = true;
+    }
+    else{
+      $scope.something = false;//rm
+      customerService.tabs[$scope.idCustomer].something = false;
+    }
   }
   //OLD THING
   $scope.open = function (){
@@ -1155,7 +1085,8 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http, cus
 
 
 
-app.controller('addPaymentMethodController',        function ($scope, $http){
+app.controller('addPaymentMethodController',        function ($scope, $http,customerService){
+//  customerService.tabs[$scope.idCustomer];
   // app.controller('addPaymentMethodController',        function ($scope, $http, customerId, notify, $uibModalInstance){
   /*
    * value[0] = Name on Card
