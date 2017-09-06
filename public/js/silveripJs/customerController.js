@@ -862,13 +862,7 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http, cus
 
   $http.get("getDefaultPaymentMethod", {params:{'id' : $scope.idCustomer}})
     .then(function (response) {
-
-
-
-    console.log(response.data);
-
-
-
+//    console.log(response.data);
 
       $scope.paymentData = response.data[0];//rm
       $scope.pproperties = response.data[1];//rm
@@ -876,15 +870,12 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http, cus
       customerService.tabs[$scope.idCustomer].paymentData  = response.data[0];
       customerService.tabs[$scope.idCustomer].pproperties  = response.data[1];
 
-
-
-
-      $scope.customerData.defaultPayment = $scope.paymentData;
-      $scope.customerData.defaultPproperties = $scope.pproperties;
+      $scope.customerData.defaultPayment = $scope.paymentData;//rm not using anymore
+      $scope.customerData.defaultPproperties = $scope.pproperties;//rm not using anymore
     });
   $http.get("getAllPaymentMethods", {params:{'id':$scope.idCustomer}})
     .then(function (response) {
-      console.log(response.data);
+//      console.log(response.data);
       $scope.paymentMethods = response.data;
       customerService.tabs[$scope.idCustomer].paymentMethods  = response.data;
     });
@@ -909,7 +900,8 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http, cus
   $scope.getPaymentMethods  = function (customerId){
     $http.get("getAllPaymentMethods", {params:{'id':customerId}})
       .then(function (response) {
-        $scope.paymentMethods = response.data;
+        $scope.paymentMethods = response.data;//rm
+        customerService.tabs[$scope.idCustomer].paymentMethods = response.data;
       });
   };
 
@@ -1100,7 +1092,9 @@ app.controller('addPaymentMethodController',        function ($scope, $http,cust
   // console.log('this is addPaymentMethodController ');
   $scope.addNewPaymentMethod = function (){
 
-    var objects = getFormValues('paymentmethodform');
+    console.log('inside addNewPaymentMethod');
+
+    var objects = getFormValues('paymentmethodform-' + $scope.idCustomer);
 
     for(var obj in objects ) {
       if(!objects[obj])
@@ -1129,8 +1123,8 @@ app.controller('addPaymentMethodController',        function ($scope, $http,cust
       return;
     }
 
-    if($scope.editPaymentFlag)
-      objects['id'] = $scope.editPaymentValues.id;
+    if(customerService.tabs[$scope.idCustomer].editPaymentFlag)
+      objects['id'] = customerService.tabs[$scope.idCustomer].editPaymentValues.id;
 
     objects['id_customers'] = $scope.idCustomer;
 
@@ -1138,10 +1132,10 @@ app.controller('addPaymentMethodController',        function ($scope, $http,cust
       .then(function (response) {
         if(response.data == 'OK')
         {
-          $('#paymentMethodModal').modal('toggle');
+          $('#paymentMethodModal-' + $scope.idCustomer).modal('toggle');
 
           $.smallBox({
-            title: $scope.editPaymentFlag ? "Card Updated." : "New Card added to this customer.",
+            title: customerService.tabs[$scope.idCustomer].editPaymentFlag ? "Card Updated." : "New Card added to this customer.",
             content: "<i class='fa fa-clock-o'></i> <i>2 seconds ago...</i>",
             color: "#739E73",
             iconSmall: "fa fa-thumbs-up bounce animated",
@@ -1149,7 +1143,7 @@ app.controller('addPaymentMethodController',        function ($scope, $http,cust
           });
 
           $scope.getPaymentMethods($scope.idCustomer);
-          $('#paymentMethodModal').trigger("reset");
+          $('#paymentMethodModal-' + $scope.idCustomer).trigger("reset");
         }
         else
         {
