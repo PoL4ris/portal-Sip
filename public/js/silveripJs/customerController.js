@@ -1,3 +1,7 @@
+//============================================
+//THIS IS THE IMPORTANT FOR THE VIEW EN EL FRONT
+//customerServiceData[uniqueIdIndex]
+
 //Customer Controllers
 app.controller('customerControllerList',            function ($scope, $http){
   $http.get("getCustomerList")
@@ -545,8 +549,8 @@ app.controller('customerInvoiceHistoryController',  function ($scope, $http, cus
 //  if(!$scope.invoiceData)
     $http.get("getInvoiceHistory", {params:{'id':$scope.idCustomer}})
       .then(function (response) {
-        $scope.invoiceData = response.data;
-        $scope.customerData.invoices = response.data;
+        $scope.invoiceData = response.data;//rm
+        $scope.customerData.invoices = response.data;//rm
         customerService.tabs[$scope.idCustomer].invoiceData = response.data;
 //        console.log($scope.customerData);
       });
@@ -844,23 +848,45 @@ app.controller('customerBuildingController',        function ($scope, $http){
   }
 
 });
-app.controller('customerPaymentMethodsController',  function ($scope, $http){
-  // console.log('something here con el id de  : ' + $scope.idCustomer);
-  // return;
-  // app.controller('customerPaymentMethodsController',  function ($scope, $http,$uibModal, $log){
-  // return;
 
-  $http.get("getDefaultPaymentMethod", {params:{'id':$scope.stcid ? $scope.stcid : $scope.idCustomer}})
+
+
+
+
+
+
+app.controller('customerPaymentMethodsController',  function ($scope, $http, customerService){
+
+//  customerService.tabs[$scope.idCustomer].invoiceData = response.data;
+
+
+  $http.get("getDefaultPaymentMethod", {params:{'id' : $scope.idCustomer}})
     .then(function (response) {
-//      console.log(response.data);
-      $scope.paymentData = response.data[0];
-      $scope.pproperties = response.data[1];
+
+
+
+    console.log(response.data);
+
+
+
+
+      $scope.paymentData = response.data[0];//rm
+      $scope.pproperties = response.data[1];//rm
+
+      customerService.tabs[$scope.idCustomer].paymentData  = response.data[0];
+      customerService.tabs[$scope.idCustomer].pproperties  = response.data[1];
+
+
+
+
       $scope.customerData.defaultPayment = $scope.paymentData;
       $scope.customerData.defaultPproperties = $scope.pproperties;
     });
   $http.get("getAllPaymentMethods", {params:{'id':$scope.idCustomer}})
     .then(function (response) {
+      console.log(response.data);
       $scope.paymentMethods = response.data;
+      customerService.tabs[$scope.idCustomer].paymentMethods  = response.data;
     });
 
   $scope.setAsDefaultPaymentMethod = function (id) {
@@ -1121,6 +1147,14 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http){
   };
 
 });
+
+
+
+
+
+
+
+
 app.controller('addPaymentMethodController',        function ($scope, $http){
   // app.controller('addPaymentMethodController',        function ($scope, $http, customerId, notify, $uibModalInstance){
   /*

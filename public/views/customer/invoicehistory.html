@@ -1,113 +1,107 @@
-
 <div class="col-lg-12 billing-history-table" ng-controller="customerInvoiceHistoryController">
-        <div id="customer-view-0">
-            <div class="panel panel-default no-border table-container animated fadeInLeft">
-                <table id="myTables" class="tablesorter table" datatable="ng">
-                    <thead>
-                    <tr>
-                        <th>Status</th>
-                        <th>Failed Charges</th>
-                        <th>Amount</th>
-                        <th>Billing Day</th>
-                        <th>Type</th>
-                        <th>Due Date</th>
-                        <th>Invoice</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr ng-repeat="invoice in invoiceData">
-                        <td class="capital-first">{{ invoice.status }}</td>
-                        <td>{{ invoice.failed_charges_count }}</td>
-                        <td>{{ invoice.amount | currency : "$" : 2 }}</td>
-                        <td>{{ invoice.bill_cycle_day }}</td>
-
-                        <td>{{ statusArrayConstant.type[invoice.processing_type] }}</td>
-
-                        <td ng-init="resultDate = convertDate(invoice.due_date)">{{resultDate | date : "shortDate" }}</td>
-
-                        <!--<td>{{ invoice.due_date | limitTo : 10 }}</td>-->
-                        <!--<td>{{ billing.action_code }}</td>-->
-                        <!--<td>{{ billing.transaction_id }}</td>-->
-                        <!--<td>{{ billing.response_text }}</td>-->
-
-                        <td>
-                            <p ng-click="setInvoiceData()" data-toggle="modal" data-target="#invoicesModal-{{uniqueIdIndex}}" class="text-center">
-                                <i class="fa fa-file-pdf-o"></i>
-                            </p>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
+    <div id="customer-view-0">
+        <div class="panel panel-default no-border table-container animated fadeInLeft">
+            <table id="myTables" class="tablesorter table" datatable="ng">
+                <thead>
+                <tr>
+                    <th>Status</th>
+                    <th>Failed Charges</th>
+                    <th>Amount</th>
+                    <th>Billing Day</th>
+                    <th>Type</th>
+                    <th>Due Date</th>
+                    <th>Invoice</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="invoice in invoiceData">
+                    <td class="capital-first">{{ invoice.status }}</td>
+                    <td>{{ invoice.failed_charges_count }}</td>
+                    <td>{{ invoice.amount | currency : "$" : 2 }}</td>
+                    <td>{{ invoice.bill_cycle_day }}</td>
+                    <td>{{ statusArrayConstant.type[invoice.processing_type] }}</td>
+                    <td ng-init="resultDate = convertDate(invoice.due_date)">{{resultDate | date : "shortDate" }}</td>
+                    <!--<td>{{ invoice.due_date | limitTo : 10 }}</td>-->
+                    <!--<td>{{ billing.action_code }}</td>-->
+                    <!--<td>{{ billing.transaction_id }}</td>-->
+                    <!--<td>{{ billing.response_text }}</td>-->
+                    <td>
+                        <p ng-click="setInvoiceData()" data-toggle="modal" data-target="#invoicesModal-{{uniqueIdIndex}}" class="text-center">
+                            <i class="fa fa-file-pdf-o"></i>
+                        </p>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
         </div>
+    </div>
 
-
-        <!--MODAL-->
-        <div class="modal fade" id="invoicesModal-{{uniqueIdIndex}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-                            &times;
-                        </button>
-                        <h4 class="modal-title" id="myModalLabel">Invoice</h4>
-                    </div>
-                    <div class="modal-body">
-                        <div class="wrapper-sm">
-                            <div>
-                                <a href class="btn btn-success pull-right" onClick="alert('sending copy to customer')">Send to Customer</a>
-                                <div class="invoice-logo "><img src="/img/silverip-logo-100px.png" alt="SilverIp"/></div>
-                                <div class="row">
-                                    <div class="col-xs-6">
-                                        <p>{{modalInvoice.address.address}}</p>
-                                        <p>Contact: {{customerData.customer.email}}</p>
-                                    </div>
-                                    <div class="col-xs-6 text-right right-side-invoice">
-                                        <p class="f-size-17"># {{modalInvoice.id}}</p>
-                                        <p class="f-size-17" ng-init="dueDate = convertDate(modalInvoice.due_date)"> Due date: {{dueDate | date : "MMM d, y h:mm a" }}</p>
-                                    </div>
+    <!--MODAL-->
+    <div class="modal fade" id="invoicesModal-{{uniqueIdIndex}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">Invoice</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="wrapper-sm">
+                        <div>
+                            <a href class="btn btn-success pull-right" onClick="alert('sending copy to customer')">Send to Customer</a>
+                            <div class="invoice-logo "><img src="/img/silverip-logo-100px.png" alt="SilverIp"/></div>
+                            <div class="row">
+                                <div class="col-xs-6">
+                                    <p>{{modalInvoice.address.address}}</p>
+                                    <p>Contact: {{customerData.customer.email}}</p>
                                 </div>
-                                <hr>
-                                <p class="m-b-lg" ng-init="invoDate = convertDate(modalInvoice.created_at)">Invoice date: <strong>{{invoDate | date : "MMM d, y h:mm a" }}</strong><br>
-                                    Status: <span class="label cdg-color-up caps">{{modalInvoice.status}}</span><br>
-                                    ID: <strong> # {{modalInvoice.id}}</strong>
-                                </p>
-                                <div class="line"></div>
-                                <table class="table table-striped bg-white b-a">
-                                    <thead>
-                                    <tr>
-                                        <th>Product ID</th>
-                                        <th>Product</th>
-                                        <th>Frequency</th>
-                                        <th>Amount</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr ng-repeat="descProd in modalInvoice.details">
-                                        <td>{{descProd.customer_product_id}}</td>
-                                        <td>{{descProd.product_name}}</td>
-                                        <td class="capital-first">{{descProd.product_frequency}}</td>
-                                        <td>${{descProd.product_amount}}</td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="3" class="text-right-invo"><strong>Tax</strong></td>
-                                        <td>$0.00</td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="3" class="text-right-invo no-border"><strong>Total</strong></td>
-                                        <td><strong>${{modalInvoice.amount}}</strong></td>
-                                    </tr>
-                                    </tbody>
-                                </table>
+                                <div class="col-xs-6 text-right right-side-invoice">
+                                    <p class="f-size-17"># {{modalInvoice.id}}</p>
+                                    <p class="f-size-17" ng-init="dueDate = convertDate(modalInvoice.due_date)"> Due date: {{dueDate | date : "MMM d, y h:mm a" }}</p>
+                                </div>
                             </div>
+                            <hr>
+                            <p class="m-b-lg" ng-init="invoDate = convertDate(modalInvoice.created_at)">Invoice date: <strong>{{invoDate | date : "MMM d, y h:mm a" }}</strong><br>
+                                Status: <span class="label cdg-color-up caps">{{modalInvoice.status}}</span><br>
+                                ID: <strong> # {{modalInvoice.id}}</strong>
+                            </p>
+                            <div class="line"></div>
+                            <table class="table table-striped bg-white b-a">
+                                <thead>
+                                <tr>
+                                    <th>Product ID</th>
+                                    <th>Product</th>
+                                    <th>Frequency</th>
+                                    <th>Amount</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr ng-repeat="descProd in modalInvoice.details">
+                                    <td>{{descProd.customer_product_id}}</td>
+                                    <td>{{descProd.product_name}}</td>
+                                    <td class="capital-first">{{descProd.product_frequency}}</td>
+                                    <td>${{descProd.product_amount}}</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" class="text-right-invo"><strong>Tax</strong></td>
+                                    <td>$0.00</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" class="text-right-invo no-border"><strong>Total</strong></td>
+                                    <td><strong>${{modalInvoice.amount}}</strong></td>
+                                </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-danger" data-dismiss="modal">
-                            Cancel
-                        </button>
-                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">
+                        Cancel
+                    </button>
                 </div>
             </div>
         </div>
     </div>
+</div>

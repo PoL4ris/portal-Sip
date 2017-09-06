@@ -1,22 +1,30 @@
 <div ng-controller="customerPaymentMethodsController" class="p-b-lg">
 
     <!--LADO UNO-->
-    <div class="col-lg-4 no-padding-sides animated fadeInLeft" ng-if="paymentData">
+    <div class="col-lg-4 no-padding-sides animated fadeInLeft" ng-if="customerServiceData[uniqueIdIndex].paymentData">
         <h2 class="float-left m-b-lg">Default Credit Card</h2>
+        <div class="col-lg-12"></div>
 
-
-        <label class="col-lg-8 no-padding-sides"><strong>Card Type: </strong> </label>
-        <label class="col-lg-4 block-b-label no-padding-sides" id="b-CCtype" ng-if="paymentData"> {{ pproperties['card type']  ? pproperties['card type'] : pproperties[0]['card type'] }}</label>
-
-        <label class="col-lg-8 no-padding-sides"><strong>Card Number: </strong> </label>
-        <label class="col-lg-4 block-b-label no-padding-sides" id="b-CCnumber" ng-if="paymentData">
-            {{ pproperties['last four'] ? pproperties['last four'] : pproperties[0]['last four'] | limitTo : 9 : 10}}
+        <label class="col-lg-8 no-padding-sides"><strong>Card Type: </strong></label>
+        <label class="col-lg-4 block-b-label no-padding-sides" id="b-CCtype">
+        <!--<label class="col-lg-4 block-b-label no-padding-sides" id="b-CCtype" ng-if="paymentData">-->
+            {{ customerServiceData[uniqueIdIndex].pproperties['card type'] }}
         </label>
 
-        <label class="col-lg-8 no-padding-sides"><strong>Expiration Month: </strong> </label>
-        <label class="col-lg-4 block-b-label no-padding-sides" id="b-Expmo"> {{ paymentData.exp_month ? paymentData.exp_month : '( ERROR )'}}</label>
-        <label class="col-lg-8 no-padding-sides"><strong>Expiration Year: </strong> </label>
-        <label class="col-lg-4 block-b-label no-padding-sides" id="b-Expyr"> {{ paymentData.exp_year ? paymentData.exp_year : '( ERROR )'}}</label>
+        <label class="col-lg-8 no-padding-sides"><strong>Card Number: </strong> </label>
+        <label class="col-lg-4 block-b-label no-padding-sides" id="b-CCnumber">
+        <!--<label class="col-lg-4 block-b-label no-padding-sides" id="b-CCnumber" ng-if="paymentData">-->
+            {{ customerServiceData[uniqueIdIndex].pproperties['last four'] | limitTo : 9 : 10 }}
+        </label>
+
+        <label class="col-lg-8 no-padding-sides"><strong>Expiration Month:</strong></label>
+        <label class="col-lg-4 block-b-label no-padding-sides" id="b-Expmo">
+            {{ customerServiceData[uniqueIdIndex].paymentData.exp_month }}
+        </label>
+        <label class="col-lg-8 no-padding-sides"><strong>Expiration Year:</strong></label>
+        <label class="col-lg-4 block-b-label no-padding-sides" id="b-Expyr">
+            {{ customerServiceData[uniqueIdIndex].paymentData.exp_year }}
+        </label>
 
         <div class="col-lg-12 no-padding-sides m-t-md">
             <button class="btn btn-danger" data-toggle="modal" data-target="#paymentManualCharge" ng-click="prepareFields();">Manual Charge</button>
@@ -26,7 +34,7 @@
     </div>
 
     <!--LADO DOS-->
-    <div class="{{paymentData ? 'col-lg-8' : 'col-lg-12'}} animated fadeInRight" id="customer-view-0">
+    <div class="{{customerServiceData[uniqueIdIndex].paymentData ? 'col-lg-8' : 'col-lg-12'}} animated fadeInRight" id="customer-view-0">
 
         <div class="panel panel-default table-container">
             <table id="myTable" class="tablesorter table">
@@ -41,7 +49,8 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="payment in paymentMethods" class="default-priority-{{payment.priority}} {{(payment.priority == 1 && defaultCssColor) ? 'old-green' : '' }}">
+                <tr ng-repeat="payment in customerServiceData[uniqueIdIndex].paymentMethods"
+                    class="default-priority-{{payment.priority}} {{(payment.priority == 1 && defaultCssColor) ? 'old-green' : '' }}">
 
                     <td ng-init="pmprops = parJson(payment.properties)">{{ pmprops['card type'] }}</td>
                     <td>{{ pmprops['last four'] | limitTo : 4 : 15 }}</td>
