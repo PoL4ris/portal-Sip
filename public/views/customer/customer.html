@@ -113,16 +113,28 @@
                         </a>
                     </p>
                 </div>
-                <div class="col-lg-12 col-md-12 no-padding-sides m-b-sm">
-
-
+                <div class="col-lg-12 col-md-12 no-padding-sides">
                     <p class="col-lg-4 col-md-4 no-padding-sides"><strong>Status:</strong></p>
-                    <p class="col-lg-4 col-md-4 no-padding-sides  capital-first" ng-if="customerTypes"><b>{{customerData.customer.status.name}}</b></p>
-
-                    <div class="col-lg-12 text-center btn btn-warning btn-slim cursor-pointer"data-toggle="modal" data-target="#customerStatusModal">
-                        <i class="fa fa-pencil"></i> Change Status
-                    </div>
-
+                    <p class="col-lg-4 col-md-4 no-padding-sides {{customerData.customer.status.name}} capital-first" ng-if="customerTypes">
+                        <a id="status-select"
+                           record-table="Customers"
+                           class="editable editable-click"
+                           href=""
+                           smart-xeditable=""
+                           data-ng-model="getCustomerData"
+                           data-options="editableOptions"
+                           data-type="select"
+                           data-pk="1"
+                           data-value="{{customerData.customer.status.id}}"
+                           record-field="id_status"
+                           record-idContainer="customers"
+                           data-placement="right"
+                           data-source="{{customerTypes}}"
+                           record-id="{{customerData.customer.id}}"
+                           data-original-title="Select Customer Status">
+                            {{customerData.customer.status.name ? customerData.customer.status.name : 'Pending'}}
+                        </a>
+                    </p>
                 </div>
                 <div class="col-lg-12 col-md-12 no-padding-sides">
                     <p class="col-lg-4 col-md-4 no-padding-sides"><strong>Location:</strong></p>
