@@ -17,10 +17,11 @@ app.controller('customerController',                function ($scope, $http, $st
   }
   else {
 
-    if(generalService.sideBarFlag) {
-      $scope.sipTool(2);
-      generalService.sideBarFlag = false;
-    }
+    if(generalService.stateRoute == 'customers')
+      if(!generalService.sideBarFlag) {
+        $scope.sipTool(2);
+        generalService.sideBarFlag = true;
+      }
 
     generalService.leftView   = true;
     $scope.customerFlag       = false;
@@ -66,8 +67,8 @@ app.controller('customerController',                function ($scope, $http, $st
         if(!$scope.customerServiceData)
           $scope.customerServiceData =  customerService.tabs;
 
+        $('#tabs-label-' + $scope.uniqueIdIndex).html(response.data.address.code + '#' + response.data.address.unit)
       });
-
 
 
 
@@ -103,7 +104,7 @@ app.controller('customerController',                function ($scope, $http, $st
 
 
 //    console.log($scope.customerData);
-    console.log(customerService);
+//    console.log(customerService);
 
 
   }
@@ -884,16 +885,21 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http, cus
 
     $http.get("setDefaultPaymentMethod", {params:{'id' : id, 'customerID' : $scope.idCustomer}})
       .then(function (response) {
-        $scope.defaultCssColor = true;
-        setTimeout(function(){$scope.defaultCssColor = false;}, 500);
+        $scope.defaultCssColor = true;//rm
+        customerService.tabs[$scope.idCustomer].defaultCssColor = true;
+        setTimeout(function(){customerService.tabs[$scope.idCustomer].defaultCssColor = false;}, 500);
 
         $scope.paymentMethods = response.data;
+        customerService.tabs[$scope.idCustomer].paymentMethods = response.data;
 
         $http.get("getDefaultPaymentMethod", {params:{'id' : $scope.idCustomer}})
           .then(function (response) {
 
-            $scope.paymentData = response.data[0];
-            $scope.pproperties = response.data[1];
+            $scope.paymentData = response.data[0];//rm
+            $scope.pproperties = response.data[1];//rm
+
+            customerService.tabs[$scope.idCustomer].paymentData  = response.data[0];
+            customerService.tabs[$scope.idCustomer].pproperties  = response.data[1];
           });
       });
   };
@@ -1297,14 +1303,14 @@ app.controller('customerBillingHistoryController',  function ($scope, $http, $ui
   };
   $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('order', [0, 'desc']);
 });
-app.controller('customersHomeController',           function ($scope, $http, customerService){
+app.controller('customersHomeController',           function ($scope, $http, customerService, generalService){
 
 //  if(customerService.stateRoute == 'customershome'){
 //
-//    if(customerService.sideBarFlag) {
-//      $scope.sipTool(2);
-//      customerService.sideBarFlag = false;
-//    }
+    if(generalService.sideBarFlag) {
+      $scope.sipTool(2);
+      generalService.sideBarFlag = false;
+    }
 //  }
 
 

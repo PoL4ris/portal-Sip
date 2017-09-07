@@ -1,11 +1,11 @@
 
 //Network Controllers
-app.controller('networkController',                 function ($scope, $http, customerService, DTOptionsBuilder, DTColumnDefBuilder){
+app.controller('networkController',                 function ($scope, $http, customerService, DTOptionsBuilder, DTColumnDefBuilder, generalService){
 
 
-  if(customerService.sideBarFlag) {
+  if(generalService.sideBarFlag) {
     $scope.sipTool(2);
-    customerService.sideBarFlag = false;
+    generalService.sideBarFlag = false;
   }
 
   $http.get("networkdash")

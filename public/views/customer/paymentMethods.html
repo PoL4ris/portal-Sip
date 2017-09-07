@@ -7,13 +7,11 @@
 
         <label class="col-lg-8 no-padding-sides"><strong>Card Type: </strong></label>
         <label class="col-lg-4 block-b-label no-padding-sides" id="b-CCtype">
-        <!--<label class="col-lg-4 block-b-label no-padding-sides" id="b-CCtype" ng-if="paymentData">-->
             {{ customerServiceData[uniqueIdIndex].pproperties['card type'] }}
         </label>
 
         <label class="col-lg-8 no-padding-sides"><strong>Card Number: </strong> </label>
         <label class="col-lg-4 block-b-label no-padding-sides" id="b-CCnumber">
-        <!--<label class="col-lg-4 block-b-label no-padding-sides" id="b-CCnumber" ng-if="paymentData">-->
             {{ customerServiceData[uniqueIdIndex].pproperties['last four'] | limitTo : 9 : 10 }}
         </label>
 

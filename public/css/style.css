@@ -1508,6 +1508,15 @@ table.dataTable tbody tr {
   /*padding-left: 25px;*/
 }
 
+.close-tab-cross{
+  text-align: center;
+  display: inline-block;
+  padding: 0px 4px;
+}
+.close-tab-cross:hover{
+  opacity: .6;
+  background: rgba(0,0,0,.3);
+}
 pre {
   font-size: 10px;
   margin: 30px;

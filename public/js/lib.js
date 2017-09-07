@@ -29,11 +29,11 @@ app.controller('libController', function ($scope, $http) {
 
 });
 
-app.controller('dropZoneController', function($scope, $http, customerService){
+app.controller('dropZoneController', function($scope, $http, customerService, generalService){
 
-  if (customerService.sideBarFlag) {
+  if (generalService.sideBarFlag) {
     $scope.sipTool(2);
-    customerService.sideBarFlag = false;
+    generalService.sideBarFlag = false;
   }
 
   var ctrl = this;
@@ -121,12 +121,12 @@ app.controller('dropZoneController', function($scope, $http, customerService){
 
 
 //New customer controller working
-app.controller('newcustomerAppController', function($scope, $http, customerService, $state){
+app.controller('newcustomerAppController', function($scope, $http, customerService, $state, generalService){
   console.log('this is the newcustomerAppController');
 
-  if (customerService.sideBarFlag) {
+  if (generalService.sideBarFlag) {
     $scope.sipTool(2);
-    customerService.sideBarFlag = false;
+    generalService.sideBarFlag = false;
   }
 
   $scope.selectedBuilding = '/img/logoSmall.png';
@@ -418,84 +418,34 @@ app.controller('newcustomerAppController', function($scope, $http, customerServi
 
 });
 
+//Tabs
+app.controller('dummyAppController', function ($scope, $http, customerService, generalService) {
 
+  $scope.addToTabArray = function (id) {
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-app.controller('dummyAppController', function ($scope, $http, customerService, generalService, $stateParams){
-//  if (customerService.sideBarFlag) {
-//    $scope.sipTool(2);
-//    customerService.sideBarFlag = false;
-//  }
-
-$scope.somethingHere = function()
-{
-  var id = '88888';
-//  return '/views/'+id+'.html';
-//  console.log('/views/customers.html?id=' + id);
-  return '/views/customers.html?id=88888';
-}
-//  console.log(generalService);
-
-  $scope.addToTabArray = function(id){
-
-
-    if(customerService.customerArray[id])
+    if (customerService.customerArray[id])
       return;
 
     customerService.customerArray[id] = id;
-    customerService.lastRequestedId = id;
-    $scope.tabsArray = customerService.customerArray;
-    generalService.rightView = true;
-
-
-
-
-    $scope.customerServiceData =  customerService.tabs;
-
-
-    console.log($scope.customerServiceData);
-
-
+    customerService.lastRequestedId   = id;
+    $scope.tabsArray                  = customerService.customerArray;
+    generalService.rightView          = true;
+    $scope.customerServiceData        = customerService.tabs;
 
   };
 
+  $scope.removeFromTabArray = function (id) {
+
+    delete customerService.customerArray[id];
+    $scope.tabsArray = customerService.customerArray;
+    delete customerService.tabs[id];
+  }
 
 
-
+  $scope.createTab = function ($event) {
+    $scope.addToTabArray(this.customerData.id);
+    $event.stopPropagation();
+  }
 
 
 });

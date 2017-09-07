@@ -195,7 +195,7 @@ var app = angular.module('app', [
   'app.reports',
   'app.charges',
   'app.newcustomer',
-  'app.warp',
+  'app.tabs',
 ])
   .config(function ($provide, $httpProvider, RestangularProvider) {
 
