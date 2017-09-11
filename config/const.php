@@ -2,11 +2,11 @@
 
 return [
     'status'                         => [
-        'active'         => 1,
-        'disabled'       => 2,
-        'new'            => 3,
-        'decommissioned' => 4,
-//        'closed'         => 'closed'
+        'active'         => env('STATUS_ACTIVE', 1),
+        'disabled'       => env('STATUS_DISABLED', 2),
+        'new'            => env('STATUS_NEW', 3),
+        'decommissioned' => env('STATUS_DECOMMISSIONED', 4),
+        'closed'         => 'closed'
     ],
     'ticket_status'                  => [
         'new'       => 'new',
@@ -37,10 +37,10 @@ return [
         'email'        => 5,
     ],
     'customer_product_charge_status' => [
-        'none'    => 5,
-        'charged' => 14,
-        'paid'    => 8,
-        'failed'  => 9,
+        'none'    => 0,
+        'charged' => 1,
+        'paid'    => 2,
+        'failed'  => 3,
     ],
     'charge_type'                    => [
         'charge'   => 'charge',
@@ -51,23 +51,23 @@ return [
         'promo'    => 'promo'
     ],
     'charge_status'                  => [
-        'none'             => 5,
-        'pending'          => 6,
-        'invoiced'         => 7,
-        'paid'             => 8,
-        'failed'           => 9,
-        'disabled'         => 2,
-        'pending_approval' => 10,
-        'denied'           => 11,
-        'cancelled'        => 12,
+        'none'             => 0,
+        'pending'          => 1,
+        'invoiced'         => 2,
+        'paid'             => 3,
+        'failed'           => 4,
+        'disabled'         => 5,
+        'pending_approval' => 6,
+        'denied'           => 7,
+        'cancelled'        => 8,
     ],
     'invoice_status'                 => [
-        'none'      => 5,
-        'open'      => 13,
-        'pending'   => 6,
-        'paid'      => 8,
-        'failed'    => 9,
-        'cancelled' => 12,
+        'none'      => 0,
+        'open'      => 1,
+        'pending'   => 2,
+        'paid'      => 3,
+        'failed'    => 4,
+        'cancelled' => 5,
     ],
     'building_property'              => [
         'type'              => '1',
@@ -131,4 +131,5 @@ return [
         'internal_billing'      => '29',
         'move_in_howto_connect' => '30'
     ],
+
 ];

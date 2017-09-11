@@ -81,10 +81,10 @@ class BillingHelper {
             ->get(['customer_products.*']);
     }
 
-    protected function getChargeableCustomerProductsQuery()
+    protected function getChargeableCustomerProductsQuery($expiresBefore = 'first day of next month 00:00:00')
     {
         // First day of next month to check expirations against
-        $firstDayOfNextMonthMysql = date("Y-m-d H:i:s", strtotime("first day of next month 00:00:00"));
+        $firstDayOfNextMonthMysql = date("Y-m-d H:i:s", strtotime($expiresBefore));
 
         return CustomerProduct::join('customers', 'customer_products.id_customers', '=', 'customers.id')
             ->join('products', 'customer_products.id_products', '=', 'products.id')
@@ -95,7 +95,10 @@ class BillingHelper {
             // the customer's product/service MUST be active
             ->where('customer_products.id_status', '=', config('const.status.active'))
             // customer's product/service MUST be expiring before the first day of next month
-            ->where('customer_products.expires', '<=', $firstDayOfNextMonthMysql)
+            ->where(function ($query) use ($firstDayOfNextMonthMysql) {
+                $query->whereNull('customer_products.expires')
+                    ->orWhere('customer_products.expires', '<=', $firstDayOfNextMonthMysql);
+            })
             // skip customer's product/service that are complimentary
             ->where('products.amount', '>', 0)
             ->where(function ($query) use ($firstDayOfNextMonthMysql) {
@@ -105,7 +108,8 @@ class BillingHelper {
                         ->where('products.frequency', '=', 'onetime');
                 })->orWhere(function ($query3) use ($firstDayOfNextMonthMysql) {
                     // Get 'monthly' and/or 'annual' products that have not been charged (status != 1 and an expired invoice date)
-                    $query3->where('customer_products.charge_status', '<>', config('const.customer_product_charge_status.charged'))
+                    $query3->where('customer_products.charge_status', '<>', config('const.customer_product_charge_status.paid'))
+                        ->where('customer_products.charge_status', '<>', config('const.customer_product_charge_status.failed'))
                         ->where('products.frequency', '<>', 'onetime')
                         ->where('products.frequency', '<>', 'included')
                         ->whereNull('customer_products.next_charge_date')
@@ -324,8 +328,10 @@ class BillingHelper {
                     'endDate'   => date("Y-m-d H:i:s", strtotime("first day of next month next year  00:00:00"))];
         } else
         {
-            return ['startDate' => date("Y-m-d H:i:s", strtotime("now")),
-                    'endDate'   => date("Y-m-d H:i:s", strtotime("now"))];
+//            return ['startDate' => date("Y-m-d H:i:s", strtotime("now")),
+//            'endDate'   => date("Y-m-d H:i:s", strtotime("now"))];
+            return ['startDate' => date("Y-m-d H:i:s", strtotime("first day of next month  00:00:00")),
+                'endDate' => null];
         }
     }
 
@@ -607,25 +613,28 @@ class BillingHelper {
      * Invoice processing functions
      */
 
-    public function processPendingAutopayInvoices()
+    public function processPendingAutopayInvoices($records = 200)
     {
 
         $nowMysql = date("Y-m-d H:i:s");
-        $invoices = Invoice::where('status', config('const.invoice_status.pending'))
+        Invoice::where('status', config('const.invoice_status.pending'))
             ->where('processing_type', config('const.type.auto_pay'))
             ->where('failed_charges_count', 0)
             ->where(function ($query) use ($nowMysql) {
                 $query->where('due_date', 'is', 'NULL')
                     ->orWhere('due_date', '<=', $nowMysql)
                     ->orWhere('due_date', '');
-            })->chunk(200, function ($invoices) {
+            })->chunk($records, function ($invoices) use ($records) {
                 foreach ($invoices as $invoice)
                 {
                     $this->processInvoice($invoice, true);
-//                    break;
                 }
-                dd('Done');
+
+                if ($records > 0) {
+                    return true;
+                }
             });
+        return true;
     }
 
     /**
@@ -696,7 +705,7 @@ class BillingHelper {
             return ['ERRMSG' => 'Invalid invoice amount: ' . $invoice->amount];
         }
 
-        // Process the invoice
+        // Charge the invoice
         $billingService = new SIPBilling();
         $charges = $invoice->charges;
         $details = $charges->pluck('details');
