@@ -195,6 +195,29 @@ angular.module('app.admin',         ['ui.router']).config(function ($stateProvid
       }
     })
 });
+angular.module('app.walkthrough',        ['ui.router']).config(function ($stateProvider) {
+  $stateProvider
+    .state('app.walkthrough', {
+      url:  '/walkthrough',
+      data: {
+        title: 'Walkthrough'
+      },
+      views: {
+        "content@app": {
+          templateUrl: '/views/mobile/walkthrough.html',
+          controller:  'dropZoneController as app',
+        }
+      },
+      resolve: {
+        scripts: function (lazyScript, generalService) {
+          
+          return lazyScript.register([
+            '/js/smart/build/vendor.ui.js'
+          ]);
+        }
+      }
+    })
+});
 angular.module('app.warpol',        ['ui.router']).config(function ($stateProvider) {
   $stateProvider
     .state('app.warpol', {
@@ -210,7 +233,7 @@ angular.module('app.warpol',        ['ui.router']).config(function ($stateProvid
       },
       resolve: {
         scripts: function (lazyScript, generalService) {
-          
+
           return lazyScript.register([
             '/js/smart/build/vendor.ui.js'
           ]);
@@ -393,6 +416,37 @@ app.factory('generalService',   function () {
     rightView: false,
   };
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //
 //Stronger Service Dif Solution.

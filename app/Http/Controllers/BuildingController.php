@@ -158,6 +158,11 @@ class BuildingController extends Controller {
         return Neighborhood::all();
     }
 
+    public function getProspectBuildings()
+    {
+        return  Building::whereNotNull('id_status')->get();
+    }
+
     //NOT IN USE ANYMORE id_types changed to TYPE
     public function getTypesList()
     {

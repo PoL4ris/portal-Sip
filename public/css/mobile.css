@@ -1,0 +1,239 @@
+.walkthrough-mobile {
+  position: fixed;
+  width: 100%;
+  top: 5px;
+  left: 0;
+  height: calc(100% - 55px);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.mobile-walk{
+  position: absolute;
+  top:0;
+  width: 100%;
+}
+#mobile-navigation .nav-container{
+  position: fixed;
+  width: 100%;
+  z-index: 905;
+  bottom: 0;
+  border-top: 1px solid #b4b4b4;
+  background: white;
+  height: 50px;
+}
+.h-menu-icons{
+  font-size: 30px;
+  padding: 3px 0;
+  color: #8f8f8f;
+}
+.h-menu-icons i {
+  font-weight: inherit;
+}
+.preview-images .img-box{
+  width: 100%;
+  padding-top: 10px;
+  height: 300px;
+  overflow: hidden;
+  background: white;
+}
+.m-dash-header{
+  background: #0086ff;
+  position: fixed;
+  left: 0px;
+  width: 100%;
+  top: 0;
+  right: 0;
+  height: 45px;
+  margin: 0;
+  padding: 5px 0 0 0;
+}
+.m-dash-header .imagen-logo{
+  width: 100px;
+}
+.m-dash-header .imagen-logo img{
+  width:100%;
+}
+.mobile-dash-content{
+  position: relative;
+  top: 40px;
+}
+.mobile-dash-content .access-box{
+  height:90px;
+}
+.mobile-dash-content .access-box div i{
+  font-size: 40px;
+  color: white;
+}
+.m-appt{}
+.m-appt .pending, .m-appt .onsite{
+  background: white;
+  border-bottom: none;
+  border-right: none;
+  border-top: none;
+  padding: 10px 0;
+}
+.m-appt .pending{
+  border-left:5px solid crimson;
+}
+.m-appt .onsite{
+  border-left:5px solid #0086ff;
+}
+.m-appt form div{
+  padding: 5px;
+  border-bottom: 1px solid #ddd;
+  width: 90%;
+  margin: 0 auto;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  background: transparent;
+  box-shadow: none;
+}
+.m-appt form pre{
+  padding: 5px;
+  margin: 5% auto;
+  width: 90%;
+  background: transparent;
+}
+.m-appt form input{
+  display: inline-block;
+  width: 20%;
+  margin: 0 2%;
+  border-radius: 3px;
+  background: #eff2f0;
+  border: none;
+  font-weight: bold;
+  color: #333;
+  letter-spacing: 0.5px;
+  font-size: 11px;
+  padding: 5px;
+}
+.m-walk{
+  left: 0;
+}
+.m-walk .bld-filters-sub-nav{
+  padding: 0;
+}
+.m-walk .mw-filter-bld input{
+  height: 33px;
+  width: 100%;
+  padding-left: 5px;
+  font-size: 14px;
+  font-weight: inherit;
+  border: 1px solid #ddd;
+  border-radius: 0px;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  color: #006eb9;
+}
+.m-walk .mw-filter-bld input::placeholder{
+  color: #bfbfbf;
+}
+.m-walk .building-list-side{
+  border: none;
+  overflow: hidden;
+  max-height: 00%;
+  padding: 0;
+}
+.m-walk .building-list-side .bld-list-side{
+  padding: 5px 0px;
+}
+.mw-1{
+  left:100%;
+}
+.back-style-action{
+  position: absolute;
+  font-size: 13px;
+  left: 10px;
+  color: #3C82D7;
+  top: 5px;
+}
+.back-style-action i{
+  font-size: 25px;
+  font-weight: bold;
+  margin-right: 5px;
+  position: relative;
+  top: 3px;
+}
+.next-style-action {
+  position: absolute;
+  font-size: 15px;
+  right: 10px;
+  color: #3C82D7;
+  top: 10px;
+}
+.next-style-action.no-action{
+  color: white;
+  text-shadow: 1px 1px 1px rgba(0,0,0,.4);
+}
+.request-fields-inline{}
+.request-fields-inline input{
+  width: 100%;
+  border: none;
+  height: 40px;
+  padding: 0 25px;
+  color: #006eb9;
+}
+.request-fields-inline input::placeholder {
+  color: #bfbfbf;
+}
+.request-fields-inline select{
+  width: 100%;
+  height: 40px;
+  border-radius: 0px;
+  border: none;
+  background: white;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  color: #bfbfbf;
+  padding: 0 25px;
+}
+.request-fields-inline select option{
+}
+
+.tabs-style-fixed li{
+  width: 33.33%;
+  text-align: center;
+}
+
+
+.areatext-m{
+  border: none;
+  min-height: 100px;
+  resize: none;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

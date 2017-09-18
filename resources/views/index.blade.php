@@ -36,6 +36,8 @@
   <link rel="stylesheet" type="text/css" media="screen" href="/css/style.css">
   <link rel="stylesheet" type="text/css" media="screen" href="/css/buildings.css">
   <link rel="stylesheet" type="text/css" media="screen" href="/css/calendar.css">
+  <link rel="stylesheet" type="text/css" media="screen" href="/css/mobile.css">
+  <link rel="stylesheet" type="text/css" media="screen" href="/css/responsive.css">
 
   <!-- #FAVICONS -->
   <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
@@ -150,6 +152,7 @@ Possible attributes
 <script src="/js/sidebar.js"></script>
 <script src="/js/silveripJs/icons.js"></script>
 <script src="/js/silveripJs/const.js"></script>
+<script src="/js/silveripJs/mobileDevice.js"></script>
 <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"></script>
 
 

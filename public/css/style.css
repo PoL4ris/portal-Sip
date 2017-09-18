@@ -1,3 +1,6 @@
+#mobile-header{
+  display: none;
+}
 .border {
   border: 2px solid red;
 }
@@ -20,6 +23,15 @@
 }
 .bg-white {
   background: white none repeat scroll 0 0;
+}
+.bg-royal {
+  background: royalblue none repeat scroll 0 0;
+}
+.bg-violet {
+  background: violet none repeat scroll 0 0;
+}
+.transparent{
+  color: transparent;
 }
 .bg-gray {
   background: #f4f4f4 none repeat scroll 0 0;
@@ -104,6 +116,9 @@
 }
 .m-t-md {
   margin-top: 10px;
+}
+.m-r-md {
+  margin-right: 10px;
 }
 .m-r-sm {
   margin-right: 5px;
@@ -1065,10 +1080,9 @@ table.dataTable tbody tr {
   font-size: 10px;
 }
 .one img {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100px;
+  width: 15px;
+  position: relative;
+  top: 5px;
 }
 .one input {
   position: absolute;
@@ -1095,32 +1109,54 @@ table.dataTable tbody tr {
 
 
 .preview-images {
-  border: 1px dotted #ddd;
 }
 .preview-images .img-box {
   float: left;
-  height: 100px;
+  /*height: 100px;*/
   overflow: hidden;
   position: relative;
   text-align: center;
   width: 10%;
 }
 .preview-images .img-box img {
-  max-height: 100px;
+  max-height: 200px;
+  max-width: 300px;
 }
-.preview-images .img-box div {
-  background: rgba(0, 0, 0, 0.5) none repeat scroll 0 0;
-  bottom: 0;
-  color: crimson;
+.preview-images .img-box div.remove-act {
+  background: rgba(237, 20, 61, 0.85);
+  top: 0;
+  color: white;
   cursor: pointer;
-  font-size: 18px;
+  font-size: 25px;
   font-weight: lighter;
-  position: absolute;
-  width: 100%;
+  width: 40px;
   z-index: 10;
+  margin: 0 auto;
+  height: 40px;
+  position: absolute;
+  text-align: center;
+  right: 0;
 }
-.preview-images .img-box div:hover {
+.preview-images .img-box div.remove-act:hover {
   opacity: 0.6;
+}
+.preview-images .img-box div.texto {
+  width: 100%;
+  margin-top: 15px;
+  margin-bottom: 0;
+  background: white;
+}
+.preview-images .img-box div.texto textarea {
+  width: 100%;
+  resize: none;
+  border: none;
+  border-radius: 0px;
+  padding: 10px 15px;
+  border-top: 1px solid #ddd;
+  min-height: 70px;
+  margin: 0;
+  border-radius: 0px;
+  box-shadow: none;
 }
 
 .style-refund{
@@ -1516,6 +1552,60 @@ table.dataTable tbody tr {
 .close-tab-cross:hover{
   opacity: .6;
   background: rgba(0,0,0,.3);
+}
+.style-form{}
+.style-form div{
+  margin-bottom: 5px;
+}
+.style-form div label{
+  color: #7d7d7d;
+}
+.style-form div input{
+  color: #006eb9;
+  width: 100%;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  border-bottom: 1px solid #ddd;
+  height: 30px;
+  padding: 0 10px;
+  font-size: 14px;
+  border-radius: 0px;
+}
+.style-form div input::placeholder{
+  color: #bfbfbf;
+}
+.style-form div textarea{
+  width:100%;
+}
+.drop-zone-box{
+  font-family:"Lato",sans-serif;
+}
+.follow-drop-box{
+  height: 50px;
+  background: #0f94f6;
+  width: 50px;
+  border-radius: 50%;
+  color: white;
+  box-shadow: 0 2px 5px rgba(0,0,0,.26);
+  position: fixed;
+  z-index: 100;
+  right: 10px;
+  bottom: 50px;
+  /*animation: bounce 5s infinite;*/
+  font-size: 16px;
+  border: none;
+  padding-top: 11px;
+}
+.follow-drop-box:hover{
+  /*-webkit-filter: blur(1px);*/
+  /*filter: blur(1px);*/
+}
+.bld-actions{
+  border-bottom: none;
+  border-top: none;
+  border-left: none;
+  border-radius: 0px;
 }
 pre {
   font-size: 10px;

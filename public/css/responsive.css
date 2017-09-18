@@ -1,0 +1,14 @@
+@media only screen and (max-width: 479px) and (min-width: 320px) {
+  #header, .desk-v{
+    display: none;
+  }
+  #mobile-navigation, .mobile-v{
+    display: block;
+  }
+  #main{
+    border-top:5px solid #0086ff;
+    margin: 0 !important;
+
+  }
+  /*DISPLAYS*/
+}

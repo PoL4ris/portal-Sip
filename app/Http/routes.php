@@ -61,6 +61,7 @@ Route::group(['middleware' => 'web'], function () {
     Route::post('insertNewProduct',         'AdminController@insertNewProduct');
     Route::post('updateProduct',            'AdminController@updateProduct');
     Route::get('getChargesStats',           'AdminController@getChargesStats');
+    Route::get('getConstantData',           'AdminController@getConstantData');
     //PROFILE
     Route::get('getProfileInfo',            'AdminController@getProfileInfo');
     Route::get('updateProfileInfo',         'AdminController@updateProfileInfo');
@@ -94,6 +95,8 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('getBuildingProperty',       'BuildingController@getBuildingProperty');
     Route::get('getBuildingSwitches',       'BuildingController@getBuildingSwitches');
     Route::get('getBuildingByAddressId',    'BuildingController@getBuildingByAddressId');
+    Route::get('getNeighborhoodList',       'BuildingController@getNeighborhoodList');
+    Route::get('getProspectBuildings',      'BuildingController@getProspectBuildings');
     //Insert Building
     Route::post('insertbuildingData',       'BuildingController@insertBuildingData');
     Route::get('insertBuildingProperties',  'BuildingController@insertBuildingProperties');

@@ -31,34 +31,86 @@ app.controller('libController', function ($scope, $http) {
 
 app.controller('dropZoneController', function($scope, $http, customerService, generalService){
 
+
+
+console.log(generalService);
+
+
+  //This is the checkMobileDevice
+  console.log($.browser.mobile);
+  $scope.mobDevice = $.browser.mobile;
+
+
   if (generalService.sideBarFlag) {
     $scope.sipTool(2);
     generalService.sideBarFlag = false;
   }
 
+  /*DOROP ENGINE*/
   var ctrl = this;
   ctrl.data = { upload:[] }
   $scope.filesControl = ctrl.data.upload;
 
   $scope.getDataControl = function(){
     console.log($scope.filesControl);
+    var objetos = getFormValues('walkthrough-form');
+
+    for(var obj in objetos ) {
+    console.log();
+      $scope.filesControl[obj.split('image-')[1]].comment = objetos[obj];
+    }
+
+
+    console.log($scope.filesControl);
+
   }
   $scope.removeImage = function (keyId){
     $scope.filesControl.splice(keyId, 1);
     ctrl.data.upload = $scope.filesControl;
   }
-
   $('.drop-zone-box').on('dragenter', function() {
     $(this)
       .css({'background-color' : 'rgba(255,255,255,0.4)'})
       .find("p").show();
   });
-
   $('.drop-zone-box').on('dragleave', function() {
     $(this)
       .css({'background-color' : ''})
       .find("p").hide();
   });
+
+
+
+
+
+
+
+
+  /*mas Engine*/
+  $scope.phaseFlagStyle = 0;
+
+  $http.get("getProspectBuildings")
+    .then(function (response) {
+      $scope.prospectBuildings = response.data
+    });
+  $http.get("getNeighborhoodList")
+    .then(function (response) {
+      $scope.neighborhoodList = response.data
+    });
+
+  $scope.nextPhase = function(id, index){
+    $('#'+id+index).css('left', '-110%');
+    $('#'+id+(index+1)).css('left', '0');
+  }
+  $scope.backPhase = function(id, index){
+    $('#'+id+index).css('left', '100%');
+    $('#'+id+(index-1)).css('left', '0');
+  }
+
+  $scope.verifyBldRecord = function (){
+    console.log('ok on mwView1');
+    $scope.mwView1 = true;
+  }
 
 })
 .directive('dropZone',[
@@ -449,10 +501,6 @@ app.controller('dummyAppController', function ($scope, $http, customerService, g
 
 
 });
-
-
-
-
 
 
 
