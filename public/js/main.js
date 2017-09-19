@@ -325,6 +325,7 @@ angular.module('app.tech-schedule', ['ui.router']).config(function ($stateProvid
         })
 });
 
+
 angular.module('app.tech-appointments', ['ui.router']).config(function ($stateProvider) {
     $stateProvider
         .state('app.tech-appointments', {
@@ -348,7 +349,28 @@ angular.module('app.tech-appointments', ['ui.router']).config(function ($statePr
         })
 });
 
-
+angular.module('app.calDataScrape', ['ui.router']).config(function ($stateProvider) {
+    $stateProvider
+        .state('app.calDataScrape', {
+            url: '/CalReport',
+            data: {
+                title: 'CalReport'
+            },
+            views: {
+                "content@app": {
+                    templateUrl: '/views/customer/customerCalReport.html',
+                    controller: 'calDataScrape'
+                }
+            },
+            resolve: {
+                scripts: function (lazyScript) {
+                    return lazyScript.register([
+                        '/js/smart/build/vendor.ui.js'
+                    ]);
+                }
+            }
+        })
+});
 
 app.factory('customerService',  function () {
   return {

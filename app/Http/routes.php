@@ -256,6 +256,10 @@ Route::group(['middleware' => 'web'], function () {
     //LoginApp
     Route::get('authApp',                     'Auth\AuthController@AppSocialCredentials');
 
+//calDataScrape
+    Route::resource('CalReport', 'CalDataScrapeController');
+
+
     $s = 'social.';
     Route::get('/social/redirect/{provider}',   ['as' => $s . 'redirect',
                                                  'uses' =>    'Auth\AuthController@getSocialRedirect']);

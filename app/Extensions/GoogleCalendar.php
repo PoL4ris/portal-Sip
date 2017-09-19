@@ -213,6 +213,78 @@ class GoogleCalendar {
 
     }
 
+    public function GetValidCompletedAppointmentsInRange(DateTime $startdate,DateTime $enddate)
+    {
+
+        $timeMin = new DateTime($startdate->format(DATE_RFC3339));
+        $timeMin->setTime(00, 00, 00);
+
+        $timeMax = new DateTime($enddate->format(DATE_RFC3339));
+        $timeMax->setTime(23, 59, 59);
+        $optParams = array(
+            'maxResults'   => 2500,
+            'orderBy'      => 'startTime',
+            'singleEvents' => true,
+            'timeMin'      => $timeMin->format(DATE_RFC3339),
+            'timeMax'      => $timeMax->format(DATE_RFC3339)
+        );
+        $listing = [];
+
+        $scheduledtechs = $this->service->events->listEvents(Config::get('google.schedule_appointment'), $optParams);
+        //should have google schedule now, but let's process the appointments and make a cleaner table.
+        $techsworking = [];
+        foreach ($scheduledtechs as $techevent)
+        {
+            array_push($techsworking, $techevent->getSummary());
+        }
+
+
+        //$availableTechCalendar = $this->all(Config::get('google.schedule_appointment') );
+        //dd($availableTechCalendar);
+        $appointments = $this->service->events->listEvents(Config::get('google.completed_appointment'), $optParams);
+        //should have google schedule now, but let's process the appointments and make a cleaner table.
+
+        foreach ($appointments as $appointment)
+        {
+
+            foreach ($techsworking as $tech)
+            {
+                //find out which tech an appointment is scheduled for.
+                $summary = $appointment->getSummary();
+                if ($this->foundinstring($summary, $tech))
+                {
+                    $appointmentend = $appointment->getEnd()->getDateTime();
+                    $appointmentstart = $appointment->getStart()->getDateTime();
+                    $validatecheck = validateAppointment($appointment);
+                    array_push($listing, ['tech' => $tech, 'appointment' => $appointment, 'start' => $appointmentstart, 'end' => $appointmentend, 'type' => 'completed']);
+                }
+            }
+
+
+        }
+
+
+        // dd($pending_appointments);
+        return $listing;
+
+    }
+
+    private function validateAppointment(Google_Service_Calendar_Event $appointment) {
+        $apptSummary = $appointment->getSummary();
+        $explodedSummary = explode(" ", $apptSummary);
+        $countSum = count($explodedSummary);
+        if($countSum != 4) {
+            return 0;
+        }
+
+    //no need to check if tech is valid here, it has already been against the schedule by GetValidCompletedAppointmentsInRange
+
+    //validate 2nd field of summary (building code) against valid building codes, for the sake of not making a million db calls
+    //we can pass in a valid list, however if list is not present db calls will be made.
+        
+
+    }
+
     /**
      * just a helper function, finds $needle in $haystack
      * @param $haystack
