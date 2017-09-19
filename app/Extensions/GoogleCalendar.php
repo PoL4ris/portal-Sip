@@ -86,8 +86,8 @@ class GoogleCalendar {
     {
 
      //needed for the schedule builder to determine length of schedule.
-        $startofday;
-        $endofday;
+        $startofday = null;
+        $endofday = null;
 
 
         $techSchedule = $this->GetTechSchedule($date);
@@ -401,7 +401,7 @@ class GoogleCalendar {
 
         $description .= "{$appointmentdescription}\n\n";
         $description .= "Scheduled By:\n";
-        $description .= $user . " at " . (new DateTime('now'))->format(DATE_RFC3339);
+        $description .= $user . " on " . (new DateTime('now'))->format(DATE_RFC3339);
 
         $event = new \Google_Service_Calendar_Event;
         $start = new \Google_Service_Calendar_EventDateTime();
@@ -424,11 +424,11 @@ class GoogleCalendar {
 
 
 //set the event on the pending calendar.
-        $onset = $Calendar->service->events->insert(Config::get('google.pending_appointment'), $event, []);
+        $googleresponse = $Calendar->service->events->insert(Config::get('google.pending_appointment'), $event, []);
 
-//$onset is just the newly created appointment in case we need anything else done with it.
+//$googleresponse is just the newly created appointment in case we need anything else done with it.
 
-        return $onset;
+        return $googleresponse;
     }
 
     /**
@@ -534,6 +534,60 @@ class GoogleCalendar {
         //should have google schedule now, but let's process the appointments and make a cleaner table.
 
         foreach ($pending_appointments as $appointment)
+        {
+
+            foreach ($techsworking as $tech)
+            {
+                //find out which tech an appointment is scheduled for.
+                $summary = $appointment->getSummary();
+                if ($this->foundinstring($summary, $tech))
+                {
+
+                    $appointmentend = $appointment->getEnd()->getDateTime();
+                    $appointmentstart = $appointment->getStart()->getDateTime();
+
+                    array_push($listing, ['tech' => $tech, 'appointment' => $appointment, 'start' => $appointmentstart, 'end' => $appointmentend,'type' => 'pending']);
+                }
+            }
+
+
+        }
+
+
+        return $listing;
+
+    }
+
+
+    public function GetProblemAppointments(DateTime $date)
+    {
+
+        $timeMin = new DateTime($date->format(DATE_RFC3339));
+        $timeMin->setTime(00, 00, 00);
+
+        $timeMax = new DateTime($date->format(DATE_RFC3339));
+        $timeMax->setTime(23, 59, 59);
+        $optParams = array(
+            'maxResults'   => 2500,
+            'orderBy'      => 'startTime',
+            'singleEvents' => true,
+            'timeMin'      => $timeMin->format(DATE_RFC3339),
+            'timeMax'      => $timeMax->format(DATE_RFC3339)
+        );
+        $listing = [];
+
+        $scheduledtechs = $this->service->events->listEvents(Config::get('google.schedule_appointment'), $optParams);
+        //should have google schedule now, but let's process the appointments and make a cleaner table.
+        $techsworking = [];
+        foreach ($scheduledtechs as $techevent)
+        {
+            array_push($techsworking, $techevent->getSummary());
+        }
+
+        $problem_appointments = $this->service->events->listEvents(Config::get('google.problem_appointment'), $optParams);
+        //should have google schedule now, but let's process the appointments and make a cleaner table.
+
+        foreach ($problem_appointments as $appointment)
         {
 
             foreach ($techsworking as $tech)
