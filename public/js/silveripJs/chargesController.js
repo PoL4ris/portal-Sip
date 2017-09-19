@@ -1,9 +1,9 @@
-app.controller('chargesController', function ($scope, $http, customerService, adminService, DTOptionsBuilder) {
+app.controller('chargesController', function ($scope, $http, customerService, adminService, DTOptionsBuilder, generalService) {
   console.log('This is ChargesController');
 
-  if (customerService.sideBarFlag) {
+  if (generalService.sideBarFlag) {
     $scope.sipTool(2);
-    customerService.sideBarFlag = false;
+    generalService.sideBarFlag = false;
   }
 
   $scope.displayView  = 'charges';

@@ -15,108 +15,180 @@
 </article>
 
 <script>
+    var index = {};
+/*
   var index = {
-    '16384': '1331 S Prairie Chicago IL 60605',
-    '16385': '1235 S Prairie Ave Chicago IL 60605',
-    '16386': '1600 S Indiana Ave Chicago IL 60616',
-    '16387': '100 E 14th Street Chicago IL 60605',
-    '16388': '41 E 8th Street Chicago IL 60605',
-    '16389': '1550 S Blue Island Ave Chicago IL 60608',
-    '16390': '1250 S Indiana Chicago IL 60605',
-    '16391': '1211P S Prairie Ave Chicago IL 60605',
-    '16392': '565 W Quincy St Chicago IL 60661',
-//    };
-//    var index2 = {
-    '16393': '270 E Pearson Chicago IL 60611',
-    '16394': '360 E Randolph Chicago IL 60601',
-    '16395': '235 W Van Buren Chicago IL 60607',
-    '16396': '4800 S Chicago Beach Dr. Chicago IL 60615',
-    '16397': '222 N Columbus Drive Chicago IL 60601',
-    '16398': '501 N Clinton Chicago IL 60654',
-    '16399': '659 West Randolph Street Chicago IL 60661',
-    '16400': '770 N Halsted Street Chicago IL 60642',
-    '16401': '213 W. Institute Pl Chicago IL 60610',
-    '16402': '159 E Walton Street Chicago IL 60611',
-//    };
-//    var index3 = {
-    '16403': '2323 West Pershing Rd Chicago IL 60609',
-    '16404': '845 N. State Street Chicago IL 60610',
-    '16405': '616 West Fulton Street Chicago IL 60661',
-    '16406': '70 W Huron Street Chicago IL 60654',
-    '16407': '1339 N Dearborn Street Chicago IL 60610',
-    '16408': '1910 South Indiana Avenue Chicago IL 60616',
-    '16409': '77 E Walton Street Chicago IL 60611',
-    '16410': '65 East Monroe Street Chicago IL 60603',
-    '16411': '1224 W Van Buren St Chicago IL 60607',
-    '16412': '1524 S Sangamon Street Chicago IL 60608',
-//    };
-//    var index4 = {
-    '16413': '340 East Randolph Street Chicago IL 60601',
-    '16414': '71 W Hubbard Chicago IL 60654',
-    '16415': '737 West Washington Chicago IL 60601',
-    '16416': '730 S Clark St Chicago IL 60605',
-    '16417': '8 E Randolph St Chicago IL 60601',
-    '16418': '125 S Jefferson Chicago IL 60605',
-    '16419': '240 E Illinois St Chicago IL 60611',
-    '16420': '1901 S Calumet Ave Chicago IL 60605',
-    '16421': '657 West Fulton Chicago IL 60661',
-    '16422': '1600 S Wabash Chicago IL 60616',
-//    };
-//    var index5 = {
-    '16423': '60 East Monroe Chicago IL 60603',
-    '16426': '1033 W 14th Place,1069 W 14th Place Chicago IL 60608',
-    '16427': '610 S Michigan Ave Chicago IL 60605',
-    '16428': '1000 W 15th Street,1070 W 15th Street Chicago IL 60608',
-    '16429': '1001 W 15th Street,1071 W 15th Street Chicago IL 60608',
-    '16430': '2037 W Caroll Ave Chicago IL 60612',
-    '16431': '345 N Canal Street Chicago IL 60606',
-    '16432': '1111 W 15th Street,1151 W 15th Street Chicago IL 60608',
-    '16433': '200 W Grand Ave Chicago IL 60654',
-    '16434': '1110 W 15th Street,1150 W 15th Street Chicago IL 60608',
-//    };
-//    var index6 = {
-    '16424': '1335 S Prairie Chicago IL 60605',
-    '16435': '308 W Erie Chicago IL 60654',
-    '16436': '1111 W 14th Place,1151 W 14th Place Chicago IL 60608',
-    '16437': '1901 S Calumet Ave Chicago IL 60605',
-    '16438': '1600 S Wabash Ave Chicago IL 60616',
-    '16439': '125 E 13th Chicago IL 60605',
-    '16440': '57 E. Delaware Chicago IL 60610',
-    '16441': '111 W Maple St Chicago IL 60610',
-    '16442': '1525 S Sangamon Street Chicago IL 60608',
-    '16443': '1201P S Prairie Ave Chicago IL 60605',
-//    };
-//    var index7 = {
-    '16444': '1300 North State Parkway Chicago IL 60610',
-    '16445': '2000 S Michigan Ave Chicago IL 60616',
-    '16446': '845 W Fulton Market Chicago IL 60607',
-    '16447': '2225 W Pershing Chicago IL 60610',
-    '16448': '30 West Oak Street Chicago IL 60610',
-    '16449': '1635 W Belmont Ave Chicago IL 60657',
-    '16450': '1600 S Wabash Chicago IL 60616',
-    '16451': '130 S Canal St Chicago IL 60606',
-    '16452': '400 N Clinton Chicago IL 60654',
-    '16453': '1700 E 56th Street Chicago IL 60637',
-//    };
-//    var index8 = {
-    '16454': '711 S Dearborn St Chicago IL 60605',
-    '16455': '701 South Wells Steet Chicago IL 60607',
-    '16456': '10 S Dearborn Chicago IL 60603',
-    '16457': '850 South Clark Street Chicago IL 60605',
-    '16458': '901 W Madison Avenue Chicago IL 60607',
-    '16459': '1623 S Lumber St Chicago IL 60616',
-    '16460': '333 S Des Plaines Street Chicago IL 60661',
-    '16461': '400 N Clinton Chicago IL 60654',
-    '16462': '909 W Washington Blvd Chicago IL 60607',
-    '16463': '14 N Peoria Street Chicago IL 60607',
-//    };
-//    var index9 = {
-    '16464': '505 N McClurg Chicago IL 60611',
-    '16465': '111 West Polk Street Chicago IL 60605',
-    '16466': '212 E Cullerton Street Chicago IL 60616',
-    '16467': '900 S Clark Chicago IL 60605',
-    '16468': '1046 W Kinzie St Chicago IL 60642'
+    '13242': '1235 S Prairie Ave, Chicago IL',
+    '13243': '100 E 14th Street, Chicago IL',
+    '13244': '41 E 8th Street, Chicago IL',
+    '13245': '1250 S Indiana, Chicago IL',
+    '13246': '565 W Quincy St, Chicago IL',
+    '13247': '4800 S Chicago Beach Dr., Chicago IL',
+    '13248': '222 N Columbus Drive, Chicago IL',
+    '13249': '659 West Randolph Street, Chicago IL',
   };
+  var index = {
+    '13250': '125 S Jefferson , Chicago IL',
+    '13251': '2323 West Pershing Rd , Chicago IL',
+    '13252': '616 West Fulton Street , Chicago IL',
+    '13253': '1910 South Indiana Avenue , Chicago IL',
+    '13254': '65 East Monroe Street , Chicago IL',
+    '13255': '340 East Randolph Street , Chicago IL',
+    '13256': '737 West Washington , Chicago IL',
+    '13257': '1901 S Calumet Ave , Chicago IL',
+    '13258': '60 East Monroe , Chicago IL',
+  };
+  var index = {
+    '13259': '1335 S Prairie , Chicago IL',
+    '13260': '657 West Fulton , Chicago IL',
+    '13261': '1033 W 14th Place , Chicago IL',
+    '13262': '1000 W 15th Street , Chicago IL',
+    '13263': '1001 W 15th Street , Chicago IL',
+    '13264': '1111 W 15th Street , Chicago IL',
+    '13265': '1110 W 15th Street , Chicago IL',
+    '13266': '1111 W 14th Place,1151 W 14th Place , Chicago IL',
+    '13267': '125 E 13th , Chicago IL',
+  };
+  var index = {
+    '13268': '111 W Maple St , Chicago IL',
+    '13269': '1300 North State Parkway , Chicago IL',
+    '13270': '2225 W Pershing , Chicago IL',
+    '13271': '30 West Oak Street , Chicago IL',
+    '13272': '1600 S Wabash Ave , Chicago IL',
+    '13273': '130 S Canal St , Chicago IL',
+    '13274': '711 S Dearborn St , Chicago IL',
+    '13275': '701 South Wells Steet , Chicago IL',
+    '13276': '850 South Clark Street , Chicago IL',
+  };
+  var index = {
+    '13277': '901 W Madison Avenue , Chicago IL',
+    '13278': '333 S Des Plaines Street , Chicago IL',
+    '13279': '111 West Polk Street , Chicago IL',
+    '13280': '212 E Cullerton Street , Chicago IL',
+    '13281': '845 N. State Street , Chicago IL',
+    '13282': '57 E. Delaware , Chicago IL',
+    '13283': '1550 S Blue Island Ave , Chicago IL',
+    '13284': '240 E Illinois St , Chicago IL',
+    '13285': '14 N Peoria Street , Chicago IL',
+  };
+  var index = {
+    '13286': '909 W Washington Blvd , Chicago IL',
+    '13287': '1224 W Van Buren St , Chicago IL',
+    '13288': '1524 S Sangamon Street , Chicago IL',
+    '13289': '1201P S Prairie Ave , Chicago IL',
+    '13290': '1525 S Sangamon Street , Chicago IL',
+    '13291': '8 E Randolph St , Chicago IL',
+    '13292': '1901 S Calumet Ave , Chicago IL',
+    '13293': '200 W Grand Ave , Chicago IL',
+    '13294': '345 N Canal Street , Chicago IL',
+  };
+  var index = {
+    '13295': '610 S Michigan Ave , Chicago IL',
+    '13296': '1635 W Belmont Ave , Chicago IL',
+    '13297': '845 W Fulton Market , Chicago IL',
+    '13298': '2000 S Michigan Ave , Chicago IL',
+    '13299': '1600 S Indiana Ave , Chicago IL',
+    '13300': '730 S Clark St , Chicago IL',
+    '13301': '77 E Walton Street , Chicago IL',
+    '13302': '213 W. Institute Pl , Chicago IL',
+    '13303': '70 W Huron Street , Chicago IL',
+  };
+  var index = {
+    '13304': '1339 N Dearborn Street , Chicago IL',
+    '13305': '159 E Walton Street , Chicago IL',
+    '13306': '360 E Randolph , Chicago IL',
+    '13307': '235 W Van Buren , Chicago IL',
+    '13308': '501 N Clinton , Chicago IL',
+    '13309': '900 S Clark , Chicago IL',
+    '13310': '1700 E 56th Street , Chicago IL',
+    '13311': '1623 S Lumber St , Chicago IL',
+    '13312': '1046 W Kinzie St , Chicago IL',
+  };
+  var index = {
+    '13313': '10 S Dearborn , Chicago IL',
+    '13314': '400 N Clinton , Chicago IL',
+    '13315': 'N Clinton , Chicago IL',
+    '13316': '270 E Pearson , Chicago IL',
+    '13317': '2037 W Carroll Ave , Chicago IL',
+    '13318': '308 W Erie , Chicago IL',
+    '13319': '505 N McClurg , Chicago IL',
+    '13320': '71 W Hubbard , Chicago IL',
+    '13321': '770 N Halsted Street , Chicago IL',
+  };
+  var index = {
+    '13322': '1211P S Prairie Ave , Chicago IL',
+    '13323': '1331 S Prairie , Chicago IL',
+    '13324': '1030 W Chicago Ave , Chicago IL',
+    '13325': '1220 S State St , Chicago IL',
+    '13326': '308 W Erie , Chicago IL',
+    '13327': '1601 S Indiana , Chicago IL',
+    '13328': '3550 N. Lake Shore Dr , Chicago IL',
+    '13329': '600 W Jackson St , Chicago IL',
+    '13330': '400 W Ontario , Chicago IL',
+  };
+  var index = {
+    '13331': '11 E Hubbard St , Chicago IL',
+    '13332': '2245 W Pershing Rd , Chicago IL',
+    '13333': '5923 S Central Ave , Chicago IL',
+    '13334': '401 E Lower Wacker Dr , Chicago IL',
+    '13335': '1600 S Prairie Ave , Chicago IL',
+    '13336': '32 S State St , Chicago IL',
+    '13337': '1623 S Lumber St , Chicago IL',
+    '13338': '55 W Van Buren , Chicago IL',
+    '13339': '1616 N Wells St , Chicago IL',
+  };
+  var index = {
+    '13340': '135 S Clinton St , Chicago IL',
+    '13341': '329 W 18th St , Chicago IL',
+    '13342': '355 N Canal St , Chicago IL',
+    '13343': '346 N Justine St , Chicago IL',
+    '13344': '1801 W Jackson St , Chicago IL',
+    '13345': '955 W Grand Ave , Chicago IL',
+    '13346': '312 W Chestnut , Chicago IL',
+    '13347': '600 W Jackson , Chicago IL',
+    '13348': '515 N State St , Chicago IL',
+  };
+  var index = {
+    '13349': '27 E Monroe , Chicago IL',
+    '13350': '1637 W Belmont Ave , Chicago IL',
+    '13351': '3146 W Chicago Ave , Chicago IL',
+    '13352': '520 N Halsted , Chicago IL',
+    '13353': '210 S. Desplaines , Chicago IL',
+    '13354': '7601 S. Kostner St , Chicago IL',
+    '13355': '1600 S Wabash , Chicago IL',
+    '13356': '1600 S Wabash , Chicago IL',
+    '13392': ' , Chicago IL',
+  };
+  var index = {
+    '13415': '1070 W 15th Street , Chicago IL',
+    '13416': '1071 W 15th Street , Chicago IL',
+    '13417': '1151 W 15th Street , Chicago IL',
+    '13418': '1150 W 15th Street , Chicago IL',
+    '13419': '1151 W 14th Place , Chicago IL',
+    '13420': '120 E Cullerton Street , Chicago IL',
+    '13421': '2241 S Wabash , Chicago IL',
+    '13598': '2545 W Diversey Ave , Chicago IL',
+    '13854': '320 N Damen , Chicago IL',
+  };
+  var index = {
+    '13855': '2010 W Fulton , Chicago IL',
+    '13856': '2041 W Carroll , Chicago IL',
+    '13857': '501 W North Ave , Chicago IL',
+    '13876': '2000 W Fulton , Chicago IL',
+    '13886': '327 N Aberdeen St , Chicago IL',
+    '13989': '1306 S Halsted , Chicago IL',
+    '13998': '1165 N Clark , Chicago IL',
+    '14124': '1301 S Halsted , Chicago IL',
+    '14135': '727 S Dearborn St , Chicago IL',
+  };
+  var index = {
+    '14136': '711 S Dearborn St , Chicago IL',
+    '14137': '727 S Dearborn St , Chicago IL',
+    '14139': 'N Canal , Chicago IL',
+    '14237': '1069 W 14th Place , Chicago IL',
+    '14270': '4141 N Kedzie Ave , Chicago IL',
+  };
+  */
 
   //Calcula e inserta longitud y latitud 10x10 Tops
   //WarpolIn & InsertData
@@ -124,7 +196,7 @@
     var geocoder    = new google.maps.Geocoder;
 
 
-    $.each(index9,function(i, item)
+    $.each(index,function(i, item)
     {
       geocoder.geocode({'address': item}, function(results, status)
       {
@@ -165,7 +237,7 @@
   function mapCreate(codes) {
     $.ajax({
         type: "GET",
-        url:  "getBuildingLocations",
+        url: "getBuildingLocations",
         success: function (data) {
           var locations   = data;
           var img         = null;
@@ -176,8 +248,12 @@
             zoom:   10,
             center: {lat: 41.8599896, lng: -87.6814276}
           });
-          var markers     = locations.map(function (location, i)
+
+          var markers = locations.map(function (location, i)
           {
+            if (!codes[location.index])
+              return;
+
             if (codes[location.index].building)
               img = codes[location.index].building.img_building
             else
@@ -187,7 +263,8 @@
               content: '<a href="#/buildings?id=' + codes[location.index].id_buildings + '">' + index[location.index] + '<hr>' + '<img style="' + imgStyle + '" src="/img/buildings/' + img + '"/>' + '</a>'
             });
 
-            var marker     = new google.maps.Marker({
+
+            var marker = new google.maps.Marker({
               position:  location,
               label:     codes[location.index].code,
               animation: google.maps.Animation.DROP

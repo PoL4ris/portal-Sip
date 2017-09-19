@@ -1,6 +1,6 @@
 
 //Support Controllers
-app.controller('supportController',                 function ($scope, $http, DTOptionsBuilder, customerService, supportService){
+app.controller('supportController',                 function ($scope, $http, DTOptionsBuilder, customerService, supportService, generalService){
 
   $scope.getAllOpenTickets              = function (event){
     supportService.refreshRoute = 'getAllOpenTickets';
@@ -48,9 +48,9 @@ app.controller('supportController',                 function ($scope, $http, DTO
 
   if(customerService.stateRoute == 'support'){
 
-    if(customerService.sideBarFlag) {
+    if(generalService.sideBarFlag) {
       $scope.sipTool(2);
-      customerService.sideBarFlag = false;
+      generalService.sideBarFlag = false;
     }
 
     $scope.getNoneBillingTickets();

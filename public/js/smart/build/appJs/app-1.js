@@ -197,6 +197,7 @@ var app = angular.module('app', [
   'app.newcustomer',
   'app.calDataScrape',
   'app.warp',
+  'app.tabs',
 ])
   .config(function ($provide, $httpProvider, RestangularProvider) {
 

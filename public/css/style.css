@@ -180,6 +180,15 @@
 .desactivado{
   opacity: .5;
 }
+.silver-magnus-label{
+  position: absolute;
+  bottom: 3px;
+  width: 100%;
+  border-radius: 0px;
+  font-size: 10px;
+  text-align: center;
+  color: #6f6f6f;
+}
 .btn-slim{
   padding:0;
 }
@@ -1499,6 +1508,15 @@ table.dataTable tbody tr {
   /*padding-left: 25px;*/
 }
 
+.close-tab-cross{
+  text-align: center;
+  display: inline-block;
+  padding: 0px 4px;
+}
+.close-tab-cross:hover{
+  opacity: .6;
+  background: rgba(0,0,0,.3);
+}
 pre {
   font-size: 10px;
   margin: 30px;

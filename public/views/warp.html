@@ -1,17 +1,17 @@
-<div class="col-lg-12">
-    <h5>Add Customer to Tabs</h5>
-    <button class="btn btn-warning" ng-click="addToTabArray(88888)">ID : 88888</button>
-    <button class="btn btn-danger" ng-click="addToTabArray(4667)">ID : 4667</button>
-    <button class="btn btn-success" ng-click="addToTabArray(501)">ID : 501</button>
-    <button class="btn btn-primary" ng-click="addToTabArray(100)">ID : 100</button>
-    <button class="btn btn-info" ng-click="addToTabArray(1234)">ID : 1234</button>
-    <button class="btn btn-default" ng-click="addToTabArray(13579)">ID : 13579</button>
-    <button class="btn btn-dark" ng-click="addToTabArray(666)">ID : 666</button>
-    <button class="btn btn-danger" ng-click="addToTabArray(901)">ID : 901</button>
-    <button class="btn btn-warning" ng-click="addToTabArray(11123)">ID : 11123</button>
-    <button class="btn btn-success" ng-click="addToTabArray(11100)">ID : 11100</button>
-    <hr>
-</div>
+<!--<div class="col-lg-12">-->
+    <!--<h5>Add Customer to Tabs</h5>-->
+    <!--<button class="btn btn-warning" ng-click="addToTabArray(88888)">ID : 88888</button>-->
+    <!--<button class="btn btn-danger"  ng-click="addToTabArray(4667)"> ID : 4667</button>-->
+    <!--<button class="btn btn-success" ng-click="addToTabArray(501)">  ID : 501</button>-->
+    <!--<button class="btn btn-primary" ng-click="addToTabArray(999)">  ID : 999</button>-->
+    <!--<button class="btn btn-info"    ng-click="addToTabArray(1234)"> ID : 1234</button>-->
+    <!--<button class="btn btn-default" ng-click="addToTabArray(13579)">ID : 13579</button>-->
+    <!--<button class="btn btn-dark"    ng-click="addToTabArray(666)">  ID : 666</button>-->
+    <!--<button class="btn btn-danger"  ng-click="addToTabArray(901)">  ID : 901</button>-->
+    <!--<button class="btn btn-warning" ng-click="addToTabArray(11123)">ID : 11123</button>-->
+    <!--<button class="btn btn-success" ng-click="addToTabArray(11100)">ID : 11100</button>-->
+    <!--<hr>-->
+<!--</div>-->
 
 
 <article class="col-sm-12 col-md-12 col-lg-12 m-t-lg bg-white white-shadow border1">
@@ -21,12 +21,19 @@
             <ul id="widget-tab-1" class="nav pull-left nav-tabs size-100">
                 <li class="active">
                     <a data-toggle="tab" href="#tab-r1" aria-expanded="false">
-                        <span class="hidden-mobile hidden-tablet">Tab 1 </span>
+                        <span class="hidden-mobile hidden-tablet">Search Customer</span>
                     </a>
                 </li>
                 <li class="" ng-repeat="usuario in tabsArray">
                     <a data-toggle="tab" href="#tab-r{{usuario}}" aria-expanded="false">
-                        <span class="hidden-mobile hidden-tablet"> User id : {{usuario}}</span>
+                        <span class="hidden-mobile hidden-tablet" title="User id : {{usuario}}">
+                            <span id="tabs-label-{{usuario}}">
+                                <img src="/img/loading.gif" alt="">
+                            </span>
+                            <span class="close-tab-cross" ng-click="removeFromTabArray(usuario)">
+                                <i class="fa fa-times down-status"></i>
+                            </span>
+                        </span>
                     </a>
                 </li>
             </ul>
@@ -36,12 +43,13 @@
             <div class="tab-content">
 
                 <div class="tab-pane active" id="tab-r1">
-                    <article class="col-sm-12 col-md-12 col-lg-12 no-padding-sides m-t-lg null-article">CUSTOMER SEARCH HERE</article>
+                    <article class="col-sm-12 col-md-12 col-lg-12 no-padding-sides m-t-lg null-article" ng-include="'/views/customersHome.html'" ng-controller="customersHomeController">CUSTOMER SEARCH HERE</article>
                 </div>
 
-                <div class="tab-pane" id="tab-r{{usuario}}" ng-repeat="usuario in tabsArray">
-                    <article class="col-sm-12 col-md-12 col-lg-12 no-padding-sides m-t-lg null-article">User id : {{usuario}}
-                        <div ng-include="'/views/customers.html?id={{usuario}}'" ng-controller="customerController"></div>
+                <div class="tab-pane" id="tab-r{{uniqueIdIndex}}" ng-repeat="uniqueIdIndex in tabsArray">
+                    <article class="col-sm-12 col-md-12 col-lg-12 no-padding-sides m-t-lg null-article">
+                        <p><b>User id : {{uniqueIdIndex}} || {{customerServiceData[uniqueIdIndex].status.name}}</b></p>
+                        <div ng-include="'/views/customers.html?id={{uniqueIdIndex}}'" ng-controller="customerController"></div>
                     </article>
                 </div>
 
@@ -50,3 +58,11 @@
 
     </div>
 </article>
+
+
+
+
+
+
+
+</table>

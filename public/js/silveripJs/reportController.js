@@ -1,13 +1,13 @@
-app.controller('reportController', function ($scope, $http, customerService, $stateParams) {
+app.controller('reportController', function ($scope, $http, customerService, $stateParams, generalService) {
 
 
 
   var canvas  = document.getElementById('revenueChart');
   var context = canvas.getContext('2d');
 
-  if (customerService.sideBarFlag) {
+  if (generalService.sideBarFlag) {
     $scope.sipTool(2);
-    customerService.sideBarFlag = false;
+    generalService.sideBarFlag = false;
   }
 
   $http.get("getBuildingsList", {params: {'query': 'reports'}})
