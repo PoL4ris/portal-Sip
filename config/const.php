@@ -2,10 +2,10 @@
 
 return [
     'status'                         => [
-        'active'         => env('STATUS_ACTIVE', 1),
-        'disabled'       => env('STATUS_DISABLED', 2),
-        'new'            => env('STATUS_NEW', 3),
-        'decommissioned' => env('STATUS_DECOMMISSIONED', 4),
+        'active'         => 1,
+        'disabled'       => 2,
+        'new'            => 3,
+        'decommissioned' => 4,
         'closed'         => 'closed'
     ],
     'ticket_status'                  => [

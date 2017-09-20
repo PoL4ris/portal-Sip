@@ -338,7 +338,7 @@ class CustomerController extends Controller {
      */
     public function getCustomerServices(Request $request)//FIX IDCUSTOMER TO ID ON HTTP REQUEST.
     {
-        $customer = Customer::with('services')->find($request->id ? $request->id : $request->idCustomer);
+        $customer = Customer::with('services', 'services.product')->find($request->id ? $request->id : $request->idCustomer);
         if ($customer == null)
         {
             return $customer;

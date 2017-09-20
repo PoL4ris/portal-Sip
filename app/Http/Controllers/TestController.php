@@ -150,6 +150,9 @@ class TestController extends Controller {
     public function supportTest(Request $request)
     {
 
+
+
+
         return Customer::find($request->id);
 
         dd(Product::with('type')->orderBy('frequency', 'asc')->get()->take(10)->toArray());

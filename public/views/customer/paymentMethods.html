@@ -1,32 +1,38 @@
 <div ng-controller="customerPaymentMethodsController" class="p-b-lg">
 
     <!--LADO UNO-->
-    <div class="col-lg-4 no-padding-sides animated fadeInLeft" ng-if="paymentData">
+    <div class="col-lg-4 no-padding-sides animated fadeInLeft" ng-if="customerServiceData[uniqueIdIndex].paymentData">
         <h2 class="float-left m-b-lg">Default Credit Card</h2>
+        <div class="col-lg-12"></div>
 
-
-        <label class="col-lg-8 no-padding-sides"><strong>Card Type: </strong> </label>
-        <label class="col-lg-4 block-b-label no-padding-sides" id="b-CCtype" ng-if="paymentData"> {{ pproperties['card type']  ? pproperties['card type'] : pproperties[0]['card type'] }}</label>
-
-        <label class="col-lg-8 no-padding-sides"><strong>Card Number: </strong> </label>
-        <label class="col-lg-4 block-b-label no-padding-sides" id="b-CCnumber" ng-if="paymentData">
-            {{ pproperties['last four'] ? pproperties['last four'] : pproperties[0]['last four'] | limitTo : 9 : 10}}
+        <label class="col-lg-8 no-padding-sides"><strong>Card Type: </strong></label>
+        <label class="col-lg-4 block-b-label no-padding-sides" id="b-CCtype">
+            {{ customerServiceData[uniqueIdIndex].pproperties['card type'] }}
         </label>
 
-        <label class="col-lg-8 no-padding-sides"><strong>Expiration Month: </strong> </label>
-        <label class="col-lg-4 block-b-label no-padding-sides" id="b-Expmo"> {{ paymentData.exp_month ? paymentData.exp_month : '( ERROR )'}}</label>
-        <label class="col-lg-8 no-padding-sides"><strong>Expiration Year: </strong> </label>
-        <label class="col-lg-4 block-b-label no-padding-sides" id="b-Expyr"> {{ paymentData.exp_year ? paymentData.exp_year : '( ERROR )'}}</label>
+        <label class="col-lg-8 no-padding-sides"><strong>Card Number: </strong> </label>
+        <label class="col-lg-4 block-b-label no-padding-sides" id="b-CCnumber">
+            {{ customerServiceData[uniqueIdIndex].pproperties['last four'] | limitTo : 9 : 10 }}
+        </label>
+
+        <label class="col-lg-8 no-padding-sides"><strong>Expiration Month:</strong></label>
+        <label class="col-lg-4 block-b-label no-padding-sides" id="b-Expmo">
+            {{ customerServiceData[uniqueIdIndex].paymentData.exp_month }}
+        </label>
+        <label class="col-lg-8 no-padding-sides"><strong>Expiration Year:</strong></label>
+        <label class="col-lg-4 block-b-label no-padding-sides" id="b-Expyr">
+            {{ customerServiceData[uniqueIdIndex].paymentData.exp_year }}
+        </label>
 
         <div class="col-lg-12 no-padding-sides m-t-md">
-            <button class="btn btn-danger" data-toggle="modal" data-target="#paymentManualCharge" ng-click="prepareFields();">Manual Charge</button>
-            <button class="btn btn-warning m-r-lg pull-right" data-toggle="modal" data-target="#paymentManualRefound" ng-click="prepareFields();">Manual Refund</button>
+            <button class="btn btn-danger" data-toggle="modal" data-target="#paymentManualCharge-{{uniqueIdIndex}}" ng-click="prepareFields();">Manual Charge</button>
+            <button class="btn btn-warning m-r-lg pull-right"  data-toggle="modal" data-target="#paymentManualRefound-{{uniqueIdIndex}}" ng-click="prepareFields();">Manual Refund</button>
         </div>
 
     </div>
 
     <!--LADO DOS-->
-    <div class="{{paymentData ? 'col-lg-8' : 'col-lg-12'}} animated fadeInRight" id="customer-view-0">
+    <div class="{{customerServiceData[uniqueIdIndex].paymentData ? 'col-lg-8' : 'col-lg-12'}} animated fadeInRight" id="customer-view-0">
 
         <div class="panel panel-default table-container">
             <table id="myTable" class="tablesorter table">
@@ -41,15 +47,17 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="payment in paymentMethods" class="default-priority-{{payment.priority}} {{(payment.priority == 1 && defaultCssColor) ? 'old-green' : '' }}">
+                <tr ng-repeat="payment in customerServiceData[uniqueIdIndex].paymentMethods"
+                    class="default-priority-{{payment.priority}} {{(payment.priority == 1 && defaultCssColor) ? 'old-green' : '' }}">
 
                     <td ng-init="pmprops = parJson(payment.properties)">{{ pmprops['card type'] }}</td>
                     <td>{{ pmprops['last four'] | limitTo : 4 : 15 }}</td>
                     <td>{{ payment.exp_month }} / {{ payment.exp_year | limitTo : 2 : 2 }}</td>
-                    <td ng-init="resultDate = convertDate(payment.updated_at)">{{resultDate | date : "MMM d, y h:mm a" }}</td>
+                    <td ng-init="resultDate = convertDate(payment.updated_at)">{{resultDate | date : "MMM d, y " }}</td>
 
                     <td>
-                        <button class="btn btn-primary" title="Edit" alt="Edit" data-toggle="modal" data-target="#paymentMethodModal" ng-click="editPaymentMethod()"><i class="fa fa-pencil"></i>
+                        <button class="btn btn-primary" title="Edit" alt="Edit" data-toggle="modal" data-target="#paymentMethodModal-{{uniqueIdIndex}}" ng-click="editPaymentMethod()">
+                            <i class="fa fa-pencil"></i>
                         </button>
                     </td>
 
@@ -69,15 +77,14 @@
 
         </div>
         <div class="float-right">
-            <button class="btn btn-primary" data-toggle="modal" data-target="#paymentMethodModal" ng-click="editPaymentMethod(1)">New Payment Method</button>
+            <button class="btn btn-primary" data-toggle="modal" data-target="#paymentMethodModal-{{uniqueIdIndex}}" ng-click="editPaymentMethod(1)">New Payment Method</button>
         </div>
 
     </div>
 
 
     <!--MODAL Manual Refound-->
-    <div class="modal fade" id="paymentManualRefound" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-
+    <div class="modal fade" id="paymentManualRefound-{{uniqueIdIndex}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-ticket-size">
             <div class="modal-content">
                 <div class="modal-header">
@@ -92,16 +99,18 @@
                             <div class="col-lg-12">
                                 <div class="manual-ref">
                                     <div class="cbox-containter">
-                                        <form id="manual-refund-form">
+                                        <form id="manual-refund-form-{{uniqueIdIndex}}">
                                             <div class="cboxc-top">
                                                 <label>Amount to Refund</label><input type="text" placeholder="Set amount with no comas or signs" name="amount" required>
                                             </div>
                                             <div class="cboxc-bottom">
                                                 <label>Description</label><input type="text" placeholder="Describe the reason" name="desc" required>
                                             </div>
-                                            <span class="errormsg-payment" ng-if="errorMsgPaymentMethods">{{errorMsgPaymentMethods | limitTo : 40}}</span>
-                                            <button class="btn btn-primary float-right m-t-lg" ng-click="refundFunct()" ng-if="!something">Refund</button>
-                                            <div class="pull-right m-t-lg" ng-if="something">
+                                            <span class="errormsg-payment" ng-if="customerServiceData[uniqueIdIndex].errorMsgPaymentMethods">
+                                                {{customerServiceData[uniqueIdIndex].errorMsgPaymentMethods | limitTo : 40}}
+                                            </span>
+                                            <button class="btn btn-primary float-right m-t-lg" ng-click="refundFunct()" ng-if="!customerServiceData[uniqueIdIndex].something">Refund</button>
+                                            <div class="pull-right m-t-lg" ng-if="customerServiceData[uniqueIdIndex].something">
                                                 Processing.
                                                 <img src="/img/loading.gif" alt="">
                                             </div>
@@ -122,7 +131,7 @@
     </div>
 
     <!--MODAL Manual Charge-->
-    <div class="modal fade" id="paymentManualCharge" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal fade" id="paymentManualCharge-{{uniqueIdIndex}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 
         <div class="modal-dialog modal-ticket-size">
             <div class="modal-content">
@@ -138,16 +147,18 @@
                             <div class="col-lg-12">
                                 <div class="manual-char">
                                     <div class="cbox-containter">
-                                        <form id="manual-charge-form">
+                                        <form id="manual-charge-form-{{uniqueIdIndex}}">
                                             <div class="cboxc-top">
                                                 <label>Amount to Charge</label><input type="text" placeholder="Set amount with no comas or signs" name="amount" required>
                                             </div>
                                             <div class="cboxc-bottom">
                                                 <label>Description</label><input type="text" placeholder="Describe the reason" name="desc" required>
                                             </div>
-                                            <span class="errormsg-payment" ng-if="errorMsgPaymentMethods">{{errorMsgPaymentMethods | limitTo : 40}}</span>
-                                            <button class="btn btn-primary float-right m-t-lg" ng-click="chargeFunct()" ng-if="!something">Charge</button>
-                                            <div class="pull-right m-t-lg" ng-if="something">
+                                            <span class="errormsg-payment" ng-if="customerServiceData[uniqueIdIndex].errorMsgPaymentMethods">
+                                                {{ customerServiceData[uniqueIdIndex].errorMsgPaymentMethods | limitTo : 40 }}
+                                            </span>
+                                            <button class="btn btn-primary float-right m-t-lg" ng-click="chargeFunct()" ng-if="!customerServiceData[uniqueIdIndex].something">Charge</button>
+                                            <div class="pull-right m-t-lg" ng-if="customerServiceData[uniqueIdIndex].something">
                                                 Processing.
                                                 <img src="/img/loading.gif" alt="">
                                             </div>
@@ -170,37 +181,39 @@
     </div>
 
     <!--MODAL New Payment Method-->
-    <div class="modal fade" id="paymentMethodModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" ng-controller="addPaymentMethodController">
+    <div class="modal fade" id="paymentMethodModal-{{uniqueIdIndex}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" ng-controller="addPaymentMethodController">
         <div class="modal-dialog modal-ticket-size">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="cancelNewEvent()">
                         &times;
                     </button>
-                    <span ng-if="editPaymentFlag == false">New Payment Method</span>
-                    <span ng-if="editPaymentFlag == true">Update Expiration Date</span>
+                    <span ng-if="customerServiceData[uniqueIdIndex].editPaymentFlag == false">New Payment Method</span>
+                    <span ng-if="customerServiceData[uniqueIdIndex].editPaymentFlag == true">Update Expiration Date</span>
                 </div>
                 <div class="modal-body">
                     <div class="wrapper-sm">
                         <div class="row">
                             <div class="col-lg-12">
 
-                                <form id="paymentmethodform">
+                                <form id="paymentmethodform-{{uniqueIdIndex}}">
 
-                                    <label class="bold-type col-lg-4 m-b-md" required ng-if="editPaymentFlag == false">Name on card:</label>
-                                    <input type="text" name="card_name" class="col-lg-8 input-text m-b-md" placeholder="First Name Last Name" required ng-if="editPaymentFlag == false">
+                                    <label class="bold-type col-lg-4 m-b-md" required ng-if="customerServiceData[uniqueIdIndex].editPaymentFlag == false">Name on card:</label>
+                                    <input type="text" name="card_name" class="col-lg-8 input-text m-b-md" placeholder="First Name Last Name" required ng-if="customerServiceData[uniqueIdIndex].editPaymentFlag == false">
 
-                                    <label class="bold-type col-lg-4 m-b-md" required ng-if="editPaymentFlag == false">Account Number:</label>
-                                    <input type="text" name="account_number" class="col-lg-8 input-text m-b-md" placeholder="Account number with no signs(,/-)" required ng-if="editPaymentFlag == false">
+                                    <label class="bold-type col-lg-4 m-b-md" required ng-if="customerServiceData[uniqueIdIndex].editPaymentFlag == false">Account Number:</label>
+                                    <input type="text" name="account_number" class="col-lg-8 input-text m-b-md" placeholder="Account number with no signs(,/-)" required ng-if="customerServiceData[uniqueIdIndex].editPaymentFlag == false">
 
-                                    <label class="bold-type col-lg-4 m-b-md" ng-if="editPaymentFlag == false">Billing Phone:</label>
-                                    <input type="text" name="billing_phone" class="col-lg-8 input-text m-b-md" placeholder="Ex: 555-444-3322" required ng-if="editPaymentFlag == false">
+                                    <label class="bold-type col-lg-4 m-b-md" ng-if="customerServiceData[uniqueIdIndex].editPaymentFlag == false">Billing Phone:</label>
+                                    <input type="text" name="billing_phone" class="col-lg-8 input-text m-b-md" placeholder="Ex: 555-444-3322" required ng-if="customerServiceData[uniqueIdIndex].editPaymentFlag == false">
 
                                     <span class="bold-type col-lg-3 m-t-lg">Exp Month :</span>
                                     <select name="exp_month" class="col-lg-3  m-t-lg">
 
-                                        <option value="" ng-if="!editPaymentValues">Select a Month</option>
-                                        <option value="{{editPaymentValues.exp_month}}" selected ng-if="editPaymentValues">{{editPaymentValues.exp_month}}</option>
+                                        <option value="" ng-if="!customerServiceData[uniqueIdIndex].editPaymentValues">Select a Month</option>
+                                        <option value="{{customerServiceData[uniqueIdIndex].editPaymentValues.exp_month}}" selected ng-if="customerServiceData[uniqueIdIndex].editPaymentValues">
+                                            {{customerServiceData[uniqueIdIndex].editPaymentValues.exp_month}}
+                                        </option>
 
                                         <option value="01">01</option>
                                         <option value="02">02</option>
@@ -219,8 +232,10 @@
                                     <span class="bold-type col-lg-3  m-t-lg p-l-lg">Exp Year :</span>
                                     <select name="exp_year" class="col-lg-3 m-t-lg">
 
-                                        <option value="" ng-if="!editPaymentValues">Select a Year</option>
-                                        <option value="{{editPaymentValues.exp_year}}" selected ng-if="editPaymentValues">{{editPaymentValues.exp_year}}</option>
+                                        <option value="" ng-if="!customerServiceData[uniqueIdIndex].editPaymentValues">Select a Year</option>
+                                        <option value="{{customerServiceData[uniqueIdIndex].editPaymentValues.exp_year}}" selected ng-if="customerServiceData[uniqueIdIndex].editPaymentValues">
+                                            {{customerServiceData[uniqueIdIndex].editPaymentValues.exp_year}}
+                                        </option>
 
                                         <option value="2017">17</option>
                                         <option value="2018">18</option>
@@ -230,12 +245,13 @@
                                         <option value="2022">22</option>
                                     </select>
 
-                                    <span class="bold-type col-lg-3 m-t-lg" required ng-if="editPaymentFlag == false">Card Type</span>
-                                    <select name="card_type" class="col-lg-3 m-t-lg" required ng-if="editPaymentFlag == false">
+                                    <span class="bold-type col-lg-3 m-t-lg" required ng-if="customerServiceData[uniqueIdIndex].editPaymentFlag == false">Card Type</span>
+                                    <select name="card_type" class="col-lg-3 m-t-lg" required ng-if="customerServiceData[uniqueIdIndex].editPaymentFlag == false">
 
-                                        <option value="" ng-if="!editPaymentValues">Select a Type</option>
-                                        <option value="{{editPaymentValues.card_type ? editPaymentValues.card_type : '' }}" ng-if="editPaymentValues">{{editPaymentValues.card_type ?
-                                            editPaymentValues.card_type : '' }}
+                                        <option value="" ng-if="!customerServiceData[uniqueIdIndex].editPaymentValues">Select a Type</option>
+                                        <option value="{{customerServiceData[uniqueIdIndex].editPaymentValues.card_type ? customerServiceData[uniqueIdIndex].editPaymentValues.card_type : '' }}"
+                                                ng-if="customerServiceData[uniqueIdIndex].editPaymentValues">
+                                            {{customerServiceData[uniqueIdIndex].editPaymentValues.card_type ? customerServiceData[uniqueIdIndex].editPaymentValues.card_type : '' }}
                                         </option>
 
                                         <option value="VS">Visa</option>
@@ -243,21 +259,20 @@
                                         <option value="AX">Amex</option>
                                     </select>
 
-                                    <label class="bold-type col-lg-3 m-t-lg p-l-lg" required ng-if="editPaymentFlag == false">CCV :</label>
-                                    <input type="text" name="CCV" class="col-lg-3 input-text m-t-lg" placeholder="CCV" required ng-if="editPaymentFlag == false">
+                                    <label class="bold-type col-lg-3 m-t-lg p-l-lg" required ng-if="customerServiceData[uniqueIdIndex].editPaymentFlag == false">CCV :</label>
+                                    <input type="text" name="CCV" class="col-lg-3 input-text m-t-lg" placeholder="CCV" required ng-if="customerServiceData[uniqueIdIndex].editPaymentFlag == false">
 
 
                                     <div class="col-lg-12 m-b-md"></div>
 
                                     <div class="col-lg-12 addServiceBoton m-b-sm">
-                                        <button type="submit" class="btn m-b-xs w-xs btn-primary float-right" ng-click="addNewPaymentMethod()" ng-if="editPaymentFlag == false">Add</button>
-                                        <button type="submit" class="btn m-b-xs w-xs btn-primary float-right" ng-click="addNewPaymentMethod()" ng-if="editPaymentFlag == true ">Update</button>
+                                        <button type="submit" class="btn m-b-xs w-xs btn-primary float-right" ng-click="addNewPaymentMethod()" ng-if="customerServiceData[uniqueIdIndex].editPaymentFlag == false">Add</button>
+                                        <button type="submit" class="btn m-b-xs w-xs btn-primary float-right" ng-click="addNewPaymentMethod()" ng-if="customerServiceData[uniqueIdIndex].editPaymentFlag == true ">Update</button>
                                     </div>
 
                                 </form>
 
                             </div>
-
                         </div>
                     </div>
                 </div>

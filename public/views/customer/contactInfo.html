@@ -1,7 +1,6 @@
-<!--<div jarvis-widget id="wid-id-1" data-widget-deletebutton="false" data-widget-editbutton="false" data-widget-custombutton="false" ng-controller="FormXeditableCtrl">-->
 <div ng-controller="FormXeditableCtrl" class="">
     <div ng-controller="FormPluginsCtrl">
-        <div ng-controller="globalToolsCtl">
+        <div >
             <!--BOTONES-->
 
             <div class="row">
@@ -23,12 +22,13 @@
                 </div>
             </div>
 
+
             <!--CONTENIDO-->
             <div class="table-container m-t-lg tc-c-info" id="ccontactlist-gTools">
                 <table class="table table-bordered table-striped bpv-container">
                     <tbody>
                     <tr ng-repeat="contactinfo in customerContactsData">
-                        <td><strong>{{ contactTypes[(contactinfo.id_types - 1)].name }}:</strong></td>
+                        <td><strong>{{ statusArrayConstant.contact_type[contactinfo.id_types] }}:</strong></td>
                         <td>
                             <a href=""
                                id="b-p-id-{{contactinfo.id}}"

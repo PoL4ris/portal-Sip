@@ -1,5 +1,5 @@
 //Building Controllers
-app.controller('buildingCtl',             function ($scope, $http, $stateParams, customerService, buildingService, DTOptionsBuilder) {
+app.controller('buildingCtl',             function ($scope, $http, $stateParams, customerService, buildingService, DTOptionsBuilder, generalService) {
   console.log('bldContrl');
 
   //TMP HIDE AND SHOW SIDEBAR
@@ -12,9 +12,9 @@ app.controller('buildingCtl',             function ($scope, $http, $stateParams,
     setTimeout(function(){ $('#right-bld').css('width', '100%'); }, 500);
   }
 
-  if (customerService.sideBarFlag) {
+  if (generalService.sideBarFlag) {
     $scope.sipTool(2);
-    customerService.sideBarFlag = false;
+    generalService.sideBarFlag = false;
   }
 
   $scope.idBuilding = null;

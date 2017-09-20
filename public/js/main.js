@@ -15,6 +15,7 @@ angular.module('app.buildings',     ['ui.router']).config(function ($stateProvid
         scripts: function (lazyScript, customerService, generalService) {
           customerService.stateRoute = 'buildings';
           generalService.stateRoute  = 'buildings';
+          
           return lazyScript.register([
             '/js/smart/build/vendor.ui.js'
           ]);
@@ -39,6 +40,7 @@ angular.module('app.customershome', ['ui.router']).config(function ($stateProvid
         scripts: function (lazyScript, customerService, generalService) {
           customerService.stateRoute = 'customershome';
           generalService.stateRoute  = 'customershome';
+          
           return lazyScript.register([
             '/js/smart/build/vendor.ui.js'
           ]);
@@ -50,7 +52,7 @@ angular.module('app.customers',     ['ui.router']).config(function ($stateProvid
   $stateProvider
     .state('app.customers', {
       url:  '/customers?{id:int}',
-      params: { cache: null },
+      params: { cache: false },
       data: {
         title: 'Customers'
       },
@@ -66,8 +68,9 @@ angular.module('app.customers',     ['ui.router']).config(function ($stateProvid
       },
       resolve: {
         scripts: function (lazyScript, customerService, generalService) {
-          customerService.stateRoute = 'customers';
-          generalService.stateRoute  = 'customers';
+          customerService.stateRoute  = 'customers';
+          generalService.stateRoute   = 'customers';
+          
           return lazyScript.register([
             '/js/smart/build/vendor.ui.js'
           ]);
@@ -89,7 +92,8 @@ angular.module('app.network',       ['ui.router']).config(function ($stateProvid
         }
       },
       resolve: {
-        scripts: function (lazyScript) {
+        scripts: function (lazyScript, generalService) {
+          
           return lazyScript.register([
             '/js/smart/build/vendor.ui.js'
           ]);
@@ -112,8 +116,9 @@ angular.module('app.support',       ['ui.router']).config(function ($stateProvid
       },
       resolve: {
         scripts: function (lazyScript, customerService, generalService) {
-          customerService.stateRoute = 'support';
-          generalService.stateRoute  = 'support';
+          customerService.stateRoute  = 'support';
+          generalService.stateRoute   = 'support';
+          
           return lazyScript.register([
             '/js/smart/build/vendor.ui.js'
           ]);
@@ -121,6 +126,7 @@ angular.module('app.support',       ['ui.router']).config(function ($stateProvid
       }
     })
 });
+//NOT IN USE
 angular.module('app.calendar',      ['ui.router']).config(function ($stateProvider) {
   $stateProvider
     .state('app.calendar', {
@@ -157,7 +163,8 @@ angular.module('app.reports',       ['ui.router']).config(function ($stateProvid
         }
       },
       resolve: {
-        scripts: function (lazyScript) {
+        scripts: function (lazyScript, generalService) {
+          
           return lazyScript.register([
             '/js/smart/build/vendor.ui.js'
           ]);
@@ -179,7 +186,8 @@ angular.module('app.admin',         ['ui.router']).config(function ($stateProvid
         }
       },
       resolve: {
-        scripts: function (lazyScript) {
+        scripts: function (lazyScript, generalService) {
+          
           return lazyScript.register([
             '/js/smart/build/vendor.ui.js'
           ]);
@@ -201,7 +209,8 @@ angular.module('app.warpol',        ['ui.router']).config(function ($stateProvid
         }
       },
       resolve: {
-        scripts: function (lazyScript) {
+        scripts: function (lazyScript, generalService) {
+          
           return lazyScript.register([
             '/js/smart/build/vendor.ui.js'
           ]);
@@ -223,7 +232,8 @@ angular.module('app.dummyapp',      ['ui.router']).config(function ($stateProvid
         }
       },
       resolve: {
-        scripts: function (lazyScript) {
+        scripts: function (lazyScript, generalService) {
+          
           return lazyScript.register([
             '/js/smart/build/vendor.ui.js'
           ]);
@@ -245,7 +255,8 @@ angular.module('app.charges',       ['ui.router']).config(function ($stateProvid
         }
       },
       resolve: {
-        scripts: function (lazyScript) {
+        scripts: function (lazyScript, generalService) {
+          
           return lazyScript.register([
             '/js/smart/build/vendor.ui.js'
           ]);
@@ -253,12 +264,12 @@ angular.module('app.charges',       ['ui.router']).config(function ($stateProvid
       }
     })
 });
-angular.module('app.warp',          ['ui.router']).config(function ($stateProvider) {
+angular.module('app.tabs',          ['ui.router']).config(function ($stateProvider) {
   $stateProvider
-    .state('app.warp', {
-      url:  '/warp',
+    .state('app.tabs', {
+      url:  '/tabs',
       data: {
-        title: 'Warp'
+        title: 'Tabs'
       },
       views: {
         "content@app": {
@@ -267,7 +278,8 @@ angular.module('app.warp',          ['ui.router']).config(function ($stateProvid
         }
       },
       resolve: {
-        scripts: function (lazyScript) {
+        scripts: function (lazyScript, generalService) {
+          generalService.stateRoute   = 'tabs';
           return lazyScript.register([
             '/js/smart/build/vendor.ui.js'
           ]);
@@ -275,10 +287,6 @@ angular.module('app.warp',          ['ui.router']).config(function ($stateProvid
       }
     })
 });
-
-
-
-
 angular.module('app.newcustomer',      ['ui.router']).config(function ($stateProvider) {
   $stateProvider
     .state('app.newcustomer', {
@@ -293,7 +301,8 @@ angular.module('app.newcustomer',      ['ui.router']).config(function ($statePro
         }
       },
       resolve: {
-        scripts: function (lazyScript) {
+        scripts: function (lazyScript, generalService) {
+          
           return lazyScript.register([
             '/js/smart/build/vendor.ui.js'
           ]);
@@ -353,9 +362,12 @@ angular.module('app.tech-appointments', ['ui.router']).config(function ($statePr
 app.factory('customerService',  function () {
   return {
     exist: true,
-    sideBarFlag: true,
+//    sideBarFlag: true,
     rightView: false,
-    statusArrayConstant : constArray,
+    statusArrayConstant : constArray,//remove.
+    tabs: {},
+    customerArray : {},
+
   };
 });
 app.factory('buildingService',  function () {
@@ -376,9 +388,9 @@ app.factory('adminService',     function () {
 app.factory('generalService',   function () {
   return {
     exist: true,
-    customerArray : {},
     statusArrayConstant : constArray,
-
+    sideBarFlag: false,
+    rightView: false,
   };
 });
 
