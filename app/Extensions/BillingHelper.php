@@ -757,6 +757,38 @@ class BillingHelper {
         return true;
     }
 
+    public function processPendingAutopayInvoicesByMonth($monthString = '', $notifyViaEmail = true, $records = 200)
+    {
+
+        if ($monthString == '')
+        {
+            Log::info('BillingHelper::processPendingAutopayInvoicesByMonth(): ERROR: You need to specify a month. e.g. August 2017 or just August.');
+
+            return false;
+        }
+
+        $dueDateMysqlDate = date("Y-m-d H:i:s", strtotime('first day of ' . $monthString . ' 00:00:00'));
+
+        $nowMysql = date("Y-m-d H:i:s");
+        Invoice::where('status', config('const.invoice_status.pending'))
+            ->where('processing_type', config('const.type.auto_pay'))
+            ->where('failed_charges_count', 0)
+            ->where('due_date', $dueDateMysqlDate)
+            ->chunk($records, function ($invoices) use ($notifyViaEmail, $records) {
+                foreach ($invoices as $invoice)
+                {
+                    $this->processInvoice($invoice, $notifyViaEmail);
+                }
+
+                if ($records > 0)
+                {
+                    return true;
+                }
+            });
+
+        return true;
+    }
+
     /**
      * TODO: Change pagination to use record IDs not LIMIT
      */
@@ -869,10 +901,11 @@ class BillingHelper {
             $this->logInvoice($invoice, 'failed', $transactionId);
 
             /*** Create a ticket ***/
-            if($createTicketOnFailure){
+            if ($createTicketOnFailure)
+            {
 
                 $sipTicket = new SIPTicket();
-                $ticketComment = 'Failed to charge invoice: '.$invoice->id.' for $'.$invoice->amount.' --- TransID: '.$chargeResult['TRANSACTIONID'].' - Action: '.$chargeResult['ACTION'].' - Approval: '.$chargeResult['APPROVAL'].' - Response: '.$chargeResult['RESPONSETEXT'];
+                $ticketComment = 'Failed to charge invoice: ' . $invoice->id . ' for $' . $invoice->amount . ' --- TransID: ' . $chargeResult['TRANSACTIONID'] . ' - Action: ' . $chargeResult['ACTION'] . ' - Approval: ' . $chargeResult['APPROVAL'] . ' - Response: ' . $chargeResult['RESPONSETEXT'];
                 $sipTicket->createTicket($invoice->id_customers, config('const.reason.billing'), config('const.ticket_status.escalated'), $ticketComment, 0, '', false);
             }
 
