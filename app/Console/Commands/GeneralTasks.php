@@ -63,7 +63,11 @@ class GeneralTasks extends Command {
 //        $this->rebootMikrotik();
 //        $this->uploadMikrotikPackageFiles();
 //        $this->cleanupBadCustomerPorts();
-//        $billingHelper = new BillingHelper();
+
+        $billingHelper = new BillingHelper();
+//        $billingHelper->generateResidentialChargeRecordsByMonth('September', true, false);
+//        $billingHelper->invoicePendingAutoPayChargesByMonth('September');
+
 //        $result = $billingHelper->processPendingAutopayInvoices();
 //        $dbMigrationUtil = new DataMigrationUtils(true);
 //        $dbMigrationUtil->generalDatabaseTask();
@@ -156,8 +160,7 @@ class GeneralTasks extends Command {
 
     }
 
-    protected
-    function updateMikrotikHotspotLoginFiles()
+    protected function updateMikrotikHotspotLoginFiles()
     {
         echo 'exiting';
 
@@ -199,8 +202,7 @@ class GeneralTasks extends Command {
         }
     }
 
-    protected
-    function uploadMikrotikPackageFiles()
+    protected function uploadMikrotikPackageFiles()
     {
         $mikrotiks = NetworkNode::where('id_types', config('const.type.router'))->get();
 //            ->where('role', 'Transit')->get();
@@ -266,8 +268,7 @@ class GeneralTasks extends Command {
         }
     }
 
-    protected
-    function rebootMikrotik()
+    protected function rebootMikrotik()
     {
 //        $mikrotiks = NetworkNode::where('id_types', config('const.type.router'))->get();
 //            ->where('role', 'Transit')->get();
@@ -291,8 +292,7 @@ class GeneralTasks extends Command {
         }
     }
 
-    protected
-    function fixMikrotikHotspotProfile()
+    protected function fixMikrotikHotspotProfile()
     {
 //        $ipAddresses = ['10.11.137.1', '10.11.127.1', '10.11.117.1', '10.11.118.1', '10.11.119.1', '10.11.120.1', '10.11.9.1', '10.11.134.1', '10.11.142.1', '10.11.7.1', '10.11.147.1', '10.11.153.1', '10.11.154.1', '10.11.152.1', '10.11.157.1', '10.11.135.1', '10.11.174.1', '10.11.156.1', '10.11.112.1', '10.11.158.1', '10.11.151.1', '10.11.124.1', '10.11.161.1', '10.11.163.1', '10.11.164.1', '10.11.166.1', '10.11.223.1', '10.11.170.1', '10.11.173.1', '10.11.178.1', '10.11.180.1', '10.11.190.1', '10.11.201.1', '10.11.217.1', '10.11.225.1', '10.11.245.1', '10.11.237.1', '10.11.241.1', '10.11.243.1', '10.11.64.1', '10.11.254.62', '10.11.254.58', '10.11.44.1', '10.11.26.1', '10.11.22.1', '10.11.24.1', '10.11.254.42', '10.11.255.239', '10.15.235.1', '10.15.233.1', '10.15.231.1', '10.15.227.1', '10.15.215.1'];
         $ipAddresses = ['10.10.13.1', '10.11.138.1', '10.10.19.1', '10.11.115.1', '10.10.21.1', '10.11.114.1', '10.10.31.1', '10.11.109.1'];
@@ -315,8 +315,7 @@ class GeneralTasks extends Command {
         }
     }
 
-    protected
-    function getMikrotikHotspots()
+    protected function getMikrotikHotspots()
     {
         echo 'Getting all Miktotik info ... ';
         $command = '/ip/hotspot/print';
@@ -339,8 +338,7 @@ class GeneralTasks extends Command {
         }
     }
 
-    protected
-    function getMikrotikHotspotProfiles()
+    protected function getMikrotikHotspotProfiles()
     {
         echo 'Getting all Miktotik info ... ';
         $command = '/ip/hotspot/profile/print';
@@ -363,8 +361,7 @@ class GeneralTasks extends Command {
         }
     }
 
-    protected
-    function runCommandOnAllMikrotiks($command, $commandOptions = [], $resultFilter = [])
+    protected function runCommandOnAllMikrotiks($command, $commandOptions = [], $resultFilter = [])
     {
         $mikrotiks = NetworkNode::where('id_types', config('const.type.router'))->get();
 //            ->where('role', 'Transit')->get();
@@ -387,8 +384,7 @@ class GeneralTasks extends Command {
         return $results;
     }
 
-    protected
-    function fileExists($ftp, $file)
+    protected function fileExists($ftp, $file)
     {
         if ($ftp->size($file) != - 1)
         {
@@ -398,8 +394,7 @@ class GeneralTasks extends Command {
         return false;
     }
 
-    protected
-    function cleanupBadCustomerPorts()
+    protected function cleanupBadCustomerPorts()
     {
         // Records processed count
         $recordsProcessed = 0;
@@ -482,8 +477,7 @@ class GeneralTasks extends Command {
         echo $badPorts . ' out of ' . $recordsProcessed . ' were bad' . "\n";
     }
 
-    protected
-    function sendMassEmail()
+    protected function sendMassEmail()
     {
 
         /**

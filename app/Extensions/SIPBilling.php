@@ -456,6 +456,9 @@ class SIPBilling {
         $result['ERRMSG'] = $ippayresult['ERRMSG'];
         $result['TransactionType'] = $request['TransactionType'];
         $result['TotalAmount'] = $totAmount;
+        $result['OrderNumber'] = $request['OrderNumber'];
+        $result['UDField1'] = $request['UDField1'];
+
         if (isset($ippayresult['TOKEN']))
         {
             $result['TOKEN'] = $ippayresult['TOKEN'];

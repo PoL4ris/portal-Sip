@@ -37,10 +37,10 @@ return [
         'email'        => 5,
     ],
     'customer_product_charge_status' => [
-        'none'    => 5,
-        'charged' => 14,
-        'paid'    => 8,
-        'failed'  => 9,
+        'none'   => 5,
+        'active' => 14,
+        'paid'   => 8,
+        'failed' => 9,
     ],
     'charge_type'                    => [
         'charge'   => 'charge',

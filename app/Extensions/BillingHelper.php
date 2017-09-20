@@ -11,6 +11,7 @@ use App\Models\InvoiceLog;
 use App\Models\Address;
 use App\Models\CustomerProduct;
 use App\Extensions\SIPBilling;
+use App\Extensions\SIPTicket;
 use DB;
 use Hash;
 use Illuminate\Support\MessageBag;
@@ -39,13 +40,7 @@ class BillingHelper {
     public function generateResidentialChargeRecords()
     {
         // Get residential buildings
-        $buildings = Building::with(['properties' => function ($query) {
-            $query->where('id_building_properties', config('const.building_property.service_type'))
-                ->where('value', 'LIKE', '%Retail%')
-                ->orWhere('value', 'LIKE', '%Bulk%');
-        }])
-//            ->where('id', 4)// 28 is temporary for testing
-            ->get();
+        $buildings = $this->getRetailAndBulkBuildings();
 
         $count = 0;
         foreach ($buildings as $building)
@@ -53,10 +48,67 @@ class BillingHelper {
             // Get list of chargeable products/services for the requested building
             $customerProducts = $this->getChargeableCustomerProductsByBuildingId($building->id);
             $count = $this->addChargesForCustomerProducts($customerProducts);
-            Log::info('BillingHelper::generateInvoiceRecords(): Added ' . $count . ' charges for ' . $building->nickname . ' to DB');
+            Log::info('BillingHelper::generateResidentialChargeRecords(): Added ' . $count . ' charges for ' . $building->nickname . ' to DB');
         }
 
         return 'Generated ' . $count . ' charges and added them to the DB.';
+    }
+
+    public function generateResidentialChargeRecordsByMonth($monthString = '', $skipOneTime = false, $testMode = false)
+    {
+        if ($monthString == '')
+        {
+            Log::info('BillingHelper::generateResidentialChargeRecordsByMonth(): ERROR: You need to specify a month. e.g. August 2017 or just August.');
+
+            return false;
+        }
+
+        $expiresBeforeMysqlDate = date("Y-m-d H:i:s", strtotime('first day of ' . $monthString . ' 00:00:00'));
+
+        // Get residential buildings
+        $buildings = $this->getRetailAndBulkBuildings();
+
+        $count = 0;
+        $logVerb = ($testMode) ? 'Found' : 'Added';
+        foreach ($buildings as $building)
+        {
+            // Get list of chargeable products/services for the requested building
+            $customerProducts = $this->getChargeableCustomerProductsQuery('first day of ' . $monthString . ' 00:00:00', $skipOneTime)
+                ->where('customer_products.signed_up', '<', $expiresBeforeMysqlDate)
+                ->whereNull('customer_products.last_charged')
+                ->where('buildings.id', '=', $building->id)
+                ->get(['customer_products.*']);
+
+            if ($testMode)
+            {
+                $productCount = $customerProducts->count();
+
+            } else
+            {
+                $productCount = $this->addChargesForCustomerProducts($customerProducts, $monthString);
+            }
+
+            if ($productCount == 0)
+            {
+                continue;
+            }
+            $count += $productCount;
+            Log::info('BillingHelper::generateResidentialChargeRecordsByMonth(): ' . $logVerb . ' ' . $productCount . ' charges for ' . $building->nickname);
+        }
+
+        Log::info('BillingHelper::generateResidentialChargeRecordsByMonth(): ' . $logVerb . ' ' . $count . ' total products that need to be charged for ' . $monthString);
+
+        return true;
+    }
+
+    protected function getRetailAndBulkBuildings()
+    {
+        // Get residential bulk+retail buildings
+        return Building::with(['properties' => function ($query) {
+            $query->where('id_building_properties', config('const.building_property.service_type'))
+                ->where('value', 'LIKE', '%Retail%')
+                ->orWhere('value', 'LIKE', '%Bulk%');
+        }])->get();
     }
 
     public function generateChargeRecordsForCustomer($customerId)
@@ -81,12 +133,12 @@ class BillingHelper {
             ->get(['customer_products.*']);
     }
 
-    protected function getChargeableCustomerProductsQuery($expiresBefore = 'first day of next month 00:00:00')
+    public function getChargeableCustomerProductsQuery($expiresBefore = 'first day of next month 00:00:00', $skipOneTime = false)
     {
-        // First day of next month to check expirations against
-        $firstDayOfNextMonthMysql = date("Y-m-d H:i:s", strtotime($expiresBefore));
+        // Date to check product expirations against
+        $expiresBeforeMysqlDate = date("Y-m-d H:i:s", strtotime($expiresBefore));
 
-        return CustomerProduct::join('customers', 'customer_products.id_customers', '=', 'customers.id')
+        $query = CustomerProduct::join('customers', 'customer_products.id_customers', '=', 'customers.id')
             ->join('products', 'customer_products.id_products', '=', 'products.id')
             ->join('address', 'address.id_customers', '=', 'customers.id')
             ->join('buildings', 'address.id_buildings', '=', 'buildings.id')
@@ -95,51 +147,69 @@ class BillingHelper {
             // the customer's product/service MUST be active
             ->where('customer_products.id_status', '=', config('const.status.active'))
             // customer's product/service MUST be expiring before the first day of next month
-            ->where(function ($query) use ($firstDayOfNextMonthMysql) {
+            ->where(function ($query) use ($expiresBeforeMysqlDate) {
                 $query->whereNull('customer_products.expires')
-                    ->orWhere('customer_products.expires', '<=', $firstDayOfNextMonthMysql);
+                    ->orWhere('customer_products.expires', '<=', $expiresBeforeMysqlDate);
             })
             // skip customer's product/service that are complimentary
-            ->where('products.amount', '>', 0)
-            ->where(function ($query) use ($firstDayOfNextMonthMysql) {
+            ->where('products.amount', '>', 0);
+
+        if ($skipOneTime)
+        {
+            $query->where(function ($query3) use ($expiresBeforeMysqlDate) {
+                // Get 'monthly' and/or 'annual' products that can be charged (status != paid or failed, freq is monthly or annual, and next_charge_date has expired)
+                $query3->where('customer_products.charge_status', '<>', config('const.customer_product_charge_status.paid'))
+                    ->where('customer_products.charge_status', '<>', config('const.customer_product_charge_status.failed'))
+                    ->where('products.frequency', '<>', 'onetime')
+                    ->where('products.frequency', '<>', 'included')
+                    ->whereNull('customer_products.next_charge_date')
+                    ->orWhere('customer_products.next_charge_date', '<', $expiresBeforeMysqlDate);
+            });
+        } else
+        {
+            $query->where(function ($query) use ($expiresBeforeMysqlDate) {
                 $query->where(function ($query2) {
-                    // Get 'onetime' products that have not been charged (status = 0)
-                    $query2->where('customer_products.charge_status', '=', config('const.customer_product_charge_status.none'))
-                        ->where('products.frequency', '=', 'onetime');
-                })->orWhere(function ($query3) use ($firstDayOfNextMonthMysql) {
-                    // Get 'monthly' and/or 'annual' products that have not been charged (status != 1 and an expired invoice date)
+                    // Get 'onetime' products that have not been charged (status = none or active)
+                    $query2->where('products.frequency', '=', 'onetime')
+                        ->where('customer_products.charge_status', '=', config('const.customer_product_charge_status.none'))
+                        ->orWhere('customer_products.charge_status', '=', config('const.customer_product_charge_status.active'));
+                })->orWhere(function ($query3) use ($expiresBeforeMysqlDate) {
+                    // Get 'monthly' and/or 'annual' products that can be charged (status != paid or failed, freq is monthly or annual, and next_charge_date has expired)
                     $query3->where('customer_products.charge_status', '<>', config('const.customer_product_charge_status.paid'))
                         ->where('customer_products.charge_status', '<>', config('const.customer_product_charge_status.failed'))
                         ->where('products.frequency', '<>', 'onetime')
                         ->where('products.frequency', '<>', 'included')
                         ->whereNull('customer_products.next_charge_date')
-                        ->orWhere('customer_products.next_charge_date', '<', $firstDayOfNextMonthMysql);
+                        ->orWhere('customer_products.next_charge_date', '<', $expiresBeforeMysqlDate);
                 });
             });
+        }
+
+        return $query;
     }
 
-    protected function addChargesForCustomerProducts($customerProducts)
+    protected function addChargesForCustomerProducts($customerProducts, $monthString = 'next month')
     {
         $count = 0;
         foreach ($customerProducts as $customerProduct)
         {
-            $result = $this->createChargeForCustomerProduct($customerProduct);
+            $result = $this->createChargeForCustomerProduct($customerProduct, 0, $monthString);
             if ($result == false)
             {
                 continue;
             }
             // Uncomment this when ready to run a real or production test
-            $this->markCustomerProductAsCharged($customerProduct);
+            $this->markCustomerProductAsCharged($customerProduct, $monthString);
             $count ++;
         }
 
         return $count;
     }
 
-    public function createChargeForCustomerProduct($customerProduct, $userId = 0)
+    public function createChargeForCustomerProduct($customerProduct, $userId = 0, $monthString = 'next month')
     {
         $product = $customerProduct->product;
-        $dateRange = $this->getProductChargeDates($product);
+        $dateRange = $this->getProductChargeDatesByMonth($product, $monthString);
 
         $charge = Charge::where('id_customers', $customerProduct->id_customers)
             ->where('id_customer_products', $customerProduct->id)
@@ -179,7 +249,7 @@ class BillingHelper {
             'processing_type'      => config('const.type.auto_pay'),  // auto_pay, manual_pay
             'start_date'           => $dateRange['startDate'],
             'end_date'             => $dateRange['endDate'],
-            'due_date'             => date("Y-m-d H:i:s", strtotime("first day of next month  00:00:00"))
+            'due_date'             => date("Y-m-d H:i:s", strtotime("first day of $monthString  00:00:00"))
         ]);
 
         return true;
@@ -315,24 +385,28 @@ class BillingHelper {
 
     }
 
-    protected function getProductChargeDates($product)
+    protected function getProductChargeDatesByMonth($product, $monthString = 'next month')
     {
         if ($product->frequency == 'monthly')
         {
-            return ['startDate' => date("Y-m-d H:i:s", strtotime("first day of next month  00:00:00")),
-                    'endDate'   => date("Y-m-d H:i:s", strtotime("last day of next month  00:00:00"))];
+            return ['startDate' => date("Y-m-d H:i:s", strtotime("first day of $monthString  00:00:00")),
+                    'endDate'   => date("Y-m-d H:i:s", strtotime("last day of $monthString  00:00:00"))];
 
         } elseif ($product->frequency == 'annual')
         {
-            return ['startDate' => date("Y-m-d H:i:s", strtotime("first day of next month  00:00:00")),
-                    'endDate'   => date("Y-m-d H:i:s", strtotime("first day of next month next year  00:00:00"))];
+            return ['startDate' => date("Y-m-d H:i:s", strtotime("first day of $monthString  00:00:00")),
+                    'endDate'   => date("Y-m-d H:i:s", strtotime("first day of $monthString next year  00:00:00"))];
         } else
         {
-//            return ['startDate' => date("Y-m-d H:i:s", strtotime("now")),
-//            'endDate'   => date("Y-m-d H:i:s", strtotime("now"))];
-            return ['startDate' => date("Y-m-d H:i:s", strtotime("first day of next month  00:00:00")),
-                'endDate' => null];
+            // Onetime products
+            return ['startDate' => date("Y-m-d H:i:s", strtotime("first day of $monthString  00:00:00")),
+                    'endDate'   => null];
         }
+    }
+
+    protected function calculateCustomerProductDateRange()
+    {
+
     }
 
     protected function getFormattedAddress(Address $address)
@@ -351,30 +425,47 @@ class BillingHelper {
      *  Customer product timestamp and status update functions
      */
 
-    protected function markCustomerProductAsCharged($customerProduct)
+    protected function markCustomerProductAsCharged($customerProduct, $monthString = 'this month')
     {
 
         // Default to the first day of the month
-        $firstDayOfMonthTime = strtotime("first day of this month 00:00:00");
+        $firstDayOfMonthTime = strtotime("first day of $monthString 00:00:00");
+
+        if ($customerProduct->charge_status != 0)
+        {
+            $customerProduct->amount_owed += number_format($customerProduct->product->amount, 2, '.', '');
+        }
+
+        // Default charge status is active. We set one-time products to paid after their invoice is processed
+        $customerProduct->charge_status = config('const.customer_product_charge_status.active');
+
+        $customerProductNextChargeTime = strtotime($customerProduct->next_charge_date);
 
         $timestampMysql = null;
         if ($customerProduct->product->frequency == 'annual')
         {
             // Set the next chargeable date to next year for annual products
-            $timestampMysql = date('Y-m-d H:i:s', strtotime('+1 year', $firstDayOfMonthTime));
+            $nextChargeTime = strtotime('+1 year', $firstDayOfMonthTime);
+            $nextChargeDateMysql = date('Y-m-d H:i:s', $nextChargeTime);
         } elseif ($customerProduct->product->frequency == 'monthly')
         {
             // Set the next chargeable date to next month for monthly products
-            $timestampMysql = date('Y-m-d H:i:s', strtotime('+1 month', $firstDayOfMonthTime));
+            $nextChargeTime = strtotime('+1 month', $firstDayOfMonthTime);
+            $nextChargeDateMysql = date('Y-m-d H:i:s', $nextChargeTime);
+        } else
+        {
+            $nextChargeDateMysql = null;
         }
 
-        $customerProduct->next_charge_date = $timestampMysql;
-        $customerProduct->charge_status = config('const.customer_product_charge_status.charged');
-        $customerProduct->amount_owed += number_format($customerProduct->product->amount, 2);
+        if ($customerProduct->next_charge_date == null || $nextChargeTime > $customerProductNextChargeTime)
+        {
+            $customerProduct->next_charge_date = $nextChargeDateMysql;
+        }
+
         $customerProduct->save();
     }
 
-    protected function markCustomerProductAsPaid($customerProductId)
+    protected function markCustomerProductAsPaid($customerProductId, $monthString = 'this month')
     {
         $customerProduct = CustomerProduct::find($customerProductId);
         if ($customerProduct == null)
@@ -384,7 +475,10 @@ class BillingHelper {
             return false;
         }
 
-        $firstDayOfMonthTime = strtotime("first day of this month 00:00:00");
+        $firstDayOfMonthTime = strtotime("first day of $monthString 00:00:00");
+
+        // Default charge status is active. We set one-time products to paid down below
+        $customerProduct->charge_status = config('const.customer_product_charge_status.active');
 
         $timestampMysql = null;
         if ($customerProduct->product->frequency == 'annual')
@@ -397,10 +491,13 @@ class BillingHelper {
             // Set the next expiration date to next month for monthly plans
             $customerProduct->expires = date('Y-m-d H:i:s', strtotime('+1 month', $firstDayOfMonthTime));
             $customerProduct->renewed_at = date('Y-m-d H:i:s');
+        } else
+        {
+            // This is for one-time products
+            $customerProduct->charge_status = config('const.customer_product_charge_status.paid');
         }
 
         $customerProduct->last_charged = date('Y-m-d H:i:s');
-        $customerProduct->charge_status = config('const.customer_product_charge_status.paid');
         $customerProduct->amount_owed -= number_format($customerProduct->product->amount, 2);
         $customerProduct->save();
 
@@ -417,7 +514,6 @@ class BillingHelper {
             return false;
         }
         $customerProduct->last_charged = date('Y-m-d H:i:s');
-        $customerProduct->charge_status = config('const.customer_product_charge_status.failed');
         $customerProduct->save();
 
         return true;
@@ -457,22 +553,44 @@ class BillingHelper {
         }
     }
 
-    public function findOrCreateOpenInvoice($customerId, $addressId)
+    public function invoicePendingAutoPayChargesByMonth($monthString)
     {
+        // Default to the first day of the month
+        $startDateTime = strtotime("first day of $monthString 00:00:00");
+        $startDateMysql = date("Y-m-d H:i:s", $startDateTime);
+
+        while (true)
+        {
+            $charges = Charge::where('status', config('const.charge_status.pending'))
+                ->where('processing_type', config('const.type.auto_pay'))
+                ->where('start_date', $startDateMysql)
+                ->take(100)
+                ->get();
+
+            if ($charges->count() == 0)
+            {
+                break;
+            }
+
+            foreach ($charges as $charge)
+            {
+                $invoice = $this->findOrCreateOpenInvoice($charge->id_customers, $charge->id_address, $monthString);
+                $this->addChargeToInvoice($charge, $invoice);
+            }
+        }
+    }
+
+    public function findOrCreateOpenInvoice($customerId, $addressId, $monthString = 'next month')
+    {
+        $firstDayOfMonthTime = strtotime("first day of $monthString 00:00:00");
+        $description = date('M-Y', $firstDayOfMonthTime) . ' Charges';
+
         $invoice = Invoice::firstOrCreate(['id_customers' => $customerId, 'id_address' => $addressId, 'status' => config('const.invoice_status.open')]);
 
         if ($invoice->description == null)
         {
-            $invoice->description = 'New Invoice';
+            $invoice->description = $description;
         }
-//        if ($invoice->name == null)
-//        {
-//            $invoice->name = $this->getCustomerName($customerId);
-//        }
-//        if ($invoice->address == null)
-//        {
-//            $invoice->address = $this->getCustomerAddress($addressId);
-//        }
         if ($invoice->bill_cycle_day == null)
         {
             $invoice->bill_cycle_day = '1';
@@ -484,9 +602,9 @@ class BillingHelper {
 
         if ($invoice->due_date == null)
         {
-            $firstDayOfNextMonthTime = strtotime("first day of next month  00:00:00");
-            $firstDayOfNextMonthMysql = date("Y-m-d H:i:s", $firstDayOfNextMonthTime);
-            $invoice->due_date = $firstDayOfNextMonthMysql;
+            $dueDateTime = strtotime("first day of $monthString  00:00:00");
+            $dueDateMysql = date("Y-m-d H:i:s", $dueDateTime);
+            $invoice->due_date = $dueDateMysql;
         }
 
         return $invoice;
@@ -572,10 +690,10 @@ class BillingHelper {
     {
 
         $invoice = $charge->invoice;
+        $charge->delete();
 
         if ($invoice != null)
         {
-            $charge->delete();
             $this->updateInvoiceAmount($invoice);
         }
 
@@ -630,10 +748,12 @@ class BillingHelper {
                     $this->processInvoice($invoice, true);
                 }
 
-                if ($records > 0) {
+                if ($records > 0)
+                {
                     return true;
                 }
             });
+
         return true;
     }
 
@@ -689,7 +809,7 @@ class BillingHelper {
             });
     }
 
-    public function processInvoice(Invoice $invoice, $notifyViaEmail = true, $notifyViaEmailOnlyIfPassed = false)
+    public function processInvoice(Invoice $invoice, $notifyViaEmail = true, $notifyViaEmailOnlyIfPassed = false, $createTicketOnFailure = false)
     {
         if (isset($invoice) == false)
         {
@@ -721,10 +841,10 @@ class BillingHelper {
 
         if ($invoice->amount > 0)
         {
-            $chargeResult = $billingService->chargeCustomer($customer, $invoice->amount, 'invoice_id: ' . $invoice->id, 'SilverIP Data', json_encode($chargeDetailsArray));
+            $chargeResult = $billingService->chargeCustomer($customer, $invoice->amount, $invoice->description, $invoice->description, json_encode($chargeDetailsArray));
         } else
         {
-            $chargeResult = $billingService->refundCustomer($customer, - 1 * $invoice->amount, 'invoice', json_encode($chargeDetailsArray));
+            $chargeResult = $billingService->refundCustomer($customer, - 1 * $invoice->amount, $invoice->description, json_encode($chargeDetailsArray));
         }
 
         $transactionId = isset($chargeResult['TRANSACTIONID']) ? $chargeResult['TRANSACTIONID'] : null;
@@ -732,10 +852,8 @@ class BillingHelper {
         if ($chargeResult['RESPONSETEXT'] == 'APPROVED' || $chargeResult['RESPONSETEXT'] == 'RETURN ACCEPTED')
         {
             Log::info('BillingHelper::processInvoice(): INFO: id: ' . $invoice->id_customers . ', ' . trim($customer->first_name) . ' ' . trim($customer->last_name) . ', $' . $invoice->amount . ', ' . 'invoice: ' . $invoice->id . " ... processed\n");
-            $invoice->status = config('const.invoice_status.paid');
-            $invoice->save();
-            $this->markInvoiceAsPaid($invoice);
             $this->updateInvoiceChargeStatus($invoice, config('const.charge_status.paid'));
+            $this->markInvoiceAsPaid($invoice);
             $this->logInvoice($invoice, 'processed', $transactionId);
 
             if ($notifyViaEmail && $notifyViaEmailOnlyIfPassed)
@@ -747,29 +865,22 @@ class BillingHelper {
         {
 
             Log::info('BillingHelper::processInvoice(): INFO: id: ' . $invoice->id_customers . ', ' . trim($customer->first_name) . ' ' . trim($customer->last_name) . ', $' . $invoice->amount . ', ' . 'invoice: ' . $invoice->id . " ... failed\n");
-            $invoice->failed_charges_count ++;
-            $invoice->save();
             $this->markInvoiceAsFailedToCharge($invoice);
-//            $this->updateInvoiceProductDates($invoice, true);
             $this->logInvoice($invoice, 'failed', $transactionId);
 
             /*** Create a ticket ***/
+            if($createTicketOnFailure){
+
+                $sipTicket = new SIPTicket();
+                $ticketComment = 'Failed to charge invoice: '.$invoice->id.' for $'.$invoice->amount.' --- TransID: '.$chargeResult['TRANSACTIONID'].' - Action: '.$chargeResult['ACTION'].' - Approval: '.$chargeResult['APPROVAL'].' - Response: '.$chargeResult['RESPONSETEXT'];
+                $sipTicket->createTicket($invoice->id_customers, config('const.reason.billing'), config('const.ticket_status.escalated'), $ticketComment, 0, '', false);
+            }
+
+            /*** Notify customer ***/
             if ($notifyViaEmail && $notifyViaEmailOnlyIfPassed == false)
             {
                 $this->sendChargeDeclienedEmail($invoice, $chargeResult);
             }
-            //            if ($testRun == false) {
-            //                $ticketReason = 'Credit Card Declined for ' . date("M-Y") . ' (' . getFormattedPrice($amountToCharge) . ') --- TransID: ' . $chargeResult['TRANSACTIONID'] . ' - Action: ' . $chargeResult['ACTIONCODE'] . ' - Approval: ' . $chargeResult['APPROVAL'] . '- Response: ' . $chargeResult['RESPONSETEXT'];
-            //                createTicket($cid, '18', $ticketReason, 'escalated', 0, false);
-            //                addCustomerComment($cid, $ticketReason);
-            //                flagCustomerAccount($cid, '1', 'CC Declined');
-            //                foreach ($customer['LineItems'] as $lineItem) {
-            //                    updateCustomerProductBillingFlag($lineItem['CSID'], $lineItem['BillingFlag'] - 1, date("M-Y") . ' Charge Delined', false);
-            //                }
-            //                if ($skipEmails == false) {
-            //                    sendMonthlyDeclinedEmail($customer, $testRun);
-            //                }
-            //            }
         }
 
         return $chargeResult;
@@ -792,6 +903,9 @@ class BillingHelper {
 
     protected function markInvoiceAsPaid(Invoice $invoice)
     {
+        $invoice->status = config('const.invoice_status.paid');
+        $invoice->save();
+
         $invoiceDetails = $invoice->details();
 
         if (count($invoiceDetails) == 0)
@@ -812,9 +926,6 @@ class BillingHelper {
             $updateCount ++;
         }
 
-        $invoice->status = config('const.invoice_status.paid');
-        $invoice->save();
-
         Log::notice('BillingHelper::markInvoiceAsPaid(): INFO: Updated expiration and charge dates for ' . $updateCount . ' products of invoice: ' . $invoice->id);
 
         return $updateCount;
@@ -822,6 +933,8 @@ class BillingHelper {
 
     protected function markInvoiceAsFailedToCharge(Invoice $invoice)
     {
+        $invoice->failed_charges_count ++;
+        $invoice->save();
         $invoiceDetails = $invoice->details();
 
         if (count($invoiceDetails) == 0)
@@ -852,6 +965,7 @@ class BillingHelper {
         $this->updateInvoiceChargeStatus($invoice, config('const.charge_status.cancelled'));
         $invoice->status = config('const.invoice_status.cancelled');
         $invoice->save();
+
         return true;
     }
 

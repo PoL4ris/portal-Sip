@@ -406,10 +406,36 @@ class TestController extends Controller {
     public function generalTest(Request $request)
     {
 
-        $billingHelper = new BillingHelper();
-        dd($billingHelper->getChargeableCustomerProductsByCustomerId(14703));
+//        $billingHelper = new BillingHelper();
+//
+//
+////        $expiresBeforeMysqlDate = date("Y-m-d H:i:s", strtotime('first day of this month 00:00:00'));
+//        $expiresBeforeMysqlDate = date("Y-m-d H:i:s", strtotime('first day of August 00:00:00'));
+//
+////        $customerProducts = $billingHelper->getChargeableCustomerProductsQuery('first day of this month 00:00:00')
+////            ->where('buildings.id', '=', 61)  // 730C
+////            ->get(['customer_products.*']);
+////
+////        dd($customerProducts);
+//
+////        $customerProducts = $billingHelper->getChargeableCustomerProductsQuery('first day of this month 00:00:00', true)
+//        $customerProducts = $billingHelper->getChargeableCustomerProductsQuery('first day of August 00:00:00', true)
+//            ->where('customer_products.signed_up', '<', $expiresBeforeMysqlDate)
+//            ->whereNull('customer_products.last_charged')
+//            ->where('buildings.id', '=', 61)
+//            ->get(['customer_products.*']);
+//
+//        dd($customerProducts);
+//
+//        $customerProduct = $customerProducts->first();
+//
+//        dd(number_format($customerProduct->product->amount, 2, '.', ''));
 
-        dd(storage_path('app'));
+
+//        $billingHelper->generateResidentialChargeRecordsForLastMonth();
+//        dd($billingHelper->getChargeableCustomerProductsByCustomerId(14703));
+
+//        dd(storage_path('app'));
 
 //        $directory = 'mikrotik_firmware/all_packages-tile-6.40.1';
 //        $files = File::allFiles(storage_path('app/'.$directory));
@@ -418,7 +444,6 @@ class TestController extends Controller {
 //            echo $file->getPathname().'/'.$file->getFilename()  .'<br>';
 //        }
 //
-        dd('done');
 ////        $files = Storage::disk('local')->allFiles($directory);
 //
 ////        dd(Storage::disk('local')->files('mikrotik_firmware/all_packages-tile-6.40.1'));
@@ -428,13 +453,24 @@ class TestController extends Controller {
 //        $mikrotik = NetworkNode::where('ip_address', '10.10.13.1')->first();
 ////        dd($mikrotik);
 
-        $serviceRouter = new MtikRouter(['ip_address' => $mikrotik->ip_address,
-                                         'username'   => config('netmgmt.mikrotik.username'),
-                                         'password'   => config('netmgmt.mikrotik.password')]);
-        $softwareversion = $serviceRouter->getSoftwareVersion($mikrotik->ip_address);
-        $architecture = $serviceRouter->getArchitecture($mikrotik->ip_address);
+        $ipAddress = '192.168.100.249';
+        $serviceRouter = new MtikRouter(['ip_address' => $ipAddress,
+                                         'username'   => 'test',
+                                         'password'   => 'testtest']);
+        $softwareversion = $serviceRouter->getSoftwareVersion($ipAddress);
+        $architecture = $serviceRouter->getArchitecture($ipAddress);
 
         dd([$softwareversion, $architecture]);
+
+
+
+//        $serviceRouter = new MtikRouter(['ip_address' => $mikrotik->ip_address,
+//                                         'username'   => config('netmgmt.mikrotik.username'),
+//                                         'password'   => config('netmgmt.mikrotik.password')]);
+//        $softwareversion = $serviceRouter->getSoftwareVersion($mikrotik->ip_address);
+//        $architecture = $serviceRouter->getArchitecture($mikrotik->ip_address);
+//
+//        dd([$softwareversion, $architecture]);
 
 //            dd('done');
 //        $mikrotiks = NetworkNode::where('id_types', config('const.type.router'))->get();
