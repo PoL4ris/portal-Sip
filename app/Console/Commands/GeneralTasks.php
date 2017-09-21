@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\File;
 use Storage;
 use App\Models\NetworkNode;
 use App\Models\CustomerPort;
+use App\Models\Invoice;
 use FtpClient\FtpClient;
 use FtpClient\FtpException;
 use SendMail;
@@ -67,6 +68,7 @@ class GeneralTasks extends Command {
         $billingHelper = new BillingHelper();
 
         $invoice = Invoice::find(4943);
+//        dd($invoice);
         $billingHelper->processInvoice($invoice, true, false, true);
 
 //        $billingHelper->generateResidentialChargeRecordsByMonth('September', true, false);
