@@ -172,16 +172,31 @@ class BuildingController extends Controller {
     public function getBuildingsSearchSimple(Request $request)
     {
         $txt = $request['querySearch'];
+        $table = $request['table'];
+
         if (empty($txt))
             return;
 
-        return Building::where('name', 'LIKE', '%' . $txt . '%')
-            ->orWhere('alias', 'LIKE', '%' . $txt . '%')
-            ->orWhere('nickname', 'LIKE', '%' . $txt . '%')
-            ->orWhere('code', 'LIKE', '%' . $txt . '%')
-            ->orWhere('units', 'LIKE', '%' . $txt . '%')
-//                      ->limit(10)
-            ->get();
+        if($table == 'building')
+        {
+            $result['data'] = Building::where('name', 'LIKE', '%' . $txt . '%')
+                ->orWhere('alias', 'LIKE', '%' . $txt . '%')
+                ->orWhere('nickname', 'LIKE', '%' . $txt . '%')
+                ->orWhere('code', 'LIKE', '%' . $txt . '%')
+                ->orWhere('units', 'LIKE', '%' . $txt . '%')
+                ->get();
+            $result['count'] = $result['data']->count();
+        }
+        else
+        {
+            $result['data'] = Address::with('building')
+                ->where('address', 'LIKE', '%' . $txt . '%')
+                ->whereNull('id_customers')
+                ->get();
+            $result['count'] = $result['data']->count();
+        }
+
+        return $result;
     }
 
     public function getBuildingsType()
@@ -468,6 +483,36 @@ class BuildingController extends Controller {
 
 
         return Building::with('activeBuildingProducts')->find($id_building);
+
+    }
+
+    public function insertWalkthroughLocation(Request $request)
+    {
+
+//        print '<pre>';
+//        print_r($request->all());
+//        print_r($request->address);
+//        print_r($request->name);
+//        die();
+        $tmp = Building::where('name', '=', $request->name);
+        if($tmp)
+            return;
+
+        $newBuilding = new Building;
+        $newBuilding->name      = $request->name;
+        $newBuilding->id_status = 1; //Const -> newBld
+
+        $newBuilding->save();
+
+        //-------------------------------------------
+
+        $newAddress = new Address;
+        $newAddress->address      = $request->address;
+        $newAddress->id_buildings = $newBuilding->id;
+        $newAddress->save();
+
+
+        return Address::with('building')->find($newAddress->id);
 
     }
 

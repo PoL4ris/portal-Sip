@@ -168,7 +168,9 @@
   color: white;
   text-shadow: 1px 1px 1px rgba(0,0,0,.4);
 }
-.request-fields-inline{}
+.request-fields-inline{
+  position: relative;
+}
 .request-fields-inline input{
   width: 100%;
   border: none;
@@ -204,6 +206,16 @@
   border: none;
   min-height: 100px;
   resize: none;
+}
+.span-count-input{
+  position: absolute;
+  top: 1px;
+  right: 0;
+  color: green;
+  opacity: .4;
+  height: 40px;
+  padding-top: 11px;
+  padding-right: 15px;
 }
 
 

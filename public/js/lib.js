@@ -40,6 +40,11 @@ console.log(generalService);
   console.log($.browser.mobile);
   $scope.mobDevice = $.browser.mobile;
 
+  //values to reset...
+  $scope.resetValues = function (){
+    $scope.viewResults = false;
+    $scope.verifyMsgView1 = false;
+  }
 
   if (generalService.sideBarFlag) {
     $scope.sipTool(2);
@@ -107,9 +112,55 @@ console.log(generalService);
     $('#'+id+(index-1)).css('left', '0');
   }
 
-  $scope.verifyBldRecord = function (){
-    console.log('ok on mwView1');
+  $scope.verifyBldRecord = function (table){
+//    console.log('ok on mwView1');
+//    console.log(this.verifyInfo);
+    if(table  == 'building')
+    {
+      $http.get("buildingsSearch", {params:{'querySearch':this.verifyInfoBld, 'table':table}})
+        .then(function (response) {
+          $scope.nameVerifyData = response.data;
+//          console.log(response.data);
+        });
+    }
+    else
+    {
+      $http.get("buildingsSearch", {params:{'querySearch':this.verifyInfoAdd, 'table':table}})
+        .then(function (response) {
+          $scope.addressVerifyData = response.data;
+//          console.log(response.data);
+        });
+    }
     $scope.mwView1 = true;
+  };
+
+
+  $scope.seeResults = function (type){
+    if(type == 'bld')
+      $scope.viewResultsName = !$scope.viewResultsName;
+    else
+      $scope.viewResultsAddress = !$scope.viewResultsAddress;
+
+  }
+  $scope.insertProspectBuilding = function(){
+    if($scope.addressVerifyData['count'] == 0 && $scope.nameVerifyData['count'] == 0)
+    {
+      console.log('rdy to go');
+      $scope.nextPhase('mw-view-', 1);
+      $scope.verifyMsgView1 = false;
+
+      //insert temporal Location
+      $http.get("insertWalkthroughLocation", {params:{'name':this.verifyInfoBld, 'address':this.verifyInfoAdd}})
+        .then(function (response) {
+          $scope.newDataLoaded = response.data;
+          console.log(response.data);
+        });
+
+
+    }
+
+    $scope.verifyMsgView1 = true;
+    return;
   }
 
 })

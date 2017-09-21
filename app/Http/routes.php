@@ -102,6 +102,8 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('insertBuildingProperties',  'BuildingController@insertBuildingProperties');
     Route::get('insertBuildingContacts',    'BuildingController@insertBuildingContacts');
     Route::get('insertBuildingProducts',    'BuildingController@insertBuildingProducts');
+    //Walkthrough
+    Route::get('insertWalkthroughLocation', 'BuildingController@insertWalkthroughLocation');
     //Update Building
     Route::get('updateBuilding',            'BuildingController@updateBuilding');
     Route::get('updateBldPropValTable',     'BuildingController@updateBldPropValTable');
