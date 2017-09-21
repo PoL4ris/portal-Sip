@@ -65,6 +65,11 @@ class GeneralTasks extends Command {
 //        $this->cleanupBadCustomerPorts();
 
         $billingHelper = new BillingHelper();
+
+        $invoice = Invoice::find(4943);
+        $billingHelper->processInvoice($invoice, true, false, true);
+
+//        $billingHelper->generateResidentialChargeRecordsByMonth('September', true, false);
 //        $billingHelper->generateResidentialChargeRecordsByMonth('September', true, false);
 //        $billingHelper->invoicePendingAutoPayChargesByMonth('September');
 
