@@ -66,10 +66,12 @@ class GeneralTasks extends Command {
 //        $this->cleanupBadCustomerPorts();
 
         $billingHelper = new BillingHelper();
+        $billingHelper->processPendingAutopayInvoicesByMonth('August');
 
-        $invoice = Invoice::find(4943);
+//        $billingHelper->processInvoice($invoice, true, false, true);
+//        $invoice = Invoice::find(4943);
 //        dd($invoice);
-        $billingHelper->processInvoice($invoice, true, false, true);
+//        $billingHelper->processInvoice($invoice, true, false, true);
 
 //        $billingHelper->generateResidentialChargeRecordsByMonth('September', true, false);
 //        $billingHelper->generateResidentialChargeRecordsByMonth('September', true, false);

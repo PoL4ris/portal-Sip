@@ -745,6 +745,7 @@ class BillingHelper {
             })->chunk($records, function ($invoices) use ($records, $notifyViaEmail) {
                 foreach ($invoices as $invoice)
                 {
+                    Log::info('BillingHelper::processPendingAutopayInvoices(): processing invoice id='.$invoice->id.' amount=$'.$invoice->amount);
                     $this->processInvoice($invoice, $notifyViaEmail);
                 }
 
@@ -777,6 +778,7 @@ class BillingHelper {
             ->chunk($records, function ($invoices) use ($notifyViaEmail, $records) {
                 foreach ($invoices as $invoice)
                 {
+                    Log::info('BillingHelper::processPendingAutopayInvoicesByMonth(): processing invoice id='.$invoice->id.' amount=$'.$invoice->amount);
                     $this->processInvoice($invoice, $notifyViaEmail);
                 }
 
@@ -806,6 +808,7 @@ class BillingHelper {
             foreach ($invoices as $invoice)
             {
                 $totalInvoicesProcessed ++;
+                Log::info('BillingHelper::processPendingAutopayInvoicesThatHaveUpdatedPaymentMethods(): processing invoice id='.$invoice->id.' amount=$'.$invoice->amount);
                 $this->processInvoice($invoice, true, true, false);
             }
 
@@ -834,6 +837,7 @@ class BillingHelper {
             })->chunk(200, function ($invoices) {
                 foreach ($invoices as $invoice)
                 {
+                    Log::info('BillingHelper::rerunPendingAutopayInvoices(): processing invoice id='.$invoice->id.' amount=$'.$invoice->amount);
                     $this->processInvoice($invoice, true, false, false);
 //                    break;
                 }
@@ -848,6 +852,20 @@ class BillingHelper {
             Log::info('BillingHelper::processInvoice(): $invoice is not set!');
 
             return ['ERRMSG' => 'Invalid is empty!'];
+        }
+
+        if ($invoice->status == config('const.invoice_status.paid'))
+        {
+            Log::info('BillingHelper::processInvoice(): ERROR: Invoice id='.$invoice->id.' has already been processed.');
+
+            return ['ERRMSG' => 'Invoice id='. $invoice->id .' has already been processed.'];
+        }
+
+        if ($invoice->status == config('const.invoice_status.cancelled'))
+        {
+            Log::info('BillingHelper::processInvoice(): ERROR: Invoice id='.$invoice->id.' was cancelled so it can not be processed.');
+
+            return ['ERRMSG' => 'Invoice id='. $invoice->id .' was cancelled so it can not be processed.'];
         }
 
         if ($invoice->amount == 0)

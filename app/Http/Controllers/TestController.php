@@ -411,12 +411,19 @@ class TestController extends Controller {
 
 
         $invoiceStatusArrayMap = array_flip(config('const.invoice_status'));
-        $invoices = Invoice::with('address')->where('id_customers', 3783)->get();
+
+        $invoices = Invoice::with('customer')->where('status', config('const.invoice_status.pending'))
+            ->where('processing_type', config('const.type.auto_pay'))
+            ->where('due_date', '2017-08-01 00:00:00')
+            ->get();
 
         $invoices->transform(function ($invoice, $key) use ($invoiceStatusArrayMap) {
             $invoice->status = $invoiceStatusArrayMap[$invoice->status];
             return $invoice;
         });
+
+        $customers = $invoices->pluck('customer');
+        dd($customers->pluck('id_status', 'id'));
 dd($invoices);
 
 
