@@ -923,7 +923,7 @@ class BillingHelper {
             {
 
                 $sipTicket = new SIPTicket();
-                $ticketComment = 'Failed to charge invoice: ' . $invoice->id . ' for $' . $invoice->amount . ' --- TransID: ' . $chargeResult['TRANSACTIONID'] . ' - Action: ' . $chargeResult['ACTION'] . ' - Approval: ' . $chargeResult['APPROVAL'] . ' - Response: ' . $chargeResult['RESPONSETEXT'];
+                $ticketComment = 'Failed to charge invoice: ' . $invoice->id . ' for $' . $invoice->amount . ' --- TransID: ' . $chargeResult['TRANSACTIONID'] . ' - Action: ' . $chargeResult['ACTIONCODE'] . ' - Approval: ' . $chargeResult['APPROVAL'] . ' - Response: ' . $chargeResult['RESPONSETEXT'];
                 $sipTicket->createTicket($invoice->id_customers, config('const.reason.billing'), config('const.ticket_status.escalated'), $ticketComment, 0, '', false);
             }
 
