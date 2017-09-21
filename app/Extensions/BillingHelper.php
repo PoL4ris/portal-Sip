@@ -731,7 +731,7 @@ class BillingHelper {
      * Invoice processing functions
      */
 
-    public function processPendingAutopayInvoices($records = 200)
+    public function processPendingAutopayInvoices($notifyViaEmail = true, $records = 200)
     {
 
         $nowMysql = date("Y-m-d H:i:s");
@@ -742,10 +742,10 @@ class BillingHelper {
                 $query->where('due_date', 'is', 'NULL')
                     ->orWhere('due_date', '<=', $nowMysql)
                     ->orWhere('due_date', '');
-            })->chunk($records, function ($invoices) use ($records) {
+            })->chunk($records, function ($invoices) use ($records, $notifyViaEmail) {
                 foreach ($invoices as $invoice)
                 {
-                    $this->processInvoice($invoice, true);
+                    $this->processInvoice($invoice, $notifyViaEmail);
                 }
 
                 if ($records > 0)
@@ -806,7 +806,7 @@ class BillingHelper {
             foreach ($invoices as $invoice)
             {
                 $totalInvoicesProcessed ++;
-//                $this->processInvoice($invoice, true, true);
+                $this->processInvoice($invoice, true, true, false);
             }
 
             if ($paginatedInvoices->hasMorePages() == false)
@@ -834,14 +834,14 @@ class BillingHelper {
             })->chunk(200, function ($invoices) {
                 foreach ($invoices as $invoice)
                 {
-                    $this->processInvoice($invoice, true);
+                    $this->processInvoice($invoice, true, false, false);
 //                    break;
                 }
                 dd('Done');
             });
     }
 
-    public function processInvoice(Invoice $invoice, $notifyViaEmail = true, $notifyViaEmailOnlyIfPassed = false, $createTicketOnFailure = false)
+    public function processInvoice(Invoice $invoice, $notifyViaEmail = true, $notifyViaEmailOnlyIfPassed = false, $createTicketOnFailure = true)
     {
         if (isset($invoice) == false)
         {
