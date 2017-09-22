@@ -60,13 +60,13 @@ class GeneralTasks extends Command {
 //        $this->getMikrotikHotspotProfiles();
 //        $this->getMikrotikHotspots();
 
-//        $this->sendMassEmail();
+        $this->sendMassEmail();
 //        $this->rebootMikrotik();
 //        $this->uploadMikrotikPackageFiles();
 //        $this->cleanupBadCustomerPorts();
 
-        $billingHelper = new BillingHelper();
-        $billingHelper->processPendingAutopayInvoicesByMonth('August');
+//        $billingHelper = new BillingHelper();
+//        $billingHelper->processPendingAutopayInvoicesByMonth('August');
 
 //        $billingHelper->processInvoice($invoice, true, false, true);
 //        $invoice = Invoice::find(4943);

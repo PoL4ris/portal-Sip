@@ -345,13 +345,13 @@ app.controller('globalToolsCtl',                    function ($scope, $http, $co
         if(valor)
           $('#' + id).html('<i class="fa fa-pencil"></i> Edit customer').removeClass('btn-danger').addClass('btn-primary');
         else
-          $('#' + id).html('<i class="fa fa-plus plus-cross"></i> Cancel ').removeClass('btn-primary').addClass('btn-danger');
+          $('#' + id).html('<i class="fa fa-plus plus-cross"></i> Done ').removeClass('btn-primary').addClass('btn-danger');
         break;
       case 'customer-contact':
         if(valor)
           $('#' + id).html('<i class="fa fa-pencil"></i> Edit customer').removeClass('btn-danger').addClass('btn-primary');
         else
-          $('#' + id).html('<i class="fa fa-plus plus-cross"></i> Cancel ').removeClass('btn-primary').addClass('btn-danger');
+          $('#' + id).html('<i class="fa fa-plus plus-cross"></i> Done ').removeClass('btn-primary').addClass('btn-danger');
         break;
     }
   }
