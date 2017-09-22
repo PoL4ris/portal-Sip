@@ -488,15 +488,17 @@ class BuildingController extends Controller {
 
     public function insertWalkthroughLocation(Request $request)
     {
-
+//
 //        print '<pre>';
 //        print_r($request->all());
 //        print_r($request->address);
 //        print_r($request->name);
 //        die();
-        $tmp = Building::where('name', '=', $request->name);
-        if($tmp)
-            return;
+
+
+//        $tmp = Building::where('name', '=', $request->name);
+//        if($tmp)
+//            return;
 
         $newBuilding = new Building;
         $newBuilding->name      = $request->name;

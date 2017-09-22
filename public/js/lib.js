@@ -39,11 +39,13 @@ console.log(generalService);
   //This is the checkMobileDevice
   console.log($.browser.mobile);
   $scope.mobDevice = $.browser.mobile;
+  $scope.flagTab   = 'general';
 
   //values to reset...
   $scope.resetValues = function (){
     $scope.viewResults = false;
     $scope.verifyMsgView1 = false;
+    $scope.flagTab = 'general';
   }
 
   if (generalService.sideBarFlag) {
@@ -145,22 +147,39 @@ console.log(generalService);
   $scope.insertProspectBuilding = function(){
     if($scope.addressVerifyData['count'] == 0 && $scope.nameVerifyData['count'] == 0)
     {
-      console.log('rdy to go');
+
       $scope.nextPhase('mw-view-', 1);
       $scope.verifyMsgView1 = false;
-
       //insert temporal Location
       $http.get("insertWalkthroughLocation", {params:{'name':this.verifyInfoBld, 'address':this.verifyInfoAdd}})
         .then(function (response) {
           $scope.newDataLoaded = response.data;
-          console.log(response.data);
         });
-
-
     }
 
     $scope.verifyMsgView1 = true;
     return;
+  }
+
+  $scope.setTabFlag = function(tabName){
+    $scope.flagTab = tabName;
+  }
+
+  $scope.updateinstance = function(){
+    console.log('update instance with flag = ' + $scope.flagTab);
+
+    var objects = getFormValues('general-tab-content');
+
+    console.log(objects);
+
+
+
+  }
+
+
+  $scope.setToUpdate = function(id){
+    console.log(this);
+    $('#'+id).fadeIn('slow');
   }
 
 })

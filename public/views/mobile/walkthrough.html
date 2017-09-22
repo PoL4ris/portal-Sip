@@ -103,7 +103,7 @@
             <span class="back-style-action cursor-pointer" ng-click="backPhase('mw-view-', 2)"><i class="fa fa-angle-left"></i>Back</span>
             <h4>Lakeside On The Park</h4>
 
-            <span class="next-style-action cursor-pointer">Update</span>
+            <span class="next-style-action cursor-pointer" ng-click="updateinstance()">Update</span>
 
 
         </div>
@@ -111,17 +111,17 @@
 
         <header role="heading" class="ui-sortable-handle tabs-style-fixed col-xs-12 col-lg-12">
             <ul id="widget-tab-1" class="nav pull-left nav-tabs size-100">
-                <li class="active ">
+                <li class="active" ng-click="setTabFlag('general')">
                     <a data-toggle="tab" href="#tab-r0" aria-expanded="false">
                         <span class="">General</span>
                     </a>
                 </li>
-                <li class=" tabs-style-fixed">
+                <li class=" tabs-style-fixed" ng-click="setTabFlag('notes')">
                     <a data-toggle="tab" href="#tab-r1" aria-expanded="false">
                         <span class="">Notes</span>
                     </a>
                 </li>
-                <li class=" tabs-style-fixed">
+                <li class=" tabs-style-fixed" ng-click="setTabFlag('images')">
                     <a data-toggle="tab" href="#tab-r2" aria-expanded="false">
                         <span class="">Images</span>
                     </a>
@@ -135,7 +135,7 @@
                 <div class="tab-pane active" id="tab-r0">
 
                     <div class="col-xs-12 col-lg-12 no-padding-sides">
-                        <form>
+                        <form id="general-tab-content">
                             <div class="request-fields-inline bg-white b-t-ddd b-b-ddd m-b-lg">
                                 <input type="text"
                                        placeholder="Building Name Ex: Lakeside On The Park"
@@ -149,22 +149,26 @@
                                        value="{{newDataLoaded.address}}">
                             </div>
                             <div class="request-fields-inline bg-white b-t-ddd b-b-ddd m-b-lg">
-                                <input type="text" placeholder="Ex: 4800C" >
+                                <input type="text" placeholder="Ex: 4800C" name="code" ng-keyup="setToUpdate('update-code')">
+                                <i class="fa fa-save" id="update-code" style="display: none;"></i>
                             </div>
                             <div class="request-fields-inline bg-white b-t-ddd b-b-ddd m-b-lg">
-                                <input type="text" placeholder="Ex: High-Rise" >
+                                <input type="text" placeholder="Ex: High-Rise" name="type" ng-keyup="setToUpdate('update-type')">
+                                <i class="fa fa-save" id="update-type" style="display: none;"></i>
                             </div>
                             <div class="request-fields-inline bg-white b-t-ddd b-b-ddd m-b-lg">
-                                <input type="text" placeholder="Ex: 267" >
+                                <input type="text" placeholder="Ex: 267" name="units" ng-keyup="setToUpdate('update-units')">
+                                <i class="fa fa-save" id="update-units" style="display: none;"></i>
                             </div>
                             <div class="request-fields-inline bg-white b-t-ddd b-b-ddd m-b-lg">
-                                <input type="text" placeholder="Ex: 10" >
+                                <input type="text" placeholder="Ex: 10" name="floors" ng-keyup="setToUpdate('update-floors')">
+                                <i class="fa fa-save" id="update-floors" style="display: none;"></i>
                             </div>
 
                             <div class="request-fields-inline bg-white b-t-ddd b-b-ddd m-b-lg">
-                                <select name="">
+                                <select name="id_neighborhoods" ng-model="neighborhood">
                                     <option value="">Select Neighborhood</option>
-                                    <option value="item.name" ng-repeat="item in neighborhoodList">{{item.name}}</option>
+                                    <option value="{{item.id}}" ng-repeat="item in neighborhoodList">{{item.name}}</option>
                                 </select>
                             </div>
 
