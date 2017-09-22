@@ -409,6 +409,13 @@ class TestController extends Controller {
     public function generalTest(Request $request)
     {
 
+        $building = Building::where('nickname', '65M')->first();
+        $activeCustomers = $building->activeCustomers;
+        $customers = $building->customers;
+
+//        dd($customers->count());
+        dd($activeCustomers->pluck('emailAddress')->pluck('value'));
+
 //        // Find invoices that need to be cancelled
 //        $firstDayOfMonthTime = strtotime("first day of this month 00:00:00");
 //        $timestampMysql = date('Y-m-d H:i:s', $firstDayOfMonthTime);

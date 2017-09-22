@@ -12,6 +12,7 @@ use Storage;
 use App\Models\NetworkNode;
 use App\Models\CustomerPort;
 use App\Models\Invoice;
+use App\Models\Building;
 use FtpClient\FtpClient;
 use FtpClient\FtpException;
 use SendMail;
@@ -61,6 +62,7 @@ class GeneralTasks extends Command {
 //        $this->getMikrotikHotspots();
 
         $this->sendMassEmail();
+
 //        $this->rebootMikrotik();
 //        $this->uploadMikrotikPackageFiles();
 //        $this->cleanupBadCustomerPorts();
@@ -498,7 +500,7 @@ class GeneralTasks extends Command {
         /**
          * Production email contact list
          */
-        $managersContactInfo = [
+//        $managersContactInfo = [
 //            ['first_name' => 'Judy', 'last_name' => 'Pierson', 'email' => '1400museumpark@gmail.com'],
 //            ['first_name' => 'Marcy', 'last_name' => 'Juarez', 'email' => 'M.Juarez@dkcondo.com'],
 //            ['first_name' => 'Wayne', 'last_name' => 'Springer', 'email' => 'theresidencesof41e8thmgr@draperandkramer.com'],
@@ -566,29 +568,46 @@ class GeneralTasks extends Command {
 //            ['first_name' => 'Eric', 'last_name' => 'Ruby', 'email' => 'eruby@advantage-management.com'],
 //            ['first_name' => 'Theo', 'last_name' => 'Hodges', 'email' => 'theedge@communityspecialists.net'],
 //            ['first_name' => 'Amy', 'last_name' => 'Wukotich', 'email' => 'awukotich@peakproperties.biz']
-        ];
+//        ];
 
 
-        foreach ($managersContactInfo as $contactInfo)
+        $building = Building::where('nickname', '65M')->first();
+        $activeCustomers = $building->activeCustomers;
+
+
+//        foreach ($managersContactInfo as $contactInfo)
+        foreach ($activeCustomers as $activeCustomer)
         {
+
+            if($activeCustomer->emailAddress == null){
+                continue;
+            }
+
             $emailInfo = ['fromName'    => 'SilverIP Customer Care',
                           'fromAddress' => 'help@silverip.com',
-                          'toName'      => $contactInfo['first_name'] . ' ' . $contactInfo['last_name'],
-                          'toAddress'   => $contactInfo['email'],
+                          'toName'      => $activeCustomer->first_name . ' ' . $activeCustomer->last_name,
+                          'toAddress'   => $activeCustomer->emailAddress->value,
+//                          'toName'      => 'Peyman Pourkermani',
+//                          'toAddress'   => 'peyman@pourkermani.com',
 //                          'subject'     => 'SilverIP Maintenance Window'];
 //                          'subject'     => 'COMPLETED: SilverIP Network Maintenance'];
 //                          'subject'     => 'EXTENDED: SilverIP Network Maintenance'];
-                          'subject'     => 'Maintenance Completed!'];
+                          'subject'     => 'Upcoming Service Upgrade'];
 
 //            $template = 'email.template_manager_notification';
 //            $template = 'email.template_maintenance_window_complete';
 //            $template = 'email.template_maintenance_window_extended';
-            $template = 'email.template_maintenance_followup_notification';
-            $templateData = ['manager' => $contactInfo];
+//            $template = 'email.template_maintenance_followup_notification';
+            $template = 'email.template_building_upgrade_notification';
+            $templateData = ['customer' => $activeCustomer];
 
-            echo 'Sending to "' . $contactInfo['first_name'] . ' ' . $contactInfo['last_name'] . '" <' . $contactInfo['email'] . '>   ...   ';
-            SendMail::generalEmail($emailInfo, $template, $templateData);
+            echo 'Sending to "' . $activeCustomer->first_name . ' ' . $activeCustomer->last_name . '" <' . $activeCustomer->emailAddress->value . '>   ...   ';
+
+//            SendMail::generalEmail($emailInfo, $template, $templateData); // Without any attachements
+            SendMail::generalEmail($emailInfo, $template, $templateData, storage_path('app/email_attachments/65M_upgrade.pdf'));  // With an attachement
             echo "done\n";
+
+//            break;
         }
     }
 }

@@ -10,7 +10,8 @@ class Building extends Model {
     public function activeCustomers()
     {
         return $this->belongsToMany('App\Models\Customer', 'address', 'id_buildings', 'id_customers')
-            ->where('id_status', config('const.status.active'));
+            ->where('id_status', config('const.status.active'))
+            ->with('emailAddress');
     }
 
     public function customers()

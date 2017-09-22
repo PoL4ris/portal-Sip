@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use ClassPreloader\Config;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\NetworkNodes;
 use App\Models\Building;
@@ -36,12 +37,17 @@ class Customer extends Model {
 
     public function contact()
     {
-        return $this->hasOne('App\Models\Contact', 'id_customers')->where('id_types', 1);
+        return $this->hasOne('App\Models\Contact', 'id_customers')->where('id_types', config('const.contact_type.mobile_phone'));
     }
 
     public function contacts()
     {
         return $this->hasMany('App\Models\Contact', 'id_customers');
+    }
+
+    public function emailAddress()
+    {
+        return $this->hasOne('App\Models\Contact', 'id_customers')->where('id_types', config('const.contact_type.email'));
     }
 
     public function customerProducts()
