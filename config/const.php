@@ -68,6 +68,8 @@ return [
         'paid'      => 3,
         'failed'    => 4,
         'cancelled' => 5,
+        'pending200' => 200,
+        'pending12' => 12,
     ],
     'building_property'              => [
         'type'              => '1',

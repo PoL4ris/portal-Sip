@@ -5,6 +5,7 @@
                 <thead>
                 <tr>
                     <th>Status</th>
+                    <th>Description</th>
                     <th>Failed Charges</th>
                     <th>Amount</th>
                     <th>Billing Day</th>
@@ -16,6 +17,7 @@
                 <tbody>
                 <tr ng-repeat="invoice in invoiceData">
                     <td class="capital-first">{{ invoice.status }}</td>
+                    <td class="capital-first">{{ invoice.description }}</td>
                     <td>{{ invoice.failed_charges_count }}</td>
                     <td>{{ invoice.amount | currency : "$" : 2 }}</td>
                     <td>{{ invoice.bill_cycle_day }}</td>

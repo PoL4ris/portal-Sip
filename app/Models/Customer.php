@@ -157,8 +157,11 @@ class Customer extends Model {
     {
         return $this->hasMany('App\Models\Invoice', 'id_customers')
             ->where('invoices.processing_type', config('const.type.auto_pay'))
-            ->where('invoices.status', config('const.invoice_status.pending'))
             ->where('invoices.due_date', '>=', $timestamp)
+            ->where(function ($query) {
+                $query->where('invoices.status', config('const.invoice_status.pending'))
+                    ->orWhere('invoices.status', config('const.invoice_status.open'));
+            })
             ->get();
     }
 

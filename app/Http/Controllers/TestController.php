@@ -409,12 +409,20 @@ class TestController extends Controller {
     public function generalTest(Request $request)
     {
 
+//        // Find invoices that need to be cancelled
+//        $firstDayOfMonthTime = strtotime("first day of this month 00:00:00");
+//        $timestampMysql = date('Y-m-d H:i:s', $firstDayOfMonthTime);
+//
+//        $customer = Customer::find(3533);
+//        $pendingInvoices = $customer->pendingAutoPayInvoicesOnOrAfterTimestamp($timestampMysql);
+//        dd($pendingInvoices);
+
 
         $invoiceStatusArrayMap = array_flip(config('const.invoice_status'));
 
         $invoices = Invoice::with('customer')->where('status', config('const.invoice_status.pending'))
             ->where('processing_type', config('const.type.auto_pay'))
-            ->where('due_date', '2017-08-01 00:00:00')
+            ->where('due_date', '2017-09-01 00:00:00')
             ->get();
 
         $invoices->transform(function ($invoice, $key) use ($invoiceStatusArrayMap) {
@@ -423,8 +431,9 @@ class TestController extends Controller {
         });
 
         $customers = $invoices->pluck('customer');
-        dd($customers->pluck('id_status', 'id'));
-dd($invoices);
+        dd($customers->whereLoose('id_status', 2)->pluck('id_status', 'id'));
+
+        dd($invoices);
 
 
 //        $billingHelper = new BillingHelper();
