@@ -616,7 +616,11 @@ app.controller('customerNetworkController',         function ($scope, $http, cus
           alert(response.data);
 
         $.each(response.data,function(i, item) {
-          $('#' + i + '-' + $scope.idCustomer).html(item);
+          if(i == 'dashboard-port-status'){
+              $('#' + i ).html(item);
+          } else {
+              $('#' + i + '-' + $scope.idCustomer).html(item);
+          }
         });
 
         service = 1;
