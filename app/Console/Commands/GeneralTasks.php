@@ -61,8 +61,7 @@ class GeneralTasks extends Command {
 //        $this->getMikrotikHotspotProfiles();
 //        $this->getMikrotikHotspots();
 
-        $this->sendMassEmail();
-
+//        $this->sendMassEmail();
 //        $this->rebootMikrotik();
 //        $this->uploadMikrotikPackageFiles();
 //        $this->cleanupBadCustomerPorts();
