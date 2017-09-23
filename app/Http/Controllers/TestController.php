@@ -151,8 +151,6 @@ class TestController extends Controller {
     {
 
 
-
-
         return Customer::find($request->id);
 
         dd(Product::with('type')->orderBy('frequency', 'asc')->get()->take(10)->toArray());
@@ -409,38 +407,42 @@ class TestController extends Controller {
     public function generalTest(Request $request)
     {
 
-        $building = Building::where('nickname', '65M')->first();
-        $activeCustomers = $building->activeCustomers;
-        $customers = $building->customers;
+        /** Show email addresses for all active customers at the specified building **/
+//        $building = Building::where('nickname', '65M')->first();
+//        $activeCustomers = $building->activeCustomers;
+//        dd($activeCustomers->pluck('emailAddress')->pluck('value'));
 
-//        dd($customers->count());
-        dd($activeCustomers->pluck('emailAddress')->pluck('value'));
-
-//        // Find invoices that need to be cancelled
+        /**  Find invoices that need to be cancelled for the specified customer **/
 //        $firstDayOfMonthTime = strtotime("first day of this month 00:00:00");
 //        $timestampMysql = date('Y-m-d H:i:s', $firstDayOfMonthTime);
-//
 //        $customer = Customer::find(3533);
 //        $pendingInvoices = $customer->pendingAutoPayInvoicesOnOrAfterTimestamp($timestampMysql);
 //        dd($pendingInvoices);
 
-
+        /** Find pending invoices for the specified month (due on the first of the specified month) **/
         $invoiceStatusArrayMap = array_flip(config('const.invoice_status'));
 
-        $invoices = Invoice::with('customer')->where('status', config('const.invoice_status.pending'))
+        $invoices = Invoice::with('customer')
             ->where('processing_type', config('const.type.auto_pay'))
-            ->where('due_date', '2017-09-01 00:00:00')
+            ->where('status', config('const.invoice_status.pending'))
+//            ->where('status', '!=', config('const.invoice_status.cancelled'))
+            ->where('failed_charges_count', '>', 0)
+            ->where('due_date', '2017-08-01 00:00:00')
+//            ->where('amount', '<', 100)
             ->get();
 
         $invoices->transform(function ($invoice, $key) use ($invoiceStatusArrayMap) {
             $invoice->status = $invoiceStatusArrayMap[$invoice->status];
+
             return $invoice;
         });
 
+//        dd('$'.$invoices->pluck('amount', 'id_customers')->sort()->sum());
+
+        /** Get the customer IDs that are disabled for the above invoices **/
         $customers = $invoices->pluck('customer');
         dd($customers->whereLoose('id_status', 2)->pluck('id_status', 'id'));
 
-        dd($invoices);
 
 
 //        $billingHelper = new BillingHelper();
@@ -498,7 +500,6 @@ class TestController extends Controller {
         $architecture = $serviceRouter->getArchitecture($ipAddress);
 
         dd([$softwareversion, $architecture]);
-
 
 
 //        $serviceRouter = new MtikRouter(['ip_address' => $mikrotik->ip_address,
@@ -636,9 +637,9 @@ class TestController extends Controller {
 
         $invoices = $billingHelper->paginatePendingInvoices();
 
-                $queries = DB::getQueryLog();
-                $last_query = end($queries);
-                dd($queries);
+        $queries = DB::getQueryLog();
+        $last_query = end($queries);
+        dd($queries);
 
 
         dd($invoices->currentPage()); //->pluck('id'));
@@ -700,8 +701,7 @@ class TestController extends Controller {
         $nowMysql = date("Y-m-d H:i:s");
         $invoices = Invoice::where('status', config('const.invoice_status.pending'))
             ->where('processing_type', config('const.type.auto_pay'))
-            ->where(function ($query) use ($nowMysql)
-            {
+            ->where(function ($query) use ($nowMysql) {
                 $query->where('due_date', 'is', 'NULL')
                     ->orWhere('due_date', '<=', $nowMysql)
                     ->orWhere('due_date', '');
@@ -719,8 +719,7 @@ class TestController extends Controller {
         $building = Building::find(1012);
 
         $products = null;
-        $building->load(['activeBuildingProducts.product' => function ($q) use (&$products)
-        {
+        $building->load(['activeBuildingProducts.product' => function ($q) use (&$products) {
             $products = $q->with('propertyValues')->get(); //->unique();
         }]);
 
@@ -939,8 +938,7 @@ class TestController extends Controller {
         dd($myProductPropertyValues->buildingProducts->pluck('product')); //->pluck('propertyValues'));
 
         $products;
-        $building->load(['buildingProducts.product' => function ($q) use (&$products)
-        {
+        $building->load(['buildingProducts.product' => function ($q) use (&$products) {
             $products = $q->with('propertyValues')->get(); //->unique();
         }]);
 
