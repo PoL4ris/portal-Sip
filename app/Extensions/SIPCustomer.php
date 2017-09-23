@@ -8,6 +8,7 @@ use App\Models\Customer;
 use App\Models\CustomerProduct;
 use App\Models\CustomerPort;
 use App\Models\Port;
+use App\Models\User;
 use Validator;
 
 class SIPCustomer {
