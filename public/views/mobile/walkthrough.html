@@ -148,28 +148,38 @@
                                        readonly
                                        value="{{newDataLoaded.address}}">
                             </div>
+
                             <div class="request-fields-inline bg-white b-t-ddd b-b-ddd m-b-lg">
-                                <input type="text" placeholder="Ex: 4800C" name="code" ng-keyup="setToUpdate('update-code')">
+                                <input type="text" placeholder="Code Ex: 4800C" name="code" ng-keyup="setToUpdate('update-code')" ng-if="!newDataLoaded.building.code">
+                                <input type="text" name="code" ng-keyup="setToUpdate('update-code')" ng-if="newDataLoaded.building.code" value="{{newDataLoaded.building.code}}">
                                 <i class="fa fa-save" id="update-code" style="display: none;"></i>
                             </div>
+
                             <div class="request-fields-inline bg-white b-t-ddd b-b-ddd m-b-lg">
-                                <input type="text" placeholder="Ex: High-Rise" name="type" ng-keyup="setToUpdate('update-type')">
+                                <input type="text" placeholder="Type Ex: High-Rise" name="type" ng-keyup="setToUpdate('update-type')" ng-if="!newDataLoaded.building.type">
+                                <input type="text" name="type" ng-keyup="setToUpdate('update-type')" ng-if="newDataLoaded.building.type" value="{{newDataLoaded.building.type}}">
                                 <i class="fa fa-save" id="update-type" style="display: none;"></i>
                             </div>
+
                             <div class="request-fields-inline bg-white b-t-ddd b-b-ddd m-b-lg">
-                                <input type="text" placeholder="Ex: 267" name="units" ng-keyup="setToUpdate('update-units')">
+                                <input type="text" placeholder="Units Ex: 267" name="units" ng-keyup="setToUpdate('update-units')" ng-if="!newDataLoaded.building.units">
+                                <input type="text" name="units" ng-keyup="setToUpdate('update-units')" ng-if="newDataLoaded.building.units" value="{{newDataLoaded.building.units}}">
                                 <i class="fa fa-save" id="update-units" style="display: none;"></i>
                             </div>
+
                             <div class="request-fields-inline bg-white b-t-ddd b-b-ddd m-b-lg">
-                                <input type="text" placeholder="Ex: 10" name="floors" ng-keyup="setToUpdate('update-floors')">
+                                <input type="text" placeholder="Floors Ex: 10" name="floors" ng-keyup="setToUpdate('update-floors')" ng-if="!newDataLoaded.building.floors">
+                                <input type="text" name="floors" ng-keyup="setToUpdate('update-floors')" ng-if="newDataLoaded.building.floors" value="{{newDataLoaded.building.floors}}">
                                 <i class="fa fa-save" id="update-floors" style="display: none;"></i>
                             </div>
 
                             <div class="request-fields-inline bg-white b-t-ddd b-b-ddd m-b-lg">
-                                <select name="id_neighborhoods" ng-model="neighborhood">
+                                <select name="id_neighborhoods" ng-model="neighborhood" ng-change="setToUpdate('update-neighborhood')">
                                     <option value="">Select Neighborhood</option>
+                                    <option value="newDataLoaded.neighborhood.id" ng-if="newDataLoaded.neighborhood">{{newDataLoaded.neighborhood.name}}</option>
                                     <option value="{{item.id}}" ng-repeat="item in neighborhoodList">{{item.name}}</option>
                                 </select>
+                                <i class="fa fa-save" id="update-neighborhood" style="display: none;"></i>
                             </div>
 
                         </form>

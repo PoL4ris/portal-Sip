@@ -33,7 +33,7 @@ app.controller('dropZoneController', function($scope, $http, customerService, ge
 
 
 
-console.log(generalService);
+//console.log(generalService);
 
 
   //This is the checkMobileDevice
@@ -167,8 +167,27 @@ console.log(generalService);
 
   $scope.updateinstance = function(){
     console.log('update instance with flag = ' + $scope.flagTab);
+    switch ($scope.flagTab)
+    {
+      case  'general':
+        var objects = getFormValues('general-tab-content');
+        objects['id_buildings'] = $scope.newDataLoaded.id;
+        objects['id_address'] = $scope.newDataLoaded.building.id;
 
-    var objects = getFormValues('general-tab-content');
+        $http.get("updateWalkthroughLoc", {params:objects})
+          .then(function (response) {
+            console.log(response.data);
+            $scope.newDataLoaded = response.data;
+
+          });
+
+
+        break;
+      case  'notes':
+        break;
+      case  'images':
+        break;
+    }
 
     console.log(objects);
 
@@ -178,7 +197,6 @@ console.log(generalService);
 
 
   $scope.setToUpdate = function(id){
-    console.log(this);
     $('#'+id).fadeIn('slow');
   }
 

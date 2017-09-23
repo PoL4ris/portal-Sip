@@ -146,4 +146,9 @@ class Building extends Model {
         )->where('id_types', config('const.type.switch'));
     }
 
+    public function notes()
+    {
+        //return notes by id_buildings
+    }
+
 }

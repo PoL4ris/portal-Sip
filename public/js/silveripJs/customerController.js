@@ -104,7 +104,7 @@ app.controller('customerController',                function ($scope, $http, $st
 
 
 //    console.log($scope.customerData);
-//    console.log(customerService);
+    console.log(customerService);
 
 
   }

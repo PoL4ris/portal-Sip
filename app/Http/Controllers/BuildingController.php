@@ -486,24 +486,13 @@ class BuildingController extends Controller {
 
     }
 
+    //walkthrough
     public function insertWalkthroughLocation(Request $request)
     {
-//
-//        print '<pre>';
-//        print_r($request->all());
-//        print_r($request->address);
-//        print_r($request->name);
-//        die();
-
-
-//        $tmp = Building::where('name', '=', $request->name);
-//        if($tmp)
-//            return;
-
+        
         $newBuilding = new Building;
         $newBuilding->name      = $request->name;
         $newBuilding->id_status = 1; //Const -> newBld
-
         $newBuilding->save();
 
         //-------------------------------------------
@@ -511,10 +500,35 @@ class BuildingController extends Controller {
         $newAddress = new Address;
         $newAddress->address      = $request->address;
         $newAddress->id_buildings = $newBuilding->id;
+        $newAddress->city = 'Chicago';
+        $newAddress->state = 'IL';
+        $newAddress->country = 'USA';
         $newAddress->save();
 
+        return Address::with('building', 'building.neighborhood')->find($newAddress->id);
+    }
 
-        return Address::with('building')->find($newAddress->id);
+    public function updateWalkthroughLoc(Request $request)
+    {
+        print '<pre>';
+        print_r($request->all());
+        die();
+
+        $updateBld = Building::find($request['id_buildings']);
+        $updateBld->alias       = $request['code'];
+        $updateBld->nickname    = $request['code'];
+        $updateBld->id_neighborhoods = $request['id_neighborhoods'];
+        $updateBld->code        = $request['code'];
+        $updateBld->type        = $request['type'];
+        $updateBld->units       = $request['units'];
+        $updateBld->floors      = $request['floors'];
+        $updateBld->save();
+
+        $updateBld = Address::find($request['id_address']);
+        $updateBld->code = $request['code'];
+        $updateBld->save();
+
+        return Address::with('building', 'building.neighborhood')->find($request['id_address']);
 
     }
 
