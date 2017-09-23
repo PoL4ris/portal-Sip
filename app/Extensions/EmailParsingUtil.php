@@ -6,6 +6,7 @@ use App\Extensions\SIPCustomer;
 use App\Extensions\SIPTicket;
 use Log;
 use PhpMimeMailParser\Parser as Parser;
+use Html2Text\Html2Text;
 
 
 class EmailParsingUtil {
@@ -51,16 +52,16 @@ class EmailParsingUtil {
         $attachments = $Parser->getAttachments();
         $ticketContents = $text;
 
-        if ($ticketContents == '' && trim($html) != '')
-        {
-            $ticketContents = convert_html_to_text($html);
-        }
-
         if ($this->shouldIgnoreSender($from, $subject))
         {
             Log::info("parseSupportEmail(): Sender " . $from . " with subject: " . $subject . " on ignore list. Ignored ... ");
 
             return false;
+        }
+
+        if ($ticketContents == '' && trim($html) != '')
+        {
+            $ticketContents = Html2Text::convert($html);
         }
 
         if ($from == 'feedback@fusedsolutions.com' || $from == 'frontlinefusedsupervisors@frontlinecallcenter.com')

@@ -47,6 +47,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use SendMail;
 use Carbon\Carbon;
+use Html2Text\Html2Text;
 
 //use ActivityLogs;
 use Symfony\Component\Console\Helper\ProgressBar;
@@ -407,6 +408,32 @@ class TestController extends Controller {
     public function generalTest(Request $request)
     {
 
+        /** Convert HTML to text **/
+//        $htmlString = '<html>
+//                        <title>Ignored Title</title>
+//                        <body>
+//                          <h1>Hello, World!</h1>
+//
+//                          <p>This is some e-mail content.
+//                          Even though it has whitespace and newlines, the e-mail converter
+//                          will handle it correctly.
+//
+//                          <p>Even mismatched tags.</p>
+//
+//                          <div>A div</div>
+//                          <div>Another div</div>
+//                          <div>A div<div>within a div</div></div>
+//
+//                          <a href="http://foo.com">A link</a>
+//
+//                        </body>
+//                        </html>';
+//
+//
+//        $text = Html2Text::convert($htmlString);
+//        dd($text);
+
+
         /** Show email addresses for all active customers at the specified building **/
 //        $building = Building::where('nickname', '65M')->first();
 //        $activeCustomers = $building->activeCustomers;
@@ -442,7 +469,6 @@ class TestController extends Controller {
         /** Get the customer IDs that are disabled for the above invoices **/
         $customers = $invoices->pluck('customer');
         dd($customers->whereLoose('id_status', 2)->pluck('id_status', 'id'));
-
 
 
 //        $billingHelper = new BillingHelper();
