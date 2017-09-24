@@ -41,7 +41,7 @@ class ParseSupportEmail extends Command {
 
         $parsingUtil = new EmailParsingUtil();
 
-//        $parsingUtil->readEmailFromFile(storage_path('app') . '/original_msg_1.txt');
+//        $parsingUtil->readEmailFromFile(storage_path('app') . '/northstar_msg.txt');
         $parsingUtil->readEmailFromCommandPrompt();
     }
 

@@ -61,7 +61,9 @@ class EmailParsingUtil {
 
         if ($ticketContents == '' && trim($html) != '')
         {
+            libxml_use_internal_errors(true);
             $ticketContents = Html2Text::convert($html);
+            libxml_use_internal_errors(false);
         }
 
         if ($from == 'feedback@fusedsolutions.com' || $from == 'frontlinefusedsupervisors@frontlinecallcenter.com')
