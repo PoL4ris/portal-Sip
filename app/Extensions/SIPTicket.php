@@ -3,6 +3,7 @@
 namespace App\Extensions;
 
 use App\Models\Ticket;
+use App\Models\TicketHistory;
 
 class SIPTicket {
 

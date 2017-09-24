@@ -553,6 +553,28 @@ class BillingHelper {
         }
     }
 
+    public function notifyCustomersWithPendingFailedInvoices()
+    {
+        while (true)
+        {
+            $charges = Charge::where('status', config('const.charge_status.pending'))
+                ->where('processing_type', config('const.type.auto_pay'))
+                ->take(100)
+                ->get();
+
+            if ($charges->count() == 0)
+            {
+                break;
+            }
+
+            foreach ($charges as $charge)
+            {
+                $invoice = $this->findOrCreateOpenInvoice($charge->id_customers, $charge->id_address);
+                $this->addChargeToInvoice($charge, $invoice);
+            }
+        }
+    }
+
     public function invoicePendingAutoPayChargesByMonth($monthString)
     {
         // Default to the first day of the month
@@ -745,7 +767,7 @@ class BillingHelper {
             })->chunk($records, function ($invoices) use ($records, $notifyViaEmail) {
                 foreach ($invoices as $invoice)
                 {
-                    Log::info('BillingHelper::processPendingAutopayInvoices(): processing invoice id='.$invoice->id.' amount=$'.$invoice->amount);
+                    Log::info('BillingHelper::processPendingAutopayInvoices(): processing invoice id=' . $invoice->id . ' amount=$' . $invoice->amount);
                     $this->processInvoice($invoice, $notifyViaEmail);
                 }
 
@@ -778,7 +800,7 @@ class BillingHelper {
             ->chunk($records, function ($invoices) use ($notifyViaEmail, $records) {
                 foreach ($invoices as $invoice)
                 {
-                    Log::info('BillingHelper::processPendingAutopayInvoicesByMonth(): processing invoice id='.$invoice->id.' amount=$'.$invoice->amount);
+                    Log::info('BillingHelper::processPendingAutopayInvoicesByMonth(): processing invoice id=' . $invoice->id . ' amount=$' . $invoice->amount);
                     $this->processInvoice($invoice, $notifyViaEmail);
                 }
 
@@ -799,24 +821,23 @@ class BillingHelper {
         $perPage = 15;
         $totalInvoicesProcessed = 0;
 
-        $paginatedInvoices = $this->paginatePendingInvoices();
-        dd($paginatedInvoices);
-        while (true)
+        $paginatedInvoices = $this->paginatePendingFailedInvoices();
+        $lastProcessedInvoiceId = 0;
+
+        while ($paginatedInvoices->count() > 0)
         {
-            $invoices = $this->filterPendingInvoicesByUpdatedPaymentMethods($paginatedInvoices);
+//            $invoices = $this->filterPendingInvoicesByUpdatedPaymentMethods($paginatedInvoices);
+            $invoices = $paginatedInvoices;
 
             foreach ($invoices as $invoice)
             {
                 $totalInvoicesProcessed ++;
-                Log::info('BillingHelper::processPendingAutopayInvoicesThatHaveUpdatedPaymentMethods(): processing invoice id='.$invoice->id.' amount=$'.$invoice->amount);
-                $this->processInvoice($invoice, true, true, false);
+                Log::info('BillingHelper::processPendingAutopayInvoicesThatHaveUpdatedPaymentMethods(): processing invoice id=' . $invoice->id . ' amount=$' . $invoice->amount);
+//                $this->processInvoice($invoice, true, true, false);
+                $lastProcessedInvoiceId = $invoice->id;
             }
 
-            if ($paginatedInvoices->hasMorePages() == false)
-            {
-                break;
-            }
-            $paginatedInvoices = $this->paginatePendingInvoices($perPage, $paginatedInvoices->currentPage() + 1);
+            $paginatedInvoices = $this->paginatePendingFailedInvoices($perPage, $lastProcessedInvoiceId);
         }
 
         echo 'Processed ' . $totalInvoicesProcessed . ' invoices.' . "\n";
@@ -837,7 +858,7 @@ class BillingHelper {
             })->chunk(200, function ($invoices) {
                 foreach ($invoices as $invoice)
                 {
-                    Log::info('BillingHelper::rerunPendingAutopayInvoices(): processing invoice id='.$invoice->id.' amount=$'.$invoice->amount);
+                    Log::info('BillingHelper::rerunPendingAutopayInvoices(): processing invoice id=' . $invoice->id . ' amount=$' . $invoice->amount);
                     $this->processInvoice($invoice, true, false, false);
 //                    break;
                 }
@@ -856,16 +877,16 @@ class BillingHelper {
 
         if ($invoice->status == config('const.invoice_status.paid'))
         {
-            Log::info('BillingHelper::processInvoice(): ERROR: Invoice id='.$invoice->id.' has already been processed.');
+            Log::info('BillingHelper::processInvoice(): ERROR: Invoice id=' . $invoice->id . ' has already been processed.');
 
-            return ['ERRMSG' => 'Invoice id='. $invoice->id .' has already been processed.'];
+            return ['ERRMSG' => 'Invoice id=' . $invoice->id . ' has already been processed.'];
         }
 
         if ($invoice->status == config('const.invoice_status.cancelled'))
         {
-            Log::info('BillingHelper::processInvoice(): ERROR: Invoice id='.$invoice->id.' was cancelled so it can not be processed.');
+            Log::info('BillingHelper::processInvoice(): ERROR: Invoice id=' . $invoice->id . ' was cancelled so it can not be processed.');
 
-            return ['ERRMSG' => 'Invoice id='. $invoice->id .' was cancelled so it can not be processed.'];
+            return ['ERRMSG' => 'Invoice id=' . $invoice->id . ' was cancelled so it can not be processed.'];
         }
 
         if ($invoice->amount == 0)
@@ -1044,19 +1065,29 @@ class BillingHelper {
         return $updateCount;
     }
 
-    public function paginatePendingInvoices($perPage = 15, $page = null)
+    public function paginatePendingInvoices($perPage = 15, $startingId = 0)
     {
         // Get pending invoices
         $invoices = Invoice::where('processing_type', config('const.type.auto_pay'))
-            ->where('status', config('const.invoice_status.pending'));
+            ->where('status', config('const.invoice_status.pending'))
+            ->where('id', '>', $startingId)
+            ->orderBy('id', 'asc')
+            ->take($perPage)
+            ->get();
 
-        if ($page == null)
-        {
-            $invoices = $invoices->paginate($perPage);
-        } else
-        {
-            $invoices = $invoices->paginate($perPage, array('*'), 'page', $page);
-        }
+        return $invoices;
+    }
+
+    public function paginatePendingFailedInvoices($perPage = 15, $startingId = 0)
+    {
+        // Get pending invoices
+        $invoices = Invoice::where('processing_type', config('const.type.auto_pay'))
+            ->where('status', config('const.invoice_status.pending'))
+            ->where('failed_charges_count', '>', 0)
+            ->where('id', '>', $startingId)
+            ->orderBy('id', 'asc')
+            ->take($perPage)
+            ->get();
 
         return $invoices;
     }

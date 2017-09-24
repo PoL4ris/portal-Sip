@@ -447,31 +447,43 @@ class TestController extends Controller {
 //        dd($pendingInvoices);
 
         /** Find pending invoices for the specified month (due on the first of the specified month) **/
-        $invoiceStatusArrayMap = array_flip(config('const.invoice_status'));
-
-        $invoices = Invoice::with('customer')
-            ->where('processing_type', config('const.type.auto_pay'))
-            ->where('status', config('const.invoice_status.pending'))
-//            ->where('status', '!=', config('const.invoice_status.cancelled'))
-            ->where('failed_charges_count', '>', 0)
-            ->where('due_date', '2017-08-01 00:00:00')
-//            ->where('amount', '<', 100)
-            ->get();
-
-        $invoices->transform(function ($invoice, $key) use ($invoiceStatusArrayMap) {
-            $invoice->status = $invoiceStatusArrayMap[$invoice->status];
-
-            return $invoice;
-        });
-
+//        $invoiceStatusArrayMap = array_flip(config('const.invoice_status'));
+//
+//        $invoices = Invoice::with('customer')
+//            ->where('processing_type', config('const.type.auto_pay'))
+//            ->where('status', config('const.invoice_status.pending'))
+////            ->where('status', '!=', config('const.invoice_status.cancelled'))
+//            ->where('failed_charges_count', '>', 0)
+////            ->where('due_date', '2017-08-01 00:00:00')
+////            ->where('amount', '<', 100)
+//            ->get();
+//
+//        $invoices->transform(function ($invoice, $key) use ($invoiceStatusArrayMap) {
+//            $invoice->status = $invoiceStatusArrayMap[$invoice->status];
+//
+//            return $invoice;
+//        });
+//
+//        dd($invoices->count());
 //        dd('$'.$invoices->pluck('amount', 'id_customers')->sort()->sum());
 
         /** Get the customer IDs that are disabled for the above invoices **/
-        $customers = $invoices->pluck('customer');
-        dd($customers->whereLoose('id_status', 2)->pluck('id_status', 'id'));
+//        $customers = $invoices->pluck('customer');
+//        dd($customers->whereLoose('id_status', 2)->pluck('id_status', 'id'));
 
 
-//        $billingHelper = new BillingHelper();
+        /** Test pending invoice pagination by Id **/
+        $billingHelper = new BillingHelper();
+//        $pendingInvoices = $billingHelper->paginatePendingInvoices();
+//
+//        $lastInvoice = $pendingInvoices->last();
+//        $pendingInvoices = $billingHelper->paginatePendingInvoices(15, $lastInvoice->id);
+//        dd($pendingInvoices);
+
+        $billingHelper->processPendingAutopayInvoicesThatHaveUpdatedPaymentMethods();
+        dd('done');
+
+
 //
 //
 ////        $expiresBeforeMysqlDate = date("Y-m-d H:i:s", strtotime('first day of this month 00:00:00'));
