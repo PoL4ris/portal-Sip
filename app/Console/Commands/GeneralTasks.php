@@ -5,12 +5,18 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use App\Extensions\DataMigrationUtils;
 use App\Extensions\BillingHelper;
+use App\Extensions\MtikRouter;
+use App\Extensions\CiscoSSH;
+use Illuminate\Support\Facades\File;
 use Storage;
 use App\Models\NetworkNode;
 use App\Models\CustomerPort;
+use App\Models\Invoice;
+use App\Models\Building;
 use FtpClient\FtpClient;
 use FtpClient\FtpException;
 use SendMail;
+
 
 class GeneralTasks extends Command {
 
@@ -47,16 +53,120 @@ class GeneralTasks extends Command {
     {
         $this->info('Starting general task');
 
-        $this->sendMassEmail();
+//        $this->activateSnmpSystemShutdown();
 
+//        $this->testCiscoSshAccess();
+
+//        $this->fixMikrotikHotspotProfile();
+//        $this->getMikrotikHotspotProfiles();
+//        $this->getMikrotikHotspots();
+
+//        $this->sendMassEmail();
+//        $this->rebootMikrotik();
+//        $this->uploadMikrotikPackageFiles();
 //        $this->cleanupBadCustomerPorts();
+
 //        $billingHelper = new BillingHelper();
+//        $billingHelper->processPendingAutopayInvoicesByMonth('August');
+
+//        $billingHelper->processInvoice($invoice, true, false, true);
+//        $invoice = Invoice::find(4943);
+//        dd($invoice);
+//        $billingHelper->processInvoice($invoice, true, false, true);
+
+//        $billingHelper->generateResidentialChargeRecordsByMonth('September', true, false);
+//        $billingHelper->generateResidentialChargeRecordsByMonth('September', true, false);
+//        $billingHelper->invoicePendingAutoPayChargesByMonth('September');
+
 //        $result = $billingHelper->processPendingAutopayInvoices();
 //        $dbMigrationUtil = new DataMigrationUtils(true);
 //        $dbMigrationUtil->generalDatabaseTask();
 //        $this->updateMikrotikHotspotLoginFiles();
 
         $this->info('Done');
+
+    }
+
+    protected function activateSnmpSystemShutdown()
+    {
+
+        $switchList = ['10.11.254.103', '10.11.254.123', '10.11.254.140', '10.11.254.107', '10.11.254.171'];
+//        $switchList = ['10.11.188.10'];
+
+        foreach ($switchList as $switch)
+        {
+            echo $switch . ': ';
+//            `snmpset -c BigSeem -v 2c $switch 	 1.3.6.1.4.1.9.9.96.1.1.1.1.2.665 i 1`;
+//            `snmpset -c BigSeem -v 2c $switch 	 1.3.6.1.4.1.9.9.96.1.1.1.1.3.665 i 1`;
+//            `snmpset -c BigSeem -v 2c $switch 	 1.3.6.1.4.1.9.9.96.1.1.1.1.4.665 i 4`;
+//            `snmpset -c BigSeem -v 2c $switch 	 1.3.6.1.4.1.9.9.96.1.1.1.1.5.665 a 10.11.101.116`;
+//            `snmpset -c BigSeem -v 2c $switch 	 1.3.6.1.4.1.9.9.96.1.1.1.1.6.665 s cisco_snmp_server_system_shutdown.txt`;
+//            `snmpset -c BigSeem -v 2c $switch 	 1.3.6.1.4.1.9.9.96.1.1.1.1.14.665 i 1`;
+
+            /*
+             * When ready to reboot, comment the above lines and uncomment the below
+             */
+//            `snmpset -c BigSeem -v 2c $switch 	 1.3.6.1.4.1.9.2.9.9.0 i 2`;
+
+            sleep(1);
+            echo "done\n";
+        }
+
+    }
+
+    protected function testCiscoSshAccess()
+    {
+
+//        App::error(function(Exception $exception){
+//            Log::error($exception);
+//            if(($exception->getMessage() == "Connection closed by server") &&
+//                ($exception->getFile() == "/home/{user}/{location}/deploy/vendor/phpseclib/phpseclib/phpseclib/Net/SSH2.php")){
+//                // Let's handle this
+//            }
+//        });
+
+        error_reporting(0);
+
+        $coreSwitches = NetworkNode::where('id_types', config('const.type.switch'))
+//            ->where('ip_address', '10.11.188.10')
+            ->where('vendor', 'Cisco')
+            ->where('model', 'like', 'WS-C3560G%')
+            ->get();
+
+
+//        dd($coreSwitches->pluck('host_name'));
+
+        $uniqueCoreSwitches = $coreSwitches->unique('ip_address');
+
+        $results = [];
+        foreach ($uniqueCoreSwitches as $switch)
+        {
+            echo $switch->host_name . ': ';
+
+            $cisco = new CiscoSSH($switch->ip_address, 'portal', 'test');
+            $connected = $cisco->connect();
+            if ($connected)
+            {
+                echo "ok\n";
+
+            } else
+            {
+                echo "BAD\n";
+                $results[] = $switch->ip_address;
+            }
+            $cisco->close();
+        }
+
+        dd($results);
+
+        /**
+         *  Other things you can do with the CiscoSSH class
+         */
+//        $data = $cisco->show_int_config('f0/43');
+//        $data = $cisco->exec('copy running-config tftp://10.11.101.227/130Canal-swi-3-running.config');
+//        $data = $cisco->exec('show startup');
+//        touch("/tftpboot/test.txt");
+//        $data = $cisco->copy('running-config', 'tftp://10.11.101.227/130Canal-swi-3-running.config');
 
     }
 
@@ -100,6 +210,188 @@ class GeneralTasks extends Command {
                 echo 'failed: ' . $e->getMessage() . "\n";
             }
         }
+    }
+
+    protected function uploadMikrotikPackageFiles()
+    {
+        $mikrotiks = NetworkNode::where('id_types', config('const.type.router'))->get();
+//            ->where('role', 'Transit')->get();
+//        $mikrotiks = NetworkNode::where('id', 800)->get();
+
+//        dd($mikrotiks->pluck('host_name'));
+
+        $uniqueMikrotiks = $mikrotiks->unique('ip_address');
+
+        foreach ($uniqueMikrotiks as $mikrotik)
+        {
+            $serviceRouter = new MtikRouter(['ip_address' => $mikrotik->ip_address,
+                                             'username'   => config('netmgmt.mikrotik.username'),
+                                             'password'   => config('netmgmt.mikrotik.password')]);
+            $softwareVersion = $serviceRouter->getSoftwareVersion($mikrotik->ip_address);
+            $architecture = $serviceRouter->getArchitecture($mikrotik->ip_address);
+
+            // Skip non-CCR architectures
+            if ($architecture != 'tile')
+            {
+                continue;
+            }
+
+            // Skip CCRs that already have 6.40.1
+            if (preg_match('/6\.40\.1.*/', $softwareVersion) === 1)
+            {
+                continue;
+            }
+
+            echo 'Uploading files to ' . $mikrotik->host_name . ' (' . $mikrotik->ip_address . '): ';
+
+            try
+            {
+                $ftp = new FtpClient();
+                $ftp->connect($mikrotik->ip_address, false, 2121);
+                $ftp->login('admin', 'BigSeem');
+                $ftp->pasv(true);
+
+                $directory = storage_path('app/mikrotik_firmware/all_packages-tile-6.40.1');
+                $packageFiles = File::allFiles($directory);
+
+                foreach ($packageFiles as $packageFile)
+                {
+
+
+                    $localFile = $packageFile->getPathname();
+                    $remoteFile = $packageFile->getFilename();
+
+                    $xferSuccessful = $ftp->put($remoteFile, $localFile, FTP_BINARY);
+                    if ($xferSuccessful)
+                    {
+                        echo '.';
+                    } else
+                    {
+                        echo '!';
+                    }
+                }
+                echo "  done\n";
+            } catch (FtpException $e)
+            {
+                echo 'failed: ' . $e->getMessage() . "\n";
+            }
+        }
+    }
+
+    protected function rebootMikrotik()
+    {
+//        $mikrotiks = NetworkNode::where('id_types', config('const.type.router'))->get();
+//            ->where('role', 'Transit')->get();
+        $mikrotiks = NetworkNode::where('id', 1117)->get();
+
+        dd($mikrotiks->pluck('host_name'));
+
+        $uniqueMikrotiks = $mikrotiks->unique('ip_address');
+
+        foreach ($uniqueMikrotiks as $mikrotik)
+        {
+            $serviceRouter = new MtikRouter(['ip_address' => $mikrotik->ip_address,
+                                             'username'   => config('netmgmt.mikrotik.username'),
+                                             'password'   => config('netmgmt.mikrotik.password')]);
+
+            echo 'Rebooting ' . $mikrotik->host_name . ' (' . $mikrotik->ip_address . '): ';
+
+            $serviceRouter->reboot($mikrotik->ip_address);
+
+            echo "  done\n";
+        }
+    }
+
+    protected function fixMikrotikHotspotProfile()
+    {
+//        $ipAddresses = ['10.11.137.1', '10.11.127.1', '10.11.117.1', '10.11.118.1', '10.11.119.1', '10.11.120.1', '10.11.9.1', '10.11.134.1', '10.11.142.1', '10.11.7.1', '10.11.147.1', '10.11.153.1', '10.11.154.1', '10.11.152.1', '10.11.157.1', '10.11.135.1', '10.11.174.1', '10.11.156.1', '10.11.112.1', '10.11.158.1', '10.11.151.1', '10.11.124.1', '10.11.161.1', '10.11.163.1', '10.11.164.1', '10.11.166.1', '10.11.223.1', '10.11.170.1', '10.11.173.1', '10.11.178.1', '10.11.180.1', '10.11.190.1', '10.11.201.1', '10.11.217.1', '10.11.225.1', '10.11.245.1', '10.11.237.1', '10.11.241.1', '10.11.243.1', '10.11.64.1', '10.11.254.62', '10.11.254.58', '10.11.44.1', '10.11.26.1', '10.11.22.1', '10.11.24.1', '10.11.254.42', '10.11.255.239', '10.15.235.1', '10.15.233.1', '10.15.231.1', '10.15.227.1', '10.15.215.1'];
+        $ipAddresses = ['10.10.13.1', '10.11.138.1', '10.10.19.1', '10.11.115.1', '10.10.21.1', '10.11.114.1', '10.10.31.1', '10.11.109.1'];
+
+        foreach ($ipAddresses as $ip)
+        {
+
+            $serviceRouter = new MtikRouter(['ip_address' => $ip,
+                                             'username'   => config('netmgmt.mikrotik.username'),
+                                             'password'   => config('netmgmt.mikrotik.password')]);
+
+            $command = '/ip/hotspot/set';
+            $commandOptions = ['.id'     => '*1',
+                               'profile' => 'default'];
+
+            echo $ip . ' ... ';
+            $results = $serviceRouter->runCommand($ip, $command, $commandOptions);
+            echo "done\n";
+//            dd('done');
+        }
+    }
+
+    protected function getMikrotikHotspots()
+    {
+        echo 'Getting all Miktotik info ... ';
+        $command = '/ip/hotspot/print';
+        $results = $this->runCommandOnAllMikrotiks($command);
+        echo "done\n";
+
+        foreach ($results as $ip => $result)
+        {
+            echo '(' . $ip . '): ' . "\n";
+            if (isset($result['error']))
+            {
+                echo ' error: ' . $result['error'];
+            } else
+            {
+                foreach ($result['response'] as $hotspot)
+                {
+                    echo '   ' . $hotspot['name'] . ': ' . $hotspot['profile'] . "\n";
+                }
+            }
+        }
+    }
+
+    protected function getMikrotikHotspotProfiles()
+    {
+        echo 'Getting all Miktotik info ... ';
+        $command = '/ip/hotspot/profile/print';
+        $results = $this->runMikrotikCommand($command);
+        echo "done\n";
+
+        foreach ($results as $ip => $result)
+        {
+            echo '(' . $ip . '): ' . "\n";
+            if (isset($result['error']))
+            {
+                echo ' error: ' . $result['error'];
+            } else
+            {
+                foreach ($result['response'] as $hotspotProfile)
+                {
+                    echo '   ' . $hotspotProfile['name'] . "\n";
+                }
+            }
+        }
+    }
+
+    protected function runCommandOnAllMikrotiks($command, $commandOptions = [], $resultFilter = [])
+    {
+        $mikrotiks = NetworkNode::where('id_types', config('const.type.router'))->get();
+//            ->where('role', 'Transit')->get();
+//        $mikrotiks = NetworkNode::where('id', 1117)->get();
+
+//        dd($mikrotiks->pluck('host_name'));
+
+        $uniqueMikrotiks = $mikrotiks->unique('ip_address');
+
+        $results = [];
+        foreach ($uniqueMikrotiks as $mikrotik)
+        {
+            $serviceRouter = new MtikRouter(['ip_address' => $mikrotik->ip_address,
+                                             'username'   => config('netmgmt.mikrotik.username'),
+                                             'password'   => config('netmgmt.mikrotik.password')]);
+
+            $results[$mikrotik->ip_address] = $serviceRouter->runCommand($mikrotik->ip_address, $command, $commandOptions);
+        }
+
+        return $results;
     }
 
     protected function fileExists($ftp, $file)
@@ -198,69 +490,15 @@ class GeneralTasks extends Command {
     protected function sendMassEmail()
     {
 
-        $managersContactInfo = [['first_name' => 'Peyman', 'last_name' => 'Pourkermani', 'email' => 'peyman@pourkermani.com']];
-
-//        $managersContactInfoOLD = [
-//            ['Firstname' => 'Judy', 'Lastname' => 'Pierson', 'Email' => '1400museumpark@gmail.com'],
-//            ['Firstname' => 'Marcy', 'Lastname' => 'Juarez', 'Email' => 'M.Juarez@dkcondo.com'],
-//            ['Firstname' => 'Leslie', 'Lastname' => 'Dyenson', 'Email' => 'L.Dyenson@DKCondo.co'],
-//            ['Firstname' => 'Edison', 'Lastname' => 'Giles', 'Email' => 'egiles@lmsnet.com'],
-//            ['Firstname' => 'Aislinn', 'Lastname' => 'Pulley', 'Email' => 'apulley@lmsnet.com'],
-//            ['Firstname' => 'Cindy', 'Lastname' => 'Schulz', 'Email' => 'c.schulz@dkcondo.com'],
-//            ['Firstname' => 'Denise', 'Lastname' => 'Savino', 'Email' => 'manager125@communityspecialists.net'],
-//            ['Firstname' => 'Michael', 'Lastname' => 'Dailey', 'Email' => 'Mdailey@lmsnet.com'],
-//            ['Firstname' => 'Flo', 'Lastname' => 'Roberson', 'Email' => 'mplmanager@sudlerchicago.com'],
-//            ['Firstname' => 'Warren', 'Lastname' => 'Powell', 'Email' => 'wpowell@advantage-management.com'],
-//            ['Firstname' => 'Kirk', 'Lastname' => 'Sullivan', 'Email' => 'k.sullivan@dkcondo.com'],
-//            ['Firstname' => 'Bobby', 'Lastname' => 'Kennedy', 'Email' => 'Bobby@buildinggroup.com'],
-//            ['Firstname' => 'Amy', 'Lastname' => 'Eickhoff', 'Email' => 'Aeickhoff@lmsnet.com'],
-//            ['Firstname' => 'Joni', 'Lastname' => 'Hoffer', 'Email' => 'jhoffer@lmsnet.com'],
-//            ['Firstname' => 'Deborah', 'Lastname' => 'Romero', 'Email' => 'D.Romero@DKCondo.com'],
-//            ['Firstname' => 'Yvette', 'Lastname' => 'Lafrenere', 'Email' => 'ylafrenere@communityspecialists.net'],
-//            ['Firstname' => 'April', 'Lastname' => 'Daly', 'Email' => 'A.Daly@dkcondo.com'],
-//            ['Firstname' => 'Shirley', 'Lastname' => 'Feldman', 'Email' => 'S.Feldman@dkcondo.com'],
-//            ['Firstname' => 'Cherie', 'Lastname' => 'Schmidt', 'Email' => '125east@museumpark.net'],
-//            ['Firstname' => 'Nanci', 'Lastname' => 'Gonzalez', 'Email' => 'N.Gonzalez@dkcondo.com'],
-//            ['Firstname' => 'Kathleen', 'Lastname' => 'Dormin', 'Email' => 'k.dormin@dkcondo.com'],
-//            ['Firstname' => 'Sharon', 'Lastname' => 'McAndrews', 'Email' => 's.mcandrews@dkcondo.com'],
-//            ['Firstname' => 'Kim', 'Lastname' => 'Pinson', 'Email' => 'k.pinson@dkcondo.com'],
-//            ['Firstname' => 'Brent', 'Lastname' => 'Lehr', 'Email' => 'blehr@amli.com'],
-//            ['Firstname' => 'Jermeise', 'Lastname' => 'Steele', 'Email' => 'j.steele@dkcondo.com'],
-//            ['Firstname' => 'Jake', 'Lastname' => 'Larman', 'Email' => 'larman@privateholding.com'],
-//            ['Firstname' => 'Zalina', 'Lastname' => 'Jones', 'Email' => 'zalina.jones@fsresidential.com'],
-//            ['Firstname' => 'Holly', 'Lastname' => 'Foley', 'Email' => 'hfoley@lmsnet.com'],
-//            ['Firstname' => 'Stephanie', 'Lastname' => 'Skelley', 'Email' => 'stephanie.skelley@associa.us'],
-//            ['Firstname' => 'Mollie', 'Lastname' => 'Johnstone', 'Email' => 'mjohnstone@habitat.com'],
-//            ['Firstname' => 'Carly', 'Lastname' => 'Sweeney', 'Email' => 'csweeney@resideliving.com'],
-//            ['Firstname' => 'Gayle', 'Lastname' => 'Lang', 'Email' => 'gl@phoenixrisinggroup.com'],
-//            ['Firstname' => 'Mavis', 'Lastname' => 'Mather', 'Email' => 'm.mather@dkcondo.com'],
-//            ['Firstname' => 'David', 'Lastname' => 'Westveer', 'Email' => 'david@westwardmanagement.com'],
-//            ['Firstname' => 'Jaime', 'Lastname' => 'Sartin', 'Email' => 'j.sartin@dkcondo.com'],
-//            ['Firstname' => 'Heather', 'Lastname' => 'McHenry', 'Email' => 'heather.mchenry@related.com'],
-//            ['Firstname' => 'Christina', 'Lastname' => 'Hannigan', 'Email' => 'joffreytowermgr@sudlerchicago.com'],
-//            ['Firstname' => 'Jake', 'Lastname' => 'Larman', 'Email' => 'larman@privateholding.com'],
-//            ['Firstname' => 'Kathy', 'Lastname' => 'Weinstein', 'Email' => 'kweinstein@lms.net'],
-//            ['Firstname' => 'Jennifer', 'Lastname' => 'Bastidas', 'Email' => 'jennifer.bastidas@related.com'],
-//            ['Firstname' => 'Donna', 'Lastname' => 'Ciota', 'Email' => 'donna.ciota@associa.us'],
-//            ['Firstname' => 'Sharron', 'Lastname' => 'Healy', 'Email' => 'shealy@peakproperties.biz'],
-//            ['Firstname' => 'Teena', 'Lastname' => 'Lorie', 'Email' => 'teena@buildinggroup.com'],
-//            ['Firstname' => 'Austin', 'Lastname' => 'Arkush', 'Email' => 'AustinA@westwardmanagement.com'],
-//            ['Firstname' => 'Sandy', 'Lastname' => 'Albecker', 'Email' => 'sandy@enlan.com'],
-//            ['Firstname' => 'Sarah', 'Lastname' => 'Florie', 'Email' => 'S.Florie@DKCondo.com'],
-//            ['Firstname' => 'Lily', 'Lastname' => 'Godow', 'Email' => 'lgodow@burnhampointechicago.com'],
-//            ['Firstname' => 'Edin', 'Lastname' => 'Dzafic', 'Email' => 'manager@hermitagehuron.com'],
-//            ['Firstname' => 'Jennifer', 'Lastname' => 'Taylor', 'Email' => 'jtaylor@forthgrp.com'],
-//            ['Firstname' => 'Serina', 'Lastname' => 'Brancato', 'Email' => 's.brancato@dkcondo.com'],
-//            ['Firstname' => 'Katharine', 'Lastname' => 'Rousseve', 'Email' => 'k.rousseve@dkcondo.com'],
-//            ['Firstname' => 'Linda', 'Lastname' => 'Ivery', 'Email' => '235wvanburenmgr@sudlerchicago.com'],
-//            ['Firstname' => 'Kaitlin', 'Lastname' => 'McLearen', 'Email' => '900@amli.com'],
-//            ['Firstname' => 'Yvette', 'Lastname' => 'Young', 'Email' => '1700mgr@sudlerchicago.com'],
-//            ['Firstname' => 'Mary', 'Lastname' => 'Wolf', 'Email' => 'm.wolf@dkcondo.com'],
-//            ['Firstname' => 'Steve', 'Lastname' => 'Schantz', 'Email' => 'stevetschantz@gmail.com'],
-//            ['Firstname' => 'Tricia', 'Lastname' => 'Conway', 'Email' => 'tconway@communityspecialists.net'],
-//            ['Firstname' => 'Property', 'Lastname' => 'Manager', 'Email' => 'mgrlakeside@sudlerchicago.com']];
+        /**
+         * Test email contact list
+         */
+//        $managersContactInfo = [['first_name' => 'Peyman', 'last_name' => 'Pourkermani', 'email' => 'peyman@pourkermani.com']];
 
 
+        /**
+         * Production email contact list
+         */
 //        $managersContactInfo = [
 //            ['first_name' => 'Judy', 'last_name' => 'Pierson', 'email' => '1400museumpark@gmail.com'],
 //            ['first_name' => 'Marcy', 'last_name' => 'Juarez', 'email' => 'M.Juarez@dkcondo.com'],
@@ -282,7 +520,7 @@ class GeneralTasks extends Command {
 //            ['first_name' => 'April', 'last_name' => 'Daly', 'email' => 'A.Daly@dkcondo.com'],
 //            ['first_name' => 'Shirley', 'last_name' => 'Feldman', 'email' => 'S.Feldman@dkcondo.com'],
 //            ['first_name' => 'Cherie', 'last_name' => 'Schmidt', 'email' => '125east@museumpark.net'],
-//            ['first_name' => 'Nanci', 'last_name' => 'Gonzalez', 'email' => 'N.Gonzalez@dkcondo.com'],
+//            ['first_name' => 'Nanci', 'last_name' => 'Gonzalez', 'email' => 'nanci.gonzales@draperandkramer.com'],
 //            ['first_name' => 'Kathleen', 'last_name' => 'Dormin', 'email' => 'k.dormin@dkcondo.com'],
 //            ['first_name' => 'Mark', 'last_name' => 'Johnson', 'email' => 'PrintersRowMGR@draperandkramer.com'],
 //            ['first_name' => 'Kim', 'last_name' => 'Pinson', 'email' => 'k.pinson@dkcondo.com'],
@@ -328,25 +566,47 @@ class GeneralTasks extends Command {
 //            ['first_name' => 'Kiyah', 'last_name' => 'Larkins', 'email' => 'k.larkins@draperandkramer.com'],
 //            ['first_name' => 'Eric', 'last_name' => 'Ruby', 'email' => 'eruby@advantage-management.com'],
 //            ['first_name' => 'Theo', 'last_name' => 'Hodges', 'email' => 'theedge@communityspecialists.net'],
-//            ['first_name' => 'Amy', 'last_name' => 'Wukotich', 'email' => 'awukotich@peakproperties.biz']];
+//            ['first_name' => 'Amy', 'last_name' => 'Wukotich', 'email' => 'awukotich@peakproperties.biz']
+//        ];
 
 
-        foreach ($managersContactInfo as $contactInfo)
+        $building = Building::where('nickname', '65M')->first();
+        $activeCustomers = $building->activeCustomers;
+
+
+//        foreach ($managersContactInfo as $contactInfo)
+        foreach ($activeCustomers as $activeCustomer)
         {
-//            dd([$contactInfo]);
+
+            if($activeCustomer->emailAddress == null){
+                continue;
+            }
 
             $emailInfo = ['fromName'    => 'SilverIP Customer Care',
                           'fromAddress' => 'help@silverip.com',
-                          'toName'      => $contactInfo['first_name'] . ' ' . $contactInfo['last_name'],
-                          'toAddress'   => $contactInfo['email'],
-                          'subject'     => 'SilverIP Maintenance Window'];
+                          'toName'      => $activeCustomer->first_name . ' ' . $activeCustomer->last_name,
+                          'toAddress'   => $activeCustomer->emailAddress->value,
+//                          'toName'      => 'Peyman Pourkermani',
+//                          'toAddress'   => 'peyman@pourkermani.com',
+//                          'subject'     => 'SilverIP Maintenance Window'];
+//                          'subject'     => 'COMPLETED: SilverIP Network Maintenance'];
+//                          'subject'     => 'EXTENDED: SilverIP Network Maintenance'];
+                          'subject'     => 'Upcoming Service Upgrade'];
 
-            $template = 'email.template_manager_notification';
-            $templateData = ['manager' => $contactInfo];
+//            $template = 'email.template_manager_notification';
+//            $template = 'email.template_maintenance_window_complete';
+//            $template = 'email.template_maintenance_window_extended';
+//            $template = 'email.template_maintenance_followup_notification';
+            $template = 'email.template_building_upgrade_notification';
+            $templateData = ['customer' => $activeCustomer];
 
-            echo 'Sending to "' . $contactInfo['first_name'] . ' ' . $contactInfo['last_name']. '" <'.$contactInfo['email'].'>   ...   ';
-            SendMail::generalEmail($emailInfo, $template, $templateData);
+            echo 'Sending to "' . $activeCustomer->first_name . ' ' . $activeCustomer->last_name . '" <' . $activeCustomer->emailAddress->value . '>   ...   ';
+
+//            SendMail::generalEmail($emailInfo, $template, $templateData); // Without any attachements
+            SendMail::generalEmail($emailInfo, $template, $templateData, storage_path('app/email_attachments/65M_upgrade.pdf'));  // With an attachement
             echo "done\n";
+
+//            break;
         }
     }
 }

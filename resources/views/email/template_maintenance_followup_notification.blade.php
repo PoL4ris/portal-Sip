@@ -37,18 +37,13 @@
 {{--<p class='p1'><strong><img src="http://www.silverip.com/silverip-tiny-logo-clear.png" alt=" SilverIP Communications"--}}
                            {{--width="165" height="70"></strong><br>--}}
 <p class='p2'></p>
-<p class='p1'>Good Afternoon,</p>
+<p class='p1'>Hello,</p>
 <p class='p2'></p>
-<p class='p1'>On Monday, we experienced a rare network complication that caused an outage in portions of our network.  The outage was due to equipment failure of a core device at one of our data centers.  Unfortunately, the backup system did not activate correctly during this incident.  As soon as we were alerted of the problem, our network operations team was immediately dispatched and all efforts went towards resolving this matter as quickly as possible.  We certainly apologize for any inconvenience this may have caused.</p>
+<p class='p1'>As a follow up to our maintenance window this morning, I wanted to inform you that everything went according to plan and the impact to the service was minimal.  Over the next couple of nights, our network engineers will be monitoring the latest updates and performing minor tests between the hours of <strong>1am - 5am</strong>.  During these tests, little to no disruptions are anticipated on the service.</p>
 <p class='p2'></p>
-<p class='p1'>Needless to say, we take this matter very seriously.  In light of this, we will be scheduling a <strong>maintenance window during off-peak hours</strong> to replace the faulty core device and test our backup procedures.</p>
-<p class='p2'></p>
-<p class='p1'><strong>Date:  Tuesday, August 22</strong></p>
-<p class='p1'><strong>Time:  1am - 5am</strong></p>
-<p class='p2'></p>
-<p class='p1'>During this window of 1am - 5am, you may experience intermittent service disruptions.  We greatly appreciate your continued support and we thank you for your understanding.</p>
+<p class='p1'>If you have any questions or experience any issues, please connect our team for assistance. We again appreciate your understanding and cooperation.</p>
 <p class='p4'></p>
-<p class='p3'>Sincerely,</p>
+<p class='p3'>Thanks you,</p>
 <p class='p1'>
     <font face="Avenir, serif">
         <font color="#063dcc"><font style="font-size:9pt" size="2"><b>_______________________________________</b></font></font><br/>

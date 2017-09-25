@@ -42,9 +42,12 @@ use Mail;
 use Config;
 use Auth;
 use View;
-use Storage;
+//use Storage;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 use SendMail;
 use Carbon\Carbon;
+use Html2Text\Html2Text;
 
 //use ActivityLogs;
 use Symfony\Component\Console\Helper\ProgressBar;
@@ -147,8 +150,6 @@ class TestController extends Controller {
 
     public function supportTest(Request $request)
     {
-
-
 
 
         return Customer::find($request->id);
@@ -407,13 +408,162 @@ class TestController extends Controller {
     public function generalTest(Request $request)
     {
 
-        $firstDayOfMonthTime = strtotime("first day of this month 00:00:00");
-        $timestampMysql = date('Y-m-d H:i:s', $firstDayOfMonthTime);
+        /** Convert HTML to text **/
+//        $htmlString = '<html>
+//                        <title>Ignored Title</title>
+//                        <body>
+//                          <h1>Hello, World!</h1>
+//
+//                          <p>This is some e-mail content.
+//                          Even though it has whitespace and newlines, the e-mail converter
+//                          will handle it correctly.
+//
+//                          <p>Even mismatched tags.</p>
+//
+//                          <div>A div</div>
+//                          <div>Another div</div>
+//                          <div>A div<div>within a div</div></div>
+//
+//                          <a href="http://foo.com">A link</a>
+//
+//                        </body>
+//                        </html>';
+//
+//
+//        $text = Html2Text::convert($htmlString);
+//        dd($text);
 
-        dd($timestampMysql);
 
-        $customer = Customer::find(2460);
-        dd($customer->pendingAutoPayInvoicesOnOrAfterTimestamp($timestampMysql)->get());
+        /** Show email addresses for all active customers at the specified building **/
+//        $building = Building::where('nickname', '65M')->first();
+//        $activeCustomers = $building->activeCustomers;
+//        dd($activeCustomers->pluck('emailAddress')->pluck('value'));
+
+        /**  Find invoices that need to be cancelled for the specified customer **/
+//        $firstDayOfMonthTime = strtotime("first day of this month 00:00:00");
+//        $timestampMysql = date('Y-m-d H:i:s', $firstDayOfMonthTime);
+//        $customer = Customer::find(3533);
+//        $pendingInvoices = $customer->pendingAutoPayInvoicesOnOrAfterTimestamp($timestampMysql);
+//        dd($pendingInvoices);
+
+        /** Find pending invoices for the specified month (due on the first of the specified month) **/
+//        $invoiceStatusArrayMap = array_flip(config('const.invoice_status'));
+//
+//        $invoices = Invoice::with('customer')
+//            ->where('processing_type', config('const.type.auto_pay'))
+//            ->where('status', config('const.invoice_status.pending'))
+////            ->where('status', '!=', config('const.invoice_status.cancelled'))
+//            ->where('failed_charges_count', '>', 0)
+////            ->where('due_date', '2017-08-01 00:00:00')
+////            ->where('amount', '<', 100)
+//            ->get();
+//
+//        $invoices->transform(function ($invoice, $key) use ($invoiceStatusArrayMap) {
+//            $invoice->status = $invoiceStatusArrayMap[$invoice->status];
+//
+//            return $invoice;
+//        });
+//
+//        dd($invoices->count());
+//        dd('$'.$invoices->pluck('amount', 'id_customers')->sort()->sum());
+
+        /** Get the customer IDs that are disabled for the above invoices **/
+//        $customers = $invoices->pluck('customer');
+//        dd($customers->whereLoose('id_status', 2)->pluck('id_status', 'id'));
+
+
+        /** Test pending invoice pagination by Id **/
+        $billingHelper = new BillingHelper();
+//        $pendingInvoices = $billingHelper->paginatePendingInvoices();
+//
+//        $lastInvoice = $pendingInvoices->last();
+//        $pendingInvoices = $billingHelper->paginatePendingInvoices(15, $lastInvoice->id);
+//        dd($pendingInvoices);
+
+        $billingHelper->processPendingAutopayInvoicesThatHaveUpdatedPaymentMethods();
+        dd('done');
+
+
+//
+//
+////        $expiresBeforeMysqlDate = date("Y-m-d H:i:s", strtotime('first day of this month 00:00:00'));
+//        $expiresBeforeMysqlDate = date("Y-m-d H:i:s", strtotime('first day of August 00:00:00'));
+//
+////        $customerProducts = $billingHelper->getChargeableCustomerProductsQuery('first day of this month 00:00:00')
+////            ->where('buildings.id', '=', 61)  // 730C
+////            ->get(['customer_products.*']);
+////
+////        dd($customerProducts);
+//
+////        $customerProducts = $billingHelper->getChargeableCustomerProductsQuery('first day of this month 00:00:00', true)
+//        $customerProducts = $billingHelper->getChargeableCustomerProductsQuery('first day of August 00:00:00', true)
+//            ->where('customer_products.signed_up', '<', $expiresBeforeMysqlDate)
+//            ->whereNull('customer_products.last_charged')
+//            ->where('buildings.id', '=', 61)
+//            ->get(['customer_products.*']);
+//
+//        dd($customerProducts);
+//
+//        $customerProduct = $customerProducts->first();
+//
+//        dd(number_format($customerProduct->product->amount, 2, '.', ''));
+
+
+//        $billingHelper->generateResidentialChargeRecordsForLastMonth();
+//        dd($billingHelper->getChargeableCustomerProductsByCustomerId(14703));
+
+//        dd(storage_path('app'));
+
+//        $directory = 'mikrotik_firmware/all_packages-tile-6.40.1';
+//        $files = File::allFiles(storage_path('app/'.$directory));
+//
+//        foreach($files as $file){
+//            echo $file->getPathname().'/'.$file->getFilename()  .'<br>';
+//        }
+//
+////        $files = Storage::disk('local')->allFiles($directory);
+//
+////        dd(Storage::disk('local')->files('mikrotik_firmware/all_packages-tile-6.40.1'));
+//
+//        dd($files);
+//
+//        $mikrotik = NetworkNode::where('ip_address', '10.10.13.1')->first();
+////        dd($mikrotik);
+
+        $ipAddress = '192.168.100.249';
+        $serviceRouter = new MtikRouter(['ip_address' => $ipAddress,
+                                         'username'   => 'test',
+                                         'password'   => 'testtest']);
+        $softwareversion = $serviceRouter->getSoftwareVersion($ipAddress);
+        $architecture = $serviceRouter->getArchitecture($ipAddress);
+
+        dd([$softwareversion, $architecture]);
+
+
+//        $serviceRouter = new MtikRouter(['ip_address' => $mikrotik->ip_address,
+//                                         'username'   => config('netmgmt.mikrotik.username'),
+//                                         'password'   => config('netmgmt.mikrotik.password')]);
+//        $softwareversion = $serviceRouter->getSoftwareVersion($mikrotik->ip_address);
+//        $architecture = $serviceRouter->getArchitecture($mikrotik->ip_address);
+//
+//        dd([$softwareversion, $architecture]);
+
+//            dd('done');
+//        $mikrotiks = NetworkNode::where('id_types', config('const.type.router'))->get();
+//        dd($mikrotiks);
+
+//        $serverIp = '108.160.193.70';
+//        foreach ($mikrotiks as $mikrotik)
+//        {
+//            $serviceRouter = new MtikRouter(['ip_address' => $mikrotik->ip_address,
+//                                             'username' => config('netmgmt.mikrotik.username'),
+//                                             'password' => config('netmgmt.mikrotik.password')]);
+//            $serviceRouter->updateHotspotServerTarget($mikrotik->ip_address, $serverIp);
+//            echo 'Updated ' . $mikrotik->host_name . '<br>';
+////            dd('done');
+//        }
+//        dd('done');
+
 
 //        $customer = Customer::with('services')->find(9992)->toArray();
 //
@@ -525,11 +675,9 @@ class TestController extends Controller {
 
         $invoices = $billingHelper->paginatePendingInvoices();
 
-                $queries = DB::getQueryLog();
-                $last_query = end($queries);
-                dd($queries);
-
-
+        $queries = DB::getQueryLog();
+        $last_query = end($queries);
+        dd($queries);
 
 
         dd($invoices->currentPage()); //->pluck('id'));
@@ -591,8 +739,7 @@ class TestController extends Controller {
         $nowMysql = date("Y-m-d H:i:s");
         $invoices = Invoice::where('status', config('const.invoice_status.pending'))
             ->where('processing_type', config('const.type.auto_pay'))
-            ->where(function ($query) use ($nowMysql)
-            {
+            ->where(function ($query) use ($nowMysql) {
                 $query->where('due_date', 'is', 'NULL')
                     ->orWhere('due_date', '<=', $nowMysql)
                     ->orWhere('due_date', '');
@@ -610,8 +757,7 @@ class TestController extends Controller {
         $building = Building::find(1012);
 
         $products = null;
-        $building->load(['activeBuildingProducts.product' => function ($q) use (&$products)
-        {
+        $building->load(['activeBuildingProducts.product' => function ($q) use (&$products) {
             $products = $q->with('propertyValues')->get(); //->unique();
         }]);
 
@@ -830,8 +976,7 @@ class TestController extends Controller {
         dd($myProductPropertyValues->buildingProducts->pluck('product')); //->pluck('propertyValues'));
 
         $products;
-        $building->load(['buildingProducts.product' => function ($q) use (&$products)
-        {
+        $building->load(['buildingProducts.product' => function ($q) use (&$products) {
             $products = $q->with('propertyValues')->get(); //->unique();
         }]);
 

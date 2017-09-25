@@ -318,7 +318,14 @@ class CustomerController extends Controller {
      */
     public function getInvoiceHistory(Request $request)
     {
-        return Invoice::with('address')->where('id_customers', $request->id)->get();
+        $invoiceStatusArrayMap = array_flip(config('const.invoice_status'));
+        $invoices = Invoice::with('address')->where('id_customers', $request->id)->get();
+
+        $invoices->transform(function ($invoice, $key) use ($invoiceStatusArrayMap) {
+            $invoice->status = $invoiceStatusArrayMap[$invoice->status];
+            return $invoice;
+        });
+        return $invoices;
     }
 
     /**

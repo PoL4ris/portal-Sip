@@ -111,7 +111,7 @@ class SendMail {
 
     }
 
-    public function generalEmail($messageInfo, $template, $templateData)
+    public function generalEmail($messageInfo, $template, $templateData, $attachement= null)
     {
 
         $fromName = $messageInfo['fromName'];
@@ -127,12 +127,16 @@ class SendMail {
                 $fromAddress,
                 $toName,
                 $toAddress,
-                $subject
+                $subject,
+                $attachement
             )
             {
                 $message->from($fromAddress, $fromName);
                 $message->to($toAddress, $toName)
                     ->subject($subject);
+                if($attachement != ''){
+                    $message->attach($attachement);
+                }
             }
         );
 

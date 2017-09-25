@@ -189,7 +189,7 @@ class SupportController extends Controller
                                'userAssigned',
                                'address',
                                'contacts')
-                         ->where('id_users', Auth::user()->id)
+                         ->where('id_users_assigned', Auth::user()->id)
                          ->where('status', '!=', config('const.ticket_status.closed'))
                          ->orderBy('updated_at', 'desc')
                          ->get();

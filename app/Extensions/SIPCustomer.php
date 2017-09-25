@@ -8,6 +8,7 @@ use App\Models\Customer;
 use App\Models\CustomerProduct;
 use App\Models\CustomerPort;
 use App\Models\Port;
+use App\Models\User;
 use Validator;
 
 class SIPCustomer {
@@ -209,5 +210,62 @@ class SIPCustomer {
         );
 
         return $timeToAdd[$type];
+    }
+
+    public function getCustomerByEmail($emailAddress)
+    {
+
+        return Customer::where('email', $emailAddress)->orderBy('id_status', 'ASC')->first();
+    }
+
+    public function getActiveCustomerByPhoneNumber($phoneNumber)
+    {
+
+        $contact = Contact::where('value', $phoneNumber)->first();
+        if ($contact != null)
+        {
+            return Customer::find($contact->id_customers);
+        }
+
+        return null;
+
+    }
+
+    public function getActiveCustomerByLocUnitNumber($locCode, $unitNumber)
+    {
+
+        $address = Address::where('code', $locCode)
+            ->where('unit', $unitNumber)
+            ->first();
+        if ($address != null)
+        {
+            return Customer::find($address->id_customers);
+        }
+
+        return null;
+    }
+
+    public function getAdminUserByEmail($emailAddress)
+    {
+
+        return User::where('email', $emailAddress)
+            ->where('id_status', config('const.status.active'))->first();
+    }
+
+    public function getAdminUserIdByEmail($email)
+    {
+        $adminUserId = 0;
+        $sipAdminMatch = preg_match('/^.*\@silverip\.com/', $email);
+
+        if ($sipAdminMatch !== 0 && $sipAdminMatch !== false)
+        {
+            $adminUser = $this->getAdminUserByEmail($email);
+            if ($adminUser != null)
+            {
+                $adminUserId = $adminUser->id;
+            }
+        }
+
+        return $adminUserId;
     }
 }
