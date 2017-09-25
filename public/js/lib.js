@@ -59,16 +59,17 @@ app.controller('dropZoneController', function($scope, $http, customerService, ge
   $scope.filesControl = ctrl.data.upload;
 
   $scope.getDataControl = function(){
-    console.log($scope.filesControl);
+//    console.log($scope.filesControl);
     var objetos = getFormValues('walkthrough-form');
 
-    for(var obj in objetos ) {
-    console.log();
+    for(var obj in objetos )
+    {
       $scope.filesControl[obj.split('image-')[1]].comment = objetos[obj];
     }
 
 
     console.log($scope.filesControl);
+    $scope.updateinstance();
 
   }
   $scope.removeImage = function (keyId){
@@ -137,12 +138,11 @@ app.controller('dropZoneController', function($scope, $http, customerService, ge
   };
 
 
-  $scope.seeResults = function (type){
+  $scope.seeResults     = function (type){
     if(type == 'bld')
       $scope.viewResultsName = !$scope.viewResultsName;
     else
       $scope.viewResultsAddress = !$scope.viewResultsAddress;
-
   }
   $scope.insertProspectBuilding = function(){
     if($scope.addressVerifyData['count'] == 0 && $scope.nameVerifyData['count'] == 0)
@@ -161,31 +161,48 @@ app.controller('dropZoneController', function($scope, $http, customerService, ge
     return;
   }
 
-  $scope.setTabFlag = function(tabName){
+  $scope.setTabFlag     = function(tabName){
     $scope.flagTab = tabName;
   }
-
   $scope.updateinstance = function(){
+
     console.log('update instance with flag = ' + $scope.flagTab);
+
     switch ($scope.flagTab)
     {
       case  'general':
-        var objects = getFormValues('general-tab-content');
-        objects['id_buildings'] = $scope.newDataLoaded.id;
-        objects['id_address'] = $scope.newDataLoaded.building.id;
 
-        $http.get("updateWalkthroughLoc", {params:objects})
+        var objects = getFormValues('general-tab-content');
+        objects['id_buildings'] = $scope.newDataLoaded.building.id;
+        objects['id_address']   = $scope.newDataLoaded.id;
+
+        $http.get("updateWalkthroughLoc", {params : objects})
           .then(function (response) {
             console.log(response.data);
             $scope.newDataLoaded = response.data;
-
+            $scope.updatedValues();
           });
-
 
         break;
       case  'notes':
         break;
       case  'images':
+
+
+        console.log($scope.filesControl.id_buildings);
+
+
+
+        $http.post("insertMediaFiles", {params : $scope.filesControl, id_buildings:$scope.newDataLoaded.building.id})
+          .then(function (response) {
+            console.log(response.data);
+//            $scope.newDataLoaded = response.data;
+//            $scope.updatedValues();
+          });
+
+
+
+
         break;
     }
 
@@ -194,9 +211,14 @@ app.controller('dropZoneController', function($scope, $http, customerService, ge
 
 
   }
-
-
-  $scope.setToUpdate = function(id){
+  $scope.updatedValues  = function(){
+    $('#update-code').fadeOut('slow');
+    $('#update-type').fadeOut('slow');
+    $('#update-units').fadeOut('slow');
+    $('#update-floors').fadeOut('slow');
+    $('#update-neighborhood').fadeOut('slow');
+  }
+  $scope.setToUpdate    = function(id){
     $('#'+id).fadeIn('slow');
   }
 

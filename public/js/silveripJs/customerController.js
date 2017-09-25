@@ -12,10 +12,25 @@ app.controller('customerControllerList',            function ($scope, $http){
 app.controller('customerController',                function ($scope, $http, $stateParams, customerService, DTOptionsBuilder, generalService){
 
 
+
+
+
+
+
+
   if(!generalService.rightView) {
     generalService.rightView = true;
+    console.log('UNO');
   }
   else {
+    console.log('DOS');
+
+
+
+    console.log(customerService);
+
+
+
 
     if(generalService.stateRoute == 'customers')
       if(!generalService.sideBarFlag) {
@@ -104,7 +119,7 @@ app.controller('customerController',                function ($scope, $http, $st
 
 
 //    console.log($scope.customerData);
-    console.log(customerService);
+//    console.log(customerService);
 
 
   }
@@ -616,7 +631,9 @@ app.controller('customerNetworkController',         function ($scope, $http, cus
           alert(response.data);
 
         $.each(response.data,function(i, item) {
+
           $('#' + i + '-' + $scope.idCustomer).html(item);
+//          console.log('#' + i + '-' + $scope.idCustomer + ' -----> ' + item);
         });
 
         service = 1;
@@ -626,6 +643,7 @@ app.controller('customerNetworkController',         function ($scope, $http, cus
             $.each(response.data,function(i, item)
             {
               $('#' + i + '-' + $scope.idCustomer).html(item);
+//              console.log('#' + i + '-' + $scope.idCustomer + ' -----> ' + item);
             });
           });
 

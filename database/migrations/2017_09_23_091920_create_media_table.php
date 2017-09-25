@@ -17,6 +17,7 @@ class CreateMediaTable extends Migration
             $table->binary('data');
             $table->string('name');
             $table->string('comment');
+            $table->integer('id_buildings');
             $table->timestamps();
         });
     }

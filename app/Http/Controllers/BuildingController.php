@@ -510,9 +510,6 @@ class BuildingController extends Controller {
 
     public function updateWalkthroughLoc(Request $request)
     {
-        print '<pre>';
-        print_r($request->all());
-        die();
 
         $updateBld = Building::find($request['id_buildings']);
         $updateBld->alias       = $request['code'];
@@ -530,6 +527,15 @@ class BuildingController extends Controller {
 
         return Address::with('building', 'building.neighborhood')->find($request['id_address']);
 
+    }
+
+    public function insertMediaFiles(Request $request)
+    {
+        print '<pre>';
+        print_r($request->all());
+        die();
+
+//        $mediaFile = new Media();
     }
 
 }
