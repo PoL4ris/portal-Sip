@@ -9,3 +9,4 @@ Homestead.json
 bower_components
 .DS_Store
 /avendorX
+/public/img/wttmp
