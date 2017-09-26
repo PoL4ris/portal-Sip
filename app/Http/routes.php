@@ -103,9 +103,13 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('insertBuildingContacts',    'BuildingController@insertBuildingContacts');
     Route::get('insertBuildingProducts',    'BuildingController@insertBuildingProducts');
     //Walkthrough
+    Route::get('getWalkthroughLocation',    'BuildingController@getWalkthroughLocation');
     Route::get('insertWalkthroughLocation', 'BuildingController@insertWalkthroughLocation');
     Route::get('updateWalkthroughLoc',      'BuildingController@updateWalkthroughLoc');
-    Route::post('insertMediaFiles',          'BuildingController@insertMediaFiles');
+    Route::post('insertMediaFiles',         'BuildingController@insertMediaFiles');
+    Route::get('removeImgLocation',         'BuildingController@removeImgLocation');
+    Route::get('insertWtNotes',             'BuildingController@insertWtNotes');
+
     //Update Building
     Route::get('updateBuilding',            'BuildingController@updateBuilding');
     Route::get('updateBldPropValTable',     'BuildingController@updateBldPropValTable');

@@ -151,11 +151,9 @@ class TestController extends Controller {
     public function supportTest(Request $request)
     {
 
+        $respuesta = Address::with('building', 'building.neighborhood', 'building.media')->where('id_buildings', 85)->first();
+        dd($respuesta);
 
-        return Customer::find($request->id);
-
-        dd(Product::with('type')->orderBy('frequency', 'asc')->get()->take(10)->toArray());
-        die();
     }
 
     public function mail()

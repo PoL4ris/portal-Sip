@@ -1083,6 +1083,7 @@ table.dataTable tbody tr {
   width: 15px;
   position: relative;
   top: 5px;
+  right: 1px;
 }
 .one input {
   position: absolute;
@@ -1273,6 +1274,7 @@ table.dataTable tbody tr {
   color: #006eb9;
 }
 .cn-customer .cn-containers input::placeholder,
+.preview-images .img-box div.texto textarea::placeholder,
 .search-subnav-nc input::placeholder{
   color: #bfbfbf;
 }

@@ -21,7 +21,10 @@ use App\Models\Type;
 use App\Models\Address;
 use App\Http\Controllers\Lib\FormsController;
 use App\Models\User;
+use App\Models\Media;
+use App\Models\Note;
 use Redirect;
+use Image;
 
 class BuildingController extends Controller {
 
@@ -487,6 +490,11 @@ class BuildingController extends Controller {
     }
 
     //walkthrough
+
+    public function getWalkthroughLocation(Request $request)
+    {
+        return Address::with('building', 'building.neighborhood', 'building.media', 'building.notes')->where('id_buildings', $request['id'])->first();
+    }
     public function insertWalkthroughLocation(Request $request)
     {
         
@@ -505,7 +513,7 @@ class BuildingController extends Controller {
         $newAddress->country = 'USA';
         $newAddress->save();
 
-        return Address::with('building', 'building.neighborhood')->find($newAddress->id);
+        return Address::with('building', 'building.neighborhood', 'building.media', 'building.notes')->find($newAddress->id);
     }
 
     public function updateWalkthroughLoc(Request $request)
@@ -525,17 +533,55 @@ class BuildingController extends Controller {
         $updateBld->code = $request['code'];
         $updateBld->save();
 
-        return Address::with('building', 'building.neighborhood')->find($request['id_address']);
+        return Address::with('building', 'building.neighborhood', 'building.media', 'building.notes')->find($request['id_address']);
 
     }
 
     public function insertMediaFiles(Request $request)
     {
-        print '<pre>';
-        print_r($request->all());
-        die();
 
-//        $mediaFile = new Media();
+        $data = $request->data;
+
+        $mediaFile = new Media;
+        $mediaFile->name    = $data['name'];
+        $mediaFile->comment = $data['comment'];
+        $mediaFile->id_buildings = $request->id_buildings;
+        $mediaFile->save();
+
+        $path = public_path('img/wttmp/' . $data['name']);
+        Image::make(file_get_contents($data['data']))->save($path);
+
+        return Address::with('building', 'building.neighborhood', 'building.media', 'building.notes')->where('id_buildings', $request->id_buildings)->first();
+    }
+
+    public function removeImgLocation(Request $request)
+    {
+        Media::find($request->id)->delete();
+        return Address::with('building', 'building.neighborhood', 'building.media', 'building.notes')->where('id_buildings', $request->id_buildings)->first();
+    }
+
+    public function insertWtNotes(Request $request)
+    {
+
+
+        $data = $request->all();
+        $idBld = $data['id_buildings'];
+        unset($data['id_buildings']);
+
+
+
+        foreach($data as $item)
+        {
+
+            print $item . '|||';
+//            $newNote = new Note;
+//
+//            $newNote->save();
+        }
+
+die();
+
+        return Address::with('building', 'building.neighborhood', 'building.media', 'building.notes')->where('id_buildings', $request->id_buildings)->first();
     }
 
 }

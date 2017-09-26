@@ -11,26 +11,10 @@ app.controller('customerControllerList',            function ($scope, $http){
 });
 app.controller('customerController',                function ($scope, $http, $stateParams, customerService, DTOptionsBuilder, generalService){
 
-
-
-
-
-
-
-
   if(!generalService.rightView) {
     generalService.rightView = true;
-    console.log('UNO');
   }
   else {
-    console.log('DOS');
-
-
-
-    console.log(customerService);
-
-
-
 
     if(generalService.stateRoute == 'customers')
       if(!generalService.sideBarFlag) {

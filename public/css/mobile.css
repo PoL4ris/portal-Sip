@@ -1,5 +1,5 @@
 .walkthrough-mobile {
-  position: fixed;
+  /*position: fixed;*/
   width: 100%;
   top: 5px;
   left: 0;
@@ -9,7 +9,8 @@
 }
 
 .mobile-walk{
-  position: absolute;
+  /*position: absolute;*/
+  position: relative;
   top:0;
   width: 100%;
 }
@@ -109,9 +110,7 @@
   font-size: 11px;
   padding: 5px;
 }
-.m-walk{
-  left: 0;
-}
+
 .m-walk .bld-filters-sub-nav{
   padding: 0;
 }
@@ -140,8 +139,14 @@
 .m-walk .building-list-side .bld-list-side{
   padding: 5px 0px;
 }
+.m-walk{
+   left: 0;
+  position: relative;
+}
 .mw-1{
   left:100%;
+  position: absolute;
+  /*display: none;*/
 }
 .back-style-action{
   position: absolute;
@@ -224,6 +229,33 @@
   height: 40px;
   padding-top: 11px;
   padding-right: 15px;
+}
+.save-img-icon{
+  color: #ff6d00;
+  font-size: 16px;
+  position: absolute;
+  top: 50px;
+  width: 40px;
+  right: 0;
+}
+.save-img-icon:after{
+  position: absolute;
+  font-size: 11px;
+  width: 40px;
+  top: 20px;
+  right: 0;
+  font-family: sans-serif;
+}
+.request-fields-inline .remove-note{
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 30px;
+  height: 30px;
+}
+.request-fields-inline .remove-note i{
+  top: 7px;
+  right: 8px;
 }
 
 

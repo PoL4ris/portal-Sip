@@ -19,11 +19,11 @@
                 <div class="building-list-side">
                     <div ng-repeat="building in bldListResult"
                          class="bld-list-side"
-                         ng-click="displayBldData(building.id)">
+                         ng-click="getWtLocation(building.id)">
                         <p alt="{{building.name}}" title="{{building.name}}">
                             <b>{{building.code}}</b> : {{building.name}} | <b>Status here.</b>
                             <br>
-                            {{building.type}}
+                            {{building.type}} | ID: ({{building.id}})
                         </p>
                     </div>
                 </div>
@@ -31,7 +31,7 @@
         </div>
     </div>
 
-    <div class="m-b-lg  mobile-walk anim mw-1" id="mw-view-1">
+    <div class="m-b-lg  mobile-walk anim mw-1 animated fade-in-left-big"   id="mw-view-1">
         <div class="col-lg-12 col-xs-12 m-b-lg text-center bg-white p-t-md p-b-md b-b-ddd no-padding-sides">
             <span class="back-style-action cursor-pointer" ng-click="backPhase('mw-view-', 1)"><i class="fa fa-angle-left"></i>Walkthrough</span>
             <h4>Building Name</h4>
@@ -71,7 +71,8 @@
             </form>
             <div class="building-list-side" ng-if="viewResultsName">
                 <div ng-repeat="building in nameVerifyData['data']"
-                     class="bld-list-side">
+                     class="bld-list-side"
+                     ng-click="getWtLocation(building.id)">
                     <p alt="{{building.name}}" title="{{building.name}}" class="size-100">
                         <b>{{building.code}}</b> : {{building.name}} | <b>Status...</b>
 
@@ -80,7 +81,8 @@
             </div>
             <div class="building-list-side" ng-if="viewResultsAddress">
                 <div ng-repeat="building in addressVerifyData['data']"
-                     class="bld-list-side">
+                     class="bld-list-side"
+                     ng-click="getWtLocation(building.building.id)">
                     <p alt="{{building.building.name}}" title="{{building.building.name}}" class="size-100" ng-if="building.building">
                         <b>{{building.building.code}}</b> : {{building.building.name}} | <b>Status...</b>
                     </p>
@@ -96,7 +98,7 @@
 
     </div>
 
-    <div class="m-b-lg  mobile-walk anim  mw-1"  id="mw-view-2">
+    <div class="m-b-lg  mobile-walk anim  mw-1 animated fade-in-left-big"  id="mw-view-2">
 
         <div class="col-lg-12 col-xs-12 m-b-lg text-center bg-white p-t-md p-b-md b-b-ddd no-padding-sides">
             <span class="back-style-action cursor-pointer" ng-click="backPhase('mw-view-', 2)"><i class="fa fa-angle-left"></i>Back</span>
@@ -187,23 +189,30 @@
                 <div class="tab-pane" id="tab-r1">
 
                     <div class="col-xs-12 col-lg-12 no-padding-sides">
-                        <form>
-                            <div class="request-fields-inline bg-white b-t-ddd b-b-ddd m-b-lg">
-                                <textarea placeholder="Notes #1" class="padding-10 areatext-m size-100"></textarea>
+                        <form id="walkthrough-form-notes">
+
+                            <div class="request-fields-inline bg-white b-t-ddd b-b-ddd m-b-lg"
+                                 ng-if="notesArray"
+                                 ng-repeat="note in newDataLoaded.building.notes">
+                                <textarea class="padding-10 areatext-m size-100">{{note.comment}}</textarea>
+                                <div class="remove-note">
+                                <!--<div class="remove-note" ng-click="removeNoteField($index)">-->
+                                    <i class="fa fa-times"></i>
+                                </div>
                             </div>
-                            <div class="request-fields-inline bg-white b-t-ddd b-b-ddd m-b-lg">
-                                <textarea placeholder="Notes #2" class="padding-10 areatext-m size-100"></textarea>
+
+
+                            <div class="request-fields-inline bg-white b-t-ddd b-b-ddd m-b-lg"
+                                 ng-if="notesArray"
+                                 ng-repeat="note in notesArray">
+                                <textarea placeholder="Note #{{$index}}" class="padding-10 areatext-m size-100" name="note-{{$index}}"></textarea>
+                                <div class="remove-note" ng-click="removeNoteField($index)">
+                                    <i class="fa fa-times"></i>
+                                </div>
                             </div>
-                            <div class="request-fields-inline bg-white b-t-ddd b-b-ddd m-b-lg">
-                                <textarea placeholder="Notes #3" class="padding-10 areatext-m size-100"></textarea>
-                            </div>
-                            <div class="request-fields-inline bg-white b-t-ddd b-b-ddd m-b-lg">
-                                <textarea placeholder="Notes #4" class="padding-10 areatext-m size-100"></textarea>
-                            </div>
-                            <div class="request-fields-inline bg-white b-t-ddd b-b-ddd m-b-lg">
-                                <textarea placeholder="Notes #5" class="padding-10 areatext-m size-100"></textarea>
-                            </div>
+
                         </form>
+                        <div class="btn btn-success m-l-lg" ng-click="addNoteFiled()">Add Note <i class="fa fa-plus"></i></div>
                     </div>
 
                 </div>
@@ -225,22 +234,44 @@
                                 </div>
                             </div>
 
+
+
+
+
+                            <div class="col-lg-12 col-xs-12 preview-images no-padding-sides p-t-lg">
+                                <div ng-repeat="file in newDataLoaded.building.media" class="img-box m-t-lg">
+                                    <img src="/img/wttmp/{{file.name}}"/>
+                                    <div ng-click="removeImgLocation(file.id)" class="remove-act"><i class="fa fa-trash-o"></i></div>
+                                    <div class="texto"><textarea name="image-{{$index}}" placeholder="Add comment to Image. {{$index}}"></textarea></div>
+                                </div>
+                            </div>
+
+
+
+
+
                             <div class="col-lg-12 col-xs-12 preview-images no-padding-sides p-t-lg" ng-if="filesControl.length > 0">
                                 <form id="walkthrough-form">
                                     <div ng-repeat="file in app.data.upload" ng-if="file.type.indexOf('image')!==-1" class="img-box m-t-lg">
                                         <img src="{{file.data}}" class="" ng-if="file.data"/>
                                         <div ng-click="removeImage($index)" class="remove-act"><i class="fa fa-trash-o"></i></div>
+                                        <i class="fa fa-save save-img-icon"></i>
                                         <div class="texto"><textarea name="image-{{$index}}" placeholder="Add comment to Image. {{$index}}"></textarea></div>
                                     </div>
                                 </form>
                             </div>
 
 
+
+
+
+
+
                             <!-- BOTON -->
 
-                            <div class="col-lg-12 m-t-lg col-xs-12">
-                                <button ng-click="getDataControl()" class="btn btn-default">| Tadaa : Count and Console.Log() Array of Objects : Click |</button>
-                            </div>
+                            <!--<div class="col-lg-12 m-t-lg col-xs-12">-->
+                                <!--<button ng-click="getDataControl()" class="btn btn-default">| Tadaa : Count and Console.Log() Array of Objects : Click |</button>-->
+                            <!--</div>-->
 
                         </div>
                     </div>

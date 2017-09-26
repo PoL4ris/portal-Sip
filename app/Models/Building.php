@@ -149,7 +149,11 @@ class Building extends Model {
 
     public function notes()
     {
-        //return notes by id_buildings
+        return $this->hasMany('App\Models\Note', 'id_buildings', 'id');
+    }
+    public function media()
+    {
+        return $this->hasMany('App\Models\Media', 'id_buildings', 'id');
     }
 
 }

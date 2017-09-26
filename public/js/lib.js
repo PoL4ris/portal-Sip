@@ -40,12 +40,14 @@ app.controller('dropZoneController', function($scope, $http, customerService, ge
   console.log($.browser.mobile);
   $scope.mobDevice = $.browser.mobile;
   $scope.flagTab   = 'general';
+  $scope.notesArray = [0];
 
   //values to reset...
   $scope.resetValues = function (){
     $scope.viewResults = false;
     $scope.verifyMsgView1 = false;
     $scope.flagTab = 'general';
+    $scope.notesArray = [];
   }
 
   if (generalService.sideBarFlag) {
@@ -68,8 +70,7 @@ app.controller('dropZoneController', function($scope, $http, customerService, ge
     }
 
 
-    console.log($scope.filesControl);
-    $scope.updateinstance();
+//    console.log($scope.filesControl);
 
   }
   $scope.removeImage = function (keyId){
@@ -107,12 +108,27 @@ app.controller('dropZoneController', function($scope, $http, customerService, ge
     });
 
   $scope.nextPhase = function(id, index){
+//    $('#'+id+(index+1)).fadeIn();
+//    $('#'+id+index).fadeOut();
     $('#'+id+index).css('left', '-110%');
     $('#'+id+(index+1)).css('left', '0');
   }
   $scope.backPhase = function(id, index){
+//    $('#'+id+index).fadeOut();
+//    $('#'+id+(index-1)).fadeIn();
     $('#'+id+index).css('left', '100%');
     $('#'+id+(index-1)).css('left', '0');
+  }
+
+  $scope.getWtLocation = function(id){
+//    $scope.nextPhase('mw-view-',0);
+    $http.get("getWalkthroughLocation", {params: {'id':id}})
+      .then(function (response) {
+        $scope.newDataLoaded = response.data;
+
+        $scope.nextPhase('mw-view-',0);
+        $scope.nextPhase('mw-view-',1);
+      });
   }
 
   $scope.verifyBldRecord = function (table){
@@ -185,32 +201,63 @@ app.controller('dropZoneController', function($scope, $http, customerService, ge
 
         break;
       case  'notes':
+        var objects = getFormValues('walkthrough-form-notes');
+        objects['id_buildings'] = $scope.newDataLoaded.building.id;
+
+        $http.get("insertWtNotes", {params : objects})
+          .then(function (response) {
+//              console.log(response.data);
+//            $scope.newDataLoaded = response.data;
+          });
+
         break;
       case  'images':
 
+        $scope.getDataControl();
+        console.log($scope.filesControl);
+        var tmpDataStance = $scope.filesControl;
 
-        console.log($scope.filesControl.id_buildings);
+        for (var x = 0 in tmpDataStance) {
+
+          $http.post("insertMediaFiles", {data : tmpDataStance[x], id_buildings  : $scope.newDataLoaded.building.id})
+            .then(function (response) {
+//              console.log(response.data);
+              $scope.newDataLoaded = response.data;
+            });
 
 
-
-        $http.post("insertMediaFiles", {params : $scope.filesControl, id_buildings:$scope.newDataLoaded.building.id})
-          .then(function (response) {
-            console.log(response.data);
-//            $scope.newDataLoaded = response.data;
-//            $scope.updatedValues();
-          });
-
-
-
+          ctrl.data = { upload:[] }
+          $scope.filesControl = ctrl.data.upload;
+        }
 
         break;
     }
 
-    console.log(objects);
 
 
 
   }
+  $scope.removeImgLocation = function(id){
+//  console.log(id);
+    $http.get("removeImgLocation", {params : {'id':id, 'id_buildings':$scope.newDataLoaded.building.id}})
+      .then(function (response) {
+//        console.log(response.data);
+        $scope.newDataLoaded = response.data;
+      });
+
+  }
+  $scope.addNoteFiled = function(){
+    $scope.notesArray.push([]);
+  }
+  $scope.removeNoteField = function(index){
+    $scope.notesArray.splice(index, 1);
+  }
+
+
+
+
+
+
   $scope.updatedValues  = function(){
     $('#update-code').fadeOut('slow');
     $('#update-type').fadeOut('slow');
