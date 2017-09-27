@@ -33,21 +33,22 @@ app.controller('dropZoneController', function($scope, $http, customerService, ge
 
 
 
-//console.log(generalService);
 
 
   //This is the checkMobileDevice
   console.log($.browser.mobile);
-  $scope.mobDevice = $.browser.mobile;
-  $scope.flagTab   = 'general';
-  $scope.notesArray = [0];
+  $scope.mobDevice  = $.browser.mobile;
+  $scope.flagTab    = 'general';
+  $scope.notesArray = [];
 
   //values to reset...
   $scope.resetValues = function (){
-    $scope.viewResults = false;
+
+    $scope.viewResults    = false;
     $scope.verifyMsgView1 = false;
-    $scope.flagTab = 'general';
-    $scope.notesArray = [];
+    $scope.flagTab        = 'general';
+    $scope.notesArray     = [];
+
   }
 
   if (generalService.sideBarFlag) {
@@ -56,12 +57,13 @@ app.controller('dropZoneController', function($scope, $http, customerService, ge
   }
 
   /*DOROP ENGINE*/
-  var ctrl = this;
+  var ctrl  = this;
   ctrl.data = { upload:[] }
   $scope.filesControl = ctrl.data.upload;
 
+
   $scope.getDataControl = function(){
-//    console.log($scope.filesControl);
+
     var objetos = getFormValues('walkthrough-form');
 
     for(var obj in objetos )
@@ -69,14 +71,12 @@ app.controller('dropZoneController', function($scope, $http, customerService, ge
       $scope.filesControl[obj.split('image-')[1]].comment = objetos[obj];
     }
 
-
-//    console.log($scope.filesControl);
-
   }
-  $scope.removeImage = function (keyId){
+  $scope.removeImage    = function (keyId){
     $scope.filesControl.splice(keyId, 1);
     ctrl.data.upload = $scope.filesControl;
   }
+
   $('.drop-zone-box').on('dragenter', function() {
     $(this)
       .css({'background-color' : 'rgba(255,255,255,0.4)'})
@@ -87,6 +87,11 @@ app.controller('dropZoneController', function($scope, $http, customerService, ge
       .css({'background-color' : ''})
       .find("p").hide();
   });
+
+
+
+
+
 
 
 
@@ -108,48 +113,48 @@ app.controller('dropZoneController', function($scope, $http, customerService, ge
     });
 
   $scope.nextPhase = function(id, index){
-//    $('#'+id+(index+1)).fadeIn();
-//    $('#'+id+index).fadeOut();
-    $('#'+id+index).css('left', '-110%');
-    $('#'+id+(index+1)).css('left', '0');
+    $('#' + id + index).css('left', '-110%');
+    $('#' + id + (index+1)).css('left', '0');
   }
   $scope.backPhase = function(id, index){
-//    $('#'+id+index).fadeOut();
-//    $('#'+id+(index-1)).fadeIn();
-    $('#'+id+index).css('left', '100%');
-    $('#'+id+(index-1)).css('left', '0');
+    $('#' + id + index).css('left', '100%');
+    $('#' + id + (index-1)).css('left', '0');
   }
 
   $scope.getWtLocation = function(id){
-//    $scope.nextPhase('mw-view-',0);
+
     $http.get("getWalkthroughLocation", {params: {'id':id}})
       .then(function (response) {
+
         $scope.newDataLoaded = response.data;
 
         $scope.nextPhase('mw-view-',0);
         $scope.nextPhase('mw-view-',1);
+
       });
   }
 
   $scope.verifyBldRecord = function (table){
-//    console.log('ok on mwView1');
-//    console.log(this.verifyInfo);
+
     if(table  == 'building')
     {
       $http.get("buildingsSearch", {params:{'querySearch':this.verifyInfoBld, 'table':table}})
         .then(function (response) {
+
           $scope.nameVerifyData = response.data;
-//          console.log(response.data);
+
         });
     }
     else
     {
       $http.get("buildingsSearch", {params:{'querySearch':this.verifyInfoAdd, 'table':table}})
         .then(function (response) {
+
           $scope.addressVerifyData = response.data;
-//          console.log(response.data);
+
         });
     }
+
     $scope.mwView1 = true;
   };
 
@@ -166,6 +171,7 @@ app.controller('dropZoneController', function($scope, $http, customerService, ge
 
       $scope.nextPhase('mw-view-', 1);
       $scope.verifyMsgView1 = false;
+
       //insert temporal Location
       $http.get("insertWalkthroughLocation", {params:{'name':this.verifyInfoBld, 'address':this.verifyInfoAdd}})
         .then(function (response) {
@@ -194,41 +200,54 @@ app.controller('dropZoneController', function($scope, $http, customerService, ge
 
         $http.get("updateWalkthroughLoc", {params : objects})
           .then(function (response) {
-            console.log(response.data);
-            $scope.newDataLoaded = response.data;
-            $scope.updatedValues();
+//            $scope.newDataLoaded = response.data;
+            $scope.updatedGeneralValues();
           });
 
         break;
       case  'notes':
-        var objects = getFormValues('walkthrough-form-notes');
-        objects['id_buildings'] = $scope.newDataLoaded.building.id;
 
-        $http.get("insertWtNotes", {params : objects})
+        var savedObjects = getFormValues('wt-saved-notes');
+        var objects      = getFormValues('walkthrough-form-notes');
+
+        $http.get("insertWtNotes", {params : {insert:objects, update:savedObjects, id_buildings:$scope.newDataLoaded.building.id}})
           .then(function (response) {
-//              console.log(response.data);
-//            $scope.newDataLoaded = response.data;
+            $scope.newDataLoaded = response.data;
+            $scope.notesArray = [];
+            $scope.updatedNotesValues()
           });
 
         break;
       case  'images':
 
         $scope.getDataControl();
-        console.log($scope.filesControl);
+        var objects = getFormValues('walkthrough-form-images');
+        objects['id_buildings'] = $scope.newDataLoaded.building.id;
         var tmpDataStance = $scope.filesControl;
 
-        for (var x = 0 in tmpDataStance) {
+        $http.get("updateMediaFiles", {params : objects})
+          .then(function (response) {
 
-          $http.post("insertMediaFiles", {data : tmpDataStance[x], id_buildings  : $scope.newDataLoaded.building.id})
-            .then(function (response) {
-//              console.log(response.data);
-              $scope.newDataLoaded = response.data;
-            });
+            $scope.newDataLoaded = response.data;
 
+            if($scope.filesControl.length > 0)
+            {
 
-          ctrl.data = { upload:[] }
-          $scope.filesControl = ctrl.data.upload;
-        }
+              for (var x = 0 in tmpDataStance) {
+
+                $http.post("insertMediaFiles", {data : tmpDataStance[x], id_buildings  : $scope.newDataLoaded.building.id})
+                  .then(function (response) {
+                    $scope.newDataLoaded = response.data;
+                  });
+
+                ctrl.data = { upload:[] }
+                $scope.filesControl = ctrl.data.upload;
+                $scope.updatedImgValues();
+
+              }
+
+            }
+          });
 
         break;
     }
@@ -238,11 +257,12 @@ app.controller('dropZoneController', function($scope, $http, customerService, ge
 
   }
   $scope.removeImgLocation = function(id){
-//  console.log(id);
+
     $http.get("removeImgLocation", {params : {'id':id, 'id_buildings':$scope.newDataLoaded.building.id}})
       .then(function (response) {
-//        console.log(response.data);
+
         $scope.newDataLoaded = response.data;
+
       });
 
   }
@@ -252,21 +272,42 @@ app.controller('dropZoneController', function($scope, $http, customerService, ge
   $scope.removeNoteField = function(index){
     $scope.notesArray.splice(index, 1);
   }
+  $scope.removeNoteLocation = function(id){
+    $http.get("removeNoteLocation", {params : {'id':id, 'id_buildings':$scope.newDataLoaded.building.id}})
+      .then(function (response) {
+        $scope.newDataLoaded = response.data;
+      });
+  }
 
 
 
 
 
 
-  $scope.updatedValues  = function(){
+  $scope.updatedGeneralValues  = function(){
     $('#update-code').fadeOut('slow');
     $('#update-type').fadeOut('slow');
     $('#update-units').fadeOut('slow');
     $('#update-floors').fadeOut('slow');
     $('#update-neighborhood').fadeOut('slow');
   }
+  $scope.updatedNotesValues = function(){
+    $('.saved-notes-icon').fadeOut('slow');
+  }
+  $scope.updatedImgValues = function(){
+    $('.saved-img-icon').fadeOut('slow');
+  }
   $scope.setToUpdate    = function(id){
     $('#'+id).fadeIn('slow');
+  }
+  $scope.setToUpdateS    = function(id){
+    $('#saved-'+id).fadeIn('slow');
+  }
+  $scope.setToUpdateN    = function(id){
+    $('#note-'+id).fadeIn('slow');
+  }
+  $scope.setToUpdateI    = function(id){
+    $('#i-save-'+id).fadeIn('slow');
   }
 
 })

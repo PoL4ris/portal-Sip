@@ -191,6 +191,11 @@
   font-size: 16px;
 
 }
+.request-fields-inline i.save-notes-icon{
+  top: inherit;
+  right: 8px;
+  bottom: 2px;
+}
 .request-fields-inline input::placeholder {
   color: #bfbfbf;
 }
@@ -256,6 +261,7 @@
 .request-fields-inline .remove-note i{
   top: 7px;
   right: 8px;
+  color: crimson;
 }
 
 

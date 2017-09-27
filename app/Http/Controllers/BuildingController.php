@@ -489,7 +489,9 @@ class BuildingController extends Controller {
 
     }
 
-    //walkthrough
+
+
+    //Walkthrough
 
     public function getWalkthroughLocation(Request $request)
     {
@@ -503,7 +505,6 @@ class BuildingController extends Controller {
         $newBuilding->id_status = 1; //Const -> newBld
         $newBuilding->save();
 
-        //-------------------------------------------
 
         $newAddress = new Address;
         $newAddress->address      = $request->address;
@@ -537,6 +538,25 @@ class BuildingController extends Controller {
 
     }
 
+    public function updateMediaFiles(Request $request)
+    {
+        $data = $request->all();
+        $idBuilding = $data['id_buildings'];
+
+        unset($data['id_buildings']);
+
+        foreach($data as $x => $item)
+        {
+            if($item == '')
+                continue;
+
+            $updateImage = Media::find(explode('saved-',$x)[1]);
+            $updateImage->comment = $item;
+            $updateImage->save();
+        }
+
+        return Address::with('building', 'building.neighborhood', 'building.media', 'building.notes')->where('id_buildings', $idBuilding)->first();
+    }
     public function insertMediaFiles(Request $request)
     {
 
@@ -553,34 +573,51 @@ class BuildingController extends Controller {
 
         return Address::with('building', 'building.neighborhood', 'building.media', 'building.notes')->where('id_buildings', $request->id_buildings)->first();
     }
-
     public function removeImgLocation(Request $request)
     {
         Media::find($request->id)->delete();
         return Address::with('building', 'building.neighborhood', 'building.media', 'building.notes')->where('id_buildings', $request->id_buildings)->first();
     }
 
+    //ok
     public function insertWtNotes(Request $request)
     {
 
-
-        $data = $request->all();
-        $idBld = $data['id_buildings'];
-        unset($data['id_buildings']);
-
+        $dataInsert = json_decode($request['insert'], true);
+        $dataUpdate = json_decode($request['update'], true);
+        $idBuilding = $request['id_buildings'];
 
 
-        foreach($data as $item)
-        {
+        //insert IF exist
+        if(count($dataInsert) > 0 && isset($dataInsert))
+            foreach($dataInsert as $item)
+            {
+                if($item == '')
+                    continue;
 
-            print $item . '|||';
-//            $newNote = new Note;
-//
-//            $newNote->save();
-        }
+                $newNote = new Note;
+                $newNote->comment = $item;
+                $newNote->created_by = Auth::user()->id;
+                $newNote->id_buildings = $idBuilding;
+                $newNote->save();
+            }
+        //update IF exist
+        if(count($dataUpdate) > 0 && isset($dataUpdate))
+            foreach($dataUpdate as $x => $item)
+            {
+                if($item == '')
+                    continue;
 
-die();
+                    $updateNote = Note::find(explode('saved-',$x)[1]);
+                    $updateNote->comment = $item;
+                    $updateNote->save();
+            }
 
+        return Address::with('building', 'building.neighborhood', 'building.media', 'building.notes')->where('id_buildings', $idBuilding)->first();
+    }
+    public function removeNoteLocation(Request $request)
+    {
+        Note::find($request->id)->delete();
         return Address::with('building', 'building.neighborhood', 'building.media', 'building.notes')->where('id_buildings', $request->id_buildings)->first();
     }
 
