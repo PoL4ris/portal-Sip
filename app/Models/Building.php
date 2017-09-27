@@ -147,4 +147,12 @@ class Building extends Model {
         )->where('id_types', config('const.type.switch'));
     }
 
+    public function accessSwitches()
+    {
+        return $this->hasManyThrough(
+            'App\Models\NetworkNode', 'App\Models\Address',
+            'id_buildings', 'id_address', 'id'
+        )->where('id_types', config('const.type.switch'))
+            ->where('host_name', 'not like', '%CORE%');
+    }
 }

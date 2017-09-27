@@ -23,7 +23,8 @@ app.controller('chargesController', function ($scope, $http, customerService, ad
     {id : 4, label:'Failed'},
     {id : 5, label:'Disabled'},
     {id : 6, label:'Pending-Approval'},
-    {id : 7, label:'Denied'}];
+    {id : 7, label:'Denied'},
+      {id : 8, label:'Cancelled'}];
 
   $http.get('getPendingManualCharges')
     .then(function (response) {
@@ -310,8 +311,7 @@ app.controller('chargesController', function ($scope, $http, customerService, ad
         break;
       case 'empty':
         page = '?';
-        adminService.unit = adminService.amount = adminService.code = '';
-        adminService.status = 2;
+        adminService.unit = adminService.amount = adminService.code = adminService.status = '';
         $('#charges-filter-form-container').trigger('reset');
         break;
     }
