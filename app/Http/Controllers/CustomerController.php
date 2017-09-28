@@ -557,18 +557,21 @@ class CustomerController extends Controller {
 
         if ($when != null)
         {
-            $expires = date("Y-m-d H:i:s", strtotime($when));
+            $expires = date("Y-m-d H:i:s", strtotime($when.' 00:00:00'));
         }
 
+        $customer = Customer::find($request->idCustomer);
+        $address = $customer->address;
 
-        $newData = new CustomerProduct();
-        $newData->id_customers = $request->idCustomer;
-        $newData->id_products = $request->idProduct;
-        $newData->id_status = config('const.status.active');
-        $newData->signed_up = date("Y-m-d H:i:s");
-        $newData->expires = $expires;
-        $newData->id_users = Auth::user()->id;
-        $newData->save();
+        $newProduct = new CustomerProduct();
+        $newProduct->id_customers = $request->idCustomer;
+        $newProduct->id_products = $request->idProduct;
+        $newProduct->id_status = config('const.status.active');
+        $newProduct->id_address = ($address != null) ? $address->id : 0;
+        $newProduct->signed_up = date("Y-m-d H:i:s");
+        $newProduct->expires = $expires;
+        $newProduct->id_users = Auth::user()->id;
+        $newProduct->save();
 
         $relationData = Product::find($request->idProduct);
 

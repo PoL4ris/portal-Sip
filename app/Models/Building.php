@@ -156,4 +156,12 @@ class Building extends Model {
         return $this->hasMany('App\Models\Media', 'id_buildings', 'id');
     }
 
+    public function accessSwitches()
+    {
+        return $this->hasManyThrough(
+            'App\Models\NetworkNode', 'App\Models\Address',
+            'id_buildings', 'id_address', 'id'
+        )->where('id_types', config('const.type.switch'))
+            ->where('host_name', 'not like', '%CORE%');
+    }
 }

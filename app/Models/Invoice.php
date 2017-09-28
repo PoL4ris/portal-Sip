@@ -24,8 +24,7 @@ class Invoice extends Model {
             {
                 continue;
             }
-            $chargeDetailsArray = json_decode($charge->details, true);
-            $detailsArray[] = $chargeDetailsArray;
+            $detailsArray [] = json_decode($charge->details, true);
         }
 
         return $detailsArray;

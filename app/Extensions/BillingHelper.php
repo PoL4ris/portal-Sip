@@ -119,6 +119,14 @@ class BillingHelper {
         Log::info('BillingHelper::generateChargeRecordsForCustomer(): Added charges for customer id=' . $customerId . ' to DB');
     }
 
+    public function generateChargeRecordsForCustomerByMonth($customerId, $monthString = 'next month')
+    {
+        // Get list of chargeable products/services for the requested customer
+        $customerProducts = $this->getChargeableCustomerProductsByCustomerId($customerId);
+        $count = $this->addChargesForCustomerProducts($customerProducts, $monthString);
+        Log::info('BillingHelper::generateChargeRecordsForCustomerByMonth(): Added charges for customer id=' . $customerId . ' to DB');
+    }
+
     public function getChargeableCustomerProductsByBuildingId($buildingId)
     {
         return $this->getChargeableCustomerProductsQuery()
@@ -251,6 +259,34 @@ class BillingHelper {
             'end_date'             => $dateRange['endDate'],
             'due_date'             => date("Y-m-d H:i:s", strtotime("first day of $monthString  00:00:00"))
         ]);
+
+        return true;
+    }
+
+    public function updateChargeFromCustomerProduct(Charge $charge)
+    {
+        $customerProduct = $charge->customerProduct;
+
+        if ($customerProduct == null)
+        {
+            Log::info('BillingHelper::updateChargeFromCustomerProduct(): Charge id=' . $charge->id . ' does not have a customer product associated with it.');
+
+            return false;
+        }
+        $product = $customerProduct->product;
+
+        $charge->details = json_encode(array('customer_product_id'     => $customerProduct->id,
+                                             'customer_product_status' => $customerProduct->id_status,
+                                             'product_id'              => $customerProduct->id_products,
+                                             'product_name'            => $product->name,
+                                             'product_desc'            => $product->description,
+                                             'product_amount'          => $product->amount,
+                                             'product_frequency'       => $product->frequency,
+                                             'product_type'            => $product->type
+        ));
+        $charge->amount = number_format($product->amount, 2);
+        $charge->id_address = $customerProduct->id_address;
+        $charge->save();
 
         return true;
     }
@@ -425,7 +461,7 @@ class BillingHelper {
      *  Customer product timestamp and status update functions
      */
 
-    protected function markCustomerProductAsCharged($customerProduct, $monthString = 'this month')
+    public function markCustomerProductAsCharged($customerProduct, $monthString = 'this month')
     {
 
         // Default to the first day of the month
@@ -439,7 +475,11 @@ class BillingHelper {
         // Default charge status is active. We set one-time products to paid after their invoice is processed
         $customerProduct->charge_status = config('const.customer_product_charge_status.active');
 
+        // Current value of the "next charge date"
         $customerProductNextChargeTime = strtotime($customerProduct->next_charge_date);
+
+        // Initialize next charge time to the product's current timestamp
+        $nextChargeTime = $customerProductNextChargeTime;
 
         $timestampMysql = null;
         if ($customerProduct->product->frequency == 'annual')
@@ -457,6 +497,7 @@ class BillingHelper {
             $nextChargeDateMysql = null;
         }
 
+        // If the "next charge date" has never been set or if it's old then update it
         if ($customerProduct->next_charge_date == null || $nextChargeTime > $customerProductNextChargeTime)
         {
             $customerProduct->next_charge_date = $nextChargeDateMysql;
@@ -602,12 +643,43 @@ class BillingHelper {
         }
     }
 
+    public function invoicePendingAutoPayChargesForCustomerByMonth($customerId, $monthString)
+    {
+        // Default to the first day of the month
+        $startDateTime = strtotime("first day of $monthString 00:00:00");
+        $startDateMysql = date("Y-m-d H:i:s", $startDateTime);
+
+        while (true)
+        {
+            $charges = Charge::where('status', config('const.charge_status.pending'))
+                ->where('processing_type', config('const.type.auto_pay'))
+                ->where('id_customers', $customerId)
+                ->where('start_date', $startDateMysql)
+                ->take(100)
+                ->get();
+
+            if ($charges->count() == 0)
+            {
+                break;
+            }
+
+            foreach ($charges as $charge)
+            {
+                $invoice = $this->findOrCreateOpenInvoice($charge->id_customers, $charge->id_address, $monthString);
+                $this->addChargeToInvoice($charge, $invoice);
+            }
+        }
+    }
+
     public function findOrCreateOpenInvoice($customerId, $addressId, $monthString = 'next month')
     {
         $firstDayOfMonthTime = strtotime("first day of $monthString 00:00:00");
         $description = date('M-Y', $firstDayOfMonthTime) . ' Charges';
 
-        $invoice = Invoice::firstOrCreate(['id_customers' => $customerId, 'id_address' => $addressId, 'status' => config('const.invoice_status.open')]);
+        $dueDateTime = strtotime("first day of $monthString  00:00:00");
+        $dueDateMysql = date("Y-m-d H:i:s", $dueDateTime);
+
+        $invoice = Invoice::firstOrCreate(['id_customers' => $customerId, 'id_address' => $addressId, 'status' => config('const.invoice_status.open'), 'due_date' => $dueDateMysql]);
 
         if ($invoice->description == null)
         {
@@ -624,8 +696,6 @@ class BillingHelper {
 
         if ($invoice->due_date == null)
         {
-            $dueDateTime = strtotime("first day of $monthString  00:00:00");
-            $dueDateMysql = date("Y-m-d H:i:s", $dueDateTime);
             $invoice->due_date = $dueDateMysql;
         }
 
@@ -722,7 +792,7 @@ class BillingHelper {
         return true;
     }
 
-    protected function updateInvoiceAmount(Invoice $invoice)
+    public function updateInvoiceAmount(Invoice $invoice)
     {
         $charges = $invoice->charges;
 
@@ -747,7 +817,6 @@ class BillingHelper {
             $invoice->save();
         }
     }
-
 
     /**
      * Invoice processing functions
@@ -813,9 +882,6 @@ class BillingHelper {
         return true;
     }
 
-    /**
-     * TODO: Change pagination to use record IDs not LIMIT
-     */
     public function processPendingAutopayInvoicesThatHaveUpdatedPaymentMethods()
     {
         $perPage = 15;
@@ -826,14 +892,16 @@ class BillingHelper {
 
         while ($paginatedInvoices->count() > 0)
         {
-//            $invoices = $this->filterPendingInvoicesByUpdatedPaymentMethods($paginatedInvoices);
+            // TODO: Uncomment the line below when ready to run this in production or test it in dev
+            // $invoices = $this->filterPendingInvoicesByUpdatedPaymentMethods($paginatedInvoices);
             $invoices = $paginatedInvoices;
 
             foreach ($invoices as $invoice)
             {
                 $totalInvoicesProcessed ++;
                 Log::info('BillingHelper::processPendingAutopayInvoicesThatHaveUpdatedPaymentMethods(): processing invoice id=' . $invoice->id . ' amount=$' . $invoice->amount);
-//                $this->processInvoice($invoice, true, true, false);
+                // TODO: Uncomment the line below when ready to run this in production or test it in dev
+                // $this->processInvoice($invoice, true, true, false);
                 $lastProcessedInvoiceId = $invoice->id;
             }
 
@@ -1041,7 +1109,7 @@ class BillingHelper {
         return true;
     }
 
-    protected function updateInvoiceChargeStatus(Invoice $invoice, $status)
+    public function updateInvoiceChargeStatus(Invoice $invoice, $status)
     {
         $charges = $invoice->charges;
 
@@ -1092,6 +1160,19 @@ class BillingHelper {
         return $invoices;
     }
 
+    public function paginatePaidAutoPayInvoices($perPage = 15, $startingId = 0)
+    {
+        // Get pending invoices
+        $invoices = Invoice::where('processing_type', config('const.type.auto_pay'))
+            ->where('status', config('const.invoice_status.paid'))
+            ->where('id', '>', $startingId)
+            ->orderBy('id', 'asc')
+            ->take($perPage)
+            ->get();
+
+        return $invoices;
+    }
+
     public function filterPendingInvoicesByUpdatedPaymentMethods($invoices)
     {
         if ($invoices->isEmpty())
@@ -1123,8 +1204,126 @@ class BillingHelper {
         return $invoices;
     }
 
+    /**
+     * Pending invoice reminder and reporting functions
+     */
 
+    public function remindFailedInvoiceCustomers()
+    {
 
+        $maxIterations = $this->getFailedPendingInvoiceToNotifyQuery()->count();
+        $iteration = 1;
+        while ($iteration <= $maxIterations)
+        {
+            $invoice = $this->getFailedPendingInvoiceToNotifyQuery()->first();
+
+            if ($invoice == null)
+            {
+                break;
+            }
+
+            $customerId = $invoice->id_customers;
+            $pendingInvoices = $this->getFailedPendingInvoiceToNotifyQuery()
+                ->where('id_customers', $customerId)
+                ->orderBy('due_date', 'asc')
+                ->get();
+
+            $customer = Customer::find($customerId);
+            if ($customer->id_atatus != config('const.status.active'))
+            {
+                $this->markInvoicesAsFailedToNotify($pendingInvoices);
+                continue;
+            }
+
+            $this->sendDeclinedChargeReminderByInvoiceCollection($customer, $pendingInvoices);
+
+            $iteration ++;
+        }
+    }
+
+    public function getFailedPendingInvoiceToNotifyQuery()
+    {
+        // Get pending invoices
+        return Invoice::where('processing_type', config('const.type.auto_pay'))
+            ->where('status', config('const.invoice_status.pending'))
+            ->where('failed_charges_count', '>', 0)
+            ->where(function ($query) {
+                $query->whereNull('notified')
+                    ->orWhere('notified', 0);
+            });
+    }
+
+    public function sendDeclinedChargeReminderByInvoiceCollection(Customer $customer, $invoices)
+    {
+        $template = 'email.template_customer_declined_invoice_reminder';
+
+//        $firstInvoice = $invoices->first();
+//        $customer = $firstInvoice->customer;
+        $emailAddress = $customer->emailAddress;
+
+        $charges = [];
+
+        foreach ($invoices as $invoice)
+        {
+            $charges = array_merge($charges, $invoice->details());
+        }
+
+        dd($charges);
+//
+//        if ($chargeResult == null || isset($chargeResult['PaymentType']) == false)
+//        {
+//            Log::info('BillingHelper::sendChargeDeclienedEmail(): INFO: Did not send a declined email for invoice id=' . $invoice->id . ' due to missing credit card info.');
+//
+//            return false;
+//        }
+//        if ($chargeResult['PaymentType'] == 'Credit Card')
+//        {
+//            $subject = 'NOTICE: Credit Card Declined';
+//        } elseif ($chargeResult['PaymentType'] == 'Checking Account')
+//        {
+//            $subject = 'NOTICE: ACH Declined';
+//        } else
+//        {
+//            $subject = 'NOTICE: Charge Declined';
+//        }
+//
+////        $this->sendInvoiceResponseEmail($invoice, $chargeResult, $subject, $template);
+//
+//        $customer = Customer::find($invoice->id_customers);
+//
+//        $address = Address::find($invoice->id_address);
+//
+//        $toAddress = ($this->testMode) ? 'peyman@silverip.com' : $customer->email;
+//
+//        $lineItems = $invoice->details(); //($invoice->details != null && $invoice->details != '') ? json_decode($invoice->details, true) : array();
+//        $chargeDetails = array();
+//        $chargeDetails['TRANSACTIONId'] = $chargeResult['TRANSACTIONID'];
+//        $chargeDetails['PaymentType'] = $chargeResult['PaymentType'];
+//        $chargeDetails['PaymentTypeDetails'] = $chargeResult['PaymentTypeDetails'];
+//
+//        Mail::send(array('html' => $template), ['invoice' => $invoice, 'customer' => $customer, 'address' => $address, 'lineItems' => $lineItems, 'chargeDetails' => $chargeDetails], function ($message) use ($toAddress, $subject, $customer, $address, $lineItems, $chargeDetails) {
+//            $message->from('help@silverip.com', 'SilverIP Customer Care');
+//            $message->to($toAddress, trim($customer->first_name) . ' ' . trim($customer->last_name))->subject($subject);
+//        });
+    }
+
+    public function markInvoicesAsNotified($invoices)
+    {
+
+        $nowMysqlDate = date("Y-m-d H:i:s");
+
+        $invoiceIds = $invoices->pluck('id')->toArray();
+        Invoice::whereIn('id', $invoiceIds)->update('notified', 1)->update('last_notified', $nowMysqlDate);
+    }
+
+    public function markInvoicesAsFailedToNotify($invoices)
+    {
+
+        $nowMysqlDate = date("Y-m-d H:i:s");
+
+        $invoiceIds = $invoices->pluck('id')->toArray();
+        Invoice::whereIn('id', $invoiceIds)->update('notified', 2)->update('last_notified', $nowMysqlDate);
+    }
 
 
 //    protected function generateBuildingInvoiceDataTable($buildingId)
