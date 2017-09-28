@@ -154,15 +154,7 @@ class TestController extends Controller {
         dd($ticket2);
     }
 
-    public function supportTest(Request $request)
-    {
 
-
-        return Customer::find($request->id);
-
-        dd(Product::with('type')->orderBy('frequency', 'asc')->get()->take(10)->toArray());
-        die();
-    }
 
     public function mail()
     {
@@ -180,68 +172,6 @@ class TestController extends Controller {
         return view('mail.signup', ['customer' => $customer, 'address' => $address]);
     }
 
-    public function cleanView()
-    {
-        $supController = new SupportController();
-
-
-        $record = Ticket::with('customer', 'reason', 'ticketNote', 'lastTicketHistory', 'user', 'userAssigned', 'address', 'contacts')
-            ->where('id_reasons', '!=', 11)
-            ->where('status', '!=', 'closed')
-            ->orderBy('updated_at', 'desc')
-            ->limit(3)
-            ->get()->toArray();
-
-        $result = $supController->getOldTimeTicket($record);
-
-
-        //    $result = Customer::with('contacts.types')
-        $result = Customer::with('addresses', 'contacts', 'type', 'address.buildings', 'address.buildings.neighborhood', 'status', 'status.type', 'openTickets', 'log')
-            //                             'status.type',
-            //                             'openTickets')
-            ->find(501)
-            ->toArray();
-
-
-        //      print '<pre>';
-        dd($result);
-        die();
-
-
-        print '<pre>';
-
-        //    $customerControllerVar = new CustomerController();
-        //    $customerControllerData = $customerControllerVar->customersData();
-        //
-        //    print '<pre>';
-        //    print_r($customerControllerData);
-        //    die();
-
-        //    print_r($last_query);
-
-        $coso = CustomerProduct::where('id_customers', 501)->get()->toArray();
-
-        print_r($coso);
-        die();
-
-        $coso = Customer::with('address', 'contact', 'type', 'address.buildings', 'address.buildings.neighborhood')->find(13579)->toarray();
-
-        $queries = DB::getQueryLog();
-        $last_query = end($queries);
-
-
-        //    print_r($last_query);
-
-
-        print '----------------------------------------------<br>';
-
-        print_r(
-            $coso
-        );
-
-
-        die();
-    }
 
     public function logFunction()
     {
@@ -500,9 +430,9 @@ class TestController extends Controller {
 //        $billingHelper->invoicePendingAutoPayChargesForCustomerByMonth(4667, 'October');
 //        dd('done');
 
-        $customer = Customer::find(4667);
+        $customer = Customer::find(14187);
 
-        $invoices = Invoice::where('id_customers', 4667)
+        $invoices = Invoice::where('id_customers', $customer->id)
             ->where('status', config('const.invoice_status.pending'))
             ->where('processing_type', config('const.type.auto_pay'))
             ->orderBy('due_date', 'asc')->get();

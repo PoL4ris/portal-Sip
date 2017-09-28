@@ -31,75 +31,141 @@
         span.s1 {
             font: 12.0px Avenir
         }
+        .content-mail{
+            width: 700px;
+            margin: 0 auto;
+        }
+        .banner{
+            background: #ddd;
+            text-align: center;
+            font-size: 16px;
+            padding:4px 0;
+        }
+        .table-line {
+            margin: 20px 0;
+        }
+        .line-black{
+            border-bottom: 1px solid #ddd;
+        }
+        .silver-logo{
+            float: right;
+            padding-right: 25px;
+
+        }
+        .pull-left{
+            float: left;
+        }
     </style>
 </head>
 <body>
-<p class='p1'><strong><img src="http://www.silverip.net/logo.png" alt=" SilverIP Communications"
-                           width="165" height="37"></strong><br>
+
+
+
+
+<div class="content-mail">
+
+
+    <p class='p1'>Dear {{ trim($customer->first_name) }} {{ trim($customer->last_name) }},</p>
+    <p class='p2'></p>
+    <p class='p1'>
+        This is a reminder that you have a past due balance on your SilverIP account.
+        {{--<br>--}}
+        Our previous attempt to charge your account was unsuccessful.
+        {{--<br>--}}
+        If you need to update your credit card on file please visit the <a href="https://myaccount.silverip.net">MyAccount</a> portal.
+    </p>
     <br>
-</p>
-<p class='p1'>Dear {{ trim($customer->first_name) }} {{ trim($customer->last_name) }},</p>
-<p class='p2'></p>
-<p class='p1'>This is a reminder that you have a past due balance on your SilverIP account. Our previous attempt to charge your account was unsuccessful. If you need to update your credit card on file please visit the <a href="https://myaccount.silverip.net">MyAccount</a> portal.</p>
-<p class='p2'></p>
-<p class='p1'><strong>Please Note:</strong> If this the first time you are logging in to the MyAccount site your username is the email address you initially registered with and your password is the ten digit phone number <strong>(e.g. 3121112222 without dashes or periods)</strong> that you initially registered with. We encourage you to change this password when you login for the first time.</p>
-<p class='p2'></p>
-<p class='p1'><strong>Past Due Invoice</strong></p>
-<p class='p1'>{{ trim($customer->first_name) }} {{ trim($customer->last_name) }}<br>
-    {{ $address->address }}<br>
-    {{ $address->city }}, {{ $address->state }} {{ $address->zip }}<br>
-</p>
-<table width="350" border="0" cellspacing="1" cellpadding="1">
-    <tr>
-        <td width="184"><p class="p1"><strong>Product</strong></p></td>
-        <td width="109"><p class="p1"><strong>Period</strong></p></td>
-        <td width="109"><p class="p1"><strong>Amount</strong></p></td>
-    </tr>
-    @foreach($charges as $charge)
+    <p class='p1'>
+        <strong>
+            Please Note:
+            <br>
+        </strong>
+        If this the first time you are logging in to the MyAccount site your username is the email address you initially registered with and your password is the ten digit phone number
+        <strong>
+            (e.g. 3121112222 without dashes or periods)
+        </strong>
+        that you initially registered with.
+        <br>
+        We encourage you to change this password when you login for the first time.
+    </p>
+    <p class='p2'></p>
+    <br>
+    <p class='p1 banner' >
+        <strong >
+            Past Due Items
+        </strong>
+    </p>
+    <br>
+    <p class='p1 pull-left'>
+        {{ trim($customer->first_name) }} {{ trim($customer->last_name) }}<br>
+        {{ $address->address }}<br>
+        {{ $address->city }}, {{ $address->state }} {{ $address->zip }}<br>
+        <div class="silver-logo">
+            <img src="http://www.silverip.net/logo.png" alt=" SilverIP Communications"
+                  width="165" height="37">
+        </div>
+    </p>
+    <br>
+    {{--<hr>--}}
+    <br>
+    <table class="table-line">
+        <thead>
         <tr>
-            <td>
-                <p class="p1">{{ $charge['product_desc'] }}</p>
-            </td>
-            <td>
-                @if($charge['product_frequency'] == 'monthly')
-                    <p class="p1">{{ date('M Y', strtotime($charge['start_date'])) }}</p>
-                @elseif($charge['product_frequency'] == 'annual')
-                    <p class="p1">{{ date('Y', strtotime($charge['start_date'])).' - '.date('Y', strtotime($charge['end_date'])) }}</p>
-                @endif
-            </td>
-            <td>
-                <p class="p1">${{ number_format($charge['product_amount'], 2, '.', '') }}</p>
+            <td width="300px"><p class="p1"><strong>Product</strong></p></td>
+            <td width="150px" ><p class="p1"><strong>Period</strong></p></td>
+            <td  width="100px"><p class="p1"><strong>Amount</strong></p></td>
+        </tr>
+        <tr><td colspan="100%" class="line-black"></td></tr>
+        </thead>
+        @foreach($charges as $charge)
+            <tr>
+                <td>
+                    <p class="p1">{{ $charge['product_desc'] }}</p>
+                </td>
+                <td>
+                    @if($charge['product_frequency'] == 'monthly')
+                        <p class="p1">{{ date('M Y', strtotime($charge['start_date'])) }}</p>
+                    @elseif($charge['product_frequency'] == 'annual')
+                        <p class="p1">{{ date('Y', strtotime($charge['start_date'])).' - '.date('Y', strtotime($charge['end_date'])) }}</p>
+                    @endif
+                </td>
+                <td>
+                    <p class="p1">${{ number_format($charge['product_amount'], 2, '.', '') }}</p>
+                </td>
+            </tr>
+        @endforeach
+        <tr>
+            <td><p class="p1">Sales Tax</td>
+            <td><p class="p1"></td>
+            <td><p class="p1">$0.00</p></td>
+        </tr>
+        <tr>
+            <td><p class="p1">Other</td>
+            <td><p class="p1"></td>
+            <td><p class="p1">$0.00</p></td>
+        </tr>
+        <tr>
+            <td height="2px" colspan="3" bgcolor="#FFFFFF">
+                {{--<hr>--}}
             </td>
         </tr>
-    @endforeach
-    <tr>
-        <td><p class="p1">Sales Tax</td>
-        <td><p class="p1"></td>
-        <td><p class="p1">$0.00</p></td>
-    </tr>
-    <tr>
-        <td><p class="p1">Other</td>
-        <td><p class="p1"></td>
-        <td><p class="p1">$0.00</p></td>
-    </tr>
-    <tr>
-        <td height="2px" colspan="3" bgcolor="#FFFFFF">
-            <hr>
-        </td>
-    </tr>
-    <tr>
-        <td><p class="p1"><strong>Total Amount Due</strong></p></td>
-        <td><p class="p1"></td>
-        <td><p class="p1"><strong>${{ number_format($total, 2, '.', '') }}</strong></p></td>
-    </tr>
-</table>
-<p class='p1'>&nbsp;</p>
-<p class='p3'><span class='s1'>If you have any questions or concerns, please contact us at 312-600-3800 or email us at help@silverip.com at your earliest convenience.</span></p>
-<p class='p4'></p>
-<p class='p3'>Sincerely,</p>
-<p class='p2'><br></p>
-<p class='p1'> SilverIP Customer Support<br>help@silverip.com<br>312-600-3800</p>
-<hr>
-<p class='p1'>&nbsp;</p>
+        <tr><td colspan="100%" class="line-black"></td></tr>
+        <tr>
+            <td><p class="p1"></td>
+            <td><p class="p1"><strong>Total Amount Due</strong></p></td>
+            <td><p class="p1"><strong>${{ number_format($total, 2, '.', '') }}</strong></p></td>
+        </tr>
+    </table>
+    <br>
+    <hr>
+    <p class='p1'>&nbsp;</p>
+    <p class='p3'><span class='s1'>If you have any questions or concerns, please contact us at 312-600-3800 or email us at help@silverip.com at your earliest convenience.</span></p>
+    <p class='p4'></p>
+    <p class='p3'>Sincerely,</p>
+    <p class='p2'><br></p>
+    <p class='p1'> SilverIP Customer Support<br>help@silverip.com<br>312-600-3800</p>
+    {{--<hr>--}}
+    <p class='p1'>&nbsp;</p>
+</div>
 </body>
 </html>

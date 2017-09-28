@@ -476,6 +476,7 @@ app.controller('globalToolsCtl',                    function ($scope, $http, $co
 
   $scope.idSearch = function(){
 //    console.log('this is idSearch');
+//ROUTE         return Customer::find($request->id);
 
     if(!this.adminSearch)
     {

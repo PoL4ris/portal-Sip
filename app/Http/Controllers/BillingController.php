@@ -213,18 +213,6 @@ class BillingController extends Controller {
             ->whereRaw('YEAR(due_date)  = YEAR(' . $timeData . ')')
             ->whereRaw('MONTH(due_date) = MONTH(' . $timeData . ')');
 
-//        $loadResults->where(function($query) use ($timeData){
-//            $query->whereNull('start_date')
-//                ->whereRaw('YEAR(due_date)  = YEAR(' . $timeData . ')')
-//                ->whereRaw('MONTH(due_date) = MONTH(' . $timeData . ')');
-//        })
-//        ->orWhere(function($query) use ($timeData){
-//            $query->whereNotNull('start_date')
-//                ->whereRaw('YEAR(start_date)  = YEAR(' . $timeData . ')')
-//                ->whereRaw('MONTH(start_date) = MONTH(' . $timeData . ')');
-//        });
-
-
         if (isset($data['status']) && $data['status'] != '')
             $loadResults->where('status', $data['status']);
         if (isset($data['amount']))
