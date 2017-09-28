@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BillingTransactionLog;
 use Auth;
 use Config;
 use DB;
@@ -419,6 +420,117 @@ class TestController extends Controller {
     public function generalTest(Request $request)
     {
 
+        /** Cleanup successful manual invoices that have not been marked paid **/
+
+//        $billingHelper = new BillingHelper();
+//
+//        $invoices = Invoice::where('processing_type', 14)
+//            ->where('status', 2)
+//            ->where('failed_charges_count', '>', 0)
+//            ->get();
+//
+//        foreach ($invoices as $invoice)
+//        {
+//
+//            $invoiceLogs = $invoice->logs;
+//            if ($invoiceLogs == null)
+//            {
+//                Log::info('Could not find any logs for invoice id=' . $invoice->id);
+//                continue;
+//            }
+//
+//            $invoiceLog = $invoiceLogs->first();
+//            $transactionId = $invoiceLog->id_transactions;
+//            $transaction = BillingTransactionLog::where('transaction_id', $transactionId)->first();
+//
+//            if ($transaction->response_text == 'APPROVED' || $transaction->response_text == 'RETURN ACCEPTED')
+//            {
+//                Log::info('Invoice id=' . $invoice->id . ' should be marked as paid but it\'s not.');
+//                $billingHelper->updateInvoiceChargeStatus($invoice, config('const.charge_status.paid'));
+//                $billingHelper->markInvoiceAsPaid($invoice);
+//                $invoiceLog->status = 'processed';
+//                $invoiceLog->save();
+//            } else
+//            {
+//                Log::info('Skipping invoice id=' . $invoice->id . '. The response from billing was: ' . $transaction->response_text . ' ' . $transaction->response_error);
+//            }
+//        }
+//
+//        $charges = Charge::where('status', 2)
+//            ->where('description', 'like', 'Manual%')
+//            ->get();
+//
+//        foreach ($charges as $charge)
+//        {
+//            $invoice = $charge->invoice;
+//            if ($invoice->status == config('const.invoice_status.paid'))
+//            {
+//                $invoiceLogs = $invoice->logs;
+//                if ($invoiceLogs == null)
+//                {
+//                    Log::info('Could not find any logs for invoice id=' . $invoice->id);
+//                    continue;
+//                }
+//
+//                $invoiceLog = $invoiceLogs->first();
+//                $transactionId = $invoiceLog->id_transactions;
+//                $transaction = BillingTransactionLog::where('transaction_id', $transactionId)->first();
+//
+//                if ($transaction->response_text == 'APPROVED' || $transaction->response_text == 'RETURN ACCEPTED')
+//                {
+//                    Log::info('Charge id=' . $charge->id . ' should be marked as paid but it\'s not.');
+//                    $billingHelper->updateInvoiceChargeStatus($invoice, config('const.charge_status.paid'));
+//                    $invoiceLog->status = 'processed';
+//                    $invoiceLog->save();
+//                } else
+//                {
+//                    Log::info('Skipping charge id=' . $charge->id . '. The response from billing was: ' . $transaction->response_text . ' ' . $transaction->response_error);
+//                }
+//            }
+//
+//        }
+//        dd('done');
+
+        /** Test declined invoice notifications **/
+        $billingHelper = new BillingHelper();
+
+//        $billingHelper->generateChargeRecordsForCustomerByMonth(4667, 'September');
+//        $billingHelper->invoicePendingAutoPayChargesForCustomerByMonth(4667, 'September');
+//        $billingHelper->generateChargeRecordsForCustomerByMonth(4667, 'October');
+//        $billingHelper->invoicePendingAutoPayChargesForCustomerByMonth(4667, 'October');
+//        dd('done');
+
+        $customer = Customer::find(4667);
+
+        $invoices = Invoice::where('id_customers', 4667)
+            ->where('status', config('const.invoice_status.pending'))
+            ->where('processing_type', config('const.type.auto_pay'))
+            ->orderBy('due_date', 'asc')->get();
+
+        $billingHelper->sendDeclinedChargeReminderByInvoiceCollection($customer, $invoices);
+
+        dd('done');
+
+        if ($invoices->count() > 0)
+        {
+            $firstInvoice = $invoices->first();
+            $firstInvoiceDetails = $firstInvoice->details();
+            dd($firstInvoiceDetails);
+//            $productFrequency = $firstInvoiceDetails['']
+        }
+
+        dd('done');
+
+        $details = [];
+        $productFrequency = '';
+        foreach ($invoices as $invoice)
+        {
+            $details[] = $invoice->details();
+//            $productFrequency =
+        }
+        dd($details);
+
+
         /** Mark paid invoice charges as paid **/
 //        $billingHelper = new BillingHelper();
 //
@@ -551,127 +663,90 @@ class TestController extends Controller {
 
         /** Update customer products and charges that don't have addresses **/
 
-        $customerProducts = CustomerProduct::where('id_address', 0)->get();
-        $charges = Charge::where('id_address', 0)->get();
+//        $customerProducts = CustomerProduct::where('id_address', 0)->get();
+//        $charges = Charge::where('id_address', 0)->get();
+//
+//        foreach ($customerProducts as $customerProduct)
+//        {
+//            $customer = $customerProduct->customer;
+//            if($customer == null){
+//                Log::info('Customer product id='.$customerProduct->id.' has no customer associated with it.');
+//                $customerProduct->delete();
+//                continue;
+//            }
+//            $address = $customer->address;
+//            if($address == null){
+//                Log::info('Customer id='.$customer->id.' has no address associated with it.');
+//                continue;
+//            }
+//            $customerProduct->id_address = $address->id;
+//            $customerProduct->save();
+//        }
+//
+//        foreach ($charges as $charge)
+//        {
+//            $customer = $charge->customer;
+//            if($customer == null){
+//                Log::info('Charge id='.$charge->id.' has no customer associated with it.');
+//                continue;
+//            }
+//            $address = $customer->address;
+//            if($address == null){
+//                Log::info('Customer id='.$customer->id.' has no address associated with it.');
+//                continue;
+//            }
+//
+//            $charge->id_address = $address->id;
+//            $charge->save();
+//        }
+//
+//        $customerProducts = CustomerProduct::where('id_address', 0)->get();
+//        $charges = Charge::where('id_address', 0)->get();
+//
+//        dd(['customer products' => $customerProducts->count(), 'charges' => $charges->count()]);
 
-        foreach ($customerProducts as $customerProduct)
-        {
-            $customer = $customerProduct->customer;
-            if($customer == null){
-                Log::info('Customer product id='.$customerProduct->id.' has no customer associated with it.');
-                $customerProduct->delete();
-                continue;
-            }
-            $address = $customer->address;
-            if($address == null){
-                Log::info('Customer id='.$customer->id.' has no address associated with it.');
-                continue;
-            }
-            $customerProduct->id_address = $address->id;
-            $customerProduct->save();
-        }
-
-        foreach ($charges as $charge)
-        {
-            $customer = $charge->customer;
-            if($customer == null){
-                Log::info('Charge id='.$charge->id.' has no customer associated with it.');
-                continue;
-            }
-            $address = $customer->address;
-            if($address == null){
-                Log::info('Customer id='.$customer->id.' has no address associated with it.');
-                continue;
-            }
-
-            $charge->id_address = $address->id;
-            $charge->save();
-        }
-
-        $customerProducts = CustomerProduct::where('id_address', 0)->get();
-        $charges = Charge::where('id_address', 0)->get();
-
-        dd(['customer products' => $customerProducts->count(), 'charges' => $charges->count()]);
-
-        $result = array();
-//        $result['year'] = Date('Y');
-//        $result['month'] = Date('m');
-        $result['year'] = '2017';
-        $result['month'] = '10';
-        $data = $request->all();
-
-//        if (count($data) > 1)
-        $timeData = '"' . $result['year'] . '-' . $result['month'] . '-' . '0"';
-//        else
-//            $timeData = 'CURRENT_DATE()';
-
-        $loadResults = Charge::with('customer',
-            'address',
-            'invoice',
-            'user',
-            'productDetail.product')
-            ->whereRaw('YEAR(start_date)  = YEAR(' . $timeData . ')')
-            ->whereRaw('MONTH(start_date) = MONTH(' . $timeData . ')');
-
-//        $loadResults->where('status', 3);
-        $loadResults->where('amount', 'like', '%%');
-
-        $code = '';
-        $loadResults->whereHas('address', function ($query) use ($code) {
-            $query->where('code', 'like', '%%');
-        });
-
-
-        $unit = '';
-        $loadResults->whereHas('address', function ($query) use ($unit) {
-            $query->where('unit', 'like', '%' . $unit . '%');
-        });
-
-//        $loadResults->count();
-//        $queries = DB::getQueryLog();
-//        $last_query = end($queries);
-////        dd($queries);
-//        dd($last_query);
-
-        dd($loadResults->count());
-
-
-        $billingHelper = new BillingHelper();
-
-//        $billingHelper->generateChargeRecordsForCustomerByMonth(4667, 'September');
-//        $billingHelper->invoicePendingAutoPayChargesForCustomerByMonth(4667, 'September');
-//        $billingHelper->generateChargeRecordsForCustomerByMonth(4667, 'October');
-//        $billingHelper->invoicePendingAutoPayChargesForCustomerByMonth(4667, 'October');
-//        dd('done');
-
-        $customer = Customer::find(4667);
-
-        $invoices = Invoice::where('id_customers', 4667)
-            ->where('status', config('const.invoice_status.pending'))
-            ->orderBy('due_date', 'asc')->get();
-
-        $billingHelper->sendDeclinedChargeReminderByInvoiceCollection($customer, $invoices);
-
-        dd('done');
-
-        if ($invoices->count() > 0)
-        {
-            $firstInvoice = $invoices->first();
-            $firstInvoiceDetails = $firstInvoice->details();
-            dd($firstInvoiceDetails);
-//            $productFrequency = $firstInvoiceDetails['']
-        }
-
-        dd('done');
-
-        $details = [];
-        $productFrequency = '';
-        foreach ($invoices as $invoice)
-        {
-            $details[] = $invoice->details();
-//            $productFrequency =
-        }
-        dd($details);
+        /** Test the charges and invoices page queries **/
+//        $result = array();
+////        $result['year'] = Date('Y');
+////        $result['month'] = Date('m');
+//        $result['year'] = '2017';
+//        $result['month'] = '10';
+//        $data = $request->all();
+//
+////        if (count($data) > 1)
+//        $timeData = '"' . $result['year'] . '-' . $result['month'] . '-' . '0"';
+////        else
+////            $timeData = 'CURRENT_DATE()';
+//
+//        $loadResults = Charge::with('customer',
+//            'address',
+//            'invoice',
+//            'user',
+//            'productDetail.product')
+//            ->whereRaw('YEAR(start_date)  = YEAR(' . $timeData . ')')
+//            ->whereRaw('MONTH(start_date) = MONTH(' . $timeData . ')');
+//
+////        $loadResults->where('status', 3);
+//        $loadResults->where('amount', 'like', '%%');
+//
+//        $code = '';
+//        $loadResults->whereHas('address', function ($query) use ($code) {
+//            $query->where('code', 'like', '%%');
+//        });
+//
+//
+//        $unit = '';
+//        $loadResults->whereHas('address', function ($query) use ($unit) {
+//            $query->where('unit', 'like', '%' . $unit . '%');
+//        });
+//
+////        $loadResults->count();
+////        $queries = DB::getQueryLog();
+////        $last_query = end($queries);
+//////        dd($queries);
+////        dd($last_query);
+//
+//        dd($loadResults->count());
 
 
         /** Send unregistered ports to signup **/
