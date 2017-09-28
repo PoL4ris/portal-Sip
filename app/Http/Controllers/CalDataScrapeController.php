@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use Auth;
 use App\Extensions\GoogleCalendar;
+use App\Exceptions\CalendarDataCollector;
+use DateTime;
+
 
 class CalDataScrapeController extends Controller
 {
@@ -25,13 +28,23 @@ class CalDataScrapeController extends Controller
     {
         //
         $Calendar = new GoogleCalendar;
+        $startdate = new DateTime('now');
+        $startdate->modify('first day of this month');
+
+        $enddate = new DateTime('now');
+        $enddate->modify('last day of this month');
+        $enddate->modify('11:59 p.m.');
+
 
         $validAppointments = $Calendar->GetValidCompletedAppointmentsInRange($startdate,$enddate);
 
+        $dataBreakdown = new CalendarDataCollector($validAppointments);
+
+
+        //dd($validAppointments);
+
 
     }
-
-    private function IdentifyProperty()
 
     /**
      * Show the form for creating a new resource.

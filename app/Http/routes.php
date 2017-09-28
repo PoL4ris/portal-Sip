@@ -256,7 +256,7 @@ Route::group(['middleware' => 'web'], function () {
     //LoginApp
     Route::get('authApp',                     'Auth\AuthController@AppSocialCredentials');
 
-//calDataScrape
+    //calDataScrape
     Route::resource('CalReport', 'CalDataScrapeController');
 
 
