@@ -490,7 +490,8 @@ app.controller('customerController',                function ($scope, $http, $st
 
     if (defaultValue)
       $scope.disableStatusActive = false;
-  }
+  };
+
   $scope.updateCustomerStatus       = function (){
 
 
