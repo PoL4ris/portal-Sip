@@ -10,7 +10,8 @@ class Building extends Model {
     public function activeCustomers()
     {
         return $this->belongsToMany('App\Models\Customer', 'address', 'id_buildings', 'id_customers')
-            ->where('id_status', config('const.status.active'));
+            ->where('id_status', config('const.status.active'))
+            ->with('emailAddress');
     }
 
     public function customers()
@@ -146,4 +147,12 @@ class Building extends Model {
         )->where('id_types', config('const.type.switch'));
     }
 
+    public function accessSwitches()
+    {
+        return $this->hasManyThrough(
+            'App\Models\NetworkNode', 'App\Models\Address',
+            'id_buildings', 'id_address', 'id'
+        )->where('id_types', config('const.type.switch'))
+            ->where('host_name', 'not like', '%CORE%');
+    }
 }

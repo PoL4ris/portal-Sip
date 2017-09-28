@@ -38,4 +38,9 @@ class Charge extends Model {
     {
         return $this->hasOne('App\Models\CustomerProduct', 'id', 'id_customer_products');
     }
+
+    public function customerProduct()
+    {
+        return $this->belongsTo('App\Models\CustomerProduct', 'id_customer_products');
+    }
 }

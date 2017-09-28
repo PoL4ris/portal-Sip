@@ -2,6 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use Auth;
+use Config;
+use DB;
+use Log;
+use Mail;
+use SendMail;
+use View;
+
 use App\Models\BuildingTicket;
 use App\Models\TicketHistory;
 use Illuminate\Http\Request;
@@ -14,7 +22,7 @@ use App\Extensions\BillingHelper;
 use App\Extensions\CiscoSwitch;
 use App\Extensions\MtikRouter;
 use App\Extensions\DataMigrationUtils;
-use DB;
+
 //use App\User;
 use App\Models\Customer;
 use App\Models\Charge;
@@ -38,13 +46,13 @@ use App\Http\Controllers\TechScheduleController;
 use App\Extensions\GoogleCalendar;
 use DateTime;
 use App\Http\Controllers\Lib\UtilsController;
-use Mail;
-use Config;
-use Auth;
-use View;
-use Storage;
-use SendMail;
+
+//use Storage;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
+use Html2Text\Html2Text;
+
 
 //use ActivityLogs;
 use Symfony\Component\Console\Helper\ProgressBar;
@@ -147,8 +155,6 @@ class TestController extends Controller {
 
     public function supportTest(Request $request)
     {
-
-
 
 
         return Customer::find($request->id);
@@ -404,16 +410,439 @@ class TestController extends Controller {
 
     }
 
+    protected function getAnnualChargeQuery()
+    {
+        return Charge::where('details', 'like', '%"product_frequency":"annual"%')
+            ->where('status', config('const.charge_status.invoiced'));
+    }
+
     public function generalTest(Request $request)
     {
 
-        $firstDayOfMonthTime = strtotime("first day of this month 00:00:00");
-        $timestampMysql = date('Y-m-d H:i:s', $firstDayOfMonthTime);
+        /** Mark paid invoice charges as paid **/
+//        $billingHelper = new BillingHelper();
+//
+//        $perPage = 15;
+//        $totalInvoicesProcessed = 0;
+//
+//        $paginatedInvoices = $billingHelper->paginatePendingInvoices();
+//        $lastProcessedInvoiceId = 0;
+//
+//        while ($paginatedInvoices->count() > 0)
+//        {
+//            $invoices = $paginatedInvoices;
+//
+//            foreach ($invoices as $invoice)
+//            {
+//                $totalInvoicesProcessed ++;
+//                Log::info('TestController::generalTest(): Updating charge details for invoice id=' . $invoice->id . ' amount=$' . $invoice->amount);
+//
+//                $charges = $invoice->charges;
+//                if($charges == null){ continue; }
+//                foreach($charges as $charge){
+//                    $billingHelper->updateChargeFromCustomerProduct($charge);
+//                }
+//
+////                $billingHelper->updateInvoiceChargeStatus($invoice, config('const.charge_status.paid'));
+//                $lastProcessedInvoiceId = $invoice->id;
+//            }
+//
+//            $paginatedInvoices = $billingHelper->paginatePendingInvoices($perPage, $lastProcessedInvoiceId);
+//        }
+//
+//        dd('Processed ' . $totalInvoicesProcessed . ' invoices.');
 
-        dd($timestampMysql);
 
-        $customer = Customer::find(2460);
-        dd($customer->pendingAutoPayInvoicesOnOrAfterTimestamp($timestampMysql)->get());
+        /** Update product descriptions **/
+//
+//        while (true)
+//        {
+//
+//            $products = Product::where('description', '')
+//                ->where(function ($query) {
+//                    $query->where('frequency', 'annual')
+//                        ->orWhere('frequency', 'monthly');
+//                })
+//                ->take(10)
+//                ->get();
+//
+//            if ($products->count() == 0)
+//            {
+//                break;
+//            }
+//
+//            foreach ($products as $product)
+//            {
+//                $name = $product->name;
+//                $description = trim(preg_replace('/(.*)-.*/', '$1', $name));
+//                $product->description = $description.' Internet Plan';
+//                $product->save();
+//            }
+//        }
+//
+//        dd('done');
+
+
+        /** Find duplicate annual invoices and delete them **/
+//        $billingHelper = new BillingHelper();
+//
+//
+//        // Get a distinct copy of the annual charges that have duplicate records
+//        $charges = $this->getAnnualChargeQuery()
+////            ->where('id_customers', 5192)
+//            ->groupBy('id_customers')
+//            ->havingRaw('count(id) > 1')
+//            ->orderBy('start_date', 'asc')
+////            ->take(5)
+//            ->get();
+//
+//        dd($charges->pluck('id_customers')->sort());
+//
+//        $customerCount = 0;
+//
+//        // Iterate through them and weed out the duplicate ones
+//        foreach ($charges as $charge)
+//        {
+//
+//            // Get the customer for this charge and verify that they are active
+//            $customer = Customer::find($charge->id_customers);
+//            if ($customer->id_status != config('const.status.active'))
+//            {
+//                Log::info('Skipping inactive customer id=' . $customer->id);
+//                continue;
+//            }
+//
+//            // Get all the annual charges for the customer
+//            $annualCustomerCharges = $this->getAnnualChargeQuery()
+//                ->where('id_customers', $customer->id)
+//                ->orderBy('start_date', 'asc')
+//                ->get();
+//
+//            // Pop the first charge from the list. We will keep this one to set the
+//            // customer product flags and dates
+//            $firstCharge = $annualCustomerCharges->shift();
+//
+//            $customerProduct = $charge->customerProduct;
+//            if ($customerProduct->charge_status == 0)
+//            {
+//                $customerProduct->amount_owed = $firstCharge->amount;
+//            } else {
+//                $customerProduct->amount_owed = 0;
+//            }
+//            $monthString = date('F Y', strtotime('+1 month', strtotime($customerProduct->signed_up)));
+//            if($customerProduct->expires != null){
+//                $monthString = date('F Y', strtotime('-1 month', strtotime($customerProduct->expires)));
+//            }
+//
+//            $billingHelper->markCustomerProductAsCharged($customerProduct, $monthString);
+//
+//            foreach ($annualCustomerCharges as $chargeToRemove)
+//            {
+//                $invoice = $chargeToRemove->invoice;
+//                $chargeToRemove->delete();
+//                $billingHelper->updateInvoiceAmount($invoice);
+//            }
+//            $customerCount++;
+//
+//        }
+//
+//        dd('Cleaned up '.$customerCount.' customer accounts.');
+
+
+        /** Update customer products and charges that don't have addresses **/
+
+        $customerProducts = CustomerProduct::where('id_address', 0)->get();
+        $charges = Charge::where('id_address', 0)->get();
+
+        foreach ($customerProducts as $customerProduct)
+        {
+            $customer = $customerProduct->customer;
+            if($customer == null){
+                Log::info('Customer product id='.$customerProduct->id.' has no customer associated with it.');
+                $customerProduct->delete();
+                continue;
+            }
+            $address = $customer->address;
+            if($address == null){
+                Log::info('Customer id='.$customer->id.' has no address associated with it.');
+                continue;
+            }
+            $customerProduct->id_address = $address->id;
+            $customerProduct->save();
+        }
+
+        foreach ($charges as $charge)
+        {
+            $customer = $charge->customer;
+            if($customer == null){
+                Log::info('Charge id='.$charge->id.' has no customer associated with it.');
+                continue;
+            }
+            $address = $customer->address;
+            if($address == null){
+                Log::info('Customer id='.$customer->id.' has no address associated with it.');
+                continue;
+            }
+
+            $charge->id_address = $address->id;
+            $charge->save();
+        }
+
+        $customerProducts = CustomerProduct::where('id_address', 0)->get();
+        $charges = Charge::where('id_address', 0)->get();
+
+        dd(['customer products' => $customerProducts->count(), 'charges' => $charges->count()]);
+
+        $result = array();
+//        $result['year'] = Date('Y');
+//        $result['month'] = Date('m');
+        $result['year'] = '2017';
+        $result['month'] = '10';
+        $data = $request->all();
+
+//        if (count($data) > 1)
+        $timeData = '"' . $result['year'] . '-' . $result['month'] . '-' . '0"';
+//        else
+//            $timeData = 'CURRENT_DATE()';
+
+        $loadResults = Charge::with('customer',
+            'address',
+            'invoice',
+            'user',
+            'productDetail.product')
+            ->whereRaw('YEAR(start_date)  = YEAR(' . $timeData . ')')
+            ->whereRaw('MONTH(start_date) = MONTH(' . $timeData . ')');
+
+//        $loadResults->where('status', 3);
+        $loadResults->where('amount', 'like', '%%');
+
+        $code = '';
+        $loadResults->whereHas('address', function ($query) use ($code) {
+            $query->where('code', 'like', '%%');
+        });
+
+
+        $unit = '';
+        $loadResults->whereHas('address', function ($query) use ($unit) {
+            $query->where('unit', 'like', '%' . $unit . '%');
+        });
+
+//        $loadResults->count();
+//        $queries = DB::getQueryLog();
+//        $last_query = end($queries);
+////        dd($queries);
+//        dd($last_query);
+
+        dd($loadResults->count());
+
+
+        $billingHelper = new BillingHelper();
+
+//        $billingHelper->generateChargeRecordsForCustomerByMonth(4667, 'September');
+//        $billingHelper->invoicePendingAutoPayChargesForCustomerByMonth(4667, 'September');
+//        $billingHelper->generateChargeRecordsForCustomerByMonth(4667, 'October');
+//        $billingHelper->invoicePendingAutoPayChargesForCustomerByMonth(4667, 'October');
+//        dd('done');
+
+        $customer = Customer::find(4667);
+
+        $invoices = Invoice::where('id_customers', 4667)
+            ->where('status', config('const.invoice_status.pending'))
+            ->orderBy('due_date', 'asc')->get();
+
+        $billingHelper->sendDeclinedChargeReminderByInvoiceCollection($customer, $invoices);
+
+        dd('done');
+
+        if ($invoices->count() > 0)
+        {
+            $firstInvoice = $invoices->first();
+            $firstInvoiceDetails = $firstInvoice->details();
+            dd($firstInvoiceDetails);
+//            $productFrequency = $firstInvoiceDetails['']
+        }
+
+        dd('done');
+
+        $details = [];
+        $productFrequency = '';
+        foreach ($invoices as $invoice)
+        {
+            $details[] = $invoice->details();
+//            $productFrequency =
+        }
+        dd($details);
+
+
+        /** Send unregistered ports to signup **/
+        $building = Building::where('alias', '65M')->first();
+//        $address = $building->address;
+
+        $accessSwitches = $building->accessSwitches;
+        foreach ($accessSwitches as $switch)
+        {
+            $ports = $switch->ports;
+
+        }
+        dd($accessSwitches);
+
+
+        /** Convert HTML to text **/
+//        $htmlString = '<html>
+//                        <title>Ignored Title</title>
+//                        <body>
+//                          <h1>Hello, World!</h1>
+//
+//                          <p>This is some e-mail content.
+//                          Even though it has whitespace and newlines, the e-mail converter
+//                          will handle it correctly.
+//
+//                          <p>Even mismatched tags.</p>
+//
+//                          <div>A div</div>
+//                          <div>Another div</div>
+//                          <div>A div<div>within a div</div></div>
+//
+//                          <a href="http://foo.com">A link</a>
+//
+//                        </body>
+//                        </html>';
+//
+//
+//        $text = Html2Text::convert($htmlString);
+//        dd($text);
+
+
+        /** Show email addresses for all active customers at the specified building **/
+//        $building = Building::where('nickname', '65M')->first();
+//        $activeCustomers = $building->activeCustomers;
+//        dd($activeCustomers->pluck('emailAddress')->pluck('value'));
+
+        /**  Find invoices that need to be cancelled for the specified customer **/
+//        $firstDayOfMonthTime = strtotime("first day of this month 00:00:00");
+//        $timestampMysql = date('Y-m-d H:i:s', $firstDayOfMonthTime);
+//        $customer = Customer::find(3533);
+//        $pendingInvoices = $customer->pendingAutoPayInvoicesOnOrAfterTimestamp($timestampMysql);
+//        dd($pendingInvoices);
+
+        /** Find pending invoices for the specified month (due on the first of the specified month) **/
+//        $invoiceStatusArrayMap = array_flip(config('const.invoice_status'));
+//
+//        $invoices = Invoice::with('customer')
+//            ->where('processing_type', config('const.type.auto_pay'))
+//            ->where('status', config('const.invoice_status.pending'))
+////            ->where('status', '!=', config('const.invoice_status.cancelled'))
+//            ->where('failed_charges_count', '>', 0)
+////            ->where('due_date', '2017-08-01 00:00:00')
+////            ->where('amount', '<', 100)
+//            ->get();
+//
+//        $invoices->transform(function ($invoice, $key) use ($invoiceStatusArrayMap) {
+//            $invoice->status = $invoiceStatusArrayMap[$invoice->status];
+//
+//            return $invoice;
+//        });
+//
+//        dd($invoices->count());
+//        dd('$'.$invoices->pluck('amount', 'id_customers')->sort()->sum());
+
+        /** Get the customer IDs that are disabled for the above invoices **/
+//        $customers = $invoices->pluck('customer');
+//        dd($customers->whereLoose('id_status', 2)->pluck('id_status', 'id'));
+
+
+        /** Test pending invoice pagination by Id **/
+        $billingHelper = new BillingHelper();
+//        $pendingInvoices = $billingHelper->paginatePendingInvoices();
+//
+//        $lastInvoice = $pendingInvoices->last();
+//        $pendingInvoices = $billingHelper->paginatePendingInvoices(15, $lastInvoice->id);
+//        dd($pendingInvoices);
+
+        $billingHelper->processPendingAutopayInvoicesThatHaveUpdatedPaymentMethods();
+        dd('done');
+
+
+//
+//
+////        $expiresBeforeMysqlDate = date("Y-m-d H:i:s", strtotime('first day of this month 00:00:00'));
+//        $expiresBeforeMysqlDate = date("Y-m-d H:i:s", strtotime('first day of August 00:00:00'));
+//
+////        $customerProducts = $billingHelper->getChargeableCustomerProductsQuery('first day of this month 00:00:00')
+////            ->where('buildings.id', '=', 61)  // 730C
+////            ->get(['customer_products.*']);
+////
+////        dd($customerProducts);
+//
+////        $customerProducts = $billingHelper->getChargeableCustomerProductsQuery('first day of this month 00:00:00', true)
+//        $customerProducts = $billingHelper->getChargeableCustomerProductsQuery('first day of August 00:00:00', true)
+//            ->where('customer_products.signed_up', '<', $expiresBeforeMysqlDate)
+//            ->whereNull('customer_products.last_charged')
+//            ->where('buildings.id', '=', 61)
+//            ->get(['customer_products.*']);
+//
+//        dd($customerProducts);
+//
+//        $customerProduct = $customerProducts->first();
+//
+//        dd(number_format($customerProduct->product->amount, 2, '.', ''));
+
+
+//        $billingHelper->generateResidentialChargeRecordsForLastMonth();
+//        dd($billingHelper->getChargeableCustomerProductsByCustomerId(14703));
+
+//        dd(storage_path('app'));
+
+//        $directory = 'mikrotik_firmware/all_packages-tile-6.40.1';
+//        $files = File::allFiles(storage_path('app/'.$directory));
+//
+//        foreach($files as $file){
+//            echo $file->getPathname().'/'.$file->getFilename()  .'<br>';
+//        }
+//
+////        $files = Storage::disk('local')->allFiles($directory);
+//
+////        dd(Storage::disk('local')->files('mikrotik_firmware/all_packages-tile-6.40.1'));
+//
+//        dd($files);
+//
+//        $mikrotik = NetworkNode::where('ip_address', '10.10.13.1')->first();
+////        dd($mikrotik);
+
+        $ipAddress = '192.168.100.249';
+        $serviceRouter = new MtikRouter(['ip_address' => $ipAddress,
+                                         'username'   => 'test',
+                                         'password'   => 'testtest']);
+        $softwareversion = $serviceRouter->getSoftwareVersion($ipAddress);
+        $architecture = $serviceRouter->getArchitecture($ipAddress);
+
+        dd([$softwareversion, $architecture]);
+
+
+//        $serviceRouter = new MtikRouter(['ip_address' => $mikrotik->ip_address,
+//                                         'username'   => config('netmgmt.mikrotik.username'),
+//                                         'password'   => config('netmgmt.mikrotik.password')]);
+//        $softwareversion = $serviceRouter->getSoftwareVersion($mikrotik->ip_address);
+//        $architecture = $serviceRouter->getArchitecture($mikrotik->ip_address);
+//
+//        dd([$softwareversion, $architecture]);
+
+//            dd('done');
+//        $mikrotiks = NetworkNode::where('id_types', config('const.type.router'))->get();
+//        dd($mikrotiks);
+
+//        $serverIp = '108.160.193.70';
+//        foreach ($mikrotiks as $mikrotik)
+//        {
+//            $serviceRouter = new MtikRouter(['ip_address' => $mikrotik->ip_address,
+//                                             'username' => config('netmgmt.mikrotik.username'),
+//                                             'password' => config('netmgmt.mikrotik.password')]);
+//            $serviceRouter->updateHotspotServerTarget($mikrotik->ip_address, $serverIp);
+//            echo 'Updated ' . $mikrotik->host_name . '<br>';
+////            dd('done');
+//        }
+//        dd('done');
+
 
 //        $customer = Customer::with('services')->find(9992)->toArray();
 //
@@ -525,11 +954,9 @@ class TestController extends Controller {
 
         $invoices = $billingHelper->paginatePendingInvoices();
 
-                $queries = DB::getQueryLog();
-                $last_query = end($queries);
-                dd($queries);
-
-
+        $queries = DB::getQueryLog();
+        $last_query = end($queries);
+        dd($queries);
 
 
         dd($invoices->currentPage()); //->pluck('id'));
@@ -591,8 +1018,7 @@ class TestController extends Controller {
         $nowMysql = date("Y-m-d H:i:s");
         $invoices = Invoice::where('status', config('const.invoice_status.pending'))
             ->where('processing_type', config('const.type.auto_pay'))
-            ->where(function ($query) use ($nowMysql)
-            {
+            ->where(function ($query) use ($nowMysql) {
                 $query->where('due_date', 'is', 'NULL')
                     ->orWhere('due_date', '<=', $nowMysql)
                     ->orWhere('due_date', '');
@@ -610,8 +1036,7 @@ class TestController extends Controller {
         $building = Building::find(1012);
 
         $products = null;
-        $building->load(['activeBuildingProducts.product' => function ($q) use (&$products)
-        {
+        $building->load(['activeBuildingProducts.product' => function ($q) use (&$products) {
             $products = $q->with('propertyValues')->get(); //->unique();
         }]);
 
@@ -830,8 +1255,7 @@ class TestController extends Controller {
         dd($myProductPropertyValues->buildingProducts->pluck('product')); //->pluck('propertyValues'));
 
         $products;
-        $building->load(['buildingProducts.product' => function ($q) use (&$products)
-        {
+        $building->load(['buildingProducts.product' => function ($q) use (&$products) {
             $products = $q->with('propertyValues')->get(); //->unique();
         }]);
 

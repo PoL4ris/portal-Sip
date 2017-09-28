@@ -11,7 +11,18 @@ app.controller('globalToolsCtl',                    function ($scope, $http, $co
 //  console.log($scope.statusArrayConstant);
 
 
-
+    $scope.factoryReset = function () {
+        $.SmartMessageBox({
+            title: "<i class='fa fa-refresh' style='color:green'></i> Clear Local Storage",
+            content: "Would you like to RESET all your saved widgets and clear LocalStorage?1",
+            buttons: '[No][Yes]'
+        }, function (ButtonPressed) {
+            if (ButtonPressed == "Yes" && localStorage) {
+                localStorage.clear();
+                location.reload()
+            }
+        });
+    };
 
   $scope.leftColumnOpenClose  = function (){
     if($('#content').hasClass("ccr-small"))
@@ -334,13 +345,13 @@ app.controller('globalToolsCtl',                    function ($scope, $http, $co
         if(valor)
           $('#' + id).html('<i class="fa fa-pencil"></i> Edit customer').removeClass('btn-danger').addClass('btn-primary');
         else
-          $('#' + id).html('<i class="fa fa-plus plus-cross"></i> Cancel ').removeClass('btn-primary').addClass('btn-danger');
+          $('#' + id).html('<i class="fa fa-plus plus-cross"></i> Done ').removeClass('btn-primary').addClass('btn-danger');
         break;
       case 'customer-contact':
         if(valor)
           $('#' + id).html('<i class="fa fa-pencil"></i> Edit customer').removeClass('btn-danger').addClass('btn-primary');
         else
-          $('#' + id).html('<i class="fa fa-plus plus-cross"></i> Cancel ').removeClass('btn-primary').addClass('btn-danger');
+          $('#' + id).html('<i class="fa fa-plus plus-cross"></i> Done ').removeClass('btn-primary').addClass('btn-danger');
         break;
     }
   }
