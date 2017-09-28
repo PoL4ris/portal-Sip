@@ -8,6 +8,16 @@ app.controller('globalToolsCtl',                    function ($scope, $http, $co
   $scope.focusIndex     = 0;
   $scope.statusArrayConstant = generalService.statusArrayConstant;
 
+  //Get Constants from constantConfig
+  $http.get("getConstantData").then(function (response) {
+    generalService.constPHP = response.data;
+  });
+
+
+  console.log($.browser.mobile);
+  $scope.mobDevice = $.browser.mobile;
+  $scope.mobDevice = true;
+
 //  console.log($scope.statusArrayConstant);
 
 
@@ -508,6 +518,9 @@ app.controller('globalToolsCtl',                    function ($scope, $http, $co
   }
 
 
+
+
+
 })
 .directive('enterAction', function () {
   return function (scope, element, attrs) {
@@ -542,5 +555,6 @@ function getFormValues(id){
 app.controller('userAuthController',                function ($scope){
   $scope.userDataAuth = JSON.parse($('#auth-user').val());
 })
+
 
 

@@ -11,7 +11,6 @@ app.controller('customerControllerList',            function ($scope, $http){
 });
 app.controller('customerController',                function ($scope, $http, $stateParams, customerService, DTOptionsBuilder, generalService){
 
-
   if(!generalService.rightView) {
     generalService.rightView = true;
   }
@@ -617,11 +616,9 @@ app.controller('customerNetworkController',         function ($scope, $http, cus
           alert(response.data);
 
         $.each(response.data,function(i, item) {
-          if(i == 'dashboard-port-status'){
-              $('#' + i ).html(item);
-          } else {
-              $('#' + i + '-' + $scope.idCustomer).html(item);
-          }
+
+          $('#' + i + '-' + $scope.idCustomer).html(item);
+//          console.log('#' + i + '-' + $scope.idCustomer + ' -----> ' + item);
         });
 
         service = 1;
@@ -631,6 +628,7 @@ app.controller('customerNetworkController',         function ($scope, $http, cus
             $.each(response.data,function(i, item)
             {
               $('#' + i + '-' + $scope.idCustomer).html(item);
+//              console.log('#' + i + '-' + $scope.idCustomer + ' -----> ' + item);
             });
           });
 

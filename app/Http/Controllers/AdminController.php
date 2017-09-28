@@ -403,6 +403,16 @@ class AdminController extends Controller
     }
 
 
+    /**
+     * @param Request $request
+     * @return bool
+     */
+    public function getConstantData(Request $request)
+    {
+        return config('const');
+    }
+
+
 
 
     /**

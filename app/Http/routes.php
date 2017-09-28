@@ -61,6 +61,7 @@ Route::group(['middleware' => 'web'], function () {
     Route::post('insertNewProduct',         'AdminController@insertNewProduct');
     Route::post('updateProduct',            'AdminController@updateProduct');
     Route::get('getChargesStats',           'AdminController@getChargesStats');
+    Route::get('getConstantData',           'AdminController@getConstantData');
     //PROFILE
     Route::get('getProfileInfo',            'AdminController@getProfileInfo');
     Route::get('updateProfileInfo',         'AdminController@updateProfileInfo');
@@ -94,11 +95,23 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('getBuildingProperty',       'BuildingController@getBuildingProperty');
     Route::get('getBuildingSwitches',       'BuildingController@getBuildingSwitches');
     Route::get('getBuildingByAddressId',    'BuildingController@getBuildingByAddressId');
+    Route::get('getNeighborhoodList',       'BuildingController@getNeighborhoodList');
+    Route::get('getProspectBuildings',      'BuildingController@getProspectBuildings');
     //Insert Building
     Route::post('insertbuildingData',       'BuildingController@insertBuildingData');
     Route::get('insertBuildingProperties',  'BuildingController@insertBuildingProperties');
     Route::get('insertBuildingContacts',    'BuildingController@insertBuildingContacts');
     Route::get('insertBuildingProducts',    'BuildingController@insertBuildingProducts');
+    //Walkthrough
+    Route::get('getWalkthroughLocation',    'BuildingController@getWalkthroughLocation');
+    Route::get('insertWalkthroughLocation', 'BuildingController@insertWalkthroughLocation');
+    Route::get('updateWalkthroughLoc',      'BuildingController@updateWalkthroughLoc');
+    Route::post('insertMediaFiles',         'BuildingController@insertMediaFiles');
+    Route::get('updateMediaFiles',          'BuildingController@updateMediaFiles');
+    Route::get('removeImgLocation',         'BuildingController@removeImgLocation');
+    Route::get('insertWtNotes',             'BuildingController@insertWtNotes');
+    Route::get('removeNoteLocation',        'BuildingController@removeNoteLocation');
+
     //Update Building
     Route::get('updateBuilding',            'BuildingController@updateBuilding');
     Route::get('updateBldPropValTable',     'BuildingController@updateBldPropValTable');

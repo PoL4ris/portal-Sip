@@ -198,6 +198,7 @@ var app = angular.module('app', [
   'app.calDataScrape',
   'app.warp',
   'app.tabs',
+  'app.walkthrough',
 ])
   .config(function ($provide, $httpProvider, RestangularProvider) {
 

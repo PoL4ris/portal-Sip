@@ -102,6 +102,34 @@
         color: white;
       }
       .help-block{text-align: center;}
+      .copy{
+          text-align: center;
+          color: #98a6ad;
+          margin-bottom: 15px
+      }
+      @media only screen and (max-width: 479px) and (min-width: 320px) {
+          .panel-body{
+            padding: 0px;
+          }
+          .navbar.navbar-default .navbar-header{
+              margin: 0 15%;
+              width: 70%;
+          }
+          .inputthing{
+              margin: 0 5% !important;
+              width: 90%;
+          }
+          .inputthing input {
+              border-radius: 2px !important;
+              height: 35px;
+              width: 100%;
+              margin: 15px 0;
+              border: 1px solid #ddd !important;
+          }
+          .copy{
+              margin-top: 15px
+          }
+      }
 
 
 
@@ -126,6 +154,6 @@
     <!-- JavaScripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-    {{-- <script src="{{ elixir('js/app.js') }}"></script> --}}
+
 </body>
 </html>
