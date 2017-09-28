@@ -2,17 +2,14 @@
 
 namespace App\Extensions;
 
-use Illuminate\Support\Collection;
+//use Illuminate\Support\Collection;
 
 class CalendarDataCollector {
 
+   public function __construct($appointmentList) {
+   // $this->appointments=$appointmentList;
 
-
-
-    public function __construct($appointmentlist) {
-    $this->appointments=$appointmentlist;
-
-    }
+   }
 
     public function findRepeatVisitsToUnits()
     {
@@ -31,9 +28,9 @@ class CalendarDataCollector {
 
     public function visitsPerTech()
     {
-        $collection = collect($this->appointments);
-        $unique = $collection->unique('tech');
-        dd($unique);
+  //      $collection = collect($this->appointments);
+   //     $unique = $collection->unique('tech');
+   //     dd($unique);
     }
 
     public function visitsPerTimeOfDay()

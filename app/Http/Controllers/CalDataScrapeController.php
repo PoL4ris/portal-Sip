@@ -37,8 +37,8 @@ class CalDataScrapeController extends Controller
 
 
         $validAppointments = $Calendar->GetValidCompletedAppointmentsInRange($startdate,$enddate);
-
-        $dataBreakdown = new CalendarDataCollector($validAppointments);
+dd($validAppointments);
+    //    $dataBreakdown = new CalendarDataCollector($validAppointments);
 
 
         //dd($validAppointments);
