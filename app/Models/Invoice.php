@@ -24,7 +24,7 @@ class Invoice extends Model {
             {
                 continue;
             }
-            $detailsArray [] = array_merge(json_decode($charge->details, true), ['start_date' => $charge->start_date, 'end_date' => $charge->end_date]);
+            $detailsArray [] = array_merge(json_decode($charge->details, true), ['start_date' => $charge->start_date, 'end_date' => $charge->end_date, 'invoice_id' => $charge->id_invoices ]);
         }
 
         return $detailsArray;

@@ -420,6 +420,66 @@ class TestController extends Controller {
     public function generalTest(Request $request)
     {
 
+        dd('done');
+
+        /** 65M switch port moves **/
+        $ports = Port::where('id_network_nodes', 903)->get();
+
+        foreach ($ports as $port)
+        {
+//            $port->port_number = '1/' . ($port->port_number - 4);
+            $port->port_number = '1/' . $port->port_number;
+//            $port->save();
+        }
+        dd($ports->sortBy('port_number')->pluck('port_number', 'id'));
+
+
+        /** Cisco switch tests **/
+
+//        $ciscoSwitch = new CiscoSwitch(['readCommunity'  => 'oomoomee',
+//                                        'writeCommunity' => 'BigSeem']);
+//
+//        $ipArray = ['10.11.51.40', '10.11.51.140', '10.11.51.43', '10.11.51.143', '10.11.51.46', '10.11.51.47', '10.11.51.146'];
+//
+//        // entPhysicalDescr
+////        dd(snmp2_real_walk($ipArray[0], 'oomoomee', '1.3.6.1.2.1.47.1.1.1.1.13'));
+//
+//        // sysLocation
+////        dd(snmp2_real_walk('10.11.122.43', 'oomoomee', '1.3.6.1.2.1.1.6')); // . '.0'
+//
+//        // dot1dBaseBridgeAddress
+////        dd(snmp2_real_walk('10.11.122.43', 'oomoomee', '1.3.6.1.2.1.17.1.1')); // . '.0'
+//
+////        $switchPortInfoArray = array();
+////        $portTypeRegEx = '/.*ethernet.*/i';
+////        $skipLabelPattern = ['/.*[uU]plink.*/i', '/.*[dD]ownlink.*/i', '/.*CORE.*/i', '/.*CCR.*/i', '/.*SWITCH.*/i', '/.*\-.*/i'];
+////        $skipLabelPattern =[];
+//
+//        $response = [];
+//        foreach ($ipArray as $ip)
+//        {
+//            $hostname = preg_replace('/\.silverip\..*/', '', $ciscoSwitch->getSnmpSysName($ip));
+//            $model = $ciscoSwitch->getSnmpModelNumber($ip);
+//            $mac = $ciscoSwitch->getSnmpMacAddress($ip);
+////            dd($mac);
+//            $response[] = ['name' => $hostname['response'], 'model' => $model['response'], 'mac' => $mac['response']];
+//        }
+//
+//        dd($response);
+
+//        $portDescArr = $ciscoSwitch->getSnmpAllPortDesc($ip, $portTypeRegEx);
+////        if(isset($portDescArr['error'])){
+////            return $switchPortInfoArray;
+////        }
+//
+//        $portLabelArr = $ciscoSwitch->getSnmpAllPortLabel($ip, $portTypeRegEx, $skipLabelPattern);
+////        if(isset($portLabelArr['error'])){
+////            return $switchPortInfoArray;
+////        }
+//
+//        dd([$portDescArr, $portLabelArr]);
+
+
         /** Cleanup successful manual invoices that have not been marked paid **/
 
 //        $billingHelper = new BillingHelper();
@@ -705,6 +765,7 @@ class TestController extends Controller {
 //
 //        dd(['customer products' => $customerProducts->count(), 'charges' => $charges->count()]);
 
+
         /** Test the charges and invoices page queries **/
 //        $result = array();
 ////        $result['year'] = Date('Y');
@@ -946,32 +1007,7 @@ class TestController extends Controller {
 //
 //        dd($invoices);
 
-//        $switchPortInfoArray = array();
-//        $portTypeRegEx = '/.*ethernet.*/i';
-////        $ciscoSwitch = $this->getSwitchInstance();
-//        $ciscoSwitch = new CiscoSwitch(['readCommunity' => 'oomoomee',
-//                         'writeCommunity' => 'BigSeem']);
-//
-////        $ip = '10.11.190.71';
-//        $ip = '10.15.215.254';
-//
-//        $skipLabelPattern = ['/.*[uU]plink.*/i', '/.*[dD]ownlink.*/i', '/.*CORE.*/i', '/.*CCR.*/i', '/.*SWITCH.*/i', '/.*\-.*/i'];
-////        $skipLabelPattern =[];
-//
-//        $response = $ciscoSwitch->getSnmpModelNumber($ip);
-//        dd($response);
-//
-//        $portDescArr = $ciscoSwitch->getSnmpAllPortDesc($ip, $portTypeRegEx);
-////        if(isset($portDescArr['error'])){
-////            return $switchPortInfoArray;
-////        }
-//
-//        $portLabelArr = $ciscoSwitch->getSnmpAllPortLabel($ip, $portTypeRegEx, $skipLabelPattern);
-////        if(isset($portLabelArr['error'])){
-////            return $switchPortInfoArray;
-////        }
-//
-//        dd([$portDescArr, $portLabelArr]);
+
 //
 //        $sipCustomer = new SIPCustomer();
 //

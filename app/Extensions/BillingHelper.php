@@ -2,6 +2,12 @@
 
 namespace App\Extensions;
 
+use DB;
+use Hash;
+use Mail;
+use Log;
+use ActivityLogs;
+
 use App\Models\NetworkNode;
 use App\Models\Building;
 use App\Models\Customer;
@@ -12,17 +18,16 @@ use App\Models\Address;
 use App\Models\CustomerProduct;
 use App\Extensions\SIPBilling;
 use App\Extensions\SIPTicket;
-use DB;
-use Hash;
-use Illuminate\Support\MessageBag;
-use Mail;
-use Log;
 use Carbon\Carbon;
+use Illuminate\Support\MessageBag;
+
+
 
 class BillingHelper {
 
     private $testMode = true;
     private $passcode = '$2y$10$igbvfItrwUkvitqONf4FkebPyD0hhInH.Be4ztTaAUlxGQ4yaJd1K';
+    protected $logType;
 
     public function __construct()
     {
@@ -30,6 +35,7 @@ class BillingHelper {
         //        DB::connection()->enableQueryLog();
         $configPasscode = config('billing.ippay.passcode');
         $this->testMode = (Hash::check($configPasscode, $this->passcode)) ? false : true;
+        $this->logType = 'billing';
     }
 
     public function getMode()
@@ -1229,6 +1235,9 @@ class BillingHelper {
                 ->get();
 
             $customer = Customer::find($customerId);
+            /**
+             * If the customer is disabled skip it and mark their invoices accordingly
+             */
             if ($customer->id_atatus != config('const.status.active'))
             {
                 $this->markInvoicesAsFailedToNotify($pendingInvoices);
@@ -1236,7 +1245,8 @@ class BillingHelper {
             }
 
             $this->sendDeclinedChargeReminderByInvoiceCollection($customer, $pendingInvoices);
-
+            $this->markInvoicesAsNotified($pendingInvoices);
+            ActivityLogs::add($this->logType, $customerId, 'notify', 'remindFailedInvoiceCustomers', '', '', json_encode(['customer_id' => $customer->id, 'invoice_id' => $pendingInvoices->pluck('id')]), 'notify-customer');
             $iteration ++;
         }
     }
@@ -1257,8 +1267,7 @@ class BillingHelper {
     {
         $template = 'email.template_customer_declined_billing_reminder';
         $subject = 'NOTICE: Balance due';
-        $toAddress = 'peyman@silverip.com';
-//        $toAddress = ($this->testMode) ? 'peyman@silverip.com' :$customer->emailAddress;
+        $toAddress = ($this->testMode) ? 'peyman@silverip.com' :$customer->emailAddress;
         $address = $customer->address;
 
         $charges = [];
