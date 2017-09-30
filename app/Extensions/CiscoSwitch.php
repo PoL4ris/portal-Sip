@@ -265,9 +265,9 @@ class CiscoSwitch {
         {
             foreach ($entPhysicalDescrArr as $oid => $entPhysicalDescr)
             {
-                if ($entPhysicalDescr != '""' && substr($entPhysicalDescr, 0, strlen('STRING: "PWR')) !== 'STRING: "PWR')
+                if ($entPhysicalDescr != '""' && $entPhysicalDescr != 'STRING: ' && substr($entPhysicalDescr, 0, strlen('STRING: "PWR')) !== 'STRING: "PWR')
                 {
-                    $response['response'] = $entPhysicalDescr; //$this->formatSnmpResponse($entPhysicalDescr);
+                    $response['response'] = $this->formatSnmpResponse($entPhysicalDescr);
                     break;
                 }
             }
