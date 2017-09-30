@@ -420,27 +420,31 @@ class TestController extends Controller {
     public function generalTest(Request $request)
     {
 
-        dd('done');
+//        dd('done');
+
 
         /** 65M switch port moves **/
-        $ports = Port::where('id_network_nodes', 903)->get();
-
-        foreach ($ports as $port)
-        {
-//            $port->port_number = '1/' . ($port->port_number - 4);
-            $port->port_number = '1/' . $port->port_number;
-//            $port->save();
-        }
-        dd($ports->sortBy('port_number')->pluck('port_number', 'id'));
+//        $ports = Port::where('id_network_nodes', 905)->get();
+//
+//        foreach ($ports as $port)
+//        {
+////            $port->port_number = '1/' . ($port->port_number - 4);
+//            $port->port_number = '1/' . $port->port_number;
+//            $port->id_network_nodes = 1039;
+////            $port->save();
+//        }
+//        dd($ports->sortBy('port_number')->pluck('port_number', 'id'));
 
 
         /** Cisco switch tests **/
 
-//        $ciscoSwitch = new CiscoSwitch(['readCommunity'  => 'oomoomee',
-//                                        'writeCommunity' => 'BigSeem']);
-//
-//        $ipArray = ['10.11.51.40', '10.11.51.140', '10.11.51.43', '10.11.51.143', '10.11.51.46', '10.11.51.47', '10.11.51.146'];
-//
+        $ciscoSwitch = new CiscoSwitch(['readCommunity'  => 'oomoomee',
+                                        'writeCommunity' => 'BigSeem']);
+
+        $ipArray = ['10.11.51.40', '10.11.51.140', '10.11.51.43', '10.11.51.143', '10.11.51.46', '10.11.51.47', '10.11.51.146'];
+
+        dd($ciscoSwitch->getSnmpPortOperStatus($ipArray[0], '1/1'));
+        
 //        // entPhysicalDescr
 ////        dd(snmp2_real_walk($ipArray[0], 'oomoomee', '1.3.6.1.2.1.47.1.1.1.1.13'));
 //
