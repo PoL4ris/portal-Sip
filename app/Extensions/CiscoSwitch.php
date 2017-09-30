@@ -267,7 +267,7 @@ class CiscoSwitch {
             {
                 if ($entPhysicalDescr != '""' && substr($entPhysicalDescr, 0, strlen('STRING: "PWR')) !== 'STRING: "PWR')
                 {
-                    $response['response'] = $this->formatSnmpResponse($entPhysicalDescr);
+                    $response['response'] = $entPhysicalDescr; //$this->formatSnmpResponse($entPhysicalDescr);
                     break;
                 }
             }

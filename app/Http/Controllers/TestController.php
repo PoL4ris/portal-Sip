@@ -444,7 +444,7 @@ class TestController extends Controller {
         $ipArray = ['10.11.51.40', '10.11.51.140', '10.11.51.43', '10.11.51.143', '10.11.51.46', '10.11.51.47', '10.11.51.146'];
 
         dd($ciscoSwitch->getSnmpPortOperStatus($ipArray[0], '1/1'));
-        
+
 //        // entPhysicalDescr
 ////        dd(snmp2_real_walk($ipArray[0], 'oomoomee', '1.3.6.1.2.1.47.1.1.1.1.13'));
 //
