@@ -880,7 +880,7 @@ class CiscoSwitch {
         return $response;
     }
 
-    protected function getPortIndex($ip, $portNum, $isIdx = false)
+    public function getPortIndex($ip, $portNum, $isIdx = false)
     {
 
         if ($isIdx)
