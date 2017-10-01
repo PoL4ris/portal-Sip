@@ -805,7 +805,7 @@ class BillingHelper {
         $total = 0;
         foreach ($charges as $charge)
         {
-            if ($charge->id_types != config('const.charge_type.charge'))
+            if ($charge->type != config('const.charge_type.charge'))
             {
                 $total -= $charge->amount;
             } else
@@ -1216,7 +1216,6 @@ class BillingHelper {
 
     public function remindFailedInvoiceCustomers()
     {
-
         $maxIterations = $this->getFailedPendingInvoiceToNotifyQuery()->count();
         $iteration = 1;
         while ($iteration <= $maxIterations)
@@ -1248,6 +1247,7 @@ class BillingHelper {
             $this->markInvoicesAsNotified($pendingInvoices);
             ActivityLogs::add($this->logType, $customerId, 'notify', 'remindFailedInvoiceCustomers', '', '', json_encode(['customer_id' => $customer->id, 'invoice_id' => $pendingInvoices->pluck('id')]), 'notify-customer');
             $iteration ++;
+dd('sent 1 message');
         }
     }
 

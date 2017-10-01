@@ -420,7 +420,75 @@ class TestController extends Controller {
     public function generalTest(Request $request)
     {
 
-//        dd('done');
+        dd('done');
+
+
+        /** Find pending invoices then check for ones that belong to disabled customers **/
+
+//        $invoiceStatusArrayMap = array_flip(config('const.invoice_status'));
+
+//        $invoices = Invoice::with('customer')
+//            ->where('processing_type', config('const.type.auto_pay'))
+//            ->where('status', config('const.invoice_status.pending'))
+////            ->where('status', '!=', config('const.invoice_status.cancelled'))
+////            ->where('failed_charges_count', '>', 0)
+////            ->where('due_date', '2017-08-01 00:00:00')
+////            ->where('amount', '<', 100)
+//            ->get();
+
+//        $invoices->transform(function ($invoice, $key) use ($invoiceStatusArrayMap) {
+//            $invoice->status = $invoiceStatusArrayMap[$invoice->status];
+//
+//            return $invoice;
+//        });
+
+//        dd($invoices->count());
+//        dd('$'.$invoices->pluck('amount', 'id_customers')->sort()->sum());
+
+        /** Get the customer IDs that are disabled for the above invoices **/
+//        $customers = $invoices->pluck('customer');
+//        dd($customers->whereLoose('id_status', config('const.status.disabled'))->pluck('id_status', 'id'));
+
+
+        /** Check and disable one-time products that have been charged/invoiced **/
+//        $billingHelper = new BillingHelper();
+
+//        $oneTimeCharges = Charge::with('customerProduct')
+//            ->where('details', 'like', '%onetime%')
+//            ->where('due_date', '2017-10-01 00:00:00')
+//            ->get();
+
+//        $customerProducts = $oneTimeCharges->pluck('customerProduct')->whereLoose('id_users', 0);
+
+//        foreach ($customerProducts as $customerProduct)
+//        {
+//            $customerProduct->charge_status = config('const.customer_product_charge_status.paid');
+//            $customerProduct->amount_owed = '0.00';
+//            $customerProduct->save();
+//
+//            $activeCharge = $customerProduct->activeCharge;
+//            $invoice = $activeCharge->invoice;
+//            $activeCharge->delete();
+//            $billingHelper->updateInvoiceAmount($invoice);
+////            dd('done');
+//        }
+
+//        dd($customerProducts->pluck('charge_status', 'id'));
+
+//        $info = array();
+//
+//        foreach ($oneTimeCharges as $oneTimeCharge)
+//        {
+//            $customer = $oneTimeCharge->customer;
+//            $customerProduct = $oneTimeCharge->customerProduct;
+//            $info[$customer->first_name . ' ' . $customer->last_name. ' ('.$customer->id.')'] = $customerProduct->product->description . ' (' . $customerProduct->id . ')';
+//        }
+//
+//        dd($info);
+//
+//        $customerProducts = $oneTimeCharges->pluck('customerProduct');
+//        $products = $customerProducts->pluck('id_products', 'signed_up');
+//        dd($products);
 
         /** Check internet plans for 65M customers **/
 

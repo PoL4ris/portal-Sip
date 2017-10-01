@@ -41,6 +41,12 @@ class Charge extends Model {
 
     public function customerProduct()
     {
-        return $this->belongsTo('App\Models\CustomerProduct', 'id_customer_products');
+        return $this->belongsTo('App\Models\CustomerProduct', 'id_customer_products')
+            ->with('product');
     }
+
+//    public function product()
+//    {
+//        return $this->customerProduct()->with('product');
+//    }
 }
