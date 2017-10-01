@@ -422,6 +422,69 @@ class TestController extends Controller {
 
 //        dd('done');
 
+        /** Check internet plans for 65M customers **/
+
+//        $building = Building::where('alias', '65M')->first();
+//
+//        $customerProducts = $building->activeCustomerProducts;
+//        $productsCollection = collect($customerProducts->pluck('product'));
+//        $internetProducts = $productsCollection->filter(function ($product, $key) {
+//            return $product->id_types == config('const.type.internet');
+//        });
+//
+//        dd($internetProducts->pluck('name'));
+
+
+        /** Change base plans for 65M customers **/
+
+//        $building = Building::where('alias', '65M')->first();
+//
+//        $customerProducts = $building->activeCustomerProducts;
+//
+//        foreach ($customerProducts as $customerProduct)
+//        {
+//            $customer = $customerProduct->customer;
+//            if ($customer == null)
+//            {
+//                Log::info('Customer product id=' . $customerProduct->id . ' does not have a customer. skipping.');
+//                continue;
+//            }
+//
+//            if ($customerProduct->customer->id_status == config('const.status.disabled'))
+//            {
+//                $customerProduct->id_status = config('const.status.disabled');
+//                $customerProduct->save();
+//                Log::info('Customer id='.$customer->id.' is disabled ... deactivating customer product id=' . $customerProduct->id);
+//                continue;
+//            }
+//
+//            $product = $customerProduct->product;
+//            if ($product == null)
+//            {
+//                Log::info('Customer product id=' . $customerProduct->id . ' does not have a product. skipping.');
+//                continue;
+//            }
+//
+//            if ($customerProduct->product->id_types == config('const.type.internet'))
+//            {
+//                $customerProduct->id_status = config('const.status.disabled');
+//                $customerProduct->save();
+//                $newBasePlan = new CustomerProduct();
+//                $newBasePlan->id_products = 67;
+//                $newBasePlan->id_customers = $customer->id;
+//                $newBasePlan->id_status = config('const.status.active');
+//                $newBasePlan->id_address = $customerProduct->id_address;
+//                $newBasePlan->signed_up = '2017-09-30 21:00:00';
+//                $newBasePlan->id_users = 0;
+//                $newBasePlan->charge_status = 0;
+//                $newBasePlan->save();
+//                Log::info('Added new base plan for customer id='.$customer->id);
+//                continue;
+//            }
+//        }
+//
+//        dd('done');
+
 
         /** 65M switch port moves **/
 //        $ports = Port::where('id_network_nodes', 905)->get();
@@ -438,20 +501,20 @@ class TestController extends Controller {
 
         /** Cisco switch tests **/
 
-        $ciscoSwitch = new CiscoSwitch(['readCommunity'  => 'oomoomee',
-                                        'writeCommunity' => 'BigSeem']);
-
-        $ipArray = ['10.11.51.40', '10.11.51.140', '10.11.51.43', '10.11.51.143', '10.11.51.46', '10.11.51.47', '10.11.51.146'];
-
-        $switchInfo = array();
-//        $switchInfo[] = $ciscoSwitch->getBridgePortIndex('10.11.51.146', '1/9', false);
-        $switchInfo[] = $ciscoSwitch->getSnmpPortVlanAssignment($ipArray[6], '1/9', false);
-        $switchInfo[] = $ciscoSwitch->getPortIndex($ipArray[6], '1/9', false);
-
-//        $switchInfo[] = $ciscoSwitch->getSnmpModelNumber($ipArray[6]);
-//        $switchInfo[] = $ciscoSwitch->getSnmpPortOperStatus($ipArray[0], '1/9');
-
-        dd($switchInfo);
+//        $ciscoSwitch = new CiscoSwitch(['readCommunity'  => 'oomoomee',
+//                                        'writeCommunity' => 'BigSeem']);
+//
+//        $ipArray = ['10.11.51.40', '10.11.51.140', '10.11.51.43', '10.11.51.143', '10.11.51.46', '10.11.51.47', '10.11.51.146'];
+//
+//        $switchInfo = array();
+////        $switchInfo[] = $ciscoSwitch->getBridgePortIndex('10.11.51.146', '1/9', false);
+//        $switchInfo[] = $ciscoSwitch->getSnmpPortVlanAssignment($ipArray[6], '1/9', false);
+//        $switchInfo[] = $ciscoSwitch->getPortIndex($ipArray[6], '1/9', false);
+//
+////        $switchInfo[] = $ciscoSwitch->getSnmpModelNumber($ipArray[6]);
+////        $switchInfo[] = $ciscoSwitch->getSnmpPortOperStatus($ipArray[0], '1/9');
+//
+//        dd($switchInfo);
 
 
 //        // entPhysicalDescr
