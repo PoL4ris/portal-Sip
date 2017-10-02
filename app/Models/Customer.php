@@ -171,6 +171,21 @@ class Customer extends Model {
             ->get();
     }
 
+    // TODO: complete the following two relation/functions
+//    public function activeInvoices()
+//    {
+//        return $this->hasMany('App\Models\Invoice', 'id_customers')
+//        ->where('invoices.processing_type', config('const.type.auto_pay'))
+//        ->where('invoices.status', config('const.invoice_status.pending'));
+//
+//    }
+//
+//
+//    public function activeCharges()
+//    {
+//
+//    }
+
 //    public function payment() {
 //        return $this->hasOne('App\Models\PaymentMethod', 'id_customers')
 //                ->where('priority', 1);

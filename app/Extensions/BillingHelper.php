@@ -1216,7 +1216,7 @@ class BillingHelper {
     public function remindFailedInvoiceCustomers()
     {
         $maxIterations = $this->getFailedPendingInvoiceToNotifyQuery()->count();
-        $iterations = 1;
+        $iterations = 0;
         while ($iterations <= $maxIterations)
         {
             $invoice = $this->getFailedPendingInvoiceToNotifyQuery()->first();
@@ -1314,7 +1314,7 @@ class BillingHelper {
     public function notifyUpcomingInvoiceCustomers()
     {
         $maxIterations = $this->getPendingInvoicesToNotifyQuery()->count();
-        $iterations = 1;
+        $iterations = 0;
         while ($iterations <= $maxIterations)
         {
             $invoice = $this->getPendingInvoicesToNotifyQuery()->first();

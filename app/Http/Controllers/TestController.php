@@ -420,7 +420,74 @@ class TestController extends Controller {
     public function generalTest(Request $request)
     {
 
-        dd('done');
+//        dd('done');
+
+        /** Find duplicate annual invoices and delete them **/
+        $billingHelper = new BillingHelper();
+
+
+        // Get a distinct copy of the annual charges that have duplicate records
+        $charges = $this->getAnnualChargeQuery()
+//            ->where('id_customers', 5192)
+            ->groupBy('id_customers')
+            ->havingRaw('count(id) > 1')
+            ->orderBy('start_date', 'asc')
+//            ->take(5)
+            ->get();
+
+        dd($charges->pluck('id_customers')->sort());
+
+        $customerCount = 0;
+
+        // Iterate through them and weed out the duplicate ones
+        foreach ($charges as $charge)
+        {
+
+            // Get the customer for this charge and verify that they are active
+            $customer = Customer::find($charge->id_customers);
+            if ($customer->id_status != config('const.status.active'))
+            {
+                Log::info('Skipping inactive customer id=' . $customer->id);
+                continue;
+            }
+
+            // Get all the annual charges for the customer
+            $annualCustomerCharges = $this->getAnnualChargeQuery()
+                ->where('id_customers', $customer->id)
+                ->orderBy('start_date', 'asc')
+                ->get();
+
+            // Pop the first charge from the list. We will keep this one to set the
+            // customer product flags and dates
+            $firstCharge = $annualCustomerCharges->shift();
+
+            $customerProduct = $charge->customerProduct;
+            if ($customerProduct->charge_status == 0)
+            {
+                $customerProduct->amount_owed = $firstCharge->amount;
+            } else {
+                $customerProduct->amount_owed = 0;
+            }
+            $monthString = date('F Y', strtotime('+1 month', strtotime($customerProduct->signed_up)));
+            if($customerProduct->expires != null){
+                $monthString = date('F Y', strtotime('-1 month', strtotime($customerProduct->expires)));
+            }
+
+            $billingHelper->markCustomerProductAsCharged($customerProduct, $monthString);
+
+            foreach ($annualCustomerCharges as $chargeToRemove)
+            {
+                $invoice = $chargeToRemove->invoice;
+                $chargeToRemove->delete();
+                $billingHelper->updateInvoiceAmount($invoice);
+            }
+            $customerCount++;
+
+        }
+
+        dd('Cleaned up '.$customerCount.' customer accounts.');
+
+
 
         /** Show number of pending failed invoices that need to be notified **/
 //        $billingHelper = new BillingHelper();
@@ -699,43 +766,43 @@ class TestController extends Controller {
 //        dd('done');
 
         /** Test declined invoice notifications **/
-        $billingHelper = new BillingHelper();
-
-//        $billingHelper->generateChargeRecordsForCustomerByMonth(4667, 'September');
-//        $billingHelper->invoicePendingAutoPayChargesForCustomerByMonth(4667, 'September');
-//        $billingHelper->generateChargeRecordsForCustomerByMonth(4667, 'October');
-//        $billingHelper->invoicePendingAutoPayChargesForCustomerByMonth(4667, 'October');
+//        $billingHelper = new BillingHelper();
+//
+////        $billingHelper->generateChargeRecordsForCustomerByMonth(4667, 'September');
+////        $billingHelper->invoicePendingAutoPayChargesForCustomerByMonth(4667, 'September');
+////        $billingHelper->generateChargeRecordsForCustomerByMonth(4667, 'October');
+////        $billingHelper->invoicePendingAutoPayChargesForCustomerByMonth(4667, 'October');
+////        dd('done');
+//
+//        $customer = Customer::find(4667);
+//
+//        $invoices = Invoice::where('id_customers', 4667)
+//            ->where('status', config('const.invoice_status.pending'))
+//            ->where('processing_type', config('const.type.auto_pay'))
+//            ->orderBy('due_date', 'asc')->get();
+//
+//        $billingHelper->sendDeclinedChargeReminderByInvoiceCollection($customer, $invoices);
+//
 //        dd('done');
-
-        $customer = Customer::find(4667);
-
-        $invoices = Invoice::where('id_customers', 4667)
-            ->where('status', config('const.invoice_status.pending'))
-            ->where('processing_type', config('const.type.auto_pay'))
-            ->orderBy('due_date', 'asc')->get();
-
-        $billingHelper->sendDeclinedChargeReminderByInvoiceCollection($customer, $invoices);
-
-        dd('done');
-
-        if ($invoices->count() > 0)
-        {
-            $firstInvoice = $invoices->first();
-            $firstInvoiceDetails = $firstInvoice->details();
-            dd($firstInvoiceDetails);
-//            $productFrequency = $firstInvoiceDetails['']
-        }
-
-        dd('done');
-
-        $details = [];
-        $productFrequency = '';
-        foreach ($invoices as $invoice)
-        {
-            $details[] = $invoice->details();
-//            $productFrequency =
-        }
-        dd($details);
+//
+//        if ($invoices->count() > 0)
+//        {
+//            $firstInvoice = $invoices->first();
+//            $firstInvoiceDetails = $firstInvoice->details();
+//            dd($firstInvoiceDetails);
+////            $productFrequency = $firstInvoiceDetails['']
+//        }
+//
+//        dd('done');
+//
+//        $details = [];
+//        $productFrequency = '';
+//        foreach ($invoices as $invoice)
+//        {
+//            $details[] = $invoice->details();
+////            $productFrequency =
+//        }
+//        dd($details);
 
 
         /** Mark paid invoice charges as paid **/
@@ -801,71 +868,6 @@ class TestController extends Controller {
 //
 //        dd('done');
 
-
-        /** Find duplicate annual invoices and delete them **/
-//        $billingHelper = new BillingHelper();
-//
-//
-//        // Get a distinct copy of the annual charges that have duplicate records
-//        $charges = $this->getAnnualChargeQuery()
-////            ->where('id_customers', 5192)
-//            ->groupBy('id_customers')
-//            ->havingRaw('count(id) > 1')
-//            ->orderBy('start_date', 'asc')
-////            ->take(5)
-//            ->get();
-//
-//        dd($charges->pluck('id_customers')->sort());
-//
-//        $customerCount = 0;
-//
-//        // Iterate through them and weed out the duplicate ones
-//        foreach ($charges as $charge)
-//        {
-//
-//            // Get the customer for this charge and verify that they are active
-//            $customer = Customer::find($charge->id_customers);
-//            if ($customer->id_status != config('const.status.active'))
-//            {
-//                Log::info('Skipping inactive customer id=' . $customer->id);
-//                continue;
-//            }
-//
-//            // Get all the annual charges for the customer
-//            $annualCustomerCharges = $this->getAnnualChargeQuery()
-//                ->where('id_customers', $customer->id)
-//                ->orderBy('start_date', 'asc')
-//                ->get();
-//
-//            // Pop the first charge from the list. We will keep this one to set the
-//            // customer product flags and dates
-//            $firstCharge = $annualCustomerCharges->shift();
-//
-//            $customerProduct = $charge->customerProduct;
-//            if ($customerProduct->charge_status == 0)
-//            {
-//                $customerProduct->amount_owed = $firstCharge->amount;
-//            } else {
-//                $customerProduct->amount_owed = 0;
-//            }
-//            $monthString = date('F Y', strtotime('+1 month', strtotime($customerProduct->signed_up)));
-//            if($customerProduct->expires != null){
-//                $monthString = date('F Y', strtotime('-1 month', strtotime($customerProduct->expires)));
-//            }
-//
-//            $billingHelper->markCustomerProductAsCharged($customerProduct, $monthString);
-//
-//            foreach ($annualCustomerCharges as $chargeToRemove)
-//            {
-//                $invoice = $chargeToRemove->invoice;
-//                $chargeToRemove->delete();
-//                $billingHelper->updateInvoiceAmount($invoice);
-//            }
-//            $customerCount++;
-//
-//        }
-//
-//        dd('Cleaned up '.$customerCount.' customer accounts.');
 
 
         /** Update customer products and charges that don't have addresses **/
