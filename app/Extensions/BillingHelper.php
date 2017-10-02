@@ -22,7 +22,6 @@ use Carbon\Carbon;
 use Illuminate\Support\MessageBag;
 
 
-
 class BillingHelper {
 
     private $testMode = true;
@@ -1234,20 +1233,24 @@ class BillingHelper {
                 ->get();
 
             $customer = Customer::find($customerId);
+
+//            dd($customer);
+
             /**
              * If the customer is disabled skip it and mark their invoices accordingly
              */
-            if ($customer->id_atatus != config('const.status.active'))
+            if ($customer->id_status != config('const.status.active'))
             {
                 $this->markInvoicesAsFailedToNotify($pendingInvoices);
                 continue;
             }
 
+
             $this->sendDeclinedChargeReminderByInvoiceCollection($customer, $pendingInvoices);
             $this->markInvoicesAsNotified($pendingInvoices);
             ActivityLogs::add($this->logType, $customerId, 'notify', 'remindFailedInvoiceCustomers', '', '', json_encode(['customer_id' => $customer->id, 'invoice_id' => $pendingInvoices->pluck('id')]), 'notify-customer');
             $iteration ++;
-dd('sent 1 message');
+            dd('sent 1 message');
         }
     }
 
@@ -1267,7 +1270,7 @@ dd('sent 1 message');
     {
         $template = 'email.template_customer_declined_billing_reminder';
         $subject = 'NOTICE: Balance due';
-        $toAddress = ($this->testMode) ? 'peyman@silverip.com' :$customer->emailAddress;
+        $toAddress = ($this->testMode) ? 'peyman@silverip.com' : $customer->emailAddress;
         $address = $customer->address;
 
         $charges = [];
@@ -1291,7 +1294,7 @@ dd('sent 1 message');
         $nowMysqlDate = date("Y-m-d H:i:s");
 
         $invoiceIds = $invoices->pluck('id')->toArray();
-        Invoice::whereIn('id', $invoiceIds)->update('notified', 1)->update('last_notified', $nowMysqlDate);
+        Invoice::whereIn('id', $invoiceIds)->update(['notified' => 1, 'last_notified' => $nowMysqlDate]);
     }
 
     public function markInvoicesAsFailedToNotify($invoices)
@@ -1300,7 +1303,7 @@ dd('sent 1 message');
         $nowMysqlDate = date("Y-m-d H:i:s");
 
         $invoiceIds = $invoices->pluck('id')->toArray();
-        Invoice::whereIn('id', $invoiceIds)->update('notified', 2)->update('last_notified', $nowMysqlDate);
+        Invoice::whereIn('id', $invoiceIds)->update(['notified' => 2, 'last_notified' => $nowMysqlDate]);
     }
 
 
