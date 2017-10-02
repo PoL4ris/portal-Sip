@@ -9,7 +9,7 @@ app.controller('customerControllerList',            function ($scope, $http){
       $scope.supportDataCustomer = response.data;
     });
 });
-app.controller('customerController',                function ($scope, $http, $stateParams, customerService, DTOptionsBuilder, generalService){
+app.controller('customerController',                function ($scope, $http, $stateParams, customerService, DTOptionsBuilder, generalService, $timeout){
 
   if(!generalService.rightView) {
     generalService.rightView = true;
@@ -462,7 +462,7 @@ app.controller('customerController',                function ($scope, $http, $st
       });
   };//ok
   //Network
-  $scope.getCoreData = function (ip){
+  $scope.getCoreData                = function (ip){
 //    $scope.pLoad     = true;
 //    $scope.pRecord   = ip;
 
@@ -479,8 +479,27 @@ app.controller('customerController',                function ($scope, $http, $st
         customerService.tabs[$scope.idCustomer].pInfo    = response.data[1];
       });
   }
-  $scope.pStInOptions = DTOptionsBuilder.newOptions().withDisplayLength(50);
+  $scope.pStInOptions               = DTOptionsBuilder.newOptions().withDisplayLength(50);
 //  customerService.tabs[$scope.idCustomer].pStInOptions = DTOptionsBuilder.newOptions().withDisplayLength(50);
+
+  //Log->triggersModal-TEST->working/verify...
+  $scope.logInvoiceView             = function(record){
+
+    //record Contains:
+    //record.invoice_id
+    //record.customer_id
+
+    var data = $scope.parJson(record.data);
+
+    $('#invoice-payment-tab-link-' + data.customer_id).trigger('click');
+
+    $timeout(function() {
+      //console.log(data.invoice_id[0]);
+
+      $('#inv-list-' + data.invoice_id[0]).trigger('click');
+      }, 1);
+
+  }
 
   //STATUS CHANGE
   $scope.activeServiceDisplay       = function (defaultValue = null) {
@@ -545,14 +564,15 @@ app.controller('customerTicketHistoryController',   function ($scope, $http){
 });
 //invoicehistory.html
 app.controller('customerInvoiceHistoryController',  function ($scope, $http, customerService){
-
+//console.log('getInvoiceHistory ==> Estamos adentro');
 //  if(!$scope.invoiceData)
     $http.get("getInvoiceHistory", {params:{'id':$scope.idCustomer}})
       .then(function (response) {
+
         $scope.invoiceData = response.data;//rm
         $scope.customerData.invoices = response.data;//rm
         customerService.tabs[$scope.idCustomer].invoiceData = response.data;
-//        console.log($scope.customerData);
+//        console.log(response.data);
       });
 
   $scope.setInvoiceData = function (){

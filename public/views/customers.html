@@ -58,7 +58,7 @@
                         </a>
                     </li>
                     <li class="">
-                        <a data-toggle="tab" href="#tab-r7-{{uniqueIdIndex}}" aria-expanded="false" id="invoice-payment-tab-link">
+                        <a data-toggle="tab" href="#tab-r7-{{uniqueIdIndex}}" aria-expanded="false" id="invoice-payment-tab-link-{{uniqueIdIndex}}">
                             <i class="fa fa-lg fa-file-pdf-o"></i>
                             <span
                                 class="hidden-mobile hidden-tablet"> Invoices</span>
@@ -101,7 +101,7 @@
                         <article class="col-sm-12 col-md-12 col-lg-12 no-padding-sides null-article" ng-include="'/views/customer/paymentMethods.html'"></article>
                     </div>
                     <div class="tab-pane" id="tab-r7-{{uniqueIdIndex}}">
-                        <article class="col-sm-12 col-md-12 col-lg-12 no-padding-sides null-article" ng-include="'/views/customer/invoicehistoryinvoicehistory.html'"></article>
+                        <article class="col-sm-12 col-md-12 col-lg-12 no-padding-sides null-article" ng-include="'/views/customer/invoicehistory.html'"></article>
                     </div>
                     <div class="tab-pane animated fadeInLeft" id="tab-r8-{{uniqueIdIndex}}">
                         <article class="col-sm-12 col-md-12 col-lg-12 no-padding-sides null-article" ng-include="'/views/customer/billinghistory.html'"></article>

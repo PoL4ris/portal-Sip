@@ -40,14 +40,15 @@
                                     <span ng-if="arrayData.type == 'update-payment'">Payment ending <b> {{ arrayData.data | limitTo : 5 : 14 }} now is Default</b> </span>
                                     <span ng-if="arrayData.type == 'notification-customer-failed-invoice'">
                                         Invoice failed,
-                                        Notification sent to Customer</b> <i class="fa fa-envelope-o f-size-17 down-status bg-white"></i>
+                                        Notification sent to Customer</b> <i class="fa fa-envelope-o f-size-17 down-status bg-white cursor-pointer"></i>
                                         <br>
                                     </span>
                                     <span ng-if="arrayData.type == 'notification-customer-upcoming-invoice'">
                                     <!--<span ng-if="arrayData.type == 'notify-customer'">-->
                                         Upcoming invoice ready.
                                         <br>
-                                        Notification sent to Customer</b> <i class="fa fa-envelope-o f-size-17 down-status bg-white"></i>
+                                        Notification sent to Customer</b>
+                                        <i class="fa fa-envelope-o f-size-17 down-status bg-white cursor-pointer" ng-click="logInvoiceView(arrayData)"></i>
                                     </span>
                                 </div>
 

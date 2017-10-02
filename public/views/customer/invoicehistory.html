@@ -24,7 +24,7 @@
                     <td>{{ statusArrayConstant.type[invoice.processing_type] }}</td>
                     <td ng-init="resultDate = convertDate(invoice.due_date)">{{resultDate | date : "shortDate" }}</td>
                     <td>
-                        <p ng-click="setInvoiceData()" data-toggle="modal" data-target="#invoicesModal-{{uniqueIdIndex}}" class="text-center">
+                        <p ng-click="setInvoiceData()" data-toggle="modal" data-target="#invoicesModal-{{uniqueIdIndex}}" class="text-center" id="inv-list-{{invoice.id}}">
                             <i class="fa fa-file-pdf-o"></i>
                         </p>
                     </td>
