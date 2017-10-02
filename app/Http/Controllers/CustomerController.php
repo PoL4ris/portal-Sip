@@ -936,6 +936,11 @@ class CustomerController extends Controller {
          * */
 
     }
+
+    public function getCustomerById(Request $request)
+    {
+        return Customer::find($request->id);
+    }
 }
 
 

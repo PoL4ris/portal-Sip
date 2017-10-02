@@ -126,7 +126,7 @@ angular.module('app.support',       ['ui.router']).config(function ($stateProvid
       }
     })
 });
-//NOT IN USE
+//NOT IN USE ->CALENDAR CONTROLLER
 angular.module('app.calendar',      ['ui.router']).config(function ($stateProvider) {
   $stateProvider
     .state('app.calendar', {
@@ -195,7 +195,7 @@ angular.module('app.admin',         ['ui.router']).config(function ($stateProvid
       }
     })
 });
-angular.module('app.walkthrough',        ['ui.router']).config(function ($stateProvider) {
+angular.module('app.walkthrough',   ['ui.router']).config(function ($stateProvider) {
   $stateProvider
     .state('app.walkthrough', {
       url:  '/walkthrough',
@@ -333,9 +333,7 @@ angular.module('app.newcustomer',   ['ui.router']).config(function ($stateProvid
       }
     })
 });
-
-
-angular.module('app.test',       ['ui.router']).config(function ($stateProvider) {
+angular.module('app.test',          ['ui.router']).config(function ($stateProvider) {
   $stateProvider
     .state('app.test', {
       url:  '/test',
@@ -356,6 +354,8 @@ angular.module('app.test',       ['ui.router']).config(function ($stateProvider)
       }
     })
 });
+
+
 
 angular.module('app.tech-schedule', ['ui.router']).config(function ($stateProvider) {
     $stateProvider
@@ -379,7 +379,6 @@ angular.module('app.tech-schedule', ['ui.router']).config(function ($stateProvid
             }
         })
 });
-
 angular.module('app.tech-appointments', ['ui.router']).config(function ($stateProvider) {
     $stateProvider
         .state('app.tech-appointments', {
@@ -402,8 +401,6 @@ angular.module('app.tech-appointments', ['ui.router']).config(function ($statePr
             }
         })
 });
-
-
 
 app.factory('customerService',  function () {
   return {

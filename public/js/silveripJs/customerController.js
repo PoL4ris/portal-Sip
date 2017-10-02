@@ -842,7 +842,6 @@ app.controller('customerNetworkController',         function ($scope, $http, cus
 
 
 });
-
 app.controller('customerBuildingController',        function ($scope, $http){
 
   //   console.log($scope.customerData);
@@ -856,13 +855,6 @@ app.controller('customerBuildingController',        function ($scope, $http){
   }
 
 });
-
-
-
-
-
-
-
 app.controller('customerPaymentMethodsController',  function ($scope, $http, customerService){
 
 //  customerService.tabs[$scope.idCustomer].invoiceData = response.data;
@@ -1082,14 +1074,6 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http, cus
   };
 
 });
-
-
-
-
-
-
-
-
 app.controller('addPaymentMethodController',        function ($scope, $http,customerService){
 //  customerService.tabs[$scope.idCustomer];
   // app.controller('addPaymentMethodController',        function ($scope, $http, customerId, notify, $uibModalInstance){
@@ -1168,7 +1152,6 @@ app.controller('addPaymentMethodController',        function ($scope, $http,cust
 
 
 });
-
 //Product.html
 app.controller('customerServicesController',        function ($scope, $http, customerService){
   $http.get("getCustomerServices", {params:{'id':$scope.idCustomer}})
@@ -1253,8 +1236,6 @@ app.controller('serviceProductController',          function ($scope, $http, cus
     });
 
 });
-
-
 app.controller('customerNotesController',           function ($scope, $http, customerService){
 
   $http.get("getCustomerNotes", {params : {'id' : $scope.idCustomer}})
@@ -1310,6 +1291,7 @@ app.controller('customerBillingHistoryController',  function ($scope, $http, $ui
   };
   $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('order', [0, 'desc']);
 });
+
 app.controller('customersHomeController',           function ($scope, $http, customerService, generalService){
 
 //  if(customerService.stateRoute == 'customershome'){
