@@ -422,6 +422,9 @@ class TestController extends Controller {
 
         dd('done');
 
+        /** Show number of pending failed invoices that need to be notified **/
+//        $billingHelper = new BillingHelper();
+//        dd($billingHelper->getFailedPendingInvoiceToNotifyQuery()->count());
 
         /** Find pending invoices then check for ones that belong to disabled customers **/
 

@@ -1239,13 +1239,13 @@ class BillingHelper {
              */
             if ($customer->id_status != config('const.status.active'))
             {
-                $this->markInvoicesAsFailedToNotify($pendingInvoices);
+                $this->markInvoicesAsFailedToNotifyPastDue($pendingInvoices);
                 continue;
             }
 
 
             $this->sendDeclinedChargeReminderByInvoiceCollection($customer, $pendingInvoices);
-            $this->markInvoicesAsNotified($pendingInvoices);
+            $this->markInvoicesAsNotifiedPastDue($pendingInvoices);
             ActivityLogs::add($this->logType, $customerId, 'notify', 'remindFailedInvoiceCustomers', '', '', json_encode(['customer_id' => $customer->id, 'invoice_id' => $pendingInvoices->pluck('id')]), 'notify-customer');
             $iterations ++;
         }
@@ -1260,8 +1260,8 @@ class BillingHelper {
             ->where('status', config('const.invoice_status.pending'))
             ->where('failed_charges_count', '>', 0)
             ->where(function ($query) {
-                $query->whereNull('notified')
-                    ->orWhere('notified', 0);
+                $query->whereNull('notified_pastdue')
+                    ->orWhere('notified_pastdue', 0);
             });
     }
 
@@ -1281,7 +1281,6 @@ class BillingHelper {
             $charges = array_merge($charges, $invoice->details());
             $total += $invoice->amount;
         }
-//dd([$charges, $total]);
 
         Mail::send(array('html' => $template), ['customer' => $customer, 'address' => $address, 'charges' => $charges, 'total' => $total], function ($message) use ($toAddress, $customer, $subject) {
             $message->from('help@silverip.com', 'SilverIP Customer Care');
@@ -1289,24 +1288,120 @@ class BillingHelper {
         });
     }
 
-    public function markInvoicesAsNotified($invoices)
+    public function markInvoicesAsNotifiedPastDue($invoices)
     {
 
         $nowMysqlDate = date("Y-m-d H:i:s");
 
         $invoiceIds = $invoices->pluck('id')->toArray();
-        Invoice::whereIn('id', $invoiceIds)->update(['notified' => 1, 'last_notified' => $nowMysqlDate]);
+        Invoice::whereIn('id', $invoiceIds)->update(['notified_pastdue' => 1, 'last_notified_pastdue' => $nowMysqlDate]);
     }
 
-    public function markInvoicesAsFailedToNotify($invoices)
+    public function markInvoicesAsFailedToNotifyPastDue($invoices)
     {
 
         $nowMysqlDate = date("Y-m-d H:i:s");
 
         $invoiceIds = $invoices->pluck('id')->toArray();
-        Invoice::whereIn('id', $invoiceIds)->update(['notified' => 2, 'last_notified' => $nowMysqlDate]);
+        Invoice::whereIn('id', $invoiceIds)->update(['notified_pastdue' => 2, 'last_notified_pastdue' => $nowMysqlDate]);
     }
 
+
+    /**
+     * Upcoming invoice reminder functions
+     */
+
+    public function notifyUpcomingInvoiceCustomers()
+    {
+        $maxIterations = $this->getPendingInvoicesToNotifyQuery()->count();
+        $iterations = 1;
+        while ($iterations <= $maxIterations)
+        {
+            $invoice = $this->getPendingInvoicesToNotifyQuery()->first();
+
+            if ($invoice == null)
+            {
+                break;
+            }
+
+            $customerId = $invoice->id_customers;
+            $pendingInvoices = $this->getPendingInvoicesToNotifyQuery()
+                ->where('id_customers', $customerId)
+                ->orderBy('due_date', 'asc')
+                ->get();
+
+            $customer = Customer::find($customerId);
+
+            /**
+             * If the customer is disabled skip it and mark their invoices accordingly
+             */
+            if ($customer->id_status != config('const.status.active'))
+            {
+                $this->markInvoicesAsFailedToNotifyUpcoming($pendingInvoices);
+                continue;
+            }
+
+
+            $this->sendUpcomingChargeReminderByInvoiceCollection($customer, $pendingInvoices);
+            $this->markInvoicesAsNotifiedUpcoming($pendingInvoices);
+            ActivityLogs::add($this->logType, $customerId, 'notify', 'notifyUpcomingInvoiceCustomers', '', '', json_encode(['customer_id' => $customer->id, 'invoice_id' => $pendingInvoices->pluck('id')]), 'notify-customer');
+            $iterations ++;
+        }
+
+        return $iterations;
+    }
+
+    public function getPendingInvoicesToNotifyQuery()
+    {
+        // Get pending invoices
+        return Invoice::where('processing_type', config('const.type.auto_pay'))
+            ->where('status', config('const.invoice_status.pending'))
+            ->where(function ($query) {
+                $query->whereNull('notified_upcoming')
+                    ->orWhere('notified_upcoming', 0);
+            });
+    }
+
+    public function sendUpcomingChargeReminderByInvoiceCollection(Customer $customer, $invoices)
+    {
+        $template = 'email.template_customer_upcoming_bill_notification';
+        $subject = 'Your Upcoming SilverIP Bill';
+
+        $customerEmail = ($customer->emailAddress == null) ? 'peyman@silverip.com' : $customer->emailAddress->value;
+        $toAddress = ($this->testMode) ? 'peyman@silverip.com' : $customerEmail;
+        $address = $customer->address;
+
+        $charges = [];
+        $total = 0;
+        foreach ($invoices as $invoice)
+        {
+            $charges = array_merge($charges, $invoice->details());
+            $total += $invoice->amount;
+        }
+
+        Mail::send(array('html' => $template), ['customer' => $customer, 'address' => $address, 'charges' => $charges, 'total' => $total], function ($message) use ($toAddress, $customer, $subject) {
+            $message->from('help@silverip.com', 'SilverIP Customer Care');
+            $message->to($toAddress, trim($customer->first_name) . ' ' . trim($customer->last_name))->subject($subject);
+        });
+    }
+
+    public function markInvoicesAsNotifiedUpcoming($invoices)
+    {
+
+        $nowMysqlDate = date("Y-m-d H:i:s");
+
+        $invoiceIds = $invoices->pluck('id')->toArray();
+        Invoice::whereIn('id', $invoiceIds)->update(['notified_upcoming' => 1, 'last_notified_upcoming' => $nowMysqlDate]);
+    }
+
+    public function markInvoicesAsFailedToNotifyUpcoming($invoices)
+    {
+
+        $nowMysqlDate = date("Y-m-d H:i:s");
+
+        $invoiceIds = $invoices->pluck('id')->toArray();
+        Invoice::whereIn('id', $invoiceIds)->update(['notified_upcoming' => 2, 'last_notified_upcoming' => $nowMysqlDate]);
+    }
 
 //    protected function generateBuildingInvoiceDataTable($buildingId)
 //    {
