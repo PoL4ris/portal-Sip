@@ -31,8 +31,8 @@ class CustomerProduct extends Model {
         return $this->hasOne('App\Models\Charge', 'id_customer_products')
             ->where(function ($query)
             {
-                $query->where('charges.status', config('const.charge_status.pending'));
-//                    ->orWhere('charges.status', config('const.charge_status.invoiced'));
+                $query->where('charges.status', config('const.charge_status.pending'))
+                    ->orWhere('charges.status', config('const.charge_status.invoiced'));
             });
     }
 

@@ -32,7 +32,8 @@ class Building extends Model {
         return $this->hasManyThrough(
             'App\Models\CustomerProduct', 'App\Models\Address',
             'id_buildings', 'id_address', 'id'
-        )->where('id_status', config('const.status.active'));
+        )->where('id_status', config('const.status.active'))
+            ->with(['product', 'customer']);
     }
 
     public function address()
@@ -80,22 +81,22 @@ class Building extends Model {
 
     public function activeProducts()
     {
-        $products = $this->products;
-
-        return $products->whereLoose('id_status', config('const.status.active'));
+        return $this->hasMany('App\Models\BuildingProduct', 'id_buildings', 'id')
+            ->where('id_status', config('const.status.active'))
+            ->with('product');
     }
 
     public function activeInternetProducts()
     {
-        return $this->hasMany('App\Models\BuildingProduct', 'id_buildings', 'id')
-            ->where('id_status', config('const.status.active'))
-            ->with(['product' => function ($query)
-            {
-                $query->where('id_types', config('const.type.internet'));
-            }]);
+        $activeProducts = $this->activeProducts;
+        if ($activeProducts == null)
+        {
+            return $activeProducts;
+        }
 
-//        $products = $this->products;
-//        return $products->whereLoose('id_status', config('const.status.active'));
+        return $activeProducts->filter(function ($buildingProduct, $key) {
+            return $buildingProduct->product->id_types == config('const.type.internet');
+        });
     }
 
     public function activeParentProducts()

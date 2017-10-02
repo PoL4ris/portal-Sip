@@ -26,7 +26,7 @@ class ActivityLogger {
     public function add($type, $idType, $action, $route, $currData, $newData, $data, $logType){
 
         $newLogEntry              = new ActivityLog;
-        $newLogEntry->id_users    = Auth::user()->id;
+        $newLogEntry->id_users    = (Auth::user() == null) ? 0 : Auth::user()->id;
         $newLogEntry->type        = $type;
         $newLogEntry->id_type     = $idType;
         $newLogEntry->action      = $action;

@@ -234,7 +234,9 @@ class CiscoSwitch {
         $response = $this->snmp2_real_walk($ip, $this->readCommunity, self::sysName);
         if ( ! isset($response['error']))
         {
-            $response['response'] = array_shift($response['response']);
+            $sysName = trim(preg_replace('/^.*STRING:\s+/', '', array_shift($response['response'])));
+            $response['response'] = $sysName;
+//            $response['response'] = array_shift($response['response']);
         }
 
         return $response;
@@ -263,7 +265,7 @@ class CiscoSwitch {
         {
             foreach ($entPhysicalDescrArr as $oid => $entPhysicalDescr)
             {
-                if ($entPhysicalDescr != '""')
+                if ($entPhysicalDescr != '""' && $entPhysicalDescr != 'STRING: ' && substr($entPhysicalDescr, 0, strlen('STRING: "PWR')) !== 'STRING: "PWR' && substr($entPhysicalDescr, 0, strlen('STRING: PWR')) !== 'STRING: PWR')
                 {
                     $response['response'] = $this->formatSnmpResponse($entPhysicalDescr);
                     break;
@@ -322,10 +324,9 @@ class CiscoSwitch {
     public function getSnmpMacAddress($ip)
     {
 
-        $response = $this->snmp2_real_walk($ip, $this->readCommunity, self::sysLocation . '.0', true);
+        $response = $this->snmp2_real_walk($ip, $this->readCommunity, self::dot1dBaseBridgeAddress . '.0', true);
         if ( ! isset($response['error']))
         {
-
             $sysMacAddress = trim(preg_replace('/^.*STRING:\s+/', '', $response['response']));
             $sysMacAddress = preg_replace('/\s+/', ':', $sysMacAddress);
             $sysMacAddress = strtoupper($sysMacAddress);
@@ -357,8 +358,7 @@ class CiscoSwitch {
     protected function filterResponseByRegEx($response, $regexArray)
     {
         $patternCollection = collect($response);
-        $filtered = $patternCollection->reject(function ($value, $key) use ($regexArray)
-        {
+        $filtered = $patternCollection->reject(function ($value, $key) use ($regexArray) {
             foreach ($regexArray as $regex)
             {
                 if (preg_match($regex, $value) !== 0)
@@ -674,15 +674,17 @@ class CiscoSwitch {
             {
                 foreach ($portIndexList as $key => $value)
                 {
+                    // Skip non GigabitEthernet ports and cards 5 & 6
                     if (strpos($key, 'GigabitEthernet') !== 0 || strpos($key, 'GigabitEthernet5') === 0 || strpos($key, 'GigabitEthernet6') === 0)
                     {
                         unset($portIndexList[$key]);
                     }
                 }
-            } else if (strstr($switchModel, 'WS-C2960G') || strstr($switchModel, 'WS-C3750G') || strstr($switchModel, 'WS-C3560G'))
+            } else if (strstr($switchModel, 'WS-C2960G') || strstr($switchModel, 'WS-C3750G') || strstr($switchModel, 'WS-C3560G') || strstr($switchModel, 'WS-C4948'))
             {
                 foreach ($portIndexList as $key => $value)
                 {
+                    // Skip non GigabitEthernet ports
                     if (strpos($key, 'GigabitEthernet') !== 0)
                     {
                         unset($portIndexList[$key]);
@@ -692,6 +694,7 @@ class CiscoSwitch {
             {
                 foreach ($portIndexList as $key => $value)
                 {
+                    // Skip non FastEthernet ports
                     if (strpos($key, 'FastEthernet') !== 0)
                     {
                         unset($portIndexList[$key]);
@@ -701,6 +704,7 @@ class CiscoSwitch {
             {
                 foreach ($portIndexList as $key => $value)
                 {
+                    // Skip non Ethernet ports
                     if (strpos($key, 'Ethernet') !== 0)
                     {
                         unset($portIndexList[$key]);
@@ -749,7 +753,7 @@ class CiscoSwitch {
                 } elseif (strstr($switchModel, 'WS-C3560G'))
                 {
                     $portNamePrefix = 'GigabitEthernet0/';
-                } elseif (strstr($switchModel, 'WS-C6509'))
+                } elseif (strstr($switchModel, 'WS-C6509') || strstr($switchModel, 'WS-C4948'))
                 {
                     $portNamePrefix = 'GigabitEthernet';
                 } elseif (strstr($switchModel, 'NK-C3'))
@@ -836,7 +840,7 @@ class CiscoSwitch {
             $portIndex = $portIndexList[$portNamePrefix . $portNum];
         } else
         {
-            if (strstr($switchModel, 'WS-C6509'))
+            if (strstr($switchModel, 'WS-C6509') || strstr($switchModel, 'WS-C4948'))
             {
                 $portIndex = $portIndexList[$portNamePrefix . $portNum];
             } else
@@ -876,7 +880,7 @@ class CiscoSwitch {
         return $response;
     }
 
-    protected function getPortIndex($ip, $portNum, $isIdx = false)
+    public function getPortIndex($ip, $portNum, $isIdx = false)
     {
 
         if ($isIdx)

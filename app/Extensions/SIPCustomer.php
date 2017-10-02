@@ -249,7 +249,9 @@ class SIPCustomer {
     {
 
         return User::where('email', $emailAddress)
-            ->where('id_status', config('const.status.active'))->first();
+            // Search for any status not just active otherwiese emails from help@silverip.com will not clear the "read" flag on tickets
+//            ->where('id_status', config('const.status.active'))
+            ->first();
     }
 
     public function getAdminUserIdByEmail($email)
@@ -268,4 +270,94 @@ class SIPCustomer {
 
         return $adminUserId;
     }
+
+    /**
+     * @param Request $request
+     * id = id_customers.
+     * idService to find and update (disable) record/Service.
+     * Status
+     * 1 = active
+     * 2 = disabled
+     * 3 = decommissioned
+     * 4 = pending
+     * 5 = admin
+     * @return Customer services list.
+     */
+//    public function disableCustomerServices($customerId)
+//    {
+//        $customer = Customer::find($customerId);
+//        $activeService = CustomerProduct::find($request->idService);
+//        $activeService->id_status = config('const.status.disabled');
+//        $activeService->save();
+//
+//        $this->cancelActiveChargesForCustomerProduct($activeService);
+//        $this->cancelActiveInvoicesForCustomer($customer);
+//
+//        $newData = array();
+//        $newData['id_status'] = config('const.status.disabled');
+//
+//        $relationData = Product::find($activeService->id_products);
+//
+//        ActivityLogs::add($this->logType, $request->id, 'update', 'disableCustomerServices', $activeService, $newData, $relationData, 'disable-service');
+//
+//        return $this->getCustomerServices($request);
+//
+//    }
+
+// TODO: Complete the following functions
+//    public function disableCustomer($customerId)
+//    {
+//        $customer = Customer::find($customerId);
+//        $activeService = CustomerProduct::find($request->idService);
+//        $activeService->id_status = config('const.status.disabled');
+//        $activeService->save();
+//
+//        $this->cancelActiveChargesForCustomerProduct($activeService);
+//        $this->cancelActiveInvoicesForCustomer($customer);
+//
+//        $newData = array();
+//        $newData['id_status'] = config('const.status.disabled');
+//
+//        $relationData = Product::find($activeService->id_products);
+//
+//        ActivityLogs::add($this->logType, $request->id, 'update', 'disableCustomerServices', $activeService, $newData, $relationData, 'disable-service');
+//
+//        return $this->getCustomerServices($request);
+//
+//    }
+//
+//    protected function cancelActiveChargesForCustomerProduct(CustomerProduct $customerProduct)
+//    {
+//
+//        $charge = $customerProduct->activeCharge;
+//        if ($charge == null)
+//        {
+//            Log::info('cancelActiveChargesForCustomerProduct(): CustomerProduct id=' . $customerProduct->id . ' has no active charges.');
+//
+//            return false;
+//        }
+//        $billingHelper = new BillingHelper();
+//
+//        return $billingHelper->removeChargeFromInvoice($charge);
+//    }
+//
+//    protected function cancelActiveInvoicesForCustomer(Customer $customer)
+//    {
+//
+//        $firstDayOfMonthTime = strtotime("first day of this month 00:00:00");
+//        $timestampMysql = date('Y-m-d H:i:s', $firstDayOfMonthTime);
+//
+//        $pendingInvoices = $customer->pendingAutoPayInvoicesOnOrAfterTimestamp($timestampMysql);
+//        $billingHelper = new BillingHelper();
+//
+//        $count = 0;
+//        foreach ($pendingInvoices as $invoice)
+//        {
+//            $billingHelper->markInvoiceAsCancelled($invoice);
+//            $count ++;
+//        }
+//        Log::info('cancelActiveInvoicesForCustomer(): Cancelled ' . $count . ' invoices for customer id=' . $customer->id);
+//
+//        return true;
+//    }
 }

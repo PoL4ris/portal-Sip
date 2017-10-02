@@ -575,7 +575,7 @@ class CustomerController extends Controller {
 
         $relationData = Product::find($request->idProduct);
 
-        ActivityLogs::add($this->logType, $request->idCustomer, 'insert', 'insertCustomerService', null, $newData, $relationData, 'insert-service');
+        ActivityLogs::add($this->logType, $request->idCustomer, 'insert', 'insertCustomerService', null, $newProduct, $relationData, 'insert-service');
 
         return $this->getCustomerServices($request);
 
@@ -873,9 +873,10 @@ class CustomerController extends Controller {
         $newCustomer->last_name = $request->customers_last_name;
         $newCustomer->email = $request->customers_email;
         $newCustomer->vip = $request->customers_vip;
-        $newCustomer->id_status = $request->customers_id_status;
+//        $newCustomer->id_status = $request->customers_id_status;
+        $newCustomer->id_status = config('const.status.active');
 //        print_r($newCustomer);
-//        $newCustomer->save();
+        $newCustomer->save();
 
         //CONTACT
         $newContact = new Contact;
@@ -883,7 +884,7 @@ class CustomerController extends Controller {
         $newContact->id_types = config('const.type.phone');
         $newContact->value = $request->contacts_value;
 //        print_r($newContact);
-//        $newContact->save();
+        $newContact->save();
 
         //BUILDING
         $locationData = Building::with('address')->find($request->building_id)->address;
