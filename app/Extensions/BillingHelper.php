@@ -1270,7 +1270,9 @@ class BillingHelper {
     {
         $template = 'email.template_customer_declined_billing_reminder';
         $subject = 'NOTICE: Balance due';
-        $toAddress = ($this->testMode) ? 'peyman@silverip.com' : $customer->emailAddress;
+
+        $customerEmail = ($customer->emailAddress == null) ? 'peyman@silverip.com' : $customer->emailAddress->value;
+        $toAddress = ($this->testMode) ? 'peyman@silverip.com' : $customerEmail;
         $address = $customer->address;
 
         $charges = [];
