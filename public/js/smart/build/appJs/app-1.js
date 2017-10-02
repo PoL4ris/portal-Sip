@@ -197,6 +197,7 @@ var app = angular.module('app', [
   'app.newcustomer',
   'app.tabs',
   'app.walkthrough',
+  'app.test',
 ])
   .config(function ($provide, $httpProvider, RestangularProvider) {
 

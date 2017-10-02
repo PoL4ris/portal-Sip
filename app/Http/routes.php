@@ -20,9 +20,9 @@ header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Ac
 //DB functions
 Route::get('activity-log-test',  'TestController@testActivityLog');
 Route::get('db-test',            'TestController@testDBRelations');
-Route::get('supportTest',        'TestController@supportTest');
+Route::get('supportTest',        'PabloController@supportTest');
 Route::get('logFunction',        'TestController@logFunction');
-Route::get('testView',           'TestController@cleanView');
+Route::get('bladeView',          'PabloController@bladeView');
 Route::get('testTickets',        'TestController@testCustomerTickets');
 Route::get('process-lease',      'DhcpController@processLease');
 Route::get('invoiceTest',        'TestController@invoiceTest');
@@ -84,7 +84,7 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('customersSearch',           'CustomerController@getCustomersSearch');
     Route::get('getGenericSearch',          'CustomerController@getGenericSearch');
     Route::get('getFilterBld',              'BuildingController@getFilterBld');
-    Route::get('getCustomerById',           'TestController@supportTest');
+    Route::get('getCustomerById',           'PabloController@supportTest');
     Route::get('productsSearch',            'BuildingController@productsSearch');
     //GLOBAL SEARCH
     Route::get('getTicketsSearch',          'SupportController@getTicketsSearch');
@@ -149,6 +149,7 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('getPendingManualCharges',   'BillingController@getPendingManualCharges');
 
     Route::get('getChargesAndInvoices',     'BillingController@getChargesAndInvoices');
+    Route::get('getInvoices',               'BillingController@getInvoices');
 
     //UpdateCustomer
     Route::get('updateAddressTable',        'CustomerController@updateAddressTable');

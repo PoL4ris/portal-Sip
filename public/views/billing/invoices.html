@@ -1,1 +1,256 @@
-THIS IS Invoices...
+<div class="col-lg-12 no-padding-sides">
+    <div class="col-lg-1 b-r-ddd btn months-select-style  {{(month == invoicesViewMonth || ($index+1) == invoicesViewMonth) ? 'ch-active-month' : 'regular-month'}}"
+         ng-repeat="month in allMonths"
+         ng-click="getIDataByMonth()">
+        {{month}}
+    </div>
+    <div class="col-lg-12 b-t-ddd"></div>
+    <div class="col-lg-1 b-r-ddd btn months-select-style  {{year == invoicesViewYear ? 'ch-active-year' : 'regular-year'}}"
+         ng-repeat="year in allYears"
+         ng-click="getIDataByYear()">
+        {{year}}
+    </div>
+</div>
+
+<div class="col-lg-12 p-t-lg p-b-lg bg-white white-shadow filters-fixed-size m-t-lg">
+    <form id="invoices-filter-form-container">
+        <div class="col-lg-3">
+            <button class="btn btn-primary m-r-lg" ng-click="getInvoices('empty')">Reset Filter</button>
+            <select name=""
+                    id=""
+                    ng-options="item as item.label for item in statusLabelArr track by item.id"
+                    ng-model="billingFilterStatus"
+                    ng-change="getInvoices('status')"
+                    class="size-50">
+                <option value="">Select Status</option>
+            </select>
+        </div>
+        <div class="col-lg-3">
+            <div class="input-group input-group-sm ">
+                <input type="text" placeholder="Amount" class="form-control input-sm" enter-action="getInvoices('amount')" ng-model="billingFilterAmount">
+                <div class="input-group-btn">
+                    <button type="submit" class="btn btn-primary" ng-click="getInvoices('amount')">
+                        <i class="fa fa-fw fa-filter fa-lg"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="input-group input-group-sm ">
+                <input type="text" placeholder="Building" class="form-control input-sm" enter-action="getInvoices('code')" ng-model="billingFilterCode">
+                <div class="input-group-btn">
+                    <button type="submit" class="btn btn-primary" ng-click="getInvoices('code')">
+                        <i class="fa fa-fw fa-filter fa-lg"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="input-group input-group-sm ">
+                <input type="text" placeholder="Unit" class="form-control input-sm" enter-action="getInvoices('unit')" ng-model="billingFilterUnit">
+                <div class="input-group-btn">
+                    <button type="submit" class="btn btn-primary" ng-click="getInvoices('unit')">
+                        <i class="fa fa-fw fa-filter fa-lg"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+    <div class="col-lg-12 m-b-lg">
+        <hr>
+        <div class="showing-paginate-label">Showing: {{fullInvoiceResponse.invoices.from}} to {{fullInvoiceResponse.invoices.to}} of {{fullInvoiceResponse.invoices.total}}</div>
+    </div>
+
+
+    <table id="myTable" class="tablesorter table table-striped" datatable="ng" dt-options="dtOptions">
+        <thead>
+        <tr>
+            <!--<th>ID</th>-->
+            <!--<th>Type</th>-->
+            <th>Customer</th>
+            <th>Amount</th>
+            <!--<th>Quantity</th>-->
+            <!--<th>Details</th>-->
+            <!--<th>Invoice</th>-->
+            <th>Status</th>
+            <th>Description</th>
+            <th>Comment</th>
+            <!--<th>Period</th>-->
+            <th>Due On</th>
+            <th>Added</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="invoice in invoicesView">
+
+            <!--<td>{{charge.id}}</td>-->
+            <!--<td class="capital-first ch-{{invoice.status}} " ng-if="invoice.type == 'credit'"><b><i>{{invoice.type}}</i></b></td>-->
+            <!--<td class="capital-first ch-{{invoice.status}} " ng-if="invoice.type != 'credit'">{{invoice.type}}</td>-->
+
+            <td><a href="#/customers?id={{invoice.customer.id}}">{{invoice.customer.first_name + ' ' + invoice.customer.last_name}}<br>{{invoice.address.code}} #{{invoice.address.unit}}</a></td>
+
+            <td>${{invoice.amount}}</td>
+
+            <!--<td>{{invoice.qty}}</td>-->
+
+            <!--<td ng-if="!invoice.id_customer_products">N/A</td>-->
+            <!--<td ng-if="invoice.id_customer_products"><i class="btn btn-primary fa fa-eye" ng-click="showProductDetail()" data-toggle="modal" data-target="#chandin-product"></i></td>-->
+
+            <!--<td ng-if="!invoice.id_invoices">N/A</td>-->
+            <!--<td ng-if="invoice.id_invoices"><i class="btn btn-warning fa fa-file-pdf-o" ng-click="showInvoiceDetail()" data-toggle="modal" data-target="#chandin-invoice"></i></td>-->
+
+            <td ng-init="statLabel = statusLabel(invoice.status)" class="ch-{{statLabel}} capital-first ch-border-1 ch-{{invoice.status}}">{{statLabel}}</td>
+
+            <td>{{invoice.description}}</td>
+            <td>{{invoice.description ? invoice.description : 'No Description'}}</td>
+
+            <!--<td>-->
+                <!--<label ng-init="resultDateSD = convertDate(invoice.start_date)">{{ resultDateSD | date : "MMM d" }}</label> <b> - </b>-->
+                <!--<label ng-init="resultDateED = convertDate(invoice.end_date)"> {{ resultDateED | date : "MMM d" }}</label>-->
+            <!--</td>-->
+
+            <td ng-init="resultDateDD = convertDate(invoice.due_date)"><i class="fa fa-calendar"></i> <b> {{ resultDateDD | date : "shortDate" }}</b></td>
+            <td ng-init="resultDateCA = convertDate(invoice.created_at)"><i class="fa fa-calendar"></i> <b>{{ resultDateCA | date : "shortDate" }}</b></td>
+
+
+        </tr>
+        </tbody>
+    </table>
+
+    <div>
+        <button class="btn btn-warning " ng-if="!fullInvoiceResponse.invoices.prev_page_url" disabled><i class="fa fa-arrow-left"></i> Prev</button>
+        <button class="btn btn-danger " ng-if="!fullInvoiceResponse.invoices.next_page_url" disabled>Next <i class="fa fa-arrow-right"></i></button>
+
+        <button class="btn btn-warning " ng-if="fullInvoiceResponse.invoices.prev_page_url" ng-click="getInvoices(fullInvoiceResponse.invoices.prev_page_url)"><i class="fa fa-arrow-left"></i> Prev</button>
+        <button class="btn btn-danger " ng-if="fullInvoiceResponse.invoices.next_page_url" ng-click="getInvoices(fullInvoiceResponse.invoices.next_page_url)">Next <i class="fa fa-arrow-right"></i></button>
+    </div>
+</div>
+
+
+<!--Modal 1 = ProductDetails -->
+<div class="modal fade" id="chandin-product" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-ticket-size">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="wrapper-sm">
+                    <div class="row">
+                        <div class="col-lg-12 b-b-ddd m-b-lg p-b-md">
+                            <small>Product Detail :</small>
+                            <label class="label-data-service">{{showProductDetails.product.name}}</label>
+                        </div>
+                        <div class="col-lg-6">
+                            <label class="bold-type col-lg-3">Amount</label>
+                            <label class="col-lg-3 block-a-label">{{('$' + showProductDetails.product.amount + '.00')}}</label>
+                            <label class="bold-type col-lg-3">Cycle</label>
+                            <label class="col-lg-3 block-a-label">{{showProductDetails.product.frequency}}</label>
+                            <label class="bold-type col-lg-3">Status</label>
+                            <label class="col-lg-3 block-a-label">{{showProductDetails.id_status}}</label>
+                        </div>
+                        <div class="col-lg-6">
+                            <label class="bold-type col-lg-5">Signed Up</label>
+                            <label class="col-lg-7 block-a-label" ng-init="resultDatePSUP = convertDate(showProductDetails.signed_up)" ng-if="showProductDetails.signed_up">
+                                {{ resultDatePSUP | date : "MMM d, y h:mm a"}}
+                            </label>
+                            <label class="bold-type col-lg-5">Expires</label>
+                            <label class="col-lg-7 block-a-label" ng-init="resultDatePEX = convertDate(showProductDetails.expires)" ng-if="showProductDetails.expires">
+                                {{resultDatePEX | date : "MMM d, y h:mm a"}}
+                            </label>
+                            <label class="bold-type col-lg-5">Last Updated</label>
+                            <label class="col-lg-7 block-a-label" ng-init="resultDatePUAT = convertDate(showProductDetails.updated_at)" ng-if="showProductDetails.updated_at">
+                                {{resultDatePUAT | date : "MMM d, y h:mm a"}}
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--END Modal 1 = ProductDetails -->
+
+<!--Modal 2 = InvoiceDetails -->
+<div class="modal fade" id="chandin-invoice" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-body">
+                <div class="wrapper-sm">
+                    <div>
+                        <!--<a href class="btn btn-success pull-right" onClick="alert('sending copy to customer')">Send to Customer</a>-->
+                        <div class="invoice-logo "><img src="/img/silverip-logo-100px.png" alt="SilverIp"/></div>
+
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <p>{{showInvoiceDetails.address.address}}</p>
+                                <p>{{showInvoiceDetails.address.city}}, {{showInvoiceDetails.address.state}}, {{showInvoiceDetails.address.zip}}</p>
+                                <p>Unit: {{showInvoiceDetails.address.unit}}</p>
+                                <p>@: {{showInvoiceDetails.customer.email}}</p>
+                            </div>
+                            <div class="col-xs-6 text-right right-side-invoice">
+                                <p class="f-size-17">Invoice No. {{showInvoiceDetails.id}}</p>
+                                <p class="f-size-17" ng-init="dueDate = convertDate(showInvoiceDetails.due_date)" ng-if="showInvoiceDetails.due_date">
+                                    Due date: <i class="fa fa-calendar"></i> {{dueDate | date : "shortDate" }}
+                                </p>
+                                <p class="f-size-17 bg-color-darken txt-color-white">Total Due : ${{showInvoiceDetails.amount}} USD</p>
+                            </div>
+                        </div>
+
+
+                        <hr>
+
+                        <p class="m-b-lg"
+                           ng-init="invoDate = convertDate(showInvoiceDetails.created_at)"
+                           ng-if="showInvoiceDetails.created_at">
+                            Invoice date: <strong>{{invoDate | date : "MMM d, y h:mm a" }}</strong><br>
+                            Status: <span class="label cdg-color-up caps">{{showInvoiceDetails.status}}</span><br>
+                            ID: <strong> # {{showInvoiceDetails.id}}</strong>
+                        </p>
+
+                        <div class="line"></div>
+
+                        <table class="table table-striped bg-white b-a">
+                            <thead>
+                            <tr>
+                                <th>Product ID</th>
+                                <th>Product</th>
+                                <th>Frequency</th>
+                                <th>Amount</th>
+                            </tr>
+                            </thead>
+                            <tbody ng-init="invoiceParsed = parJson(showInvoiceDetails.details)" ng-if="showInvoiceDetails.details">
+                            <tr>
+                                <td>{{invoiceParsed.product_id}}</td>
+                                <td>{{invoiceParsed.product_name}}</td>
+                                <td class="capital-first">{{invoiceParsed.product_frequency}}</td>
+                                <td>${{invoiceParsed.product_amount}}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" class="text-right-invo"><strong>Tax</strong></td>
+                                <td>$0.00</td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" class="text-right-invo no-border"><strong>Total</strong></td>
+                                <td><strong>${{showInvoiceDetails.amount}}</strong></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--END Modal 2 = InvoiceDetails -->
+
+
+

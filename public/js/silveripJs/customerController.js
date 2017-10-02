@@ -560,7 +560,12 @@ app.controller('customerInvoiceHistoryController',  function ($scope, $http, cus
     console.log('this is the locotrocholoco');
 
     $scope.modalInvoice         = this.invoice;
-    $scope.modalInvoice.details = $scope.parJson($scope.modalInvoice.details);
+
+    console.log(this.invoice);
+    console.log($scope.customerServiceData[$scope.idCustomer]);
+//    console.log($scope.customerData);
+
+//    $scope.modalInvoice.details = $scope.parJson($scope.modalInvoice.details);
   };
 
 });

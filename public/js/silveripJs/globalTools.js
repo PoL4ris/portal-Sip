@@ -1,5 +1,5 @@
 // Global Tools //
-app.controller('globalToolsCtl',                    function ($scope, $http, $compile, $sce, $stateParams, customerService, supportService, buildingService, generalService){
+app.controller('globalToolsCtl',                    function ($scope, $http, $compile, $sce, $stateParams, customerService, supportService, buildingService, generalService, $templateCache){
 
   $scope.customerData   = {};
   $scope.globalScopeVar = true;
@@ -19,20 +19,24 @@ app.controller('globalToolsCtl',                    function ($scope, $http, $co
   $scope.mobDevice = true;
 
 //  console.log($scope.statusArrayConstant);
+//  console.log(localStorage);
+//  console.log($templateCache.info);
 
 
-    $scope.factoryReset = function () {
-        $.SmartMessageBox({
-            title: "<i class='fa fa-refresh' style='color:green'></i> Clear Local Storage",
-            content: "Would you like to RESET all your saved widgets and clear LocalStorage?1",
-            buttons: '[No][Yes]'
-        }, function (ButtonPressed) {
-            if (ButtonPressed == "Yes" && localStorage) {
-                localStorage.clear();
-                location.reload()
-            }
-        });
-    };
+  $scope.factoryReset = function () {
+    console.log('asa');
+      $.SmartMessageBox({
+          title: "<i class='fa fa-refresh' style='color:green'></i> Clear Local Storage",
+          content: "Would you like to RESET all your saved widgets and clear LocalStorage?1",
+          buttons: '[No][Yes]'
+      }, function (ButtonPressed) {
+          if (ButtonPressed == "Yes" && localStorage) {
+              localStorage.clear();
+              $templateCache.removeAll();//not working right....
+              location.reload()
+          }
+      });
+  };
 
   $scope.leftColumnOpenClose  = function (){
     if($('#content').hasClass("ccr-small"))
@@ -486,6 +490,7 @@ app.controller('globalToolsCtl',                    function ($scope, $http, $co
 
   $scope.idSearch = function(){
 //    console.log('this is idSearch');
+//ROUTE         return Customer::find($request->id);
 
     if(!this.adminSearch)
     {

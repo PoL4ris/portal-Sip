@@ -1041,7 +1041,7 @@ class BillingHelper {
         return $invoiceLog->id;
     }
 
-    protected function markInvoiceAsPaid(Invoice $invoice)
+    public function markInvoiceAsPaid(Invoice $invoice)
     {
         $invoice->status = config('const.invoice_status.paid');
         $invoice->save();
@@ -1255,56 +1255,25 @@ class BillingHelper {
 
     public function sendDeclinedChargeReminderByInvoiceCollection(Customer $customer, $invoices)
     {
-        $template = 'email.template_customer_declined_invoice_reminder';
-
-//        $firstInvoice = $invoices->first();
-//        $customer = $firstInvoice->customer;
-        $emailAddress = $customer->emailAddress;
+        $template = 'email.template_customer_declined_billing_reminder';
+        $subject = 'NOTICE: Balance due';
+        $toAddress = 'peyman@silverip.com';
+//        $toAddress = ($this->testMode) ? 'peyman@silverip.com' :$customer->emailAddress;
+        $address = $customer->address;
 
         $charges = [];
-
+        $total = 0;
         foreach ($invoices as $invoice)
         {
             $charges = array_merge($charges, $invoice->details());
+            $total += $invoice->amount;
         }
+//dd([$charges, $total]);
 
-        dd($charges);
-//
-//        if ($chargeResult == null || isset($chargeResult['PaymentType']) == false)
-//        {
-//            Log::info('BillingHelper::sendChargeDeclienedEmail(): INFO: Did not send a declined email for invoice id=' . $invoice->id . ' due to missing credit card info.');
-//
-//            return false;
-//        }
-//        if ($chargeResult['PaymentType'] == 'Credit Card')
-//        {
-//            $subject = 'NOTICE: Credit Card Declined';
-//        } elseif ($chargeResult['PaymentType'] == 'Checking Account')
-//        {
-//            $subject = 'NOTICE: ACH Declined';
-//        } else
-//        {
-//            $subject = 'NOTICE: Charge Declined';
-//        }
-//
-////        $this->sendInvoiceResponseEmail($invoice, $chargeResult, $subject, $template);
-//
-//        $customer = Customer::find($invoice->id_customers);
-//
-//        $address = Address::find($invoice->id_address);
-//
-//        $toAddress = ($this->testMode) ? 'peyman@silverip.com' : $customer->email;
-//
-//        $lineItems = $invoice->details(); //($invoice->details != null && $invoice->details != '') ? json_decode($invoice->details, true) : array();
-//        $chargeDetails = array();
-//        $chargeDetails['TRANSACTIONId'] = $chargeResult['TRANSACTIONID'];
-//        $chargeDetails['PaymentType'] = $chargeResult['PaymentType'];
-//        $chargeDetails['PaymentTypeDetails'] = $chargeResult['PaymentTypeDetails'];
-//
-//        Mail::send(array('html' => $template), ['invoice' => $invoice, 'customer' => $customer, 'address' => $address, 'lineItems' => $lineItems, 'chargeDetails' => $chargeDetails], function ($message) use ($toAddress, $subject, $customer, $address, $lineItems, $chargeDetails) {
-//            $message->from('help@silverip.com', 'SilverIP Customer Care');
-//            $message->to($toAddress, trim($customer->first_name) . ' ' . trim($customer->last_name))->subject($subject);
-//        });
+        Mail::send(array('html' => $template), ['customer' => $customer, 'address' => $address, 'charges' => $charges, 'total' => $total], function ($message) use ($toAddress, $customer, $subject) {
+            $message->from('help@silverip.com', 'SilverIP Customer Care');
+            $message->to($toAddress, trim($customer->first_name) . ' ' . trim($customer->last_name))->subject($subject);
+        });
     }
 
     public function markInvoicesAsNotified($invoices)
