@@ -40,7 +40,7 @@ class RemindFailedInvoiceCustomers extends Command
     {
         $this->info('Rerunning all pending invoices');
         $billingHelper = new BillingHelper();
-        $billingHelper->remindFailedInvoiceCustomers();
-        $this->info('Done');
+        $messagesSent = $billingHelper->remindFailedInvoiceCustomers();
+        $this->info('Sent '.$messagesSent.' notifications.');
     }
 }

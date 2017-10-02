@@ -1216,8 +1216,8 @@ class BillingHelper {
     public function remindFailedInvoiceCustomers()
     {
         $maxIterations = $this->getFailedPendingInvoiceToNotifyQuery()->count();
-        $iteration = 1;
-        while ($iteration <= $maxIterations)
+        $iterations = 1;
+        while ($iterations <= $maxIterations)
         {
             $invoice = $this->getFailedPendingInvoiceToNotifyQuery()->first();
 
@@ -1234,8 +1234,6 @@ class BillingHelper {
 
             $customer = Customer::find($customerId);
 
-//            dd($customer);
-
             /**
              * If the customer is disabled skip it and mark their invoices accordingly
              */
@@ -1249,9 +1247,10 @@ class BillingHelper {
             $this->sendDeclinedChargeReminderByInvoiceCollection($customer, $pendingInvoices);
             $this->markInvoicesAsNotified($pendingInvoices);
             ActivityLogs::add($this->logType, $customerId, 'notify', 'remindFailedInvoiceCustomers', '', '', json_encode(['customer_id' => $customer->id, 'invoice_id' => $pendingInvoices->pluck('id')]), 'notify-customer');
-            $iteration ++;
-            dd('sent 1 message');
+            $iterations ++;
         }
+
+        return $iterations;
     }
 
     public function getFailedPendingInvoiceToNotifyQuery()
