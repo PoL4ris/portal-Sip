@@ -575,7 +575,7 @@ class CustomerController extends Controller {
 
         $relationData = Product::find($request->idProduct);
 
-        ActivityLogs::add($this->logType, $request->idCustomer, 'insert', 'insertCustomerService', null, $newData, $relationData, 'insert-service');
+        ActivityLogs::add($this->logType, $request->idCustomer, 'insert', 'insertCustomerService', null, $newProduct, $relationData, 'insert-service');
 
         return $this->getCustomerServices($request);
 
