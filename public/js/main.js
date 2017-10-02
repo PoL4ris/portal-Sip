@@ -232,7 +232,7 @@ angular.module('app.warpol',        ['ui.router']).config(function ($stateProvid
         }
       },
       resolve: {
-        scripts: function (lazyScript, generalService) {
+        scripts: function (lazyScript) {
 
           return lazyScript.register([
             '/js/smart/build/vendor.ui.js'

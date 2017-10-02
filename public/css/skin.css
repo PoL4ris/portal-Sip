@@ -978,6 +978,10 @@ nav ul li a {
     padding: 2px 5px;
     text-shadow: 2px 0 1px rgba(0, 0, 0, 0.2);
 }
+#activity-log .al-lg-header .lg-user span.system{
+  background: #0f94f6 none repeat scroll 0 0;
+  letter-spacing: .7px;
+}
 #activity-log .log-content .al-lg-description {
     border-bottom: 1px solid #dad8da;
     clear: both;
