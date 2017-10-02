@@ -32,7 +32,7 @@ class FileTypeFilterIteratorTest extends RealIteratorTestCase
         $onlyFiles = array(
             'test.py',
             'foo/bar.tmp',
-            'test.blade.php',
+            'test.html',
             '.bar',
             '.foo/.bar',
             '.foo/bar',

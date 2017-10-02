@@ -42,12 +42,12 @@ class SortableIteratorTest extends RealIteratorTestCase
                     file_get_contents(self::toAbsolute('.bar'));
                     break;
                 case SortableIterator::SORT_BY_CHANGED_TIME :
-                    file_put_contents(self::toAbsolute('test.blade.php'), 'foo');
+                    file_put_contents(self::toAbsolute('test.html'), 'foo');
                     sleep(1);
                     file_put_contents(self::toAbsolute('test.py'), 'foo');
                     break;
                 case SortableIterator::SORT_BY_MODIFIED_TIME :
-                    file_put_contents(self::toAbsolute('test.blade.php'), 'foo');
+                    file_put_contents(self::toAbsolute('test.html'), 'foo');
                     sleep(1);
                     file_put_contents(self::toAbsolute('test.py'), 'foo');
                     break;
@@ -82,7 +82,7 @@ class SortableIteratorTest extends RealIteratorTestCase
             'foo',
             'foo bar',
             'foo/bar.tmp',
-            'test.blade.php',
+            'test.html',
             'test.py',
             'toto',
             'toto/.git',
@@ -99,7 +99,7 @@ class SortableIteratorTest extends RealIteratorTestCase
             '.foo/bar',
             'foo bar',
             'foo/bar.tmp',
-            'test.blade.php',
+            'test.html',
             'test.py',
         );
 
@@ -112,7 +112,7 @@ class SortableIteratorTest extends RealIteratorTestCase
             'foo',
             'foo bar',
             'foo/bar.tmp',
-            'test.blade.php',
+            'test.html',
             'test.py',
             'toto',
             'toto/.git',
@@ -120,7 +120,7 @@ class SortableIteratorTest extends RealIteratorTestCase
 
         $sortByAccessedTime = array(
             // For these two files the access time was set to 2005-10-15
-            array('foo/bar.tmp', 'test.blade.php'),
+            array('foo/bar.tmp', 'test.html'),
             // These files were created more or less at the same time
             array(
                 '.git',
@@ -150,7 +150,7 @@ class SortableIteratorTest extends RealIteratorTestCase
                 'toto/.git',
                 'foo bar',
             ),
-            array('test.blade.php'),
+            array('test.html'),
             array('test.py'),
         );
 
@@ -167,7 +167,7 @@ class SortableIteratorTest extends RealIteratorTestCase
                 'toto/.git',
                 'foo bar',
             ),
-            array('test.blade.php'),
+            array('test.html'),
             array('test.py'),
         );
 

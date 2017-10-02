@@ -136,6 +136,7 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('getPendingManualCharges',   'BillingController@getPendingManualCharges');
 
     Route::get('getChargesAndInvoices',     'BillingController@getChargesAndInvoices');
+    Route::get('getInvoices',               'BillingController@getInvoices');
 
     //UpdateCustomer
     Route::get('updateAddressTable',        'CustomerController@updateAddressTable');

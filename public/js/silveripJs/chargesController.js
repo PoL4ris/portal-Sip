@@ -24,7 +24,7 @@ app.controller('chargesController', function ($scope, $http, customerService, ad
     {id : 5, label:'Disabled'},
     {id : 6, label:'Pending-Approval'},
     {id : 7, label:'Denied'},
-      {id : 8, label:'Cancelled'}];
+    {id : 8, label:'Cancelled'}];
 
   $http.get('getPendingManualCharges')
     .then(function (response) {
@@ -289,7 +289,7 @@ app.controller('chargesController', function ($scope, $http, customerService, ad
   $scope.processCheck         = function () {
     processCheckFunct();
   }
-  //Charges and invoices
+  //Charges
   $scope.getCharges           = function (page = '?') {
 
     switch(page){
@@ -322,8 +322,8 @@ app.controller('chargesController', function ($scope, $http, customerService, ad
         $scope.chargesAndInvoicesYear     =  response.data.year;
         $scope.chargesAndInvoicesMonth    =  response.data.month;
         $scope.fullResponse               =  response.data;
-        adminService.chAndInMonth         =  response.data.month;
-        adminService.chAndInYear          =  response.data.year;
+        adminService.chargesMonth         =  response.data.month;
+        adminService.chargesYear          =  response.data.year;
       });
   }
   $scope.showProductDetail    = function () {
@@ -331,6 +331,44 @@ app.controller('chargesController', function ($scope, $http, customerService, ad
   }
   $scope.showInvoiceDetail    = function () {
     $scope.showInvoiceDetails = this.charge;
+  }
+
+  //Invoices
+  $scope.getInvoices           = function (page = '?') {
+
+    switch(page){
+      case 'status':
+        page = '?&';
+        adminService.status = this.billingFilterStatus.id ? this.billingFilterStatus.id : '';
+        break;
+      case 'amount':
+        page = '?&';
+        adminService.amount = this.billingFilterAmount ? this.billingFilterAmount : '';
+        break;
+      case 'code':
+        page = '?&';
+        adminService.code = this.billingFilterCode ? this.billingFilterCode : '';
+        break;
+      case 'unit':
+        page = '?&';
+        adminService.unit = this.billingFilterUnit ? this.billingFilterUnit : '';
+        break;
+      case 'empty':
+        page = '?';
+        adminService.unit = adminService.amount = adminService.code = adminService.status = '';
+        $('#invoices-filter-form-container').trigger('reset');
+        break;
+    }
+
+    $http.get('getInvoices' + page, {params : adminService})
+      .then(function (response) {
+        $scope.invoicesView         =  response.data.invoices.data;
+        $scope.invoicesViewYear     =  response.data.year;
+        $scope.invoicesViewMonth    =  response.data.month;
+        $scope.fullInvoiceResponse               =  response.data;
+        adminService.invoiceMonth         =  response.data.month;
+        adminService.invoiceYear          =  response.data.year;
+      });
   }
 
   //Global
@@ -350,9 +388,15 @@ app.controller('chargesController', function ($scope, $http, customerService, ad
 
     if(id == 1)
     {
-      adminService.chAndInMonth = null;
-      adminService.chAndInYear  = null;
+      adminService.chargesMonth = null;
+      adminService.chargesYear  = null;
       $scope.getCharges();
+    }
+    if(id == 4)
+    {
+      adminService.invoicesMonth = null;
+      adminService.invoicesYear  = null;
+      $scope.getInvoices();
     }
 
 
@@ -372,12 +416,20 @@ app.controller('chargesController', function ($scope, $http, customerService, ad
       return(statusLabel[id]);
   };
   $scope.getDataByMonth       = function () {
-    adminService.chAndInMonth = this.$index + 1;
+    adminService.chargesMonth = this.$index + 1;
     $scope.getCharges();
   };
+  $scope.getIDataByMonth       = function () {
+    adminService.invoiceMonth = this.$index + 1;
+    $scope.getInvoices();
+  };
   $scope.getDataByYear        = function () {
-    adminService.chAndInYear = this.year;
+    adminService.chargesYear = this.year;
     $scope.getCharges();
+  };
+  $scope.getIDataByYear        = function () {
+    adminService.invoiceYear = this.year;
+    $scope.getInvoices();
   };
 
 

@@ -105,17 +105,6 @@ angular.module('app.misc').config(function ($stateProvider) {
       }
     })
 
-    .state('app.misc.test', {
-      url: '/test',
-      data: {
-        title: 'Test'
-      },
-      views: {
-        "content@app": {
-          templateUrl: 'app/misc/views/billing.html'
-        }
-      }
-    })
 
     .state('app.misc.emailTemplate', {
       url: '/email-template',

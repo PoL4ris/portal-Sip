@@ -8,6 +8,7 @@ use App\Extensions\SIPBilling;
 use App\Extensions\BillingHelper;
 use App\Models\Customer;
 use App\Models\Charge;
+use App\Models\Invoice;
 use App\Models\Address;
 use App\Models\PaymentMethod;
 use App\Models\ActivityLog;
@@ -193,11 +194,57 @@ class BillingController extends Controller {
      * Month
      * @return mixed
      */
+    public function getInvoices(Request $request)
+    {
+        $result = array();
+        $result['year']  = isset($request->invoiceYear)  ? $request->invoiceYear  : Date('Y');
+        $result['month'] = isset($request->invoiceMonth) ? $request->invoiceMonth : Date('m');
+        $data = $request->all();
+
+        if (count($data) > 1)
+            $timeData = '"' . $result['year'] . '-' . $result['month'] . '-' . '0"';
+        else
+            $timeData = 'CURRENT_DATE()';
+
+        $loadResults = Invoice::with('customer','address')
+            ->whereRaw('YEAR(due_date)  = YEAR('  . $timeData . ')')
+            ->whereRaw('MONTH(due_date) = MONTH(' . $timeData . ')');
+
+        if (isset($data['status']) && $data['status'] != '')
+            $loadResults->where('status', $data['status']);
+        if (isset($data['amount']))
+            $loadResults->where('amount', 'like', '%' . $data['amount'] . '%');
+        if (isset($data['code']))
+        {
+            $code = $data['code'];
+            $loadResults->whereHas('address', function ($query) use ($code) {
+                $query->where('code', 'like', '%' . $code . '%');
+            });
+        }
+        if (isset($data['unit']))
+        {
+            $unit = $data['unit'];
+            $loadResults->whereHas('address', function ($query) use ($unit) {
+                $query->where('unit', 'like', '%' . $unit . '%');
+            });
+        }
+
+        $result['invoices'] = $loadResults->paginate(10)->setPath('');
+
+        return $result;
+    }
+
+    /**
+     * @param Request $request
+     * Year
+     * Month
+     * @return mixed
+     */
     public function getChargesAndInvoices(Request $request)
     {
         $result = array();
-        $result['year'] = isset($request->chAndInYear) ? $request->chAndInYear : Date('Y');
-        $result['month'] = isset($request->chAndInMonth) ? $request->chAndInMonth : Date('m');
+        $result['year'] = isset($request->chargesYear) ? $request->chargesYear : Date('Y');
+        $result['month'] = isset($request->chargesMonth) ? $request->chargesMonth : Date('m');
         $data = $request->all();
 
         if (count($data) > 1)

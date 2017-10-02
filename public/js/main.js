@@ -287,7 +287,7 @@ angular.module('app.tabs',          ['ui.router']).config(function ($stateProvid
       }
     })
 });
-angular.module('app.newcustomer',      ['ui.router']).config(function ($stateProvider) {
+angular.module('app.newcustomer',   ['ui.router']).config(function ($stateProvider) {
   $stateProvider
     .state('app.newcustomer', {
       url:  '/newcustomer',
@@ -303,6 +303,29 @@ angular.module('app.newcustomer',      ['ui.router']).config(function ($statePro
       resolve: {
         scripts: function (lazyScript, generalService) {
           
+          return lazyScript.register([
+            '/js/smart/build/vendor.ui.js'
+          ]);
+        }
+      }
+    })
+});
+
+
+angular.module('app.test',       ['ui.router']).config(function ($stateProvider) {
+  $stateProvider
+    .state('app.test', {
+      url:  '/test',
+      data: {
+        title: 'Test'
+      },
+      views: {
+        "content@app": {
+          templateUrl: '/views/test.html',
+        }
+      },
+      resolve: {
+        scripts: function (lazyScript) {
           return lazyScript.register([
             '/js/smart/build/vendor.ui.js'
           ]);

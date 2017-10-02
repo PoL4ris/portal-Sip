@@ -94,6 +94,44 @@ class PabloController extends Controller
     {
 
 
+
+        $result['year']  = Date('Y');
+        $result['month'] = Date('m');
+
+
+        $timeData = 'CURRENT_DATE()';
+
+//        $loadResults = Charge::with('customer',
+//            'address',
+//            'invoice',
+//            'user',
+//            'productDetail.product')
+//            ->whereRaw('YEAR(due_date)  = YEAR('  . $timeData . ')')
+//            ->whereRaw('MONTH(due_date) = MONTH(' . $timeData . ')')
+//            ->take(10)
+//            ->get()
+//            ->toArray();
+        $loadResults = Invoice::with('customer', 'address')
+            ->whereRaw('YEAR(due_date)  = YEAR('  . $timeData . ')')
+            ->whereRaw('MONTH(due_date) = MONTH(' . $timeData . ')')
+            ->take(1)
+            ->get()
+            ->toArray();
+
+
+
+        print '<pre>';
+        dd($loadResults);
+        die();
+
+
+
+
+
+
+
+//CHANGE ROUTE
+
         return Customer::find($request->id);
 
         dd(Product::with('type')->orderBy('frequency', 'asc')->get()->take(10)->toArray());
