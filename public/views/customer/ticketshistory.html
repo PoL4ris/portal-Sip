@@ -64,30 +64,30 @@
             <div class="modal-body">
                 <div class="wrapper-sm">
                     <div class="row">
-                        <div class="field-data col-lg-12">
+                        <div class="field-data col-lg-12 col-md-12 col-sm-12">
                             <!--Name-->
-                            <div class="col-lg-12 no-padding-sides">
+                            <div class="col-lg-12 col-md-12 col-sm-12 no-padding-sides m-b-lg">
                                 <label><strong> {{selectedTicket.customer.first_name + ' ' + selectedTicket.customer.last_name}}</strong></label>
                             </div>
                             <!--Default Info-->
-                            <div class="col-lg-3 no-padding-sides">
+                            <div class="col-lg-4 col-md-4 col-sm-4 no-padding-sides">
                                 <div>Address</div>
                                 <small class="text-muted">{{selectedTicket.address.address}}</small>
                             </div>
-                            <div class="col-lg-3 no-padding-sides">
+                            <div class="col-lg-3 col-md-3 col-sm-3 no-padding-sides">
                                 <div>Tel</div>
                                 <small class="text-muted">{{selectedTicket.contacts.value}}</small>
                             </div>
-                            <div class="col-lg-3 no-padding-sides">
+                            <div class="col-lg-3 col-md-3 col-sm-3 no-padding-sides">
                                 <div>Email</div>
                                 <small class="text-muted">{{selectedTicket.customer.email}}</small>
                             </div>
-                            <div class="col-lg-3 no-padding-sides">
+                            <div class="col-lg-2 col-md-2 col-sm-2 no-padding-sides">
                                 <div>Status</div>
                                 <small class="text-muted">{{selectedTicket.status}}</small>
                             </div>
                             <!--Details Info-->
-                            <div class="col-lg-12 no-padding-sides m-t-lg m-b-sm bg-gray p-b-lg">
+                            <div class="col-lg-12 col-md-12 col-sm-12 no-padding-sides m-t-lg m-b-sm bg-gray p-b-lg">
                                 <form id="form-1-ticket">
                                     <div class="col-lg-12 no-padding-sides b-t-ddd b-b-ddd m-b-lg">
                                         <div class="pull-left m-t-md">Details:</div>
@@ -143,13 +143,13 @@
                             </div>
                             <!--Comments-->
 
-                            <div class="col-lg-12 b-t-ddd no-padding-sides p-t-lg p-b-lg m-t-lg summary-ticket-container">
+                            <div class="col-lg-12 col-md-12 col-sm-12 b-t-ddd no-padding-sides p-t-lg p-b-lg m-t-lg summary-ticket-container">
                                 <div>Summary:</div>
                                 <div ng-bind-html="selectedTicket.comment" class="comment-content m-b-md">{{selectedTicket.comment}}</div>
                             </div>
 
                             <!--Info Left Block-->
-                            <div class="col-lg-4 no-padding-sides bg-gray">
+                            <div class="col-lg-4 col-md-4 col-sm-4 no-padding-sides bg-gray">
                                 <div>Created by</div>
                                 <small class="text-muted">Auto</small>
                                 <div class="b-t-ddd m-t-md p-t-lg">Created on</div>
@@ -160,7 +160,7 @@
                                 </small>
                             </div>
                             <!--Update History Right Block-->
-                            <div class="col-lg-8 p-b-lg ">
+                            <div class="col-lg-8 col-md-8 col-sm-8 p-b-lg ">
                                 <div>History:</div>
                                 <form id="form-2-ticket">
                                     <input type="hidden" name="id_reasons" value="{{selectedTicket.reason.id}}">
@@ -182,7 +182,7 @@
                                 </form>
                             </div>
                             <!--History-->
-                            <div class="col-lg-12 b-t-ddd no-padding-sides p-t-lg p-b-lg">
+                            <div class="col-lg-12 col-md-12 col-sm-12 b-t-ddd no-padding-sides p-t-lg p-b-lg">
                                 <div>History:</div>
                                 <div class="thistory-container m-t-sm">
                                     <table class="table table-striped b-b">
