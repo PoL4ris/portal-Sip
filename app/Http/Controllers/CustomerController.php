@@ -25,6 +25,7 @@ use App\Models\Building;
 use App\Models\ContactType;
 use App\Models\ActivityLog;
 use App\Models\Charge;
+use App\Extensions\SIPCustomer;
 use App\Extensions\BillingHelper;
 
 /*
@@ -614,38 +615,40 @@ class CustomerController extends Controller {
     public function disableCustomerServices(Request $request)
     {
         $customer = Customer::find($request->id);
-        $activeService = CustomerProduct::find($request->idService);
-        $activeService->id_status = config('const.status.disabled');
-        $activeService->save();
+        $customerProduct = CustomerProduct::find($request->idService);
+        $customerProduct->id_status = config('const.status.disabled');
+        $customerProduct->save();
 
-        $this->cancelActiveChargesForCustomerProduct($activeService);
-        $this->cancelActiveInvoicesForCustomer($customer);
+        $sipCustomer = new SIPCustomer();
+        $sipCustomer->cancelActiveChargesForCustomerProduct($customerProduct);
+//        $this->cancelActiveChargesForCustomerProduct($activeService);
+//        $this->cancelActiveInvoicesForCustomer($customer);
 
         $newData = array();
         $newData['id_status'] = config('const.status.disabled');
 
-        $relationData = Product::find($activeService->id_products);
+        $relationData = Product::find($customerProduct->id_products);
 
-        ActivityLogs::add($this->logType, $request->id, 'update', 'disableCustomerServices', $activeService, $newData, $relationData, 'disable-service');
+        ActivityLogs::add($this->logType, $request->id, 'update', 'disableCustomerServices', $customerProduct, $newData, $relationData, 'disable-service');
 
         return $this->getCustomerServices($request);
 
     }
 
-    protected function cancelActiveChargesForCustomerProduct(CustomerProduct $customerProduct)
-    {
-
-        $charge = $customerProduct->activeCharge;
-        if ($charge == null)
-        {
-            Log::info('cancelActiveChargesForCustomerProduct(): CustomerProduct id=' . $customerProduct->id . ' has no active charges.');
-
-            return false;
-        }
-        $billingHelper = new BillingHelper();
-
-        return $billingHelper->removeChargeFromInvoice($charge);
-    }
+//    protected function cancelActiveChargesForCustomerProduct(CustomerProduct $customerProduct)
+//    {
+//
+//        $charge = $customerProduct->activeCharges;
+//        if ($charge == null)
+//        {
+//            Log::info('cancelActiveChargesForCustomerProduct(): CustomerProduct id=' . $customerProduct->id . ' has no active charges.');
+//
+//            return false;
+//        }
+//        $billingHelper = new BillingHelper();
+//
+//        return $billingHelper->removeChargeFromInvoice($charge);
+//    }
 
     protected function cancelActiveInvoicesForCustomer(Customer $customer)
     {
@@ -659,7 +662,7 @@ class CustomerController extends Controller {
         $count = 0;
         foreach ($pendingInvoices as $invoice)
         {
-            $billingHelper->markInvoiceAsCancelled($invoice);
+            $billingHelper->cancelInvoice($invoice);
             $count ++;
         }
         Log::info('cancelActiveInvoicesForCustomer(): Cancelled ' . $count . ' invoices for customer id=' . $customer->id);

@@ -326,38 +326,68 @@ class SIPCustomer {
 //
 //    }
 //
-//    protected function cancelActiveChargesForCustomerProduct(CustomerProduct $customerProduct)
-//    {
-//
-//        $charge = $customerProduct->activeCharge;
-//        if ($charge == null)
-//        {
-//            Log::info('cancelActiveChargesForCustomerProduct(): CustomerProduct id=' . $customerProduct->id . ' has no active charges.');
-//
-//            return false;
-//        }
-//        $billingHelper = new BillingHelper();
-//
-//        return $billingHelper->removeChargeFromInvoice($charge);
-//    }
-//
-//    protected function cancelActiveInvoicesForCustomer(Customer $customer)
-//    {
-//
-//        $firstDayOfMonthTime = strtotime("first day of this month 00:00:00");
-//        $timestampMysql = date('Y-m-d H:i:s', $firstDayOfMonthTime);
-//
-//        $pendingInvoices = $customer->pendingAutoPayInvoicesOnOrAfterTimestamp($timestampMysql);
-//        $billingHelper = new BillingHelper();
-//
-//        $count = 0;
-//        foreach ($pendingInvoices as $invoice)
-//        {
-//            $billingHelper->markInvoiceAsCancelled($invoice);
-//            $count ++;
-//        }
-//        Log::info('cancelActiveInvoicesForCustomer(): Cancelled ' . $count . ' invoices for customer id=' . $customer->id);
-//
-//        return true;
-//    }
+
+
+    public function cancelActiveChargesForCustomerProduct(CustomerProduct $customerProduct)
+    {
+
+        $charges = $customerProduct->activeCharges;
+        if ($charges == null)
+        {
+            Log::info('cancelActiveChargesForCustomerProduct(): CustomerProduct id=' . $customerProduct->id . ' has no active charges.');
+
+            return false;
+        }
+        $billingHelper = new BillingHelper();
+
+        foreach ($charges as $charge)
+        {
+            $billingHelper->removeChargeFromInvoice($charge);
+        }
+
+        return true;
+    }
+
+    protected function cancelActiveChargesForCustomer(Customer $customer)
+    {
+
+        $charges = $customer->allActiveCharges;
+        if ($charges == null)
+        {
+            Log::info('cancelActiveChargesForCustomer(): Customer id=' . $customer->id . ' has no active charges.');
+
+            return false;
+        }
+        
+        $billingHelper = new BillingHelper();
+        foreach ($charges as $charge)
+        {
+            $billingHelper->removeChargeFromInvoice($charge);
+        }
+
+        return true;
+    }
+
+    protected function cancelActiveInvoicesForCustomer(Customer $customer)
+    {
+
+        $invoices = $customer->allActiveInvoices;
+        if ($invoices == null)
+        {
+            Log::info('cancelActiveInvoicesForCustomer(): Customer id=' . $customer->id . ' has no active invoices.');
+
+            return false;
+        }
+
+        $billingHelper = new BillingHelper();
+        $count = 0;
+        foreach ($invoices as $invoice)
+        {
+            $billingHelper->cancelInvoice($invoice);
+            $count ++;
+        }
+        Log::info('cancelActiveInvoicesForCustomer(): Cancelled ' . $count . ' invoices for customer id=' . $customer->id);
+
+        return true;
+    }
 }

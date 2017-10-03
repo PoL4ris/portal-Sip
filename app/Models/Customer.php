@@ -171,20 +171,72 @@ class Customer extends Model {
             ->get();
     }
 
-    // TODO: complete the following two relation/functions
-//    public function activeInvoices()
-//    {
-//        return $this->hasMany('App\Models\Invoice', 'id_customers')
-//        ->where('invoices.processing_type', config('const.type.auto_pay'))
-//        ->where('invoices.status', config('const.invoice_status.pending'));
-//
-//    }
-//
-//
-//    public function activeCharges()
-//    {
-//
-//    }
+    /**
+     * Charge and Invoice relations
+     */
+    public function activeAutoPayCharges()
+    {
+        return $this->hasMany('App\Models\Charge', 'id_customers')
+            ->where('charges.processing_type', config('const.type.auto_pay'))
+            ->where(function ($query) {
+                $query->where('charges.status', config('const.charge_status.pending'))
+                    ->orWhere('charges.status', config('const.charge_status.invoiced'));
+            })
+            ->get();
+    }
+
+    public function activeManualCharges()
+    {
+        return $this->hasMany('App\Models\Charge', 'id_customers')
+            ->where('charges.processing_type', config('const.type.manual_pay'))
+            ->where(function ($query) {
+                $query->where('charges.status', config('const.charge_status.pending'))
+                    ->orWhere('charges.status', config('const.charge_status.invoiced'));
+            })
+            ->get();
+    }
+
+    public function allActiveCharges()
+    {
+        return $this->hasMany('App\Models\Charge', 'id_customers')
+            ->where(function ($query) {
+                $query->where('charges.status', config('const.charge_status.pending'))
+                    ->orWhere('charges.status', config('const.charge_status.invoiced'));
+            })
+            ->get();
+    }
+
+    public function activeAutoPayInvoices()
+    {
+        return $this->hasMany('App\Models\Invoice', 'id_customers')
+            ->where('invoices.processing_type', config('const.type.auto_pay'))
+            ->where(function ($query) {
+                $query->where('invoices.status', config('const.invoice_status.open'))
+                    ->orWhere('invoices.status', config('const.invoice_status.pending'));
+            })
+            ->get();
+    }
+
+    public function activeManualInvoices()
+    {
+        return $this->hasMany('App\Models\Invoice', 'id_customers')
+            ->where('invoices.processing_type', config('const.type.manual_pay'))
+            ->where(function ($query) {
+                $query->where('invoices.status', config('const.invoice_status.open'))
+                    ->orWhere('invoices.status', config('const.invoice_status.pending'));
+            })
+            ->get();
+    }
+
+    public function allActiveInvoices()
+    {
+        return $this->hasMany('App\Models\Invoice', 'id_customers')
+            ->where(function ($query) {
+                $query->where('invoices.status', config('const.invoice_status.open'))
+                    ->orWhere('invoices.status', config('const.invoice_status.pending'));
+            })
+            ->get();
+    }
 
 //    public function payment() {
 //        return $this->hasOne('App\Models\PaymentMethod', 'id_customers')

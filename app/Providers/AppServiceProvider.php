@@ -24,7 +24,8 @@ class AppServiceProvider extends ServiceProvider {
 
 //        Customer::saving(
 //
-//            function ($paymentMethod) {
+//            function ($customer) {
+//
 //
 //                $sipBilling = new SIPBilling();
 //

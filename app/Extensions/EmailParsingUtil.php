@@ -309,6 +309,11 @@ class EmailParsingUtil {
             return true;
         }
 
+        if ($email == 'MAILER-DAEMON@mail.silverip.net' && preg_match('/^Undelivered Mail Returned to Sender/', $subject))
+        {
+            return true;
+        }
+
         return false;
     }
 

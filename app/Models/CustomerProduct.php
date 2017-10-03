@@ -26,9 +26,21 @@ class CustomerProduct extends Model {
         return $this->belongsTo('App\Models\Status', 'id_status');
     }
 
-    public function activeCharge()
+    public function lastActiveCharge()
     {
-        return $this->hasOne('App\Models\Charge', 'id_customer_products')
+        return $this->activeCharges()->orderBy('due_date', 'desc')->take(1);
+
+//        hasOne('App\Models\Charge', 'id_customer_products')
+//            ->where(function ($query)
+//            {
+//                $query->where('charges.status', config('const.charge_status.pending'))
+//                    ->orWhere('charges.status', config('const.charge_status.invoiced'));
+//            });
+    }
+
+    public function activeCharges()
+    {
+        return $this->hasMany('App\Models\Charge', 'id_customer_products', 'id')
             ->where(function ($query)
             {
                 $query->where('charges.status', config('const.charge_status.pending'))
