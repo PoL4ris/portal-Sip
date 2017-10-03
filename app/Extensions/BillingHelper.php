@@ -184,16 +184,20 @@ class BillingHelper {
                 $query->where(function ($query2) {
                     // Get 'onetime' products that have not been charged (status = none or active)
                     $query2->where('products.frequency', '=', 'onetime')
-                        ->where('customer_products.charge_status', '=', config('const.customer_product_charge_status.none'))
-                        ->orWhere('customer_products.charge_status', '=', config('const.customer_product_charge_status.active'));
-                })->orWhere(function ($query3) use ($expiresBeforeMysqlDate) {
+                        ->where(function ($query3) {
+                            $query3->where('customer_products.charge_status', '=', config('const.customer_product_charge_status.none'))
+                                ->orWhere('customer_products.charge_status', '=', config('const.customer_product_charge_status.active'));
+                        });
+                })->orWhere(function ($query4) use ($expiresBeforeMysqlDate) {
                     // Get 'monthly' and/or 'annual' products that can be charged (status != paid or failed, freq is monthly or annual, and next_charge_date has expired)
-                    $query3->where('customer_products.charge_status', '<>', config('const.customer_product_charge_status.paid'))
+                    $query4->where('customer_products.charge_status', '<>', config('const.customer_product_charge_status.paid'))
                         ->where('customer_products.charge_status', '<>', config('const.customer_product_charge_status.failed'))
                         ->where('products.frequency', '<>', 'onetime')
                         ->where('products.frequency', '<>', 'included')
-                        ->whereNull('customer_products.next_charge_date')
-                        ->orWhere('customer_products.next_charge_date', '<', $expiresBeforeMysqlDate);
+                        ->where(function ($query5) use ($expiresBeforeMysqlDate) {
+                            $query5->whereNull('customer_products.next_charge_date')
+                                ->orWhere('customer_products.next_charge_date', '<', $expiresBeforeMysqlDate);
+                        });
                 });
             });
         }
@@ -250,7 +254,7 @@ class BillingHelper {
                                                         'product_frequency'       => $product->frequency,
                                                         'product_type'            => $product->type
             )),
-            'amount'               => number_format($product->amount, 2),
+            'amount'               => number_format($product->amount, 2, '.', ''),
             'qty'                  => 1,
             'id_customers'         => $customerProduct->id_customers,
             'id_customer_products' => $customerProduct->id,
@@ -289,7 +293,7 @@ class BillingHelper {
                                              'product_frequency'       => $product->frequency,
                                              'product_type'            => $product->type
         ));
-        $charge->amount = number_format($product->amount, 2);
+        $charge->amount = number_format($product->amount, 2, '.', '');
         $charge->id_address = $customerProduct->id_address;
         $charge->save();
 
@@ -301,7 +305,7 @@ class BillingHelper {
         $address = $customer->address;
 
         Charge::create(['description'     => 'Manual Charge',
-                        'amount'          => number_format($amount, 2),
+                        'amount'          => number_format($amount, 2, '.', ''),
                         'qty'             => 1,
                         'id_customers'    => $customer->id,
                         'id_address'      => $address->id,
@@ -322,7 +326,7 @@ class BillingHelper {
         $address = $customer->address;
 
         Charge::create(['description'     => 'Manual Refund',
-                        'amount'          => number_format($amount, 2),
+                        'amount'          => number_format($amount, 2, '.', ''),
                         'qty'             => 1,
                         'id_customers'    => $customer->id,
                         'id_address'      => $address->id,
@@ -351,7 +355,7 @@ class BillingHelper {
      */
     public function updateManualChargeAmount(Charge $charge, $amount, $comment, $userId = 0)
     {
-        $charge->amount = number_format($amount, 2);
+        $charge->amount = number_format($amount, 2, '.', '');
         $charge->comment = $comment;
         $charge->id_users = $userId;
         $charge->save();
@@ -544,7 +548,7 @@ class BillingHelper {
         }
 
         $customerProduct->last_charged = date('Y-m-d H:i:s');
-        $customerProduct->amount_owed -= number_format($customerProduct->product->amount, 2);
+        $customerProduct->amount_owed -= number_format($customerProduct->product->amount, 2, '.', '');
         $customerProduct->save();
 
         return true;
@@ -775,10 +779,10 @@ class BillingHelper {
 
         if ($charge->type == config('const.charge_type.charge'))
         {
-            $invoice->amount += number_format($charge->amount, 2);
+            $invoice->amount += number_format($charge->amount, 2, '.', '');
         } else
         {
-            $invoice->amount -= number_format($charge->amount, 2);
+            $invoice->amount -= number_format($charge->amount, 2, '.', '');
         }
         $invoice->save();
     }
@@ -786,6 +790,19 @@ class BillingHelper {
     public function removeChargeFromInvoice(Charge $charge)
     {
 
+        $invoice = $charge->invoice;
+        $this->cancelCharge($charge);
+
+        if ($invoice != null)
+        {
+            $this->updateInvoiceAmount($invoice);
+        }
+
+        return true;
+    }
+
+    public function deleteCharge(Charge $charge)
+    {
         $invoice = $charge->invoice;
         $charge->delete();
 
@@ -795,6 +812,39 @@ class BillingHelper {
         }
 
         return true;
+
+    }
+
+    public function cancelCharge(Charge $charge)
+    {
+
+        $invoice = $charge->invoice;
+        $charge->status = config('const.charge_status.cancelled');
+        $charge->id_invoices = null;
+        $charge->save();
+
+        return true;
+    }
+
+    public function cancelInvoice(Invoice $invoice)
+    {
+
+        $this->updateInvoiceChargeStatus($invoice, config('const.charge_status.cancelled'));
+        $invoice->status = config('const.invoice_status.cancelled');
+        $invoice->save();
+
+        return true;
+
+//        $charges = $invoice->charges;
+//        foreach ($charges as $charge)
+//        {
+//            $this->cancelCharge($charge);
+//        }
+//
+//        $invoice->status = config('const.invoice_status.cancelled');
+//        $invoice->save();
+//
+//        return true;
     }
 
     public function updateInvoiceAmount(Invoice $invoice)
@@ -812,11 +862,11 @@ class BillingHelper {
                 $total += $charge->amount;
             }
         }
-        $invoice->amount = number_format($total, 2);
+        $invoice->amount = number_format($total, 2, '.', '');
 
         if ($invoice->amount == 0)
         {
-            $invoice->delete();
+            $this->cancelInvoice($invoice);
         } else
         {
             $invoice->save();
@@ -928,14 +978,14 @@ class BillingHelper {
                 $query->where('due_date', 'is', 'NULL')
                     ->orWhere('due_date', '<=', $nowMysql)
                     ->orWhere('due_date', '');
-            })->chunk(200, function ($invoices) {
+            })->chunk(1, function ($invoices) {
                 foreach ($invoices as $invoice)
                 {
                     Log::info('BillingHelper::rerunPendingAutopayInvoices(): processing invoice id=' . $invoice->id . ' amount=$' . $invoice->amount);
                     $this->processInvoice($invoice, true, false, false);
 //                    break;
                 }
-                dd('Done');
+//                dd('Done');
             });
     }
 
@@ -1105,14 +1155,14 @@ class BillingHelper {
         return $updateCount;
     }
 
-    public function markInvoiceAsCancelled(Invoice $invoice)
-    {
-        $this->updateInvoiceChargeStatus($invoice, config('const.charge_status.cancelled'));
-        $invoice->status = config('const.invoice_status.cancelled');
-        $invoice->save();
-
-        return true;
-    }
+//    public function markInvoiceAsCancelled(Invoice $invoice)
+//    {
+//        $this->updateInvoiceChargeStatus($invoice, config('const.charge_status.cancelled'));
+//        $invoice->status = config('const.invoice_status.cancelled');
+//        $invoice->save();
+//
+//        return true;
+//    }
 
     public function updateInvoiceChargeStatus(Invoice $invoice, $status)
     {
@@ -1574,6 +1624,38 @@ class BillingHelper {
 
     protected function sendInvoiceReceiptEmail(Invoice $invoice, $chargeResult)
     {
+
+//        $template = 'email.template_customer_invoice_receipt';
+//        $subject = 'Service Charge Receipt';
+//
+//        if ($invoice->due_date != null)
+//        {
+//            $invoiceDueDateTime = strtotime($invoice->due_date);
+//            $month = date('F', $invoiceDueDateTime);
+//            $year = date('Y', $invoiceDueDateTime);
+//        }
+//        $subject = 'Service Charge Receipt: ' . $month . ' ' . $year;
+//
+//        $customer = Customer::find($invoice->id_customers);
+//        $customerEmail = ($customer->emailAddress == null) ? 'peyman@silverip.com' : $customer->emailAddress->value;
+//        $toAddress = ($this->testMode) ? 'peyman@silverip.com' : $customerEmail;
+//        $address = $customer->address;
+//
+//        $chargeDetails = array();
+//        $chargeDetails['TRANSACTIONId'] = $chargeResult['TRANSACTIONID'];
+//        $chargeDetails['PaymentType'] = $chargeResult['PaymentType'];
+//        $chargeDetails['PaymentTypeDetails'] = $chargeResult['PaymentTypeDetails'];
+//
+//        $charges = $invoice->details();
+//        $total = $invoice->amount;
+//
+//
+//        Mail::send(array('html' => $template), ['customer' => $customer, 'address' => $address, 'charges' => $charges, 'total' => $total, 'chargeDetails' => $chargeDetails], function ($message) use ($toAddress, $customer, $subject) {
+//            $message->from('help@silverip.com', 'SilverIP Customer Care');
+//            $message->to($toAddress, trim($customer->first_name) . ' ' . trim($customer->last_name))->subject($subject);
+//        });
+
+
         $month = date('F');
         $year = date('Y');
 
@@ -1628,6 +1710,7 @@ class BillingHelper {
         Mail::send(array('html' => $template), ['invoice' => $invoice, 'customer' => $customer, 'address' => $address, 'lineItems' => $lineItems, 'chargeDetails' => $chargeDetails], function ($message) use ($toAddress, $subject, $customer, $address, $lineItems, $chargeDetails) {
             $message->from('help@silverip.com', 'SilverIP Customer Care');
             $message->to($toAddress, trim($customer->first_name) . ' ' . trim($customer->last_name))->subject($subject);
+            $message->bcc('peyman@silverip.com', trim($customer->first_name) . ' ' . trim($customer->last_name))->subject($subject);
         });
     }
 
