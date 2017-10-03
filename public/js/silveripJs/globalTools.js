@@ -14,9 +14,9 @@ app.controller('globalToolsCtl',                    function ($scope, $http, $co
   });
 
 
-  //console.log($.browser.mobile);
+  console.log($.browser.mobile);
   $scope.mobDevice = $.browser.mobile;
-  $scope.mobDevice = false;
+  $scope.mobDevice = true;
 
 //  console.log($scope.statusArrayConstant);
 //  console.log(localStorage);
@@ -490,8 +490,6 @@ app.controller('globalToolsCtl',                    function ($scope, $http, $co
 
   $scope.idSearch = function(){
 //    console.log('this is idSearch');
-//    console.log(this.adminSearch);
-//    return;
 //ROUTE         return Customer::find($request->id);
 
     if(!this.adminSearch)
@@ -499,25 +497,25 @@ app.controller('globalToolsCtl',                    function ($scope, $http, $co
       console.log('emptyString');
     }
     else {
-      $http.get("getCustomerById", {params:{'id':this.adminSearch}})
-        .then(function (response) {
+    $http.get("getCustomerById", {params:{'id':this.adminSearch}})
+      .then(function (response) {
 
-          $scope.idCustomerResult = response.data;
+        $scope.idCustomerResult = response.data;
 
-          if($scope.idCustomerResult)
-          {
-            $('#admin-id-search-input').val('');
-            window.location = '#/customers?id='+response.data.id
-          }
-          else
-          {
-            $('#admin-id-search-input').val('Customer not in the DB').css('color', 'crimson');
-            setTimeout( function(){
-              $('#admin-id-search-input').val('').css('color', 'inherit');
-            }  , 1000 );
-          }
+        if($scope.idCustomerResult)
+        {
+          $('#admin-id-search-input').val('');
+          window.location = '#/customers?id='+response.data.id
+        }
+        else
+        {
+          $('#admin-id-search-input').val('Customer not in the DB').css('color', 'crimson');
+          setTimeout( function(){
+            $('#admin-id-search-input').val('').css('color', 'inherit');
+          }  , 1000 );
+        }
 
-        });
+      });
 
     }
 
