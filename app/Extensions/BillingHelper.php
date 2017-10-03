@@ -877,7 +877,7 @@ class BillingHelper {
      * Invoice processing functions
      */
 
-    public function processPendingAutopayInvoices($notifyViaEmail = true, $records = 200)
+    public function processPendingAutopayInvoices($notifyViaEmail = true, $records = 1)
     {
 
         $nowMysql = date("Y-m-d H:i:s");
