@@ -978,7 +978,7 @@ class BillingHelper {
                 $query->where('due_date', 'is', 'NULL')
                     ->orWhere('due_date', '<=', $nowMysql)
                     ->orWhere('due_date', '');
-            })->chunk(1, function ($invoices) {
+            })->chunk(200, function ($invoices) {
                 foreach ($invoices as $invoice)
                 {
                     Log::info('BillingHelper::rerunPendingAutopayInvoices(): processing invoice id=' . $invoice->id . ' amount=$' . $invoice->amount);
