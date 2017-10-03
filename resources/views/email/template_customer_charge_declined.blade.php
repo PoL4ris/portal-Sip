@@ -14,9 +14,9 @@
   </style>
 </head>
 <body>
-<p class='p1'><strong><img src="http://www.silverip.com/silverip-tiny-logo-clear.png" alt=" SilverIP Communications" width="165" height="70"></strong><br>
-  <br>
-</p>
+{{--<p class='p1'><strong><img src="http://www.silverip.com/silverip-tiny-logo-clear.png" alt=" SilverIP Communications" width="165" height="70"></strong><br>--}}
+  {{--<br>--}}
+{{--</p>--}}
 <p class='p1'>Dear {{ trim($customer->first_name) }} {{ trim($customer->last_name) }},</p>
 <p class='p2'></p>
 @if($chargeDetails['PaymentType'] == 'Credit Card')

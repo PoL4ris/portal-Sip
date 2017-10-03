@@ -31,170 +31,80 @@
         span.s1 {
             font: 12.0px Avenir
         }
-
-        .content-mail {
-            width: 700px;
-            margin: 0 auto;
-        }
-
-        .banner {
-            background: #ddd;
-            text-align: center;
-            font-size: 16px;
-            padding: 4px 0;
-        }
-
-        .table-line {
-            margin: 40px 0px 20px 0px;
-            width: 100%;
-        }
-
-        .line-black {
-            border-bottom: 1px solid #ddd;
-        }
-
-        .silver-logo {
-            float: right;
-            padding-right: 25px;
-
-        }
-
-        .pull-left {
-            float: left;
-        }
     </style>
 </head>
 <body>
-
-
-<div class="content-mail">
-
-    <p class='p2'></p>
-    <p class='p1'>Dear {{ trim($customer->first_name) }} {{ trim($customer->last_name) }},</p>
-    <p class='p2'></p>
-    <p class='p1'>
-        We hope you have been enjoying your SilverIP service.
-        {{--<br>--}}
-        This email is your receipt for the charges
-        @if($chargeDetails['PaymentType'] == 'Credit Card')
-            that we made on your credit card
-        @elseif($chargeDetails['PaymentType'] == 'Checking Account')
-            that we deducted from your checking account
-        @else
-            that we made on your account
-        @endif
-        ending in {{ substr($chargeDetails['PaymentTypeDetails']['last four'], -4) }}.
-        {{--<br>--}}
-    </p>
-    <br>
-    {{--<p class='p1'>--}}
-    {{--<strong>--}}
-    {{--Please Note:--}}
+{{--<p class='p1'><strong><img src="http://www.silverip.com/silverip-tiny-logo-clear.png" alt=" SilverIP Communications"--}}
+                           {{--width="165" height="70"></strong><br>--}}
     {{--<br>--}}
-    {{--</strong>--}}
-    {{--If this the first time you are logging in to the MyAccount site your username is the email address you initially--}}
-    {{--registered with and your password is the ten digit phone number--}}
-    {{--<strong>--}}
-    {{--(e.g. 3121112222 without dashes or periods)--}}
-    {{--</strong>--}}
-    {{--that you initially registered with. We encourage you to change this password when you login for the first time.--}}
-    {{--</p>--}}
-    <p class='p2'></p>
-    <br>
-    <p class='p1 banner'>
-        <strong>
-            Your Invoice
-        </strong>
-    </p>
-    <br>
-    <p class='p1 pull-left'>
-        {{ trim($customer->first_name) }} {{ trim($customer->last_name) }}<br>
-        {{ $address->address }}
-        @if($address->unit != '')
-            # {{ $address->unit }}<br>
-        @else
-            <br>
-        @endif
-        {{ $address->city }}, {{ $address->state }} {{ $address->zip }}<br>
-    <div class="silver-logo">
-        <img src="http://www.silverip.net/logo.png" alt="SilverIP Communications"
-             width="165" height="37">
-    </div>
-    </p>
-    <br>
-    {{--<hr>--}}
-    <br>
-    <table class="table-line">
-        <thead>
+{{--</p>--}}
+<p class='p1'>Dear {{ trim($customer->first_name) }} {{ trim($customer->last_name) }},</p>
+<p class='p2'></p>
+<p class='p1'>We hope you are enjoying your SilverIP service! This email is your receipt for the charges
+    @if($chargeDetails['PaymentType'] == 'Credit Card')
+        that we made on your credit card
+    @elseif($chargeDetails['PaymentType'] == 'Checking Account')
+        that we deducted from your checking account
+    @else
+        that we made on your account
+    @endif
+    ending in {{ substr($chargeDetails['PaymentTypeDetails']['last four'], -4) }}.</p>
+<p class='p3'><span class='s1'>If you have any questions or concerns regarding this receipt please contact  SilverIP Customer Support.<span
+                class='Apple-converted-space'></span></p>
+<p class='p4'></p>
+<p class='p3'>Sincerely,</p>
+<p class='p2'><br></p>
+<p class='p1'> SilverIP Customer Support<br>help@silverip.com<br>312-242-3794</p>
+<hr>
+<p class='p1'>&nbsp;</p>
+<p class='p1'><strong>Monthly Invoice</strong></p>
+<p class='p1'>{{ trim($customer->first_name) }} {{ trim($customer->last_name) }}<br>
+    {{ $address->address }}<br>
+    {{ $address->city }}, {{ $address->state }} {{ $address->zip }}<br>
+</p>
+<table width="350" border="0" cellspacing="1" cellpadding="1">
+    <tr>
+        <td width="184"><p class="p1"><strong>Summary of Charges</strong></p></td>
+        <td width="109">&nbsp;</td>
+    </tr>
+    @foreach($lineItems as $lineItem)
         <tr>
-            <td width="300px"><p class="p1"><strong>Product</strong></p></td>
-            <td width="100px"><p class="p1"><strong>Invoice #</strong></p></td>
-            <td width="150px"><p class="p1"><strong>Period</strong></p></td>
-            <td width="100px"><p class="p1"><strong>Amount</strong></p></td>
+            <td>
+                <p class="p1">{{ ucfirst($lineItem['product_name']) }}</p>
+            </td>
+            <td>
+                <p class="p1">${{ number_format($lineItem['product_amount'], 2, '.', '') }}</p>
+            </td>
         </tr>
-        <tr>
-            <td colspan="100%" class="line-black"></td>
-        </tr>
-        </thead>
-        @foreach($charges as $charge)
-            <tr>
-                <td>
-                    <p class="p1">{{ $charge['product_desc'] }}</p>
-                </td>
-                <td>
-                    <p class="p1">{{ $charge['invoice_id'] }}</p>
-                </td>
-                <td>
-                    @if($charge['product_frequency'] == 'monthly')
-                        <p class="p1">{{ date('M Y', strtotime($charge['start_date'])) }}</p>
-                    @elseif($charge['product_frequency'] == 'annual')
-                        <p class="p1">{{ date('Y', strtotime($charge['start_date'])).' - '.date('Y', strtotime($charge['end_date'])) }}</p>
-                    @endif
-                </td>
-                <td>
-                    <p class="p1">${{ number_format($charge['product_amount'], 2, '.', '') }}</p>
-                </td>
-            </tr>
-        @endforeach
-        <tr>
-            <td colspan="100%"><br></td>
-        </tr>
-        <tr>
-            <td><p class="p1">Sales Tax</td>
-            <td><p class="p1"></td>
-            <td><p class="p1"></td>
-            <td><p class="p1">$0.00</p></td>
-        </tr>
-        <tr>
-            <td><p class="p1">Other</td>
-            <td><p class="p1"></td>
-            <td><p class="p1"></td>
-            <td><p class="p1">$0.00</p></td>
-        </tr>
-        <tr>
-            <td colspan="100%" height="2px"  bgcolor="#FFFFFF"></td>
-        </tr>
-        <tr>
-            <td colspan="100%" class="line-black"></td>
-        </tr>
-        <tr>
-            <td><p class="p1"><strong>Total Amount Charged</strong></p></td>
-            <td><p class="p1"></td>
-            <td><p class="p1"></td>
-            <td><p class="p1"><strong>${{ number_format($total, 2, '.', '') }}</strong></p></td>
-        </tr>
-    </table>
-    <br>
-    <hr>
-    <p class='p1'>&nbsp;</p>
-    <p class='p3'><span class='s1'>Thank you for being a valued customer. As always, if you have any questions or concerns, please contact us at 312-600-3800 or email us at <a href="mailto:help@silverip.com">help@silverip.com<a></a> at your earliest convenience.</span>
-    </p>
-    <p class='p4'></p>
-    <p class='p3'>Sincerely,</p>
-    <p class='p2'><br></p>
-    <p class='p1'> SilverIP Customer Support<br>help@silverip.com<br>312-600-3800</p>
-    {{--<hr>--}}
-    <p class='p1'>&nbsp;</p>
-</div>
+    @endforeach
+    <tr>
+        <td><p class="p1">Sales Tax</td>
+        <td><p class="p1">$0.00</p></td>
+    </tr>
+    <tr>
+        <td><p class="p1">Other</td>
+        <td><p class="p1">$0.00</p></td>
+    </tr>
+    <tr>
+        <td height="2px" colspan="2" bgcolor="#FFFFFF">
+            <hr>
+        </td>
+    </tr>
+    <tr>
+        <td><p class="p1"><strong>Total Amount Charged</strong></p></td>
+        <td><p class="p1"><strong>${{ number_format($invoice->amount, 2, '.', '') }}</strong></p></td>
+    </tr>
+    <tr>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+    </tr>
+    <tr>
+        <td><p class="p1">Paid {{ date('F j, Y') }}:</p></td>
+        <td><p class="p1">{{ substr($chargeDetails['PaymentTypeDetails']['last four'], -4) }}</p></td>
+    </tr>
+</table>
+<p class='p1'>&nbsp;</p>
+<hr>
+<p class='p1'>&nbsp;</p>
 </body>
 </html>

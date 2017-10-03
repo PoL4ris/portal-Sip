@@ -985,7 +985,7 @@ class BillingHelper {
                     $this->processInvoice($invoice, true, false, false);
 //                    break;
                 }
-//                dd('Done');
+                dd('Done');
             });
     }
 
