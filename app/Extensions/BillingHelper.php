@@ -1050,7 +1050,7 @@ class BillingHelper {
             $this->markInvoiceAsPaid($invoice);
             $this->logInvoice($invoice, 'processed', $transactionId);
 
-            if ($notifyViaEmail && $notifyViaEmailOnlyIfPassed)
+            if ($notifyViaEmail)
             {
                 $this->sendInvoiceReceiptEmail($invoice, $chargeResult);
             }
