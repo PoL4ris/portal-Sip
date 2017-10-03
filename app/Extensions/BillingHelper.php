@@ -893,12 +893,15 @@ class BillingHelper {
                 {
                     Log::info('BillingHelper::processPendingAutopayInvoices(): processing invoice id=' . $invoice->id . ' amount=$' . $invoice->amount);
                     $this->processInvoice($invoice, $notifyViaEmail);
+                    -- $records;
                 }
 
                 if ($records > 0)
                 {
                     return true;
                 }
+
+                return false;
             });
 
         return true;
@@ -979,7 +982,7 @@ class BillingHelper {
                     ->orWhere('due_date', '<=', $nowMysql)
                     ->orWhere('due_date', '');
             })
-            ->where('updated_at' , '<', '2017-10-03 13:00:00')
+            ->where('updated_at', '<', '2017-10-03 13:00:00')
             ->chunk(200, function ($invoices) {
                 foreach ($invoices as $invoice)
                 {
