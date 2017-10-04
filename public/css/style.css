@@ -1604,10 +1604,26 @@ table.dataTable tbody tr {
   /*filter: blur(1px);*/
 }
 .bld-actions{
-  border-bottom: none;
-  border-top: none;
-  border-left: none;
+  box-shadow: none;
   border-radius: 0px;
+  background: none;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 0px;
+}
+.al-tab-view #activity-log{
+  background: white;
+  box-shadow: none;
+  border-radius: 0px;
+}
+.al-tab-view #activity-log .al-box .al-type-title{
+  display: none;
+}
+.al-tab-view #activity-log .al-box .al-box-container{
+  background: none;
+}
+.al-tab-view .panel-body{
+  overflow: auto;
+  max-height: 300px;
 }
 pre {
   font-size: 10px;

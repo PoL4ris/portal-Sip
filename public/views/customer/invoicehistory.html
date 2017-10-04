@@ -1,9 +1,10 @@
 <div class="col-lg-12 billing-history-table" ng-controller="customerInvoiceHistoryController">
     <div id="customer-view-0">
         <div class="panel panel-default no-border table-container animated fadeInLeft">
-            <table id="myTables" class="tablesorter table" datatable="ng">
+            <table id="myTables" class="tablesorter table" datatable="ng" dt-options="invoiceOptions">
                 <thead>
                 <tr>
+                    <th>ID</th>
                     <th>Status</th>
                     <th>Description</th>
                     <th>Failed Charges</th>
@@ -16,6 +17,7 @@
                 </thead>
                 <tbody>
                 <tr ng-repeat="invoice in invoiceData">
+                    <td class="capital-first">{{ invoice.id }}</td>
                     <td class="capital-first">{{ invoice.status }}</td>
                     <td class="capital-first">{{ invoice.description }}</td>
                     <td>{{ invoice.failed_charges_count }}</td>

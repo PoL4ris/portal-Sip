@@ -7,7 +7,7 @@ angular.module('app.buildings',     ['ui.router']).config(function ($stateProvid
       },
       views: {
         "content@app": {
-          templateUrl: '/views/building/building.html',
+          templateUrl: '/views/building/building.html?'+appConfig.appCacheClear,
           controller:  'buildingCtl'
         }
       },
@@ -15,7 +15,7 @@ angular.module('app.buildings',     ['ui.router']).config(function ($stateProvid
         scripts: function (lazyScript, customerService, generalService) {
           customerService.stateRoute = 'buildings';
           generalService.stateRoute  = 'buildings';
-          
+
           return lazyScript.register([
             '/js/smart/build/vendor.ui.js'
           ]);
@@ -32,7 +32,7 @@ angular.module('app.customershome', ['ui.router']).config(function ($stateProvid
       },
       views: {
         "content@app": {
-          templateUrl: '/views/customersHome.html',
+          templateUrl: '/views/customersHome.html?'+appConfig.appCacheClear,
           controller:  'customersHomeController'
         }
       },
@@ -40,7 +40,7 @@ angular.module('app.customershome', ['ui.router']).config(function ($stateProvid
         scripts: function (lazyScript, customerService, generalService) {
           customerService.stateRoute = 'customershome';
           generalService.stateRoute  = 'customershome';
-          
+
           return lazyScript.register([
             '/js/smart/build/vendor.ui.js'
           ]);
@@ -52,17 +52,16 @@ angular.module('app.customers',     ['ui.router']).config(function ($stateProvid
   $stateProvider
     .state('app.customers', {
       url:  '/customers?{id:int}',
-      params: { cache: false },
       data: {
         title: 'Customers'
       },
       views: {
         "content@app": {
-          templateUrl: '/views/customers.html',
+          templateUrl: '/views/customers.html?'+appConfig.appCacheClear,
           controller:  'customerController',
         },
         "silveriptool": {
-          templateUrl: '/views/silverip-tool.html',
+          templateUrl: '/views/customer/activityLog.html?'+appConfig.appCacheClear,
           controller:  'customerController',
         }
       },
@@ -70,7 +69,7 @@ angular.module('app.customers',     ['ui.router']).config(function ($stateProvid
         scripts: function (lazyScript, customerService, generalService) {
           customerService.stateRoute  = 'customers';
           generalService.stateRoute   = 'customers';
-          
+
           return lazyScript.register([
             '/js/smart/build/vendor.ui.js'
           ]);
@@ -87,13 +86,13 @@ angular.module('app.network',       ['ui.router']).config(function ($stateProvid
       },
       views: {
         "content@app": {
-          templateUrl: '/views/allNetwork.html',
+          templateUrl: '/views/allNetwork.html?'+appConfig.appCacheClear,
           controller:  'networkController as datatables'
         }
       },
       resolve: {
         scripts: function (lazyScript, generalService) {
-          
+
           return lazyScript.register([
             '/js/smart/build/vendor.ui.js'
           ]);
@@ -110,7 +109,7 @@ angular.module('app.support',       ['ui.router']).config(function ($stateProvid
       },
       views: {
         "content@app": {
-          templateUrl: '/views/support/support.html',
+          templateUrl: '/views/support/support.html?'+appConfig.appCacheClear,
           controller:  'supportController'
         }
       },
@@ -118,7 +117,7 @@ angular.module('app.support',       ['ui.router']).config(function ($stateProvid
         scripts: function (lazyScript, customerService, generalService) {
           customerService.stateRoute  = 'support';
           generalService.stateRoute   = 'support';
-          
+
           return lazyScript.register([
             '/js/smart/build/vendor.ui.js'
           ]);
@@ -137,7 +136,7 @@ angular.module('app.calendar',      ['ui.router']).config(function ($stateProvid
       views: {
         "content@app": {
 //           templateUrl: '/views/billing.html'
-          templateUrl: '/views/v2Test.html'
+          templateUrl: '/views/v2Test.html?'+appConfig.appCacheClear,
         }
       },
       resolve: {
@@ -158,13 +157,13 @@ angular.module('app.reports',       ['ui.router']).config(function ($stateProvid
       },
       views: {
         "content@app": {
-          templateUrl: '/views/reports.html',
+          templateUrl: '/views/reports.html?'+appConfig.appCacheClear,
           controller:  'reportController',
         }
       },
       resolve: {
         scripts: function (lazyScript, generalService) {
-          
+
           return lazyScript.register([
             '/js/smart/build/vendor.ui.js'
           ]);
@@ -181,13 +180,13 @@ angular.module('app.admin',         ['ui.router']).config(function ($stateProvid
       },
       views: {
         "content@app": {
-          templateUrl: '/views/admin/admin.html',
+          templateUrl: '/views/admin/admin.html?'+appConfig.appCacheClear,
           controller:  'adminController'
         }
       },
       resolve: {
         scripts: function (lazyScript, generalService) {
-          
+
           return lazyScript.register([
             '/js/smart/build/vendor.ui.js'
           ]);
@@ -204,13 +203,13 @@ angular.module('app.walkthrough',   ['ui.router']).config(function ($stateProvid
       },
       views: {
         "content@app": {
-          templateUrl: '/views/mobile/walkthrough.html',
+          templateUrl: '/views/mobile/walkthrough.html?'+appConfig.appCacheClear,
           controller:  'dropZoneController as app',
         }
       },
       resolve: {
         scripts: function (lazyScript, generalService) {
-          
+
           return lazyScript.register([
             '/js/smart/build/vendor.ui.js'
           ]);
@@ -227,7 +226,7 @@ angular.module('app.warpol',        ['ui.router']).config(function ($stateProvid
       },
       views: {
         "content@app": {
-          templateUrl: '/views/warpol.html',
+          templateUrl: '/views/warpol.html?'+appConfig.appCacheClear,
           controller:  'dropZoneController as app',
         }
       },
@@ -250,13 +249,13 @@ angular.module('app.dummyapp',      ['ui.router']).config(function ($stateProvid
       },
       views: {
         "content@app": {
-          templateUrl: '/views/dummyapp.html',
+          templateUrl: '/views/dummyapp.html?'+appConfig.appCacheClear,
           controller: 'dummyAppController',
         }
       },
       resolve: {
         scripts: function (lazyScript, generalService) {
-          
+
           return lazyScript.register([
             '/js/smart/build/vendor.ui.js'
           ]);
@@ -273,13 +272,13 @@ angular.module('app.charges',       ['ui.router']).config(function ($stateProvid
       },
       views: {
         "content@app": {
-          templateUrl: '/views/billing/billing.html',
+          templateUrl: '/views/billing/billing.html?'+appConfig.appCacheClear,
           controller: 'chargesController',
         }
       },
       resolve: {
         scripts: function (lazyScript, generalService) {
-          
+
           return lazyScript.register([
             '/js/smart/build/vendor.ui.js'
           ]);
@@ -296,7 +295,7 @@ angular.module('app.tabs',          ['ui.router']).config(function ($stateProvid
       },
       views: {
         "content@app": {
-          templateUrl: '/views/warp.html',
+          templateUrl: '/views/warp.html?'+appConfig.appCacheClear,
           controller:  'dummyAppController',
         }
       },
@@ -319,13 +318,13 @@ angular.module('app.newcustomer',   ['ui.router']).config(function ($stateProvid
       },
       views: {
         "content@app": {
-          templateUrl: '/views/newcustomer.html',
+          templateUrl: '/views/newcustomer.html?'+appConfig.appCacheClear,
           controller: 'newcustomerAppController',
         }
       },
       resolve: {
         scripts: function (lazyScript, generalService) {
-          
+
           return lazyScript.register([
             '/js/smart/build/vendor.ui.js'
           ]);
@@ -342,7 +341,7 @@ angular.module('app.test',          ['ui.router']).config(function ($stateProvid
       },
       views: {
         "content@app": {
-          templateUrl: '/views/test.html',
+          templateUrl: '/views/test.html?'+appConfig.appCacheClear,
         }
       },
       resolve: {
@@ -350,6 +349,7 @@ angular.module('app.test',          ['ui.router']).config(function ($stateProvid
           return lazyScript.register([
             '/js/smart/build/vendor.ui.js'
           ]);
+
         }
       }
     })
@@ -434,6 +434,7 @@ app.factory('generalService',   function () {
     statusArrayConstant : constArray,
     sideBarFlag: false,
     rightView: false,
+    cacheClear: appConfig.appCacheClear,
   };
 });
 
