@@ -74,7 +74,8 @@ class BuildingController extends Controller {
                 ->orderBy('buildings.id', 'desc')
                 ->get();
         } else
-            return Building::where('code', 'like', '%' . $request['query'] . '%')
+            return Building::with('address')
+                ->where('code', 'like', '%' . $request['query'] . '%')
                 ->orWhere('name', 'like', '%' . $request['query'] . '%')
                 ->orderBy('id', 'desc')->get();
     }
@@ -447,20 +448,20 @@ class BuildingController extends Controller {
         $buildingId = $request->id;
 
         $building = Building::find($buildingId);
-        if($building != null){
+        if ($building != null)
+        {
             return $building->switches;
         }
+
         return array();
     }
-
-
-
 
 
     public function productsSearch(Request $request)
     {
         return Product::where('name', 'like', '%' . $request['string'] . '%')->paginate(10)->setPath('');
     }
+
     public function insertBuildingProducts(Request $request)
     {
         $data = $request->all();
@@ -469,17 +470,17 @@ class BuildingController extends Controller {
 
         unset($data['id_buildings']);
 
-        foreach($data as $index => $item)
+        foreach ($data as $index => $item)
         {
-            $verifyProd = BuildingProduct::where('id_buildings',$id_building)->where('id_products', $index)->first();
-            if(isset($verifyProd))
+            $verifyProd = BuildingProduct::where('id_buildings', $id_building)->where('id_products', $index)->first();
+            if (isset($verifyProd))
                 continue;
             else
             {
                 $newBldProduct = new BuildingProduct;
                 $newBldProduct->id_buildings = $id_building;
-                $newBldProduct->id_products  = $index;
-                $newBldProduct->id_status    = config('const.status.active');
+                $newBldProduct->id_products = $index;
+                $newBldProduct->id_status = config('const.status.active');
                 $newBldProduct->save();
             }
         }

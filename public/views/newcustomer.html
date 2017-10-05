@@ -1,28 +1,30 @@
 <hr>
 
-<!--<div class="col-lg-12">-->
-    <!--<button class="btn btn-danger" ng-click="resetFullForm()">PUSH THE RED BUTTON</button>-->
-<!--</div>-->
+<div class="col-lg-12">
+<button class="btn btn-danger" ng-click="resetFullForm()">Reset Form</button>
+</div>
 
 <div class="col-lg-12 cn-customer">
     <div class="container relative">
-        <div class="loading-bg" ng-if="loadingResponse">
-            <img src="/img/loading.gif" alt="" class="loading-gif-support" >
+        <div class="loading-bg" ng-if="showSpinner">
+            <img src="/img/loading.gif" alt="" class="loading-gif-support">
         </div>
         <div class="widget-body fuelux" data-smart-fuelux-wizard data-smart-wizard-callback="wizard2CompleteCallback">
             <div class="wizard">
                 <ul class="steps">
-                    <li data-step="1" class="active"><span class="badge badge-info">1</span>Contact Info<span class="chevron"></span></li>
+                    <li data-step="1" class="active"><span class="badge badge-info">1</span>Contact Info<span
+                            class="chevron"></span></li>
                     <li data-step="2"><span class="badge">2</span>Address Info<span class="chevron"></span></li>
                     <li data-step="3"><span class="badge">3</span>Service Info<span class="chevron"></span></li>
                     <li data-step="4"><span class="badge">4</span>Network Info<span class="chevron"></span></li>
                     <li data-step="5"><span class="badge">5</span>Summary<span class="chevron"></span></li>
                 </ul>
                 <div class="actions">
-                    <button type="button" class="btn btn-sm btn-primary btn-prev" >
+                    <button type="button" class="btn btn-sm btn-primary btn-prev">
                         <i class="fa fa-arrow-left"></i>Prev
                     </button>
-                    <button type="button" class="btn btn-sm btn-success btn-next" data-last="Finish" id="next-step-btn" ng-click="verifyCForm()">
+                    <button type="button" class="btn btn-sm btn-success btn-next" data-last="Finish" id="next-step-btn"
+                            ng-click="verifyNewCustomerForm()">
                         Next<i class="fa fa-arrow-right"></i>
                     </button>
                 </div>
@@ -32,20 +34,24 @@
                 <form class="form-horizontal" id="new-customer-form">
                     <!-- CUSTOMER INFO -->
                     <div class="step-pane active" data-step="1">
-                        <h3><strong>Step 1 </strong> - Contact Information</h3>
+                        <h3><strong>Step 1 </strong> - Fill in the customer information</h3>
                         <fieldset>
                             <div class="col-lg-6">
                                 <div class="row">
                                     <div class="col-lg-12 cn-containers">
-                                        <label for="" class="">First Name<span class="down-status">*</span></label>
-                                        <input type="text" ng-keyup="validateField('name', $event)" ng-model="model['fname']" placeholder="First Name" modelname="fname" id="cn-fname">
+                                        <label for="" class="">First Name: <span class="down-status">*</span></label>
+                                        <input type="text" ng-keyup="validateField('name', $event)"
+                                               ng-model="model['fname']" placeholder="First Name" modelname="fname"
+                                               id="cn-fname">
                                     </div>
                                     <div class="col-lg-12 cn-containers">
-                                        <label for="" class="">Last Name<span class="down-status">*</span></label>
-                                        <input type="text" ng-keyup="validateField('name', $event); " ng-model="model['lname']" placeholder="Last Name" modelname="lname" id="cn-lname">
+                                        <label for="" class="">Last Name: <span class="down-status">*</span></label>
+                                        <input type="text" ng-keyup="validateField('name', $event); "
+                                               ng-model="model['lname']" placeholder="Last Name" modelname="lname"
+                                               id="cn-lname">
                                     </div>
                                     <div class="col-lg-12 cn-containers">
-                                        <label for="" class="">VIP</label>
+                                        <label for="" class="">VIP: </label>
                                         <input type="text" placeholder="Ex: Friend of Silver" ng-model="validVip">
                                     </div>
                                 </div>
@@ -56,12 +62,14 @@
                                         <label for="">Default Status: <span class="up-status">Active</span></label>
                                     </div>
                                     <div class="col-lg-12 cn-containers">
-                                        <label for="" class="">Phone Number<span class="down-status">*</span></label>
-                                        <input type="text" placeholder="Ex: 312-123-5533" ng-keyup="validateField('tel', $event)" ng-model="validaTel" id="cn-tel">
+                                        <label for="" class="">Phone Number: <span class="down-status">*</span></label>
+                                        <input type="text" placeholder="Ex: 312-123-5533"
+                                               ng-keyup="validateField('tel', $event)" ng-model="validaTel" id="cn-tel">
                                     </div>
                                     <div class="col-lg-12 cn-containers">
-                                        <label for="" class="">Email<span class="down-status">*</span></label>
-                                        <input type="text" placeholder="Email" ng-keyup="validateField('email', $event)" ng-model="validaMail" id="cn-email">
+                                        <label for="" class="">Email: <span class="down-status">*</span></label>
+                                        <input type="text" placeholder="Email" ng-keyup="validateField('email', $event)"
+                                               ng-model="validaMail" id="cn-email">
                                     </div>
 
                                 </div>
@@ -70,46 +78,42 @@
                     </div>
                     <!-- ADDRESS INFO -->
                     <div class="step-pane" data-step="2">
-                        <h3><strong>Step 2 </strong> - Location Information</h3>
-                        <div class="col-lg-4">
-                            <div class="col-lg-12 cn-containers">
-                                <label for="" class="m-r-lg">Address<span class="down-status">*</span></label>
-                                <select ng-change="setImageBuilding(0)"
-                                        ng-model="selectedOption"
-                                        ng-options="(building.code + ' | ' +building.name) for building in buildingsData track by building.id"
-                                        id="cn-select-address-opt">
-                                    <option value="">Select Address</option>
-                                    <option value="{{building.id}}">{{building.code}} | {{building.name}}</option>
-                                </select>
-                            </div>
-                            <div class="col-lg-12 cn-containers">
-                                <label for="" class="">Unit Number<span class="down-status">*</span></label>
-                                <input type="text" placeholder="Ex: 1252" ng-model="validaUnit" ng-keyup="validateField('unit',$event)" id="cn-unit">
-                            </div>
-                            <div class="col-lg-12 cn-containers">
-                                <label for="" class="">City, State, ZIP</label>
-                                <input type="text" ng-if="tmpDta" readonly value="{{tmpDta.city}}, {{tmpDta.state}}, {{tmpDta.zip}}">
-                            </div>
-                        </div>
-                        <div class="col-lg-8">
+                        <h3><strong>Step 2 </strong> - Select a service location</h3>
+                        <div class="col-lg-7">
                             <div class="col-lg-6 ">
                                 <div class="search-subnav-nc">
-                                    <input type="text" placeholder="Filter Search" ng-keyup="filterBldList(1)" ng-model="filterBldListModel" id="cn-filter" class="color-click">
+                                    <input type="text" placeholder="Find building" ng-keyup="filterBldList(1)"
+                                           ng-model="filterBldListModel" id="cn-filter" class="color-click">
                                 </div>
                                 <div class="filter-bld-nc">
-                                    <div ng-repeat="filterBld in bldListResult" ng-click="setImageBuilding(1)">
+                                    <div ng-repeat="filterBld in bldListResult" ng-click="getBuildingInfomation(1)">
                                         {{filterBld.code}} | {{filterBld.name}}
                                     </div>
                                 </div>
                             </div>
                             <div class="col-lg-6 no-display" id="img-displayed">
-                                <img src="{{selectedBuilding}}" alt="">
+                                <img src="{{buildingImageLocation}}" alt="">
+                            </div>
+
+                        </div>
+                        <div class="col-lg-5">
+                            <div class="col-lg-12 cn-containers" id="">
+                                <label for="" class="address-label">Address: </label>
+                                <input type="text" readonly id="cn-address">
+                                <input type="text" readonly id="cn-city-state-zip">
+                            </div>
+                            <div class="col-lg-12 cn-spacer-containers">
+                            </div>
+                            <div class="col-lg-12 cn-containers">
+                                <label for="" class="">Unit Number: <span class="down-status">*</span></label>
+                                <input type="text" placeholder="Ex: 1252" ng-model="validaUnit"
+                                       ng-keyup="validateField('unit',$event)" id="cn-unit">
                             </div>
                         </div>
                     </div>
                     <!-- SERVICE INFO -->
                     <div class="step-pane" data-step="3">
-                        <h3><strong>Step 3 </strong> - Service Information</h3>
+                        <h3><strong>Step 3 </strong> - Select a products or services</h3>
                         <br><br>
                         <div class="col-lg-8">
 
@@ -122,7 +126,7 @@
                                  class="products-list col-lg-12 no-padding-sides select-service-{{service.id}} service-list"
                                  ng-click="serviceSelected()">
                                 <div class="col-lg-4">{{service.product.name}}</div>
-                                <div class="col-lg-2">${{service.product.amount}}.00</div>
+                                <div class="col-lg-2">{{ service.product.amount | currency : "$" : 2 }}</div>
                                 <div class="col-lg-2 capital-first">{{service.product.frequency}}</div>
                                 <div class="col-lg-4">
                                     {{service.id_status =='1'?'Active':'Disabled'}}
@@ -135,7 +139,7 @@
                             <h2 class="text-center text-primary">Selected Service: </h2>
                             <div class="selected-service-display" ng-if="selectedServiceDisplay">
                                 <p>{{selectedServiceDisplay.name}}</p>
-                                <p>${{selectedServiceDisplay.amount}}.00,
+                                <p>{{ selectedServiceDisplay.amount | currency : "$" : 2 }},
                                     <span class="capital-first">{{selectedServiceDisplay.frequency}}</span>
                                 </p>
                             </div>
@@ -146,7 +150,7 @@
                     </div>
                     <!-- NETWORK INFO -->
                     <div class="step-pane col-lg-12" data-step="4">
-                        <h3><strong>Step 4 </strong> - Network & Port Information
+                        <h3><strong>Step 4 </strong> - Select a switch and port
                             <div class="pull-right">
                                 <label>Port</label>
                                 <br>
@@ -178,7 +182,8 @@
                                 <div ng-repeat="(index, ports) in switchAvailablePorts"
                                      ng-click="portSelected()"
                                      class="status-color-{{ports.Status}}-left-border col-lg-6 switches-list ports-list-format">
-                                    <div ng-init="cleanName = filterName(ports.Name)" ng-if="ports" class="init-ports port-index-{{index}}">
+                                    <div ng-init="cleanName = filterName(ports.Name)" ng-if="ports"
+                                         class="init-ports port-index-{{index}}">
                                         <span>{{cleanName}},</span>
                                         <span>{{ports.Label?ports.Label+',':''}} </span>
                                         <span ng-if="ports.Status == 'up'">{{ports.Speed}}, </span>
@@ -195,16 +200,21 @@
                     </div>
                     <!-- VERIFY INFO -->
                     <div class="step-pane" data-step="5">
-                        <h3><strong>Step 5 </strong> - Verify All Information</h3>
+                        <h3><strong>Step 5 </strong> - Verify all information</h3>
                         <div class="row">
                             <div class="container verify-info-container">
                                 <div class="col-lg-4 bloque-a">
-                                    <input type="text" hidden name="customers.first_name" value="{{model['fname']}}" required readonly>
-                                    <input type="text" hidden name="customers.last_name" value="{{model['lname']}}" required readonly>
+                                    <input type="text" hidden name="customers.first_name" value="{{model['fname']}}"
+                                           required readonly>
+                                    <input type="text" hidden name="customers.last_name" value="{{model['lname']}}"
+                                           required readonly>
                                     <input type="text" hidden name="customers.id_status" value="1" required readonly>
-                                    <input type="text" hidden name="customers.email" value="{{validaMail}}" required readonly>
-                                    <input type="text" hidden name="contacts.value" value="{{validaTel}}" required readonly>
-                                    <input type="text" hidden name="customers.vip" value="{{validVip?validVip:' '}}" readonly>
+                                    <input type="text" hidden name="customers.email" value="{{validaMail}}" required
+                                           readonly>
+                                    <input type="text" hidden name="contacts.value" value="{{validaTel}}" required
+                                           readonly>
+                                    <input type="text" hidden name="customers.vip" value="{{validVip?validVip:' '}}"
+                                           readonly>
 
                                     <div class="row">
                                         <div class="col-lg-12">
@@ -238,16 +248,19 @@
                                 </div>
 
                                 <div class="col-lg-4 bloque-b">
-                                    <input type="text" hidden name="building.id" value="{{selectedOption.id}}" required readonly>
-                                    <input type="text" hidden name="address.unit" value="{{validaUnit}}" required readonly>
-                                    <input type="text" hidden value="{{tmpDta.city}}" readonly>
-                                    <input type="text" hidden value="{{tmpDta.state}}" readonly>
-                                    <input type="text" hidden value="{{tmpDta.zip}}" readonly>
+                                    <input type="text" hidden name="building.id" value="{{buildingId}}" required
+                                           readonly>
+                                    <input type="text" hidden name="address.unit" value="{{validaUnit}}" required
+                                           readonly>
+                                    <!--<input type="text" hidden value="{{tmpDta.city}}" readonly>-->
+                                    <!--<input type="text" hidden value="{{tmpDta.state}}" readonly>-->
+                                    <!--<input type="text" hidden value="{{tmpDta.zip}}" readonly>-->
 
                                     <div class="row">
                                         <div class="col-lg-12">
                                             <label for="">Address:</label>
-                                            <span ng-if="tmpDta">{{tmpDta.code}} | {{tmpDta.address}}</span>
+                                            <!--<span ng-if="tmpDta">{{tmpDta.code}} | {{tmpDta.address}}</span>-->
+                                            <span>{{address}}</span>
                                         </div>
                                         <div class="col-lg-12">
                                             <label for="">Unit #:</label>
@@ -255,14 +268,15 @@
                                         </div>
                                         <div class="col-lg-12">
                                             <label for="">City, State, Zip:</label>
-                                            <div class="nc-csz" ng-if="tmpDta">
-                                                <span>{{tmpDta.city}}, </span>
-                                                <span>{{tmpDta.state}}, </span>
-                                                <span>{{tmpDta.zip}}</span>
+                                            <div class="nc-csz">
+                                                <span>{{citystatezip}}</span>
+                                                <!--<span>{{tmpDta.city}}, </span>-->
+                                                <!--<span>{{tmpDta.state}}, </span>-->
+                                                <!--<span>{{tmpDta.zip}}</span>-->
                                             </div>
                                         </div>
                                         <div class="col-lg-12 img-cont">
-                                            <img src="{{selectedBuilding}}" alt="" style="max-height: 100px;">
+                                            <img src="{{buildingImageLocation}}" alt="" style="max-height: 100px;">
                                         </div>
 
                                     </div>
@@ -278,7 +292,7 @@
                                         <div class="col-lg-12 m-b-lg">
                                             <label for="">Service:</label>
                                             <div class="nc-serv" ng-if="selectedServiceDisplay">
-                                                <span>{{selectedServiceDisplay.name}}, ${{selectedServiceDisplay.amount}}.00</span><br>
+                                                <span>{{selectedServiceDisplay.name}}, {{ selectedServiceDisplay.amount | currency : "$" : 2 }}</span><br>
                                                 <span class=" capital-first">{{selectedServiceDisplay.frequency}}</span>
                                             </div>
                                         </div>
@@ -287,12 +301,16 @@
                                             <span ng-if="selectedSwitch">{{selectedSwitch.host_name}}, <b>{{selectedSwitch.ip_address}}</b></span>
                                         </div>
                                         <div class="col-lg-12">
-                                            <label for="">Port:</label>
+                                            <label for="">Port Info:</label>
                                             <div class="nc-serv">
                                                 <span class="status-color-{{portData.Status}}-left-border">{{portData.Name}}</span><br>
                                                 <span ng-if="portData.Status == 'up'">{{portData.Label?portData.Label:''}}</span><br>
-                                                <span>{{portData.Speed}}</span><br>
-                                                <span>{{portData.AdminStatus}}</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-12">
+                                            <label for="">Status:</label>
+                                            <div class="nc-serv">
+                                                <span>{{portData.Speed}}  {{portData.AdminStatus}}</span><br>
                                             </div>
                                         </div>
 
@@ -304,13 +322,17 @@
                             </div>
                         </div>
                         <hr>
-                        <div class="col-lg-4" ng-bind-html="bloqueA?bloqueA:''"></div>
-                        <div class="col-lg-4" ng-bind-html="bloqueB?bloqueB:''"></div>
-                        <div class="col-lg-4" ng-bind-html="bloqueC?bloqueC:''"></div>
+                        <div class="col-lg-4" ng-bind-html="contactErrorContainer ? contactErrorContainer : ''"></div>
+                        <div class="col-lg-4" ng-bind-html="addressErrorContainer ? addressErrorContainer : ''"></div>
+                        <div class="col-lg-4" ng-bind-html="serviceErrorContainer ? serviceErrorContainer:''"></div>
                         <div class="col-lg-12 p-b-lg error-message" ng-if="errorResponse">
                             <hr>
                             <p>{{errorResponse}}</p>
                         </div>
+                        <!--<div class="col-lg-12 p-b-lg error-message" ng-if="errorResponse">-->
+                            <!--<hr>-->
+                            <!--<p>{{errorResponse}}</p>-->
+                        <!--</div>-->
 
                     </div>
                 </form>

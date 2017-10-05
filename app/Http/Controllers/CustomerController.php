@@ -864,6 +864,7 @@ class CustomerController extends Controller {
     public function insertNewCustomer(Request $request)
     {
 
+        Log::info('insertNewCustomer called', $request->all());
         dd('done');
 
 //        print '<pre>';

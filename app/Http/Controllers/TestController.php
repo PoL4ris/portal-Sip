@@ -421,27 +421,43 @@ class TestController extends Controller {
     public function generalTest(Request $request)
     {
 
+        dd('done');
+
+//        $declinedInvoices = Invoice::where('processing_type',)
+
+        /** Find chargeable items for a customer and create an invoice for them **/
+//        $billingHelper = new BillingHelper();
+//
+//        $customerProducts = CustomerProduct::with('customer')
+//            ->where('id_users', '!=', 0)
+//            ->where('charge_status', 0)
+//            ->where('created_at', '>', '2017-10-01 00:00:00')
+//            ->get();
+//
+//        $customers = $customerProducts->pluck('customer');
+////        dd($customers->pluck('signedup_at', 'id'));
+//
+//        foreach ($customers as $customer)
+//        {
+//            $billingHelper->generateChargeRecordsForCustomerByMonth($customer->id, 'this month');
+//            $billingHelper->invoicePendingAutoPayChargesForCustomerByMonth($customer->id, 'this month');
+//        }
+//
+//        dd($customerProducts->pluck('charge_status', 'id'));
+
+//        $chargableProducts = $billingHelper->getChargeableCustomerProductsByCustomerId('14384');
+//        $queries = DB::getQueryLog();
+//        $last_query = end($queries);
+//        dd($last_query);
+//        dd($chargableProducts);
+
+//        $billingHelper->generateChargeRecordsForCustomerByMonth('14384', 'this month');
+//        $billingHelper->invoicePendingAutoPayChargesForCustomerByMonth('14384', 'this month');
 //        dd('done');
 
-
-//        $product = Product::find(181);
-////        dd($product);
-//        dd(number_format($product->amount, 2, '.', ''));
 
         /** Find duplicate annual invoices and delete them **/
 //        $billingHelper = new BillingHelper();
-
-
-//        $billingHelper->generateChargeRecordsForCustomerByMonth('11700', 'last month');
-//        $billingHelper->invoicePendingAutoPayChargesForCustomerByMonth('11700', 'last month');
-//        dd('done');
-
-
-//        $chargableProducts = $billingHelper->getChargeableCustomerProductsByCustomerId('11700');
-////        $queries = DB::getQueryLog();
-////        $last_query = end($queries);
-////        dd($last_query);
-//        dd($chargableProducts);
 
 
 //        // Get a distinct copy of the annual charges that have duplicate records
@@ -589,7 +605,7 @@ class TestController extends Controller {
 
         $customerProducts = $oneTimeCharges->pluck('customerProduct')->whereLoose('id_users', 0);
 
-dd($customerProducts);
+        dd($customerProducts);
 
         foreach ($customerProducts as $customerProduct)
         {
@@ -612,7 +628,7 @@ dd($customerProducts);
         {
             $customer = $oneTimeCharge->customer;
             $customerProduct = $oneTimeCharge->customerProduct;
-            $info[$customer->first_name . ' ' . $customer->last_name. ' ('.$customer->id.')'] = $customerProduct->product->description . ' (' . $customerProduct->id . ')';
+            $info[$customer->first_name . ' ' . $customer->last_name . ' (' . $customer->id . ')'] = $customerProduct->product->description . ' (' . $customerProduct->id . ')';
         }
 
         dd($info);
