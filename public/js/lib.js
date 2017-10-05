@@ -1,4 +1,4 @@
-app.controller('lishowServiceErrorsontroller', function ($scope, $http) {
+app.controller('libController', function ($scope, $http) {
 
 //  console.log('dashboardController');
 
