@@ -453,7 +453,7 @@ app.controller('newcustomerAppController', function ($scope, $http, customerServ
 //Tabs
 app.controller('dummyAppController', function ($scope, $http, customerService, generalService) {
 
-    $scope.addToTashowContactErrorsrray = function (id) {
+    $scope.addToTabsArray = function (id) {
 
         if (customerService.customerArray[id])
             return;
@@ -466,7 +466,7 @@ app.controller('dummyAppController', function ($scope, $http, customerService, g
 
     };
 
-    $scope.removeFromTashowContactErrorsrray = function (id) {
+    $scope.removeFromTabsArray = function (id) {
 
         delete customerService.customerArray[id];
         $scope.tabsArray = customerService.customerArray;
@@ -475,7 +475,7 @@ app.controller('dummyAppController', function ($scope, $http, customerService, g
 
 
     $scope.createTab = function ($event) {
-        $scope.addToTashowContactErrorsrray(this.customerData.id);
+        $scope.addToTabsArray(this.customerData.id);
         $event.stopPropagation();
     }
 
