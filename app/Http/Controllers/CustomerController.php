@@ -940,6 +940,10 @@ class CustomerController extends Controller {
          * */
 
     }
+
+    public function getCustomerById(Request $request)
+    {
+    }
 }
 
 

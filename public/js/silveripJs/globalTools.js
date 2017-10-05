@@ -1,5 +1,5 @@
 // Global Tools //
-app.controller('globalToolsCtl',                    function ($scope, $http, $compile, $sce, $stateParams, customerService, supportService, buildingService, generalService){
+app.controller('globalToolsCtl',                    function ($scope, $http, $compile, $sce, $stateParams, customerService, supportService, buildingService, generalService, $timeout){
 
   $scope.customerData   = {};
   $scope.globalScopeVar = true;
@@ -7,22 +7,39 @@ app.controller('globalToolsCtl',                    function ($scope, $http, $co
   $scope.sipToolRight   = true;
   $scope.focusIndex     = 0;
   $scope.statusArrayConstant = generalService.statusArrayConstant;
+  $scope.cacheClear = generalService.cacheClear;
+
+  //Get Constants from constantConfig
+  $http.get("getConstantData").then(function (response) {
+    generalService.constPHP = response.data;
+  });
+
+
+  //console.log($.browser.mobile);
+  $scope.mobDevice = $.browser.mobile;
+//  $scope.mobDevice = true;
 
 //  console.log($scope.statusArrayConstant);
+//  console.log(localStorage);
+//  console.log($templateCache.info);
+//  console.log($state);
+//  console.log(appConfig);
+//  console.log(generalService);
+//  console.log(customerService);
 
 
-    $scope.factoryReset = function () {
-        $.SmartMessageBox({
-            title: "<i class='fa fa-refresh' style='color:green'></i> Clear Local Storage",
-            content: "Would you like to RESET all your saved widgets and clear LocalStorage?1",
-            buttons: '[No][Yes]'
-        }, function (ButtonPressed) {
-            if (ButtonPressed == "Yes" && localStorage) {
-                localStorage.clear();
-                location.reload()
-            }
-        });
-    };
+  $scope.factoryReset = function () {
+      $.SmartMessageBox({
+          title: "<i class='fa fa-refresh' style='color:green'></i> Clear Local Storage",
+          content: "Would you like to RESET all your saved widgets and clear LocalStorage?1",
+          buttons: '[No][Yes]'
+      }, function (ButtonPressed) {
+          if (ButtonPressed == "Yes" && localStorage) {
+              localStorage.clear();
+              location.reload()
+          }
+      });
+  };
 
   $scope.leftColumnOpenClose  = function (){
     if($('#content').hasClass("ccr-small"))
@@ -44,10 +61,12 @@ app.controller('globalToolsCtl',                    function ($scope, $http, $co
       $('#arrowChange').removeClass("fa-arrow-circle-left");
     }
   };
-  $scope.singleUpdateXedit    = function (id, value, field, table, routeFunction) {
+  $scope.singleUpdateXedit    = function (id, value, field, table, model, index, routeFunction = 'getCustomer') {
 
-    console.log('singleUpdateXedit -> globalTools function to send xedit update');
-    console.log('Function singleUpdateXedit---> with routeFunction ---' + routeFunction);
+//    console.log('singleUpdateXedit -> globalTools function to send xedit update');
+//    console.log('Function singleUpdateXedit---> with routeFunction ---' + routeFunction);
+//    console.log(routeFunction);
+//    console.log(customerService.customer.id);
 
     var mainId;
     if(generalService.stateRoute == 'buildings')
@@ -69,8 +88,9 @@ app.controller('globalToolsCtl',                    function ($scope, $http, $co
           if(generalService.stateRoute == 'buildings')
             return 'OK';
 
-          if(routeFunction)
-            $scope.resolveRouteFunction(routeFunction, customerService.customer.id);
+          if(routeFunction){
+            $scope.resolveRouteFunction(routeFunction, id);
+          }
 
           return 'OK';
         }
@@ -285,9 +305,6 @@ app.controller('globalToolsCtl',                    function ($scope, $http, $co
     e.preventDefault(); // prevent the default actions
   });
 
-
-
-
   $scope.alertDummy           = function (){
     $.smallBox({
       title: "Password Updated!",
@@ -299,11 +316,29 @@ app.controller('globalToolsCtl',                    function ($scope, $http, $co
   }
   $scope.resolveRouteFunction = function (routeFunction, id){
 
+//  console.log(routeFunction);
+//  console.log(id);
+
     switch(routeFunction)
     {
-      case 'getCustomerData':
+      case 'getCustomer':
       {
-        angular.element('#customers-gTools').scope().getCustomerStatus(id);
+        console.log('todo beim');
+        console.log(customerService);
+        console.log(customerService.tabs[$scope.idCustomer]);
+
+//        $timeout(function() {
+          //console.log(data.invoice_id[0]);
+
+//          $scope.getCustomerDataRefresh(id);
+//          $('#inv-list-' + data.invoice_id[0]).trigger('click');
+//        }, 1);
+
+//          $http.get("customersData", {params: {'id': id}})
+//            .then(function (response) {
+//              customerService.tabs[$scope.idCustomer].info  = response.data;
+//            });
+
       }
     };
 
@@ -316,44 +351,12 @@ app.controller('globalToolsCtl',                    function ($scope, $http, $co
   $scope.parJson              = function (json) {
     return JSON.parse(json);
   }
-  $scope.xEditVisual          = function (valor, id){
-
-    customerService.tabs[id].xEditMainInfo = valor;
-    customerService.tabs[id].xEditContactInfo = valor;
+  $scope.xEditVisual          = function (valor, id, loc){
+    if(loc)
+      customerService.tabs[id].xEditContactInfo = valor;
+    else
+      customerService.tabs[id].xEditMainInfo = valor;
     return;
-
-
-
-
-
-    //id es # y en contacto es un string que es el nombre del id,
-    //usar un nombre dinamico
-    //calcular el id de otro metodo
-    //unificar id's
-    //pensar como cambiar el id o el registro sin afectar el resto.
-    //maybe hacer un case para cada caso del xEdit.
-
-
-
-
-
-
-
-    switch (id)
-    {
-      case 'c-c-i-e':
-        if(valor)
-          $('#' + id).html('<i class="fa fa-pencil"></i> Edit customer').removeClass('btn-danger').addClass('btn-primary');
-        else
-          $('#' + id).html('<i class="fa fa-plus plus-cross"></i> Done ').removeClass('btn-primary').addClass('btn-danger');
-        break;
-      case 'customer-contact':
-        if(valor)
-          $('#' + id).html('<i class="fa fa-pencil"></i> Edit customer').removeClass('btn-danger').addClass('btn-primary');
-        else
-          $('#' + id).html('<i class="fa fa-plus plus-cross"></i> Done ').removeClass('btn-primary').addClass('btn-danger');
-        break;
-    }
   }
   $scope.convertDate          = function (valor){
     return new Date(valor);
@@ -363,8 +366,7 @@ app.controller('globalToolsCtl',                    function ($scope, $http, $co
     // Copy to the clipboard
     document.execCommand('copy');
   }
-
-  $scope.safeHtml = function (valor){
+  $scope.safeHtml             = function (valor){
     return $sce.trustAsHtml(valor);
   }
 
@@ -474,39 +476,41 @@ app.controller('globalToolsCtl',                    function ($scope, $http, $co
     }
   }
 
-  $scope.idSearch = function(){
+  $scope.idSearch             = function(){
 //    console.log('this is idSearch');
+//    console.log(this.adminSearch);
+//    return;
+//ROUTE         return Customer::find($request->id);
 
     if(!this.adminSearch)
     {
       console.log('emptyString');
     }
     else {
-    $http.get("getCustomerById", {params:{'id':this.adminSearch}})
-      .then(function (response) {
+      $http.get("getCustomerById", {params:{'id':this.adminSearch}})
+        .then(function (response) {
 
-        $scope.idCustomerResult = response.data;
+          $scope.idCustomerResult = response.data;
 
-        if($scope.idCustomerResult)
-        {
-          $('#admin-id-search-input').val('');
-          window.location = '#/customers?id='+response.data.id
-        }
-        else
-        {
-          $('#admin-id-search-input').val('Customer not in the DB').css('color', 'crimson');
-          setTimeout( function(){
-            $('#admin-id-search-input').val('').css('color', 'inherit');
-          }  , 1000 );
-        }
+          if($scope.idCustomerResult)
+          {
+            $('#admin-id-search-input').val('');
+            window.location = '#/customers?id='+response.data.id
+          }
+          else
+          {
+            $('#admin-id-search-input').val('Customer not in the DB').css('color', 'crimson');
+            setTimeout( function(){
+              $('#admin-id-search-input').val('').css('color', 'inherit');
+            }  , 1000 );
+          }
 
-      });
+        });
 
     }
 
 
   }
-
 
 })
 .directive('enterAction', function () {
@@ -527,7 +531,15 @@ app.controller('globalToolsCtl',                    function ($scope, $http, $co
   };
 });
 function gToolsxEdit(value, field, id, idContainer, table, model, index = null){
-  console.log(id + ' <--|--id|:: '+  value+ ' <--|--value|:: ' +  field + ' <--|--field|:: ' +  table + ' <--|--table|:: '+  idContainer + ' <--|--idContainer|'+  model + ' <--|--model|'+  index + ' <--|--index|');
+  console.log(' ||::|| ID==> '    +  id +
+              ' ||::|| Value==> ' +  value +
+              ' ||::|| Field==> ' +  field +
+              ' ||::|| Table==> ' +  table +
+              ' ||::|| idContainer==> '+  idContainer +
+              ' ||::|| Model==> ' +  model +
+              ' ||::|| Index==> ' +  index);
+
+
   angular.element('#' + idContainer + '-gTools-' + (index ? index : id)).scope().singleUpdateXedit(id, value, field, table, model, index);
 }
 function getFormValues(id){
@@ -542,5 +554,6 @@ function getFormValues(id){
 app.controller('userAuthController',                function ($scope){
   $scope.userDataAuth = JSON.parse($('#auth-user').val());
 })
+
 
 

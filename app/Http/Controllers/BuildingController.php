@@ -21,7 +21,10 @@ use App\Models\Type;
 use App\Models\Address;
 use App\Http\Controllers\Lib\FormsController;
 use App\Models\User;
+use App\Models\Media;
+use App\Models\Note;
 use Redirect;
+use Image;
 
 class BuildingController extends Controller {
 
@@ -159,6 +162,11 @@ class BuildingController extends Controller {
         return Neighborhood::all();
     }
 
+    public function getProspectBuildings()
+    {
+        return  Building::whereNotNull('id_status')->get();
+    }
+
     //NOT IN USE ANYMORE id_types changed to TYPE
     public function getTypesList()
     {
@@ -168,16 +176,31 @@ class BuildingController extends Controller {
     public function getBuildingsSearchSimple(Request $request)
     {
         $txt = $request['querySearch'];
+        $table = $request['table'];
+
         if (empty($txt))
             return;
 
-        return Building::where('name', 'LIKE', '%' . $txt . '%')
-            ->orWhere('alias', 'LIKE', '%' . $txt . '%')
-            ->orWhere('nickname', 'LIKE', '%' . $txt . '%')
-            ->orWhere('code', 'LIKE', '%' . $txt . '%')
-            ->orWhere('units', 'LIKE', '%' . $txt . '%')
-//                      ->limit(10)
-            ->get();
+        if($table == 'building')
+        {
+            $result['data'] = Building::where('name', 'LIKE', '%' . $txt . '%')
+                ->orWhere('alias', 'LIKE', '%' . $txt . '%')
+                ->orWhere('nickname', 'LIKE', '%' . $txt . '%')
+                ->orWhere('code', 'LIKE', '%' . $txt . '%')
+                ->orWhere('units', 'LIKE', '%' . $txt . '%')
+                ->get();
+            $result['count'] = $result['data']->count();
+        }
+        else
+        {
+            $result['data'] = Address::with('building')
+                ->where('address', 'LIKE', '%' . $txt . '%')
+                ->whereNull('id_customers')
+                ->get();
+            $result['count'] = $result['data']->count();
+        }
+
+        return $result;
     }
 
     public function getBuildingsType()
@@ -465,6 +488,138 @@ class BuildingController extends Controller {
 
         return Building::with('activeBuildingProducts')->find($id_building);
 
+    }
+
+
+
+    //Walkthrough
+
+    public function getWalkthroughLocation(Request $request)
+    {
+        return Address::with('building', 'building.neighborhood', 'building.media', 'building.notes')->where('id_buildings', $request['id'])->first();
+    }
+    public function insertWalkthroughLocation(Request $request)
+    {
+        
+        $newBuilding = new Building;
+        $newBuilding->name      = $request->name;
+        $newBuilding->id_status = 1; //Const -> newBld
+        $newBuilding->save();
+
+
+        $newAddress = new Address;
+        $newAddress->address      = $request->address;
+        $newAddress->id_buildings = $newBuilding->id;
+        $newAddress->city = 'Chicago';
+        $newAddress->state = 'IL';
+        $newAddress->country = 'USA';
+        $newAddress->save();
+
+        return Address::with('building', 'building.neighborhood', 'building.media', 'building.notes')->find($newAddress->id);
+    }
+
+    public function updateWalkthroughLoc(Request $request)
+    {
+
+        $updateBld = Building::find($request['id_buildings']);
+        $updateBld->alias       = $request['code'];
+        $updateBld->nickname    = $request['code'];
+        $updateBld->id_neighborhoods = $request['id_neighborhoods'];
+        $updateBld->code        = $request['code'];
+        $updateBld->type        = $request['type'];
+        $updateBld->units       = $request['units'];
+        $updateBld->floors      = $request['floors'];
+        $updateBld->save();
+
+        $updateBld = Address::find($request['id_address']);
+        $updateBld->code = $request['code'];
+        $updateBld->save();
+
+        return Address::with('building', 'building.neighborhood', 'building.media', 'building.notes')->find($request['id_address']);
+
+    }
+
+    public function updateMediaFiles(Request $request)
+    {
+        $data = $request->all();
+        $idBuilding = $data['id_buildings'];
+
+        unset($data['id_buildings']);
+
+        foreach($data as $x => $item)
+        {
+            if($item == '')
+                continue;
+
+            $updateImage = Media::find(explode('saved-',$x)[1]);
+            $updateImage->comment = $item;
+            $updateImage->save();
+        }
+
+        return Address::with('building', 'building.neighborhood', 'building.media', 'building.notes')->where('id_buildings', $idBuilding)->first();
+    }
+    public function insertMediaFiles(Request $request)
+    {
+
+        $data = $request->data;
+
+        $mediaFile = new Media;
+        $mediaFile->name    = $data['name'];
+        $mediaFile->comment = $data['comment'];
+        $mediaFile->id_buildings = $request->id_buildings;
+        $mediaFile->save();
+
+        $path = public_path('img/wttmp/' . $data['name']);
+        Image::make(file_get_contents($data['data']))->save($path);
+
+        return Address::with('building', 'building.neighborhood', 'building.media', 'building.notes')->where('id_buildings', $request->id_buildings)->first();
+    }
+    public function removeImgLocation(Request $request)
+    {
+        Media::find($request->id)->delete();
+        return Address::with('building', 'building.neighborhood', 'building.media', 'building.notes')->where('id_buildings', $request->id_buildings)->first();
+    }
+
+    //ok
+    public function insertWtNotes(Request $request)
+    {
+
+        $dataInsert = json_decode($request['insert'], true);
+        $dataUpdate = json_decode($request['update'], true);
+        $idBuilding = $request['id_buildings'];
+
+
+        //insert IF exist
+        if(count($dataInsert) > 0 && isset($dataInsert))
+            foreach($dataInsert as $item)
+            {
+                if($item == '')
+                    continue;
+
+                $newNote = new Note;
+                $newNote->comment = $item;
+                $newNote->created_by = Auth::user()->id;
+                $newNote->id_buildings = $idBuilding;
+                $newNote->save();
+            }
+        //update IF exist
+        if(count($dataUpdate) > 0 && isset($dataUpdate))
+            foreach($dataUpdate as $x => $item)
+            {
+                if($item == '')
+                    continue;
+
+                    $updateNote = Note::find(explode('saved-',$x)[1]);
+                    $updateNote->comment = $item;
+                    $updateNote->save();
+            }
+
+        return Address::with('building', 'building.neighborhood', 'building.media', 'building.notes')->where('id_buildings', $idBuilding)->first();
+    }
+    public function removeNoteLocation(Request $request)
+    {
+        Note::find($request->id)->delete();
+        return Address::with('building', 'building.neighborhood', 'building.media', 'building.notes')->where('id_buildings', $request->id_buildings)->first();
     }
 
 }

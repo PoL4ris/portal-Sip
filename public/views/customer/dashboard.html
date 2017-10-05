@@ -1,47 +1,52 @@
 <div class="cdg-block col-lg-12 m-b-md no-padding-sides">
-  <div class="cdg-status cdg-color-up float-left"></div>
-  <div class="cdg-content float-right">
-    <label>Port Status</label>
-    <!--<span id="dashboard-port-status"></span>-->
-      <span id="dashboard-port-status-{{customerData.customer.id}}"></span>
-  </div>
+    <div class="cdg-status cdg-color-up float-left"></div>
+    <div class="cdg-content float-right">
+        <label>Port Status</label>
+        <span id="dashboard-port-status-{{customerData.customer.id}}" class="capital-first">
+    </span>
+    </div>
 </div>
 
 <div class="cdg-block col-lg-12 m-b-md no-padding-sides">
-  <div class="cdg-status cdg-color-t1 float-left"></div>
-  <div class="cdg-content float-right">
-    <label>Open tickets</label>
-    <span ng-if="customerData.customer.open_tickets">{{customerData.customer.open_tickets.length}}</span>
-    <span ng-if="!customerData.customer.open_tickets"><i class="fa fa-spinner loading-anim" aria-hidden="true"></i></span>
-  </div>
+    <div class="cdg-status cdg-color-t1 float-left"></div>
+    <div class="cdg-content float-right">
+        <label>Open tickets</label>
+        <span ng-if="customerData.customer.open_tickets">{{customerData.customer.open_tickets.length}}</span>
+        <span ng-if="!customerData.customer.open_tickets"><i class="fa fa-spinner loading-anim" aria-hidden="true"></i></span>
+    </div>
+</div>
+
+<!--===================================-->
+<hr>
+<h5 class="text-center">TEST OPTIONS</h5>
+<div class="cdg-block col-lg-12 m-b-md no-padding-sides">
+    <div class="cdg-status cdg-color-down float-left"></div>
+    <div class="cdg-content float-right">
+        <label>Invoice Status</label>
+        <span>Failed</span>
+    </div>
 </div>
 
 
-<!--<div class="cdg-block col-lg-12 m-b-md no-padding-sides">-->
-    <!--<div class="cdg-status cdg-color-down float-left"></div>-->
-    <!--<div class="cdg-content float-right">-->
-        <!--<label>Port Status</label>-->
-        <!--<span>DOWN</span>-->
-    <!--</div>-->
-<!--</div>-->
+<div class="cdg-block col-lg-12 m-b-md no-padding-sides">
+    <div class="cdg-status cdg-color-missing float-left"></div>
+    <div class="cdg-content float-right">
+        <label>Port</label>
+        <span>37</span>
+        <i class="fa fa-angle-right"></i>
+    </div>
+</div>
+<div class="cdg-block col-lg-12 m-b-md no-padding-sides">
+    <div class="cdg-status cdg-color-ok float-left"></div>
+    <div class="cdg-content float-right">
+        <label>IP Address</label>
+        <span>127.0.0.1</span>
+        <i class="fa fa-angle-right"></i>
+    </div>
+</div>
 
 
 
 
-<!--<div class="cdg-block col-lg-12 m-b-md no-padding-sides" ng-if="customerData.defaultPayment">-->
-  <!--<div class="cdg-status cdg-color-missing float-left"></div>-->
-  <!--<div class="cdg-content float-right">-->
-    <!--<label>Payment Method</label>-->
-    <!--<span>NO</span>-->
-    <!--<i class="fa fa-angle-right"></i>-->
-  <!--</div>-->
-<!--</div>-->
 
-<!--<div class="cdg-block col-lg-12 m-b-md no-padding-sides" ng-if="customerData.defaultPayment">-->
-  <!--<div class="cdg-status cdg-color-ok float-left"></div>-->
-  <!--<div class="cdg-content float-right">-->
-    <!--<label>Payment Method</label>-->
-    <!--<span>NO</span>-->
-    <!--<i class="fa fa-angle-right"></i>-->
-  <!--</div>-->
-<!--</div>-->
+

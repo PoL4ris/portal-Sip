@@ -1,9 +1,10 @@
 <div class="col-lg-12 billing-history-table" ng-controller="customerInvoiceHistoryController">
     <div id="customer-view-0">
         <div class="panel panel-default no-border table-container animated fadeInLeft">
-            <table id="myTables" class="tablesorter table" datatable="ng">
+            <table id="myTables" class="tablesorter table" datatable="ng" dt-options="invoiceOptions">
                 <thead>
                 <tr>
+                    <th>ID</th>
                     <th>Status</th>
                     <th>Description</th>
                     <th>Failed Charges</th>
@@ -16,6 +17,7 @@
                 </thead>
                 <tbody>
                 <tr ng-repeat="invoice in invoiceData">
+                    <td class="capital-first">{{ invoice.id }}</td>
                     <td class="capital-first">{{ invoice.status }}</td>
                     <td class="capital-first">{{ invoice.description }}</td>
                     <td>{{ invoice.failed_charges_count }}</td>
@@ -23,12 +25,8 @@
                     <td>{{ invoice.bill_cycle_day }}</td>
                     <td>{{ statusArrayConstant.type[invoice.processing_type] }}</td>
                     <td ng-init="resultDate = convertDate(invoice.due_date)">{{resultDate | date : "shortDate" }}</td>
-                    <!--<td>{{ invoice.due_date | limitTo : 10 }}</td>-->
-                    <!--<td>{{ billing.action_code }}</td>-->
-                    <!--<td>{{ billing.transaction_id }}</td>-->
-                    <!--<td>{{ billing.response_text }}</td>-->
                     <td>
-                        <p ng-click="setInvoiceData()" data-toggle="modal" data-target="#invoicesModal-{{uniqueIdIndex}}" class="text-center">
+                        <p ng-click="setInvoiceData()" data-toggle="modal" data-target="#invoicesModal-{{uniqueIdIndex}}" class="text-center" id="inv-list-{{invoice.id}}">
                             <i class="fa fa-file-pdf-o"></i>
                         </p>
                     </td>
@@ -46,25 +44,33 @@
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
                         &times;
                     </button>
-                    <h4 class="modal-title" id="myModalLabel">Invoice</h4>
+                    <h4 class="modal-title" id="myModalLabel">{{modalInvoice.description}}</h4>
                 </div>
                 <div class="modal-body">
                     <div class="wrapper-sm">
                         <div>
-                            <a href class="btn btn-success pull-right" onClick="alert('sending copy to customer')">Send to Customer</a>
+                            <!--<a href class="btn btn-success pull-right" onClick="alert('sending copy to customer')">Send to Customer</a>-->
                             <div class="invoice-logo "><img src="/img/silverip-logo-100px.png" alt="SilverIp"/></div>
                             <div class="row">
                                 <div class="col-xs-6">
                                     <p>{{modalInvoice.address.address}}</p>
-                                    <p>Contact: {{customerData.customer.email}}</p>
+                                    <p>{{modalInvoice.address.city}}, {{modalInvoice.address.state}}, {{modalInvoice.address.zip}}</p>
+                                    <p>Unit: {{modalInvoice.address.unit}}</p>
+                                    <p>@: {{customerServiceData[uniqueIdIndex].info.email}}</p>
+                                    <p>P: {{customerServiceData[uniqueIdIndex].info.contacts[1].value}}</p>
+
                                 </div>
                                 <div class="col-xs-6 text-right right-side-invoice">
-                                    <p class="f-size-17"># {{modalInvoice.id}}</p>
-                                    <p class="f-size-17" ng-init="dueDate = convertDate(modalInvoice.due_date)"> Due date: {{dueDate | date : "MMM d, y h:mm a" }}</p>
+                                    <p class="f-size-17">Invoice No. {{modalInvoice.id}}</p>
+                                    <p class="f-size-17" ng-init="dueDate = convertDate(modalInvoice.due_date)" ng-if="modalInvoice.due_date">
+                                        Due date: <i class="fa fa-calendar"></i> {{dueDate | date : "shortDate" }}
+                                    </p>
+                                    <p class="f-size-17 bg-color-darken txt-color-white">Total Due : ${{modalInvoice.amount}} USD</p>
                                 </div>
                             </div>
                             <hr>
-                            <p class="m-b-lg" ng-init="invoDate = convertDate(modalInvoice.created_at)">Invoice date: <strong>{{invoDate | date : "MMM d, y h:mm a" }}</strong><br>
+                            <p class="m-b-lg" ng-init="invoDate = convertDate(modalInvoice.created_at)" ng-if="modalInvoice.created_at">
+                                Invoice date: <strong>{{invoDate | date : "MMM d, y h:mm a" }}</strong><br>
                                 Status: <span class="label cdg-color-up caps">{{modalInvoice.status}}</span><br>
                                 ID: <strong> # {{modalInvoice.id}}</strong>
                             </p>
@@ -79,11 +85,11 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr ng-repeat="descProd in modalInvoice.details">
-                                    <td>{{descProd.customer_product_id}}</td>
-                                    <td>{{descProd.product_name}}</td>
-                                    <td class="capital-first">{{descProd.product_frequency}}</td>
-                                    <td>${{descProd.product_amount}}</td>
+                                <tr ng-repeat="descProd in customerServiceData[uniqueIdIndex].customerServices.services">
+                                    <td>{{descProd.product.id}}</td>
+                                    <td>{{descProd.product.name}}</td>
+                                    <td class="capital-first">{{descProd.product.frequency}}</td>
+                                    <td>${{descProd.amount?descProd.amount:'0.00'}}</td>
                                 </tr>
                                 <tr>
                                     <td colspan="3" class="text-right-invo"><strong>Tax</strong></td>

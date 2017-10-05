@@ -31,34 +31,284 @@ app.controller('libController', function ($scope, $http) {
 
 app.controller('dropZoneController', function ($scope, $http, customerService, generalService) {
 
-    if (generalService.sideBarFlag) {
-        $scope.sipTool(2);
-        generalService.sideBarFlag = false;
+
+
+
+
+  //This is the checkMobileDevice
+  console.log($.browser.mobile);
+  $scope.mobDevice  = $.browser.mobile;
+  $scope.flagTab    = 'general';
+  $scope.notesArray = [];
+
+  //values to reset...
+  $scope.resetValues = function (){
+
+    $scope.viewResults    = false;
+    $scope.verifyMsgView1 = false;
+    $scope.flagTab        = 'general';
+    $scope.notesArray     = [];
+
+  }
+
+  if (generalService.sideBarFlag) {
+    $scope.sipTool(2);
+    generalService.sideBarFlag = false;
+  }
+
+  /*DOROP ENGINE*/
+  var ctrl  = this;
+  ctrl.data = { upload:[] }
+  $scope.filesControl = ctrl.data.upload;
+
+
+  $scope.getDataControl = function(){
+
+    var objetos = getFormValues('walkthrough-form');
+
+    for(var obj in objetos )
+    {
+      $scope.filesControl[obj.split('image-')[1]].comment = objetos[obj];
     }
 
-    var ctrl = this;
-    ctrl.data = {upload: []}
-    $scope.filesControl = ctrl.data.upload;
+  }
+  $scope.removeImage    = function (keyId){
+    $scope.filesControl.splice(keyId, 1);
+    ctrl.data.upload = $scope.filesControl;
+  }
 
-    $scope.getDataControl = function () {
-        console.log($scope.filesControl);
-    }
-    $scope.removeImage = function (keyId) {
-        $scope.filesControl.splice(keyId, 1);
-        ctrl.data.upload = $scope.filesControl;
-    }
+  $('.drop-zone-box').on('dragenter', function() {
+    $(this)
+      .css({'background-color' : 'rgba(255,255,255,0.4)'})
+      .find("p").show();
+  });
+  $('.drop-zone-box').on('dragleave', function() {
+    $(this)
+      .css({'background-color' : ''})
+      .find("p").hide();
+  });
 
-    $('.drop-zone-box').on('dragenter', function () {
-        $(this)
-            .css({'background-color': 'rgba(255,255,255,0.4)'})
-            .find("p").show();
+
+
+
+
+
+
+
+
+
+
+
+
+  /*mas Engine*/
+  $scope.phaseFlagStyle = 0;
+
+  $http.get("getProspectBuildings")
+    .then(function (response) {
+      $scope.prospectBuildings = response.data
+    });
+  $http.get("getNeighborhoodList")
+    .then(function (response) {
+      $scope.neighborhoodList = response.data
     });
 
-    $('.drop-zone-box').on('dragleave', function () {
-        $(this)
-            .css({'background-color': ''})
-            .find("p").hide();
-    });
+  $scope.nextPhase = function(id, index){
+    $('#' + id + index).css('left', '-110%');
+    $('#' + id + (index+1)).css('left', '0');
+  }
+  $scope.backPhase = function(id, index){
+    $('#' + id + index).css('left', '100%');
+    $('#' + id + (index-1)).css('left', '0');
+  }
+
+  $scope.getWtLocation = function(id){
+
+    $http.get("getWalkthroughLocation", {params: {'id':id}})
+      .then(function (response) {
+
+        $scope.newDataLoaded = response.data;
+
+        $scope.nextPhase('mw-view-',0);
+        $scope.nextPhase('mw-view-',1);
+
+      });
+  }
+
+  $scope.verifyBldRecord = function (table){
+
+    if(table  == 'building')
+    {
+      $http.get("buildingsSearch", {params:{'querySearch':this.verifyInfoBld, 'table':table}})
+        .then(function (response) {
+
+          $scope.nameVerifyData = response.data;
+
+        });
+    }
+    else
+    {
+      $http.get("buildingsSearch", {params:{'querySearch':this.verifyInfoAdd, 'table':table}})
+        .then(function (response) {
+
+          $scope.addressVerifyData = response.data;
+
+        });
+    }
+
+    $scope.mwView1 = true;
+  };
+
+
+  $scope.seeResults     = function (type){
+    if(type == 'bld')
+      $scope.viewResultsName = !$scope.viewResultsName;
+    else
+      $scope.viewResultsAddress = !$scope.viewResultsAddress;
+  }
+  $scope.insertProspectBuilding = function(){
+    if($scope.addressVerifyData['count'] == 0 && $scope.nameVerifyData['count'] == 0)
+    {
+
+      $scope.nextPhase('mw-view-', 1);
+      $scope.verifyMsgView1 = false;
+
+      //insert temporal Location
+      $http.get("insertWalkthroughLocation", {params:{'name':this.verifyInfoBld, 'address':this.verifyInfoAdd}})
+        .then(function (response) {
+          $scope.newDataLoaded = response.data;
+        });
+    }
+
+    $scope.verifyMsgView1 = true;
+    return;
+  }
+
+  $scope.setTabFlag     = function(tabName){
+    $scope.flagTab = tabName;
+  }
+  $scope.updateinstance = function(){
+
+    console.log('update instance with flag = ' + $scope.flagTab);
+
+    switch ($scope.flagTab)
+    {
+      case  'general':
+
+        var objects = getFormValues('general-tab-content');
+        objects['id_buildings'] = $scope.newDataLoaded.building.id;
+        objects['id_address']   = $scope.newDataLoaded.id;
+
+        $http.get("updateWalkthroughLoc", {params : objects})
+          .then(function (response) {
+//            $scope.newDataLoaded = response.data;
+            $scope.updatedGeneralValues();
+          });
+
+        break;
+      case  'notes':
+
+        var savedObjects = getFormValues('wt-saved-notes');
+        var objects      = getFormValues('walkthrough-form-notes');
+
+        $http.get("insertWtNotes", {params : {insert:objects, update:savedObjects, id_buildings:$scope.newDataLoaded.building.id}})
+          .then(function (response) {
+            $scope.newDataLoaded = response.data;
+            $scope.notesArray = [];
+            $scope.updatedNotesValues()
+          });
+
+        break;
+      case  'images':
+
+        $scope.getDataControl();
+        var objects = getFormValues('walkthrough-form-images');
+        objects['id_buildings'] = $scope.newDataLoaded.building.id;
+        var tmpDataStance = $scope.filesControl;
+
+        $http.get("updateMediaFiles", {params : objects})
+          .then(function (response) {
+
+            $scope.newDataLoaded = response.data;
+
+            if($scope.filesControl.length > 0)
+            {
+
+              for (var x = 0 in tmpDataStance) {
+
+                $http.post("insertMediaFiles", {data : tmpDataStance[x], id_buildings  : $scope.newDataLoaded.building.id})
+                  .then(function (response) {
+                    $scope.newDataLoaded = response.data;
+                  });
+
+                ctrl.data = { upload:[] }
+                $scope.filesControl = ctrl.data.upload;
+                $scope.updatedImgValues();
+
+              }
+
+            }
+          });
+
+        break;
+    }
+
+
+
+
+  }
+  $scope.removeImgLocation = function(id){
+
+    $http.get("removeImgLocation", {params : {'id':id, 'id_buildings':$scope.newDataLoaded.building.id}})
+      .then(function (response) {
+
+        $scope.newDataLoaded = response.data;
+
+      });
+
+  }
+  $scope.addNoteFiled = function(){
+    $scope.notesArray.push([]);
+  }
+  $scope.removeNoteField = function(index){
+    $scope.notesArray.splice(index, 1);
+  }
+  $scope.removeNoteLocation = function(id){
+    $http.get("removeNoteLocation", {params : {'id':id, 'id_buildings':$scope.newDataLoaded.building.id}})
+      .then(function (response) {
+        $scope.newDataLoaded = response.data;
+      });
+  }
+
+
+
+
+
+
+  $scope.updatedGeneralValues  = function(){
+    $('#update-code').fadeOut('slow');
+    $('#update-type').fadeOut('slow');
+    $('#update-units').fadeOut('slow');
+    $('#update-floors').fadeOut('slow');
+    $('#update-neighborhood').fadeOut('slow');
+  }
+  $scope.updatedNotesValues = function(){
+    $('.saved-notes-icon').fadeOut('slow');
+  }
+  $scope.updatedImgValues = function(){
+    $('.saved-img-icon').fadeOut('slow');
+  }
+  $scope.setToUpdate    = function(id){
+    $('#'+id).fadeIn('slow');
+  }
+  $scope.setToUpdateS    = function(id){
+    $('#saved-'+id).fadeIn('slow');
+  }
+  $scope.setToUpdateN    = function(id){
+    $('#note-'+id).fadeIn('slow');
+  }
+  $scope.setToUpdateI    = function(id){
+    $('#i-save-'+id).fadeIn('slow');
+  }
 
 })
     .directive('dropZone', [
@@ -453,38 +703,34 @@ app.controller('newcustomerAppController', function ($scope, $http, customerServ
 //Tabs
 app.controller('dummyAppController', function ($scope, $http, customerService, generalService) {
 
-    $scope.addToTabsArray = function (id) {
+  $scope.addToTabArray = function (id) {
 
-        if (customerService.customerArray[id])
-            return;
+    if (customerService.customerArray[id])
+      return;
 
-        customerService.customerArray[id] = id;
-        customerService.lastRequestedId = id;
-        $scope.tabsArray = customerService.customerArray;
-        generalService.rightView = true;
-        $scope.customerServiceData = customerService.tabs;
+    customerService.customerArray[id] = id;
+    customerService.lastRequestedId   = id;
+    $scope.tabsArray                  = customerService.customerArray;
+    generalService.rightView          = true;
+    $scope.customerServiceData        = customerService.tabs;
 
-    };
+  };
 
-    $scope.removeFromTabsArray = function (id) {
+  $scope.removeFromTabArray = function (id) {
 
-        delete customerService.customerArray[id];
-        $scope.tabsArray = customerService.customerArray;
-        delete customerService.tabs[id];
-    }
+    delete customerService.customerArray[id];
+    $scope.tabsArray = customerService.customerArray;
+    delete customerService.tabs[id];
+  }
 
 
-    $scope.createTab = function ($event) {
-        $scope.addToTabsArray(this.customerData.id);
-        $event.stopPropagation();
-    }
+  $scope.createTab = function ($event) {
+    $scope.addToTabArray(this.customerData.id);
+    $event.stopPropagation();
+  }
 
 
 });
-
-
-
-
 
 
 

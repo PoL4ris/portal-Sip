@@ -1,11 +1,8 @@
-<div class="row no no-margin-sides">
+<div class="row no no-margin-sides" id="customer-id-{{uniqueIdIndex}}">
     <article class="col-lg-12 col-md-12 col-sm-12 p-b-lg bg-white white-shadow null-article no-padding-right  ">
         <div class="row">
             <div class="col-lg-4 col-md-12 no-padding-right" style="min-width: 300px; max-width: 300px;">
-                <article class="col-sm-12 col-md-12
-                                col-lg-12 no-padding-sides m-t-lg
-                                status-color-{{customerServiceData[uniqueIdIndex].info.status.name}}
-                                null-article"
+                <article class="col-sm-12 col-md-12 col-lg-12 no-padding-sides m-t-lg status-color-{{customerServiceData[uniqueIdIndex].info.status.name}} null-article"
                          ng-include="'/views/customer/customer.html'">
                 </article>
             </div>
@@ -13,8 +10,13 @@
             <div class="col-lg-8 col-md-12 m-t-lg customer-dash-grid ">
                 <article class="null-article" ng-include="'/views/customer/product.html'"></article>
             </div>
-
         </div>
+
+
+        <div class="btn btn-primary notification-container" ng-click="sipTool(2)">
+            Recent Activity <i class="m-l-sm fa fa-caret-right"></i>
+        </div>
+
     </article>
 
 
@@ -22,13 +24,13 @@
         <div class="row">
             <header role="heading" class="ui-sortable-handle">
                 <ul id="widget-tab-1" class="nav pull-left nav-tabs size-100">
-                    <li class="">
-                        <a data-toggle="tab" href="#tab-r1" aria-expanded="false">
+                    <li class="active">
+                        <a data-toggle="tab" href="#tab-r1-{{uniqueIdIndex}}" aria-expanded="false">
                             <i class="fa fa-lg fa-home"></i>
                             <span class="hidden-mobile hidden-tablet"></span>
                         </a>
                     </li>
-                    <li class="active">
+                    <li class="">
                         <a data-toggle="tab" href="#tab-r2-{{uniqueIdIndex}}" aria-expanded="false">
                             <i class="fa fa-lg fa-signal"></i>
                             <span class="hidden-mobile hidden-tablet"> Network </span>
@@ -58,7 +60,7 @@
                         </a>
                     </li>
                     <li class="">
-                        <a data-toggle="tab" href="#tab-r7-{{uniqueIdIndex}}" aria-expanded="false" id="invoice-payment-tab-link">
+                        <a data-toggle="tab" href="#tab-r7-{{uniqueIdIndex}}" aria-expanded="false" id="invoice-payment-tab-link-{{uniqueIdIndex}}">
                             <i class="fa fa-lg fa-file-pdf-o"></i>
                             <span
                                 class="hidden-mobile hidden-tablet"> Invoices</span>
@@ -80,11 +82,10 @@
             </header>
             <div class="col-lg-12 m-t-lg">
                 <div class="tab-content">
-
-                    <div class="tab-pane" id="tab-r1-{{uniqueIdIndex}}">
-                        <article class="col-sm-12 col-md-12 col-lg-12 no-padding-sides m-t-lg null-article"></article>
+                    <div class="tab-pane active" id="tab-r1-{{uniqueIdIndex}}">
+                        <article class="col-sm-12 col-md-12 col-lg-12 no-padding-sides m-t-lg null-article" ng-include="'/views/silverip-tool.html'"></article>
                     </div>
-                    <div class="tab-pane active" id="tab-r2-{{uniqueIdIndex}}">
+                    <div class="tab-pane" id="tab-r2-{{uniqueIdIndex}}">
                         <article class="col-sm-12 col-md-12 col-lg-12 no-padding-sides m-t-lg null-article" ng-include="'/views/customer/network.html'"></article>
                     </div>
                     <div class="tab-pane animated fadeInLeft" id="tab-r3-{{uniqueIdIndex}}">

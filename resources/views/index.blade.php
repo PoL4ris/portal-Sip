@@ -36,6 +36,8 @@
   <link rel="stylesheet" type="text/css" media="screen" href="/css/style.css">
   <link rel="stylesheet" type="text/css" media="screen" href="/css/buildings.css">
   <link rel="stylesheet" type="text/css" media="screen" href="/css/calendar.css">
+  <link rel="stylesheet" type="text/css" media="screen" href="/css/mobile.css">
+  <link rel="stylesheet" type="text/css" media="screen" href="/css/responsive.css">
 
   <!-- #FAVICONS -->
   <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
@@ -61,47 +63,6 @@
   <link rel="apple-touch-startup-image" href="styles/img/splash/iphone.png"         media="screen and (max-device-width: 320px)">
 
 </head>
-<!--
-
-TABLE OF CONTENTS.
-
-Use search to find needed section.
-
-===================================================================
-
-|  01. #CSS Links                |  all CSS links and file paths  |
-|  02. #FAVICONS                 |  Favicon links and file paths  |
-|  03. #GOOGLE FONT              |  Google font link              |
-|  04. #APP SCREEN / ICONS       |  app icons, screen backdrops   |
-|  05. #BODY                     |  body tag                      |
-|  06. #HEADER                   |  header tag                    |
-
-===================================================================
-
--->
-
-<!-- #BODY -->
-<!-- Possible Classes (to hardcode the classes you must disable the __ module)
-
-* 'smart-style-{SKIN#}'
-* 'smart-rtl'         - Switch theme mode to RTL
-* 'menu-on-top'       - Switch to top navigation (no DOM change required)
-* 'no-menu'           - Hides the menu completely
-* 'hidden-menu'       - Hides the main menu but still accessable by hovering over left edge
-* 'fixed-header'      - Fixes the header
-* 'fixed-navigation'  - Fixes the main menu
-* 'fixed-ribbon'      - Fixes breadcrumb
-* 'fixed-page-footer' - Fixes footer
-* 'container'         - boxed layout mode (non-responsive: will not work with fixed-navigation & fixed-ribbon)
-
-Possible attributes
-
-* 'data-smart-device-detect' - Detects if mobile or desktop, adds a class to body tag
-* 'data-smart-fast-click'    - Mobile click events
-* 'data-smart-layout'        - Mobile view event listener
-* 'data-smart-page-title'    - Page title
-
--->
 
 <body data-smart-device-detect
       data-smart-fast-click
@@ -150,7 +111,8 @@ Possible attributes
 <script src="/js/sidebar.js"></script>
 <script src="/js/silveripJs/icons.js"></script>
 <script src="/js/silveripJs/const.js"></script>
-<script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"></script>
+<script src="/js/silveripJs/mobileDevice.js"></script>
+<script src="/js/cluster.js"></script>
 
 
 </body>

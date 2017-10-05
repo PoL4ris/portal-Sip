@@ -597,9 +597,10 @@ angular.module('app.forms').controller('FormPluginsCtrl', function($scope, $log)
     }
   };
 
-  $scope.toggleDisabled = function(id = '') {
+  $scope.toggleDisabled = function(id = '', loc = '') {
     $scope.editableOptions.disabled = !$scope.editableOptions.disabled;
-    $scope.xEditVisual($scope.editableOptions.disabled, id);
+//    console.log($scope.editableOptions.disabled, id);
+    $scope.xEditVisual($scope.editableOptions.disabled, id, loc);
   };
 
 

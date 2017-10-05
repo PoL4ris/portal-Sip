@@ -909,7 +909,6 @@ nav ul li a {
     width: 100%;
 }
 #activity-log .log-entry {
-    background: red none repeat scroll 0 0;
     float: left;
     width: 100%;
 }
@@ -969,7 +968,7 @@ nav ul li a {
 #activity-log .al-lg-header .lg-user {
     float: left;
     margin: 0;
-    width: 25%;
+    width: 50%;
 }
 #activity-log .al-lg-header .lg-user span {
     background: #ffce54 none repeat scroll 0 0;
@@ -977,6 +976,10 @@ nav ul li a {
     color: white;
     padding: 2px 5px;
     text-shadow: 2px 0 1px rgba(0, 0, 0, 0.2);
+}
+#activity-log .al-lg-header .lg-user span.system{
+  background: #0f94f6 none repeat scroll 0 0;
+  letter-spacing: .7px;
 }
 #activity-log .log-content .al-lg-description {
     border-bottom: 1px solid #dad8da;

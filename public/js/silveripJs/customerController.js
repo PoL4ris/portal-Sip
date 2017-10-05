@@ -9,19 +9,18 @@ app.controller('customerControllerList',            function ($scope, $http){
       $scope.supportDataCustomer = response.data;
     });
 });
-app.controller('customerController',                function ($scope, $http, $stateParams, customerService, DTOptionsBuilder, generalService){
-
+app.controller('customerController',                function ($scope, $http, $stateParams, customerService, DTOptionsBuilder, generalService, $timeout){
 
   if(!generalService.rightView) {
     generalService.rightView = true;
   }
   else {
-
-    if(generalService.stateRoute == 'customers')
-      if(!generalService.sideBarFlag) {
-        $scope.sipTool(2);
-        generalService.sideBarFlag = true;
-      }
+//uncoment to apear the sideBar default
+//    if(generalService.stateRoute == 'customers')
+//      if(!generalService.sideBarFlag) {
+//        $scope.sipTool(2);
+//        generalService.sideBarFlag = true;
+//      }
 
     generalService.leftView   = true;
     $scope.customerFlag       = false;
@@ -34,26 +33,12 @@ app.controller('customerController',                function ($scope, $http, $st
 
 
     customerService.tabs[$scope.uniqueIdIndex]                = {};
-//    customerService.tabs[$scope.idCustomer].info              = {};
-//    customerService.tabs[$scope.idCustomer].customerServices  = {};
-//    customerService.tabs[$scope.idCustomer].customerNetwork   = {};
+
     customerService.tabs[$scope.idCustomer].xEditMainInfo     = true;
     customerService.tabs[$scope.idCustomer].xEditContactInfo     = true;
-//    return;
 
     //SET INPUT VALUE
     //$('#customerIdScope').val($scope.idCustomer);
-
-
-
-
-    //============================================
-    //THIS IS THE IMPORTANT FOR THE VIEW EN EL FRONT
-    //customerServiceData[uniqueIdIndex]
-
-
-
-
 
 
     $http.get("customersData", {params: {'id': $scope.idCustomer}})
@@ -66,6 +51,8 @@ app.controller('customerController',                function ($scope, $http, $st
         //for customer view and to adapt tabs structure.
         if(!$scope.customerServiceData)
           $scope.customerServiceData =  customerService.tabs;
+
+          console.log(customerService);
 
         $('#tabs-label-' + $scope.uniqueIdIndex).html(response.data.address.code + '#' + response.data.address.unit)
       });
@@ -108,6 +95,12 @@ app.controller('customerController',                function ($scope, $http, $st
 
 
   }
+  $scope.getCustomerDataRefresh = function(){
+    $http.get("customersData", {params: {'id': $scope.idCustomer}})
+      .then(function (response) {
+        customerService.tabs[$scope.idCustomer].info  = response.data;
+      });
+  }
 
   //Reloads Data
   $scope.getCustomerStatus          = function (id){
@@ -144,13 +137,15 @@ app.controller('customerController',                function ($scope, $http, $st
         $scope.addressData = response.data;
       });
   };
+  //no need anymore.
   $scope.getCustomerContactData     = function (){
     $http.get("getCustomerContactData", {params:{'id':$scope.idCustomer}})
       .then(function (response) {
-        $scope.customerContactsData = response.data.contacts;
+        $scope.customerContactsData = response.data.contacts;//rm
+        customerService.tabs[$scope.idCustomer].contacts = response.data.contacts;
       });
   }
-  $scope.getCustomerContactData();
+  //$scope.getCustomerContactData();//NO need anymore...
   $scope.submitForm                 = function (table) {
     console.log('este' + table);
     return;
@@ -463,7 +458,7 @@ app.controller('customerController',                function ($scope, $http, $st
       });
   };//ok
   //Network
-  $scope.getCoreData = function (ip){
+  $scope.getCoreData                = function (ip){
 //    $scope.pLoad     = true;
 //    $scope.pRecord   = ip;
 
@@ -480,8 +475,27 @@ app.controller('customerController',                function ($scope, $http, $st
         customerService.tabs[$scope.idCustomer].pInfo    = response.data[1];
       });
   }
-  $scope.pStInOptions = DTOptionsBuilder.newOptions().withDisplayLength(50);
+  $scope.pStInOptions               = DTOptionsBuilder.newOptions().withDisplayLength(50);
 //  customerService.tabs[$scope.idCustomer].pStInOptions = DTOptionsBuilder.newOptions().withDisplayLength(50);
+
+  //Log->triggersModal-TEST->working/verify...
+  $scope.logInvoiceView             = function(record){
+
+    //record Contains:
+    //record.invoice_id
+    //record.customer_id
+
+    var data = $scope.parJson(record.data);
+
+    $('#invoice-payment-tab-link-' + data.customer_id).trigger('click');
+
+    $timeout(function() {
+      //console.log(data.invoice_id[0]);
+
+      $('#inv-list-' + data.invoice_id[0]).trigger('click');
+      }, 1);
+
+  }
 
   //STATUS CHANGE
   $scope.activeServiceDisplay       = function (defaultValue = null) {
@@ -545,15 +559,16 @@ app.controller('customerTicketHistoryController',   function ($scope, $http){
   $scope.getTicketHistory();
 });
 //invoicehistory.html
-app.controller('customerInvoiceHistoryController',  function ($scope, $http, customerService){
-
+app.controller('customerInvoiceHistoryController',  function ($scope, $http, customerService, DTOptionsBuilder){
+//console.log('getInvoiceHistory ==> Estamos adentro');
 //  if(!$scope.invoiceData)
     $http.get("getInvoiceHistory", {params:{'id':$scope.idCustomer}})
       .then(function (response) {
+
         $scope.invoiceData = response.data;//rm
         $scope.customerData.invoices = response.data;//rm
         customerService.tabs[$scope.idCustomer].invoiceData = response.data;
-//        console.log($scope.customerData);
+//        console.log(response.data);
       });
 
   $scope.setInvoiceData = function (){
@@ -561,8 +576,15 @@ app.controller('customerInvoiceHistoryController',  function ($scope, $http, cus
     console.log('this is the locotrocholoco');
 
     $scope.modalInvoice         = this.invoice;
-    $scope.modalInvoice.details = $scope.parJson($scope.modalInvoice.details);
+
+    console.log(this.invoice);
+    console.log($scope.customerServiceData[$scope.idCustomer]);
+//    console.log($scope.customerData);
+
+//    $scope.modalInvoice.details = $scope.parJson($scope.modalInvoice.details);
   };
+
+  $scope.invoiceOptions = DTOptionsBuilder.newOptions().withOption('order', [7, 'desc']);
 
 });
 //Network.html
@@ -616,11 +638,9 @@ app.controller('customerNetworkController',         function ($scope, $http, cus
           alert(response.data);
 
         $.each(response.data,function(i, item) {
-          if(i == 'dashboard-port-status'){
-              $('#' + i ).html(item);
-          } else {
-              $('#' + i + '-' + $scope.idCustomer).html(item);
-          }
+
+          $('#' + i + '-' + $scope.idCustomer).html(item);
+//          console.log('#' + i + '-' + $scope.idCustomer + ' -----> ' + item);
         });
 
         service = 1;
@@ -630,6 +650,7 @@ app.controller('customerNetworkController',         function ($scope, $http, cus
             $.each(response.data,function(i, item)
             {
               $('#' + i + '-' + $scope.idCustomer).html(item);
+//              console.log('#' + i + '-' + $scope.idCustomer + ' -----> ' + item);
             });
           });
 
@@ -839,7 +860,6 @@ app.controller('customerNetworkController',         function ($scope, $http, cus
 
 
 });
-
 app.controller('customerBuildingController',        function ($scope, $http){
 
   //   console.log($scope.customerData);
@@ -853,13 +873,6 @@ app.controller('customerBuildingController',        function ($scope, $http){
   }
 
 });
-
-
-
-
-
-
-
 app.controller('customerPaymentMethodsController',  function ($scope, $http, customerService){
 
 //  customerService.tabs[$scope.idCustomer].invoiceData = response.data;
@@ -1079,14 +1092,6 @@ app.controller('customerPaymentMethodsController',  function ($scope, $http, cus
   };
 
 });
-
-
-
-
-
-
-
-
 app.controller('addPaymentMethodController',        function ($scope, $http,customerService){
 //  customerService.tabs[$scope.idCustomer];
   // app.controller('addPaymentMethodController',        function ($scope, $http, customerId, notify, $uibModalInstance){
@@ -1165,7 +1170,6 @@ app.controller('addPaymentMethodController',        function ($scope, $http,cust
 
 
 });
-
 //Product.html
 app.controller('customerServicesController',        function ($scope, $http, customerService){
   $http.get("getCustomerServices", {params:{'id':$scope.idCustomer}})
@@ -1250,8 +1254,6 @@ app.controller('serviceProductController',          function ($scope, $http, cus
     });
 
 });
-
-
 app.controller('customerNotesController',           function ($scope, $http, customerService){
 
   $http.get("getCustomerNotes", {params : {'id' : $scope.idCustomer}})
@@ -1307,6 +1309,7 @@ app.controller('customerBillingHistoryController',  function ($scope, $http, $ui
   };
   $scope.dtOptions = DTOptionsBuilder.newOptions().withOption('order', [0, 'desc']);
 });
+
 app.controller('customersHomeController',           function ($scope, $http, customerService, generalService){
 
 //  if(customerService.stateRoute == 'customershome'){

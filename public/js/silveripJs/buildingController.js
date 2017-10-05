@@ -17,6 +17,10 @@ app.controller('buildingCtl',             function ($scope, $http, $stateParams,
     generalService.sideBarFlag = false;
   }
 
+  if(generalService.stateRoute == 'buildings' && $scope.mobDevice)
+    $scope.fedeOUTbtn();
+
+
   $scope.idBuilding = null;
 
   if ($stateParams.id)

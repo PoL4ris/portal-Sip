@@ -148,6 +148,15 @@ class Building extends Model {
         )->where('id_types', config('const.type.switch'));
     }
 
+    public function notes()
+    {
+        return $this->hasMany('App\Models\Note', 'id_buildings', 'id');
+    }
+    public function media()
+    {
+        return $this->hasMany('App\Models\Media', 'id_buildings', 'id');
+    }
+
     public function accessSwitches()
     {
         return $this->hasManyThrough(

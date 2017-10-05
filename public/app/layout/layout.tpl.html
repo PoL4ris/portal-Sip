@@ -1,10 +1,11 @@
 <!-- HEADER -->
-<div data-smart-include="app/layout/partials/header.tpl.html" class="placeholder-header"></div>
+<div data-smart-include="app/layout/partials/header.tpl.html" class="placeholder-header" ng-if="!mobDevice"></div>
 <!-- END HEADER -->
 
 
 <!-- NAVIGATION -->
 <div data-smart-include="app/layout/partials/navigation.tpl.html" class="placeholder-left-panel"></div>
+<div ng-include="'views/mobile/nav.html'" ng-if="mobDevice" id="mobile-navigation"></div>
 <!-- END NAVIGATION -->
 
 <!-- SIDEBARS -->
