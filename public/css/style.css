@@ -1625,6 +1625,14 @@ table.dataTable tbody tr {
   overflow: auto;
   max-height: 300px;
 }
+.notification-container{
+
+  float: right;
+  margin-right: 10px;
+
+}
+.notification{
+}
 pre {
   font-size: 10px;
   margin: 30px;
