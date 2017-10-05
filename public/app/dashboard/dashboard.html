@@ -109,7 +109,7 @@
         </div>
     </div>
 
-    <div class="col-lg-12 col-xs-12 mobile-dash-content">
+    <div class="col-lg-12 col-xs-12 mobile-dash-content m-t-lg">
         <div class="row">
             <div class="col-xs-6 access-box text-center cursor-pointer">
                 <a href="#/walkthrough">
@@ -120,13 +120,25 @@
                 </a>
             </div>
             <div class="col-xs-6 access-box text-center  cursor-pointer">
-                <div class="walkthrough bg-violet padding-10 m-b-sm">
-                    <i class="fa fa-calendar"></i>
-                </div>
-                <label class="">Calendar</label>
+                <a href="#/tech-schedule">
+                    <div class="walkthrough bg-violet padding-10 m-b-sm">
+                        <i class="fa fa-calendar"></i>
+                    </div>
+                    <label class="">Calendar</label>
+                </a>
             </div>
-            <div class="col-xs-6 border3 access-box text-center">APP 3</div>
-            <div class="col-xs-6 border4 access-box text-center">APP 4</div>
+
+            <div class="col-xs-6 access-box text-center cursor-pointer">
+                <a href="#/walkthrough">
+                    <div class="walkthrough bg-danger padding-10 m-b-sm">
+                        <i class="fa fa-building"></i>
+                    </div>
+                    <label class="">Buildings</label>
+                </a>
+            </div>
+
+            <!--<div class="col-xs-6 border4 access-box text-center">APP 4</div>-->
+
         </div>
         <div class="row m-t-lg">
             <div class="m-appt" ng-include="'/views/support/tech-appointments.html'">

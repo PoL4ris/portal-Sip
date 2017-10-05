@@ -18,4 +18,19 @@
     padding: 0;
   }
   /*DISPLAYS*/
+
+  .filters-fixed-size .dataTables_filter{
+    width: 100%;
+    height: 40px;
+    text-align: left;
+    padding-top: 12px;
+    font-size: 14px;
+  }
+  div.dataTables_filter label{
+    float: left;
+  }
+  div.dataTables_filter label input{
+    width: 300px;
+    border: 1px solid #ddd;
+  }
 }

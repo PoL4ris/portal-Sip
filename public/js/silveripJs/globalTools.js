@@ -17,7 +17,7 @@ app.controller('globalToolsCtl',                    function ($scope, $http, $co
 
   //console.log($.browser.mobile);
   $scope.mobDevice = $.browser.mobile;
-//  $scope.mobDevice = false;
+//  $scope.mobDevice = true;
 
 //  console.log($scope.statusArrayConstant);
 //  console.log(localStorage);

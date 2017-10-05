@@ -33,25 +33,41 @@
         <button ng-click="fedeOUTbtn()" class="btn btn-warning"><i class="fa fa-arrow-left"></i></button>
         <button ng-click="fedeINbtn()"  class="btn btn-primary"><i class="fa fa-arrow-right"></i></button>
 
-        <div class="bld-workspace">
-            <article class="col-lg-6 p-t-lg m-b-lg null-article animated fadeInDown" ng-include="'/views/building/buildings.html'"></article>
-            <article class="col-lg-6 p-t-lg m-b-lg null-article animated fadeInDown" ng-include="'/views/building/services.html'"></article>
+        <div class="row">
+            <article class="col-lg-6 col-sm-12 col-xs-12 p-t-lg m-b-lg null-article animated fadeInDown" ng-include="'/views/building/buildings.html'"></article>
+            <article class="col-lg-6 col-sm-12 col-xs-12 p-t-lg m-b-lg null-article animated fadeInDown" ng-include="'/views/building/services.html'" ng-if="!mobDevice"></article>
         </div>
+        <div class="row">
         <!--TABS-->
-        <article class="col-sm-12 col-md-12 col-lg-12  bg-white white-shadow m-t-lg p-b-lg null-article" id="c-fixed-content">
+
+        <article class="col-lg-12 col-sm-12 col-xs-12  bg-white white-shadow m-t-lg p-b-lg null-article" id="c-fixed-content">
             <div class="row">
-                <header role="heading" class="ui-sortable-handle">
+                <header role="heading" class="ui-sortable-handle col-xs-12 col-lg-12">
                     <ul id="widget-tab-1" class="nav pull-left nav-tabs size-100">
-                        <li class=""><a data-toggle="tab" href="#tab-r2" aria-expanded="false"> <i class="fa fa-lg fa-plus-square"></i> <span class="hidden-mobile hidden-tablet"></span></a></li>
-                        <li class="active"><a data-toggle="tab" href="#tab-r1" aria-expanded="false"><i class="fa fa-lg fa-home"></i> <span class="hidden-mobile hidden-tablet">Properties</span></a></li>
-                        <li class=""><a data-toggle="tab" href="#tab-r3" aria-expanded="false"><i class="fa fa-lg fa-home"></i> <span class="hidden-mobile hidden-tablet">Services</span></a></li>
+                        <li class="">
+                            <a data-toggle="tab" href="#tab-r2" aria-expanded="false"> <i class="fa fa-lg fa-plus-square"></i>
+                                <span></span>
+                            </a>
+                        </li>
+                        <li ng-if="mobDevice" class="active">
+                            <a data-toggle="tab" href="#tab-r4" aria-expanded="false"><i class="fa fa-lg fa-home"></i><span>Products</span></a>
+                        </li>
+                        <li class="{{!mobDevice?'active':''}}">
+                            <a data-toggle="tab" href="#tab-r1" aria-expanded="false"><i class="fa fa-lg fa-home"></i><span>Properties</span></a>
+                        </li>
+                        <li class="">
+                            <a data-toggle="tab" href="#tab-r3" aria-expanded="false"><i class="fa fa-lg fa-home"></i> <span class=" ">Services</span></a>
+                        </li>
                     </ul>
                 </header>
 
                 <div class="col-lg-12 m-t-lg">
                     <div class="tab-content">
                         <!-- PROPIEDADES -->
-                        <div class="tab-pane active" id="tab-r1">
+                        <div class="tab-pane active" id="tab-r4" ng-if="mobDevice">
+                            <article class="col-lg-6 m-t-lg null-article " ng-include="'/views/building/services.html'"></article>
+                        </div>
+                        <div class="tab-pane {{!mobDevice?'active':''}}" id="tab-r1">
                             <article class="col-lg-6 m-t-lg null-article " ng-include="'/views/building/properties.html'"></article>
                             <article class="col-lg-6 m-t-lg null-article animated fadeInRight" ng-include="'/views/building/contacts.html'"></article>
                         </div>
@@ -65,6 +81,8 @@
                 </div>
             </div>
         </article>
+
+        </div>
         <!--END TABS-->
     </div>
 </div>

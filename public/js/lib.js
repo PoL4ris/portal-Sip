@@ -516,6 +516,8 @@ app.controller('newcustomerAppController', function($scope, $http, customerServi
     else
       objects = formData;
 
+      console.log(objects);
+
     var mensajes = {
                     'customers.first_name':'First Name missing.',
                     'customers.last_name' :'Last Name missing',
