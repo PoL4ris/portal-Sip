@@ -10,7 +10,8 @@ class Building extends Model {
     public function activeCustomers()
     {
         return $this->belongsToMany('App\Models\Customer', 'address', 'id_buildings', 'id_customers')
-            ->where('id_status', config('const.status.active'));
+            ->where('id_status', config('const.status.active'))
+            ->with('emailAddress');
     }
 
     public function customers()
@@ -31,7 +32,8 @@ class Building extends Model {
         return $this->hasManyThrough(
             'App\Models\CustomerProduct', 'App\Models\Address',
             'id_buildings', 'id_address', 'id'
-        )->where('id_status', config('const.status.active'));
+        )->where('id_status', config('const.status.active'))
+            ->with(['product', 'customer']);
     }
 
     public function address()
@@ -79,22 +81,22 @@ class Building extends Model {
 
     public function activeProducts()
     {
-        $products = $this->products;
-
-        return $products->whereLoose('id_status', config('const.status.active'));
+        return $this->hasMany('App\Models\BuildingProduct', 'id_buildings', 'id')
+            ->where('id_status', config('const.status.active'))
+            ->with('product');
     }
 
     public function activeInternetProducts()
     {
-        return $this->hasMany('App\Models\BuildingProduct', 'id_buildings', 'id')
-            ->where('id_status', config('const.status.active'))
-            ->with(['product' => function ($query)
-            {
-                $query->where('id_types', config('const.type.internet'));
-            }]);
+        $activeProducts = $this->activeProducts;
+        if ($activeProducts == null)
+        {
+            return $activeProducts;
+        }
 
-//        $products = $this->products;
-//        return $products->whereLoose('id_status', config('const.status.active'));
+        return $activeProducts->filter(function ($buildingProduct, $key) {
+            return $buildingProduct->product->id_types == config('const.type.internet');
+        });
     }
 
     public function activeParentProducts()
@@ -146,4 +148,21 @@ class Building extends Model {
         )->where('id_types', config('const.type.switch'));
     }
 
+    public function notes()
+    {
+        return $this->hasMany('App\Models\Note', 'id_buildings', 'id');
+    }
+    public function media()
+    {
+        return $this->hasMany('App\Models\Media', 'id_buildings', 'id');
+    }
+
+    public function accessSwitches()
+    {
+        return $this->hasManyThrough(
+            'App\Models\NetworkNode', 'App\Models\Address',
+            'id_buildings', 'id_address', 'id'
+        )->where('id_types', config('const.type.switch'))
+            ->where('host_name', 'not like', '%CORE%');
+    }
 }

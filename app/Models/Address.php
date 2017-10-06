@@ -21,7 +21,7 @@ class Address extends Model
     }
 
     public function tickets() {
-      return $this->hasMany('App\Models\Ticket', 'id_customers', 'id_buildings')->where('status', '!=', 'closed');
+      return $this->hasMany('App\Models\Ticket', 'id_customers', 'id_buildings')->where('status', '!=', config('const.ticket_status.closed'));
     }
 
     public function buildings() {

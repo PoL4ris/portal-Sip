@@ -24,8 +24,7 @@ class Invoice extends Model {
             {
                 continue;
             }
-            $chargeDetailsArray = json_decode($charge->details, true);
-            $detailsArray[] = $chargeDetailsArray;
+            $detailsArray [] = array_merge(json_decode($charge->details, true), ['start_date' => $charge->start_date, 'end_date' => $charge->end_date, 'invoice_id' => $charge->id_invoices ]);
         }
 
         return $detailsArray;
@@ -43,5 +42,10 @@ class Invoice extends Model {
     public function types()
     {
         return $this->hasOne('App\Models\Customer', 'id', 'id_customers');
+    }
+
+    public function logs()
+    {
+        return $this->hasMany('App\Models\InvoiceLog', 'id_invoices');
     }
 }

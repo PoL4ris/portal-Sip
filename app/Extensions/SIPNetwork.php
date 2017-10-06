@@ -35,7 +35,7 @@ class SIPNetwork {
         $this->devModeRouterIP = config('netmgmt.devmode.routerip');
     }
 
-    protected function getSwitchInstance(){
+    public function getSwitchInstance(){
         return new CiscoSwitch(['readCommunity' => $this->readCommunity,
                                 'writeCommunity' => $this->writeCommunity]);
     }

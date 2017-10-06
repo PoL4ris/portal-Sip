@@ -1,14 +1,12 @@
-<!--<div jarvis-widget id="wid-id-2" data-widget-deletebutton="false" data-widget-editbutton="false" data-widget-custombutton="false" ng-controller="FormXeditableCtrl">-->
-<div ng-controller="FormXeditableCtrl" class="bg-royal b-test p-t-lg p-b-lg float-left">
-
+<div ng-controller="FormXeditableCtrl" class="b-test p-t-lg p-b-lg float-left">
     <div class="widget-body">
-        <form class="customer-customer-form" id="new-ct-form">
+        <form class="customer-customer-form" id="new-ct-form-{{uniqueIdIndex}}">
             <div class="col-lg-12 margin-bottom-10 no-padding-sides b-b-ddd padding-bottom-10">
                 <label class="bold-type col-lg-3 text-left label-form-align">Issue:</label>
                 <div class="col-lg-9">
                     <select class=" select-control" name="id_reasons" required>
                         <option value="">Select an issue</option>
-                        <option ng-repeat="reason in newTicketData" value="{{ reason.id }}">{{ reason.short_description }}</option>
+                        <option ng-repeat="(index, reason) in statusArrayConstant.reason" value="{{ index }}">{{ reason }}</option>
                     </select>
                 </div>
             </div>
@@ -27,8 +25,8 @@
                 <textarea name="comment" class="col-lg-12 common-textarea" placeholder="Ticket Info..." required></textarea>
             </div>
             <div class="col-lg-12">
-                <img src="/img/loading.gif" alt="" class="loading-gif-support" ng-if="loadingGif">
-                <button id="create-customer-ticket" class="btn btn-primary float-right" ng-click="submitNewTicketForm()">Create Ticket</button>
+                <img src="/img/loading.gif" alt="loading..." class="loading-gif-support" ng-if="customerServiceData[uniqueIdIndex].loadingGif">
+                <button id="create-customer-ticket-{{uniqueIdIndex}}" class="btn btn-primary float-right" ng-click="submitNewTicketForm()">Create Ticket</button>
             </div>
         </form>
     </div>

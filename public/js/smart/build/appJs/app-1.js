@@ -125,6 +125,8 @@ appConfig.skins = [
 
 
 appConfig.apiRootUrl = 'api';
+appConfig.appCacheClear =  Math.floor((Math.random() * 100) + 1);
+
 
 window.appConfig = appConfig;
 
@@ -195,7 +197,9 @@ var app = angular.module('app', [
   'app.reports',
   'app.charges',
   'app.newcustomer',
-  'app.warp',
+  'app.tabs',
+  'app.walkthrough',
+  'app.test',
 ])
   .config(function ($provide, $httpProvider, RestangularProvider) {
 
@@ -205,6 +209,7 @@ var app = angular.module('app', [
 
   })
   .constant('APP_CONFIG', window.appConfig)
+//  .constant('APP_CACHE_CLEAR', Math.floor((Math.random() * 100) + 1))
 
   .run(function ($rootScope
     , $state, $stateParams

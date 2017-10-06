@@ -1,11 +1,11 @@
 //ADMIN
-app.controller('adminController',                   function($scope, $http, customerService, adminService, DTOptionsBuilder){
+app.controller('adminController',                   function($scope, $http, customerService, adminService, DTOptionsBuilder, generalService){
 
   console.log('this is the admincontroller rawr');
 
-  if(customerService.sideBarFlag) {
+  if(generalService.sideBarFlag) {
     $scope.sipTool(2);
-    customerService.sideBarFlag = false;
+    generalService.sideBarFlag = false;
   }
 
   $scope.displayView = 'users';

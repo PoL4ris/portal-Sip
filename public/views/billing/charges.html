@@ -181,33 +181,34 @@
             <div class="modal-body">
                 <div class="wrapper-sm">
                     <div>
-                        <a href class="btn btn-success pull-right" onClick="alert('sending copy to customer')">Send to Customer</a>
+                        <!--<a href class="btn btn-success pull-right" onClick="alert('sending copy to customer')">Send to Customer</a>-->
                         <div class="invoice-logo "><img src="/img/silverip-logo-100px.png" alt="SilverIp"/></div>
+
                         <div class="row">
-
                             <div class="col-xs-6">
-                                <p>{{showInvoiceDetails.invoices.address}}</p>
-                                <p>Contact: {{showInvoiceDetails.customer.email}}</p>
+                                <p>{{showInvoiceDetails.address.address}}</p>
+                                <p>{{showInvoiceDetails.address.city}}, {{showInvoiceDetails.address.state}}, {{showInvoiceDetails.address.zip}}</p>
+                                <p>Unit: {{showInvoiceDetails.address.unit}}</p>
+                                <p>@: {{showInvoiceDetails.customer.email}}</p>
                             </div>
-
                             <div class="col-xs-6 text-right right-side-invoice">
-                                <p class="f-size-17"># {{showInvoiceDetails.invoices.id}}</p>
-                                <p class="f-size-17"
-                                   ng-init="dueDate = convertDate(showInvoiceDetails.invoices.due_date)"
-                                   ng-if="showInvoiceDetails.invoices.due_date">
-                                    Due date: {{dueDate | date : "MMM d, y h:mm a" }}
+                                <p class="f-size-17">Invoice No. {{showInvoiceDetails.id}}</p>
+                                <p class="f-size-17" ng-init="dueDate = convertDate(showInvoiceDetails.due_date)" ng-if="showInvoiceDetails.due_date">
+                                    Due date: <i class="fa fa-calendar"></i> {{dueDate | date : "shortDate" }}
                                 </p>
+                                <p class="f-size-17 bg-color-darken txt-color-white">Total Due : ${{showInvoiceDetails.amount}} USD</p>
                             </div>
-
                         </div>
+
+
                         <hr>
 
                         <p class="m-b-lg"
-                           ng-init="invoDate = convertDate(showInvoiceDetails.invoices.created_at)"
-                           ng-if="showInvoiceDetails.invoices.created_at">
+                           ng-init="invoDate = convertDate(showInvoiceDetails.created_at)"
+                           ng-if="showInvoiceDetails.created_at">
                             Invoice date: <strong>{{invoDate | date : "MMM d, y h:mm a" }}</strong><br>
-                            Status: <span class="label cdg-color-up caps">{{showInvoiceDetails.invoices.status}}</span><br>
-                            ID: <strong> # {{showInvoiceDetails.invoices.id}}</strong>
+                            Status: <span class="label cdg-color-up caps">{{showInvoiceDetails.status}}</span><br>
+                            ID: <strong> # {{showInvoiceDetails.id}}</strong>
                         </p>
 
                         <div class="line"></div>
@@ -221,12 +222,12 @@
                                 <th>Amount</th>
                             </tr>
                             </thead>
-                            <tbody ng-init="invoiceParsed = parJson(showInvoiceDetails.invoices.details)" ng-if="showInvoiceDetails.invoices.details">
-                            <tr ng-repeat="descProd in invoiceParsed">
-                                <td>{{descProd.customer_product_id}}</td>
-                                <td>{{descProd.product_name}}</td>
-                                <td class="capital-first">{{descProd.product_frequency}}</td>
-                                <td>${{descProd.product_amount}}</td>
+                            <tbody ng-init="invoiceParsed = parJson(showInvoiceDetails.details)" ng-if="showInvoiceDetails.details">
+                            <tr>
+                                <td>{{invoiceParsed.product_id}}</td>
+                                <td>{{invoiceParsed.product_name}}</td>
+                                <td class="capital-first">{{invoiceParsed.product_frequency}}</td>
+                                <td>${{invoiceParsed.product_amount}}</td>
                             </tr>
                             <tr>
                                 <td colspan="3" class="text-right-invo"><strong>Tax</strong></td>
@@ -234,7 +235,7 @@
                             </tr>
                             <tr>
                                 <td colspan="3" class="text-right-invo no-border"><strong>Total</strong></td>
-                                <td><strong>${{showInvoiceDetails.invoices.amount}}</strong></td>
+                                <td><strong>${{showInvoiceDetails.amount}}</strong></td>
                             </tr>
                             </tbody>
                         </table>

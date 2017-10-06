@@ -28,7 +28,7 @@ class CustomFilterIteratorTest extends IteratorTestCase
      */
     public function testAccept($filters, $expected)
     {
-        $inner = new Iterator(array('test.blade.php', 'test.py', 'foo.php'));
+        $inner = new Iterator(array('test.html', 'test.py', 'foo.php'));
 
         $iterator = new CustomFilterIterator($inner, $filters);
 
@@ -39,7 +39,7 @@ class CustomFilterIteratorTest extends IteratorTestCase
     {
         return array(
             array(array(function (\SplFileInfo $fileinfo) { return false; }), array()),
-            array(array(function (\SplFileInfo $fileinfo) { return 0 === strpos($fileinfo, 'test'); }), array('test.blade.php', 'test.py')),
+            array(array(function (\SplFileInfo $fileinfo) { return 0 === strpos($fileinfo, 'test'); }), array('test.html', 'test.py')),
             array(array('is_dir'), array()),
         );
     }

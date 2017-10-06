@@ -17,7 +17,11 @@
         "guzzlehttp/guzzle": "~5.3|~6.0",
         "fedeisas/laravel-mail-css-inliner": "^2.0",
         "marktopper/doctrine-dbal-timestamp-type": "^1.0",
-        "nicolab/php-ftp-client": "^1.4"
+        "nicolab/php-ftp-client": "^1.4",
+
+        "phpseclib/phpseclib": "^2.0",
+        "soundasleep/html2text": "^0.5.0",
+        "intervention/image": "^2.4"
 
     },
     "require-dev": {

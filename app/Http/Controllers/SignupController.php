@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
 use Illuminate\Http\Request;
 use DB;
 use Log;
 use View;
+use SendMail;
 //use App\Models\Product;
 use App\Models\Address;
 use App\Models\Contact;
@@ -22,8 +24,7 @@ use App\Extensions\SIPBilling;
 use App\Extensions\SIPNetwork;
 use Illuminate\Support\Facades\Validator;
 
-class SignupController extends Controller
-{
+class SignupController extends Controller {
 
     protected $session;
     protected $serviceRouter;
@@ -35,81 +36,111 @@ class SignupController extends Controller
     protected $chargeDetails;
 
     protected $validationRules = [
-        'first_name' => 'required|alpha_dash|max:255',
-        'last_name'  => 'required|alpha_dash|max:255',
-        'email'      => 'required|e-mail|max:255',
-        'phone_number' => 'required|alpha_dash|max:255',
-        'street_address' => 'required|max:255',
-        'unit' => 'required|max:255',
-        'city' => 'required|alpha|max:255',
-        'state' => 'required|size:2|alpha|max:2',
+        'first_name'        => 'required|alpha_dash|max:255',
+        'last_name'         => 'required|alpha_dash|max:255',
+        'email'             => 'required|e-mail|max:255',
+        'phone_number'      => 'required|alpha_dash|max:255',
+        'street_address'    => 'required|max:255',
+        'unit'              => 'required|max:255',
+        'city'              => 'required|alpha|max:255',
+        'state'             => 'required|size:2|alpha|max:2',
         //            'zip' => 'required|numeric|size:5',
-        'service_plan' => 'required|alpha_dash|max:255',
-        'wireless_router' => 'required|max:255',
-        'cc_type' => 'present|required_unless:total_charges,0.00|required_unless:recurring_charges,0.00|alpha|size:2',
-        'cc_number' => 'present|required_unless:total_charges,0.00|required_unless:recurring_charges,0.00|numeric',
-        'cc_exp_month' => 'present|required_unless:total_charges,0.00|required_unless:recurring_charges,0.00|numeric',
-        'cc_exp_year' => 'present|required_unless:total_charges,0.00|required_unless:recurring_charges,0.00|numeric',
-        'cc_sec_code' => 'present|required_unless:total_charges,0.00|required_unless:recurring_charges,0.00|numeric',
+        'service_plan'      => ['required', 'alpha_dash', 'max:255', 'regex:/^[0-9]+-([a-z|A-Z])+$/'],
+        'wireless_router'   => 'required|max:255',
+        'cc_type'           => 'present|required_unless:total_charges,0.00|required_unless:recurring_charges,0.00|alpha|size:2',
+        'cc_number'         => 'present|required_unless:total_charges,0.00|required_unless:recurring_charges,0.00|numeric',
+        'cc_exp_month'      => 'present|required_unless:total_charges,0.00|required_unless:recurring_charges,0.00|numeric',
+        'cc_exp_year'       => 'present|required_unless:total_charges,0.00|required_unless:recurring_charges,0.00|numeric',
+        'cc_sec_code'       => 'present|required_unless:total_charges,0.00|required_unless:recurring_charges,0.00|numeric',
         't_and_c_check_box' => 'required',
     ];
 
     protected $validationMessages = [
-        'unit.required' => 'Please enter or select your unit number',
-        't_and_c_check_box.required' => 'You must read and agree with the terms and conditions',
-        'wireless_router.required' => 'Please select a router option',
-        'service_plan.required' => 'Please select an internet plan',
-        'required' => 'Please enter your :attribute',
-        'alpha_dash' => 'Please use letters and numbers only',
-        'alpha' => 'Please use letters only',
-        'size'    => 'The :attribute must be exactly :size.',
-        'cc_type.required_unless'   => 'Please select your card type',
-        'cc_number.required_unless'   => 'Please enter your card number',
-        'cc_exp_month.required_unless'   => 'Please select an expiration month',
-        'cc_exp_year.required_unless'   => 'Please select an expiration year',
-        'cc_sec_code.required_unless'   => 'Please enter your card\'s security code',
+        'unit.required'                => 'Please enter or select your unit number',
+        't_and_c_check_box.required'   => 'You must read and agree with the terms and conditions',
+        'wireless_router.required'     => 'Please select a router option',
+        'service_plan.required'        => 'Please select an internet plan',
+        'service_plan.regex'           => 'Please select the Monthly or Annual option',
+        'required'                     => 'Please enter your :attribute',
+        'alpha_dash'                   => 'Please use letters and numbers only',
+        'alpha'                        => 'Please use letters only',
+        'size'                         => 'The :attribute must be exactly :size.',
+        'cc_type.required_unless'      => 'Please select your card type',
+        'cc_number.required_unless'    => 'Please enter your card number',
+        'cc_exp_month.required_unless' => 'Please select an expiration month',
+        'cc_exp_year.required_unless'  => 'Please select an expiration year',
+        'cc_sec_code.required_unless'  => 'Please enter your card\'s security code',
     ];
 
-    protected $validationAttributes = ['first_name' => 'first name',
-                                       'last_name' => 'last name',
-                                       'email' => 'Email',
-                                       'phone_number' => 'phone number',
-                                       'street_address' => 'address',
-                                       'unit' => 'unit number',
-                                       'city' => 'city',
-                                       'state' => 'state',
-                                       'zip' => 'zip code',
-                                       'service_plan' => 'plan',
+    protected $validationAttributes = ['first_name'      => 'first name',
+                                       'last_name'       => 'last name',
+                                       'email'           => 'Email',
+                                       'phone_number'    => 'phone number',
+                                       'street_address'  => 'address',
+                                       'unit'            => 'unit number',
+                                       'city'            => 'city',
+                                       'state'           => 'state',
+                                       'zip'             => 'zip code',
+                                       'service_plan'    => 'plan',
                                        'wireless_router' => 'wireless router',
-                                       'cc_type' => 'card type',
-                                       'cc_number' => 'card number',
-                                       'cc_exp_month' => 'expiration month',
-                                       'cc_exp_year' => 'expiration year',
-                                       'cc_sec_code' => 'security code'];
+                                       'cc_type'         => 'card type',
+                                       'cc_number'       => 'card number',
+                                       'cc_exp_month'    => 'expiration month',
+                                       'cc_exp_year'     => 'expiration year',
+                                       'cc_sec_code'     => 'security code'];
 
-    public function __construct(){
+    public function __construct()
+    {
         //    DB::connection()->enableQueryLog();
         $this->sipSignup = new SIPSignup();
         $this->sipNetwork = new SIPNetwork();
     }
 
-    public function getSplashPage(){
+    public function getSplashPage()
+    {
 
         return view('signup.splash');
     }
 
-    public function getWelcomePage(Request $request){
+    public function postConnectPage(Request $request)
+    {
+
+        $input = $request->all();
+        $data = array();
+
+        if (isset($input['MacAddress']) && isset($input['IPAddress']) && isset($input['#LinkLogin']) &&
+            isset($input['#LinkOrig']) && isset($input['ServiceRouter'])
+        )
+        {
+
+            $data['mac_address'] = $input['MacAddress'];
+            $data['ip_address'] = $input['IPAddress'];
+            $data['link_login'] = $input['#LinkLogin'];
+            $data['link_orig'] = $input['#LinkOrig'];
+            $data['service_router'] = $input['ServiceRouter'];
+            $data['post_type'] = $input['PostType'];
+
+            return view('signup.connect', compact('data'));
+        }
+
+        return Redirect::to('http://www.silverip.com');
+    }
+
+    public function getWelcomePage(Request $request)
+    {
 
         $input = $request->all();
 
         $sessionArray = $this->sipSignup->processRouterRequest($input);
         $this->session = $request->session();
 
-        if ($sessionArray == false || $sessionArray['invalidUserIP']){
+        if ($sessionArray == false || $sessionArray['invalidUserIP'])
+        {
             return view('signup.error');
         }
 
-        foreach($sessionArray as $key => $value){
+        foreach ($sessionArray as $key => $value)
+        {
             $this->session->put($key, $value);
         }
 
@@ -120,12 +151,14 @@ class SignupController extends Controller
         $portAlreadyRegistered = false;
         $unit = null;
 
-        if($port != null){
+        if ($port != null)
+        {
 
             $this->session->put('userPortInfo.PortID', $port->id);
             $this->session->put('PortID', $port->id);
 
-            if ($port->access_level == 'yes'){
+            if ($port->access_level == 'yes')
+            {
                 $this->session->put('activateUser', true);
                 $activationCode = rand();
                 $portId = $this->session->get('PortID');
@@ -152,7 +185,7 @@ class SignupController extends Controller
         $this->session->put('locName', $locName);
         $locSubtitle = $address->address;
         $buildingProperties = $building->getProperties();
-        $buildingLogo = 'img/buildings/'.$buildingProperties[config('const.building_property.image')];
+        $buildingLogo = 'img/buildings/' . $buildingProperties[config('const.building_property.image')];
         $phoneNumber = $buildingProperties[config('const.building_property.support_number')];
 
         $this->session->put('locName', $locName);
@@ -163,10 +196,11 @@ class SignupController extends Controller
 
         // This is where we render the building welcome screen
         return view('signup.welcome', compact('locName', 'locSubtitle', 'buildingLogo',
-                                              'phoneNumber'));
+            'phoneNumber'));
     }
 
-    public function getSignupForm(Request $request){
+    public function getSignupForm(Request $request)
+    {
 
         $this->session = $request->session();
 
@@ -177,12 +211,13 @@ class SignupController extends Controller
             ->get();
 
         $unitNumbers = array();
-        if(count($addressList) == 1){
-            $unitNumbers = $this->getUnitNumbers(['address' => $addressList->first()->address]);
+        if (count($addressList) == 1)
+        {
+            $unitNumbers = $this->getUnitNumbers(['address_id' => $addressList->first()->id]);
         }
 
         $addressId = $this->session->get('id_address');
-        $servicePlanInfo = $this->sipSignup->getBuildingPlans($addressId);
+        $servicePlanInfo = $this->sipSignup->getActiveBuildingPlans($addressId);
         $this->session->put('servicePlanInfo', $servicePlanInfo);
 
         $serviceType = $building->getProperty(config('const.building_property.service_type'));
@@ -190,41 +225,53 @@ class SignupController extends Controller
         $this->session->put('splashMode', $splashMode);
         $activationFees = $this->sipSignup->getBuildingActivationFees($addressId);
 
-        return view('signup.form', compact('locName', 'addressList', 'unitNumbers', 'servicePlanInfo', 'activationFees','splashMode'));
+        return view('signup.form', compact('locName', 'addressList', 'unitNumbers', 'servicePlanInfo', 'activationFees', 'splashMode'));
     }
 
-    public function getUnitNumbersAjax(Request $request){
+    public function getUnitNumbersAjax(Request $request)
+    {
 
         $input = $request->all();
         $this->session = $request->session();
-        $unitNumbers = $this->getUnitNumbers;
+        $unitNumbers = $this->getUnitNumbers($input);
+
         return view('signup.unit-drop-down', compact('unitNumbers'));
     }
 
-    protected function getUnitNumbers($input){
+    protected function getUnitNumbers($input)
+    {
 
-        $streetAddress = $input['address'];
-        if($streetAddress == '0'){
+        $addressId = $input['address_id'];
+        if ($addressId == '0')
+        {
             $unitNumbers = array();
+
             return view('signup.unit-drop-down', compact('unitNumbers'));
         }
 
         $building = $this->session->get('building');
-        $addressCollection = Address::where('id_buildings', $building->id)
-            ->whereNull('id_customers')
-            ->get();
-
-        $addressList = $addressCollection->pluck('address', 'id');
         $addressUnitNumberMap = $building->getUnitNumbers();
-        $unitNumberArray = array();
-        foreach($addressUnitNumberMap as $addressId => $unitNumberList){
-            $unitNumberArray[$addressList[$addressId]] = $unitNumberList;
-        }
 
-        return $unitNumberArray[$streetAddress];
+        return $addressUnitNumberMap[$addressId];
+//        return $unitNumberArray;
+
+
+//        $addressCollection = Address::where('id_buildings', $building->id)
+//            ->whereNull('id_customers')
+//            ->get();
+//        $addressList = $addressCollection->pluck('address', 'id');
+//        $addressUnitNumberMap = $building->getUnitNumbers();
+//        $unitNumberArray = array();
+//        foreach ($addressUnitNumberMap as $addressId => $unitNumberList)
+//        {
+//            $unitNumberArray[$addressList[$addressId]] = $unitNumberList;
+//        }
+//        return $unitNumberArray[$addressId];
+
     }
 
-    public function processCC($input) {
+    public function processCC($input)
+    {
 
         $authOnly = false;
         $amount = 0;
@@ -232,26 +279,27 @@ class SignupController extends Controller
         $chargeDetails = false;
 
         // If customer has selected a router then charge them now
-        if ($input['total_charges'] != '0.00' && $input['total_charges'] != '') {
+        if ($input['total_charges'] != '0.00' && $input['total_charges'] != '')
+        {
             $authOnly = false;
             $amount = $input['total_charges'];
             $desc = $input['wireless_router'] . ' - ($' . $input['total_charges'] . ')';
-        }
-        // If customer has selected a monthly plan just authorize their card
-        elseif ($input['recurring_charges'] != '0.00' && $input['recurring_charges'] != '') {
+        } // If customer has selected a monthly plan just authorize their card
+        elseif ($input['recurring_charges'] != '0.00' && $input['recurring_charges'] != '')
+        {
             $authOnly = true;
             $amount = $input['recurring_charges'];
             $desc = 'SilverIP Service - ($' . $input['recurring_charges'] . ')';
 
-        }
-        // If customer has selected an annual plan just authorize their card
-        elseif ($input['delayed_charges'] != '0.00' && $input['delayed_charges'] != '') {
+        } // If customer has selected an annual plan just authorize their card
+        elseif ($input['delayed_charges'] != '0.00' && $input['delayed_charges'] != '')
+        {
             $authOnly = true;
             $amount = $input['delayed_charges'];
             $desc = 'SilverIP Service - ($' . $input['delayed_charges'] . ')';
-        }
-        // otherwise this function shouldn't have been called
-        else {
+        } // otherwise this function shouldn't have been called
+        else
+        {
             return false;
         }
 
@@ -267,8 +315,7 @@ class SignupController extends Controller
         $cardInfo['BillingPhone'] = $this->validatedFormData['phone_number'];
 
 
-
-        $orderNumber = ($this->validatedFormData['cc_type'] == 'AX') ? date('My') : date('My') . ' Data'; ;
+        $orderNumber = ($this->validatedFormData['cc_type'] == 'AX') ? date('My') : date('My') . ' Data';;
 
         $address = new Address;
         $address->address = $this->validatedFormData['street_address'];
@@ -277,39 +324,43 @@ class SignupController extends Controller
         $address->zip = $this->validatedFormData['zip'];
         $address->unit = $this->validatedFormData['unit'];
 
-        if($authOnly){
-            Log::info('SignupController: Authorzing customer: ' . "\n" . print_r([$cardInfo['CardName'], $desc, $address['address'], $address['unit'], $address['city'], $address['state'], $address['zip']],true));
-            return $this->billingService->authCreditCard($cardInfo, $amount, $desc,  $orderNumber, $chargeDetails, $address);
+        if ($authOnly)
+        {
+            Log::info('SignupController: Authorzing customer: ' . "\n" . print_r([$cardInfo['CardName'], $desc, $address['address'], $address['unit'], $address['city'], $address['state'], $address['zip']], true));
+
+            return $this->billingService->authCreditCard($cardInfo, $amount, $desc, $orderNumber, $chargeDetails, $address);
         }
 
-        Log::info('SignupController: Charging customer: ' . "\n" . print_r([$cardInfo['CardName'], $desc, $address['address'], $address['unit'], $address['city'], $address['state'], $address['zip']],true));
-        return $this->billingService->chargeCreditCard($cardInfo, $amount, $desc,  $orderNumber, $chargeDetails, $address);
+        Log::info('SignupController: Charging customer: ' . "\n" . print_r([$cardInfo['CardName'], $desc, $address['address'], $address['unit'], $address['city'], $address['state'], $address['zip']], true));
+
+        return $this->billingService->chargeCreditCard($cardInfo, $amount, $desc, $orderNumber, $chargeDetails, $address);
     }
 
-    protected function handleChargeResult($chargeResult){
+    protected function handleChargeResult($chargeResult)
+    {
 
-        $response;
-        if(isset($chargeResult['FAILED']) == true){
+        $response = 'unknown';
+        if (isset($chargeResult['FAILED']) == true)
+        {
             $response = 'failed';
-        }
-
-        else if (!isset($chargeResult['RESPONSETEXT']) && !isset($chargeResult['ACTIONCODE'])) {
+        } else if ( ! isset($chargeResult['RESPONSETEXT']) && ! isset($chargeResult['ACTIONCODE']))
+        {
             $response = 'failed';
-        }
-
-        else if ($chargeResult['RESPONSETEXT'] == 'DECLINED') {
+        } else if ($chargeResult['RESPONSETEXT'] == 'DECLINED')
+        {
             $response = 'declined';
-        }
-
-        else if ($chargeResult['RESPONSETEXT'] == 'APPROVED' && $chargeResult['ACTIONCODE'] == '000') {
+        } else if ($chargeResult['RESPONSETEXT'] == 'APPROVED' && $chargeResult['ACTIONCODE'] == '000')
+        {
             $response = 'approved';
         }
 
-//        Log::info('SignupController: Charge '.$response.': ' . "\n" . print_r($chargeResult,true));
+        Log::info('SignupController: Charge ' . $response . ': ' . "\n" . print_r($chargeResult, true));
+
         return $response;
     }
 
-    protected function getRawPhoneNumber($phoneNumber) {
+    protected function getRawPhoneNumber($phoneNumber)
+    {
 
         $phoneNumber = trim($phoneNumber);
         $phoneNumber = preg_replace('/ /', '', $phoneNumber);
@@ -323,7 +374,8 @@ class SignupController extends Controller
         return $phoneNumber;
     }
 
-    protected function storeCustomer(){
+    protected function storeCustomer()
+    {
 
         $customer = new Customer;
         $customer->first_name = $this->validatedFormData['first_name'];
@@ -349,11 +401,13 @@ class SignupController extends Controller
         return $customer;
     }
 
-    protected function storeCustomerPort($customer){
+    protected function storeCustomerPort($customer)
+    {
 
         $portAlreadyRegistered = $this->session->get('portAlreadyRegistered');
-        $portId;
-        if($portAlreadyRegistered){
+        $portId = null;
+        if ($portAlreadyRegistered)
+        {
 
             $port = Port::find($this->session->get('PortID'));
             $port->id_customers = $customer->id;
@@ -361,7 +415,8 @@ class SignupController extends Controller
             $port->save();
             $portId = $port->id;
 
-        } else {
+        } else
+        {
 
             $userPortInfo = $this->session->get('userPortInfo');
             $serviceSwitch = $this->session->get('serviceSwitch');
@@ -379,10 +434,12 @@ class SignupController extends Controller
         $customerPort->customer_id = $customer->id;
         $customerPort->port_id = $portId;
         $customerPort->save();
+
         return $customerPort;
     }
 
-    protected function storeCustomerAddress($customerId, $address){
+    protected function storeCustomerAddress($customerId, $address)
+    {
 
         $newAddress = $address->replicate();
         $newAddress->unit = $this->validatedFormData['unit'];
@@ -392,12 +449,13 @@ class SignupController extends Controller
         return $newAddress;
     }
 
-    protected function storeCustomerProducts($customerId, $addressId, $servicePlan, $wirelessRouter, $buildingPlanInfo){
+    protected function storeCustomerProducts($customerId, $addressId, $servicePlan, $wirelessRouter, $buildingPlanInfo)
+    {
 
         $servicePlanInfoArray = explode('-', $servicePlan);
         $servicePlanKey = $servicePlanInfoArray[0];
         $servicePlanType = $servicePlanInfoArray[1];
-        $servicePlanId = $buildingPlanInfo[$servicePlanKey]['id-'.$servicePlanType];
+        $servicePlanId = $buildingPlanInfo[$servicePlanKey]['id-' . $servicePlanType];
 
         $customerProduct = new CustomerProduct;
         $customerProduct->id_customers = $customerId;
@@ -406,11 +464,12 @@ class SignupController extends Controller
         $customerProduct->id_address = $addressId;
         $customerProduct->id_customer_products = 0;
         $customerProduct->id_users = 0;
-        $customerProduct->invoice_status = 0;
+//        $customerProduct->invoice_status = 0;
         $customerProduct->amount_owed = 0;
         $customerProduct->save();
 
-        if($wirelessRouter == 'FastWiFi'){
+        if ($wirelessRouter == 'FastWiFi')
+        {
             $customerProduct = new CustomerProduct;
             $customerProduct->id_customers = $customerId;
             $customerProduct->id_products = 136;
@@ -418,14 +477,16 @@ class SignupController extends Controller
             $customerProduct->id_address = $addressId;
             $customerProduct->id_customer_products = 0;
             $customerProduct->id_users = 0;
-            $customerProduct->invoice_status = 2;
+//            $customerProduct->invoice_status = 2;
             $customerProduct->amount_owed = 0;
             $customerProduct->save();
         }
+
         return $customerProduct;
     }
 
-    protected function storePaymentMethod($customerId, $addressId){
+    protected function storePaymentMethod($customerId, $addressId)
+    {
 
         $pm = new PaymentMethod;
         $pm->account_number = $this->validatedFormData['ccToken'];
@@ -438,7 +499,7 @@ class SignupController extends Controller
         $pm->id_customers = $customerId;
         $pm->card_type = $this->validatedFormData['cc_type'];
         $pmPropertiesArr = array();
-        $pmPropertiesArr['last four'] = 'XXXX-XXXX-XXXX-'.substr($this->validatedFormData['cc_number'], -4);
+        $pmPropertiesArr['last four'] = 'XXXX-XXXX-XXXX-' . substr($this->validatedFormData['cc_number'], - 4);
         $pmPropertiesArr['card type'] = $this->validatedFormData['cc_type'];
         $pmPropertiesArr['exp month'] = $this->validatedFormData['cc_exp_month'];
         $pmPropertiesArr['exp year'] = $this->validatedFormData['cc_exp_year'];
@@ -449,36 +510,36 @@ class SignupController extends Controller
         return $pm;
     }
 
-    public function activate(Request $request){
+    public function activate(Request $request)
+    {
 
         $this->session = $request->session();
         $input = $request->all();
 
-//         dump([$this->session,$input]);
-//        return;
-
-        if(isset($input['ActivationCode']) && $input['ActivationCode'] == $this->session->get('activationCode')){
+        if (isset($input['ActivationCode']) && $input['ActivationCode'] == $this->session->get('activationCode'))
+        {
             $result = $this->sipNetwork->activatePort($this->session->get('PortID'));
-            if($result){ return 'activated'; }
+            if ($result)
+            {
+                return 'activated';
+            }
         }
+
         return 'failed';
     }
 
-    public function validateSignupForm(Request $request) {
+    public function validateSignupForm(Request $request)
+    {
 
         $this->session = $request->session();
         $input = $request->all();
-
-//        dump($input);
-//        dump($this->session);
-//        return;
 
         $validation = Validator::make($request->all(), $this->validationRules, $this->validationMessages);
         $validation->setAttributeNames($this->validationAttributes);
 
         // Validation failed
-        if($validation->passes() == false) {
-
+        if ($validation->passes() == false)
+        {
             $errors = $validation->getMessageBag();
             $errors->add('error', 1);
             return $errors;
@@ -489,26 +550,32 @@ class SignupController extends Controller
         $this->validatedFormData = $input;
 
         $chargeResult = null;
-        if($input['total_charges'] != '0.00' || $input['recurring_charges'] != '0.00' || $input['delayed_charges'] != '0.00'){
+        if ($input['total_charges'] != '0.00' || $input['recurring_charges'] != '0.00' || $input['delayed_charges'] != '0.00')
+        {
 
             $chargeResult = $this->processCC($input);
             $chargeCheck = $this->handleChargeResult($chargeResult);
 
-            if($chargeCheck == 'failed'){
+            if ($chargeCheck == 'failed')
+            {
                 $errors = $validation->getMessageBag();
                 $errors->add('cc_number', ['We were unable to process your credit card. Please check your card information and try again.']);
                 $errors->add('error', 1);
+
                 return $errors;
             }
 
-            if($chargeCheck == 'declined'){
+            if ($chargeCheck == 'declined')
+            {
                 $errors = $validation->getMessageBag();
                 $errors->add('cc_number', ['Your card was declined. Please check the number and/or expiration date and click Submit again.']);
                 $errors->add('error', 1);
+
                 return $errors;
             }
 
-            if(isset($chargeResult['TOKEN'])) {
+            if (isset($chargeResult['TOKEN']))
+            {
                 $this->session->put('ccToken', $chargeResult['TOKEN']);
                 $this->validatedFormData['ccToken'] = $chargeResult['TOKEN'];
                 $this->session->put('TransactionLogId', $chargeResult['TransactionLogId']);
@@ -520,7 +587,8 @@ class SignupController extends Controller
         $address = $this->storeCustomerAddress($customer->id, $this->session->get('address'));
         $customerProduct = $this->storeCustomerProducts($customer->id, $address->id, $this->validatedFormData['service_plan'], $this->validatedFormData['wireless_router'], $this->session->get('servicePlanInfo'));
 
-        if(isset($this->validatedFormData['ccToken'])){
+        if (isset($this->validatedFormData['ccToken']))
+        {
             $pm = $this->storePaymentMethod($customer->id, $address->id);
             $this->billingService->updateXactionWithCustomer($this->session->get('TransactionLogId'), $customer, $address, $pm);
         }
@@ -532,8 +600,52 @@ class SignupController extends Controller
         $returnURL = $this->session->get('LinkOrig');
         $locName = $this->session->put('locName');
 
-//        $signupService->sendSipEmail();
-//        $signupService->sendUserReceipt();
+
+        //Prepare E-Mail Data
+        $data = array();
+        $data['first_name'] = $customer->first_name;
+        $data['last_name'] = $customer->last_name;
+        $data['email'] = $customer->email;
+        $data['phone_number'] = $this->validatedFormData['phone_number'];
+
+        $data['address'] = $address->address;
+        $data['code'] = $address->code;
+        $data['unit'] = $address->unit;
+        $data['city'] = $address->city;
+        $data['state'] = $address->state;
+        $data['zip'] = $address->zip;
+
+        $servicePlan = $this->validatedFormData['service_plan'];
+        $sPExplode = explode('-', $servicePlan);
+
+        if ($sPExplode[1] == 'included')
+        {
+            $sPString = $sPExplode[0] . ' Mbps - ' . $sPExplode[1] . ' ($0.00)';
+        } else
+        {
+            $amount = $this->validatedFormData[$this->validatedFormData['service_plan']];
+            $sPString = $sPExplode[0] . ' Mbps - ' . $sPExplode[1] . ' (' . $amount . ')';
+        }
+
+        $data['service_plan'] = $sPString;
+        $data['wireless_router'] = $this->validatedFormData['wireless_router'];
+        $data['total_charges'] = $this->validatedFormData['total_charges'];
+        $data['recurring_charges'] = $this->validatedFormData['recurring_charges'];
+        $data['delayed_charges'] = $this->validatedFormData['delayed_charges'];
+
+        $userPortInfo = $this->session->get('userPortInfo');
+        $data['ip_address'] = $userPortInfo['IPAddress'];
+        $data['mac_address'] = $userPortInfo['MacAddress'];
+        $data['switch_port'] = $userPortInfo['Switch Port Number'];
+
+        $serviceSwitch = $this->session->get('serviceSwitch');
+        $data['switch_name'] = $serviceSwitch->host_name;
+        $data['switch_ip'] = $serviceSwitch->ip_address;
+
+        SendMail::signupAdminMail($data);
+        SendMail::signupCustomerMail($data);
+
+//        dd($customer,$customerPort ,$address,$customerProduct, $input, $this->session, $data);
 
         return view('signup.thank-you', compact('locName', 'activationCode', 'portId', 'timer', 'returnURL'));
     }

@@ -16,12 +16,25 @@ class AppServiceProvider extends ServiceProvider {
     public function boot()
     {
         PaymentMethod::saving(
-            function ($paymentMethod)
-            {
+            function ($paymentMethod) {
                 $sipBilling = new SIPBilling();
 
                 return $sipBilling->updatePaymentMethod($paymentMethod);
             });
+
+//        Customer::saving(
+//
+//            function ($customer) {
+//
+//
+//                $sipBilling = new SIPBilling();
+//
+//                $this->cancelActiveChargesForCustomerProduct($activeService);
+//                $this->cancelActiveInvoicesForCustomer($customer);
+//
+//
+//                return $sipBilling->updatePaymentMethod($paymentMethod);
+//            });
     }
 
     /**

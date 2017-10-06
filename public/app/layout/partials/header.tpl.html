@@ -64,10 +64,10 @@
   <!--<div id="right-sip-tool" class="btn-header pull-left m-r-sm" ng-click="sipTool(1,'silverip-right')">-->
     <!--<span> <a title="SET RIGHT SIDEBAR"><i class="fa fa-arrow-circle-right"></i></a></span>-->
   <!--</div>-->
-  <!--&lt;!&ndash;HIDE SIDEBAR&ndash;&gt;-->
-  <!--<div id="hide-silver-tool" class="btn-header pull-left m-r-sm" ng-click="sipTool(2)">-->
-    <!--<span> <a title="HIDE SIDE BAR"><i class="fa fa-reorder"></i></a></span>-->
-  <!--</div>-->
+  <!--HIDE SIDEBAR-->
+  <div id="hide-silver-tool" class="btn-header pull-left m-r-sm" ng-click="sipTool(2)">
+    <span> <a title="HIDE SIDE BAR" ><i class="fa fa-reorder cursor-pointer"></i></a></span>
+  </div>
   <!--&lt;!&ndash;NOTIFICACION&ndash;&gt;-->
   <!--<div id="notif" class="btn-header pull-left m-r-sm" ng-click="alertDummy()">-->
     <!--<span> <a title="NOTIF"><i class="fa fa-warning"></i></a></span>-->
@@ -129,6 +129,9 @@
 
   <div ng-include="'/views/search.html'" class="header-search pull-right main-search"></div>
 
+  <div id="reset-smart-widget" class="btn-header transparent pull-right">
+    <span><a ng-click="factoryReset()" title="Reset Application" ><i class="fa fa-refresh"></i></a></span>
+  </div>
 
     <!--<div class="header-search pull-right main-search m-r-lg admin-id-search" ng-if="userDataAuth.id_profiles == 1">-->
         <!--<input type="text"  class="no-padding-sides no-margin p-l-md size-85 pull-left"  ng-model="adminSearch" id="admin-id-search-input" placeholder="Search Customer by id: ">-->

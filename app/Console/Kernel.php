@@ -25,6 +25,9 @@ class Kernel extends ConsoleKernel {
         Commands\ProcessPendingInvoicesWithUpdatedPaymentMethods::class,
         Commands\RerunAllPendingInvoices::class,
         Commands\GenerateMrrReport::class,
+        Commands\ParseSupportEmail::class,
+        Commands\RemindFailedInvoiceCustomers::class,
+        Commands\NotifyUpcomingInvoiceCustomers::class,
     ];
 
     /**

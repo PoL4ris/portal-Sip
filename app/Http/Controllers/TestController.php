@@ -2,8 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BillingTransactionLog;
+use Auth;
+use Config;
+use DB;
+use Log;
+use Mail;
+use SendMail;
+use View;
+
 use App\Models\BuildingTicket;
-use App\Models\Legacy\BillingTransactionLogOld;
 use App\Models\TicketHistory;
 use Illuminate\Http\Request;
 use App\Http\Requests;
@@ -15,7 +23,7 @@ use App\Extensions\BillingHelper;
 use App\Extensions\CiscoSwitch;
 use App\Extensions\MtikRouter;
 use App\Extensions\DataMigrationUtils;
-use DB;
+
 //use App\User;
 use App\Models\Customer;
 use App\Models\Charge;
@@ -39,19 +47,18 @@ use App\Http\Controllers\TechScheduleController;
 use App\Extensions\GoogleCalendar;
 use DateTime;
 use App\Http\Controllers\Lib\UtilsController;
-use Mail;
-use Config;
-use Auth;
-use View;
-use Storage;
-use SendMail;
+
+//use Storage;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
+use Html2Text\Html2Text;
+
 
 //use ActivityLogs;
 use Symfony\Component\Console\Helper\ProgressBar;
 
-class TestController extends Controller
-{
+class TestController extends Controller {
 
     public function __construct()
     {
@@ -150,6 +157,7 @@ class TestController extends Controller
     public function supportTest(Request $request)
     {
 
+
         return Customer::find($request->id);
 
         dd(Product::with('type')->orderBy('frequency', 'asc')->get()->take(10)->toArray());
@@ -247,7 +255,8 @@ class TestController extends Controller
         $z = 0;
         $p = 0;
 
-        for ($p = 0; $z < $a; $p++) {
+        for ($p = 0; $z < $a; $p ++)
+        {
 
 
             //        print 'SERIE-->' . $p . '<br>';
@@ -255,7 +264,8 @@ class TestController extends Controller
             $y = $x;
             $x = $z;
 
-            if ($z % 2 == 0) {
+            if ($z % 2 == 0)
+            {
                 $b = $b + $z;
                 print '|----- <strong>' . $b . '</strong> -----|<br>';
             }
@@ -339,7 +349,8 @@ class TestController extends Controller
 
         $charges = $invoice->charges;
         $details = $charges->pluck('details');
-        foreach ($details as $chargeDetails) {
+        foreach ($details as $chargeDetails)
+        {
             dd(json_decode($chargeDetails, true));
         }
         dd($details);
@@ -400,40 +411,798 @@ class TestController extends Controller
 
     }
 
+    protected function getAnnualChargeQuery()
+    {
+        return Charge::where('details', 'like', '%"product_frequency":"annual"%')
+            ->where('status', config('const.charge_status.invoiced'))
+            ->with('customer');
+    }
+
     public function generalTest(Request $request)
     {
 
-//        $oldTransaction = BillingTransactionLogOld::where('OrderNumber', 'Sep-2017 Charges')
-//            ->where('ChargeDescription', 'Sep Service Charge')
-//            ->where('ResponseText','LIKE','APPROVED')
-//            ->first();
-//            ->get();
-//            ->count();
-
-//        $sipBilling = new SIPBilling();
-//        $result = $sipBilling->voidTransactionOld('IP01091219KZLLRWJR');
-//        $result = $sipBilling->refundTransactionOld($oldTransaction->TransactionID);
-//        dd($result);
-
-
-//dd($oldTransactions);
-dd('done');
-
-//        $chargeQuery = Charge::where('status',2)->where('dues_date','2017-09-01 00:00:00');
-
-//        $billingHelper = new BillingHelper();
-
-//        $customerProducts = CustomerProduct::whereIn('id', [20030, 20031])->get();
-//        dd($customerProducts);
-
-//        foreach ($customerProducts as $customerProduct) {
-//            $billingHelper->createChargeForCustomerProduct($customerProduct);
-//        }
-
-
         dd('done');
 
-//        $billingHelper->updateCustomerProductChargeStatus();
+//        $declinedInvoices = Invoice::where('processing_type',)
+
+        /** Find chargeable items for a customer and create an invoice for them **/
+//        $billingHelper = new BillingHelper();
+//
+//        $customerProducts = CustomerProduct::with('customer')
+//            ->where('id_users', '!=', 0)
+//            ->where('charge_status', 0)
+//            ->where('created_at', '>', '2017-10-01 00:00:00')
+//            ->get();
+//
+//        $customers = $customerProducts->pluck('customer');
+////        dd($customers->pluck('signedup_at', 'id'));
+//
+//        foreach ($customers as $customer)
+//        {
+//            $billingHelper->generateChargeRecordsForCustomerByMonth($customer->id, 'this month');
+//            $billingHelper->invoicePendingAutoPayChargesForCustomerByMonth($customer->id, 'this month');
+//        }
+//
+//        dd($customerProducts->pluck('charge_status', 'id'));
+
+//        $chargableProducts = $billingHelper->getChargeableCustomerProductsByCustomerId('14384');
+//        $queries = DB::getQueryLog();
+//        $last_query = end($queries);
+//        dd($last_query);
+//        dd($chargableProducts);
+
+//        $billingHelper->generateChargeRecordsForCustomerByMonth('14384', 'this month');
+//        $billingHelper->invoicePendingAutoPayChargesForCustomerByMonth('14384', 'this month');
+//        dd('done');
+
+
+        /** Find duplicate annual invoices and delete them **/
+//        $billingHelper = new BillingHelper();
+
+
+//        // Get a distinct copy of the annual charges that have duplicate records
+//        $charges = $this->getAnnualChargeQuery()
+//            ->where('processing_type', config('const.type.auto_pay'))
+////            ->where('id_customers', 5192)
+////            ->groupBy('id_customers')
+////            ->havingRaw('count(id) > 1')
+//            ->orderBy('amount', 'desc')
+////            ->take(5)
+//            ->get();
+//
+////        $charges = Charge::where('amount', '<', 10)
+////            ->where('status', config('const.charge_status.invoiced'))
+////            ->with('customer')
+//////            ->where('id_customers', 5192)
+////            ->orderBy('start_date', 'asc')
+//////            ->take(5)
+////            ->get();
+//
+////        $info = array();
+//        $infoLine = '';
+//        foreach ($charges as $charge)
+//        {
+//
+//            $customer = $charge->customer;
+//            $address = $customer->address;
+//            $invoices = $customer->pendingAutoPayInvoices;
+//            $customerProduct = $charge->customerProduct;
+//            $product = $customerProduct->product;
+//
+//            $infoLine .= $address->code;
+//            $infoLine .= ','.$address->unit;
+//            $infoLine .= ','.$customer->first_name.' '.$customer->last_name;
+//            foreach($invoices as $invoice){
+//                $infoLine .= ','.$invoice->description.','.$invoice->amount;
+//            }
+//            $infoLine .= ','.$customerProduct->expires.','.$product->description;
+//            $infoLine .= '<br>';
+//
+////            $info[$address->code.' #'.$address->unit] = $customer->first_name.' '.$customer->last_name.' | ';
+////            foreach($invoices as $invoice){
+////                $info[$address->code.' #'.$address->unit] .= $invoice->description.' ('.$invoice->amount.'), ';
+////            }
+////            $info[$address->code.' #'.$address->unit] .= $customerProduct->expires.', '.$product->description;
+//        }
+//
+//        dd($infoLine);
+////        dd($info);
+////
+//////        dd($charges->pluck('id_customers')->sort());
+//
+//        $customerCount = 0;
+//
+//        // Iterate through them and weed out the duplicate ones
+//        foreach ($charges as $charge)
+//        {
+//
+//            // Get the customer for this charge and verify that they are active
+//            $customer = Customer::find($charge->id_customers);
+//            if ($customer->id_status != config('const.status.active'))
+//            {
+//                Log::info('Skipping inactive customer id=' . $customer->id);
+//                continue;
+//            }
+//
+//            // Get all the annual charges for the customer
+//            $annualCustomerCharges = $this->getAnnualChargeQuery()
+//                ->where('id_customers', $customer->id)
+//                ->orderBy('start_date', 'asc')
+//                ->get();
+//
+//            // Pop the first charge from the list. We will keep this one to set the
+//            // customer product flags and dates
+//            $firstCharge = $annualCustomerCharges->shift();
+//
+//            $customerProduct = $charge->customerProduct;
+//            if ($customerProduct->charge_status == 0)
+//            {
+//                $customerProduct->amount_owed = $firstCharge->amount;
+//            } else
+//            {
+//                $customerProduct->amount_owed = 0;
+//            }
+//            $monthString = date('F Y', strtotime('+1 month', strtotime($customerProduct->signed_up)));
+//            if ($customerProduct->expires != null)
+//            {
+//                $monthString = date('F Y', strtotime('-1 month', strtotime($customerProduct->expires)));
+//            }
+//
+//            $billingHelper->markCustomerProductAsCharged($customerProduct, $monthString);
+//
+//            foreach ($annualCustomerCharges as $chargeToRemove)
+//            {
+//                $invoice = $chargeToRemove->invoice;
+//                $chargeToRemove->delete();
+//                $billingHelper->updateInvoiceAmount($invoice);
+//            }
+//            $customerCount ++;
+////dd('done');
+//        }
+//
+//        dd('Cleaned up ' . $customerCount . ' customer accounts.');
+
+
+        /** Show number of pending failed invoices that need to be notified **/
+//        $billingHelper = new BillingHelper();
+//        dd($billingHelper->getFailedPendingInvoiceToNotifyQuery()->count());
+
+
+        /** Find pending invoices then check for ones that belong to disabled customers **/
+
+//        $invoiceStatusArrayMap = array_flip(config('const.invoice_status'));
+//
+//        $invoices = Invoice::with('customer')
+//            ->where('processing_type', config('const.type.auto_pay'))
+//            ->where('status', config('const.invoice_status.pending'))
+////            ->where('status', '!=', config('const.invoice_status.cancelled'))
+////            ->where('failed_charges_count', '>', 0)
+////            ->where('due_date', '2017-08-01 00:00:00')
+////            ->where('amount', '<', 100)
+//            ->get();
+//
+//        $invoices->transform(function ($invoice, $key) use ($invoiceStatusArrayMap) {
+//            $invoice->status = $invoiceStatusArrayMap[$invoice->status];
+//
+//            return $invoice;
+//        });
+//
+////        dd($invoices->count());
+////        dd('$'.$invoices->pluck('amount', 'id_customers')->sort()->sum());
+//
+//        /** Get the customer IDs that are disabled for the above invoices **/
+//        $customers = $invoices->pluck('customer');
+//        dd($customers->whereLoose('id_status', config('const.status.disabled'))->pluck('id_status', 'id'));
+
+
+        /** Check and disable one-time products that have been charged/invoiced **/
+        $billingHelper = new BillingHelper();
+
+        $oneTimeCharges = Charge::with('customerProduct')
+            ->where('details', 'like', '%onetime%')
+            ->where('due_date', '2017-10-01 00:00:00')
+            ->get();
+
+        $customerProducts = $oneTimeCharges->pluck('customerProduct')->whereLoose('id_users', 0);
+
+        dd($customerProducts);
+
+        foreach ($customerProducts as $customerProduct)
+        {
+            $customerProduct->charge_status = config('const.customer_product_charge_status.paid');
+            $customerProduct->amount_owed = '0.00';
+            $customerProduct->save();
+
+            $activeCharge = $customerProduct->activeCharge;
+            $invoice = $activeCharge->invoice;
+            $activeCharge->delete();
+            $billingHelper->updateInvoiceAmount($invoice);
+//            dd('done');
+        }
+
+        dd($customerProducts->pluck('charge_status', 'id'));
+
+        $info = array();
+
+        foreach ($oneTimeCharges as $oneTimeCharge)
+        {
+            $customer = $oneTimeCharge->customer;
+            $customerProduct = $oneTimeCharge->customerProduct;
+            $info[$customer->first_name . ' ' . $customer->last_name . ' (' . $customer->id . ')'] = $customerProduct->product->description . ' (' . $customerProduct->id . ')';
+        }
+
+        dd($info);
+
+        $customerProducts = $oneTimeCharges->pluck('customerProduct');
+        $products = $customerProducts->pluck('id_products', 'signed_up');
+        dd($products);
+
+        /** Check internet plans for 65M customers **/
+
+//        $building = Building::where('alias', '65M')->first();
+//
+//        $customerProducts = $building->activeCustomerProducts;
+//        $productsCollection = collect($customerProducts->pluck('product'));
+//        $internetProducts = $productsCollection->filter(function ($product, $key) {
+//            return $product->id_types == config('const.type.internet');
+//        });
+//
+//        dd($internetProducts->pluck('name'));
+
+
+        /** Change base plans for 65M customers **/
+
+//        $building = Building::where('alias', '65M')->first();
+//
+//        $customerProducts = $building->activeCustomerProducts;
+//
+//        foreach ($customerProducts as $customerProduct)
+//        {
+//            $customer = $customerProduct->customer;
+//            if ($customer == null)
+//            {
+//                Log::info('Customer product id=' . $customerProduct->id . ' does not have a customer. skipping.');
+//                continue;
+//            }
+//
+//            if ($customerProduct->customer->id_status == config('const.status.disabled'))
+//            {
+//                $customerProduct->id_status = config('const.status.disabled');
+//                $customerProduct->save();
+//                Log::info('Customer id='.$customer->id.' is disabled ... deactivating customer product id=' . $customerProduct->id);
+//                continue;
+//            }
+//
+//            $product = $customerProduct->product;
+//            if ($product == null)
+//            {
+//                Log::info('Customer product id=' . $customerProduct->id . ' does not have a product. skipping.');
+//                continue;
+//            }
+//
+//            if ($customerProduct->product->id_types == config('const.type.internet'))
+//            {
+//                $customerProduct->id_status = config('const.status.disabled');
+//                $customerProduct->save();
+//                $newBasePlan = new CustomerProduct();
+//                $newBasePlan->id_products = 67;
+//                $newBasePlan->id_customers = $customer->id;
+//                $newBasePlan->id_status = config('const.status.active');
+//                $newBasePlan->id_address = $customerProduct->id_address;
+//                $newBasePlan->signed_up = '2017-09-30 21:00:00';
+//                $newBasePlan->id_users = 0;
+//                $newBasePlan->charge_status = 0;
+//                $newBasePlan->save();
+//                Log::info('Added new base plan for customer id='.$customer->id);
+//                continue;
+//            }
+//        }
+//
+//        dd('done');
+
+
+        /** 65M switch port moves **/
+//        $ports = Port::where('id_network_nodes', 905)->get();
+//
+//        foreach ($ports as $port)
+//        {
+////            $port->port_number = '1/' . ($port->port_number - 4);
+//            $port->port_number = '1/' . $port->port_number;
+//            $port->id_network_nodes = 1039;
+////            $port->save();
+//        }
+//        dd($ports->sortBy('port_number')->pluck('port_number', 'id'));
+
+
+        /** Cisco switch tests **/
+
+//        $ciscoSwitch = new CiscoSwitch(['readCommunity'  => 'oomoomee',
+//                                        'writeCommunity' => 'BigSeem']);
+//
+//        $ipArray = ['10.11.51.40', '10.11.51.140', '10.11.51.43', '10.11.51.143', '10.11.51.46', '10.11.51.47', '10.11.51.146'];
+//
+//        $switchInfo = array();
+////        $switchInfo[] = $ciscoSwitch->getBridgePortIndex('10.11.51.146', '1/9', false);
+//        $switchInfo[] = $ciscoSwitch->getSnmpPortVlanAssignment($ipArray[6], '1/9', false);
+//        $switchInfo[] = $ciscoSwitch->getPortIndex($ipArray[6], '1/9', false);
+//
+////        $switchInfo[] = $ciscoSwitch->getSnmpModelNumber($ipArray[6]);
+////        $switchInfo[] = $ciscoSwitch->getSnmpPortOperStatus($ipArray[0], '1/9');
+//
+//        dd($switchInfo);
+
+
+//        // entPhysicalDescr
+////        dd(snmp2_real_walk($ipArray[0], 'oomoomee', '1.3.6.1.2.1.47.1.1.1.1.13'));
+//
+//        // sysLocation
+////        dd(snmp2_real_walk('10.11.122.43', 'oomoomee', '1.3.6.1.2.1.1.6')); // . '.0'
+//
+//        // dot1dBaseBridgeAddress
+////        dd(snmp2_real_walk('10.11.122.43', 'oomoomee', '1.3.6.1.2.1.17.1.1')); // . '.0'
+//
+////        $switchPortInfoArray = array();
+////        $portTypeRegEx = '/.*ethernet.*/i';
+////        $skipLabelPattern = ['/.*[uU]plink.*/i', '/.*[dD]ownlink.*/i', '/.*CORE.*/i', '/.*CCR.*/i', '/.*SWITCH.*/i', '/.*\-.*/i'];
+////        $skipLabelPattern =[];
+//
+//        $response = [];
+//        foreach ($ipArray as $ip)
+//        {
+//            $hostname = preg_replace('/\.silverip\..*/', '', $ciscoSwitch->getSnmpSysName($ip));
+//            $model = $ciscoSwitch->getSnmpModelNumber($ip);
+//            $mac = $ciscoSwitch->getSnmpMacAddress($ip);
+////            dd($mac);
+//            $response[] = ['name' => $hostname['response'], 'model' => $model['response'], 'mac' => $mac['response']];
+//        }
+//
+//        dd($response);
+
+//        $portDescArr = $ciscoSwitch->getSnmpAllPortDesc($ip, $portTypeRegEx);
+////        if(isset($portDescArr['error'])){
+////            return $switchPortInfoArray;
+////        }
+//
+//        $portLabelArr = $ciscoSwitch->getSnmpAllPortLabel($ip, $portTypeRegEx, $skipLabelPattern);
+////        if(isset($portLabelArr['error'])){
+////            return $switchPortInfoArray;
+////        }
+//
+//        dd([$portDescArr, $portLabelArr]);
+
+
+        /** Cleanup successful manual invoices that have not been marked paid **/
+
+//        $billingHelper = new BillingHelper();
+//
+//        $invoices = Invoice::where('processing_type', 14)
+//            ->where('status', 2)
+//            ->where('failed_charges_count', '>', 0)
+//            ->get();
+//
+//        foreach ($invoices as $invoice)
+//        {
+//
+//            $invoiceLogs = $invoice->logs;
+//            if ($invoiceLogs == null)
+//            {
+//                Log::info('Could not find any logs for invoice id=' . $invoice->id);
+//                continue;
+//            }
+//
+//            $invoiceLog = $invoiceLogs->first();
+//            $transactionId = $invoiceLog->id_transactions;
+//            $transaction = BillingTransactionLog::where('transaction_id', $transactionId)->first();
+//
+//            if ($transaction->response_text == 'APPROVED' || $transaction->response_text == 'RETURN ACCEPTED')
+//            {
+//                Log::info('Invoice id=' . $invoice->id . ' should be marked as paid but it\'s not.');
+//                $billingHelper->updateInvoiceChargeStatus($invoice, config('const.charge_status.paid'));
+//                $billingHelper->markInvoiceAsPaid($invoice);
+//                $invoiceLog->status = 'processed';
+//                $invoiceLog->save();
+//            } else
+//            {
+//                Log::info('Skipping invoice id=' . $invoice->id . '. The response from billing was: ' . $transaction->response_text . ' ' . $transaction->response_error);
+//            }
+//        }
+//
+//        $charges = Charge::where('status', 2)
+//            ->where('description', 'like', 'Manual%')
+//            ->get();
+//
+//        foreach ($charges as $charge)
+//        {
+//            $invoice = $charge->invoice;
+//            if ($invoice->status == config('const.invoice_status.paid'))
+//            {
+//                $invoiceLogs = $invoice->logs;
+//                if ($invoiceLogs == null)
+//                {
+//                    Log::info('Could not find any logs for invoice id=' . $invoice->id);
+//                    continue;
+//                }
+//
+//                $invoiceLog = $invoiceLogs->first();
+//                $transactionId = $invoiceLog->id_transactions;
+//                $transaction = BillingTransactionLog::where('transaction_id', $transactionId)->first();
+//
+//                if ($transaction->response_text == 'APPROVED' || $transaction->response_text == 'RETURN ACCEPTED')
+//                {
+//                    Log::info('Charge id=' . $charge->id . ' should be marked as paid but it\'s not.');
+//                    $billingHelper->updateInvoiceChargeStatus($invoice, config('const.charge_status.paid'));
+//                    $invoiceLog->status = 'processed';
+//                    $invoiceLog->save();
+//                } else
+//                {
+//                    Log::info('Skipping charge id=' . $charge->id . '. The response from billing was: ' . $transaction->response_text . ' ' . $transaction->response_error);
+//                }
+//            }
+//
+//        }
+//        dd('done');
+
+        /** Test declined invoice notifications **/
+//        $billingHelper = new BillingHelper();
+//
+////        $billingHelper->generateChargeRecordsForCustomerByMonth(4667, 'September');
+////        $billingHelper->invoicePendingAutoPayChargesForCustomerByMonth(4667, 'September');
+////        $billingHelper->generateChargeRecordsForCustomerByMonth(4667, 'October');
+////        $billingHelper->invoicePendingAutoPayChargesForCustomerByMonth(4667, 'October');
+////        dd('done');
+//
+//        $customer = Customer::find(4667);
+//
+//        $invoices = Invoice::where('id_customers', 4667)
+//            ->where('status', config('const.invoice_status.pending'))
+//            ->where('processing_type', config('const.type.auto_pay'))
+//            ->orderBy('due_date', 'asc')->get();
+//
+//        $billingHelper->sendDeclinedChargeReminderByInvoiceCollection($customer, $invoices);
+//
+//        dd('done');
+//
+//        if ($invoices->count() > 0)
+//        {
+//            $firstInvoice = $invoices->first();
+//            $firstInvoiceDetails = $firstInvoice->details();
+//            dd($firstInvoiceDetails);
+////            $productFrequency = $firstInvoiceDetails['']
+//        }
+//
+//        dd('done');
+//
+//        $details = [];
+//        $productFrequency = '';
+//        foreach ($invoices as $invoice)
+//        {
+//            $details[] = $invoice->details();
+////            $productFrequency =
+//        }
+//        dd($details);
+
+
+        /** Mark paid invoice charges as paid **/
+//        $billingHelper = new BillingHelper();
+//
+//        $perPage = 15;
+//        $totalInvoicesProcessed = 0;
+//
+//        $paginatedInvoices = $billingHelper->paginatePendingInvoices();
+//        $lastProcessedInvoiceId = 0;
+//
+//        while ($paginatedInvoices->count() > 0)
+//        {
+//            $invoices = $paginatedInvoices;
+//
+//            foreach ($invoices as $invoice)
+//            {
+//                $totalInvoicesProcessed ++;
+//                Log::info('TestController::generalTest(): Updating charge details for invoice id=' . $invoice->id . ' amount=$' . $invoice->amount);
+//
+//                $charges = $invoice->charges;
+//                if($charges == null){ continue; }
+//                foreach($charges as $charge){
+//                    $billingHelper->updateChargeFromCustomerProduct($charge);
+//                }
+//
+////                $billingHelper->updateInvoiceChargeStatus($invoice, config('const.charge_status.paid'));
+//                $lastProcessedInvoiceId = $invoice->id;
+//            }
+//
+//            $paginatedInvoices = $billingHelper->paginatePendingInvoices($perPage, $lastProcessedInvoiceId);
+//        }
+//
+//        dd('Processed ' . $totalInvoicesProcessed . ' invoices.');
+
+
+        /** Update product descriptions **/
+//
+//        while (true)
+//        {
+//
+//            $products = Product::where('description', '')
+//                ->where(function ($query) {
+//                    $query->where('frequency', 'annual')
+//                        ->orWhere('frequency', 'monthly');
+//                })
+//                ->take(10)
+//                ->get();
+//
+//            if ($products->count() == 0)
+//            {
+//                break;
+//            }
+//
+//            foreach ($products as $product)
+//            {
+//                $name = $product->name;
+//                $description = trim(preg_replace('/(.*)-.*/', '$1', $name));
+//                $product->description = $description.' Internet Plan';
+//                $product->save();
+//            }
+//        }
+//
+//        dd('done');
+
+
+        /** Update customer products and charges that don't have addresses **/
+
+//        $customerProducts = CustomerProduct::where('id_address', 0)->get();
+//        $charges = Charge::where('id_address', 0)->get();
+//
+//        foreach ($customerProducts as $customerProduct)
+//        {
+//            $customer = $customerProduct->customer;
+//            if($customer == null){
+//                Log::info('Customer product id='.$customerProduct->id.' has no customer associated with it.');
+//                $customerProduct->delete();
+//                continue;
+//            }
+//            $address = $customer->address;
+//            if($address == null){
+//                Log::info('Customer id='.$customer->id.' has no address associated with it.');
+//                continue;
+//            }
+//            $customerProduct->id_address = $address->id;
+//            $customerProduct->save();
+//        }
+//
+//        foreach ($charges as $charge)
+//        {
+//            $customer = $charge->customer;
+//            if($customer == null){
+//                Log::info('Charge id='.$charge->id.' has no customer associated with it.');
+//                continue;
+//            }
+//            $address = $customer->address;
+//            if($address == null){
+//                Log::info('Customer id='.$customer->id.' has no address associated with it.');
+//                continue;
+//            }
+//
+//            $charge->id_address = $address->id;
+//            $charge->save();
+//        }
+//
+//        $customerProducts = CustomerProduct::where('id_address', 0)->get();
+//        $charges = Charge::where('id_address', 0)->get();
+//
+//        dd(['customer products' => $customerProducts->count(), 'charges' => $charges->count()]);
+
+
+        /** Test the charges and invoices page queries **/
+//        $result = array();
+////        $result['year'] = Date('Y');
+////        $result['month'] = Date('m');
+//        $result['year'] = '2017';
+//        $result['month'] = '10';
+//        $data = $request->all();
+//
+////        if (count($data) > 1)
+//        $timeData = '"' . $result['year'] . '-' . $result['month'] . '-' . '0"';
+////        else
+////            $timeData = 'CURRENT_DATE()';
+//
+//        $loadResults = Charge::with('customer',
+//            'address',
+//            'invoice',
+//            'user',
+//            'productDetail.product')
+//            ->whereRaw('YEAR(start_date)  = YEAR(' . $timeData . ')')
+//            ->whereRaw('MONTH(start_date) = MONTH(' . $timeData . ')');
+//
+////        $loadResults->where('status', 3);
+//        $loadResults->where('amount', 'like', '%%');
+//
+//        $code = '';
+//        $loadResults->whereHas('address', function ($query) use ($code) {
+//            $query->where('code', 'like', '%%');
+//        });
+//
+//
+//        $unit = '';
+//        $loadResults->whereHas('address', function ($query) use ($unit) {
+//            $query->where('unit', 'like', '%' . $unit . '%');
+//        });
+//
+////        $loadResults->count();
+////        $queries = DB::getQueryLog();
+////        $last_query = end($queries);
+//////        dd($queries);
+////        dd($last_query);
+//
+//        dd($loadResults->count());
+
+
+        /** Send unregistered ports to signup **/
+        $building = Building::where('alias', '65M')->first();
+//        $address = $building->address;
+
+        $accessSwitches = $building->accessSwitches;
+        foreach ($accessSwitches as $switch)
+        {
+            $ports = $switch->ports;
+
+        }
+        dd($accessSwitches);
+
+
+        /** Convert HTML to text **/
+//        $htmlString = '<html>
+//                        <title>Ignored Title</title>
+//                        <body>
+//                          <h1>Hello, World!</h1>
+//
+//                          <p>This is some e-mail content.
+//                          Even though it has whitespace and newlines, the e-mail converter
+//                          will handle it correctly.
+//
+//                          <p>Even mismatched tags.</p>
+//
+//                          <div>A div</div>
+//                          <div>Another div</div>
+//                          <div>A div<div>within a div</div></div>
+//
+//                          <a href="http://foo.com">A link</a>
+//
+//                        </body>
+//                        </html>';
+//
+//
+//        $text = Html2Text::convert($htmlString);
+//        dd($text);
+
+
+        /** Show email addresses for all active customers at the specified building **/
+//        $building = Building::where('nickname', '65M')->first();
+//        $activeCustomers = $building->activeCustomers;
+//        dd($activeCustomers->pluck('emailAddress')->pluck('value'));
+
+        /**  Find invoices that need to be cancelled for the specified customer **/
+//        $firstDayOfMonthTime = strtotime("first day of this month 00:00:00");
+//        $timestampMysql = date('Y-m-d H:i:s', $firstDayOfMonthTime);
+//        $customer = Customer::find(3533);
+//        $pendingInvoices = $customer->pendingAutoPayInvoicesOnOrAfterTimestamp($timestampMysql);
+//        dd($pendingInvoices);
+
+        /** Find pending invoices for the specified month (due on the first of the specified month) **/
+//        $invoiceStatusArrayMap = array_flip(config('const.invoice_status'));
+//
+//        $invoices = Invoice::with('customer')
+//            ->where('processing_type', config('const.type.auto_pay'))
+//            ->where('status', config('const.invoice_status.pending'))
+////            ->where('status', '!=', config('const.invoice_status.cancelled'))
+//            ->where('failed_charges_count', '>', 0)
+////            ->where('due_date', '2017-08-01 00:00:00')
+////            ->where('amount', '<', 100)
+//            ->get();
+//
+//        $invoices->transform(function ($invoice, $key) use ($invoiceStatusArrayMap) {
+//            $invoice->status = $invoiceStatusArrayMap[$invoice->status];
+//
+//            return $invoice;
+//        });
+//
+//        dd($invoices->count());
+//        dd('$'.$invoices->pluck('amount', 'id_customers')->sort()->sum());
+
+        /** Get the customer IDs that are disabled for the above invoices **/
+//        $customers = $invoices->pluck('customer');
+//        dd($customers->whereLoose('id_status', 2)->pluck('id_status', 'id'));
+
+
+        /** Test pending invoice pagination by Id **/
+        $billingHelper = new BillingHelper();
+//        $pendingInvoices = $billingHelper->paginatePendingInvoices();
+//
+//        $lastInvoice = $pendingInvoices->last();
+//        $pendingInvoices = $billingHelper->paginatePendingInvoices(15, $lastInvoice->id);
+//        dd($pendingInvoices);
+
+        $billingHelper->processPendingAutopayInvoicesThatHaveUpdatedPaymentMethods();
+        dd('done');
+
+
+//
+//
+////        $expiresBeforeMysqlDate = date("Y-m-d H:i:s", strtotime('first day of this month 00:00:00'));
+//        $expiresBeforeMysqlDate = date("Y-m-d H:i:s", strtotime('first day of August 00:00:00'));
+//
+////        $customerProducts = $billingHelper->getChargeableCustomerProductsQuery('first day of this month 00:00:00')
+////            ->where('buildings.id', '=', 61)  // 730C
+////            ->get(['customer_products.*']);
+////
+////        dd($customerProducts);
+//
+////        $customerProducts = $billingHelper->getChargeableCustomerProductsQuery('first day of this month 00:00:00', true)
+//        $customerProducts = $billingHelper->getChargeableCustomerProductsQuery('first day of August 00:00:00', true)
+//            ->where('customer_products.signed_up', '<', $expiresBeforeMysqlDate)
+//            ->whereNull('customer_products.last_charged')
+//            ->where('buildings.id', '=', 61)
+//            ->get(['customer_products.*']);
+//
+//        dd($customerProducts);
+//
+//        $customerProduct = $customerProducts->first();
+//
+//        dd(number_format($customerProduct->product->amount, 2, '.', ''));
+
+
+//        $billingHelper->generateResidentialChargeRecordsForLastMonth();
+//        dd($billingHelper->getChargeableCustomerProductsByCustomerId(14703));
+
+//        dd(storage_path('app'));
+
+//        $directory = 'mikrotik_firmware/all_packages-tile-6.40.1';
+//        $files = File::allFiles(storage_path('app/'.$directory));
+//
+//        foreach($files as $file){
+//            echo $file->getPathname().'/'.$file->getFilename()  .'<br>';
+//        }
+//
+////        $files = Storage::disk('local')->allFiles($directory);
+//
+////        dd(Storage::disk('local')->files('mikrotik_firmware/all_packages-tile-6.40.1'));
+//
+//        dd($files);
+//
+//        $mikrotik = NetworkNode::where('ip_address', '10.10.13.1')->first();
+////        dd($mikrotik);
+
+        $ipAddress = '192.168.100.249';
+        $serviceRouter = new MtikRouter(['ip_address' => $ipAddress,
+                                         'username'   => 'test',
+                                         'password'   => 'testtest']);
+        $softwareversion = $serviceRouter->getSoftwareVersion($ipAddress);
+        $architecture = $serviceRouter->getArchitecture($ipAddress);
+
+        dd([$softwareversion, $architecture]);
+
+
+//        $serviceRouter = new MtikRouter(['ip_address' => $mikrotik->ip_address,
+//                                         'username'   => config('netmgmt.mikrotik.username'),
+//                                         'password'   => config('netmgmt.mikrotik.password')]);
+//        $softwareversion = $serviceRouter->getSoftwareVersion($mikrotik->ip_address);
+//        $architecture = $serviceRouter->getArchitecture($mikrotik->ip_address);
+//
+//        dd([$softwareversion, $architecture]);
+
+//            dd('done');
+//        $mikrotiks = NetworkNode::where('id_types', config('const.type.router'))->get();
+//        dd($mikrotiks);
+
+//        $serverIp = '108.160.193.70';
+//        foreach ($mikrotiks as $mikrotik)
+//        {
+//            $serviceRouter = new MtikRouter(['ip_address' => $mikrotik->ip_address,
+//                                             'username' => config('netmgmt.mikrotik.username'),
+//                                             'password' => config('netmgmt.mikrotik.password')]);
+//            $serviceRouter->updateHotspotServerTarget($mikrotik->ip_address, $serverIp);
+//            echo 'Updated ' . $mikrotik->host_name . '<br>';
+////            dd('done');
+//        }
+//        dd('done');
 
 
 //        $customer = Customer::with('services')->find(9992)->toArray();
@@ -463,32 +1232,7 @@ dd('done');
 //
 //        dd($invoices);
 
-//        $switchPortInfoArray = array();
-//        $portTypeRegEx = '/.*ethernet.*/i';
-////        $ciscoSwitch = $this->getSwitchInstance();
-//        $ciscoSwitch = new CiscoSwitch(['readCommunity' => 'oomoomee',
-//                         'writeCommunity' => 'BigSeem']);
-//
-////        $ip = '10.11.190.71';
-//        $ip = '10.15.215.254';
-//
-//        $skipLabelPattern = ['/.*[uU]plink.*/i', '/.*[dD]ownlink.*/i', '/.*CORE.*/i', '/.*CCR.*/i', '/.*SWITCH.*/i', '/.*\-.*/i'];
-////        $skipLabelPattern =[];
-//
-//        $response = $ciscoSwitch->getSnmpModelNumber($ip);
-//        dd($response);
-//
-//        $portDescArr = $ciscoSwitch->getSnmpAllPortDesc($ip, $portTypeRegEx);
-////        if(isset($portDescArr['error'])){
-////            return $switchPortInfoArray;
-////        }
-//
-//        $portLabelArr = $ciscoSwitch->getSnmpAllPortLabel($ip, $portTypeRegEx, $skipLabelPattern);
-////        if(isset($portLabelArr['error'])){
-////            return $switchPortInfoArray;
-////        }
-//
-//        dd([$portDescArr, $portLabelArr]);
+
 //
 //        $sipCustomer = new SIPCustomer();
 //
@@ -768,14 +1512,18 @@ dd('done');
             ->get();
         dd($subbedProducts);
 
-        foreach ($subbedProducts as $product) {
+        foreach ($subbedProducts as $product)
+        {
             $subbedProductsArr[$product->id] = $product;
         }
         dd($subbedProductsArr);
-        foreach ($allProducts as $key => $product) {
-            if (array_key_exists($key, $subbedProductsArr)) {
+        foreach ($allProducts as $key => $product)
+        {
+            if (array_key_exists($key, $subbedProductsArr))
+            {
                 $allProducts[$key]['Total'] = $subbedProductsArr[$key]->Total;
-            } else {
+            } else
+            {
                 $allProducts[$key]['Total'] = 0;
             }
         }
@@ -794,7 +1542,7 @@ dd('done');
         dd($lastTicketNumber);
 
         $ticketNumber = explode('ST-', $lastTicketNumber);
-        $ticketNumberCast = (int)$ticketNumber[1] + 1;
+        $ticketNumberCast = (int) $ticketNumber[1] + 1;
         $defaultUserId = 10;
 
         $newTicket = new Ticket;

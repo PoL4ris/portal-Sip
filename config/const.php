@@ -2,10 +2,10 @@
 
 return [
     'status'                         => [
-        'active'         => env('STATUS_ACTIVE', 1),
-        'disabled'       => env('STATUS_DISABLED', 2),
-        'new'            => env('STATUS_NEW', 3),
-        'decommissioned' => env('STATUS_DECOMMISSIONED', 4),
+        'active'         => 1,
+        'disabled'       => 2,
+        'new'            => 3,
+        'decommissioned' => 4,
         'closed'         => 'closed'
     ],
     'ticket_status'                  => [
@@ -37,10 +37,10 @@ return [
         'email'        => 5,
     ],
     'customer_product_charge_status' => [
-        'none'    => 0,
-        'charged' => 1,
-        'paid'    => 2,
-        'failed'  => 3,
+        'none'   => 0,
+        'active' => 1,
+        'paid'   => 2,
+        'failed' => 3,
     ],
     'charge_type'                    => [
         'charge'   => 'charge',
@@ -68,6 +68,8 @@ return [
         'paid'      => 3,
         'failed'    => 4,
         'cancelled' => 5,
+        'pending200' => 200,
+        'pending12' => 12,
     ],
     'building_property'              => [
         'type'              => '1',

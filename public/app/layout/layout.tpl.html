@@ -1,14 +1,15 @@
 <!-- HEADER -->
-<div data-smart-include="app/layout/partials/header.tpl.html" class="placeholder-header"></div>
+<div data-smart-include="app/layout/partials/header.tpl.html" class="placeholder-header" ng-if="!mobDevice"></div>
 <!-- END HEADER -->
 
 
 <!-- NAVIGATION -->
 <div data-smart-include="app/layout/partials/navigation.tpl.html" class="placeholder-left-panel"></div>
+<div ng-include="'views/mobile/nav.html'" ng-if="mobDevice" id="mobile-navigation"></div>
 <!-- END NAVIGATION -->
 
 <!-- SIDEBARS -->
-<div ui-view="silveriptool" id="silverip-side" class="silverip-right"></div>
+<div ui-view="silveriptool" id="silverip-side" class="silverip-right-hide"></div>
 <!-- END SIDEBARS -->
 
 <div class="modal fade" id="modalTest" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -21,7 +22,7 @@
 <!------------------------------------------------------------------------>
 
 
-<div id="main" role="main" class="silverip-right-location anim">
+<div id="main" role="main" class=" anim">
     <div data-smart-router-animation-wrap="content content@app" data-wrap-for="#content">
         <div data-ui-view="content" data-autoscroll="false" id="content"></div>
     </div>
@@ -31,7 +32,7 @@
 <!-- END MAIN PANEL -->
 
 <!-- PAGE FOOTER -->
-<div data-smart-include="app/layout/partials/footer.tpl.html"></div>
+<!--<div data-smart-include="app/layout/partials/footer.tpl.html"></div>-->
 
 <div data-smart-include="app/layout/shortcut/shortcut.tpl.html"></div>
 

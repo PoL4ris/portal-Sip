@@ -7,6 +7,8 @@ return [
      */
     'support-ticket-recipient'  => env('SUPPORT_TICKET_RECIPIENT'),
 
+    'processed-email-directory'  => env('PROCESSED_EMAIL_DIRECTORY', '/tmp'),
+
     /*
     |--------------------------------------------------------------------------
     | Mail Driver

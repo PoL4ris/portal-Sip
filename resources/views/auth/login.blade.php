@@ -38,16 +38,6 @@
                             </div>
                         </div>
 
-                        {{--<div class="form-group">--}}
-                            {{--<div class="col-md-6 col-md-offset-4">--}}
-                                {{--<div class="checkbox">--}}
-                                    {{--<label>--}}
-                                        {{--<input type="checkbox" name="remember"> Remember Me--}}
-                                    {{--</label>--}}
-                                {{--</div>--}}
-                            {{--</div>--}}
-                        {{--</div>--}}
-
                         <div class="form-group inputthing">
                             <div class="">
                                 <button type="submit" class="btn btn-primary login-btn">
@@ -70,7 +60,7 @@
                     </form>
                 </div>
             </div>
-            <div style="text-align: center; color: #98a6ad;margin-bottom: 15px">Silver<i>IP </i>  Communications © 2017</div>
+            <div class="copy">Silver<i>IP </i>  Communications © 2017</div>
         </div>
     </div>
 </div>

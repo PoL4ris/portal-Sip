@@ -3024,10 +3024,6 @@ select[multiple].input-lg {
   -ms-user-select: none;
   user-select: none;
 }
-.btn-sm {
-  padding: 3px 3px;
-  font-size: 12px;
-}
 .btn:focus,
 .btn:active:focus,
 .btn.active:focus,

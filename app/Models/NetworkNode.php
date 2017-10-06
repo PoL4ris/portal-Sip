@@ -47,4 +47,9 @@ class NetworkNode extends Model {
     {
         return $this->hasOne('App\Models\Address', 'id', 'id_address');
     }
+
+    public function ports()
+    {
+        return $this->hasMany('App\Models\Port', 'id_network_nodes', 'id'); //->with('product');
+    }
 }

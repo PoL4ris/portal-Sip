@@ -176,6 +176,9 @@ return [
         // Doctrine/DBAL timestamp type
         MarkTopper\DoctrineDBALTimestampType\Laravel5ServiceProvider::class,
 
+        //Image intervention
+        Intervention\Image\ImageServiceProvider::class,
+
     ],
 
     /*
@@ -227,6 +230,10 @@ return [
         'Socialite' => Laravel\Socialite\Facades\Socialite::class,
         'ActivityLogs' => App\Extensions\Facades\ActivityLogs::class,
         'SendMail' => App\Extensions\Facades\SendMail::class,
+
+        //ImageIntervention
+        'Image' => Intervention\Image\Facades\Image::class,
+
 
     ],
 

@@ -1,37 +1,22 @@
 <aside id="left-panel">
-
-
-
-
-  <!-- User info -->
-  <!--<div login-info></div>-->
-  <div ng-controller="userAuthController">
-    <div class="login-info ng-cloak">
-      <span>
-        <a  href="" toggle-shortcut>
-            <img ng-src="{{userDataAuth.avatar ? userDataAuth.avatar : '/img/male.png'}}"
-                 alt="{{userDataAuth.first_name}}"
-                 class="online"
-                 title="{{userDataAuth.first_name}}" />
-            <span>{{userDataAuth.first_name}}</span>
-            <i class="fa fa-angle-right"></i>
-        </a>
-      </span>
+    <!-- User info -->
+    <div ng-controller="userAuthController">
+        <div class="login-info ng-cloak">
+          <span>
+            <a href="" toggle-shortcut>
+                <img ng-src="{{userDataAuth.avatar ? userDataAuth.avatar : '/img/male.png'}}"
+                     alt="{{userDataAuth.first_name}}"
+                     class="online"
+                     title="{{userDataAuth.first_name}}"/>
+                <span>{{userDataAuth.first_name}}</span>
+                <i class="fa fa-angle-right"></i>
+            </a>
+          </span>
+        </div>
     </div>
-  </div>
-  <!-- end user info -->
-
-  <nav ng-include="'/angularviews/templates/nav.html'"></nav>
-
-
-
-
-
-  <!--<span class="minifyme" data-action="minifyMenu" minify-menu>-->
-    <!--<i class="fa fa-arrow-circle-left hit"></i>-->
-  <!--</span>-->
-
-
-
+    <!-- end user info -->
+    <nav ng-include="'/angularviews/templates/nav.html'"></nav>
+    <div class="silver-magnus-label">SilverIP Magnus © 2017</div>
 </aside>
+
 

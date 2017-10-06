@@ -1,12 +1,18 @@
-<!--<div jarvis-widget id="wid-id-1" data-widget-deletebutton="false" data-widget-editbutton="false" data-widget-custombutton="false" ng-controller="FormXeditableCtrl">-->
 <div ng-controller="FormXeditableCtrl" class="">
     <div ng-controller="FormPluginsCtrl">
-        <div ng-controller="globalToolsCtl">
+        <div >
             <!--BOTONES-->
 
             <div class="row">
                 <div class="col-sm-4">
-                    <button id="customer-contact" class="btn btn btn-primary" ng-click="toggleDisabled('customer-contact')"><i class="fa fa-pencil"></i> Edit Info</button>
+                    <button id="customer-contact"
+                    class="btn btn btn-primary"
+                    ng-click="toggleDisabled(uniqueIdIndex, 'contact-info')"
+                    ng-if="customerServiceData[uniqueIdIndex].xEditContactInfo"><i class="fa fa-pencil"></i> Edit Info</button>
+                    <button id="customer-contact"
+                            class="btn btn btn-success"
+                            ng-click="toggleDisabled(uniqueIdIndex, 'contact-info');getCustomerDataRefresh()"
+                            ng-if="!customerServiceData[uniqueIdIndex].xEditContactInfo"><i class="fa fa fa-times"></i> Done</button>
                     <!--<button ng-if="customerContactsData == ''" id="customer-contact" class="btn btn btn-default" ng-click="toggleDisabled()" disabled >Disabled</button>-->
                 </div>
                 <div class="col-sm-8">
@@ -23,12 +29,13 @@
                 </div>
             </div>
 
+
             <!--CONTENIDO-->
-            <div class="table-container m-t-lg tc-c-info" id="ccontactlist-gTools">
+            <div class="table-container m-t-lg tc-c-info" id="ccontactlist-gTools-{{uniqueIdIndex}}">
                 <table class="table table-bordered table-striped bpv-container">
                     <tbody>
-                    <tr ng-repeat="contactinfo in customerContactsData">
-                        <td><strong>{{ contactTypes[(contactinfo.id_types - 1)].name }}:</strong></td>
+                    <tr ng-repeat="contactinfo in customerServiceData[uniqueIdIndex].info.contacts">
+                        <td><strong>{{ statusArrayConstant.contact_type[contactinfo.id_types] }}:</strong></td>
                         <td>
                             <a href=""
                                id="b-p-id-{{contactinfo.id}}"
@@ -43,6 +50,7 @@
                                data-type="text"
                                record-idContainer="ccontactlist"
                                data-placement="right"
+                               record-index="{{uniqueIdIndex}}"
                                class="editable editable-click">
                                 {{contactinfo.value ? contactinfo.value : 'nada'}}
                             </a>
