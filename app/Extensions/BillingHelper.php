@@ -1301,7 +1301,7 @@ class BillingHelper {
 
             $this->sendDeclinedChargeReminderByInvoiceCollection($customer, $pendingInvoices);
             $this->markInvoicesAsNotifiedPastDue($pendingInvoices);
-            ActivityLogs::add($this->logType, $customerId, 'notify', 'remindFailedInvoiceCustomers', '', '', json_encode(['customer_id' => $customer->id, 'invoice_id' => $pendingInvoices->pluck('id')]), 'notify-customer');
+            ActivityLogs::add($this->logType, $customerId, 'notify', 'remindFailedInvoiceCustomers', '', '', json_encode(['customer_id' => $customer->id, 'invoice_id' => $pendingInvoices->pluck('id')]), 'notification-customer-failed-invoice');
             $iterations ++;
         }
 
@@ -1399,7 +1399,7 @@ class BillingHelper {
 
             $this->sendUpcomingChargeReminderByInvoiceCollection($customer, $pendingInvoices);
             $this->markInvoicesAsNotifiedUpcoming($pendingInvoices);
-            ActivityLogs::add($this->logType, $customerId, 'notify', 'notifyUpcomingInvoiceCustomers', '', '', json_encode(['customer_id' => $customer->id, 'invoice_id' => $pendingInvoices->pluck('id')]), 'notify-customer');
+            ActivityLogs::add($this->logType, $customerId, 'notify', 'notifyUpcomingInvoiceCustomers', '', '', json_encode(['customer_id' => $customer->id, 'invoice_id' => $pendingInvoices->pluck('id')]), 'notification-customer-upcoming-invoice');
             $iterations ++;
         }
 
