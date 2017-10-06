@@ -4,8 +4,18 @@ app.controller('buildingCtl',             function ($scope, $http, $stateParams,
 
   //TMP HIDE AND SHOW SIDEBAR
   $scope.fedeINbtn  = function () {
-    $('#left-bld').animate({width: '200px'});
-    $('#right-bld').css('width', 'calc(100% - 200px)');
+
+    if($scope.mobDevice)
+    {
+      $('#left-bld').animate({width: '100%'});
+      $('#right-bld').animate({width: '0'});
+    }
+    else{
+      $('#left-bld').animate({width: '200px'});
+      $('#right-bld').css('width', 'calc(100% - 200px)');
+    }
+//    $('#left-bld').animate({width: '200px'});
+//    $('#right-bld').css('width', 'calc(100% - 200px)');
   }
   $scope.fedeOUTbtn = function () {
     $('#left-bld').animate({width: '0'});
@@ -17,8 +27,10 @@ app.controller('buildingCtl',             function ($scope, $http, $stateParams,
     generalService.sideBarFlag = false;
   }
 
-  if(generalService.stateRoute == 'buildings' && $scope.mobDevice)
-    $scope.fedeOUTbtn();
+  if(generalService.stateRoute == 'buildings' && $scope.mobDevice){
+    $('#left-bld').css({width: '0'});
+    $('#right-bld').animate({'width': '100%'});
+  }
 
 
   $scope.idBuilding = null;

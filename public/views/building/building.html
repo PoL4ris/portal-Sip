@@ -1,6 +1,11 @@
 <div class="row">
     <!--LEFT CONTENT-->
     <div id="left-bld" class="bld-sub-nav pull-left anim">
+
+        <div class="col-lg-12 col-xs-12 m-b-md m-t-md text-align-right p-r-lg">
+            <button ng-click="fedeOUTbtn()" class="btn btn-warning" ng-if="mobDevice"><i class="fa fa-arrow-left"></i></button>
+        </div>
+
         <div class="bld-filters-sub-nav">
 
             <div class="search-subnav-bld">
@@ -30,7 +35,7 @@
     </div>
     <!--RIGHT CONTENT-->
     <div id="right-bld" class="sub-nav-active pull-left padding-10 p-l-lg anim">
-        <button ng-click="fedeOUTbtn()" class="btn btn-warning"><i class="fa fa-arrow-left"></i></button>
+        <button ng-click="fedeOUTbtn()" class="btn btn-warning" ng-if="!mobDevice"><i class="fa fa-arrow-left"></i></button>
         <button ng-click="fedeINbtn()"  class="btn btn-primary"><i class="fa fa-arrow-right"></i></button>
 
         <div class="row">
@@ -42,43 +47,36 @@
 
         <article class="col-lg-12 col-sm-12 col-xs-12  bg-white white-shadow m-t-lg p-b-lg null-article" id="c-fixed-content">
             <div class="row">
+
                 <header role="heading" class="ui-sortable-handle col-xs-12 col-lg-12">
                     <ul id="widget-tab-1" class="nav pull-left nav-tabs size-100">
-                        <li class="">
-                            <a data-toggle="tab" href="#tab-r2" aria-expanded="false"> <i class="fa fa-lg fa-plus-square"></i>
-                                <span></span>
-                            </a>
-                        </li>
-                        <li ng-if="mobDevice" class="active">
-                            <a data-toggle="tab" href="#tab-r4" aria-expanded="false"><i class="fa fa-lg fa-home"></i><span>Products</span></a>
-                        </li>
-                        <li class="{{!mobDevice?'active':''}}">
-                            <a data-toggle="tab" href="#tab-r1" aria-expanded="false"><i class="fa fa-lg fa-home"></i><span>Properties</span></a>
-                        </li>
-                        <li class="">
-                            <a data-toggle="tab" href="#tab-r3" aria-expanded="false"><i class="fa fa-lg fa-home"></i> <span class=" ">Services</span></a>
-                        </li>
+                        <li ng-if="mobDevice" class="active">       <a data-toggle="tab" href="#tab-r4" aria-expanded="false"><i class="fa fa-lg fa-home"></i>        <span>Products</span>           </a>    </li>
+                        <li class="{{!mobDevice ? 'active' : ''}}"> <a data-toggle="tab" href="#tab-r1" aria-expanded="false"><i class="fa fa-lg fa-gear"></i>        <span>Properties</span>         </a>    </li>
+                        <li class="">                               <a data-toggle="tab" href="#tab-r3" aria-expanded="false"><i class="fa fa-lg fa-dashboard"></i>   <span class=" ">Services</span> </a>    </li>
+                        <li ng-if="mobDevice" class="">             <a data-toggle="tab" href="#tab-r2" aria-expanded="false"><i class="fa fa-lg fa-phone"></i>       <span class=" ">Contacts</span> </a>    </li>
                     </ul>
                 </header>
 
-                <div class="col-lg-12 m-t-lg">
+                <div class="col-lg-12 col-sm-12 col-xs-12 ">
                     <div class="tab-content">
                         <!-- PROPIEDADES -->
                         <div class="tab-pane active" id="tab-r4" ng-if="mobDevice">
                             <article class="col-lg-6 m-t-lg null-article " ng-include="'/views/building/services.html'"></article>
                         </div>
-                        <div class="tab-pane {{!mobDevice?'active':''}}" id="tab-r1">
-                            <article class="col-lg-6 m-t-lg null-article " ng-include="'/views/building/properties.html'"></article>
-                            <article class="col-lg-6 m-t-lg null-article animated fadeInRight" ng-include="'/views/building/contacts.html'"></article>
+                        <div class="tab-pane {{!mobDevice ? 'active' : ''}}" id="tab-r1">
+                            <article class="col-lg-6 col-sm-12 col-xs-12 m-t-lg null-article "                     ng-include="'/views/building/properties.html'"></article>
+                            <article class="col-lg-6 col-sm-12 col-xs-12 m-t-lg null-article animated fadeInRight" ng-include="'/views/building/contacts.html'" ng-if="!mobDevice"></article>
                         </div>
                         <!-- CONTACT -->
-                        <div class="tab-pane" id="tab-r2">
+                        <div class="tab-pane" id="tab-r2" ng-if="mobDevice">
+                            <article class="col-sm-12 col-xs-12 m-t-lg null-article animated fadeInRight" ng-include="'/views/building/contacts.html'"></article>
                         </div>
                         <div class="tab-pane " id="tab-r3">
-                            <article class="col-lg-12 m-t-lg null-article animated fadeInLeft" ng-include="'/views/building/product.html'"></article>
+                            <article class="col-lg-12 col-sm-12 col-xs-12 m-t-lg null-article animated fadeInLeft" ng-include="'/views/building/product.html'"></article>
                         </div>
                     </div>
                 </div>
+
             </div>
         </article>
 
