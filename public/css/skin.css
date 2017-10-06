@@ -943,7 +943,7 @@ nav ul li a {
     float: left;
     font-weight: bold;
     letter-spacing: 0.7px;
-    width: 50%;
+    width: 60%;
 }
 #activity-log .log-content .al-lg-header {
     clear: both;
@@ -968,7 +968,7 @@ nav ul li a {
 #activity-log .al-lg-header .lg-user {
     float: left;
     margin: 0;
-    width: 50%;
+    width: 40%;
 }
 #activity-log .al-lg-header .lg-user span {
     background: #ffce54 none repeat scroll 0 0;

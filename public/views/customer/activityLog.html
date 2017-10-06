@@ -21,17 +21,17 @@
                                 </div>
 
                                 <div class="al-lg-description" ng-init="arrayData = parJson(logEntry.log_data)">
-                                    <span ng-if="arrayData.type == 'update-id_status'"><b>Status</b> updated to <b>{{customerData.statusList[(arrayData.new['id_status'])-1].name}}</b></span>
-                                    <span ng-if="arrayData.type == 'update-first_name'"><b>First name</b>  updated to <b>{{arrayData.new['first_name']}}</b></span>
-                                    <span ng-if="arrayData.type == 'update-last_name'"><b>Last name</b> updated to <b>{{arrayData.new['last_name']}}</b></span>
-                                    <span ng-if="arrayData.type == 'update-email'"><b>Username</b> updated to <b>{{arrayData.new['email']}}</b></span>
-                                    <span ng-if="arrayData.type == 'update-contact'"><b>Contact field </b> updated to <b>{{arrayData.new['value']}}</b></span>
-                                    <span ng-if="arrayData.type == 'update-unit'"><b>Unit number</b> updated to <b>{{arrayData.new['unit']}}</b></span>
-                                    <span ng-if="arrayData.type == 'insert-service'">Product<b> {{arrayData.data.name}}</b> added</span>
-                                    <span ng-if="arrayData.type == 'update-service'">Product updated to <b> {{arrayData.data.name}}</b> </span>
-                                    <span ng-if="arrayData.type == 'disable-service'">Product <b> {{arrayData.data.name}}</b> now is disabled</span>
-                                    <span ng-if="arrayData.type == 'active-service'">Product <b> {{arrayData.data.name}}</b> now is active</span>
-                                    <span ng-if="arrayData.type == 'update-payment'">Payment ending <b> {{ arrayData.data | limitTo : 5 : 14 }} now is Default</b> </span>
+                                    <span ng-if="arrayData.type == 'update-id_status'"><b>Status</b> changed to <b>{{customerData.statusList[(arrayData.new['id_status'])-1].name}}</b></span>
+                                    <span ng-if="arrayData.type == 'update-first_name'"><b>First name</b> changed to <b>{{arrayData.new['first_name']}}</b></span>
+                                    <span ng-if="arrayData.type == 'update-last_name'"><b>Last name</b> changed to <b>{{arrayData.new['last_name']}}</b></span>
+                                    <span ng-if="arrayData.type == 'update-email'"><b>Username</b> changed to <b>{{arrayData.new['email']}}</b></span>
+                                    <span ng-if="arrayData.type == 'update-contact'"><b>Contact field</b> changed to <b>{{arrayData.new['value']}}</b></span>
+                                    <span ng-if="arrayData.type == 'update-unit'"><b>Unit number</b> changed to <b>{{arrayData.new['unit']}}</b></span>
+                                    <span ng-if="arrayData.type == 'insert-service'">Product<b> {{arrayData.data.name}}</b> is added</span>
+                                    <span ng-if="arrayData.type == 'update-service'">Product changed to <b>{{arrayData.data.name}}</b> </span>
+                                    <span ng-if="arrayData.type == 'disable-service'">Product <b>{{arrayData.data.name}}</b> is disabled</span>
+                                    <span ng-if="arrayData.type == 'active-service'">Product <b> {{arrayData.data.name}}</b> is activated</span>
+                                    <span ng-if="arrayData.type == 'update-payment'">{{ arrayData.new['types'] }} ending in <b>{{ arrayData.new['account_number'] | limitTo : 4 : -4 }}</b>  is set to default</span>
                                     <span ng-if="arrayData.type == 'notification-customer-failed-invoice'">
                                         <i class="fa fa-envelope-o f-size-17 down-status bg-white cursor-pointer"></i> Sent past due invoice reminder
                                     </span>
