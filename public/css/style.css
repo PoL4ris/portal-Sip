@@ -1647,7 +1647,8 @@ table.dataTable tbody tr {
   margin-right: 10px;
 
 }
-.notification{
+.reset-form-ncustomer:hover{
+  opacity: .5;
 }
 pre {
   font-size: 10px;
