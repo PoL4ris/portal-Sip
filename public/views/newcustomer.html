@@ -90,8 +90,8 @@
                                            class="color-click">
 
                                     <span class="search-close-nc-address">
-                                        <i class="fa fa-search nc-lupa" ng-if="!selectedItem "></i>
-                                        <i class="fa fa-times nc-no-lupa cursor-pointer" ng-if="selectedItem " ng-click="clearAddress()"></i>
+                                        <i class="fa fa-search nc-lupa" ng-if="!selectedBuilding "></i>
+                                        <i class="fa fa-times nc-no-lupa cursor-pointer" ng-if="selectedBuilding " ng-click="clearAddress()"></i>
                                     </span>
 
                                 </div>
@@ -229,26 +229,26 @@
                                         <div class="col-lg-12">
                                             <label>Name:</label>
                                             <div class="nc-name">
-                                                <span>{{model['fname']}}</span>
-                                                <span>{{model['lname']}}</span>
+                                                <span ng-if="model['fname']">{{model['fname']}}</span>
+                                                <span ng-if="model['lname']">{{model['lname']}}</span>
                                             </div>
                                         </div>
                                         <div class="col-lg-12">
-                                            <label for="">Status</label>
-                                            <span class="up-status">Active</span>
+                                            <label for="">Status:</label>
+                                            <span ng-if="model['fname']" class="up-status">Active</span>
                                         </div>
 
                                         <div class="col-lg-12">
                                             <label for="">Mail:</label>
-                                            <span>{{validaMail}}</span>
+                                            <span ng-if="validaMail">{{validaMail}}</span>
                                         </div>
                                         <div class="col-lg-12">
                                             <label for="">Phone:</label>
-                                            <span>{{validaTel}}</span>
+                                            <span ng-if="validaTel">{{validaTel}}</span>
                                         </div>
                                         <div class="col-lg-12">
                                             <label for="">VIP:</label>
-                                            <span>{{validVip?validVip:' '}}</span>
+                                            <span ng-if="validVip">{{validVip?validVip:''}}</span>
                                         </div>
 
                                     </div>
@@ -366,7 +366,7 @@
 
 <div class="col-lg-12">
 
-    <h1 class="font-md"> Latest customers inserted</h1>
+    <h1 class="font-md">Recent Manual Registrations</h1>
 
     <br>
 
