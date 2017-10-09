@@ -54,6 +54,8 @@
                         <li class="{{!mobDevice ? 'active' : ''}}"> <a data-toggle="tab" href="#tab-r1" aria-expanded="false"><i class="fa fa-lg fa-gear"></i>        <span>Properties</span>         </a>    </li>
                         <li class="">                               <a data-toggle="tab" href="#tab-r3" aria-expanded="false"><i class="fa fa-lg fa-dashboard"></i>   <span class=" ">Services</span> </a>    </li>
                         <li ng-if="mobDevice" class="">             <a data-toggle="tab" href="#tab-r2" aria-expanded="false"><i class="fa fa-lg fa-phone"></i>       <span class=" ">Contacts</span> </a>    </li>
+
+                        <li ng-if="buildingData.media && userDataAuth.id == 24" class="">    <a data-toggle="tab" href="#tab-r5" aria-expanded="false"><i class="fa fa-lg fa-photo"></i>       <span class=" ">Media</span>    </a>    </li>
                     </ul>
                 </header>
 
@@ -73,6 +75,41 @@
                         </div>
                         <div class="tab-pane " id="tab-r3">
                             <article class="col-lg-12 col-sm-12 col-xs-12 m-t-lg null-article animated fadeInLeft" ng-include="'/views/building/product.html'"></article>
+                        </div>
+
+
+                        <div class="tab-pane " id="tab-r5" ng-if="buildingData.media && userDataAuth.id == 24">
+                            <article class="col-lg-12 col-sm-12 col-xs-12 m-t-lg null-article animated fadeInLeft">
+                            <div class="row">
+                                <div ng-repeat="item in buildingData.media" class="ddd col-lg-3">
+                                    <div class="row">
+                                        <div class="col-lg-6 border">
+                                            <img style="max-height: 100px" src="/img/wttmp/{{item.name}}" alt="">
+                                        </div>
+                                        <div class="col-lg-6 border4">
+                                            <p class="border3">Notes:</p>
+                                            <p class="border5">{{item.comment ? item.comment : 'N/A'}}</p>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="row">
+                                                <div class="col-lg-6 border1 text-center">
+                                                    <i class="fa fa-check up-status"></i>
+                                                </div>
+                                                <div class="col-lg-6 border2 text-center">
+                                                    <i class="fa fa-times down-status"></i>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            </article>
                         </div>
                     </div>
                 </div>

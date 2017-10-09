@@ -53,7 +53,7 @@ class BuildingController extends Controller {
      */
     public function buildingData(Request $request)
     {
-        return Building::with('neighborhood', 'contacts', 'properties', 'activeBuildingProducts')
+        return Building::with('neighborhood', 'contacts', 'properties', 'activeBuildingProducts', 'media')
             ->find($request->id ? $request->id : 29);
     }
 
