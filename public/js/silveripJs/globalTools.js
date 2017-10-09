@@ -1,13 +1,14 @@
 // Global Tools //
-app.controller('globalToolsCtl',                    function ($scope, $http, $compile, $sce, $stateParams, customerService, supportService, buildingService, generalService, $timeout){
+app.controller('globalToolsCtl',                    function ($scope, $http, $compile, $sce, $stateParams, customerService, supportService, buildingService, generalService, adminService, $timeout){
 
   $scope.customerData   = {};
   $scope.globalScopeVar = true;
   $scope.sipToolLeft    = false;
   $scope.sipToolRight   = true;
   $scope.focusIndex     = 0;
+  $scope.cacheClear     = generalService.cacheClear;
+
   $scope.statusArrayConstant = generalService.statusArrayConstant;
-  $scope.cacheClear = generalService.cacheClear;
 
   //Get Constants from constantConfig
   $http.get("getConstantData").then(function (response) {
@@ -24,6 +25,8 @@ app.controller('globalToolsCtl',                    function ($scope, $http, $co
 //  console.log($templateCache.info);
 //  console.log($state);
 //  console.log(appConfig);
+//  console.log(adminService);
+
 //  console.log(generalService);
 //  console.log(customerService);
 
@@ -512,6 +515,10 @@ app.controller('globalToolsCtl',                    function ($scope, $http, $co
 
   }
 
+  $scope.customerGoTo = function (){
+    document.location.href = '#/customers?id=' + this.customerData.id;
+  }
+
 })
 .directive('enterAction', function () {
   return function (scope, element, attrs) {
@@ -553,6 +560,7 @@ function getFormValues(id){
 /* User Authenticated Data */
 app.controller('userAuthController',                function ($scope){
   $scope.userDataAuth = JSON.parse($('#auth-user').val());
+  console.log($scope.userDataAuth);
 })
 
 

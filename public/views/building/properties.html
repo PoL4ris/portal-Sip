@@ -3,11 +3,11 @@
         <div class="widget-body" ng-controller="globalToolsCtl" id="buildingProperties-gTools">
             <div class="row">
 
-                <div class="col-lg-4">
+                <div class="col-lg-4 col-sm-6 col-xs-3 ">
                     <button ng-if="buildingData.properties != ''" id="enable" class="btn btn btn-success" ng-click="toggleDisabled()">Edit</button>
                     <!--<button ng-if="buildingData.properties == ''" id="enable" class="btn btn btn-success" ng-click="toggleDisabled()" disabled>Edit</button>-->
                 </div>
-                <div class="col-lg-8">
+                <div class="col-lg-8 col-sm-6 col-xs-9 ">
 
                     <button id="add-property"
                             class="btn btn btn-primary pull-right"
@@ -23,7 +23,7 @@
 
                 </div>
 
-                <div class="col-lg-12 m-t-lg m-b-lg p-b-lg">
+                <div class="col-lg-12 col-sm-12 col-xs-12 m-t-lg m-b-lg p-b-lg bpv-container">
                     <table id="user" class="table table-bordered table-striped bld-prop-table bpv-container" style="clear: both">
                         <tbody>
                         <tr ng-repeat="properData in buildingData.properties">
@@ -127,12 +127,11 @@
                     </table>
                 </div>
 
-                <div class="new-form-function no-display">
+                <div class="new-form-function no-display col-lg-12 col-sm-12 col-xs-12">
                     <div get-building-prop-values>
                         <h3>{{buildingData.name}}
                             <!--<small><strong>id: ({{buildingData.id}})</strong></small>-->
                         </h3>
-
                         <form id="new-bpv-form">
                             <select name="id_building_properties" id="" class="new-form-select new-form-fields m-b-lg" required>
                                 <option value="">Select Property</option>
@@ -141,8 +140,6 @@
                             <textarea class="new-form-fields new-form-textarea m-b-lg" placeholder="Example: 127.0.0.1/255" name="value" required></textarea>
                             <button class="btn btn-primary" ng-click="insertBuildingProperty()">Add Property</button>
                         </form>
-
-
                     </div>
                 </div>
 

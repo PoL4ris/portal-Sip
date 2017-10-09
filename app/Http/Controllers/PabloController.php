@@ -60,6 +60,28 @@ use Symfony\Component\Console\Helper\ProgressBar;
 
 class PabloController extends Controller
 {
+    public function supportTest(Request $request)
+    {
+
+
+
+        $loadResults = Building::with('neighborhood',
+                                      'contacts',
+                                      'properties',
+                                      'activeBuildingProducts',
+                                      'media')
+            ->find($request->id ? $request->id : 29);
+
+
+
+
+
+        dd($loadResults->toArray());
+        die();
+
+
+
+    }
     //This tests Blade files Direct.
     public function bladeView()
     {
@@ -90,31 +112,5 @@ class PabloController extends Controller
 
         dd('done');
     }
-    public function supportTest(Request $request)
-    {
 
-
-
-        $loadResults = Building::whereNotNull('id_status')->get();
-
-
-
-
-        print '<pre>';
-        dd($loadResults);
-        die();
-
-
-
-
-
-
-
-//CHANGE ROUTE
-
-        return Customer::find($request->id);
-
-        dd(Product::with('type')->orderBy('frequency', 'asc')->get()->take(10)->toArray());
-        die();
-    }
 }

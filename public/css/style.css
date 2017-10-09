@@ -1308,6 +1308,7 @@ table.dataTable tbody tr {
 }
 .search-subnav-nc{
   margin-bottom: 10px;
+  position: relative;
 }
 .search-subnav-nc input{
   width: 100%;
@@ -1315,7 +1316,20 @@ table.dataTable tbody tr {
   font-size: 14px;
   border-bottom: 1px solid #ddd;
 }
-
+.search-close-nc-address{
+  position: absolute;
+  top: 0px;
+  right: 10px;
+  width: 15px;
+  font-size: 16px;
+  color: #ddd;
+}
+.search-close-nc-address .nc-lupa{
+  color: #ddd;
+}
+.search-close-nc-address .nc-no-lupa{
+  color: crimson;
+}
 
 .filter-bld-nc{
   max-height: 150px;
@@ -1326,8 +1340,9 @@ table.dataTable tbody tr {
   width: 100%;
 }
 .filter-bld-nc div{
-  /*color: #3276b1;*/
   cursor: pointer;
+  padding: 2px 0px;
+  border-bottom: 1px solid rgba(0,0,0,.02);
 }
 .filter-bld-nc div:hover{
   opacity: .7;
@@ -1472,7 +1487,7 @@ table.dataTable tbody tr {
   top: 0;
   left: 0;
   background: rgba(255,255,255,.7);
-  width: 10%;
+  width: 100%;
   height: 100%;
   z-index: 10;
   transition: all .7s ease 0s;
@@ -1647,7 +1662,12 @@ table.dataTable tbody tr {
   margin-right: 10px;
 
 }
-.notification{
+.reset-form-ncustomer{
+  margin: 0 auto;
+  width: 25%;
+}
+.reset-form-ncustomer:hover{
+  opacity: .5;
 }
 pre {
   font-size: 10px;

@@ -1,5 +1,5 @@
 <div class="row">
-    <div class="col-lg-8">
+    <div class="col-lg-8 col-sm-12 col-xs-12">
         <h4>Search for product by Name</h4>
         <hr>
         <div class="relative">
@@ -21,12 +21,12 @@
 
         <div class="row" ng-if="productLoading">
 
-            <div class="col-lg-12 b-b-ddd p-b-md m-b-md">
+            <div class="col-lg-12 col-sm-12 col-xs-12 b-b-ddd p-b-md m-b-md">
                 <b>
-                    <div class="col-lg-6">Product Name</div>
-                    <div class="col-lg-2">Frequency</div>
-                    <div class="col-lg-2">Created At</div>
-                    <div class="col-lg-2">Amount</div>
+                    <div class="col-lg-6 col-sm-6 col-xs-6">Product Name</div>
+                    <div class="col-lg-2 col-sm-3 col-xs-3">Frequency</div>
+                    <div class="col-lg-2 {{mobDevice?'no-display':''}}">Created At</div>
+                    <div class="col-lg-2 col-sm-3 col-xs-3">Amount</div>
                 </b>
             </div>
 
@@ -34,7 +34,7 @@
             <div ng-repeat="resultSearch in productResultSearch"
                  ng-click="prodIdsArray()"
                  class="cursor-pointer
-                        col-lg-12
+                        col-lg-12 col-sm-12 col-xs-12
                         anim
                         product-list-result
                         service-id-{{resultSearch.id}}
@@ -42,32 +42,36 @@
                         p-b-sm
                         {{checkoutSelectedProducts[resultSearch.id]?'selected-product-active':''}}">
 
-                <div class="col-lg-6">
+                <div class="col-lg-6 col-sm-6 col-xs-6">
                     <label class="cursor-pointer ">{{resultSearch.name}}</label>
                 </div>
-                <div class="col-lg-2">
+                <div class="col-lg-2 col-sm-3 col-xs-3">
                     <label class="capital-first cursor-pointer">{{resultSearch.frequency}}</label>
                 </div>
-                <div class="col-lg-2">
+                <div class="col-lg-2 {{mobDevice?'no-display':''}}">
                     <label ng-init="cAtData = convertDate(resultSearch.created_at)" class="cursor-pointer">{{cAtData | date : "MMM d, y" }}</label>
                 </div>
-                <div class="col-lg-2">
+                <div class="col-lg-2 col-sm-3 col-xs-3">
                     <label class="cursor-pointer">${{resultSearch.amount}}</label>
                     <i class="fa fa-check up-status no-display pull-right"></i>
                 </div>
 
             </div>
+
         </div>
+
         <div ng-if="!productLoading">
             <img src="/img/loading.gif" alt="" class="loading-gif-support m-r-lg">
         </div>
-        <hr>
-        <div class="col-lg-12">
 
+        <hr>
+
+        <div class="col-lg-12 col-sm-12 col-xs-12 m-b-lg">
 
             <button type="button" class="btn btn-primary pull-left" ng-if="productResult.prev_page_url" ng-click="prevPage()">
                 <i class="fa fa-arrow-left"></i> Prev
             </button>
+
             <button type="button" class="btn btn-success pull-right" ng-if="productResult.next_page_url" ng-click="nextPage()">
                 Next <i class="fa fa-arrow-right"></i>
             </button>
@@ -77,7 +81,7 @@
 
     </div>
 
-    <div class="col-lg-4">
+    <div class="col-lg-4 col-sm-12 col-xs-12">
 
         <h4 class="text-center">Preview Selected Products.</h4>
         <hr>

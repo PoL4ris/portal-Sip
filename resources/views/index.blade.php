@@ -70,6 +70,7 @@
       data-smart-page-title="SilverIP Magnus"
       ng-controller="globalToolsCtl"
       class="fixed-navigation fixed-header smart-style-7">
+      {{--class="fixed-header smart-style-7">--}}
 
 <!-- ui-view container -->
 <input type="hidden" value="{{Auth::user()}}" id="auth-user" tmpTokenTest="{{ csrf_token() }}"/>
@@ -105,6 +106,8 @@
 <script src="/js/silveripJs/techScheduler.js"></script>
 <script src="/js/silveripJs/reportController.js"></script>
 <script src="/js/silveripJs/chargesController.js"></script>
+<script src="/js/silveripJs/newCustomerController.js"></script>
+<script src="/js/silveripJs/walkthroughController.js"></script>
 <script src="/js/lib.js"></script>
 <script src="/js/silveripJs/globalTools.js"></script>
 <script src="/js/calendar.js"></script>
