@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Port extends Model {
 
+    protected $fillable = ['id_network_nodes', 'port_number'];
+
     public function networkNode()
     {
         return $this->belongsTo('App\Models\NetworkNode', 'id_network_nodes');

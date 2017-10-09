@@ -646,8 +646,11 @@ app.controller('newcustomerAppController', function ($scope, $http, customerServ
                 $scope.showSpinner = false;
                 var newCustomerResponse = response.data;
                 if (!newCustomerResponse.error) {
-                    $scope.errorResponse = 'Customer added!';
+                    customerId = newCustomerResponse.ok.id;
+                    $scope.errorResponse = 'Added customer id: '+customerId;
                     $scope.triggerErrorMsg();
+                    $scope.resetFullForm();
+                    return true;
                 }
 
                 for (var errorSection in newCustomerResponse.messages) {
@@ -689,7 +692,7 @@ app.controller('newcustomerAppController', function ($scope, $http, customerServ
         $scope.contactErrorContainer = contactErrorTitle + contactErrorContainer;
     }
 
-    $scope.resetFullForm = function () {
+    $scope.resetFullForm = function (verifyForm) {
 
         $scope.showSpinner = false;
 
@@ -712,7 +715,9 @@ app.controller('newcustomerAppController', function ($scope, $http, customerServ
         $('.cn-containers input').css('border-bottom', '1px solid #ddd');
         $('.cn-containers input').css('-moz-border-bottom-colors', '#ddd');
 
-        $scope.verifyNewCustomerForm(true);
+        if(verifyForm){
+            $scope.verifyNewCustomerForm(true);
+        }
 
         console.log(getFormValues('new-customer-form'));
     }

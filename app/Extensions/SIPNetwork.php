@@ -24,7 +24,8 @@ class SIPNetwork {
     private $devModeSwitchIP;
     private $devModeRouterIP;
 
-    public function __construct(){
+    public function __construct()
+    {
 
         $this->readCommunity = config('netmgmt.cisco.read');
         $this->writeCommunity = config('netmgmt.cisco.write');
@@ -35,12 +36,14 @@ class SIPNetwork {
         $this->devModeRouterIP = config('netmgmt.devmode.routerip');
     }
 
-    public function getSwitchInstance(){
-        return new CiscoSwitch(['readCommunity' => $this->readCommunity,
+    public function getSwitchInstance()
+    {
+        return new CiscoSwitch(['readCommunity'  => $this->readCommunity,
                                 'writeCommunity' => $this->writeCommunity]);
     }
 
-    public function getSwitchPortStatus($portId) {
+    public function getSwitchPortStatus($portId)
+    {
 
         $portStatus = array();
         $portStatus['oper-status'] = 'error';
@@ -48,12 +51,14 @@ class SIPNetwork {
         $portStatus['port-speed'] = 'error';
 
         $port = Port::find($portId);
-        if($port == null){
+        if ($port == null)
+        {
             return $portStatus;
         }
 
         $networkNode = $port->networkNode;
-        if($networkNode == null){
+        if ($networkNode == null)
+        {
             return $portStatus;
         }
 
@@ -62,9 +67,11 @@ class SIPNetwork {
         $switch = $this->getSwitchInstance();
 
         $portOperStatusResponse = $switch->getSnmpPortOperStatus($switchIP, $switchPort);
-        if (!isset($portOperStatusResponse['error'])) {
+        if ( ! isset($portOperStatusResponse['error']))
+        {
             $portOperStatus = $portOperStatusResponse['response'];
-            switch ($portOperStatus) {
+            switch ($portOperStatus)
+            {
                 case '1':
                 case 'up(1)':
                     $portOperStatus = 'up';
@@ -98,14 +105,17 @@ class SIPNetwork {
                     break;
             }
             $portStatus['oper-status'] = $portOperStatus;
-        } else {
+        } else
+        {
             $portStatus['oper-status'] = 'error';
         }
 
         $portAdminStatusResponse = $switch->getSnmpPortAdminStatus($switchIP, $switchPort);
-        if (!isset($portAdminStatusResponse['error'])) {
+        if ( ! isset($portAdminStatusResponse['error']))
+        {
             $portAdminStatus = $portAdminStatusResponse['response'];
-            switch ($portAdminStatus) {
+            switch ($portAdminStatus)
+            {
                 case '1':
                 case 'up(1)':
                     $portAdminStatus = 'up';
@@ -123,26 +133,31 @@ class SIPNetwork {
                     break;
             }
             $portStatus['admin-status'] = $portAdminStatus;
-        } else {
+        } else
+        {
             $portStatus['admin-status'] = 'error';
         }
 
         $portSpeedResponse = $switch->getSnmpPortSpeed($switchIP, $switchPort);
-        if (!isset($portSpeedResponse['error'])) {
+        if ( ! isset($portSpeedResponse['error']))
+        {
             $portSpeedInt = intval($portSpeedResponse['response']) / 1000000;
 
-            if ($portStatus['oper-status'] == 'up') {
+            if ($portStatus['oper-status'] == 'up')
+            {
                 $portStatus['port-speed'] = $portSpeedInt . 'M';
-            } else {
+            } else
+            {
                 $portStatus['port-speed'] = 'N/A';
             }
-        } else {
+        } else
+        {
             $portStatus['port-speed'] = 'error';
         }
 
-        $portStatus['port-status'] = ($portStatus['port-speed'] == 'N/A') ? $portStatus['oper-status'].' (admin: '.$portStatus['admin-status'].')' :
-        $portStatus['oper-status'].' (admin: '.$portStatus['admin-status'].', speed: '.$portStatus['port-speed'].')';
-        $portStatus['dashboard-port-status'] = ($portStatus['port-speed'] == 'N/A') ? $portStatus['oper-status'] : $portStatus['oper-status'].' at '.$portStatus['port-speed'];
+        $portStatus['port-status'] = ($portStatus['port-speed'] == 'N/A') ? $portStatus['oper-status'] . ' (admin: ' . $portStatus['admin-status'] . ')' :
+            $portStatus['oper-status'] . ' (admin: ' . $portStatus['admin-status'] . ', speed: ' . $portStatus['port-speed'] . ')';
+        $portStatus['dashboard-port-status'] = ($portStatus['port-speed'] == 'N/A') ? $portStatus['oper-status'] : $portStatus['oper-status'] . ' at ' . $portStatus['port-speed'];
 
         $lastChangeResponse = $switch->getSnmpPortLastChangeFormatted($switchIP, $switchPort);
         $portStatus['last-change'] = isset($lastChangeResponse['error']) ? 'error' : $lastChangeResponse['response'];
@@ -158,9 +173,11 @@ class SIPNetwork {
         $portVlansArr = isset($portVlanResponse['error']) ? [] : $portVlanResponse['response'];
 
         $numOfVlans = count($portVlansArr);
-        if ($numOfVlans > 0 && $numOfVlans < 6) {
+        if ($numOfVlans > 0 && $numOfVlans < 6)
+        {
             $portVlanString = implode(', ', $portVlansArr);
-        } else {
+        } else
+        {
             $portVlanString = 'More than 5';
         }
         $portVlan = $portVlanString . (($switchPortMode == 1) ? ' (Trunk)' : ' (Access)');
@@ -169,17 +186,20 @@ class SIPNetwork {
         return $portStatus;
     }
 
-    public function getAdvSwitchPortStatus($portId) {
+    public function getAdvSwitchPortStatus($portId)
+    {
 
         $port = Port::find($portId);
         $errorResponse = false;
 
-        if($port == null){
+        if ($port == null)
+        {
             return false;
         }
 
         $networkNode = $port->networkNode;
-        if($networkNode == null){
+        if ($networkNode == null)
+        {
             return false;
         }
 
@@ -187,77 +207,98 @@ class SIPNetwork {
         $switchPort = $port->port_number;
         $switchVendor = $networkNode->vendor;
 
-        if ($switchVendor == 'Cisco') {
+        if ($switchVendor == 'Cisco')
+        {
             $switch = $this->getSwitchInstance();
             $portStatus = array();
 
             $portfastResponse = $switch->getSnmpPortfastStatus($switchIP, $switchPort);
             $portfastStatus = isset($portfastResponse['error']) ? 'error' : $portfastResponse['response'];
 
-            if ($portfastStatus == '1' || $portfastStatus == 'true(1)') {
+            if ($portfastStatus == '1' || $portfastStatus == 'true(1)')
+            {
                 $portStatus['portfast'] = 'Yes';
-            } else if($portfastStatus != 'error') {
+            } else if ($portfastStatus != 'error')
+            {
                 $portStatus['portfast'] = 'No';
-            } else {
+            } else
+            {
                 $portStatus['portfast'] = $portfastStatus;
             }
 
             $portfastModeResponse = $switch->getSnmpPortfastMode($switchIP, $switchPort);
             $portfastMode = isset($portfastModeResponse['error']) ? 'error' : $portfastModeResponse['response'];
 
-            if ($portfastMode == '1' || $portfastMode == 'enable(1)') {
+            if ($portfastMode == '1' || $portfastMode == 'enable(1)')
+            {
                 $portStatus['portfast-mode'] = 'Enabled';
-            } else if ($portfastMode == '2' || $portfastMode == 'disable(2)') {
+            } else if ($portfastMode == '2' || $portfastMode == 'disable(2)')
+            {
                 $portStatus['portfast-mode'] = 'Disabled';
-            } else if ($portfastMode == '3' || $portfastMode == 'trunk(3)') {
+            } else if ($portfastMode == '3' || $portfastMode == 'trunk(3)')
+            {
                 $portStatus['portfast-mode'] = 'Enabled (Trunk)';
-            } else if ($portfastMode == '4' || $portfastMode == 'default(4)') {
+            } else if ($portfastMode == '4' || $portfastMode == 'default(4)')
+            {
                 $portStatus['portfast-mode'] = 'Default';
-            } else {
+            } else
+            {
                 $portStatus['portfast-mode'] = $portfastMode;
             }
 
             $bpduGuardResponse = $switch->getSnmpBpduGuardStatus($switchIP, $switchPort);
             $bpduGuardStatus = isset($bpduGuardResponse['error']) ? 'error' : $bpduGuardResponse['response'];
 
-            if ($bpduGuardStatus == '1' || $bpduGuardStatus == 'enable(1)') {
+            if ($bpduGuardStatus == '1' || $bpduGuardStatus == 'enable(1)')
+            {
                 $portStatus['bpdu-guard'] = 'Enabled';
-            } else if ($bpduGuardStatus == '2' || $bpduGuardStatus == 'disable(2)') {
+            } else if ($bpduGuardStatus == '2' || $bpduGuardStatus == 'disable(2)')
+            {
                 $portStatus['bpdu-guard'] = 'Disabled';
-            } else if ($bpduGuardStatus == '3' || $bpduGuardStatus == 'default(3)') {
+            } else if ($bpduGuardStatus == '3' || $bpduGuardStatus == 'default(3)')
+            {
                 $portStatus['bpdu-guard'] = 'Default';
-            } else {
+            } else
+            {
                 $portStatus['bpdu-guard'] = $bpduGuardStatus;
             }
 
             $bpduFilterResponse = $switch->getSnmpBpduFilterStatus($switchIP, $switchPort);
             $bpduFilterStatus = isset($bpduFilterResponse['error']) ? 'error' : $bpduFilterResponse['response'];
 
-            if ($bpduFilterStatus == '1' || $bpduFilterStatus == 'enable(1)') {
+            if ($bpduFilterStatus == '1' || $bpduFilterStatus == 'enable(1)')
+            {
                 $portStatus['bpdu-filter'] = 'Enabled';
-            } else if ($bpduFilterStatus == '2' || $bpduFilterStatus == 'disable(2)') {
+            } else if ($bpduFilterStatus == '2' || $bpduFilterStatus == 'disable(2)')
+            {
                 $portStatus['bpdu-filter'] = 'Disabled';
-            } else if ($bpduFilterStatus == '3' || $bpduFilterStatus == 'default(3)') {
+            } else if ($bpduFilterStatus == '3' || $bpduFilterStatus == 'default(3)')
+            {
                 $portStatus['bpdu-filter'] = 'Default';
-            } else {
+            } else
+            {
                 $portStatus['bpdu-filter'] = $bpduFilterStatus;
             }
 
             return $portStatus;
-        } else {
+        } else
+        {
             return false;
         }
     }
 
-    public function recycleSwitchPort($portId) {
+    public function recycleSwitchPort($portId)
+    {
 
         $port = Port::find($portId);
-        if($port == null){
+        if ($port == null)
+        {
             return false;
         }
 
         $networkNode = $port->networkNode;
-        if($networkNode == null){
+        if ($networkNode == null)
+        {
             return false;
         }
 
@@ -267,29 +308,36 @@ class SIPNetwork {
 
         $portRecyleStatus = false;
 
-        if ($switchVendor == 'Cisco') {
+        if ($switchVendor == 'Cisco')
+        {
             $switch = $this->getSwitchInstance();
             $portRecycleResponse = $switch->snmpPortRecycle($switchIP, $switchPort);
-            if(!isset($portRecycleResponse['error'])){
+            if ( ! isset($portRecycleResponse['error']))
+            {
                 $portRecyleStatus = $portRecycleResponse['response'];
             }
         }
 
-        if ($portRecyleStatus == true) {
+        if ($portRecyleStatus == true)
+        {
             return true;
         }
+
         return false;
     }
 
-    public function authenticatePort($portId) {
+    public function authenticatePort($portId)
+    {
 
         $port = Port::find($portId);
-        if($port == null){
+        if ($port == null)
+        {
             return false;
         }
 
         $networkNode = $port->networkNode;
-        if($networkNode == null){
+        if ($networkNode == null)
+        {
             return false;
         }
 
@@ -299,31 +347,38 @@ class SIPNetwork {
         $noAccessVlan = 6;
 
         $portAuthStatus = false;
-        if ($switchVendor == 'Cisco') {
+        if ($switchVendor == 'Cisco')
+        {
             $switch = $this->getSwitchInstance();
             $portAuthResponse = $switch->setSnmpPortVlanAssignment($switchIP, $switchPort, $noAccessVlan);
-            if(!isset($portAuthResponse['error'])){
+            if ( ! isset($portAuthResponse['error']))
+            {
                 $portAuthStatus = $portAuthResponse['response'];
                 $port->access_level = 'signup';
                 $port->save();
             }
         }
 
-        if ($portAuthStatus == true) {
+        if ($portAuthStatus == true)
+        {
             return true;
         }
+
         return false;
     }
 
-    public function activatePort($portId) {
+    public function activatePort($portId)
+    {
 
         $port = Port::find($portId);
-        if($port == null){
+        if ($port == null)
+        {
             return false;
         }
 
         $networkNode = $port->networkNode;
-        if($networkNode == null){
+        if ($networkNode == null)
+        {
             return false;
         }
 
@@ -333,21 +388,26 @@ class SIPNetwork {
         $privateVlan = 6;
         $portActivateStatus = false;
 
-        if ($switchVendor == 'Cisco') {
+        if ($switchVendor == 'Cisco')
+        {
 
             $switch = $this->getSwitchInstance();
             $privateVlan = $this->getPrivateVlanByPort($port);
-            if ($privateVlan != '') {
+            if ($privateVlan != '')
+            {
                 $portActivateResponse = $switch->setSnmpPortVlanAssignment($switchIP, $switchPort, $privateVlan);
-                if(!isset($portActivateResponse['error'])){
+                if ( ! isset($portActivateResponse['error']))
+                {
                     $portActivateStatus = $portActivateResponse['response'];
                     $port->access_level = 'yes';
                     $port->save();
                 }
-            } else {
+            } else
+            {
                 $accessVlan = 52;
                 $portActivateResponse = $switch->setSnmpPortVlanAssignment($switchIP, $switchPort, $accessVlan);
-                if(!isset($portActivateResponse['error'])){
+                if ( ! isset($portActivateResponse['error']))
+                {
                     $portActivateStatus = $portActivateResponse['response'];
                     $port->access_level = 'yes';
                     $port->save();
@@ -355,53 +415,67 @@ class SIPNetwork {
             }
         }
 
-        if ($portActivateStatus == true){
+        if ($portActivateStatus == true)
+        {
             return true;
         }
+
         return false;
     }
 
-    public function getPrivateVlanByPort(Port $port){
+    public function getPrivateVlanByPort(Port $port)
+    {
 
         $netNode = $port->networkNode;
         $vlanRangeStr = $netNode->getProperty('private vlan range');
-        if($vlanRangeStr == null){
+        if ($vlanRangeStr == null)
+        {
             return '';
         }
         $switch = $this->getSwitchInstance();
         $portPosition = $switch->getPortPositionByPortNumber($netNode->ip_address, $port->port_number);
+
         return $this->calculatePrivateVlanFromRange($vlanRangeStr, $portPosition);
     }
 
-    protected function calculatePrivateVlanFromRange($vlanRangeStr, $portPosition) {
+    protected function calculatePrivateVlanFromRange($vlanRangeStr, $portPosition)
+    {
         $privateVlan = '';
-        if (isset($vlanRangeStr) && $vlanRangeStr != '') {
+        if (isset($vlanRangeStr) && $vlanRangeStr != '')
+        {
             $vlanArray = array();
             $vlanRangeChunks = explode(',', $vlanRangeStr);
 
-            foreach($vlanRangeChunks as $range){
+            foreach ($vlanRangeChunks as $range)
+            {
                 $range = trim($range);
                 $vlanRangeArr = explode('-', $range);
-                if(empty($vlanArray)) {
+                if (empty($vlanArray))
+                {
                     $vlanArray = range(trim($vlanRangeArr[0]), trim($vlanRangeArr[count($vlanRangeArr) - 1]));
-                } else {
+                } else
+                {
                     $vlanArray = array_merge($vlanArray, range(trim($vlanRangeArr[0]), trim($vlanRangeArr[count($vlanRangeArr) - 1])));
                 }
             }
             $privateVlan = $vlanArray[$portPosition];
         }
+
         return $privateVlan;
     }
 
-    public function getPortPrivateVlanByPortID($portID) {
+    public function getPortPrivateVlanByPortID($portID)
+    {
 
         $port = Port::find($portID);
         $netNode = $port->networkNode;
         $switchIP = ($this->devMode) ? $this->devModeSwitchIP : $netNode->ip_address;
+
         return $this->getPortPrivateVlanBySwitchIP($switchIP, $port->port_number);
     }
 
-    protected function getPortPrivateVlanBySwitchIP($switchIP, $switchPort) {
+    protected function getPortPrivateVlanBySwitchIP($switchIP, $switchPort)
+    {
 
         $vlanRangeStr = $this->getNetworkNodePropertyByIPAddress($switchIP, 'private vlan range');
         $switch = $this->getSwitchInstance();
@@ -410,60 +484,74 @@ class SIPNetwork {
         return $this->calculatePrivateVlanFromRange($vlanRangeStr, $portPosition);
     }
 
-    protected function getNetworkNodePropertyByIPAddress($ipAddress, $propertyName) {
+    protected function getNetworkNodePropertyByIPAddress($ipAddress, $propertyName)
+    {
 
-        $netNode = networkNodes::where('IPAddress',$ipAddress)
+        $netNode = networkNodes::where('IPAddress', $ipAddress)
             ->first();
         $nodePropertyValue = '';
         $nodeProps = $netNode->Properties;
-        if ($nodeProps != NULL && $nodeProps != '') {
+        if ($nodeProps != null && $nodeProps != '')
+        {
             $nodePropsArr = json_decode($nodeProps, true);
-            if (isset($nodePropsArr[0]) && isset($nodePropsArr[0][$propertyName])) {
+            if (isset($nodePropsArr[0]) && isset($nodePropsArr[0][$propertyName]))
+            {
                 $nodePropertyValue = $nodePropsArr[0][$propertyName];
             }
         }
+
         return $nodePropertyValue;
     }
 
-    public function getSwitchPortInfoTable($ip, $skipLabelPattern = []) {
+    public function getSwitchPortInfoTable($ip, $skipLabelPattern = [])
+    {
 
         $switchPortInfoArray = array();
-        $portTypeRegEx = '/.*ethernet.*/i';
         $ciscoSwitch = $this->getSwitchInstance();
+        $portType = $ciscoSwitch->getSwitchPortType($ip);
+        $portTypeRegEx = '/.*' . $portType . '.*/i';
 
         $portDescArr = $ciscoSwitch->getSnmpAllPortDesc($ip, $portTypeRegEx);
-        if(isset($portDescArr['error'])){
+        if (isset($portDescArr['error']))
+        {
             return $switchPortInfoArray;
         }
 
         $portLabelArr = $ciscoSwitch->getSnmpAllPortLabel($ip, $portTypeRegEx, $skipLabelPattern);
-        if(isset($portLabelArr['error'])){
+        if (isset($portLabelArr['error']))
+        {
             return $switchPortInfoArray;
         }
 
         $portOperStatusArr = $ciscoSwitch->getSnmpAllPortOperStatus($ip, $portTypeRegEx);
-        if(isset($portOperStatusArr['error'])){
+        if (isset($portOperStatusArr['error']))
+        {
             return $switchPortInfoArray;
         }
 
         $portAdminStatusArr = $ciscoSwitch->getSnmpAllPortAdminStatus($ip, $portTypeRegEx);
-        if(isset($portAdminStatusArr['error'])){
+        if (isset($portAdminStatusArr['error']))
+        {
             return $switchPortInfoArray;
         }
 
         $portSpeedArr = $ciscoSwitch->getSnmpAllPortSpeed($ip, $portTypeRegEx);
-        if(isset($portSpeedArr['error'])){
+        if (isset($portSpeedArr['error']))
+        {
             return $switchPortInfoArray;
         }
 
         $portLastChangeArr = $ciscoSwitch->getSnmpAllPortLastChangeFormatted($ip, $portTypeRegEx);
-        if(isset($portLastChangeArr['error'])){
+        if (isset($portLastChangeArr['error']))
+        {
             return $switchPortInfoArray;
         }
 
-        foreach ($portDescArr['response'] as $key => $desc) {
+        foreach ($portDescArr['response'] as $key => $desc)
+        {
             $switchPortInfo = array();
-            if(isset($portLabelArr['response'][$key]) == false){
+            if (isset($portLabelArr['response'][$key]) == false)
+            {
                 continue;
             }
             $switchPortInfo['Name'] = $desc;
@@ -471,45 +559,53 @@ class SIPNetwork {
             $switchPortInfo['Status'] = isset($portOperStatusArr['response'][$key]) ? $portOperStatusArr['response'][$key] : '';
             $switchPortInfo['Speed'] = isset($portSpeedArr['response'][$key]) ?
                 (($portSpeedArr['response'][$key] == '1000000000') ? '1G' :
-                 (($portSpeedArr['response'][$key] == '100000000') ? '100M' : '10M')) : '';
+                    (($portSpeedArr['response'][$key] == '100000000') ? '100M' : '10M')) : '';
             $switchPortInfo['LastChange'] = isset($portLastChangeArr['response'][$key]) ? $portLastChangeArr['response'][$key] : '';
             $switchPortInfo['AdminStatus'] = ($portAdminStatusArr['response'][$key] == 'up') ? 'enabled' : 'disabled';
             $switchPortInfoArray[$key] = $switchPortInfo;
         }
+
         return $switchPortInfoArray;
     }
 
-    public function getSwitchCdpNeighborInfoTable($ip) {
+    public function getSwitchCdpNeighborInfoTable($ip)
+    {
 
         $switchPortInfoArray = array();
         $portTypeRegEx = '/.*ethernet.*/i';
         $ciscoSwitch = $this->getSwitchInstance();
 
         $portDescArr = $ciscoSwitch->getSnmpAllPortDesc($ip, $portTypeRegEx);
-        if(isset($portDescArr['error'])){
+        if (isset($portDescArr['error']))
+        {
             return $switchPortInfoArray;
         }
 
         $portLabelArr = $ciscoSwitch->getSnmpAllPortLabel($ip, $portTypeRegEx);
-        if(isset($portLabelArr['error'])){
+        if (isset($portLabelArr['error']))
+        {
             return $switchPortInfoArray;
         }
 
         $snmpCdpCacheDeviceIdArr = $ciscoSwitch->getSnmpCdpCacheDeviceId($ip);
-        if(isset($snmpCdpCacheDeviceIdArr['error'])){
+        if (isset($snmpCdpCacheDeviceIdArr['error']))
+        {
             return $switchPortInfoArray;
         }
 
         $snmpCdpCachePlatformArr = $ciscoSwitch->getSnmpCdpCachePlatform($ip);
-        if(isset($snmpCdpCachePlatformArr['error'])){
+        if (isset($snmpCdpCachePlatformArr['error']))
+        {
             return $switchPortInfoArray;
         }
 
-        if (count($snmpCdpCacheDeviceIdArr) <= 0) {
+        if (count($snmpCdpCacheDeviceIdArr) <= 0)
+        {
             return $switchPortInfoArray;
         }
 
-        foreach ($snmpCdpCacheDeviceIdArr as $key => $devId) {
+        foreach ($snmpCdpCacheDeviceIdArr as $key => $devId)
+        {
             $keyArr = explode('.', $key);
             $portIndex = $keyArr[0];
             $switchPortInfo = array();
@@ -523,6 +619,15 @@ class SIPNetwork {
         return $switchPortInfoArray;
     }
 
+    public function getPortNumberFromInfoTableIndex($ip, $portIndex)
+    {
+        $skipLabelPattern = ['/.*[uU]plink.*/i', '/.*[dD]ownlink.*/i', '/.*CORE.*/i', '/.*CCR.*/i', '/.*SWITCH.*/i', '/.*\-.*/i'];
+        $portInfoTable = $this->getSwitchPortInfoTable($ip, $skipLabelPattern);
+        $ciscoSwitch = $this->getSwitchInstance();
+        $portNumber = $ciscoSwitch->getPortNumberFromPortDescription($ip, $portInfoTable[$portIndex]['Name']);
+
+        return $portNumber;
+    }
 }
 
 ?>

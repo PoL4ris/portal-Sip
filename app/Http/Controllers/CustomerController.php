@@ -326,8 +326,10 @@ class CustomerController extends Controller {
 
         $invoices->transform(function ($invoice, $key) use ($invoiceStatusArrayMap) {
             $invoice->status = $invoiceStatusArrayMap[$invoice->status];
+
             return $invoice;
         });
+
         return $invoices;
     }
 
@@ -560,7 +562,7 @@ class CustomerController extends Controller {
 
         if ($when != null)
         {
-            $expires = date("Y-m-d H:i:s", strtotime($when.' 00:00:00'));
+            $expires = date("Y-m-d H:i:s", strtotime($when . ' 00:00:00'));
         }
 
         $customer = Customer::find($request->idCustomer);
@@ -871,49 +873,67 @@ class CustomerController extends Controller {
         // Add the customer
         $response = $this->sipCustomer->addNewCustomer($request->customers_first_name, $request->customers_last_name, $request->customers_email, $request->customers_vip);
 
-        Log::info('insertNewCustomer: '. json_encode($response));
+        Log::info('insertNewCustomer: ' . json_encode($response));
 
-        if(isset($response['error'])){
+        if (isset($response['error']))
+        {
             return $response;
         }
 
-dd('done');
-
         $customer = $response['response'];
         $response = $this->sipCustomer->addCustomerContact($customer->id, config('const.contact_type.mobile_phone'), $request->contacts_value);
-        if(isset($response['error'])){
+        if (isset($response['error']))
+        {
             $customer->delete();
+
             return $response;
         }
         $customerPhone = $response['response'];
 
         $response = $this->sipCustomer->addCustomerContact($customer->id, config('const.contact_type.email'), $request->customers_email);
-        if(isset($response['error'])){
+        if (isset($response['error']))
+        {
             $customerPhone->delete();
             $customer->delete();
+
             return $response;
         }
         $customerEmail = $response['response'];
 
         $response = $this->sipCustomer->addCustomerAddressByBuilding($customer->id, $request->building_id, $request->address_unit);
-        if(isset($response['error'])){
+        if (isset($response['error']))
+        {
             $customerEmail->delete();
             $customer->delete();
+
             return $response;
         }
 
         $response = $this->sipCustomer->addCustomerProduct($customer->id, $request->product_id);
-        if(isset($response['error'])){
+        if (isset($response['error']))
+        {
             $customerPhone->delete();
             $customerEmail->delete();
             $customer->delete();
+
+            return $response;
+        }
+        $customerProduct = $response['response'];
+
+        $response = $this->sipCustomer->addCustomerPortBySwitchAndPort($customer->id, $request->switch_id, $request->port_id);
+        if (isset($response['error']))
+        {
+            $customerPhone->delete();
+            $customerEmail->delete();
+            $customer->delete();
+            $customerProduct->delete();
+
             return $response;
         }
 
-        dd('MISSING: ==>');
-        //SWITCH -> $request->switch_id;
-        //PORT   -> $request->port_id;
+        ActivityLogs::add($this->logType, $customer->id, 'insert', 'insertNewCustomer', '', $customer, json_encode(['customer_id' => $customer->id]), 'insert-customer');
 
+        return ['ok' => $customer];
     }
 
     public function updateCustomerStatus(Request $request)
