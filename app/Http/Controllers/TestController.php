@@ -421,36 +421,40 @@ class TestController extends Controller {
     public function generalTest(Request $request)
     {
 
-        $sipCustomer = new SIPCustomer();
-        dd($sipCustomer->getRecentManuallyAddedCustomers());
+        //        dd('done');
 
-        dd('done');
+        /** Get recently added manual registrations **/
+//        $sipCustomer = new SIPCustomer();
+//        dd($sipCustomer->getRecentManuallyAddedCustomers());
+
 
         /** Switch port info filtering test **/
-//        $ciscoSwitch = new CiscoSwitch(['readCommunity'  => 'oomoomee',
-//                                        'writeCommunity' => 'BigSeem']);
+        $ciscoSwitch = new CiscoSwitch(['readCommunity'  => 'oomoomee',
+                                        'writeCommunity' => 'BigSeem']);
+
+//        $switchModel = $ciscoSwitch->getSnmpModelNumber('10.15.215.254');
+        $switchModel = $ciscoSwitch->getSnmpModelNumber('10.11.51.47');
+//        $portType = $ciscoSwitch->getSwitchPortType('10.11.51.40');
+        $portFastMode = $ciscoSwitch->getSnmpPortfastStatus('10.11.51.47', '1/24');
+//        dd($portType);
+        dd([$switchModel, $portFastMode]);
+
 //
-//////        $switchModel = $ciscoSwitch->getSnmpModelNumber('10.15.215.254');
-////        $switchModel = $ciscoSwitch->getSnmpModelNumber('10.11.51.40');
-////        $portType = $ciscoSwitch->getSwitchPortType('10.11.51.40');
-////        dd($portType);
-////        dd($switchModel);
-////
-//////        preg_match_all('/-/', $info,$matches, PREG_OFFSET_CAPTURE);
-//////        echo $matches[0][1][1];
-////
-////        $testString = "Today is - Friday and tomorrow is - Saturday";
-////        $newString = substr(strstr(substr(strstr($testString, "-"),1),"-"),1);
-////        echo $newString;//print  Saturday
+////        preg_match_all('/-/', $info,$matches, PREG_OFFSET_CAPTURE);
+////        echo $matches[0][1][1];
 //
-//
-////        $switchIp = '10.15.215.254';
-//        $switchIp = '10.11.51.40';
-//        $skipLabelPattern = ['/.*[uU]plink.*/i', '/.*[dD]ownlink.*/i', '/.*CORE.*/i', '/.*CCR.*/i', '/.*SWITCH.*/i', '/.*\-.*/i'];
-//        $sipNetwork = new SIPNetwork();
-//
-//        $portInfoTable = $sipNetwork->getSwitchPortInfoTable($switchIp, $skipLabelPattern);
-//        dd($portInfoTable);
+//        $testString = "Today is - Friday and tomorrow is - Saturday";
+//        $newString = substr(strstr(substr(strstr($testString, "-"),1),"-"),1);
+//        echo $newString;//print  Saturday
+
+
+//        $switchIp = '10.15.215.254';
+        $switchIp = '10.11.51.40';
+        $skipLabelPattern = ['/.*[uU]plink.*/i', '/.*[dD]ownlink.*/i', '/.*CORE.*/i', '/.*CCR.*/i', '/.*SWITCH.*/i', '/.*\-.*/i'];
+        $sipNetwork = new SIPNetwork();
+
+        $portInfoTable = $sipNetwork->getSwitchPortInfoTable($switchIp, $skipLabelPattern);
+        dd($portInfoTable);
 
 
 //        $declinedInvoices = Invoice::where('processing_type',)

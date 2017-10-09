@@ -529,6 +529,9 @@ app.controller('newcustomerAppController', function ($scope, $http, customerServ
 
         // if (!formData)
         newCustomerFormObjects = getFormValues('new-customer-form');
+
+        console.log(getFormValues('new-customer-form'));
+
         // else
         //     newCustomerFormObjects = formData;
 
@@ -697,8 +700,16 @@ app.controller('newcustomerAppController', function ($scope, $http, customerServ
         $scope.showSpinner = false;
 
         $('#new-customer-form').trigger("reset");
-        $scope.resetSelectedService();
+        // $scope.resetSelectedService();
+        $scope.selectedServiceDisplay = false;
+
         $scope.resetSelectedPort();
+            // $scope.portData = false;
+            // $scope.portIndex = false;
+            // $scope.loadingPorts = false;
+            // $scope.selectedSwitch = false;
+            // $scope.switchAvailablePorts = false;
+
         $scope.availableServices = false;
         $scope.buildingSwitches = false;
         $('.bloque-a span').html('');
@@ -708,9 +719,37 @@ app.controller('newcustomerAppController', function ($scope, $http, customerServ
         $('.bloque-c span').html('');
 
 
-        $('#new-customer-form').find("input:hidden").each(function () {
-            $(this).val('');
-        });
+        // $('#new-customer-form').find("input:hidden").each(function () {
+        //     $(this).val('');
+        // });
+
+        // $scope.availableServices = false;
+        // $scope.buildingSwitches = false;
+        // $scope.switchAvailablePorts = false;
+        // $scope.selectedServiceDisplay = false;
+        // $scope.selectedSwitch = false;
+        // $scope.portData = false;
+        // $scope.portIndex = false;
+
+        // $scope.selectedServiceDisplay.id = '';
+        // $scope.selectedSwitch.id = '';
+        // $scope.port.id = '';
+        // $scope.portIndex = '';
+        // $scope.selectedServiceDisplay.name = '';
+        // $scope.selectedServiceDisplay.amount = '';
+        // $scope.selectedServiceDisplay.frequency = '';
+        // $scope.selectedSwitch.host_name = '';
+        // $scope.selectedSwitch.ip_address = '';
+        // $scope.portData.Status = '';
+        // $scope.portData.Name = '';
+        // $scope.portData.Status = '';
+        // $scope.portData.Label = '';
+        // $scope.portData.Speed = '';
+        // $scope.portData.AdminStatus = '';
+
+
+
+
 
         $('.cn-containers input').css('border-bottom', '1px solid #ddd');
         $('.cn-containers input').css('-moz-border-bottom-colors', '#ddd');
