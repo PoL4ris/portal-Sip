@@ -47,11 +47,13 @@ use SendMail;
 class CustomerController extends Controller {
 
     protected $logType;
+    protected $sipCustomer;
 
     public function __construct()
     {
         $this->middleware('auth');
         $this->logType = 'customer';
+        $this->sipCustomer = new SIPCustomer();
     }
 
     public function addCustomer(Request $request)
@@ -865,62 +867,48 @@ class CustomerController extends Controller {
     {
 
         Log::info('insertNewCustomer called', $request->all());
-        dd('done');
 
-//        print '<pre>';
-//        print_r($request->all());
-//        die();
+        // Add the customer
+        $response = $this->sipCustomer->addNewCustomer($request->customers_first_name, $request->customers_last_name, $request->customers_email, $request->customers_vip);
 
-        //CUSTOMER
-        $newCustomer = new Customer;
-        $newCustomer->first_name = $request->customers_first_name;
-        $newCustomer->last_name = $request->customers_last_name;
-        $newCustomer->email = $request->customers_email;
-        $newCustomer->vip = $request->customers_vip;
-//        $newCustomer->id_status = $request->customers_id_status;
-        $newCustomer->id_status = config('const.status.active');
-//        print_r($newCustomer);
-        $newCustomer->save();
+        Log::info('insertNewCustomer: '. json_encode($response));
 
-        //CONTACT
-        $newContact = new Contact;
-        $newContact->id_customers = $newCustomer->id;
-        $newContact->id_types = config('const.type.phone');
-        $newContact->value = $request->contacts_value;
-//        print_r($newContact);
-        $newContact->save();
+        if(isset($response['error'])){
+            return $response;
+        }
 
-        //BUILDING
-        $locationData = Building::with('address')->find($request->building_id)->address;
+dd('done');
 
-        $newAddress = new Address;
-        $newAddress->address = $locationData->address;
-        $newAddress->code = $locationData->code;
-        $newAddress->unit = $request->address_unit;
-        $newAddress->city = $locationData->city;
-        $newAddress->zip = $locationData->zip;
-        $newAddress->state = $locationData->state;
-        $newAddress->id_customers = $newCustomer->id;
-        $newAddress->id_buildings = $request->building_id;
-//        print_r($newAddress);
-//        $newAddress->save();
+        $customer = $response['response'];
+        $response = $this->sipCustomer->addCustomerContact($customer->id, config('const.contact_type.mobile_phone'), $request->contacts_value);
+        if(isset($response['error'])){
+            $customer->delete();
+            return $response;
+        }
+        $customerPhone = $response['response'];
 
-        //SERVICE
-        $when = $this->getTimeToAdd(Product::find($request->product_id)->frequency);
-        $expires = null;
+        $response = $this->sipCustomer->addCustomerContact($customer->id, config('const.contact_type.email'), $request->customers_email);
+        if(isset($response['error'])){
+            $customerPhone->delete();
+            $customer->delete();
+            return $response;
+        }
+        $customerEmail = $response['response'];
 
-        if ($when != null)
-            $expires = date("Y-m-d H:i:s", strtotime($when));
+        $response = $this->sipCustomer->addCustomerAddressByBuilding($customer->id, $request->building_id, $request->address_unit);
+        if(isset($response['error'])){
+            $customerEmail->delete();
+            $customer->delete();
+            return $response;
+        }
 
-        $newService = new CustomerProduct();
-        $newService->id_customers = $newCustomer->id;
-        $newService->id_products = $request->product_id;
-        $newService->id_status = config('const.status.active');
-        $newService->signed_up = date("Y-m-d H:i:s");
-        $newService->expires = $expires;
-        $newService->id_users = Auth::user()->id;
-//        print_r($newService);
-//        $newService->save();
+        $response = $this->sipCustomer->addCustomerProduct($customer->id, $request->product_id);
+        if(isset($response['error'])){
+            $customerPhone->delete();
+            $customerEmail->delete();
+            $customer->delete();
+            return $response;
+        }
 
         dd('MISSING: ==>');
         //SWITCH -> $request->switch_id;

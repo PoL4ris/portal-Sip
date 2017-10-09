@@ -10,29 +10,38 @@ use App\Models\CustomerPort;
 use App\Models\Port;
 use App\Models\User;
 use Validator;
+use Log;
 
 class SIPCustomer {
 
     protected $validationRules = [
         'Customer' => ['first_name' => 'required|alpha_dash|max:255',
                        'last_name'  => 'required|alpha_dash|max:255',
-                       'email'      => 'required|e-mail|max:255'],
-        'Contact'  => ['id_customers' => 'required|numeric|max:255',
-                       'id_types'     => 'required|numeric|max:255',
-                       'value'        => 'required|max:255'],
+                       'email'      => 'required|e-mail|max:255',
+                       'vip'        => 'alpha_dash|max:255'],
+        'Contact'  => ['customer_id'  => 'required|numeric|max:255',
+                       'contact_type' => 'required|numeric|max:255',
+                       'mobile_phone' => 'required|regex:/[0-9]{3}-[0-9]{3}-[0-9]{4}/',
+                       'home_phone'   => 'required|regex:/[0-9]{3}-[0-9]{3}-[0-9]{4}/',
+                       'work_phone'   => 'required|regex:/[0-9]{3}-[0-9]{3}-[0-9]{4}/',
+                       'fax'          => 'required|regex:/[0-9]{3}-[0-9]{3}-[0-9]{4}/',
+                       'email'        => 'required|e-mail|max:255'],
 
-        'Address' => ['address'      => 'required|max:255',
-                      'code'         => 'required|max:255',
-                      'unit'         => 'required|max:255',
-                      'city'         => 'required|alpha|max:255',
-                      'zip'          => 'required|numeric|size:5',
-                      'state'        => 'required|size:2|alpha|max:2',
-                      'id_customers' => 'required|numeric|max:255',
-                      'id_buildings' => 'required|numeric|max:255'],
+        'Address' => ['address'     => 'required|max:255',
+                      'code'        => 'required|max:255',
+                      'unit'        => 'required|max:255',
+                      'city'        => 'required|alpha|max:255',
+                      'zip'         => 'required|numeric|size:5',
+                      'state'       => 'required|size:2|alpha|max:2',
+                      'customer_id' => 'required|numeric|max:255',
+                      'building_id' => 'required|numeric|max:255'],
 
-        'CustomerProduct' => ['id_customers' => 'required|max:255',
-                              'id_products'  => 'required|max:255',
-                              'id_status'    => 'required|max:255']
+        'CustomerProduct' => ['customer_id' => 'required|max:255',
+                              'product_id'  => 'required|max:255'],
+
+        'CustomerPort' => ['customer_id' => 'required|max:255',
+                           'switch_id'   => 'required|max:255',
+                           'port_id'     => 'required|max:255']
 
 
     ];
@@ -60,9 +69,9 @@ class SIPCustomer {
         'service_plan.required'        => 'Please select an internet plan',
         'service_plan.regex'           => 'Please select the Monthly or Annual option',
         'required'                     => ':attribute is required',
-        'alpha_dash'                   => 'Please use letters and numbers only',
-        'alpha'                        => 'Please use letters only',
-        'size'                         => 'The :attribute must be exactly :size.',
+        'alpha_dash'                   => ':attribute: Please use letters and numbers only',
+        'alpha'                        => ':attribute: Please use letters only',
+        'size'                         => 'The :attribute length must be exactly :size.',
         'cc_type.required_unless'      => 'Please select your card type',
         'cc_number.required_unless'    => 'Please enter your card number',
         'cc_exp_month.required_unless' => 'Please select an expiration month',
@@ -70,66 +79,97 @@ class SIPCustomer {
         'cc_sec_code.required_unless'  => 'Please enter your card\'s security code',
     ];
 
-    protected $validationAttributes = ['first_name'      => 'first name',
-                                       'last_name'       => 'last name',
-                                       'email'           => 'email',
-                                       'phone_number'    => 'phone number',
-                                       'street_address'  => 'address',
-                                       'unit'            => 'unit number',
-                                       'city'            => 'city',
-                                       'state'           => 'state',
-                                       'zip'             => 'zip code',
-                                       'service_plan'    => 'plan',
-                                       'wireless_router' => 'wireless router',
-                                       'cc_type'         => 'card type',
-                                       'cc_number'       => 'card number',
-                                       'cc_exp_month'    => 'expiration month',
-                                       'cc_exp_year'     => 'expiration year',
-                                       'cc_sec_code'     => 'security code'];
+    protected $validationAttributes = ['first_name'      => 'First name',
+                                       'last_name'       => 'Last name',
+                                       'email'           => 'Email',
+                                       'vip'             => 'vip',
+                                       'phone_number'    => 'Phone number',
+                                       'street_address'  => 'Address',
+                                       'unit'            => 'Unit number',
+                                       'city'            => 'City',
+                                       'state'           => 'State',
+                                       'zip'             => 'Zip code',
+                                       'service_plan'    => 'Plan',
+                                       'wireless_router' => 'Wireless router',
+                                       'cc_type'         => 'Card type',
+                                       'cc_number'       => 'Card number',
+                                       'cc_exp_month'    => 'Expiration month',
+                                       'cc_exp_year'     => 'Expiration year',
+                                       'cc_sec_code'     => 'Security code'];
 
     public function addNewCustomer($firstName, $lastName, $email, $vip = '')
     {
         $validator = Validator::make(['first_name' => $firstName,
                                       'last_name'  => $lastName,
-                                      'email'      => $email], $this->customerValidationRules, $this->validationMessages);
-
-        $validator->setAttributeNames($this->validationAttributes);
+                                      'email'      => $email,
+                                      'vip'        => $vip], $this->validationRules['Customer'], $this->validationMessages, $this->validationAttributes);
 
         if ($validator->fails())
         {
             $errors = $validator->getMessageBag();
-            $errors->add('error', 1);
 
-            return $errors;
+            return ['error' => true, 'messages' => ['customer' => $errors]];
         }
 
-        return 'ok';
+        // TODO: remove for production
+        return ['response' => 'ok'];
 
-//        $customer = new Customer;
-//        $customer->first_name = $firstName;
-//        $customer->last_name = $lastName;
-//        $customer->email = $email;
-//        $customer->vip = $vip;
-//        $customer->id_status = config('const.status.enabled');
-//        $customer->save();
-//
-//        return $customer;
+        $customer = new Customer;
+        $customer->first_name = $firstName;
+        $customer->last_name = $lastName;
+        $customer->email = $email;
+        $customer->id_status = config('const.status.enabled');
+
+        if ($vip != null && $vip != '')
+        {
+            $customer->vip = $vip;
+        }
+
+        $customer->save();
+
+        return ['response' => $customer];
     }
 
     public function addCustomerContact($customerId, $contactType, $value)
     {
+        $validator = Validator::make(['customer_id'                                  => $customerId,
+                                      'contact_type'                                 => $contactType,
+                                      $this->getContactTypeNameByValue($contactType) => $value], $this->validationRules['Contact'], $this->validationMessages, $this->validationAttributes);
+
+        if ($validator->fails())
+        {
+            $errors = $validator->getMessageBag();
+
+            return ['error' => true, 'messages' => ['customer' => $errors]];
+        }
+
+        // TODO: remove for production
+        return ['response' => 'ok'];
 
         $contact = new Contact;
-        $contact->id_customers = $customerId;
+        $contact->id_customers = $customer->id;
         $contact->id_types = $contactType;
         $contact->value = $value;
         $contact->save();
 
-        return $contact;
+        return ['response' => $contact];
     }
 
     public function addCustomerAddressByBuilding($customerId, $buildingId, $unit)
     {
+        $validator = Validator::make(['customer_id' => $customerId,
+                                      'building_id' => $buildingId,
+                                      'unit'        => $unit], $this->validationRules['Address'], $this->validationMessages, $this->validationAttributes);
+
+        if ($validator->fails())
+        {
+            $errors = $validator->getMessageBag();
+
+            return ['error' => true, 'messages' => ['location' => $errors]];
+        }
+
+        // TODO: remove for production
+        return ['response' => 'ok'];
 
         $locationAddress = Address::where('id_buildings', $buildingId)
             ->where('id_customers', null)
@@ -146,26 +186,30 @@ class SIPCustomer {
         $address->id_buildings = $locationAddress->id_buildings;
         $address->save();
 
-        return $address;
+        return ['response' => $address];
     }
 
     public function addCustomerProduct($customerId, $productId)
     {
+        $validator = Validator::make(['customer_id' => $customerId,
+                                      'product_id'  => $productId], $this->validationRules['CustomerProduct'], $this->validationMessages, $this->validationAttributes);
+
+        if ($validator->fails())
+        {
+            $errors = $validator->getMessageBag();
+
+            return ['error' => true, 'messages' => ['service' => $errors]];
+        }
+
+        // TODO: remove for production
+        return ['response' => 'ok'];
 
         $product = Product::find($productId);
         if ($product == null)
         {
             Log::debug('addCustomerProduct(): product not found. id=' . $productId);
 
-            return false;
-        }
-
-        $expiration = $this->getTimeToAdd($product->frequency);
-        $expires = null;
-
-        if ($expiration != null)
-        {
-            $expires = date("Y-m-d H:i:s", strtotime($expiration));
+            return ['error' => true, 'messages' => ['service' => ['product' => ['The product you specified is not found in the database']]]];
         }
 
         $customerProduct = new CustomerProduct;
@@ -173,11 +217,64 @@ class SIPCustomer {
         $customerProduct->id_products = $productId;
         $customerProduct->id_status = config('const.status.active');
         $customerProduct->signed_up = date("Y-m-d H:i:s");
-        $customerProduct->expires = $expires;
         $customerProduct->id_users = Auth::user()->id;
         $customerProduct->save();
 
-        return $customerProduct;
+        return ['response' => $customerProduct];
+    }
+
+    public function getContactTypeNameByValue($value)
+    {
+        $contactTypeArray = array_flip(config('const.contact_type'));
+        if (isset($contactTypeArray[$value]))
+        {
+            return $contactTypeArray[$value];
+        }
+
+        return null;
+    }
+
+    public function addCustomerPortBySwitchAndPort($customerId, $switchId, $portId)
+    {
+        $validator = Validator::make(['customer_id' => $customerId,
+                                      'switch_id'  => $switchId,
+                                      'port_id'     => $portId], $this->validationRules['CustomerPort'], $this->validationMessages, $this->validationAttributes);
+
+        if ($validator->fails())
+        {
+            $errors = $validator->getMessageBag();
+
+            return ['error' => true, 'messages' => ['service' => $errors]];
+        }
+
+        // TODO: remove for production
+        return ['response' => 'ok'];
+
+        $switch = NwtworkNode::find($switchId);
+        if ($switch == null)
+        {
+            Log::debug('addCustomerPortBySwitchAndPort(): switch not found. id=' . $switchId);
+
+            return ['error' => true, 'messages' => ['service' => ['switch' => ['The switch you specified is not found in the database']]]];
+        }
+
+        $switchIp = $switch->ip_address;
+        $skipLabelPattern = ['/.*[uU]plink.*/i', '/.*[dD]ownlink.*/i', '/.*CORE.*/i', '/.*CCR.*/i', '/.*SWITCH.*/i', '/.*\-.*/i'];
+        $sipNetwork = new SIPNetwork();
+
+        return $portInfoTable = $sipNetwork->getSwitchPortInfoTable($switchIp, $skipLabelPattern);
+
+        $switchPortInfoArray[$key] = $switchPortInfo;
+
+//        $customerProduct = new CustomerProduct;
+//        $customerProduct->id_customers = $customerId;
+//        $customerProduct->id_products = $productId;
+//        $customerProduct->id_status = config('const.status.active');
+//        $customerProduct->signed_up = date("Y-m-d H:i:s");
+//        $customerProduct->id_users = Auth::user()->id;
+//        $customerProduct->save();
+
+        return ['response' => $customerProduct];
     }
 
     /**
@@ -358,7 +455,7 @@ class SIPCustomer {
 
             return false;
         }
-        
+
         $billingHelper = new BillingHelper();
         foreach ($charges as $charge)
         {
