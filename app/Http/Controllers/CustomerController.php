@@ -933,7 +933,7 @@ class CustomerController extends Controller {
 
         ActivityLogs::add($this->logType, $customer->id, 'insert', 'insertNewCustomer', '', $customer, json_encode(['customer_id' => $customer->id]), 'insert-customer');
 
-        return ['ok' => $customer];
+        return ['ok' => $this->sipCustomer->getRecentManuallyAddedCustomers()];
     }
 
     public function updateCustomerStatus(Request $request)
