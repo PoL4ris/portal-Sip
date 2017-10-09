@@ -411,8 +411,8 @@ app.controller('newcustomerAppController', function ($scope, $http, customerServ
             }
 
             $scope.buildingImageLocation = '/img/buildings/' + this.filterBld.img_building;
+            $scope.selectedItem = true;
             $('#cn-filter').val(this.filterBld.code + ' | ' + this.filterBld.name);
-            // $('#cn-select-address-opt').val('');
             $('#cn-address').val(this.filterBld.address.address);
             $('#cn-city-state-zip').val(this.filterBld.address.city + ', ' + this.filterBld.address.state + ' ' + this.filterBld.address.zip);
 
@@ -600,10 +600,32 @@ app.controller('newcustomerAppController', function ($scope, $http, customerServ
         }
     }
     $scope.filterBldList = function () {
+
+      if(this.filterBldListModel && this.filterBldListModel.length > 0)
+      {
         $http.get("getFilterBld", {params: {'query': this.filterBldListModel}})
             .then(function (response) {
                 $scope.bldListResult = response.data;
             });
+      }
+      else
+      {
+        $scope.selectedItem = false;
+      }
+    }
+    $scope.clearAddress = function(){
+      $scope.filterBldListModel = null;
+
+      $('#cn-filter').val('');
+      $('#img-displayed img').attr('src', '');
+      $('#cn-address').val('');
+      $('#cn-city-state-zip').val('');
+
+      $scope.address = false;
+      $scope.citystatezip = false;
+      $scope.buildingId = false;
+
+      $scope.filterBldList();
     }
     $scope.filterName = function (name) {
 

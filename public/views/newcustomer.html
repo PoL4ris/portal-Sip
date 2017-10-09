@@ -1,6 +1,6 @@
-<div class="col-lg-12">
-<button class="btn btn-danger" ng-click="resetFullForm(true)">Reset Form</button>
-</div>
+<!--<div class="col-lg-12">-->
+    <!--<button class="btn btn-danger" ng-click="resetFullForm(true)">Reset Form</button>-->
+<!--</div>-->
 
 <div class="col-lg-12 cn-customer">
     <div class="container relative">
@@ -10,6 +10,7 @@
         </div>
 
         <div class="widget-body fuelux" data-smart-fuelux-wizard data-smart-wizard-callback="wizard2CompleteCallback">
+
             <div class="wizard">
                 <ul class="steps">
                     <li data-step="1" class="active"><span class="badge badge-info">1</span>Contact Info<span class="chevron"></span></li>
@@ -27,6 +28,7 @@
                     </button>
                 </div>
             </div>
+
             <div class="step-content">
 
                 <form class="form-horizontal" id="new-customer-form">
@@ -80,8 +82,18 @@
                         <div class="col-lg-7">
                             <div class="col-lg-6 ">
                                 <div class="search-subnav-nc">
-                                    <input type="text" placeholder="Find building" ng-keyup="filterBldList(1)"
-                                           ng-model="filterBldListModel" id="cn-filter" class="color-click">
+                                    <input type="text"
+                                           placeholder="Find building"
+                                           ng-keyup="filterBldList()"
+                                           ng-model="filterBldListModel"
+                                           id="cn-filter"
+                                           class="color-click">
+
+                                    <span class="search-close-nc-address">
+                                        <i class="fa fa-search nc-lupa" ng-if="!selectedItem "></i>
+                                        <i class="fa fa-times nc-no-lupa cursor-pointer" ng-if="selectedItem " ng-click="clearAddress()"></i>
+                                    </span>
+
                                 </div>
                                 <div class="filter-bld-nc">
                                     <div ng-repeat="filterBld in bldListResult" ng-click="getBuildingInfomation(1)">
@@ -92,7 +104,6 @@
                             <div class="col-lg-6 no-display" id="img-displayed">
                                 <img src="{{buildingImageLocation}}" alt="">
                             </div>
-
                         </div>
                         <div class="col-lg-5">
                             <div class="col-lg-12 cn-containers" id="">
@@ -335,12 +346,13 @@
                     </div>
                     <!--RESET-->
                     <br>
-                    <div class="text-center m-b-md m-t-lg  p-b-md  col-lg-12">
+                    <div class="text-center m-b-md m-t-lg p-b-md col-lg-12">
                         <div class="down-status f-size-17 cursor-pointer p-t-lg reset-form-ncustomer" ng-click="resetFullForm()">Reset Form</div>
                     </div>
                 </form>
 
             </div>
+
         </div>
 
     </div>
