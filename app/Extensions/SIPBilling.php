@@ -489,6 +489,10 @@ class SIPBilling {
         {
             $type = 'Credit';
             $response = 'processed';
+        } else if ($chargeResult['RESPONSETEXT'] == 'TOKENIZED' && $chargeResult['ACTIONCODE'] == '000')
+        {
+            $type = $chargeResult['PaymentType'];
+            $response = 'tokenized';
         }
 
         Log::info('SIPBilling: ' . $type . ' ' . $response . ': ' . "\n" . print_r($chargeResult, true));
