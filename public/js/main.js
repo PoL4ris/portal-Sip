@@ -204,7 +204,7 @@ angular.module('app.walkthrough',   ['ui.router']).config(function ($stateProvid
       views: {
         "content@app": {
           templateUrl: '/views/mobile/walkthrough.html?'+appConfig.appCacheClear,
-          controller:  'dropZoneController as app',
+          controller:  'walkthroughController as app',
         }
       },
       resolve: {

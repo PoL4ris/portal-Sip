@@ -104,7 +104,7 @@ class Building extends Model {
         $products = $this->products;
 
         return $products->whereLoose('id_status', config('const.status.active'))
-            ->whereLoose('product.id_products', 0);
+                        ->whereLoose('product.id_products', 0);
     }
 
     public function properties()

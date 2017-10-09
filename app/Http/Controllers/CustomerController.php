@@ -936,6 +936,11 @@ class CustomerController extends Controller {
         return ['ok' => $this->sipCustomer->getRecentManuallyAddedCustomers()];
     }
 
+    public function getLatestManuallyCustomers(Request $request)
+    {
+        return $this->sipCustomer->getRecentManuallyAddedCustomers();
+    }
+
     public function updateCustomerStatus(Request $request)
     {
         dd($request->all());

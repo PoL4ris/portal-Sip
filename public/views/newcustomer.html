@@ -1,5 +1,5 @@
 <!--<div class="col-lg-12">-->
-    <!--<button class="btn btn-danger" ng-click="resetFullForm(true)">Reset Form</button>-->
+    <!--<button class="btn btn-danger" ng-click="res()">GETVALS</button>-->
 <!--</div>-->
 
 <div class="col-lg-12 cn-customer">
@@ -13,7 +13,7 @@
 
             <div class="wizard">
                 <ul class="steps">
-                    <li data-step="1" class="active"><span class="badge badge-info">1</span>Contact Info<span class="chevron"></span></li>
+                    <li data-step="1" class="active" id="inicio-nc-form"><span class="badge badge-info">1</span>Contact Info<span class="chevron"></span></li>
                     <li data-step="2"><span class="badge">2</span>Address Info<span class="chevron"></span></li>
                     <li data-step="3"><span class="badge">3</span>Service Info<span class="chevron"></span></li>
                     <li data-step="4"><span class="badge">4</span>Network Info<span class="chevron"></span></li>
@@ -356,4 +356,54 @@
         </div>
 
     </div>
+</div>
+
+<div class="col-lg-12">
+    <hr>
+</div>
+
+<!--LATEST RESULTS-->
+
+<div class="col-lg-12">
+
+    <h1 class="font-md"> Latest customers inserted</h1>
+
+    <br>
+
+    <div class="table-responsive">
+        <table id="resultTable" class="table table-striped table-bordered table-hover">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Location</th>
+                <th>Address</th>
+                <th>Created By</th>
+                <th>Email / Username</th>
+                <th>Created</th>
+                <th>Status</th>
+            </tr>
+            </thead>
+            <tbody class="">
+                <tr class="status-dash-type-{{customerData.id_status}} cursor-pointer customer-record" ng-repeat="customerData in latestCustomers" ng-click="customerGoTo()">
+
+                    <td>{{customerData.id}}</td>
+                    <td>{{customerData.first_name}} {{customerData.last_name}}</td>
+                    <td>{{customerData.address.code}} #{{customerData.address.unit}}</td>
+                    <td>{{customerData.address.address}}</td>
+                    <td>{{customerData.user.first_name}} {{customerData.user.first_name}}</td>
+                    <td>{{customerData.email}}</td>
+                    <td ng-init="signedup = convertDate(customerData.created_at)">{{ signedup | date : "MMM d, y h:mm a" }}</td>
+                    <td ng-if="customerData.id_status == 1"><span class="label status-dash-btn-{{customerData.id_status}}">Active</span></td>
+                    <td ng-if="customerData.id_status == 2"><span class="label status-dash-btn-{{customerData.id_status}}">Disabled</span></td>
+                    <td ng-if="customerData.id_status == 3"><span class="label status-dash-btn-{{customerData.id_status}}">Decommissioned</span></td>
+                    <td ng-if="customerData.id_status == 4"><span class="label status-dash-btn-{{customerData.id_status}}">Pending</span></td>
+                    <td ng-if="customerData.id_status == 5"><span class="label status-dash-btn-{{customerData.id_status}}">Admin</span></td>
+
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+
 </div>

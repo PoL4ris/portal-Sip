@@ -515,6 +515,10 @@ app.controller('globalToolsCtl',                    function ($scope, $http, $co
 
   }
 
+  $scope.customerGoTo = function (){
+    document.location.href = '#/customers?id=' + this.customerData.id;
+  }
+
 })
 .directive('enterAction', function () {
   return function (scope, element, attrs) {
