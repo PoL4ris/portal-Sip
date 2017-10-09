@@ -63,6 +63,12 @@ return [
             'prefix'    => '',
             'strict'    => false,
             'engine'    => null,
+//            'options'   => array(
+////                PDO::ATTR_PERSISTENT => true,
+//                PDO::ATTR_TIMEOUT => "180",
+//            ),
+
+
         ],
 
 
@@ -76,6 +82,10 @@ return [
             'collation' => 'utf8_unicode_ci',
             'prefix'    => '',
             'strict'    => false,
+//            'options'   => array(
+////                PDO::ATTR_PERSISTENT => true,
+//                PDO::ATTR_TIMEOUT => "180",
+//            ),
         ],
 
         'pgsql' => [

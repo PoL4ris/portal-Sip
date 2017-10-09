@@ -222,7 +222,8 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('email/template_support_new_ticket',     'TestController@supportTest');//new
 
     //MAILS
-    Route::get('sendCustomerMail',          'MailController@sendCustomerMail');//new
+//    Route::get('sendCustomerMail',          'MailController@sendCustomerMail');//new
+    
     //SUPPORT
     Route::get('updateTicketDetails',       'SupportController@updateTicketData');
     Route::get('updateTicketHistory',       'SupportController@updateTicketHistory');

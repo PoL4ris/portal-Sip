@@ -616,6 +616,10 @@ TPL;
                     $this->xactionInfo['TotalAmount'] = str_replace('.', '', $this->xactionInfo['TotalAmount']);
                 }
             }
+            if ($this->xactionInfo['TransactionType'] == 'VOID'){
+                unset($this->xactionInfo['OrderNumber']);
+            }
+
         } else {
             $this->xactionInfo['OrderNumber'] = NULL;
             $this->xactionInfo['TransactionID'] = NULL;
@@ -651,7 +655,7 @@ TPL;
         }
 
 
-        Log::debug('IPPay:process(): $this->ipPayXML: ' . print_r($this->cleanXML, true));
+        Log::info('IPPay:process(): $this->ipPayXML: ' . print_r($this->cleanXML, true));
         //        }
         $result = $this->sendHTTP($url, $this->ipPayXML);
 
