@@ -279,6 +279,15 @@ class SIPCustomer {
         return ['response' => $customerPort];
     }
 
+    public function getRecentManuallyAddedCustomers()
+    {
+        return Customer::with(['address', 'user'])
+            ->where('id_users', '!=', 0)
+            ->orderBy('signedup_at', 'desc')
+            ->take(5)
+            ->get();
+    }
+
     /**
      * @param $type
      * Array index to get proper frequency to add.

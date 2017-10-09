@@ -171,6 +171,11 @@ class Customer extends Model {
             ->get();
     }
 
+    public function user()
+    {
+        return $this->hasOne('App\Models\User', 'id', 'id_users');
+    }
+
     /**
      * Charge and Invoice relations
      */
