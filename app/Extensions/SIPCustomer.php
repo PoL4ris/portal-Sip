@@ -5,43 +5,51 @@ namespace App\Extensions;
 use App\Models\Address;
 use App\Models\Contact;
 use App\Models\Customer;
+use App\Models\Product;
 use App\Models\CustomerProduct;
 use App\Models\CustomerPort;
+use App\Models\NetworkNode;
 use App\Models\Port;
 use App\Models\User;
+use App\Extensions\SIPNetwork;
 use Validator;
 use Log;
+use Auth;
 
 class SIPCustomer {
 
     protected $validationRules = [
-        'Customer' => ['first_name' => 'required|alpha_dash|max:255',
-                       'last_name'  => 'required|alpha_dash|max:255',
-                       'email'      => 'required|e-mail|max:255',
-                       'vip'        => 'alpha_dash|max:255'],
-        'Contact'  => ['customer_id'  => 'required|numeric|max:255',
-                       'contact_type' => 'required|numeric|max:255',
-                       'mobile_phone' => 'required|regex:/[0-9]{3}-[0-9]{3}-[0-9]{4}/',
-                       'home_phone'   => 'required|regex:/[0-9]{3}-[0-9]{3}-[0-9]{4}/',
-                       'work_phone'   => 'required|regex:/[0-9]{3}-[0-9]{3}-[0-9]{4}/',
-                       'fax'          => 'required|regex:/[0-9]{3}-[0-9]{3}-[0-9]{4}/',
-                       'email'        => 'required|e-mail|max:255'],
+        'Customer' => ['first_name' => 'required|alpha_dash',
+                       'last_name'  => 'required|alpha_dash',
+                       'email'      => 'required|e-mail',
+                       'vip'        => 'alpha_dash'],
+        'Contact'  => ['customer_id'  => 'required|numeric|min:2',
+                       'contact_type' => 'required|numeric',
+                       'mobile_phone' => 'regex:/[0-9]{3}-[0-9]{3}-[0-9]{4}/',
+                       'home_phone'   => 'regex:/[0-9]{3}-[0-9]{3}-[0-9]{4}/',
+                       'work_phone'   => 'regex:/[0-9]{3}-[0-9]{3}-[0-9]{4}/',
+                       'fax'          => 'regex:/[0-9]{3}-[0-9]{3}-[0-9]{4}/',
+                       'email'        => 'e-mail'],
 
-        'Address' => ['address'     => 'required|max:255',
-                      'code'        => 'required|max:255',
-                      'unit'        => 'required|max:255',
-                      'city'        => 'required|alpha|max:255',
-                      'zip'         => 'required|numeric|size:5',
-                      'state'       => 'required|size:2|alpha|max:2',
-                      'customer_id' => 'required|numeric|max:255',
-                      'building_id' => 'required|numeric|max:255'],
+        'Address' => ['customer_id' => 'required|numeric|min:2',
+                      'building_id' => 'required|numeric|min:2',
+                      'unit'        => 'required'],
 
-        'CustomerProduct' => ['customer_id' => 'required|max:255',
-                              'product_id'  => 'required|max:255'],
+//        'Address' => ['address'     => 'required',
+//                      'code'        => 'required',
+//                      'unit'        => 'required',
+//                      'city'        => 'required|alpha',
+//                      'zip'         => 'required|numeric|size:5',
+//                      'state'       => 'required|size:2|alpha|size:2',
+//                      'customer_id' => 'required|numeric|min:2',
+//                      'building_id' => 'required|numeric|min:2'],
 
-        'CustomerPort' => ['customer_id' => 'required|max:255',
-                           'switch_id'   => 'required|max:255',
-                           'port_id'     => 'required|max:255']
+        'CustomerProduct' => ['customer_id' => 'required|min:2',
+                              'product_id'  => 'required|min:1'],
+
+        'CustomerPort' => ['customer_id' => 'required|numeric|min:2',
+                           'switch_id'   => 'required|numeric|min:2',
+                           'port_id'     => 'required|numeric|min:2']
 
 
     ];
@@ -111,15 +119,15 @@ class SIPCustomer {
             return ['error' => true, 'messages' => ['customer' => $errors]];
         }
 
-        // TODO: remove for production
-        return ['response' => 'ok'];
-
         $customer = new Customer;
         $customer->first_name = $firstName;
         $customer->last_name = $lastName;
         $customer->email = $email;
-        $customer->id_status = config('const.status.enabled');
+        $customer->id_status = config('const.status.active');
+        $customer->signedup_at = $nowMysqlDate = date("Y-m-d H:i:s");
+        $customer->id_users = Auth::user()->id;
 
+        $vip = trim($vip);
         if ($vip != null && $vip != '')
         {
             $customer->vip = $vip;
@@ -143,11 +151,8 @@ class SIPCustomer {
             return ['error' => true, 'messages' => ['customer' => $errors]];
         }
 
-        // TODO: remove for production
-        return ['response' => 'ok'];
-
         $contact = new Contact;
-        $contact->id_customers = $customer->id;
+        $contact->id_customers = $customerId;
         $contact->id_types = $contactType;
         $contact->value = $value;
         $contact->save();
@@ -168,9 +173,6 @@ class SIPCustomer {
             return ['error' => true, 'messages' => ['location' => $errors]];
         }
 
-        // TODO: remove for production
-        return ['response' => 'ok'];
-
         $locationAddress = Address::where('id_buildings', $buildingId)
             ->where('id_customers', null)
             ->first();
@@ -182,6 +184,7 @@ class SIPCustomer {
         $address->city = $locationAddress->city;
         $address->zip = $locationAddress->zip;
         $address->state = $locationAddress->state;
+        $address->country = $locationAddress->country;
         $address->id_customers = $customerId;
         $address->id_buildings = $locationAddress->id_buildings;
         $address->save();
@@ -201,15 +204,12 @@ class SIPCustomer {
             return ['error' => true, 'messages' => ['service' => $errors]];
         }
 
-        // TODO: remove for production
-        return ['response' => 'ok'];
-
         $product = Product::find($productId);
         if ($product == null)
         {
             Log::debug('addCustomerProduct(): product not found. id=' . $productId);
 
-            return ['error' => true, 'messages' => ['service' => ['product' => ['The product you specified is not found in the database']]]];
+            return ['error' => true, 'messages' => ['service' => ['product' => ['The product you specified was not found in the database']]]];
         }
 
         $customerProduct = new CustomerProduct;
@@ -234,11 +234,11 @@ class SIPCustomer {
         return null;
     }
 
-    public function addCustomerPortBySwitchAndPort($customerId, $switchId, $portId)
+    public function addCustomerPortBySwitchAndPort($customerId, $switchId, $portIndex)
     {
         $validator = Validator::make(['customer_id' => $customerId,
-                                      'switch_id'  => $switchId,
-                                      'port_id'     => $portId], $this->validationRules['CustomerPort'], $this->validationMessages, $this->validationAttributes);
+                                      'switch_id'   => $switchId,
+                                      'port_id'     => $portIndex], $this->validationRules['CustomerPort'], $this->validationMessages, $this->validationAttributes);
 
         if ($validator->fails())
         {
@@ -247,34 +247,36 @@ class SIPCustomer {
             return ['error' => true, 'messages' => ['service' => $errors]];
         }
 
-        // TODO: remove for production
-        return ['response' => 'ok'];
-
-        $switch = NwtworkNode::find($switchId);
+        $switch = NetworkNode::find($switchId);
         if ($switch == null)
         {
             Log::debug('addCustomerPortBySwitchAndPort(): switch not found. id=' . $switchId);
 
-            return ['error' => true, 'messages' => ['service' => ['switch' => ['The switch you specified is not found in the database']]]];
+            return ['error' => true, 'messages' => ['service' => ['switch' => ['The switch you specified was not found in the database']]]];
         }
 
         $switchIp = $switch->ip_address;
-        $skipLabelPattern = ['/.*[uU]plink.*/i', '/.*[dD]ownlink.*/i', '/.*CORE.*/i', '/.*CCR.*/i', '/.*SWITCH.*/i', '/.*\-.*/i'];
+
         $sipNetwork = new SIPNetwork();
+        $portNumber = $sipNetwork->getPortNumberFromInfoTableIndex($switchIp, $portIndex);
 
-        return $portInfoTable = $sipNetwork->getSwitchPortInfoTable($switchIp, $skipLabelPattern);
+        if ($portNumber == '')
+        {
+            Log::debug('addCustomerPortBySwitchAndPort(): port not found. index=' . $portIndex);
 
-        $switchPortInfoArray[$key] = $switchPortInfo;
+            return ['error' => true, 'messages' => ['service' => ['port' => ['The port you specified was not found on the switch']]]];
+        }
 
-//        $customerProduct = new CustomerProduct;
-//        $customerProduct->id_customers = $customerId;
-//        $customerProduct->id_products = $productId;
-//        $customerProduct->id_status = config('const.status.active');
-//        $customerProduct->signed_up = date("Y-m-d H:i:s");
-//        $customerProduct->id_users = Auth::user()->id;
-//        $customerProduct->save();
+        $port = Port::firstOrNew(['id_network_nodes' => $switch->id, 'port_number' => $portNumber]);
+        $port->access_level = 'yes';
+        $port->save();
 
-        return ['response' => $customerProduct];
+        $customerPort = new CustomerPort();
+        $customerPort->customer_id = $customerId;
+        $customerPort->port_id = $port->id;
+        $customerPort->save();
+
+        return ['response' => $customerPort];
     }
 
     /**

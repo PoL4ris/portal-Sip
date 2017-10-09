@@ -1071,6 +1071,81 @@ class CiscoSwitch {
     #  Supporting functions
     #########################
 
+    public function getBaseModel($ip)
+    {
+        $switchModel = $this->getSnmpModelNumber($ip);
+        if (isset($switchModel['response']) == false)
+        {
+            $switchModel = '';
+        }
+
+        $modelArray = explode('-', $switchModel['response']);
+
+        if (count($modelArray) >= 2)
+        {
+            $switchModel = $modelArray[0] . '-' . $modelArray[1];
+        }
+
+        return $switchModel;
+    }
+
+    public function getSwitchPortType($ip)
+    {
+        $baseModel = $this->getBaseModel($ip);
+
+        switch ($baseModel)
+        {
+            case 'WS-C2960G':
+            case 'WS-C3560G':
+            case 'WS-C3750G':
+            case 'WS-C4948':
+            case 'WS-C6509':
+                return 'GigabitEthernet';
+                break;
+            case 'N3K-C3048TP':
+            case 'WS-C2960':
+            case 'WS-C3560':
+            case 'WS-C3750':
+                return 'ethernet';
+                break;
+        }
+
+        return '';
+    }
+
+    public function getPortNumberFromPortDescription($ip, $portDescription)
+    {
+        $baseModel = $this->getBaseModel($ip);
+        return $this->convertPortDescriptionToPortNumber($portDescription, $baseModel);
+    }
+
+    protected function convertPortDescriptionToPortNumber($portDescription, $baseModel)
+    {
+        $portNumber = '';
+        switch ($baseModel)
+        {
+            case 'WS-C2960G':
+            case 'WS-C3560G':
+            case 'WS-C3750G':
+                $portNumber = preg_replace('/GigabitEthernet0\//', '', $portDescription);
+                break;
+            case 'WS-C4948':
+            case 'WS-C6509':
+                $portNumber = preg_replace('/GigabitEthernet/', '', $portDescription);
+                break;
+            case 'N3K-C3048TP':
+                $portNumber = preg_replace('/Ethernet1\//', '', $portDescription);
+                break;
+            case 'WS-C2960':
+            case 'WS-C3560':
+            case 'WS-C3750':
+                $portNumber = preg_replace('/FastEthernet0\//', '', $portDescription);
+                break;
+        }
+
+        return $portNumber;
+    }
+
     public function getSnmpAllPortDesc($ip, $keyRegEx = '')
     {
 
