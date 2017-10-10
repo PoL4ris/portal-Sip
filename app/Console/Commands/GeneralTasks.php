@@ -7,6 +7,7 @@ use App\Extensions\DataMigrationUtils;
 use App\Extensions\BillingHelper;
 use App\Extensions\MtikRouter;
 use App\Extensions\CiscoSSH;
+use App\Extensions\CiscoSwitch;
 use Illuminate\Support\Facades\File;
 use Storage;
 use App\Models\NetworkNode;
@@ -52,6 +53,8 @@ class GeneralTasks extends Command {
     public function handle()
     {
         $this->info('Starting general task');
+
+//        $this->registerSwitches();
 
 //        $this->activateSnmpSystemShutdown();
 
@@ -578,7 +581,8 @@ class GeneralTasks extends Command {
         foreach ($activeCustomers as $activeCustomer)
         {
 
-            if($activeCustomer->emailAddress == null){
+            if ($activeCustomer->emailAddress == null)
+            {
                 continue;
             }
 
@@ -610,8 +614,18 @@ class GeneralTasks extends Command {
         }
     }
 
-    protected function registerSwitches(){
+    protected function registerSwitches()
+    {
 
-//        $switchIpList = [''];
+        $switchIpList = ['10.15.208.10' => '[{"private vlan range":"2001-2048"}]',
+                         '10.15.208.20' => '[{"private vlan range":"2049-2096"}]',
+                         '10.15.208.30' => '[{"private vlan range":"2097-2144"}]',
+                         '10.15.208.40' => '[{"private vlan range":"2145-2192"}]'];
+
+        $ciscoSwitch = new CiscoSwitch(['readCommunity'  => 'oomoomee',
+                                        'writeCommunity' => 'BigSeem']);
+
+        $ciscoSwitch->register($switchIpList, '120G');
+
     }
 }

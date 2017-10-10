@@ -4,6 +4,7 @@ namespace App\Extensions;
 
 use App\Models\NetworkNode;
 use App\Models\Address;
+use Log;
 
 class CiscoSwitch {
 
@@ -145,19 +146,39 @@ class CiscoSwitch {
             return false;
         }
 
-        foreach ($ipAddressList as $ip)
+        foreach ($ipAddressList as $ip => $properties)
         {
             $existingNode = NetworkNode::where('ip_address', $ip)->first();
             if ($existingNode != null)
             {
-                Log::info('CiscoSwitch::register(): The requested node (' . $ip . ') already exists with id=' . $existingNode->id);
+                Log::info('CiscoSwitch::register(): The requested node (' . $ip . ') already exists with id=' . $existingNode->id . '. Skipping ... ');
                 continue;
             }
 
-            $fullHostName = $this->formatSnmpResponse($this->getSnmpSysName($ip));
-            $hostName = preg_replace('/\.silverip\..*/', '', $fullHostName);
-            $mac = $this->getSnmpMacAddress($ip);
-            $model = str_replace('"', '', $this->getSnmpModelNumber($ip));
+            $hostNameResponse = $this->formatSnmpResponse($this->getSnmpSysName($ip));
+            if (isset($hostNameResponse['error']))
+            {
+                Log::info('CiscoSwitch::register(): Could not get the hostname for the requested node (' . $ip . '). Skipping ... ');
+                continue;
+            }
+            $hostName = preg_replace('/\.silverip\..*/', '', $hostNameResponse['response']);
+
+            $macResponse = $this->getSnmpMacAddress($ip);
+            if (isset($macResponse['error']))
+            {
+                Log::info('CiscoSwitch::register(): Could not get the MAC address for the requested node (' . $ip . '). Skipping ... ');
+                continue;
+            }
+            $mac = $macResponse['response'];
+
+            $modelResponse = $this->getSnmpModelNumber($ip);
+            if (isset($modelResponse['error']))
+            {
+                Log::info('CiscoSwitch::register(): Could not get the model number for the requested node (' . $ip . '). Skipping ... ');
+                continue;
+            }
+            $model = str_replace('"', '', $modelResponse['response']);
+
             $networkNode = new NetworkNode;
             $networkNode->ip_address = $ip;
             $networkNode->mac_address = $mac;
@@ -179,6 +200,12 @@ class CiscoSwitch {
             $networkNode->id_types = config('const.type.switch');
             $networkNode->vendor = 'Cisco';
             $networkNode->model = $model;
+
+            if ($properties != null && $properties != '')
+            {
+                $networkNode->properties = $properties;
+            }
+
             $networkNode->save();
 
             Log::info('CiscoSwitch::register(): Registered new Cisco switch (' . $ip . ') for ' . $locationCode . ' with id=' . $networkNode->id);
