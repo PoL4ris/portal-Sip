@@ -1,6 +1,11 @@
-<!--<div class="col-lg-12">-->
-    <!--<button class="btn btn-danger" ng-click="res()">GETVALS</button>-->
-<!--</div>-->
+<div class="col-lg-12">
+    <a href="#/customershome">
+        <button class="btn btn-primary" >
+            <i class="fa fa-angle-left f-size-17 "></i>
+            Back to Customers
+        </button>
+    </a>
+</div>
 
 <div class="col-lg-12 cn-customer">
     <div class="container relative">
@@ -344,7 +349,7 @@
                         <hr>
                         <div class="col-lg-4" ng-bind-html="contactErrorContainer ? contactErrorContainer : ''"></div>
                         <div class="col-lg-4" ng-bind-html="addressErrorContainer ? addressErrorContainer : ''"></div>
-                        <div class="col-lg-4" ng-bind-html="serviceErrorContainer ? serviceErrorContainer:''"></div>
+                        <div class="col-lg-4" ng-bind-html="serviceErrorContainer ? serviceErrorContainer : ''"></div>
                         <!--<div class="col-lg-12 p-b-lg error-message" ng-if="errorResponse">-->
                             <!--<hr>-->
                             <!--<p>{{errorResponse}}</p>-->
@@ -376,6 +381,7 @@
 <!--LATEST RESULTS-->
 
 <div class="col-lg-12">
+<div class="container no-padding-sides">
 
     <h1 class="font-md">Recent Manual Registrations</h1>
 
@@ -416,5 +422,5 @@
         </table>
     </div>
 
-
+</div>
 </div>
