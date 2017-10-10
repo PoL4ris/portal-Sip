@@ -429,47 +429,72 @@ class TestController extends Controller {
 
 
         /** Switch port info filtering test **/
-        $ciscoSwitch = new CiscoSwitch(['readCommunity'  => 'oomoomee',
-                                        'writeCommunity' => 'BigSeem']);
-
-//        $switchModel = $ciscoSwitch->getSnmpModelNumber('10.15.215.254');
-        $switchModel = $ciscoSwitch->getSnmpModelNumber('10.11.51.47');
-//        $portType = $ciscoSwitch->getSwitchPortType('10.11.51.40');
-        $portFastMode = $ciscoSwitch->getSnmpPortfastStatus('10.11.51.47', '1/24');
-//        dd($portType);
-        dd([$switchModel, $portFastMode]);
-
+//        $ciscoSwitch = new CiscoSwitch(['readCommunity'  => 'oomoomee',
+//                                        'writeCommunity' => 'BigSeem']);
 //
-////        preg_match_all('/-/', $info,$matches, PREG_OFFSET_CAPTURE);
-////        echo $matches[0][1][1];
+////        $switchModel = $ciscoSwitch->getSnmpModelNumber('10.15.215.254');
+//        $switchModel = $ciscoSwitch->getSnmpModelNumber('10.11.51.47');
+////        $portType = $ciscoSwitch->getSwitchPortType('10.11.51.40');
+//        $portFastMode = $ciscoSwitch->getSnmpPortfastStatus('10.11.51.47', '1/24');
+////        dd($portType);
+//        dd([$switchModel, $portFastMode]);
 //
-//        $testString = "Today is - Friday and tomorrow is - Saturday";
-//        $newString = substr(strstr(substr(strstr($testString, "-"),1),"-"),1);
-//        echo $newString;//print  Saturday
-
-
-//        $switchIp = '10.15.215.254';
-        $switchIp = '10.11.51.40';
-        $skipLabelPattern = ['/.*[uU]plink.*/i', '/.*[dD]ownlink.*/i', '/.*CORE.*/i', '/.*CCR.*/i', '/.*SWITCH.*/i', '/.*\-.*/i'];
-        $sipNetwork = new SIPNetwork();
-
-        $portInfoTable = $sipNetwork->getSwitchPortInfoTable($switchIp, $skipLabelPattern);
-        dd($portInfoTable);
+////
+//////        preg_match_all('/-/', $info,$matches, PREG_OFFSET_CAPTURE);
+//////        echo $matches[0][1][1];
+////
+////        $testString = "Today is - Friday and tomorrow is - Saturday";
+////        $newString = substr(strstr(substr(strstr($testString, "-"),1),"-"),1);
+////        echo $newString;//print  Saturday
+//
+//
+////        $switchIp = '10.15.215.254';
+//        $switchIp = '10.11.51.40';
+//        $skipLabelPattern = ['/.*[uU]plink.*/i', '/.*[dD]ownlink.*/i', '/.*CORE.*/i', '/.*CCR.*/i', '/.*SWITCH.*/i', '/.*\-.*/i'];
+//        $sipNetwork = new SIPNetwork();
+//
+//        $portInfoTable = $sipNetwork->getSwitchPortInfoTable($switchIp, $skipLabelPattern);
+//        dd($portInfoTable);
 
 
 //        $declinedInvoices = Invoice::where('processing_type',)
 
-        /** Find chargeable items for a customer and create an invoice for them **/
-//        $billingHelper = new BillingHelper();
-//
-//        $customerProducts = CustomerProduct::with('customer')
-//            ->where('id_users', '!=', 0)
-//            ->where('charge_status', 0)
-//            ->where('created_at', '>', '2017-10-01 00:00:00')
-//            ->get();
-//
+        /** Find chargeable items for manually added plans and create an invoice for them **/
+        $billingHelper = new BillingHelper();
+
+        $customerProducts = CustomerProduct::with([
+            'customer' => function ($query) {
+                $query->where('id_status', config('const.status.active'));
+            },
+            'product'  => function ($query) {
+                $query->where('amount', '>', 0)
+                ->where('frequency', 'annual');
+            }])
+            ->where('id_users', '!=', 0)
+            ->where('charge_status', config('const.customer_product_charge_status.none'))
+            ->where('id_status', config('const.status.active'))
+            ->whereNotNull('expires')
+            ->orderBy('created_at', 'desc')
+            ->take(10)
+            ->get();
+
+//        dd($customerProducts);
 //        $customers = $customerProducts->pluck('customer');
-////        dd($customers->pluck('signedup_at', 'id'));
+//        $filteredProducts = $customerProducts->where('product.amount', '>', 0);
+
+        $filteredProducts = $customerProducts->filter(function ($customerProduct, $key) {
+            $product = $customerProduct->product;
+            $customer = $customerProduct->customer;
+            if ($customer != null && $product != null)
+            {
+                return true;
+            }
+
+            return false;
+        });
+
+        dd($filteredProducts);
+////    dd($customers->pluck('signedup_at', 'id'));
 //
 //        foreach ($customers as $customer)
 //        {
@@ -478,13 +503,13 @@ class TestController extends Controller {
 //        }
 //
 //        dd($customerProducts->pluck('charge_status', 'id'));
-
+//
 //        $chargableProducts = $billingHelper->getChargeableCustomerProductsByCustomerId('14384');
 //        $queries = DB::getQueryLog();
 //        $last_query = end($queries);
 //        dd($last_query);
 //        dd($chargableProducts);
-
+//
 //        $billingHelper->generateChargeRecordsForCustomerByMonth('14384', 'this month');
 //        $billingHelper->invoicePendingAutoPayChargesForCustomerByMonth('14384', 'this month');
 //        dd('done');

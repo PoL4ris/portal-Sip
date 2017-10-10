@@ -181,9 +181,9 @@
                             <div class="pull-right m-r-lg">
                                 <label>Status</label>
                                 <br>
-                                <small class="status-color-up-left-border m-r-lg"> UP</small>
+                                <small class="status-color-up-left-border m-r-lg"> Up</small>
                                 <br>
-                                <small class="status-color-down-left-border"> DOWN</small>
+                                <small class="status-color-down-left-border"> Down</small>
                             </div>
                         </h3>
                         <br><br><br><br>
@@ -388,10 +388,10 @@
                 <th>ID</th>
                 <th>Name</th>
                 <th>Location</th>
-                <th>Address</th>
-                <th>Created By</th>
-                <th>Email / Username</th>
-                <th>Created</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Registered By</th>
+                <th>Registered on</th>
                 <th>Status</th>
             </tr>
             </thead>
@@ -401,9 +401,9 @@
                     <td>{{customerData.id}}</td>
                     <td>{{customerData.first_name}} {{customerData.last_name}}</td>
                     <td>{{customerData.address.code}} #{{customerData.address.unit}}</td>
-                    <td>{{customerData.address.address}}</td>
+                    <td>{{customerData.email_address.value}}</td>
+                    <td>{{customerData.phone.value}}</td>
                     <td>{{customerData.user.first_name}} {{customerData.user.first_name}}</td>
-                    <td>{{customerData.email}}</td>
                     <td ng-init="signedup = convertDate(customerData.created_at)">{{ signedup | date : "MMM d, y h:mm a" }}</td>
                     <td ng-if="customerData.id_status == 1"><span class="label status-dash-btn-{{customerData.id_status}}">Active</span></td>
                     <td ng-if="customerData.id_status == 2"><span class="label status-dash-btn-{{customerData.id_status}}">Disabled</span></td>

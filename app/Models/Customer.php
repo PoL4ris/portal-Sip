@@ -50,6 +50,11 @@ class Customer extends Model {
         return $this->hasOne('App\Models\Contact', 'id_customers')->where('id_types', config('const.contact_type.email'));
     }
 
+    public function phone()
+    {
+        return $this->hasOne('App\Models\Contact', 'id_customers')->where('id_types', config('const.contact_type.mobile_phone'));
+    }
+
     public function customerProducts()
     {
         return $this->hasMany('App\Models\CustomerProduct', 'id_customers', 'id');

@@ -609,4 +609,9 @@ class GeneralTasks extends Command {
 //            break;
         }
     }
+
+    protected function registerSwitches(){
+
+//        $switchIpList = [''];
+    }
 }
