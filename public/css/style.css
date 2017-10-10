@@ -1657,15 +1657,11 @@ table.dataTable tbody tr {
   max-height: 300px;
 }
 .notification-container{
-
   float: right;
   margin-right: 10px;
+}
+.reset-form-ncustomer{  }
 
-}
-.reset-form-ncustomer{
-  margin: 0 auto;
-  width: 25%;
-}
 .reset-form-ncustomer:hover{
   opacity: .5;
 }
