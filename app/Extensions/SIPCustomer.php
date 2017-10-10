@@ -281,7 +281,7 @@ class SIPCustomer {
 
     public function getRecentManuallyAddedCustomers()
     {
-        return Customer::with(['address', 'user'])
+        return Customer::with(['address', 'user', 'emailAddress', 'phone'])
             ->where('id_users', '!=', 0)
             ->orderBy('signedup_at', 'desc')
             ->take(15)
