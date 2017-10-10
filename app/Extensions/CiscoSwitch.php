@@ -3,6 +3,7 @@
 namespace App\Extensions;
 
 use App\Models\NetworkNode;
+use App\Models\Address;
 
 class CiscoSwitch {
 
@@ -137,31 +138,50 @@ class CiscoSwitch {
         return false;
     }
 
-    public function register($ipAddressList, $location = null)
+    public function register($ipAddressList, $locationCode = null)
     {
         if (isset($ipAddressList) == false && count($ipAddressList) <= 0)
         {
             return false;
         }
+
         foreach ($ipAddressList as $ip)
         {
-            //            $hostName = str_replace('.silverip.net', '', $this->formatSnmpResponse($this->getSnmpSysName($ip)));
-            $hostName = $this->formatSnmpResponse($this->getSnmpSysName($ip));
+            $existingNode = NetworkNode::where('ip_address', $ip)->first();
+            if ($existingNode != null)
+            {
+                Log::info('CiscoSwitch::register(): The requested node (' . $ip . ') already exists with id=' . $existingNode->id);
+                continue;
+            }
+
+            $fullHostName = $this->formatSnmpResponse($this->getSnmpSysName($ip));
+            $hostName = preg_replace('/\.silverip\..*/', '', $fullHostName);
             $mac = $this->getSnmpMacAddress($ip);
             $model = str_replace('"', '', $this->getSnmpModelNumber($ip));
-            $netNode = new NetworkNode;
-            $netNode->ip_address = $ip;
-            $netNode->mac_address = $mac;
-            $netNode->host_name = $hostName;
-            if ($location != null)
-            {
-                $netNode->id_address = $location;
-            }
-            $netNode->id_types = 8;
-            $netNode->vendor = 'Cisco';
-            $netNode->model = $model;
+            $networkNode = new NetworkNode;
+            $networkNode->ip_address = $ip;
+            $networkNode->mac_address = $mac;
+            $networkNode->host_name = $hostName;
 
-            $netNode->save();
+            $idAddress = null;
+
+            if ($locationCode != null)
+            {
+                $address = Address::where('code', $locationCode)
+                    ->whereNull('unit')
+                    ->whereNull('id_customers')
+                    ->first();
+
+                $idAddress = ($address != null) ? $address->id : null;
+            }
+
+            $networkNode->id_address = $idAddress;
+            $networkNode->id_types = config('const.type.switch');
+            $networkNode->vendor = 'Cisco';
+            $networkNode->model = $model;
+            $networkNode->save();
+
+            Log::info('CiscoSwitch::register(): Registered new Cisco switch (' . $ip . ') for ' . $locationCode . ' with id=' . $networkNode->id);
         }
 
         return true;
@@ -1116,6 +1136,7 @@ class CiscoSwitch {
     public function getPortNumberFromPortDescription($ip, $portDescription)
     {
         $baseModel = $this->getBaseModel($ip);
+
         return $this->convertPortDescriptionToPortNumber($portDescription, $baseModel);
     }
 
