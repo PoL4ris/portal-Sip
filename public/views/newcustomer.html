@@ -40,14 +40,20 @@
                                 <div class="row">
                                     <div class="col-lg-12 cn-containers">
                                         <label for="" class="">First Name: <span class="down-status">*</span></label>
-                                        <input type="text" ng-keyup="validateField('name', $event)"
-                                               ng-model="model['fname']" placeholder="First Name" modelname="fname"
+                                        <input type="text"
+                                               ng-keyup="validateField('name', $event)"
+                                               ng-model="model['fname']"
+                                               placeholder="First Name"
+                                               modelname="fname"
                                                id="cn-fname">
                                     </div>
                                     <div class="col-lg-12 cn-containers">
                                         <label for="" class="">Last Name: <span class="down-status">*</span></label>
-                                        <input type="text" ng-keyup="validateField('name', $event); "
-                                               ng-model="model['lname']" placeholder="Last Name" modelname="lname"
+                                        <input type="text"
+                                               ng-keyup="validateField('name', $event); "
+                                               ng-model="model['lname']"
+                                               placeholder="Last Name"
+                                               modelname="lname"
                                                id="cn-lname">
                                     </div>
                                     <div class="col-lg-12 cn-containers">
@@ -63,15 +69,20 @@
                                     </div>
                                     <div class="col-lg-12 cn-containers">
                                         <label for="" class="">Phone Number: <span class="down-status">*</span></label>
-                                        <input type="text" placeholder="Ex: 312-123-5533"
-                                               ng-keyup="validateField('tel', $event)" ng-model="validaTel" id="cn-tel">
+                                        <input type="text"
+                                               placeholder="Ex: 312-123-5533"
+                                               ng-keyup="validateField('tel', $event)"
+                                               ng-model="validaTel"
+                                               id="cn-tel">
                                     </div>
                                     <div class="col-lg-12 cn-containers">
                                         <label for="" class="">Email: <span class="down-status">*</span></label>
-                                        <input type="text" placeholder="Email" ng-keyup="validateField('email', $event)"
-                                               ng-model="validaMail" id="cn-email">
+                                        <input type="text"
+                                               placeholder="Email"
+                                               ng-keyup="validateField('email', $event)"
+                                               ng-model="validaMail"
+                                               id="cn-email">
                                     </div>
-
                                 </div>
                             </div>
                         </fieldset>
@@ -334,10 +345,10 @@
                         <div class="col-lg-4" ng-bind-html="contactErrorContainer ? contactErrorContainer : ''"></div>
                         <div class="col-lg-4" ng-bind-html="addressErrorContainer ? addressErrorContainer : ''"></div>
                         <div class="col-lg-4" ng-bind-html="serviceErrorContainer ? serviceErrorContainer:''"></div>
-                        <div class="col-lg-12 p-b-lg error-message" ng-if="errorResponse">
-                            <hr>
-                            <p>{{errorResponse}}</p>
-                        </div>
+                        <!--<div class="col-lg-12 p-b-lg error-message" ng-if="errorResponse">-->
+                            <!--<hr>-->
+                            <!--<p>{{errorResponse}}</p>-->
+                        <!--</div>-->
                         <!--<div class="col-lg-12 p-b-lg error-message" ng-if="errorResponse">-->
                             <!--<hr>-->
                             <!--<p>{{errorResponse}}</p>-->
@@ -347,7 +358,7 @@
                     <!--RESET-->
                     <br>
                     <div class="text-center m-b-md m-t-lg p-b-md col-lg-12">
-                        <div class="down-status f-size-17 cursor-pointer p-t-lg reset-form-ncustomer" ng-click="resetFullForm()">Reset Form</div>
+                        <div class="f-size-17 reset-form-ncustomer btn btn-danger pull-right" ng-click="resetFullForm()">Start Over</div>
                     </div>
                 </form>
 
