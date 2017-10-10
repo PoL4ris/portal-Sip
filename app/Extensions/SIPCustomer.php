@@ -284,7 +284,7 @@ class SIPCustomer {
         return Customer::with(['address', 'user'])
             ->where('id_users', '!=', 0)
             ->orderBy('signedup_at', 'desc')
-            ->take(5)
+            ->take(15)
             ->get();
     }
 
