@@ -429,13 +429,16 @@ class TestController extends Controller {
 
 
         /** Switch port info filtering test **/
-//        $ciscoSwitch = new CiscoSwitch(['readCommunity'  => 'oomoomee',
-//                                        'writeCommunity' => 'BigSeem']);
+        $ciscoSwitch = new CiscoSwitch(['readCommunity'  => 'oomoomee',
+                                        'writeCommunity' => 'BigSeem']);
 //
 ////        $switchModel = $ciscoSwitch->getSnmpModelNumber('10.15.215.254');
 //        $switchModel = $ciscoSwitch->getSnmpModelNumber('10.11.51.47');
 ////        $portType = $ciscoSwitch->getSwitchPortType('10.11.51.40');
-//        $portFastMode = $ciscoSwitch->getSnmpPortfastStatus('10.11.51.47', '1/24');
+        $portFastMode = $ciscoSwitch->getSnmpPortfastStatus('10.11.51.47', '1/24');
+        dd($portFastMode);
+
+
 ////        dd($portType);
 //        dd([$switchModel, $portFastMode]);
 //
