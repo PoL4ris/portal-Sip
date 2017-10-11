@@ -616,6 +616,13 @@ table.dataTable tbody tr {
 .status-dash-type-5{
   background: rgba(0, 134, 255, 0.45) !important;
 }
+.status-dash-type-1 td:first-child,
+.status-dash-type-2 td:first-child,
+.status-dash-type-3 td:first-child,
+.status-dash-type-4 td:first-child,
+.status-dash-type-5 td:first-child{
+  background: rgb(245, 245, 245);
+}
 .vip-class i {
   color: #fcc515;
   font-size: 17px;
@@ -1688,6 +1695,14 @@ table.dataTable tbody tr {
 
 .reset-form-ncustomer:hover{
   opacity: .5;
+}
+.prevent-loading{
+  position: absolute;
+  background: rgba(255,255,255,.7);
+  width: 100%;
+  height: calc(100% - 200px);
+  z-index: 10;
+  margin-top: 34px;
 }
 pre {
   font-size: 10px;

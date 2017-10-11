@@ -1,6 +1,6 @@
 app.controller('newcustomerAppController', function ($scope, $http, customerService, $state, generalService) {
 
-  console.log('this is the newcustomerAppController');
+//  console.log('this is the newcustomerAppController');
 
   if (generalService.sideBarFlag){
     $scope.sipTool(2);
@@ -115,7 +115,7 @@ app.controller('newcustomerAppController', function ($scope, $http, customerServ
     $scope.portIndex = false;
     //RESET VALUES
 
-    $scope.loadingPorts   = false;
+    $scope.loadingPorts   = true;
     $scope.selectedSwitch = this.switch;
     var id = this.switch.id;
     $scope.ableDisableSwitches(id);
@@ -123,7 +123,7 @@ app.controller('newcustomerAppController', function ($scope, $http, customerServ
       .then(function (response) {
 
         $scope.switchAvailablePorts = response.data;
-        $scope.loadingPorts = true;
+        $scope.loadingPorts = false;
 
       });
 
@@ -378,36 +378,40 @@ app.controller('newcustomerAppController', function ($scope, $http, customerServ
   }
   $scope.resetFullForm              = function (verifyForm){
 
+    $scope.showSpinner = false;
+
+    $('#new-customer-form').trigger("reset");
+
+    $scope.resetScopeVariables();
+    $scope.clearAddress();
+
+    $('.cn-containers input').css('border-bottom', '1px solid #ddd');
+    $('.cn-containers input').css('-moz-border-bottom-colors', '#ddd');
+
+    if (verifyForm) {
+      $scope.verifyNewCustomerForm(true);
+    }
+
+    console.log(getFormValues('new-customer-form'));
+
+    $('#inicio-nc-form').click();
+
+
+  }
+
+  $scope.resetFullFormBtn = function(){
+
     $.SmartMessageBox({
-      title: "Please Confirm",
-      content: 'Are you sure you like to start over?',
-      buttons: '[No][Yes]'
-    }, function (ButtonPressed)
-       {
-          if (ButtonPressed === "Yes")
-          {
-
-            $scope.showSpinner = false;
-
-            $('#new-customer-form').trigger("reset");
-
-            $scope.resetScopeVariables();
-            $scope.clearAddress();
-
-            $('.cn-containers input').css('border-bottom', '1px solid #ddd');
-            $('.cn-containers input').css('-moz-border-bottom-colors', '#ddd');
-
-            if (verifyForm){
-              $scope.verifyNewCustomerForm(true);
-            }
-
-            console.log(getFormValues('new-customer-form'));
-
-            $('#inicio-nc-form').click();
-
-          }
+        title: "Please Confirm",
+        content: 'Are you sure you like to start over?',
+        buttons: '[No][Yes]'
+      }, function (ButtonPressed) {
+        if (ButtonPressed === "Yes") {
+          $scope.resetFullForm();
         }
+      }
     );
+
 
   }
 

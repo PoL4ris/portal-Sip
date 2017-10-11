@@ -250,7 +250,7 @@ angular.module('app.dummyapp',      ['ui.router']).config(function ($stateProvid
       views: {
         "content@app": {
           templateUrl: '/views/dummyapp.html?'+appConfig.appCacheClear,
-          controller: 'dummyAppController',
+          controller: 'tabsController',
         }
       },
       resolve: {
@@ -296,7 +296,7 @@ angular.module('app.tabs',          ['ui.router']).config(function ($stateProvid
       views: {
         "content@app": {
           templateUrl: '/views/warp.html?'+appConfig.appCacheClear,
-          controller:  'dummyAppController',
+          controller:  'tabsController',
         }
       },
       resolve: {

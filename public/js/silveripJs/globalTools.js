@@ -7,6 +7,7 @@ app.controller('globalToolsCtl',                    function ($scope, $http, $co
   $scope.sipToolRight   = true;
   $scope.focusIndex     = 0;
   $scope.cacheClear     = generalService.cacheClear;
+  $scope.customerById   = false;
 
   $scope.statusArrayConstant = generalService.statusArrayConstant;
 
@@ -480,16 +481,17 @@ app.controller('globalToolsCtl',                    function ($scope, $http, $co
   }
 
   $scope.idSearch             = function(){
-//    console.log('this is idSearch');
-//    console.log(this.adminSearch);
-//    return;
-//ROUTE         return Customer::find($request->id);
+
+
+  console.log(this.adminSearch);
+  console.log('++++++++++++===========+++++++++');
 
     if(!this.adminSearch)
     {
       console.log('emptyString');
     }
-    else {
+    else
+    {
       $http.get("getCustomerById", {params:{'id':this.adminSearch}})
         .then(function (response) {
 
@@ -497,21 +499,26 @@ app.controller('globalToolsCtl',                    function ($scope, $http, $co
 
           if($scope.idCustomerResult)
           {
+
+            //angular Call to tabs
+            customerService.lastRequestedId = $scope.idCustomerResult.id
             $('#admin-id-search-input').val('');
-            window.location = '#/customers?id='+response.data.id
+            angular.element('#customers-home-main-id').scope().createTab('', true);
+
+            //Redirects to Customer by id
+            //window.location = '#/customers?id='+response.data.id
+
           }
           else
           {
             $('#admin-id-search-input').val('Customer not in the DB').css('color', 'crimson');
+
             setTimeout( function(){
               $('#admin-id-search-input').val('').css('color', 'inherit');
             }  , 1000 );
           }
-
         });
-
     }
-
 
   }
 

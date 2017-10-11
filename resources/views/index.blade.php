@@ -108,6 +108,7 @@
 <script src="/js/silveripJs/chargesController.js"></script>
 <script src="/js/silveripJs/newCustomerController.js"></script>
 <script src="/js/silveripJs/walkthroughController.js"></script>
+<script src="/js/silveripJs/tabsController.js"></script>
 <script src="/js/lib.js"></script>
 <script src="/js/silveripJs/globalTools.js"></script>
 <script src="/js/calendar.js"></script>
