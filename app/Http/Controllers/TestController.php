@@ -421,6 +421,23 @@ class TestController extends Controller {
     public function generalTest(Request $request)
     {
 
+        $commandOptions = ['count'    => '5',
+                           'addresses'  => ['www.google.com', 'www.yahoo.com', 'www.silverip.com'],
+                           'interval' => '300ms'];
+
+        dd(json_encode($commandOptions));
+
+        $ip = '108.160.198.204';
+        $serviceRouter = new MtikRouter(['ip_address' => $ip,
+                                         'username'   => config('netmgmt.mikrotik.username'),
+                                         'password'   => config('netmgmt.mikrotik.password')]);
+        $command = '/ping';
+        $commandOptions = ['count'    => '5',
+                           'address'  => 'www.google.com',
+                           'interval' => '300ms'];
+        dd($serviceRouter->runCommand($ip, $command, $commandOptions));
+
+
         //        dd('done');
 
         /** Get recently added manual registrations **/
