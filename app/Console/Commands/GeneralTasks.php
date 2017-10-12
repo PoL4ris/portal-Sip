@@ -54,6 +54,8 @@ class GeneralTasks extends Command {
     {
         $this->info('Starting general task');
 
+        $this->getMikrotikPingStats();
+
 //        $this->registerSwitches();
 
 //        $this->activateSnmpSystemShutdown();
@@ -627,5 +629,49 @@ class GeneralTasks extends Command {
 
         $ciscoSwitch->register($switchIpList, '120G');
 
+    }
+
+    protected function getMikrotikPingStats()
+    {
+        $ipAddresses = ['108.160.198.204'];
+        $sitesToPing = ['www.google.com', 'www.yahoo.com', 'www.silverip.com'];
+
+        $command = '/ping';
+        $commandOptions = ['count'    => '5',
+                           'address'  => '',
+                           'interval' => '300ms'];
+
+        $results = [];
+        foreach ($ipAddresses as $ip)
+        {
+
+            $results[$ip] = [];
+            $serviceRouter = new MtikRouter(['ip_address' => $ip,
+                                             'username'   => config('netmgmt.mikrotik.username'),
+                                             'password'   => config('netmgmt.mikrotik.password')]);
+
+            echo $ip . ' ... ';
+
+            foreach ($sitesToPing as $site)
+            {
+                $commandOptions['address'] = $site;
+                $response = $serviceRouter->runCommand($ip, $command, $commandOptions);
+                if (isset($response['error']))
+                {
+                    $results[$ip][$site] = 'Failed: ' . $response['error'] . "\n";
+                }
+
+                $results[$ip][$site] = collect($response['response'])->last(); //
+//                $results[$ip][$site] =  $this->processPingStats(collect($response['response']));
+            }
+        }
+        dd($results);
+    }
+
+    protected function processPingStats($results)
+    {
+        $pingStats = $results->last();
+        $responsePercentage = ($pingStats['received'] > 0) ? $pingStats['sent'] * 100 / $pingStats['received'] : 0;
+        return [$responsePercentage, isset($pingStats['avg-rtt']) ? $pingStats['avg-rtt'] : 'n/a'];
     }
 }
