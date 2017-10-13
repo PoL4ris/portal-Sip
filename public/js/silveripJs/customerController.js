@@ -51,7 +51,7 @@ app.controller('customerController',                function ($scope, $http, $st
         if (!$scope.customerServiceData)
           $scope.customerServiceData = customerService.tabs;
 
-        $('#tabs-label-' + $scope.uniqueIdIndex).html(response.data.address.code + ' # ' + response.data.address.unit)
+        $('#tabs-label-' + $scope.uniqueIdIndex).html(response.data.address.code + ' #' + response.data.address.unit)
 
         if($scope.callTabAction)
           $('#customer-tab-link-id-' + $scope.uniqueIdIndex).trigger('click');
