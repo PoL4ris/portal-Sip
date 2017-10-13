@@ -46,7 +46,7 @@
                             <div class="prevent-loading" ng-if="preventLoading">
                                 <img src="/img/loading.gif" alt="">
                             </div>
-                            <tr class="status-dash-type-{{customerData.id_status}} cursor-pointer customer-record" ng-repeat="customerData in cDashboardSearchResult" ng-click="customerGoToTab();createTab($event, true);">
+                            <tr class="status-dash-type-{{customerData.id_status}} cursor-pointer customer-record" ng-repeat="customerData in cDashboardSearchResult" ng-click="customerGoToTab(customerData.id);createTab($event, true);">
 
                                 <td ng-click="createTab($event, false)" class="text-center tab-td"><i class="fa fa-plus new-status"></i></td>
                                 <td>{{customerData.id}}</td>

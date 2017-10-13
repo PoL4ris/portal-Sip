@@ -87,7 +87,7 @@
             <td class="capital-first ch-{{charge.status}} " ng-if="charge.type == 'credit'"><b><i>{{charge.type}}</i></b></td>
             <td class="capital-first ch-{{charge.status}} " ng-if="charge.type != 'credit'">{{charge.type}}</td>
 
-            <td><a href="#/customers?id={{charge.customer.id}}">{{charge.customer.first_name + ' ' + charge.customer.last_name}}<br>{{charge.address.code}} #{{charge.address.unit}}</a></td>
+            <td><a href="#/customer?id={{charge.customer.id}}">{{charge.customer.first_name + ' ' + charge.customer.last_name}}<br>{{charge.address.code}} #{{charge.address.unit}}</a></td>
 
             <td>${{charge.amount}}</td>
 

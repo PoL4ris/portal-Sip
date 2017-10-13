@@ -1326,7 +1326,7 @@ app.controller('customersHomeController',           function ($scope, $http, cus
 
 //  //Now in GLobalTools.js
 //  $scope.customerGoTo = function (){
-//    document.location.href = '#/customers?id=' + this.customerData.id;
+//    document.location.href = '#/customer?id=' + this.customerData.id;
 //  }
 
 

@@ -23,23 +23,24 @@ angular.module('app.buildings',     ['ui.router']).config(function ($stateProvid
       }
     })
 });
-angular.module('app.customershome', ['ui.router']).config(function ($stateProvider) {
+angular.module('app.customers', ['ui.router']).config(function ($stateProvider) {
   $stateProvider
-    .state('app.customershome', {
-      url:  '/customershome',
+    .state('app.customers', {
+      url:  '/customers',
       data: {
-        title: 'Customer Home'
+        title: 'Customers Home'
       },
       views: {
         "content@app": {
-          templateUrl: '/views/customersHome.html?'+appConfig.appCacheClear,
-          controller:  'customersHomeController'
+          templateUrl: '/views/customers.html?'+appConfig.appCacheClear,
+            controller:  'tabsController',
         }
       },
       resolve: {
         scripts: function (lazyScript, customerService, generalService) {
-          customerService.stateRoute = 'customershome';
-          generalService.stateRoute  = 'customershome';
+            generalService.stateRoute   = 'tabs';
+          // customerService.stateRoute = 'customershome';
+          // generalService.stateRoute  = 'customershome';
 
           return lazyScript.register([
             '/js/smart/build/vendor.ui.js'
@@ -48,16 +49,16 @@ angular.module('app.customershome', ['ui.router']).config(function ($stateProvid
       }
     })
 });
-angular.module('app.customers',     ['ui.router']).config(function ($stateProvider) {
+angular.module('app.customer',     ['ui.router']).config(function ($stateProvider) {
   $stateProvider
-    .state('app.customers', {
-      url:  '/customers?{id:int}',
+    .state('app.customer', {
+      url:  '/customer?{id:int}',
       data: {
         title: 'Customers'
       },
       views: {
         "content@app": {
-          templateUrl: '/views/customers.html?'+appConfig.appCacheClear,
+          templateUrl: '/views/customer.html?'+appConfig.appCacheClear,
           controller:  'customerController',
         },
         "silveriptool": {
@@ -67,8 +68,8 @@ angular.module('app.customers',     ['ui.router']).config(function ($stateProvid
       },
       resolve: {
         scripts: function (lazyScript, customerService, generalService) {
-          customerService.stateRoute  = 'customers';
-          generalService.stateRoute   = 'customers';
+          customerService.stateRoute  = 'customer';
+          generalService.stateRoute   = 'customer';
 
           return lazyScript.register([
             '/js/smart/build/vendor.ui.js'
@@ -286,29 +287,29 @@ angular.module('app.charges',       ['ui.router']).config(function ($stateProvid
       }
     })
 });
-angular.module('app.tabs',          ['ui.router']).config(function ($stateProvider) {
-  $stateProvider
-    .state('app.tabs', {
-      url:  '/tabs',
-      data: {
-        title: 'Tabs'
-      },
-      views: {
-        "content@app": {
-          templateUrl: '/views/warp.html?'+appConfig.appCacheClear,
-          controller:  'tabsController',
-        }
-      },
-      resolve: {
-        scripts: function (lazyScript, generalService) {
-          generalService.stateRoute   = 'tabs';
-          return lazyScript.register([
-            '/js/smart/build/vendor.ui.js'
-          ]);
-        }
-      }
-    })
-});
+// angular.module('app.tabs',          ['ui.router']).config(function ($stateProvider) {
+//   $stateProvider
+//     .state('app.tabs', {
+//       url:  '/tabs',
+//       data: {
+//         title: 'Tabs'
+//       },
+//       views: {
+//         "content@app": {
+//           templateUrl: '/views/customers.html?'+appConfig.appCacheClear,
+//           controller:  'tabsController',
+//         }
+//       },
+//       resolve: {
+//         scripts: function (lazyScript, generalService) {
+//           generalService.stateRoute   = 'tabs';
+//           return lazyScript.register([
+//             '/js/smart/build/vendor.ui.js'
+//           ]);
+//         }
+//       }
+//     })
+// });
 angular.module('app.newcustomer',   ['ui.router']).config(function ($stateProvider) {
   $stateProvider
     .state('app.newcustomer', {
@@ -409,7 +410,8 @@ app.factory('customerService',  function () {
     rightView: false,
     statusArrayConstant : constArray,//remove.
     tabs: {},
-    customerArray : {},
+    // customerArray : {},
+      customerArray : [],
 
   };
 });

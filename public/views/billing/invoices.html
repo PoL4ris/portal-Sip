@@ -87,7 +87,7 @@
             <!--<td class="capital-first ch-{{invoice.status}} " ng-if="invoice.type == 'credit'"><b><i>{{invoice.type}}</i></b></td>-->
             <!--<td class="capital-first ch-{{invoice.status}} " ng-if="invoice.type != 'credit'">{{invoice.type}}</td>-->
 
-            <td><a href="#/customers?id={{invoice.customer.id}}">{{invoice.customer.first_name + ' ' + invoice.customer.last_name}}<br>{{invoice.address.code}} #{{invoice.address.unit}}</a></td>
+            <td><a href="#/customer?id={{invoice.customer.id}}">{{invoice.customer.first_name + ' ' + invoice.customer.last_name}}<br>{{invoice.address.code}} #{{invoice.address.unit}}</a></td>
 
             <td>${{invoice.amount}}</td>
 

@@ -17,7 +17,7 @@ app.config(['$routeProvider', function ($routeProvider) {
 //     .when("/buildingdash",  {templateUrl: "/views/building/dashboard.html"})
 //     .when("/support",       {templateUrl: "/views/support.html"})
 //     .when("/adminusers",    {templateUrl: "/angularviews/partials/home.html", controller: "adminusers"})
-//     .when("/customer",      {templateUrl: "/views/customers.html"})
+//     .when("/customer",      {templateUrl: "/views/customer.html"})
 //     .when("/network",       {templateUrl: "/views/allNetwork.html"})
 //     .when("/userprofile",   {templateUrl: "/views/userprofile.html", controller: 'userProfileController'})
 //     .when("/calendar",      {templateUrl: "/views/v2Test.html"})

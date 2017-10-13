@@ -506,7 +506,7 @@ app.controller('globalToolsCtl',                    function ($scope, $http, $co
             angular.element('#customers-home-main-id').scope().createTab('', true);
 
             //Redirects to Customer by id
-            //window.location = '#/customers?id='+response.data.id
+            //window.location = '#/customer?id='+response.data.id
 
           }
           else
@@ -523,7 +523,7 @@ app.controller('globalToolsCtl',                    function ($scope, $http, $co
   }
 
   $scope.customerGoTo = function (){
-    document.location.href = '#/customers?id=' + this.customerData.id;
+    document.location.href = '#/customer?id=' + this.customerData.id;
   }
 
 })
