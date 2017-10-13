@@ -1,4 +1,5 @@
 <div class="row no no-margin-sides" id="customer-id-{{uniqueIdIndex}}">
+
     <article class="col-lg-12 col-md-12 col-sm-12 p-b-lg bg-white white-shadow null-article no-padding-right  ">
         <div class="row">
             <div class="col-lg-4 col-md-12 no-padding-right" style="min-width: 300px; max-width: 300px;">
@@ -11,12 +12,6 @@
                 <article class="null-article" ng-include="'/views/customer/product.html'"></article>
             </div>
         </div>
-
-
-        <!--<div class="btn btn-primary notification-container" ng-click="sipTool(2)">-->
-            <!--Recent Activity <i class="m-l-sm fa fa-caret-right"></i>-->
-        <!--</div>-->
-
     </article>
 
 
@@ -72,12 +67,7 @@
                             <span class="hidden-mobile hidden-tablet"> Payment History </span>
                         </a>
                     </li>
-                    <li class="">
-                        <a data-toggle="tab" href="#tab-r9-{{uniqueIdIndex}}" aria-expanded="false">
-                            <i class="fa fa-lg fa-th"></i>
-                            <span class="hidden-mobile hidden-tablet"> Schedule Tech </span>
-                        </a>
-                    </li>
+
                 </ul>
             </header>
             <div class="col-lg-12 m-t-lg">
@@ -107,9 +97,7 @@
                     <div class="tab-pane animated fadeInLeft" id="tab-r8-{{uniqueIdIndex}}">
                         <article class="col-sm-12 col-md-12 col-lg-12 no-padding-sides null-article" ng-include="'/views/customer/billinghistory.html'"></article>
                     </div>
-                    <div class="tab-pane" id="tab-r9-{{uniqueIdIndex}}">
-                        <article class="col-sm-12 col-md-12 col-lg-12 no-padding-sides m-t-lg null-article" ng-include="'/views/support/tech-scheduler.html'" ng-controller="techschedulercontroller"></article>
-                    </div>
+
 
                 </div>
             </div>

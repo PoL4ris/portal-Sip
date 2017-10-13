@@ -23,7 +23,7 @@ angular.module('app.buildings',     ['ui.router']).config(function ($stateProvid
       }
     })
 });
-angular.module('app.customers', ['ui.router']).config(function ($stateProvider) {
+angular.module('app.customers',     ['ui.router']).config(function ($stateProvider) {
   $stateProvider
     .state('app.customers', {
       url:  '/customers',
@@ -49,7 +49,7 @@ angular.module('app.customers', ['ui.router']).config(function ($stateProvider) 
       }
     })
 });
-angular.module('app.customer',     ['ui.router']).config(function ($stateProvider) {
+angular.module('app.customer',      ['ui.router']).config(function ($stateProvider) {
   $stateProvider
     .state('app.customer', {
       url:  '/customer?{id:int}',
