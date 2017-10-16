@@ -41,13 +41,73 @@
 
                 <p class="float-left p-l-md">({{ customerServiceData[uniqueIdIndex].info.id }})</p>
 
-                <div ng-if="customerServiceData[uniqueIdIndex].info.vip" class="float-left m-l-md vip-class">
-                    <label>{{customerServiceData[uniqueIdIndex].info.vip}}</label>
-                </div>
-
             </h2>
             <div class="customer-info-card">
+
+
+
                 <div class="col-lg-12 col-md-12 no-padding-sides m-t-lg">
+                    <p class="col-lg-4 col-md-4 no-padding-sides"><strong>VIP:</strong></p>
+                    <p class="col-lg-4 col-md-4 no-padding-sides vip-class" ng-if="customerServiceData[uniqueIdIndex].info.vip">
+                        <a  href=""
+                            id="b-p-id-cvip"
+                            record-table="Customers"
+                            data-pk="1"
+                            data-options="editableOptions"
+                            data-original-title="Set Value"
+                            record-field="vip"
+                            smart-xeditable
+                            data-ng-model="customerServiceData[uniqueIdIndex].info.vip"
+                            record-id="{{customerServiceData[uniqueIdIndex].info.id}}"
+                            data-type="text"
+                            record-idContainer="customers"
+                            data-placement="right"
+                            class="editable editable-click vip-class capital-first">
+                            {{customerServiceData[uniqueIdIndex].info.vip ? customerServiceData[uniqueIdIndex].info.vip : 'Info'}}
+                        </a>
+                    </p>
+                    <p class="col-lg-4 col-md-4 no-padding-sides no-vip-class" ng-if="!customerServiceData[uniqueIdIndex].info.vip">
+                        <a  href=""
+                            id="b-p-id-cvip"
+                            record-table="Customers"
+                            data-pk="1"
+                            data-options="editableOptions"
+                            data-original-title="Set Value"
+                            record-field="vip"
+                            smart-xeditable
+                            data-ng-model="customerServiceData[uniqueIdIndex].info.vip"
+                            record-id="{{customerServiceData[uniqueIdIndex].info.id}}"
+                            data-type="text"
+                            record-idContainer="customers"
+                            data-placement="right"
+                            class="editable editable-click vip-class capital-first color-ddd">
+                            {{customerServiceData[uniqueIdIndex].info.vip ? customerServiceData[uniqueIdIndex].info.vip : 'Set VIP...'}}
+                        </a>
+                    </p>
+                </div>
+
+
+                <!--<p class="no-vip-class float-left" >-->
+                    <!--<a  href=""-->
+                        <!--id="b-p-id-cvip"-->
+                        <!--record-table="Customers"-->
+                        <!--data-pk="1"-->
+                        <!--data-options="editableOptions"-->
+                        <!--data-original-title="Set Value"-->
+                        <!--record-field="vip"-->
+                        <!--smart-xeditable-->
+                        <!--data-ng-model="customerServiceData[uniqueIdIndex].info.vip"-->
+                        <!--record-id="{{customerServiceData[uniqueIdIndex].info.id}}"-->
+                        <!--data-type="text"-->
+                        <!--record-idContainer="customers"-->
+                        <!--data-placement="right"-->
+                        <!--class="editable editable-click vip-class capital-first">-->
+                        <!--{{customerServiceData[uniqueIdIndex].info.vip ? customerServiceData[uniqueIdIndex].info.vip : ' SET VIP '}}-->
+                    <!--</a>-->
+                <!--</p>-->
+
+
+                <div class="col-lg-12 col-md-12 no-padding-sides">
                     <p class="col-lg-4 col-md-4 no-padding-sides"><strong>Address:</strong></p>
 
                     <p class="col-lg-6 col-md-6 no-padding-sides address-bld-img-hover">{{customerServiceData[uniqueIdIndex].info.address.address ? customerServiceData[uniqueIdIndex].info.address.address : 'Not Set'}}</p>

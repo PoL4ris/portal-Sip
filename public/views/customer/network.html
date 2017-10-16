@@ -27,7 +27,7 @@
                                 value="{{ customerServiceData[uniqueIdIndex].customerNetwork.network_node.ip_address?customerServiceData[uniqueIdIndex].customerNetwork.network_node.ip_address:'' }}"
                                 class="color-click no-border cursor-pointer">
                     </div>
-                    <div class="col-lg-4 no-padding-sides cursor-pointer clip-style" ng-click="copyClipboard('ip-clipboard-id-{{uniqueIdIndex}}')"><i class="fa fa-clipboard"></i>
+                    <div class="col-lg-4 no-padding-sides cursor-pointer clip-style" ng-click="copyClipboard('ip-clipboard-id-', uniqueIdIndex)" ><i class="fa fa-clipboard"></i>
                         <small class="text-muted">Copy</small>
                     </div>
 

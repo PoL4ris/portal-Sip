@@ -27,6 +27,7 @@
                                     <span ng-if="arrayData.type == 'update-email'"><b>Username</b> changed to <b>{{arrayData.new['email']}}</b></span>
                                     <span ng-if="arrayData.type == 'update-contact'"><b>Contact field</b> changed to <b>{{arrayData.new['value']}}</b></span>
                                     <span ng-if="arrayData.type == 'update-unit'"><b>Unit number</b> changed to <b>{{arrayData.new['unit']}}</b></span>
+                                    <span ng-if="arrayData.type == 'update-vip'"><b>VIP Status</b> changed to <b>{{arrayData.new['vip']?arrayData.new['vip']:'not VIP'}}</b></span>
                                     <span ng-if="arrayData.type == 'insert-service'">Product<b> {{arrayData.data.name}}</b> is added</span>
                                     <span ng-if="arrayData.type == 'update-service'">Product changed to <b>{{arrayData.data.name}}</b> </span>
                                     <span ng-if="arrayData.type == 'disable-service'">Product <b>{{arrayData.data.name}}</b> is disabled</span>
