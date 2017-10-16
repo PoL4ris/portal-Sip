@@ -177,7 +177,7 @@ return [
         MarkTopper\DoctrineDBALTimestampType\Laravel5ServiceProvider::class,
 
         //Image intervention
-        Intervention\Image\ImageServiceProvider::class,
+   //     Intervention\Image\ImageServiceProvider::class,
 
     ],
 
@@ -232,7 +232,7 @@ return [
         'SendMail' => App\Extensions\Facades\SendMail::class,
 
         //ImageIntervention
-        'Image' => Intervention\Image\Facades\Image::class,
+    //    'Image' => Intervention\Image\Facades\Image::class,
 
 
     ],

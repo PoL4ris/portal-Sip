@@ -249,6 +249,8 @@ class GoogleCalendar {
         $bcodelist = Address::whereNull('id_customers')->pluck('code')->toArray();
 
         $appointments = $this->service->events->listEvents(Config::get('google.completed_appointment'), $optParams);
+        //$pappointments = $this->service->events->listEvents(Config::get('google.problem_appointment'), $optParams);
+
         //should have google schedule now, but let's process the appointments and make a cleaner table.
         $lastappointmentstart = null;
         foreach ($appointments as $appointment)
@@ -294,12 +296,11 @@ class GoogleCalendar {
         }
 
 
-
         return $listing;
 
     }
 
-        protected function validateAppointment(&$appointment, $buildinglist = null, $scheduledtechs = null)
+protected function validateAppointment(&$appointment, $buildinglist = null, $scheduledtechs = null)
     {
 
         $codevalid = 0;
@@ -307,7 +308,7 @@ class GoogleCalendar {
         $actionvalid = 0;
         $techvalid = 0;
 
-        $apptSummary = $appointment['appointment']->getSummary();
+        $apptSummary = strtolower($appointment['appointment']->getSummary()) ;
         $explodedSummary = explode(" ", $apptSummary);
         $countSum = count($explodedSummary);
         if ($countSum != 5)
@@ -339,6 +340,7 @@ class GoogleCalendar {
         if ($scheduledtechs == null)
         {
             $scheduledtechs = $this->service->events->listEvents(Config::get('google.schedule_appointment'), $optParams);
+
         }
 
 
@@ -346,7 +348,7 @@ class GoogleCalendar {
         $techsworking = [];
         foreach ($scheduledtechs as $techevent)
         {
-            array_push($techsworking, $techevent->getSummary());
+            array_push($techsworking, trim($techevent->getSummary() ) ) ;
         }
 
 
@@ -355,83 +357,89 @@ class GoogleCalendar {
         $apptSummary = $appointment['appointment']->getSummary();
         $explodedSummary = explode(' ', $apptSummary);
         $search = $explodedSummary[1];
-        $bcode = $explodedSummary[1];
+        $bcode = strtolower($explodedSummary[1]);
 
-        $tech = trim($explodedSummary[0], ' ()');
-        $tech = trim($tech);
+        $tech = strtolower(trim($explodedSummary[0], ' () ') );
 
-        if (in_array($tech, $techsworking))
+        //$tech = strtolower(trim($tech)) ;
+
+        if ($this->in_arrayi($tech, $techsworking))
         {
             $techvalid = 1;
             $appointment['tech'] = $tech;
         } else
         {
+
             $techvalid = 0;
+
         }
 
         //this is the one at a time search, does not check the list passed in.
         if ($buildinglist == null)
         {
-            $searchresult = Address::whereNull('id_customers')->where('code', '=', $search)->get();
+            $searchresult = Address::whereNull('id_customers')->where('code', '=', strtoupper(search) )->get();
             //dd($regionsearch);
-            if ( ! $searchresult->isEmpty() && $bcode == $searchresult->first()->code)
+            if ( ! $searchresult->isEmpty() && ! strcasesmp($bcode, $searchresult->first()->code))
             {
                 $codevalid = 1;
                 $appointment['bcode'] = $bcode;
             } else
             {
+
                 $codevalid = 0;
             }
         } else
         {
             //need code to check against provided list.
-            if (in_array($bcode, $buildinglist))
+            if ($this->in_arrayi($bcode, $buildinglist))
             {
                 $codevalid = 1;
                 $appointment['bcode'] = $bcode;
             } else
             {
+
                 $codevalid = 0;
             }
         }
 
 //check for a valid services, this should probably be turned into a function with definable services in the site config
-        switch ($explodedSummary[3])
+        switch (strtolower($explodedSummary[3]) )
         {
-            case "TV/INT":
+            case "tv/int":
                 $appointment['service'] = 'tvint';
                 $servicevalid = 1;
                 break;
-            case "TV":
+            case "tv":
                 $appointment['service'] = 'tv';
                 $servicevalid = 1;
                 break;
-            case "INT":
+            case "int":
                 $appointment['service'] = 'int';
                 $servicevalid = 1;
                 break;
             default:
+                strtolower($explodedSummary[3]);
                 $servicevalid = 0;
                 break;
         }
 
         //and check for a valid service action.
-        switch ($explodedSummary[4])
+        switch (strtolower($explodedSummary[4]) )
         {
-            case "Connect":
-
+            case "connect":
                 $actionvalid = 1;
                 $appointment['action'] = 'connect';
                 break;
-            case "Repair":
+            case "repair":
                 $actionvalid = 1;
                 $appointment['action'] = 'repair';
                 break;
-            case "Other":
+            case "other":
                 $actionvalid = 1;
                 $appointment['action'] = 'other';
                 break;
             default:
+
                 $actionvalid = 0;
                 break;
         }
@@ -442,13 +450,14 @@ class GoogleCalendar {
             return true;
         } else
         {
+
             return false;
         }
 
         return false;
-    }  //does this contain that?
+    }
 
-/**
+        /**
      * @param $user
      * @param $tech
      * @param $buildingcode
@@ -468,7 +477,6 @@ class GoogleCalendar {
     {
         $date = new $startTime;
 
-        $address;  //should be based off of buildingcode
 
         $Calendar = new GoogleCalendar; //a calendar hook.
 
@@ -516,7 +524,7 @@ class GoogleCalendar {
 //$googleresponse is just the newly created appointment in case we need anything else done with it.
 
         return $googleresponse;
-    }
+    }  //does this contain that?
 
     /**
      * checks that tech is not already booked in given datetime range.
@@ -731,11 +739,6 @@ class GoogleCalendar {
         return $totallist;
     }
 
-
-    //given an appointment this function determines if it has a valid building code, while a tech wash schedule, and that the service and action are valid
-    //$appointment will be modified with some additional information. bcode service action and tech will be added.
-    //passing in a building list and a list of the scheduled techs will speed this function up since it will not have to make it's own db calls.
-
     /**
      * @param DateTime $date
      * @return array containing all current techs that are marked as onsite
@@ -775,7 +778,7 @@ class GoogleCalendar {
             {
                 //find out which tech an appointment is scheduled for.
                 $summary = $appointment->getSummary();
-                if ($this->foundinstring($summary, $tech))
+                if ($this->foundinstring(strtolower($summary), strtolower($tech)))
                 {
                     $appointmentend = $appointment->getEnd()->getDateTime();
                     $appointmentstart = $appointment->getStart()->getDateTime();
@@ -789,6 +792,16 @@ class GoogleCalendar {
 
         return $listing;
 
+    }
+
+
+    //given an appointment this function determines if it has a valid building code, while a tech wash schedule, and that the service and action are valid
+    //$appointment will be modified with some additional information. bcode service action and tech will be added.
+    //passing in a building list and a list of the scheduled techs will speed this function up since it will not have to make it's own db calls.
+
+    private function in_arrayi($needle, $haystack)
+    {
+        return in_array(strtolower($needle), array_map('strtolower', $haystack));
     }
 
 

@@ -195,8 +195,8 @@ var app = angular.module('app', [
   'app.reports',
   'app.charges',
   'app.newcustomer',
-  'app.calDataScrape',
-  'app.warp',
+  'app.caldatascrape',
+ // 'app.warp',
   'app.tabs',
   'app.walkthrough',
 ])

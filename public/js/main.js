@@ -381,17 +381,17 @@ angular.module('app.tech-appointments', ['ui.router']).config(function ($statePr
         })
 });
 
-angular.module('app.calDataScrape', ['ui.router']).config(function ($stateProvider) {
+angular.module('app.caldatascrape', ['ui.router']).config(function ($stateProvider) {
     $stateProvider
-        .state('app.calDataScrape', {
-            url: '/CalReport',
+        .state('app.caldatascrape', {
+            url: '/caldatascrape',
             data: {
                 title: 'CalReport'
             },
             views: {
                 "content@app": {
                     templateUrl: '/views/customer/customerCalReport.html',
-                    controller: 'calDataScrape'
+                    //controller: 'calDataScrape'
                 }
             },
             resolve: {
