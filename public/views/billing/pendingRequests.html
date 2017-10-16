@@ -8,25 +8,25 @@
         <div class="col-lg-4 text-align-right status-color-active">
             <label class="label-charge">Charges</label>
             <div class="col-lg-4">
-                <label>Today <br><span>${{resultStatsData.day.charges_amount}}</span></label>
+                <label>Today <br><span>{{ resultStatsData.day.charges_amount | currency : "$" : 2 }}</span></label>
             </div>
             <div class="col-lg-4">
-                <label>This Week <br><span>${{resultStatsData.week.charges_amount}}</span></label>
+                <label>This Week <br><span>{{ resultStatsData.week.charges_amount | currency : "$" : 2 }} ${{}}</span></label>
             </div>
             <div class="col-lg-4">
-                <label>This Month <br><span>${{resultStatsData.month.charges_amount}}</span></label>
+                <label>This Month <br><span>{{ resultStatsData.month.charges_amount | currency : "$" : 2 }}</span></label>
             </div>
         </div>
         <div class="col-lg-4 text-align-right status-color-decommissioned">
             <label class="label-refund">Refunds</label>
             <div class="col-lg-4">
-                <label>Today  <br><span>${{resultStatsData.day.refund_amount}}</span></label>
+                <label>Today  <br><span>{{ resultStatsData.day.refund_amount | currency : "$" : 2 }}</span></label>
             </div>
             <div class="col-lg-4">
-                <label>This Week <br><span>${{resultStatsData.week.refund_amount}}</span></label>
+                <label>This Week <br><span>{{ resultStatsData.week.refund_amount | currency : "$" : 2 }}</span></label>
             </div>
             <div class="col-lg-4">
-                <label>This Month <br><span>${{resultStatsData.month.refund_amount}}</span></label>
+                <label>This Month <br><span>{{ resultStatsData.month.refund_amount | currency : "$" : 2 }}</span></label>
             </div>
         </div>
 

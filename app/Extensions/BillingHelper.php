@@ -412,6 +412,12 @@ class BillingHelper {
                 continue;
             }
             $resultsArray[$chargeId] = $this->denyManualCharge($charge);
+
+            $invoice = $charge->invoice;
+            if($invoice != null){
+                $this->cancelInvoice($invoice);
+            }
+
         }
 
         return $resultsArray;

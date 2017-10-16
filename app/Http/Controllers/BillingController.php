@@ -183,8 +183,11 @@ class BillingController extends Controller {
     {
 
         return Charge::with(['customer', 'address'])
-            ->where('status', config('const.charge_status.pending_approval'))
             ->where('processing_type', config('const.type.manual_pay'))
+            ->where(function($query){
+              $query->where('status', config('const.charge_status.pending_approval'))
+              ->orWhere('status', config('const.charge_status.invoiced'));
+            })
             ->get();
     }
 
