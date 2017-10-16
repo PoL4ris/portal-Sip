@@ -202,14 +202,13 @@ app.controller('globalToolsCtl',                    function ($scope, $http, $co
     $('#main').addClass(id + '-location');
   }
   $scope.buscador             = function () {
+
     if($scope.keyboardBtn){
       $scope.keyboardBtn = !$scope.keyboardBtn;
       return;
     }
-//       var string = $('.stringSearch').val();
 
     if(!this.searchCustomer)
-//       if(!this.searchCustomer || string.length == 0)
     {
       $scope.customerSearchResult = false;
       $scope.focusIndex = 0;
@@ -218,16 +217,9 @@ app.controller('globalToolsCtl',                    function ($scope, $http, $co
 
     var query = {'querySearch' : this.searchCustomer};
 
-//       console.log(query);
-
     $http.get("customersSearch", {params:query})
       .then(function (response) {
-//             if(supportService.searchFlag){
-//                 $scope.genericSearchResult  = response.data;
-//             }
-//             else
         $scope.customerSearchResult = response.data;
-        console.log(response.data.length);
       });
 
     return;
@@ -481,10 +473,6 @@ app.controller('globalToolsCtl',                    function ($scope, $http, $co
   }
 
   $scope.idSearch             = function(){
-
-
-  console.log(this.adminSearch);
-  console.log('++++++++++++===========+++++++++');
 
     if(!this.adminSearch)
     {

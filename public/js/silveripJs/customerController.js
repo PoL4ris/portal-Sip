@@ -51,10 +51,14 @@ app.controller('customerController',                function ($scope, $http, $st
         if (!$scope.customerServiceData)
           $scope.customerServiceData = customerService.tabs;
 
-        $('#tabs-label-' + $scope.uniqueIdIndex).html(response.data.address.code + ' #' + response.data.address.unit)
+
+        $('#tabs-label-' + $scope.uniqueIdIndex).html(response.data.address.code + ' #' + response.data.address.unit);
+        $('#customer-tab-link-id-' + $scope.uniqueIdIndex).attr('title', (response.data.first_name + ' ' + response.data.last_name)).tooltip();
 
         if($scope.callTabAction)
           $('#customer-tab-link-id-' + $scope.uniqueIdIndex).trigger('click');
+
+
 
       });
 
