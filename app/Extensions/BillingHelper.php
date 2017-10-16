@@ -951,15 +951,15 @@ class BillingHelper {
         while ($paginatedInvoices->count() > 0)
         {
             // TODO: Uncomment the line below when ready to run this in production or test it in dev
-            // $invoices = $this->filterPendingInvoicesByUpdatedPaymentMethods($paginatedInvoices);
-            $invoices = $paginatedInvoices;
+             $invoices = $this->filterPendingInvoicesByUpdatedPaymentMethods($paginatedInvoices);
+//            $invoices = $paginatedInvoices;
 
             foreach ($invoices as $invoice)
             {
                 $totalInvoicesProcessed ++;
                 Log::info('BillingHelper::processPendingAutopayInvoicesThatHaveUpdatedPaymentMethods(): processing invoice id=' . $invoice->id . ' amount=$' . $invoice->amount);
                 // TODO: Uncomment the line below when ready to run this in production or test it in dev
-                // $this->processInvoice($invoice, true, true, false);
+                 $this->processInvoice($invoice, true, true, false);
                 $lastProcessedInvoiceId = $invoice->id;
             }
 

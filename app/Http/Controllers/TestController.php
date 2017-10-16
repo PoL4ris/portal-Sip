@@ -418,24 +418,65 @@ class TestController extends Controller {
             ->with('customer');
     }
 
+    public function getPendingAutopayInvoicesThatHaveUpdatedPaymentMethods()
+    {
+        $perPage = 15;
+        $totalInvoicesProcessed = 0;
+        $billingHelper = new BillingHelper();
+
+        $paginatedInvoices = $billingHelper->paginatePendingFailedInvoices();
+        $lastProcessedInvoiceId = 0;
+
+        $invoiceTable = [];
+        while ($paginatedInvoices->count() > 0)
+        {
+            // TODO: Uncomment the line below when ready to run this in production or test it in dev
+            $invoices = $billingHelper->filterPendingInvoicesByUpdatedPaymentMethods($paginatedInvoices);
+//            $invoices = $paginatedInvoices;
+
+            foreach ($invoices as $invoice)
+            {
+                $totalInvoicesProcessed ++;
+                $invoiceTable[] = $invoice;
+//                Log::info('BillingHelper::processPendingAutopayInvoicesThatHaveUpdatedPaymentMethods(): processing invoice id=' . $invoice->id . ' amount=$' . $invoice->amount);
+                // TODO: Uncomment the line below when ready to run this in production or test it in dev
+                // $this->processInvoice($invoice, true, true, false);
+                $lastProcessedInvoiceId = $invoice->id;
+            }
+
+            $paginatedInvoices = $billingHelper->paginatePendingFailedInvoices($perPage, $lastProcessedInvoiceId);
+        }
+//        echo 'Processed ' . $totalInvoicesProcessed . ' invoices.' . "\n";
+        return $invoiceTable;
+    }
+
     public function generalTest(Request $request)
     {
 
-        $commandOptions = ['count'    => '5',
-                           'addresses'  => ['www.google.com', 'www.yahoo.com', 'www.silverip.com'],
-                           'interval' => '300ms'];
+        dd(Charge::with(['customer', 'address'])
+            ->where('status', config('const.charge_status.pending_approval'))
+            ->where('processing_type', config('const.type.manual_pay'))
+            ->get());
 
-        dd(json_encode($commandOptions));
+        $invoices = collect($this->getPendingAutopayInvoicesThatHaveUpdatedPaymentMethods());
 
-        $ip = '108.160.198.204';
-        $serviceRouter = new MtikRouter(['ip_address' => $ip,
-                                         'username'   => config('netmgmt.mikrotik.username'),
-                                         'password'   => config('netmgmt.mikrotik.password')]);
-        $command = '/ping';
-        $commandOptions = ['count'    => '5',
-                           'address'  => 'www.google.com',
-                           'interval' => '300ms'];
-        dd($serviceRouter->runCommand($ip, $command, $commandOptions));
+        dd($invoices->pluck('id_customers'));
+
+//        $commandOptions = ['count'    => '5',
+//                           'addresses'  => ['www.google.com', 'www.yahoo.com', 'www.silverip.com'],
+//                           'interval' => '300ms'];
+//
+//        dd(json_encode($commandOptions));
+//
+//        $ip = '108.160.198.204';
+//        $serviceRouter = new MtikRouter(['ip_address' => $ip,
+//                                         'username'   => config('netmgmt.mikrotik.username'),
+//                                         'password'   => config('netmgmt.mikrotik.password')]);
+//        $command = '/ping';
+//        $commandOptions = ['count'    => '5',
+//                           'address'  => 'www.google.com',
+//                           'interval' => '300ms'];
+//        dd($serviceRouter->runCommand($ip, $command, $commandOptions));
 
 
         //        dd('done');
@@ -446,14 +487,14 @@ class TestController extends Controller {
 
 
         /** Switch port info filtering test **/
-        $ciscoSwitch = new CiscoSwitch(['readCommunity'  => 'oomoomee',
-                                        'writeCommunity' => 'BigSeem']);
-//
-////        $switchModel = $ciscoSwitch->getSnmpModelNumber('10.15.215.254');
-//        $switchModel = $ciscoSwitch->getSnmpModelNumber('10.11.51.47');
-////        $portType = $ciscoSwitch->getSwitchPortType('10.11.51.40');
-        $portFastMode = $ciscoSwitch->getSnmpPortfastStatus('10.11.51.47', '1/24');
-        dd($portFastMode);
+//        $ciscoSwitch = new CiscoSwitch(['readCommunity'  => 'oomoomee',
+//                                        'writeCommunity' => 'BigSeem']);
+////
+//////        $switchModel = $ciscoSwitch->getSnmpModelNumber('10.15.215.254');
+////        $switchModel = $ciscoSwitch->getSnmpModelNumber('10.11.51.47');
+//////        $portType = $ciscoSwitch->getSwitchPortType('10.11.51.40');
+//        $portFastMode = $ciscoSwitch->getSnmpPortfastStatus('10.11.51.47', '1/24');
+//        dd($portFastMode);
 
 
 ////        dd($portType);
@@ -480,40 +521,40 @@ class TestController extends Controller {
 //        $declinedInvoices = Invoice::where('processing_type',)
 
         /** Find chargeable items for manually added plans and create an invoice for them **/
-        $billingHelper = new BillingHelper();
-
-        $customerProducts = CustomerProduct::with([
-            'customer' => function ($query) {
-                $query->where('id_status', config('const.status.active'));
-            },
-            'product'  => function ($query) {
-                $query->where('amount', '>', 0)
-                ->where('frequency', 'annual');
-            }])
-            ->where('id_users', '!=', 0)
-            ->where('charge_status', config('const.customer_product_charge_status.none'))
-            ->where('id_status', config('const.status.active'))
-            ->whereNotNull('expires')
-            ->orderBy('created_at', 'desc')
-            ->take(10)
-            ->get();
-
-//        dd($customerProducts);
-//        $customers = $customerProducts->pluck('customer');
-//        $filteredProducts = $customerProducts->where('product.amount', '>', 0);
-
-        $filteredProducts = $customerProducts->filter(function ($customerProduct, $key) {
-            $product = $customerProduct->product;
-            $customer = $customerProduct->customer;
-            if ($customer != null && $product != null)
-            {
-                return true;
-            }
-
-            return false;
-        });
-
-        dd($filteredProducts);
+//        $billingHelper = new BillingHelper();
+//
+//        $customerProducts = CustomerProduct::with([
+//            'customer' => function ($query) {
+//                $query->where('id_status', config('const.status.active'));
+//            },
+//            'product'  => function ($query) {
+//                $query->where('amount', '>', 0)
+//                ->where('frequency', 'annual');
+//            }])
+//            ->where('id_users', '!=', 0)
+//            ->where('charge_status', config('const.customer_product_charge_status.none'))
+//            ->where('id_status', config('const.status.active'))
+//            ->whereNotNull('expires')
+//            ->orderBy('created_at', 'desc')
+//            ->take(10)
+//            ->get();
+//
+////        dd($customerProducts);
+////        $customers = $customerProducts->pluck('customer');
+////        $filteredProducts = $customerProducts->where('product.amount', '>', 0);
+//
+//        $filteredProducts = $customerProducts->filter(function ($customerProduct, $key) {
+//            $product = $customerProduct->product;
+//            $customer = $customerProduct->customer;
+//            if ($customer != null && $product != null)
+//            {
+//                return true;
+//            }
+//
+//            return false;
+//        });
+//
+//        dd($filteredProducts);
 ////    dd($customers->pluck('signedup_at', 'id'));
 //
 //        foreach ($customers as $customer)
@@ -649,29 +690,30 @@ class TestController extends Controller {
 
         /** Find pending invoices then check for ones that belong to disabled customers **/
 
-//        $invoiceStatusArrayMap = array_flip(config('const.invoice_status'));
-//
-//        $invoices = Invoice::with('customer')
-//            ->where('processing_type', config('const.type.auto_pay'))
-//            ->where('status', config('const.invoice_status.pending'))
-////            ->where('status', '!=', config('const.invoice_status.cancelled'))
-////            ->where('failed_charges_count', '>', 0)
-////            ->where('due_date', '2017-08-01 00:00:00')
-////            ->where('amount', '<', 100)
-//            ->get();
-//
-//        $invoices->transform(function ($invoice, $key) use ($invoiceStatusArrayMap) {
-//            $invoice->status = $invoiceStatusArrayMap[$invoice->status];
-//
-//            return $invoice;
-//        });
-//
-////        dd($invoices->count());
+        $invoiceStatusArrayMap = array_flip(config('const.invoice_status'));
+
+        $invoices = Invoice::with('customer')
+            ->where('processing_type', config('const.type.auto_pay'))
+            ->where('status', config('const.invoice_status.pending'))
+//            ->where('status', '!=', config('const.invoice_status.cancelled'))
+//            ->where('failed_charges_count', '>', 0)
+//            ->where('due_date', '2017-08-01 00:00:00')
+//            ->where('amount', '<', 100)
+            ->get();
+
+        $invoices->transform(function ($invoice, $key) use ($invoiceStatusArrayMap) {
+            $invoice->status = $invoiceStatusArrayMap[$invoice->status];
+
+            return $invoice;
+        });
+
+//        dd($invoices);
+//        dd($invoices->count());
 ////        dd('$'.$invoices->pluck('amount', 'id_customers')->sort()->sum());
 //
 //        /** Get the customer IDs that are disabled for the above invoices **/
-//        $customers = $invoices->pluck('customer');
-//        dd($customers->whereLoose('id_status', config('const.status.disabled'))->pluck('id_status', 'id'));
+        $customers = $invoices->pluck('customer');
+        dd($customers->whereLoose('id_status', config('const.status.disabled'))->pluck('id_status', 'id'));
 
 
         /** Check and disable one-time products that have been charged/invoiced **/
