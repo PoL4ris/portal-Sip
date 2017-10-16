@@ -21,8 +21,14 @@
 }
 .demo {
 }
+.avenir-font{
+  font-family: Avenir;
+}
 .color-white{
   color: white;
+}
+.color-ddd{
+  color: #ddd;
 }
 .bg-white {
   background: white none repeat scroll 0 0;
@@ -715,15 +721,25 @@ table.dataTable tbody tr {
   position: relative;
   top: -3px;
 }
-.vip-class label {
+.vip-class label, .vip-class a{
   background: crimson none repeat scroll 0 0;
   border-radius: 3px;
-  color: white;
+  color: white !important;
   font-size: 12px;
   font-weight: bold;
   letter-spacing: 1px;
   padding: 2px 5px 0;
   text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
+}
+.no-vip-class a{
+  /*background: #a2a2a2;*/
+  border-radius: 3px;
+  color: #5d5d5d;
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  padding: 2px 5px 0;
+
 }
 .vip-class span {
   font-size: 16px;
@@ -1704,6 +1720,15 @@ table.dataTable tbody tr {
   z-index: 10;
   margin-top: 34px;
 }
+.invoice-skin{  }
+.invoice-skin thead tr{
+  background: none;
+ }
+.invoice-skin thead tr th, .invoice-skin tbody tr td{
+  border: none;
+ }
+.no-vip-class a.editable{
+  color: #ddd;}
 
 pre {
   font-size: 10px;

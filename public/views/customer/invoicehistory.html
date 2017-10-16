@@ -1,4 +1,5 @@
 <div class="col-lg-12 billing-history-table" ng-controller="customerInvoiceHistoryController">
+
     <div id="customer-view-0">
         <div class="panel panel-default no-border table-container animated fadeInLeft">
             <table class="tablesorter table" datatable="ng" dt-options="invoiceOptions">
@@ -46,61 +47,85 @@
                     </button>
                     <h4 class="modal-title" id="myModalLabel">{{modalInvoice.description}}</h4>
                 </div>
-                <div class="modal-body">
-                    <div class="wrapper-sm">
+
+                    <div class="col-lg-12 col-xs-12 bg-gray text-center p-b-xs p-t-xs ">
+                        <b><p>Upcoming Charges</p></b>
+                    </div>
+
+                <div class="modal-body avenir-font">
+                    <div class="wrapper-sm p-t-md">
                         <div>
                             <!--<a href class="btn btn-success pull-right" onClick="alert('sending copy to customer')">Send to Customer</a>-->
-                            <div class="invoice-logo "><img src="/img/silverip-logo-100px.png" alt="SilverIp"/></div>
+
+
                             <div class="row">
+
+
                                 <div class="col-xs-6">
-                                    <p>{{modalInvoice.address.address}}</p>
+                                    <p>{{customerServiceData[uniqueIdIndex].info.first_name + ' ' + customerServiceData[uniqueIdIndex].info.last_name}}</p>
+                                    <p>{{modalInvoice.address.address}} # {{modalInvoice.address.unit}}</p>
                                     <p>{{modalInvoice.address.city}}, {{modalInvoice.address.state}}, {{modalInvoice.address.zip}}</p>
-                                    <p>Unit: {{modalInvoice.address.unit}}</p>
-                                    <p>@: {{customerServiceData[uniqueIdIndex].info.email}}</p>
-                                    <p>P: {{customerServiceData[uniqueIdIndex].info.contacts[1].value}}</p>
+
+                                    <!--<p>@: {{customerServiceData[uniqueIdIndex].info.email}}</p>-->
+                                    <!--<p>P: {{customerServiceData[uniqueIdIndex].info.contacts[1].value}}</p>-->
 
                                 </div>
-                                <div class="col-xs-6 text-right right-side-invoice">
-                                    <p class="f-size-17">Invoice No. {{modalInvoice.id}}</p>
-                                    <p class="f-size-17" ng-init="dueDate = convertDate(modalInvoice.due_date)" ng-if="modalInvoice.due_date">
-                                        Due date: <i class="fa fa-calendar"></i> {{dueDate | date : "shortDate" }}
-                                    </p>
-                                    <p class="f-size-17 bg-color-darken txt-color-white">Total Due : ${{modalInvoice.amount}} USD</p>
+                                <div class="col-xs-6 text-right">
+                                    <div class="p-r-lg">
+                                        <img src="/img/silverip-logo-100px.png" alt="SilverIP" title="SilverIP"/>
+                                    </div>
                                 </div>
                             </div>
                             <hr>
-                            <p class="m-b-lg" ng-init="invoDate = convertDate(modalInvoice.created_at)" ng-if="modalInvoice.created_at">
-                                Invoice date: <strong>{{invoDate | date : "MMM d, y h:mm a" }}</strong><br>
-                                Status: <span class="label cdg-color-up caps">{{modalInvoice.status}}</span><br>
-                                ID: <strong> # {{modalInvoice.id}}</strong>
-                            </p>
+                            <!--<p class="m-b-lg" ng-init="invoDate = convertDate(modalInvoice.created_at)" ng-if="modalInvoice.created_at">-->
+                                <!--Invoice date: <strong>{{invoDate | date : "MMM d, y h:mm a" }}</strong><br>-->
+                                <!--Status: <span class="label cdg-color-up caps">{{modalInvoice.status}}</span><br>-->
+                                <!--ID: <strong> # {{modalInvoice.id}}</strong>-->
+                            <!--</p>-->
+
                             <div class="line"></div>
-                            <table class="table table-striped bg-white b-a">
+
+                            <table class="table invoice-skin">
                                 <thead>
-                                <tr>
-                                    <th>Product ID</th>
-                                    <th>Product</th>
-                                    <th>Frequency</th>
-                                    <th>Amount</th>
-                                </tr>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Invoice #</th>
+                                        <th>Period</th>
+                                        <th>Amount</th>
+                                    </tr>
                                 </thead>
                                 <tbody>
-                                <tr ng-repeat="descProd in customerServiceData[uniqueIdIndex].customerServices.services">
-                                    <td>{{descProd.product.id}}</td>
-                                    <td>{{descProd.product.name}}</td>
-                                    <td class="capital-first">{{descProd.product.frequency}}</td>
-                                    <td>${{descProd.amount?descProd.amount:'0.00'}}</td>
-                                </tr>
-                                <tr>
-                                    <td colspan="3" class="text-right-invo"><strong>Tax</strong></td>
-                                    <td>$0.00</td>
-                                </tr>
-                                <tr>
-                                    <td colspan="3" class="text-right-invo no-border"><strong>Total</strong></td>
-                                    <td><strong>${{modalInvoice.amount}}</strong></td>
-                                </tr>
+
+                                    <tr ng-repeat="descProd in customerServiceData[uniqueIdIndex].customerServices.services">
+                                        <td>{{descProd.product.description ? descProd.product.description : descProd.product.name}}</td>
+                                        <td>{{modalInvoice.id}}</td>
+                                        <td class="capital-first">{{descProd.product.frequency}}</td>
+                                        <td>${{descProd.amount?descProd.amount:'0.00'}}</td>
+                                    </tr>
+
+                                    <tr><td></td></tr>
+
+                                    <tr>
+                                        <td class="no-border">Sales Tax</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td>$0.00</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="no-border">Other</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td>$0.00</td>
+                                    </tr>
+                                    <tr class="b-t-ddd">
+                                        <td class="no-border"><strong>Total Amount Due</strong></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td><strong>${{modalInvoice.amount}}</strong></td>
+                                    </tr>
                                 </tbody>
                             </table>
+
                         </div>
                     </div>
                 </div>
@@ -112,4 +137,5 @@
             </div>
         </div>
     </div>
+
 </div>
