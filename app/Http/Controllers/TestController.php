@@ -430,19 +430,21 @@ class TestController extends Controller {
         $invoiceTable = [];
         while ($paginatedInvoices->count() > 0)
         {
-            // TODO: Uncomment the line below when ready to run this in production or test it in dev
             $invoices = $billingHelper->filterPendingInvoicesByUpdatedPaymentMethods($paginatedInvoices);
-//            $invoices = $paginatedInvoices;
 
             foreach ($invoices as $invoice)
             {
                 $totalInvoicesProcessed ++;
                 $invoiceTable[] = $invoice;
-//                Log::info('BillingHelper::processPendingAutopayInvoicesThatHaveUpdatedPaymentMethods(): processing invoice id=' . $invoice->id . ' amount=$' . $invoice->amount);
-                // TODO: Uncomment the line below when ready to run this in production or test it in dev
-                // $this->processInvoice($invoice, true, true, false);
-                $lastProcessedInvoiceId = $invoice->id;
+                Log::info('getPendingAutopayInvoicesThatHaveUpdatedPaymentMethods(): processing invoice id=' . $invoice->id . ' amount=$' . $invoice->amount);
+
+//                $lastProcessedInvoiceId = $invoice->id;
             }
+
+            $lastInvoice = $paginatedInvoices->last();
+            $lastProcessedInvoiceId = $lastInvoice->id;
+
+            Log::info('getPendingAutopayInvoicesThatHaveUpdatedPaymentMethods(): Found ' . $invoices->count() . ' invoices that have updated payment methods. Last invoice checked was: '.$lastProcessedInvoiceId);
 
             $paginatedInvoices = $billingHelper->paginatePendingFailedInvoices($perPage, $lastProcessedInvoiceId);
         }
@@ -453,10 +455,13 @@ class TestController extends Controller {
     public function generalTest(Request $request)
     {
 
-        dd(Charge::with(['customer', 'address'])
-            ->where('status', config('const.charge_status.pending_approval'))
-            ->where('processing_type', config('const.type.manual_pay'))
-            ->get());
+//        $billingHelper = new BillingHelper();
+//        dd($billingHelper->paginatePendingFailedInvoices());
+
+//        dd(Charge::with(['customer', 'address'])
+//            ->where('status', config('const.charge_status.pending_approval'))
+//            ->where('processing_type', config('const.type.manual_pay'))
+//            ->get());
 
         $invoices = collect($this->getPendingAutopayInvoicesThatHaveUpdatedPaymentMethods());
 

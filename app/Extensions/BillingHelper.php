@@ -945,24 +945,26 @@ class BillingHelper {
         $perPage = 15;
         $totalInvoicesProcessed = 0;
 
+        // Get the first batch of pending invoices
         $paginatedInvoices = $this->paginatePendingFailedInvoices();
-        $lastProcessedInvoiceId = 0;
 
         while ($paginatedInvoices->count() > 0)
         {
-            // TODO: Uncomment the line below when ready to run this in production or test it in dev
-             $invoices = $this->filterPendingInvoicesByUpdatedPaymentMethods($paginatedInvoices);
-//            $invoices = $paginatedInvoices;
+            // Get the last invoice in this batch for record keeping
+            $lastInvoice = $paginatedInvoices->last();
+            $lastProcessedInvoiceId = $lastInvoice->id;
+
+            // Find the invoices that have updated pament methods so we can just process them
+            $invoices = $this->filterPendingInvoicesByUpdatedPaymentMethods($paginatedInvoices);
 
             foreach ($invoices as $invoice)
             {
                 $totalInvoicesProcessed ++;
                 Log::info('BillingHelper::processPendingAutopayInvoicesThatHaveUpdatedPaymentMethods(): processing invoice id=' . $invoice->id . ' amount=$' . $invoice->amount);
-                // TODO: Uncomment the line below when ready to run this in production or test it in dev
-                 $this->processInvoice($invoice, true, true, false);
-                $lastProcessedInvoiceId = $invoice->id;
+                $this->processInvoice($invoice, true, true, false);
             }
 
+            // Get the next batch of pending invoices
             $paginatedInvoices = $this->paginatePendingFailedInvoices($perPage, $lastProcessedInvoiceId);
         }
 
