@@ -557,13 +557,13 @@ class CustomerController extends Controller {
      */
     public function insertCustomerService(Request $request)
     {
-        $when = $this->getTimeToAdd(Product::find($request->idProduct)->frequency);
-        $expires = null;
-
-        if ($when != null)
-        {
-            $expires = date("Y-m-d H:i:s", strtotime($when . ' 00:00:00'));
-        }
+//        $when = $this->getTimeToAdd(Product::find($request->idProduct)->frequency);
+//        $expires = null;
+//
+//        if ($when != null)
+//        {
+//            $expires = date("Y-m-d H:i:s", strtotime($when . ' 00:00:00'));
+//        }
 
         $customer = Customer::find($request->idCustomer);
         $address = $customer->address;
@@ -574,7 +574,7 @@ class CustomerController extends Controller {
         $newProduct->id_status = config('const.status.active');
         $newProduct->id_address = ($address != null) ? $address->id : 0;
         $newProduct->signed_up = date("Y-m-d H:i:s");
-        $newProduct->expires = $expires;
+//        $newProduct->expires = $expires;
         $newProduct->id_users = Auth::user()->id;
         $newProduct->save();
 
@@ -713,13 +713,13 @@ class CustomerController extends Controller {
      */
     public function updateCustomerServices(Request $request)
     {
-        $when = $this->getTimeToAdd(Product::find($request->newId)->frequency);
-        $expires = date("Y-m-d H:i:s", strtotime('first day of next ' . $when));
+//        $when = $this->getTimeToAdd(Product::find($request->newId)->frequency);
+//        $expires = date("Y-m-d H:i:s", strtotime('first day of next ' . $when));
 
         $updateService = CustomerProduct::find($request->oldId);
         $updateService->id_products = $request->newId;
         $updateService->signed_up = date("Y-m-d H:i:s");
-        $updateService->expires = $expires;
+//        $updateService->expires = $expires;
         $updateService->id_users = Auth::user()->id;
         $updateService->id_status = config('const.status.active');
         $updateService->save();
