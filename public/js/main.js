@@ -32,7 +32,7 @@ angular.module('app.customers',     ['ui.router']).config(function ($stateProvid
       },
       views: {
         "content@app": {
-          templateUrl: '/views/customers.html?'+appConfig.appCacheClear,
+          templateUrl: '/views/customers.html?' + appConfig.appCacheClear,
             controller:  'tabsController',
         }
       },
@@ -403,34 +403,32 @@ angular.module('app.tech-appointments', ['ui.router']).config(function ($statePr
         })
 });
 
-app.factory('customerService',  function () {
+app.factory('customerService',      function () {
   return {
     exist: true,
-//    sideBarFlag: true,
     rightView: false,
-    statusArrayConstant : constArray,//remove.
+//    statusArrayConstant : constArray,//remove.
     tabs: {},
-    // customerArray : {},
-      customerArray : [],
+    customerArray : [],
 
   };
 });
-app.factory('buildingService',  function () {
+app.factory('buildingService',      function () {
   return {
     exist: true
   };
 });
-app.factory('supportService',   function () {
+app.factory('supportService',       function () {
   return {
     exist: true
   };
 });
-app.factory('adminService',     function () {
+app.factory('adminService',         function () {
   return {
     existeToken: $('#auth-user').attr('tmpTokenTest')
   };
 });
-app.factory('generalService',   function () {
+app.factory('generalService',       function () {
   return {
     exist: true,
     statusArrayConstant : constArray,

@@ -2,19 +2,17 @@ app.controller('tabsController', function ($scope, $http, customerService, gener
 
     $scope.addToTabArray = function (id) {
 
-        // if (customerService.customerArray[id])
         if (customerService.tabs[id]) {
-            // console.log('customer with id='+id+' is already open');
             return;
         }
-
 
         customerService.customerArray.push(id);
         customerService.lastRequestedId = id;
         $scope.tabsArray = customerService.customerArray;
         generalService.rightView = true;
         $scope.customerServiceData = customerService.tabs;
-        // console.log(customerService);
+
+         console.log(customerService);
     };
 
     $scope.removeFromTabArray = function (id, tabIndex) {

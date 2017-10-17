@@ -16,12 +16,12 @@ app.controller('customerController',                function ($scope, $http, $st
   }
   else
   {
-    //uncoment to apear the sideBar default
-    //    if(generalService.stateRoute == 'customers')
-    //      if(!generalService.sideBarFlag) {
-    //        $scope.sipTool(2);
-    //        generalService.sideBarFlag = true;
-    //      }
+    // uncoment to apear the sideBar default
+    //  if(generalService.stateRoute == 'customers')
+    //    if(!generalService.sideBarFlag) {
+    //      $scope.sipTool(2);
+    //      generalService.sideBarFlag = true;
+    //    }
 
     generalService.leftView   = true;
     $scope.customerFlag       = false;
