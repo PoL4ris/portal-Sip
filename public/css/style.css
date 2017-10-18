@@ -1310,19 +1310,20 @@ table.dataTable tbody tr {
 .cn-customer .cn-spacer-containers {
   height: 20px;
 }
-.cn-customer .cn-containers label {
+.cn-customer .cn-containers label , .input-contect-forms label{
   color: #7d7d7d;
   font-size: 14px;
   font-weight: inherit;
   margin-bottom: 10px;
 }
-.cn-customer .cn-containers input {
+.cn-customer .cn-containers input , .input-contect-forms input{
   border:none;
   border-bottom: 1px solid #ddd;
   margin-bottom: 10px;
   width: 100%;
   color: #006eb9;
 }
+.input-contect-forms input::placeholder,
 .cn-customer .cn-containers input::placeholder,
 .preview-images .img-box div.texto textarea::placeholder,
 .search-subnav-nc input::placeholder{

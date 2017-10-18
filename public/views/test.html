@@ -1,4 +1,149 @@
-Something new here | Test.html
 
 
-asd
+
+
+<article class="container m-t-lg bg-white white-shadow" ng-controller="walkthroughController as app">
+    <div class="row">
+
+        <header role="heading" class="ui-sortable-handle">
+            <ul id="widget-tab-1" class="nav pull-left nav-tabs size-100">
+                <li class="active"><a data-toggle="tab" href="#tab-r0" aria-expanded="false"><span>Main Information</span></a></li>
+                <li class=""><a data-toggle="tab" href="#tab-r1" aria-expanded="false"><span>Address</span></a></li>
+                <li class=""><a data-toggle="tab" href="#tab-r2" aria-expanded="false"><span>Products</span></a></li>
+                <li class=""><a data-toggle="tab" href="#tab-r3" aria-expanded="false"><span>Properties</span></a></li>
+            </ul>
+        </header>
+
+        <style>
+
+            input:invalid {
+                border-color: crimson;
+            }
+            input:valid {
+                border-color: green;
+            }
+            input:placeholder-shown {
+                border-color: #ddd; /* Red border only if the input is empty */
+            }
+
+
+
+        </style>
+    <div class="col-lg-12 m-t-lg">
+        <div class="tab-content input-contect-forms">
+
+            <div class="tab-pane active" id="tab-r0">
+                <h3>Building main information</h3>
+
+                <div class="col-lg-6">
+                    <label for="building-name">BuildingName</label>
+                    <input type="text"
+                           placeholder="Name"
+                           name="building-name"
+                           ng-model="buildingName"
+                           required
+                           pattern="[a-zA-Z\s]{3,}">
+                </div>
+                <div class="col-lg-6">
+                    <label for="building-code">BuildingCode</label><input type="text" placeholder="Code" name="building-code" ng-model="buildingCode">
+                </div>
+                <div class="col-lg-6">
+                    <label for="building-type">BuildingType</label><input type="text" placeholder="Type" name="building-type" ng-model="buildingType">
+                </div>
+                <div class="col-lg-6">
+                    <label for="building-status">BuildingStatus</label><input type="text" placeholder="Status" name="building-status" ng-model="buildingStatus">
+                </div>
+                <div class="col-lg-6">
+                    <label for="building-legal">BuildingLegalName</label><input type="text" placeholder="Legal Name" name="building-legal" ng-model="buildingLegal">
+                </div>
+                <div class="col-lg-6">
+                    <label for="building-units">BuildingUnits</label><input type="text" placeholder="Units" name="building-units" ng-model="buildingUnits">
+                </div>
+                <div class="col-lg-6">
+                    <label for="building-floors">BuildingFloors</label><input type="text" placeholder="Floors" name="building-floors" ng-model="buildingFloors" pattern="[0-9]{1}">
+                </div>
+                <div class="col-lg-6">
+
+                    <label for="building-image">Profile Image</label>
+
+                    <div drop-zone ng-model="app.data.upload" class="one drop-zone-box p-t-lg" ng-if="filesControl.length <= 0">
+                        <span class="font-lg">Drop files to upload<span>(Or Click)</span></span>
+                    </div>
+
+                    <div ng-if="filesControl.length > 0" class="down-status cursor-pointer" ng-click="removeImage(0)">Change <i class="fa fa-times"></i></div>
+
+                </div>
+
+            </div>
+            <div class="tab-pane" id="tab-r1">
+                <h3>Building Address</h3>
+                <div class="col-lg-6">
+                    <label for="address-address">AddressAddress</label><input type="text" placeholder="Address" name="address-address" ng-model="addressAddress">
+                </div>
+                <div class="col-lg-6">
+                    <label for="address-unit">AddressUnit</label><input type="text" placeholder="Unit number" name="address-unit" ng-model="addressUnit">
+                </div>
+                <div class="col-lg-6">
+                    <label for="address-zip">AddressZip</label><input type="text" placeholder="Zip" name="address-zip" ng-model="addressZip">
+                </div>
+            </div>
+            <div class="tab-pane" id="tab-r2">
+                <article class="null-article animated fadeInLeft" ng-include="'/views/building/product.html'" ></article>
+            </div>
+            <div class="tab-pane" id="tab-r3">
+                <h3>Properties</h3>
+                <p ng-repeat="prop in propValuesList" class="col-lg-3">
+                    <label for="prop-{{prop.name}}">{{prop.name}}</label>
+                    <input type="text" placeholder="{{prop.name}}" name="property-{{prop.name}}" ng-keyup="propertyValue()" ng-model="propertyIndex[prop.id]">
+                </p>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="col-lg-12 m-t-lg border5 padding-10">
+        <h2>RESUMEN AQUI</h2>
+        <div class="col-lg-3 border block-1">
+            <h6>Main info</h6>
+
+            <p ng-if="buildingName"><span>Building name: </span><b>{{buildingName}}</b></p>
+
+            <br>{{buildingCode}}
+            <br>{{buildingType}}
+            <br>{{buildingStatus}}
+            <br>{{buildingLegal}}
+            <br>{{buildingUnits}}
+            <br>{{buildingFloors}}
+
+            <div class="col-lg-12 border5">
+                <div ng-repeat="file in app.data.upload" >
+                    <img src="{{file.data}}" class="" style="max-height: 150px;"/>
+                </div>
+
+            </div>
+
+
+        </div>
+        <div class="col-lg-3 border2 block-2">
+            <h6>Address</h6>
+            {{addressAddress}}
+            <br>{{addressUnit}}
+            <br>Chicago, IL
+            <br>{{addressZip}}
+        </div>
+        <div class="col-lg-3 border3 block-3">
+            <h6>Products</h6>
+            <p ng-repeat="checkout in checkoutSelectedProducts" class="b-b-ddd m-b-md padding-5">
+                {{checkout.name}}
+            </p>
+        </div>
+        <div class="col-lg-3 border4 block-4">
+            <h6>Properties</h6>
+            <p ng-repeat="item in pArrayNewBld" class="b-b-ddd m-b-md padding-5">
+                {{item.property}} : {{item.value}}
+            </p>
+        </div>
+    </div>
+
+</div>
+</article>
