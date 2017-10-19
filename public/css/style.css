@@ -1729,7 +1729,28 @@ table.dataTable tbody tr {
   border: none;
  }
 .no-vip-class a.editable{
-  color: #ddd;}
+  color: #ddd;
+}
+
+
+
+
+/*#new-building-form input:invalid {*/
+  /*border-color: crimson;*/
+/*}*/
+/*#new-building-form input:valid, #new-building-form input:valid.required {*/
+  /*border-color: green;*/
+/*}*/
+/*#new-building-form input:placeholder-shown {*/
+  /*border-color: #ddd;*/
+/*}*/
+/*#new-building-form input.required{*/
+  /*border-color: crimson;*/
+/*}*/
+
+
+
+
 
 pre {
   font-size: 10px;

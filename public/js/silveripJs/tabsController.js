@@ -1,4 +1,6 @@
 app.controller('tabsController', function ($scope, $http, customerService, generalService) {
+  console.log(generalService.stateRoute);
+
 
     $scope.addToTabArray = function (id) {
 

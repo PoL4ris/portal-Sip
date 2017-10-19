@@ -476,6 +476,18 @@ $scope.propertyValue = function(){
 
 }
 
+$scope.validaFormaCompleta = function(){
+  console.log('this is the bush button red');
+  var tmpData = $('#new-building-form').find(":invalid");
+
+
+  tmpData.each(function(index, node){
+    console.log(node);
+    $(node).addClass('required');
+  });
+  return;
+}
+
 
 
 
@@ -487,13 +499,13 @@ $scope.propertyValue = function(){
 * */
 
 })
-  .directive('getBuildingPropValues',     function () {
+.directive('getBuildingPropValues',     function () {
     return function (scope) {
       scope.getBuildingPropertyValues();
     }
 
   })
-  .directive('buildingContactForm',       function () {
+.directive('buildingContactForm',       function () {
     return {
       restrict: 'E',
       replace: true,
@@ -550,12 +562,63 @@ $scope.propertyValue = function(){
                   message: 'The Comment must be less than 500 characters long'
                 }
               }
-            }
+            },
           }
         });
       }
     }
   })
+.directive('newBuildingForm', function () {
+  return {
+    restrict: 'E',
+    replace: true,
+    link: function (scope, form) {
+      form.bootstrapValidator({
+        container: '#messages',
+        feedbackIcons: {
+          valid:      'glyphicon glyphicon-ok',
+          invalid:    'glyphicon glyphicon-remove',
+          validating: 'glyphicon glyphicon-refresh'
+        },
+        fields: {
+
+
+          floor: {
+            validators: {
+              regexp: {
+                regexp: /^[0-9]+$/,
+                message: 'ERROR: SOLO NUMEROS AQUI'
+              },
+              stringLength: {
+                min: 2,
+                max: 10,
+                message: 'ERROR: STRINGLENGTH'
+              },
+//              notEmpty: {
+//                message: 'ERROR: ESTA VACIO'
+//              }
+              empty: {
+                message:'ERROR RUDO'
+              }
+            }
+          },
+
+
+          comments: {
+            validators: {
+              stringLength: {
+                max: 500,
+                message: 'The Comment must be less than 500 characters long'
+              }
+            }
+          },
+
+
+        }
+      });
+    }
+  }
+})
 app.controller('getBuildingPropertyCtl',  function ($scope, $http){
     $http.get("getBuildingProperty", {params: {'id': $scope.properData.id_building_properties}})
       .then(function (response) {

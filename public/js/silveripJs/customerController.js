@@ -10,7 +10,7 @@ app.controller('customerControllerList',            function ($scope, $http){
 });
 
 app.controller('customerController',                function ($scope, $http, $stateParams, customerService, DTOptionsBuilder, generalService, $timeout) {
-
+console.log('customercontroller');
   if (!generalService.rightView) {
     generalService.rightView = true;
   }
