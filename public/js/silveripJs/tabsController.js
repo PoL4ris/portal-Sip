@@ -2,6 +2,10 @@ app.controller('tabsController', function ($scope, $http, customerService, gener
   console.log(generalService.stateRoute);
 
 
+  customerService.tabs = {};
+  customerService.customerArray = [];
+
+
     $scope.addToTabArray = function (id) {
 
         if (customerService.tabs[id]) {
@@ -14,7 +18,7 @@ app.controller('tabsController', function ($scope, $http, customerService, gener
         generalService.rightView = true;
         $scope.customerServiceData = customerService.tabs;
 
-         console.log(customerService);
+//         console.log(customerService);
     };
 
     $scope.removeFromTabArray = function (id, tabIndex) {
