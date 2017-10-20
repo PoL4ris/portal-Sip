@@ -2,9 +2,17 @@
 html {
     background: #f8f8f8 none repeat scroll 0 0;
 }
+@font-face {
+    font-family: 'Radikal';
+    src: url('../fonts/Radikal-Light.ttf') format('truetype');
+    /*src: url('../fonts/Radikal-Regular.ttf') format('truetype');*/
+    /*src: url('../fonts/33E7EA_3_0.eot');*/
+    /*src: url('../fonts/33E7EA_3_0.eot?#iefix') format('embedded-opentype'),url('../fonts/33E7EA_3_0.woff2') format('woff2'),url('../fonts/33E7EA_3_0.woff') format('woff'),url('../fonts/33E7EA_3_0.ttf') format('truetype');*/
+}
 body {
-    font-family: "Lato",sans-serif;
-    font-size: 12px;
+    /*font-family: "Lato",sans-serif;*/
+    font-family: 'Radikal';
+    font-size: 14px;
 }
 p {
     margin: 0 0 3px;

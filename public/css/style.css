@@ -76,7 +76,12 @@
   border: 2px solid #fafbfc;
 }
 #logo {
+  padding-top: 5px;
   margin-top: 5px;
+  width: 90%;
+}
+#logo img {
+  width: 100%;
 }
 .anim {
   transition: all 0.7s ease 0s;
