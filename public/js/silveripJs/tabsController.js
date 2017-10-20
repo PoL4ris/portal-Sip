@@ -1,6 +1,4 @@
 app.controller('tabsController', function ($scope, $http, customerService, generalService) {
-  console.log(generalService.stateRoute);
-
 
   customerService.tabs = {};
   customerService.customerArray = [];
