@@ -1298,7 +1298,8 @@ table.dataTable tbody tr {
 }
 
 .cn-customer {
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  /*font-family: Roboto, "Helvetica Neue", sans-serif;*/
+  font-family: 'Radikal-Light';
 }
 .cn-customer .container {
   background: white none repeat scroll 0 0;
@@ -1322,7 +1323,8 @@ table.dataTable tbody tr {
 .cn-customer .cn-containers label {
   color: #7d7d7d;
   font-size: 14px;
-  font-weight: inherit;
+  /*font-weight: inherit;*/
+  font-family: 'Radikal-Bold';
   margin-bottom: 10px;
 }
 .cn-customer .cn-containers input {
@@ -1424,7 +1426,8 @@ table.dataTable tbody tr {
 }
 .header-title{
   font-size: 15px;
-  font-weight: bold;
+  /*font-weight: bold;*/
+  font-family: 'Radikal-Bold';
   background: rgba(0,0,0,.04);
   margin-bottom: 5px;
   padding: 3px 13px;
@@ -1451,6 +1454,7 @@ table.dataTable tbody tr {
   color: rgba(0, 0, 0, 0.4);
   display: inline-block;
   font-size: 14px;
+  font-family: 'Radikal-Bold';
   width: 20%;
 }
 .verify-info-container .bloque-a span {
@@ -1473,6 +1477,7 @@ table.dataTable tbody tr {
   color: rgba(0, 0, 0, 0.4);
   display: inline-block;
   font-size: 14px;
+  font-family: 'Radikal-Bold';
   width: 30%;
 }
 .verify-info-container .bloque-b span {
@@ -1496,6 +1501,7 @@ table.dataTable tbody tr {
   color: rgba(0, 0, 0, 0.4);
   display: inline-block;
   font-size: 14px;
+  font-family: 'Radikal-Bold';
   width: 20%;
 }
 .verify-info-container .bloque-c div span {

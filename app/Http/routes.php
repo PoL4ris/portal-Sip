@@ -94,6 +94,7 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('getBuildingsList',          'BuildingController@getBuildingsList');
     Route::get('getBuildingProperty',       'BuildingController@getBuildingProperty');
     Route::get('getBuildingSwitches',       'BuildingController@getBuildingSwitches');
+    Route::get('getBuildingUserAccessSwitches',       'BuildingController@getBuildingUserAccessSwitches');
     Route::get('getBuildingByAddressId',    'BuildingController@getBuildingByAddressId');
     Route::get('getNeighborhoodList',       'BuildingController@getNeighborhoodList');
     Route::get('getProspectBuildings',      'BuildingController@getProspectBuildings');
@@ -224,7 +225,7 @@ Route::group(['middleware' => 'web'], function () {
 
     //MAILS
 //    Route::get('sendCustomerMail',          'MailController@sendCustomerMail');//new
-    
+
     //SUPPORT
     Route::get('updateTicketDetails',       'SupportController@updateTicketData');
     Route::get('updateTicketHistory',       'SupportController@updateTicketHistory');

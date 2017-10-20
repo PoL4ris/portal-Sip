@@ -86,7 +86,7 @@ app.controller('newcustomerAppController', function ($scope, $http, customerServ
   }
   $scope.getSwitchInfo              = function (idBuilding){
 
-    $http.get("getBuildingSwitches", {params: {'id': idBuilding}})
+    $http.get("getBuildingUserAccessSwitches", {params: {'id': idBuilding}})
       .then(function (response) {
         $scope.buildingSwitches = response.data;
       });
