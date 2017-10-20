@@ -1750,18 +1750,18 @@ table.dataTable tbody tr {
 
 
 
-/*#new-building-form input:invalid {*/
-  /*border-color: crimson;*/
-/*}*/
-/*#new-building-form input:valid, #new-building-form input:valid.required {*/
-  /*border-color: green;*/
-/*}*/
-/*#new-building-form input:placeholder-shown {*/
-  /*border-color: #ddd;*/
-/*}*/
-/*#new-building-form input.required{*/
-  /*border-color: crimson;*/
-/*}*/
+#new-building-form input:invalid {
+  border-color: crimson;
+}
+#new-building-form input:valid, #new-building-form input:valid.required {
+  border-color: green;
+}
+#new-building-form input:placeholder-shown {
+  border-color: #ddd;
+}
+#new-building-form input.required{
+  border-color: crimson;
+}
 
 
 
