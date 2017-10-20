@@ -62,7 +62,7 @@ app.controller('supportController',                 function ($scope, $http, DTO
       });
   }
   $scope.letterLimit  = 40;
-  $scope.dtOptions    = DTOptionsBuilder.newOptions().withPaginationType('full_numbers').withDisplayLength(50).withOption('order', [8, 'desc']);
+  $scope.dtOptions    = DTOptionsBuilder.newOptions().withPaginationType('full_numbers').withDisplayLength(50).withOption('order', [7, 'desc']);
 
   $scope.showFullComment                = function (id) {
     $('#ticket-' + id).fadeIn('slow');

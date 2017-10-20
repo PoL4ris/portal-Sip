@@ -455,6 +455,9 @@ class TestController extends Controller {
     public function generalTest(Request $request)
     {
 
+        $building = Building::find(29);
+
+        dd($building->activeParentProducts());
 //        $billingHelper = new BillingHelper();
 //        dd($billingHelper->paginatePendingFailedInvoices());
 

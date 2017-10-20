@@ -131,7 +131,7 @@ class SupportController extends Controller
      */
     public function getNoneBillingTickets()
     {
-        $record = Ticket::with('customer',
+        $tickets = Ticket::with('customer',
                                'reason',
                                'ticketNote',
                                'lastTicketHistory',
@@ -145,9 +145,9 @@ class SupportController extends Controller
                         ->orderBy('updated_at', 'desc')
                         ->get();
 
-        $result = $this->getOldTimeTicket($record);
+        $tickets = $this->getOldTimeTicket($tickets);
 
-        return $result;
+        return $tickets;
     }
 
     /**
@@ -250,7 +250,15 @@ class SupportController extends Controller
     public function getAvailableServices(Request $request)
     {
         $building = Building::find($request->id);
-        return $building->activeParentProducts();
+        $activeServices = $building->activeParentProducts();
+        $activeServices->transform(function ($service, $key) {
+            if($service->product->frequency == 'onetime'){
+                $service->product->frequency = 'one time';
+            }
+            return $service;
+        });
+
+        return $activeServices;
     }
 
     /**

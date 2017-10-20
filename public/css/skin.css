@@ -2,10 +2,99 @@
 html {
     background: #f8f8f8 none repeat scroll 0 0;
 }
-body {
-    font-family: "Lato",sans-serif;
-    font-size: 12px;
+
+@font-face {
+    font-family: 'Radikal-Black';
+    src: url('../fonts/Radikal-Black.ttf') format('truetype');
 }
+
+@font-face {
+    font-family: 'Radikal-BlackItalic';
+    src: url('../fonts/Radikal-BlackItalic.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Radikal-Bold';
+    src: url('../fonts/Radikal-Bold.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Radikal-BoldItalic';
+    src: url('../fonts/Radikal-BoldItalic.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Radikal-Light';
+    src: url('../fonts/Radikal-Light.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Radikal-LightItalic';
+    src: url('../fonts/Radikal-LightItalic.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Radikal-Medium';
+    src: url('../fonts/Radikal-Medium.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Radikal-MediumItalic';
+    src: url('../fonts/Radikal-MediumItalic.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Radikal-Regular';
+    src: url('../fonts/Radikal-Regular.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Radikal-RegularItalic';
+    src: url('../fonts/Radikal-RegularItalic.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Radikal-Thin';
+    src: url('../fonts/Radikal-Thin.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Radikal-ThinItalic';
+    src: url('../fonts/Radikal-ThinItalic.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Radikal-UltraThin';
+    src: url('../fonts/Radikal-UltraThin.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Radikal-UltraThinItalic';
+    src: url('../fonts/Radikal-UltraThinItalic.ttf') format('truetype');
+}
+
+body {
+    /*font-family: "Lato",sans-serif;*/
+    font-family: 'Radikal-Light';
+    font-size: 14px;
+}
+.nav-tabs > li.active > a {
+    font-family: 'Radikal-Bold';
+    /*font-weight: 700;*/
+}
+table.dataTable thead th, table.dataTable tfoot th {
+    font-family: 'Radikal-Bold';
+    /*font-weight: bold;*/
+}
+h1, h2, h3, h4 {
+    /*margin: 0;*/
+    font-family: 'Radikal-Regular';
+    /*font-weight: 300;*/
+}
+thead tr {
+    font-family: 'Radikal-Bold';
+}
+
 p {
     margin: 0 0 3px;
 }
@@ -767,6 +856,7 @@ nav ul li a {
     background: transparent none repeat scroll 0 0;
     border-bottom: 1px solid #ddd;
     color: #666;
+    font-family: 'Radikal-Bold';
     font-size: 13px;
     margin: 0;
     min-height: 2px;

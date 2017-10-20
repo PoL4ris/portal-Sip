@@ -456,6 +456,18 @@ class BuildingController extends Controller {
         return array();
     }
 
+    public function getBuildingUserAccessSwitches(Request $request)
+    {
+        $buildingId = $request->id;
+
+        $building = Building::find($buildingId);
+        if ($building != null)
+        {
+            return $building->userAccessSwitches;
+        }
+
+        return array();
+    }
 
     public function productsSearch(Request $request)
     {

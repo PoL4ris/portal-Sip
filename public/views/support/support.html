@@ -49,7 +49,7 @@
                 <thead>
                 <tr>
                     <th>Ticket</th>
-                    <th>Status</th>
+                    <!--<th>Status</th>-->
                     <th>Name</th>
                     <th>Address</th>
                     <th>Tel</th>
@@ -70,9 +70,10 @@
                         {{data.ticket_number}}
                     </td>
 
-                    <td class="capital-first">{{data.status}}</a></td>
-                    <td><a href="#/customer?id={{data.customer.id}}">{{data.customer.first_name}} {{data.customer.last_name}}</a></td>
-                    <td>{{data.address.code}} #{{data.address.unit}}</td>
+                    <!--<td class="capital-first">{{data.status}}</a></td>-->
+                    <td><a ng-if="data.customer.id > 1" href="#/customer?id={{data.customer.id}}">{{data.customer.first_name}} {{data.customer.last_name}}</a></td>
+                    <td ng-if="data.customer.id > 1">{{data.address.code}} #{{data.address.unit}}</td>
+                    <td ng-if="data.customer.id <= 1"></td>
                     <td>{{data.contacts.value}}</td>
                     <td>{{data.reason.short_description}}</td>
 
@@ -95,10 +96,13 @@
                         </div>
                     </td>
 
-                    <td>{{data.user_assigned.first_name ? (data.user_assigned.first_name) : 'AUTO' }}</td>
+                    <td>{{ (data.user_assigned != null) ? data.user_assigned.first_name : '' }}</td>
                     <!--<td >{{data.updated_at | date: "shortDate"}}</td>-->
                     <td ng-init="resultDate = convertDate(data.updated_at)">{{resultDate | date : "shortDate" }}</td>
 
+                    <!--<td class="">-->
+                        <!--<label>{{ data.updated_at |  relativeDate }}</label>-->
+                    <!--</td>-->
 
                     <td class="{{data.old}}">
                         <!--{{data.updated_at | limitTo : 10}}-->

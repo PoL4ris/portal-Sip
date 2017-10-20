@@ -77,6 +77,8 @@
 
 <div data-ui-view="root"  data-autoscroll="false"></div>
 
+{{--<script src="/js/angular/angular-relative-date.js"></script>--}}
+
 <!-- Use for production after building the project with grunt -->
 <script src="/js/smart/build/vendor.js"></script>
 {{--<script src="/js/smart/build/app.js"></script>--}}

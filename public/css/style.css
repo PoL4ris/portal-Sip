@@ -76,7 +76,12 @@
   border: 2px solid #fafbfc;
 }
 #logo {
+  padding-top: 5px;
   margin-top: 5px;
+  width: 90%;
+}
+#logo img {
+  width: 100%;
 }
 .anim {
   transition: all 0.7s ease 0s;
@@ -257,7 +262,8 @@
   padding-left: 0;
 }
 .bold-type {
-  font-weight: bold;
+  /*font-weight: bold;*/
+  font-family: 'Radikal-Bold';
 }
 .no-border {
   border: medium none !important;
@@ -1225,8 +1231,9 @@ table.dataTable tbody tr {
 }
 .label-refund, .label-charge{
   position: absolute;
-  top:-20px;
+  top:-25px;
   left:0;
+  font-family: 'Radikal-Bold';
 }
 
 .ch-border{
@@ -1269,9 +1276,11 @@ table.dataTable tbody tr {
 }
 .ch-active-month{
   border-bottom: 3px solid #0086ff;
+  font-family: 'Radikal-Bold';
 }
 .ch-active-year{
   border-bottom: 3px solid #00c853;
+  font-family: 'Radikal-Bold';
 }
 .months-select-style{
 
@@ -1289,7 +1298,8 @@ table.dataTable tbody tr {
 }
 
 .cn-customer {
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  /*font-family: Roboto, "Helvetica Neue", sans-serif;*/
+  font-family: 'Radikal-Light';
 }
 .cn-customer .container {
   background: white none repeat scroll 0 0;
@@ -1313,7 +1323,8 @@ table.dataTable tbody tr {
 .cn-customer .cn-containers label , .input-contect-forms label{
   color: #7d7d7d;
   font-size: 14px;
-  font-weight: inherit;
+  /*font-weight: inherit;*/
+  font-family: 'Radikal-Bold';
   margin-bottom: 10px;
 }
 .cn-customer .cn-containers input , .input-contect-forms input{
@@ -1416,7 +1427,8 @@ table.dataTable tbody tr {
 }
 .header-title{
   font-size: 15px;
-  font-weight: bold;
+  /*font-weight: bold;*/
+  font-family: 'Radikal-Bold';
   background: rgba(0,0,0,.04);
   margin-bottom: 5px;
   padding: 3px 13px;
@@ -1443,6 +1455,7 @@ table.dataTable tbody tr {
   color: rgba(0, 0, 0, 0.4);
   display: inline-block;
   font-size: 14px;
+  font-family: 'Radikal-Bold';
   width: 20%;
 }
 .verify-info-container .bloque-a span {
@@ -1465,6 +1478,7 @@ table.dataTable tbody tr {
   color: rgba(0, 0, 0, 0.4);
   display: inline-block;
   font-size: 14px;
+  font-family: 'Radikal-Bold';
   width: 30%;
 }
 .verify-info-container .bloque-b span {
@@ -1488,6 +1502,7 @@ table.dataTable tbody tr {
   color: rgba(0, 0, 0, 0.4);
   display: inline-block;
   font-size: 14px;
+  font-family: 'Radikal-Bold';
   width: 20%;
 }
 .verify-info-container .bloque-c div span {
