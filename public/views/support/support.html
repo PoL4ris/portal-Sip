@@ -25,9 +25,9 @@
 
                 <div class="ttr-container">
                     <div class="old-gray   float-left time-data"><label>Total:</label> {{ticketOpenTime.old}}</div>
-                    <div class="old-green  float-left time-data"><label><b>></b> 12Hrs.</label> {{ticketOpenTime.old12}}</div>
-                    <div class="old-yellow float-left time-data"><label><b>></b> 24Hrs.</label> {{ticketOpenTime.old24}}</div>
-                    <div class="old-red    float-left time-data"><label><b>></b> 48Hrs.</label> {{ticketOpenTime.old48}}</div>
+                    <div class="old-green  float-left time-data"><label><b>></b> 12 Hrs: </label> {{ticketOpenTime.old12}}</div>
+                    <div class="old-yellow float-left time-data"><label><b>></b> 24 Hrs: </label> {{ticketOpenTime.old24}}</div>
+                    <div class="old-red    float-left time-data"><label><b>></b> 48 Hrs: </label> {{ticketOpenTime.old48}}</div>
                 </div>
             </div>
 
@@ -58,6 +58,7 @@
                     <th>Owner</th>
                     <th>Created</th>
                     <th>Updated</th>
+                    <th>Updated-Hidden</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -111,6 +112,9 @@
                         <label ng-if="data.old == 'old-green'">> 12Hrs</label>
                         <!--<label ng-if="data.old == 'old'">{{data.old_by ? data.old_by : 'Minutes ago'}}</label>-->
                         <label ng-if="data.old == 'old'" class="capital-first">{{data.updated_at | relativeDate }}</label>
+                    </td>
+                    <td>
+                        {{data.updated_at}}
                     </td>
                 </tr>
                 </tbody>
