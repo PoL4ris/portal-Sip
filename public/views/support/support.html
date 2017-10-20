@@ -56,8 +56,8 @@
                     <th>Issue</th>
                     <th>Comments</th>
                     <th>Owner</th>
+                    <th>Created</th>
                     <th>Updated</th>
-                    <th>Modified</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -98,7 +98,7 @@
 
                     <td>{{ (data.user_assigned != null) ? data.user_assigned.first_name : '' }}</td>
                     <!--<td >{{data.updated_at | date: "shortDate"}}</td>-->
-                    <td ng-init="resultDate = convertDate(data.updated_at)">{{resultDate | date : "shortDate" }}</td>
+                    <td ng-init="resultDate = convertDate(data.created_at)">{{resultDate | date : "shortDate" }}</td>
 
                     <!--<td class="">-->
                         <!--<label>{{ data.updated_at |  relativeDate }}</label>-->
@@ -110,7 +110,7 @@
                         <label ng-if="data.old == 'old-yellow'">> 24Hrs.</label>
                         <label ng-if="data.old == 'old-green'">> 12Hrs</label>
                         <!--<label ng-if="data.old == 'old'">{{data.old_by ? data.old_by : 'Minutes ago'}}</label>-->
-                        <label ng-if="data.old == 'old'">{{data.old_by | relativeDate }}</label>
+                        <label ng-if="data.old == 'old'" class="capital-first">{{data.updated_at | relativeDate }}</label>
                     </td>
                 </tr>
                 </tbody>
