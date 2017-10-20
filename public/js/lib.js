@@ -28,3 +28,7 @@ app.controller('libController', function ($scope, $http) {
 
 
 });
+
+app.controller('newBuildingController', function($scope, $http){
+  console.log('this is the ==> newBuildingController');
+});

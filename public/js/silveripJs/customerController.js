@@ -11,6 +11,7 @@ app.controller('customerControllerList',            function ($scope, $http){
 
 app.controller('customerController',                function ($scope, $http, $stateParams, customerService, DTOptionsBuilder, generalService, $timeout) {
 
+
   if (!generalService.rightView) {
     generalService.rightView = true;
   }

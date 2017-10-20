@@ -1,7 +1,5 @@
 app.controller('newcustomerAppController', function ($scope, $http, customerService, $state, generalService) {
 
-//  console.log('this is the newcustomerAppController');
-
   if (generalService.sideBarFlag){
     $scope.sipTool(2);
     generalService.sideBarFlag = false;

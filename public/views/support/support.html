@@ -110,7 +110,7 @@
                         <label ng-if="data.old == 'old-yellow'">> 24Hrs.</label>
                         <label ng-if="data.old == 'old-green'">> 12Hrs</label>
                         <!--<label ng-if="data.old == 'old'">{{data.old_by ? data.old_by : 'Minutes ago'}}</label>-->
-                        <label ng-if="data.old == 'old'">{{data.updated_at | relativeDate}}</label>
+                        <label ng-if="data.old == 'old'">{{data.old_by | relativeDate }}</label>
                     </td>
                 </tr>
                 </tbody>

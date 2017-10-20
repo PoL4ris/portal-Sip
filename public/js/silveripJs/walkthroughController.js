@@ -41,8 +41,14 @@ app.controller('walkthroughController', function ($scope, $http, customerService
 
   }
   $scope.removeImage = function (keyId) {
+
+    if (generalService.stateRoute == 'newBuilding')
+      generalService.nBuildingImage = false;
+
+
     $scope.filesControl.splice(keyId, 1);
     ctrl.data.upload = $scope.filesControl;
+
   }
 
   $('.drop-zone-box').on('dragenter', function () {
@@ -271,8 +277,8 @@ app.controller('walkthroughController', function ($scope, $http, customerService
   }
 
 })
-  .directive('dropZone', [
-    function () {
+  .directive('dropZone', ['generalService',
+    function (generalService) {
 
       var config = {
         template: '<label class="drop-zone">' +
@@ -295,6 +301,12 @@ app.controller('walkthroughController', function ($scope, $http, customerService
 
       // Helper functions
       function uploadDragOver(e) {
+
+
+//        console.log('entramos al draganddrop');
+//        console.log(generalService);
+
+
         e.stopPropagation();
         e.preventDefault();
         e.dataTransfer.dropEffect = 'copy';
@@ -305,6 +317,11 @@ app.controller('walkthroughController', function ($scope, $http, customerService
         e.stopPropagation();
         e.preventDefault();
         var files = e.dataTransfer ? e.dataTransfer.files : e.target.files;
+
+        if (generalService.nBuildingImage)
+          return;
+
+
         for (var i = 0, file; file = files[i]; ++i) {
           var reader = new FileReader();
           reader.onload = (function (file) {
@@ -323,8 +340,48 @@ app.controller('walkthroughController', function ($scope, $http, customerService
               })
             }
           })(file);
+
           reader.readAsDataURL(file);
+
+          if (generalService.stateRoute == 'newBuilding') {
+            generalService.nBuildingImage = true;
+            return;
+          }
+
         }
       }
+
     }
   ])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

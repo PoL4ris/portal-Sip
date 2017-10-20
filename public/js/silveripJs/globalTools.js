@@ -9,6 +9,7 @@ app.controller('globalToolsCtl',                    function ($scope, $http, $co
   $scope.cacheClear     = generalService.cacheClear;
   $scope.customerById   = false;
 
+
   $scope.statusArrayConstant = generalService.statusArrayConstant;
 
   //Get Constants from constantConfig
