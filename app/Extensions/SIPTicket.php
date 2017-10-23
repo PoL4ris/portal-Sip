@@ -37,6 +37,11 @@ class SIPTicket {
     protected function generateTicketNumber()
     {
         $lastTicketId = Ticket::max('id');
+
+        if($lastTicketId == null){
+            return 'ST-1';
+        }
+        
         $lastTicketNumber = Ticket::find($lastTicketId)->ticket_number;
         $ticketNumber = explode('ST-', $lastTicketNumber);
         $ticketNumberCast = (int) $ticketNumber[1] + 1;
