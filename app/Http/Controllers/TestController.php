@@ -454,6 +454,17 @@ class TestController extends Controller {
 
     public function generalTest(Request $request)
     {
+        $ciscoSwitch = new CiscoSwitch();
+        $serviceSwitch = $ciscoSwitch->loadFromDB(null, '00:1B:2A:94:A4:00');
+
+//        dd($serviceSwitch);
+
+        if ($serviceSwitch->selected == false)
+        {
+            dd('Not found');
+        }
+
+        dd('Found');
 
         $building = Building::find(29);
 

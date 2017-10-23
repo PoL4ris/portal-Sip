@@ -1,25 +1,28 @@
 <div class="col-lg-12">
     <div class="col-lg-2"></div>
     <div class="col-lg-7 profile-css">
-        <h2>USER PROFILE INFO</h2>
+        <h2>Profile Information</h2>
 
-        <div class="col-lg-1 img no-padding-sides"><img src="{{profileData.avatar?profileData.avatar:'/img/male.png'}}" alt="{{ profileData.first_name }}"></div>
+        <div class="col-lg-1 img no-padding-sides"><img src="{{profileData.avatar?profileData.avatar:'/img/male.png'}}"
+                                                        alt="{{ profileData.first_name }}"></div>
         <div class="col-lg-6">
-            <p>First Name: <label >{{ profileData.first_name }}</label></p>
-            <p>Last Name: <label >{{ profileData.last_name }} </label></p>
-            <p>Username: <label >{{ profileData.email }} </label></p>
+            <p>First Name: <label>{{ profileData.first_name }}</label></p>
+            <p>Last Name: <label>{{ profileData.last_name }} </label></p>
+            <p>Username: <label>{{ profileData.email }} </label></p>
         </div>
         <div class="col-lg-5 no-padding-sides">
             <p>Social Access: <label>{{ profileData.social_access == 1 ? 'Yes' : 'No' }}</label></p>
             <p>Alias: <label>{{ profileData.alias }}</label></p>
-            <p>Created At: <label ng-init="createDate = convertDate(profileData.created_at)" ng-if="profileData">{{createDate | date : "MMM d, y h:mm a" }}</label></p>
+            <p>Created At: <label ng-init="createDate = convertDate(profileData.created_at)" ng-if="profileData">{{createDate
+                | date : "MMM d, y h:mm a" }}</label></p>
         </div>
         <br>
         <div class="col-lg-12 m-t-lg set-psw">
             <h3 class="float-left">Update Password</h3>
             <div class="col-lg-3 edit-mode float-right">
         <span class="onoffswitch">
-          <input id="st6" class="onoffswitch-checkbox" type="checkbox" ng-empty name="start_interval" ng-model="checkboxModel" ng-click="customerEditMode()">
+          <input id="st6" class="onoffswitch-checkbox" type="checkbox" ng-empty name="start_interval"
+                 ng-model="checkboxModel" ng-click="customerEditMode()">
           <label class="onoffswitch-label" for="st6">
             <span class="onoffswitch-inner" data-swchoff-text="OFF" data-swchon-text="ON"></span>
             <span class="onoffswitch-switch"></span>
@@ -28,16 +31,15 @@
             </div>
             <div class="col-lg-12 no-padding-sides">
                 <div class="editable-text animate-if bton m-t-md">
-                    <input type="password" id="uno" class="text-muted profile-password" placeholder="Set New Password" name="psw1" ng-model="psw1" ng-keyup="lengthpsw()" required/>
-                    <span>
-            5 Characters min.
-          </span>
+               <span>
+                Min 5 characters
+                </span>
+                    <input type="password" id="uno" class="text-muted profile-password" placeholder="New Password"
+                           name="psw1" ng-model="psw1" ng-keyup="lengthpsw()" required/>
                 </div>
                 <div class="editable-text animate-if bton m-t-md">
-                    <input type="password" id="dos" class="text-muted profile-password" placeholder="Confirm Password" name="psw2" ng-model="psw2" ng-keyup="lengthpsw()" required/>
-                    <span md-direction="top">
-            5 Characters min.
-          </span>
+                    <input type="password" id="dos" class="text-muted profile-password" placeholder="Confirm Password"
+                           name="psw2" ng-model="psw2" ng-keyup="lengthpsw()" required/>
                 </div>
                 <div class="text-muted col-lg-6 no-editable-text">New Password</div>
                 <div class="col-lg-12 editable-text bton no-padding-sides">

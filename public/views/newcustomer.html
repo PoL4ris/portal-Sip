@@ -411,7 +411,7 @@
                     <td>{{customerData.address.code}} #{{customerData.address.unit}}</td>
                     <td>{{customerData.email_address.value}}</td>
                     <td>{{customerData.phone.value}}</td>
-                    <td>{{customerData.user.first_name}} {{customerData.user.first_name}}</td>
+                    <td>{{customerData.user.first_name}} {{customerData.user.last_name}}</td>
                     <td ng-init="signedup = convertDate(customerData.created_at)">{{ signedup | date : "MMM d, y h:mm a" }}</td>
                     <td ng-if="customerData.id_status == 1"><span class="label status-dash-btn-{{customerData.id_status}}">Active</span></td>
                     <td ng-if="customerData.id_status == 2"><span class="label status-dash-btn-{{customerData.id_status}}">Disabled</span></td>
