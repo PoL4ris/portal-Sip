@@ -393,6 +393,9 @@ class ReportController extends Controller {
             ->activeParentProducts()
             ->pluck('product', 'id_products')
             ->where('id_types', config('const.type.internet'))
+            ->reject(function($product){
+                return $product->frequency == 'complimentary';
+            })
             ->toArray();
 
         $subbedProductsArr = array();

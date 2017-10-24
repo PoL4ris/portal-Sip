@@ -19,6 +19,7 @@ use App\Extensions\SIPBilling;
 use App\Extensions\SIPSignup;
 use App\Extensions\SIPNetwork;
 use App\Extensions\SIPCustomer;
+use App\Extensions\SIPReporting;
 use App\Extensions\BillingHelper;
 use App\Extensions\CiscoSwitch;
 use App\Extensions\MtikRouter;
@@ -455,7 +456,27 @@ class TestController extends Controller {
     public function generalTest(Request $request)
     {
 
-        $invoice = Invoice::find(6707);
+        $sipReporting = new SIPReporting();
+        $building = Building::where('type', '!=', 'commercial')
+            ->where('alias', '900C')
+            ->first();
+
+        $retailMrr = collect($sipReporting->getBuildingMrrDataByMonth($building->id, '07', '2017'));
+
+        $mrr = $retailMrr->first();
+//        $key = $mrr->Month . '-' . $mrr->Year;
+        $decodedChargeDetails = json_decode($mrr->ChargeDetails, true);
+//        dd($decodedChargeDetails);
+        if ($decodedChargeDetails == null)
+        {
+            dd('addSale(): received empty mrr record. skipping.');
+        }
+        dd('mrr record is good!');
+
+        dd($retailMrr->pluck('ChargeDetails'));
+
+
+            $invoice = Invoice::find(6707);
         $charges = $invoice->charges;
         $filteredCharges = $charges->reject(function ($charge) {
             return $charge->details == null;

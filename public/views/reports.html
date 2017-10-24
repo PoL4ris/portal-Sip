@@ -52,7 +52,7 @@
                             <tbody>
                                 <tr ng-repeat="prod_details in products">
                                     <td>{{ prod_details.name }}</td>
-                                    <td>{{ '$' + prod_details.amount }}</td>
+                                    <td>{{ prod_details.amount | currency : "$" : 2 }}</td>
                                     <td>{{ prod_details.Total }}</td>
                                 </tr>
                             </tbody>
@@ -95,15 +95,15 @@
                             </tr>
                             <tr>
                                 <td><b>Total Charged</b></td>
-                                <td>{{ '$'+ detailsArr.amount +'.'+detailsArr.credits }}</td>
+                                <td>{{ detailsArr.amount  | currency : "$" : 2 }}</td>
                             </tr>
                             <tr>
                                 <td><b>Credit Issued</b></td>
-                                <td>{{ '$'+ detailsArr.credits }}</td>
+                                <td>{{ detailsArr.credits  | currency : "$" : 2 }}</td>
                             </tr>
                             <tr>
                                 <td><b>Revenue</b></td>
-                                <td>{{ '$'+ detailsArr.amount }}</td>
+                                <td>{{ detailsArr.amount  | currency : "$" : 2 }}</td>
                             </tr>
                             </tbody>
                         </table>
@@ -139,7 +139,7 @@
                                 <td>{{ tDetails[1] }}</td>
                                 <td>{{ tDetails[2] }}</td>
                                 <td>{{ tDetails[3] }}</td>
-                                <td>{{ '$' + tDetails[4] }}</td>
+                                <td>{{ tDetails[4]  | currency : "$" : 2 }}</td>
                             </tr>
 
 

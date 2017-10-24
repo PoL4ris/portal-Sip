@@ -40,7 +40,8 @@ class GenerateMrrReport extends Command
     {
         $this->info('Starting report generation');
         $reportingHelper = new SIPReporting();
-        $reportingHelper->generateMrrReport();
+//        $reportingHelper->generateMrrReport();
+        $reportingHelper->generateMrrReportByMonth('10', '2017');
         $this->info('Done');
     }
 }
