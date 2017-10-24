@@ -502,6 +502,78 @@ class BuildingController extends Controller {
 
     }
 
+    public function insertNewBuilding(Request $request)
+    {
+
+        dd('Got it');
+
+        Log::info('insertNewCustomer called', $request->all());
+
+        // Add the customer
+        $response = $this->sipCustomer->addNewCustomer($request->customers_first_name, $request->customers_last_name, $request->customers_email, $request->customers_vip);
+
+        Log::info('insertNewCustomer: ' . json_encode($response));
+
+        if (isset($response['error']))
+        {
+            return $response;
+        }
+
+        $customer = $response['response'];
+        $response = $this->sipCustomer->addCustomerContact($customer->id, config('const.contact_type.mobile_phone'), $request->contacts_value);
+        if (isset($response['error']))
+        {
+            $customer->delete();
+
+            return $response;
+        }
+        $customerPhone = $response['response'];
+
+        $response = $this->sipCustomer->addCustomerContact($customer->id, config('const.contact_type.email'), $request->customers_email);
+        if (isset($response['error']))
+        {
+            $customerPhone->delete();
+            $customer->delete();
+
+            return $response;
+        }
+        $customerEmail = $response['response'];
+
+        $response = $this->sipCustomer->addCustomerAddressByBuilding($customer->id, $request->building_id, $request->address_unit);
+        if (isset($response['error']))
+        {
+            $customerEmail->delete();
+            $customer->delete();
+
+            return $response;
+        }
+
+        $response = $this->sipCustomer->addCustomerProduct($customer->id, $request->product_id);
+        if (isset($response['error']))
+        {
+            $customerPhone->delete();
+            $customerEmail->delete();
+            $customer->delete();
+
+            return $response;
+        }
+        $customerProduct = $response['response'];
+
+        $response = $this->sipCustomer->addCustomerPortBySwitchAndPort($customer->id, $request->switch_id, $request->port_id);
+        if (isset($response['error']))
+        {
+            $customerPhone->delete();
+            $customerEmail->delete();
+            $customer->delete();
+            $customerProduct->delete();
+
+            return $response;
+        }
+
+        ActivityLogs::add($this->logType, $customer->id, 'insert', 'insertNewCustomer', '', $customer, json_encode(['customer_id' => $customer->id]), 'insert-customer');
+
+        return ['ok' => $this->sipCustomer->getRecentManuallyAddedCustomers()];
+    }
 
 
     //Walkthrough
@@ -635,9 +707,4 @@ class BuildingController extends Controller {
     }
 
 }
-
-
-
-
-
 

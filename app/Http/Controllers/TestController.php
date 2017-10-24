@@ -456,6 +456,22 @@ class TestController extends Controller {
     public function generalTest(Request $request)
     {
 
+        $ip = '10.11.188.102';
+        $mac = 'DC:9F:DB:8C:DC:5E';
+        $serviceRouter = new MtikRouter(['host_name' => 'test-signup-rtr',
+                                         'username'  => config('netmgmt.mikrotik.username'),
+                                         'password'  => config('netmgmt.mikrotik.password')]);
+
+        if ($serviceRouter->isSelected() == false)
+        {
+            dd('ERROR: Router test-signup-rtr not found');
+        }
+
+        $userPortInfo = $serviceRouter->getUserPortInfo(null, $ip, $mac);
+
+        dd($userPortInfo);
+
+
         $sipReporting = new SIPReporting();
         $building = Building::where('type', '!=', 'commercial')
             ->where('alias', '900C')
