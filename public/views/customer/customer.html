@@ -1,7 +1,7 @@
 <div ng-controller="FormXeditableCtrl">
     <div ng-controller="FormPluginsCtrl">
         <div class="widget-body" id="customers-gTools-{{uniqueIdIndex}}">
-            <h2 class="col-lg-12 col-md-12 col-sm-12 no-margin no-padding-sides">
+            <h2 class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-margin no-padding-sides">
                 <p class="float-left">
                     <a href=""
                        id="b-p-id-cunitd"
@@ -44,74 +44,76 @@
             </h2>
             <div class="customer-info-card">
 
+                <!--VIP-->
+                <div class="col-lg-12 col-md-12 col-xs-12 no-padding-sides m-t-lg ">
+
+                    <p class="col-lg-4 col-md-4  no-padding-sides {{mobDevice ? 'no-display' : ''}}"><strong>VIP:</strong></p>
+                    <div class="col-xs-4 no-padding-sides icon-version">
+                        <div class="iv-icon-container pull-left">
+                            <span class="iv-vip iv-icon bg-black">VIP</span>
+                        </div>
+                        <div class="iv-label-container pull-left b-b-ddd ">
+                            <label class="m-b-0">VIP</label>
+                        </div>
+                    </div>
 
 
-                <div class="col-lg-12 col-md-12 no-padding-sides m-t-lg">
-                    <p class="col-lg-4 col-md-4 no-padding-sides"><strong>VIP:</strong></p>
-                    <p class="col-lg-4 col-md-4 no-padding-sides vip-class" ng-if="customerServiceData[uniqueIdIndex].info.vip">
-                        <a  href=""
-                            id="b-p-id-cvip"
-                            record-table="Customers"
-                            data-pk="1"
-                            data-options="editableOptions"
-                            data-original-title="Set Value"
-                            record-field="vip"
-                            smart-xeditable
-                            data-ng-model="customerServiceData[uniqueIdIndex].info.vip"
-                            record-id="{{customerServiceData[uniqueIdIndex].info.id}}"
-                            data-type="text"
-                            record-idContainer="customers"
-                            data-placement="right"
-                            class="editable editable-click vip-class capital-first">
+                    <p class="col-lg-4 col-md-4 col-xs-8 no-padding-sides vip-class cmb-cardinfo-text" ng-if="customerServiceData[uniqueIdIndex].info.vip">
+                        <a href=""
+                           id="b-p-id-cvip"
+                           record-table="Customers"
+                           data-pk="1"
+                           data-options="editableOptions"
+                           data-original-title="Set Value"
+                           record-field="vip"
+                           smart-xeditable
+                           data-ng-model="customerServiceData[uniqueIdIndex].info.vip"
+                           record-id="{{customerServiceData[uniqueIdIndex].info.id}}"
+                           data-type="text"
+                           record-idContainer="customers"
+                           mode="inline"
+                           data-placement="right"
+                           class="editable editable-click vip-class capital-first">
                             {{customerServiceData[uniqueIdIndex].info.vip ? customerServiceData[uniqueIdIndex].info.vip : 'Info'}}
                         </a>
                     </p>
-                    <p class="col-lg-4 col-md-4 no-padding-sides no-vip-class" ng-if="!customerServiceData[uniqueIdIndex].info.vip">
-                        <a  href=""
-                            id="b-p-id-cvip"
-                            record-table="Customers"
-                            data-pk="1"
-                            data-options="editableOptions"
-                            data-original-title="Set Value"
-                            record-field="vip"
-                            smart-xeditable
-                            data-ng-model="customerServiceData[uniqueIdIndex].info.vip"
-                            record-id="{{customerServiceData[uniqueIdIndex].info.id}}"
-                            data-type="text"
-                            record-idContainer="customers"
-                            data-placement="right"
-                            class="editable editable-click vip-class capital-first color-ddd">
+                    <p class="col-lg-4 col-md-4 col-xs-8 no-padding-sides no-vip-class cmb-cardinfo-text" ng-if="!customerServiceData[uniqueIdIndex].info.vip">
+                        <a href=""
+                           id="b-p-id-cvip"
+                           record-table="Customers"
+                           data-pk="1"
+                           data-options="editableOptions"
+                           data-original-title="Set Value"
+                           record-field="vip"
+                           smart-xeditable
+                           data-ng-model="customerServiceData[uniqueIdIndex].info.vip"
+                           record-id="{{customerServiceData[uniqueIdIndex].info.id}}"
+                           data-type="text"
+                           record-idContainer="customers"
+                           data-placement="right"
+                           class="editable editable-click vip-class capital-first color-ddd">
                             {{customerServiceData[uniqueIdIndex].info.vip ? customerServiceData[uniqueIdIndex].info.vip : 'VIP Label'}}
                         </a>
                     </p>
+
                 </div>
 
+                <!--Address & Unit-->
+                <div class="col-lg-12 col-md-12 col-xs-12 no-padding-sides ">
 
-                <!--<p class="no-vip-class float-left" >-->
-                    <!--<a  href=""-->
-                        <!--id="b-p-id-cvip"-->
-                        <!--record-table="Customers"-->
-                        <!--data-pk="1"-->
-                        <!--data-options="editableOptions"-->
-                        <!--data-original-title="Set Value"-->
-                        <!--record-field="vip"-->
-                        <!--smart-xeditable-->
-                        <!--data-ng-model="customerServiceData[uniqueIdIndex].info.vip"-->
-                        <!--record-id="{{customerServiceData[uniqueIdIndex].info.id}}"-->
-                        <!--data-type="text"-->
-                        <!--record-idContainer="customers"-->
-                        <!--data-placement="right"-->
-                        <!--class="editable editable-click vip-class capital-first">-->
-                        <!--{{customerServiceData[uniqueIdIndex].info.vip ? customerServiceData[uniqueIdIndex].info.vip : ' SET VIP '}}-->
-                    <!--</a>-->
-                <!--</p>-->
+                    <p class="col-lg-4 col-md-4 col-xs-6 no-padding-sides {{mobDevice ? 'no-display' : ''}}"><strong>Address:</strong></p>
+                    <div class="col-xs-6 no-padding-sides icon-version">
+                        <div class="iv-icon-container pull-left">
+                            <span class="iv-icon bg-green-iphone"><i class="fa fa-location-arrow"></i></span>
+                        </div>
+                        <div class="iv-label-container pull-left b-b-ddd">
+                            <label class="m-b-0">Address</label>
+                        </div>
+                    </div>
 
-
-                <div class="col-lg-12 col-md-12 no-padding-sides">
-                    <p class="col-lg-4 col-md-4 no-padding-sides"><strong>Address:</strong></p>
-
-                    <p class="col-lg-6 col-md-6 no-padding-sides address-bld-img-hover">{{customerServiceData[uniqueIdIndex].info.address.address ? customerServiceData[uniqueIdIndex].info.address.address : 'Not Set'}}</p>
-
+                    <p class="col-lg-6 col-md-6 col-xs-6 no-padding-sides {{mobDevice ? '' : 'address-bld-img-hover'}} cmb-cardinfo-text">
+                        {{customerServiceData[uniqueIdIndex].info.address.address ? customerServiceData[uniqueIdIndex].info.address.address : 'Not Set'}}
+                    </p>
                     <div class="no-display">
                         <img src="/img/buildings/{{customerServiceData[uniqueIdIndex].info.address.buildings.img_building}}"
                              alt="{{customerServiceData[uniqueIdIndex].info.address.address}}"
@@ -119,8 +121,18 @@
                     </div>
 
 
-                    <p class="col-lg-4 col-md-4 no-padding-sides"></p>
-                    <p class="col-lg-2 col-md-2 no-padding-sides ">
+                    <p class="col-lg-4 col-md-4 no-padding-sides {{mobDevice ? 'no-display' : ''}}"></p>
+                    <div class="col-xs-6 no-padding-sides icon-version">
+                        <div class="iv-icon-container pull-left">
+                            <span class="iv-icon bg-purple"><i class="fa fa-hashtag"></i></span>
+                        </div>
+                        <div class="iv-label-container pull-left b-b-ddd iv-end-container">
+                            <label class="m-b-0">Unit</label>
+                        </div>
+                    </div>
+
+
+                    <p class="col-lg-2 col-md-2 col-xs-6 no-padding-sides cmb-cardinfo-text iv-end-container">
                         <a href=""
                            id="b-p-id-cunit"
                            record-table="Address"
@@ -140,7 +152,9 @@
                     </p>
 
                 </div>
-                <div class="col-lg-12 col-md-12 no-padding-sides">
+
+                <!--City State & Zip-->
+                <div class="col-lg-12 col-md-12 col-xs-12 no-padding-sides {{mobDevice ? 'no-display' : ''}} ">
                     <p class="col-lg-4 col-md-4 no-padding-sides"></p>
                     <p class="col-lg-6 col-md-6 no-padding-sides">
                         {{customerServiceData[uniqueIdIndex].info.address.city ? customerServiceData[uniqueIdIndex].info.address.city : 'Not Set'}},
@@ -148,15 +162,41 @@
                         {{customerServiceData[uniqueIdIndex].info.address.zip ? customerServiceData[uniqueIdIndex].info.address.zip : 'Not Set'}}
                     </p>
                 </div>
-                <div class="col-lg-12 col-md-12 no-padding-sides m-t-lg">
-                    <p class="col-lg-4 col-md-4 no-padding-sides"><strong>Signed At:</strong></p>
-                    <p class="col-lg-4 col-md-4 no-padding-sides" ng-init="resultDate = convertDate(customerServiceData[uniqueIdIndex].info.signedup_at)" ng-if="customerServiceData[uniqueIdIndex].info">
+
+                <!--GraySpaceStyle-->
+                <div class="col-xs-12 {{mobDevice ? 'm-gray-space' : 'no-display'}}"></div>
+
+                <!--Signed At-->
+                <div class="col-lg-12 col-md-12 col-xs-12 no-padding-sides {{mobDevice ? '' : 'm-t-lg'}}  ">
+                    <p class="col-lg-4 col-md-4 no-padding-sides {{mobDevice ? 'no-display' : ''}}"><strong>Signed At:</strong></p>
+
+                    <div class="col-xs-6 no-padding-sides icon-version">
+                        <div class="iv-icon-container pull-left">
+                            <span class="iv-icon bg-royal"><i class="fa fa-calendar"></i></span>
+                        </div>
+                        <div class="iv-label-container pull-left b-b-ddd">
+                            <label class="m-b-0">Signed At</label>
+                        </div>
+                    </div>
+
+                    <p class="col-lg-4 col-md-4 col-xs-6 no-padding-sides cmb-cardinfo-text" ng-init="resultDate = convertDate(customerServiceData[uniqueIdIndex].info.signedup_at)" ng-if="customerServiceData[uniqueIdIndex].info">
                         <b>{{resultDate | date : "MMM d, y" }}</b>
                     </p>
                 </div>
-                <div class="col-lg-12 col-md-12 no-padding-sides m-t-lg">
-                    <p class="col-lg-4 col-md-4 no-padding-sides"><strong>Username:</strong></p>
-                    <p class="col-lg-4 col-md-4 no-padding-sides">
+
+                <!--Username-->
+                <div class="col-lg-12 col-md-12 col-xs-12 no-padding-sides {{mobDevice ? '' : 'm-t-lg'}} ">
+                    <p class="col-lg-4 col-md-4 no-padding-sides {{mobDevice ? 'no-display' : ''}}"><strong>Username:</strong></p>
+                    <div class="col-xs-4 no-padding-sides icon-version">
+                        <div class="iv-icon-container pull-left">
+                            <span class="iv-icon bg-blue"><i class="fa fa-user"></i></span>
+                        </div>
+                        <div class="iv-label-container pull-left b-b-ddd">
+                            <label class="m-b-0">Username</label>
+                        </div>
+                    </div>
+
+                    <p class="col-lg-4 col-md-4 col-xs-8 no-padding-sides cmb-cardinfo-text">
                         <a href=""
                            id="b-p-id-cemail"
                            record-table="Customers"
@@ -173,28 +213,29 @@
                            class="editable editable-click">{{customerServiceData[uniqueIdIndex].info.email ? customerServiceData[uniqueIdIndex].info.email : 'Not Set'}}
                         </a>
                     </p>
+
                 </div>
-                <!--PROPER STATUS CHANGE FOR COMPLETE PROCCESS-->
-                <!--<div class="col-lg-12 col-md-12 no-padding-sides m-b-sm">-->
 
+                <!--PROPER STATUS CHANGE FOR COMPLETE PROCCESS COPY PASTE HERE-->
 
-                    <!--<p class="col-lg-4 col-md-4 no-padding-sides"><strong>Status:</strong></p>-->
-                    <!--<p class="col-lg-8 col-md-8 no-padding-sides capital-first">-->
-                        <!--<b>{{customerServiceData[uniqueIdIndex].info.status.name}}</b>-->
-                        <!--<i class="fa fa-pencil cursor-pointer new-status m-l-lg" data-toggle="modal" data-target="#customerStatusModal"></i>-->
-                        <!--<label class="m-l-sm new-status  cursor-pointer" data-toggle="modal" data-target="#customerStatusModal-{{uniqueIdIndex}}"-->
-                               <!--ng-click="activeServiceDisplay(customerServiceData[uniqueIdIndex].info.status.name)">Modify</label>-->
-                    <!--</p>-->
-
-                    <!--&lt;!&ndash;<div class="col-lg-12 text-center btn btn-warning btn-slim cursor-pointer"data-toggle="modal" data-target="#customerStatusModal">&ndash;&gt;-->
-                    <!--&lt;!&ndash;<i class="fa fa-pencil"></i> Change Status&ndash;&gt;-->
-                    <!--&lt;!&ndash;</div>&ndash;&gt;-->
-
-                <!--</div>-->
                 <!--OLD CHANGE STATUS WITH XEDIT-->
-                <div class="col-lg-12 col-md-12 no-padding-sides">
-                    <p class="col-lg-4 col-md-4 no-padding-sides"><strong>Status:</strong></p>
-                    <p class="col-lg-4 col-md-4 no-padding-sides {{customerData.customer.status.name}} capital-first" ng-if="customerTypes">
+
+                <!--Status-->
+                <div class="col-lg-12 col-md-12 col-xs-12 no-padding-sides ">
+                    <p class="col-lg-4 col-md-4 no-padding-sides {{mobDevice ? 'no-display' : ''}}"><strong>Status:</strong></p>
+
+                    <div class="col-xs-6 no-padding-sides icon-version">
+                        <div class="iv-icon-container pull-left">
+                            <span class="iv-icon {{customerData.customer.status.name == 'active' ? 'bg-green-iphone' : 'bg-crimson'}}">
+                                <i class="fa {{customerData.customer.status.name == 'active' ? 'fa-check' : 'fa-times'}}"></i>
+                            </span>
+                        </div>
+                        <div class="iv-label-container pull-left b-b-ddd">
+                            <label class="m-b-0">Status</label>
+                        </div>
+                    </div>
+
+                    <p class="col-lg-4 col-md-4 col-xs-6 no-padding-sides {{customerData.customer.status.name}} capital-first cmb-cardinfo-text" ng-if="customerTypes">
                         <a id="status-select"
                            record-table="Customers"
                            class="editable editable-click"
@@ -214,51 +255,112 @@
                             {{customerData.customer.status.name ? customerData.customer.status.name : 'Pending'}}
                         </a>
                     </p>
+
                 </div>
-                <div class="col-lg-12 col-md-12 no-padding-sides">
-                    <p class="col-lg-4 col-md-4 no-padding-sides"><strong>Location:</strong></p>
-                    <p class="col-lg-8 col-md-8 no-padding-sides">{{customerServiceData[uniqueIdIndex].info.address.buildings.name}} ({{ customerServiceData[uniqueIdIndex].info.address.buildings.code}})</p>
-                </div>
-                <div ng-repeat="contacto in customerServiceData[uniqueIdIndex].info.contacts">
-                    <div class="col-lg-12 col-md-12 no-padding-sides">
-                        <p class="col-lg-4 col-md-4 no-padding-sides"><strong>{{statusArrayConstant.contact_type[contacto.id_types]}}:</strong></p>
-                        <p class="col-lg-4 col-md-4 no-padding-sides">{{contacto.value}}</p>
+
+                <!--Location-->
+                <div class="col-lg-12 col-md-12 col-xs-12 no-padding-sides ">
+                    <p class="col-lg-4 col-md-4 no-padding-sides {{mobDevice ? 'no-display' : ''}}"><strong>Location:</strong></p>
+
+                    <div class="col-xs-6 no-padding-sides icon-version">
+                        <div class="iv-icon-container pull-left">
+                            <span class="iv-icon bg-orange"><i class="fa fa-map-marker"></i></span>
+                        </div>
+                        <div class="iv-label-container pull-left b-b-ddd">
+                            <label class="m-b-0">Location</label>
+                        </div>
                     </div>
+
+                    <p class="col-lg-8 col-md-8 col-xs-6 no-padding-sides cmb-cardinfo-text">
+                        {{customerServiceData[uniqueIdIndex].info.address.buildings.name}} ({{ customerServiceData[uniqueIdIndex].info.address.buildings.code}})
+                    </p>
+
                 </div>
-                <div class="col-lg-12 col-md-12 no-padding-sides">
-                    <br>
-                    <p>
+
+                <!--Contacts-->
+                <div ng-repeat="contacto in customerServiceData[uniqueIdIndex].info.contacts" class="col-xs-12 no-padding-sides ">
+                    <!--<div class="col-lg-12 col-md-12 no-padding-sides">-->
+
+
+                        <p class="col-lg-4 col-md-4 no-padding-sides {{mobDevice ? 'no-display' : ''}}"><strong>{{statusArrayConstant.contact_type[contacto.id_types]}}:</strong></p>
+
+                        <div class="{{contacto.id_types =='5' ? 'col-xs-4' : 'col-xs-6'}} no-padding-sides icon-version">
+                            <div class="iv-icon-container pull-left">
+                                <span class="iv-icon {{contacto.id_types =='5' ? 'bg-dark' : 'bg-purple'}}">
+                                    <i class="fa {{contacto.id_types =='5' ? 'fa-at' : 'fa-phone'}}"></i>
+                                </span>
+                            </div>
+                            <div class="iv-label-container pull-left b-b-ddd {{$last?'iv-end-container':''}}">
+                                <label class="m-b-0">{{statusArrayConstant.contact_type[contacto.id_types]}}</label>
+                            </div>
+                        </div>
+
+
+                        <p class="col-lg-4 col-md-4 {{contacto.id_types =='5' ? 'col-xs-8' : 'col-xs-6'}} no-padding-sides cmb-cardinfo-text {{$last?'iv-end-container':''}}">{{contacto.value}}</p>
+
+
+                    <!--</div>-->
+                </div>
+
+                <!--GraySpaceStyle-->
+                <div class="col-xs-12 {{mobDevice ? 'm-gray-space' : 'no-display'}}"></div>
+
+                <!--Bld Units & Floors Description-->
+                <div class="col-lg-12 col-md-12 col-xs-12 no-padding-sides {{mobDevice ? '' : 'p-t-lg'}} ">
+
+
+                    <div class="col-xs-12 no-padding-sides icon-version">
+                        <div class="iv-icon-container pull-left">
+                            <span class="iv-icon bg-crimson"><i class="fa fa-building"></i></span>
+                        </div>
+                        <div class="iv-label-container pull-left b-b-ddd">
+                            <label class="m-b-0">
+                                <strong>{{customerServiceData[uniqueIdIndex].info.address.buildings.type}}</strong>
+                                with <strong>{{customerServiceData[uniqueIdIndex].info.address.buildings.floors}}</strong> floors
+                                and <strong>{{customerServiceData[uniqueIdIndex].info.address.buildings.units}}</strong> units
+                            </label>
+                        </div>
+                    </div>
+
+                    <p class="{{mobDevice ? 'no-display' : ''}}">
                         <strong>{{customerServiceData[uniqueIdIndex].info.address.buildings.type}}</strong>
-                        <!--in <strong>{{bld.neighborhood.name ? bld.neighborhood.name : bld.buildings.neighborhood.name}}</strong>-->
                         with <strong>{{customerServiceData[uniqueIdIndex].info.address.buildings.floors}}</strong> floors
                         and <strong>{{customerServiceData[uniqueIdIndex].info.address.buildings.units}}</strong> units
                     </p>
 
-                    <!--<p class="float-left size-50"><strong>Neighborhood:</strong></p>-->
-                    <!--<p>{{bld.neighborhood.name?bld.neighborhood.name:bld.buildings.neighborhood.name}}</p>-->
-
-                    <!--<p class="float-left size-50"><strong>Type:</strong></p>-->
-                    <!--<p>{{bld.type?bld.type:bld.buildings.type}}</p>-->
-
-                    <!--<p class="float-left size-50"><strong>Units / Floors:</strong></p>-->
-                    <!--<p>{{bld.units?bld.units:bld.buildings.units}} / {{bld.floors?bld.floors:bld.buildings.floors}}</p>-->
-
-
-                    <!--<p class="float-left size-50"><strong>Addresses:</strong></p>-->
-                    <!--<p data-toggle="modal" data-target="#customerAddressesModal" ng-click="clearAddressModal()" class="edit-info-simple-text m-t-md">-->
                 </div>
-                <div class="col-lg-12 col-md-12 no-padding-sides">
-                    <p class=" m-t-md m-b-lg">
+
+                <!--Locations Found in Account-->
+                <div class="col-lg-12 col-md-12 col-xs-12 no-padding-sides ">
+                    <p class=" m-t-md m-b-lg {{mobDevice ? 'no-display' : ''}}">
                         <i class="fa fa-map-marker "></i> {{customerServiceData[uniqueIdIndex].info.addresses.length}}
                         <label ng-if="customerServiceData[uniqueIdIndex].info.addresses.length == 1"> address found on this account</label>
                         <label ng-if="customerServiceData[uniqueIdIndex].info.addresses.length != 1"> addresses found on this account</label>
-                        <!--<label class="sm-view-action-btn" data-toggle="modal" data-target="#customerAddressesModal" ng-click="clearAddressModal()">...</label>-->
                         <button class="btn btn-primary m-l-lg" ng-click="clearAddressModal()" data-toggle="modal" data-target="#customerAddressesModal-{{uniqueIdIndex}}">View</button>
                     </p>
 
+                    <div class="col-xs-10 no-padding-sides icon-version">
+                        <div class="iv-icon-container pull-left">
+                            <span class="iv-icon bg-violet"><i class="fa fa-map-marker"></i></span>
+                        </div>
+                        <div class="iv-label-container pull-left b-b-ddd">
+                            <label class="m-b-0">
+                                {{customerServiceData[uniqueIdIndex].info.addresses.length}}
+                                {{customerServiceData[uniqueIdIndex].info.addresses.length == 1 ? 'address found on this account' : 'addresses found on this account'}}
+                            </label>
+                        </div>
+                    </div>
+
+                    <p class="col-lg-8 col-md-8 col-xs-2 no-padding-sides cmb-cardinfo-text icon-version">
+                        <i class="fa fa-angle-right" ng-click="clearAddressModal()" data-toggle="modal" data-target="#customerAddressesModal-{{uniqueIdIndex}}"></i>
+                    </p>
+
+
                 </div>
-                <div class="col-lg-12 col-md-12 no-padding-sides">
-                    <div class="col-lg-5 col-md-5 no-padding-sides">
+
+                <!--Action Buttons-->
+                <div class="col-lg-12 col-md-12 col-xs-12 no-padding-sides p-b-lg">
+                    <div class="col-lg-5 col-md-5 col-xs-6 no-padding-sides">
                         <button id="c-c-i-e-{{uniqueIdIndex}}"
                                 class="float-left btn btn-success"
                                 ng-click="toggleDisabled(uniqueIdIndex);"
@@ -273,12 +375,14 @@
                             <i class="fa fa-pencil"></i> Edit customer
                         </button>
                     </div>
-                    <div class="col-lg-6 col-md-5 ">
+                    <div class="col-lg-6 col-md-5 col-xs-6">
                         <button class=" btn btn-danger" ng-click="showConfirmPassword();">
                             <i class="fa fa-refresh"></i> Reset password
                         </button>
                     </div>
                 </div>
+
+
             </div>
         </div>
     </div>
@@ -287,7 +391,7 @@
 
 <!--MODAL-->
 <div class="modal fade cus-add-mod" id="customerAddressesModal-{{uniqueIdIndex}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog fadeInRight animated modal-lg ">
         <div class="modal-content">
 
             <div class="modal-header">
@@ -586,5 +690,34 @@
     </div>
 </div>
 <!--END STATUS MODAL-->
+
+
+
+
+
+
+
+
+
+
+
+<!--COPY TO LOCATION SET UP THERE-->
+<!--<div class="col-lg-12 col-md-12 no-padding-sides m-b-sm">-->
+
+
+<!--<p class="col-lg-4 col-md-4 no-padding-sides"><strong>Status:</strong></p>-->
+<!--<p class="col-lg-8 col-md-8 no-padding-sides capital-first">-->
+<!--<b>{{customerServiceData[uniqueIdIndex].info.status.name}}</b>-->
+<!--<i class="fa fa-pencil cursor-pointer new-status m-l-lg" data-toggle="modal" data-target="#customerStatusModal"></i>-->
+<!--<label class="m-l-sm new-status  cursor-pointer" data-toggle="modal" data-target="#customerStatusModal-{{uniqueIdIndex}}"-->
+<!--ng-click="activeServiceDisplay(customerServiceData[uniqueIdIndex].info.status.name)">Modify</label>-->
+<!--</p>-->
+
+<!--&lt;!&ndash;<div class="col-lg-12 text-center btn btn-warning btn-slim cursor-pointer"data-toggle="modal" data-target="#customerStatusModal">&ndash;&gt;-->
+<!--&lt;!&ndash;<i class="fa fa-pencil"></i> Change Status&ndash;&gt;-->
+<!--&lt;!&ndash;</div>&ndash;&gt;-->
+
+<!--</div>-->
+
 
 

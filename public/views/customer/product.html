@@ -1,7 +1,7 @@
 <div ng-controller="FormXeditableCtrl" id="customer-products-{{uniqueIdIndex}}">
     <div ng-controller="customerServicesController">
 
-        <div class="panel panel-default table-container  animated fadeInDown">
+        <div class="panel panel-default table-container  animated fadeInDown {{mobDevice ? 'no-display' : ''}}">
             <table class="tablesorter table m-b-lg">
                 <thead>
                 <tr>
@@ -46,6 +46,20 @@
             </table>
         </div>
 
+
+        <div>ALGO POR AQUI</div>
+        <div>ALGO mas por aca</div>
+        <div ng-repeat="service in customerServiceData[uniqueIdIndex].customerServices.services"
+             class="bg-status-{{statusArrayConstant.status[service.id_status]}} bg-payment-{{ (service.amount_owed > 0) ? 'debt' : 'no-debt'}} m-version m-c-product stance-1">
+             <div class="col-xs-9 no-padding-sides">
+                <p>{{ service.product.name }}</p>
+             </div>
+             <div class="col-xs-3 no-padding-sides text-right">
+                 <i class="fa fa-angle-right"></i>
+             </div>
+        </div>
+
+        <!--NEW SERVICE ADD-->
         <div class="col-lg-12 add-Service-btn no-padding-sides m-b-lg">
             <button class="btn m-b-xs btn-sm btn-primary btn-addon bg-blue float-right" data-toggle="modal" data-target="#myModalService-{{uniqueIdIndex}}" ng-click="setModeType('')">
                 <i class="fa fa-plus"></i>

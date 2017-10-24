@@ -484,6 +484,7 @@ $scope.validaFormaCompleta = function(){
   tmpData.each(function(index, node){
     console.log(node);
     $(node).addClass('required');
+    $(node).focus();
   });
   return;
 }
@@ -569,22 +570,86 @@ $scope.validaFormaCompleta = function(){
     }
   })
 .directive('newBuildingForm', function () {
+
   return {
     restrict: 'E',
     replace: true,
-    link: function (scope, form) {
+    link: function (scope, form, attrs) {
+//    console.log(attrs);
+//    console.log(attrs.msgid);
       form.bootstrapValidator({
-        container: '#messages',
+        container: '#' + attrs.msgid,
         feedbackIcons: {
           valid:      'glyphicon glyphicon-ok',
           invalid:    'glyphicon glyphicon-remove',
           validating: 'glyphicon glyphicon-refresh'
         },
         fields: {
+          //Building Main Info
+          'building[name]': {
+            validators: {
+              stringLength: {
+                min: 2,
+                message: 'Error: Invalid Name'
+              },
+              notEmpty: {
+                message: 'Error: This cant be empty'
+              },
+              callback:{
+                
+              }
+            }
+          },
+          'building[code]': {
+            validators: {
+              regexp: {
+                regexp: /^[a-z0-9]+$/,
+                message: 'Error: No signs allowed !@#$...',
+              }
+            }
+          },
+          'building[floors]': {
+            validators: {
+              numeric: {
+                message: 'Error: The value needs to be a number',
+              }
+            }
+          },
+          'building[units]': {
+            validators: {
+              numeric: {
+                message: 'Error: The value needs to be a number',
+              }
+            }
+          },
+          //END Building Main Info.
+
+          //Address info
+          'address[address]': {
+            validators: {
+              stringLength: {
+                min: 2,
+                message: 'Error: Invalid Name'
+              },
+              notEmpty: {
+                message: 'Error: This cant be empty'
+              },
+            }
+          },
+          'address[zip]': {
+            validators: {
+              regexp: {
+                regexp: /^\d{5}$/,
+                message: 'The US zipcode must contain 5 digits'
+              }
+            }
+          },
+          //END Address info
 
 
           floor: {
             validators: {
+
               regexp: {
                 regexp: /^[0-9]+$/,
                 message: 'ERROR: SOLO NUMEROS AQUI'
@@ -594,12 +659,13 @@ $scope.validaFormaCompleta = function(){
                 max: 10,
                 message: 'ERROR: STRINGLENGTH'
               },
-//              notEmpty: {
-//                message: 'ERROR: ESTA VACIO'
-//              }
+              notEmpty: {
+                message: 'ERROR: ESTA VACIO'
+              },
               empty: {
                 message:'ERROR RUDO'
               }
+
             }
           },
 
@@ -618,7 +684,7 @@ $scope.validaFormaCompleta = function(){
       });
     }
   }
-})
+});
 app.controller('getBuildingPropertyCtl',  function ($scope, $http){
     $http.get("getBuildingProperty", {params: {'id': $scope.properData.id_building_properties}})
       .then(function (response) {

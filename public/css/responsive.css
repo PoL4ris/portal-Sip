@@ -1,4 +1,10 @@
 @media only screen and (max-width: 479px) and (min-width: 320px) {
+  body{
+    font-size: 16px;
+  }
+  .icon-version, .m-version{
+    display: block;
+  }
   #header, .desk-v{
     display: none;
   }
@@ -11,8 +17,6 @@
     /*position: absolute;*/
     height: 100%;
     /*min-height: 1000px;*/
-
-
   }
   #content{
     padding: 0;
@@ -39,4 +43,157 @@
     margin: 0 auto;
     padding: 10px;
   }
+  .m-gray-space{
+    height: 30px;
+    background: #EEECF3;
+    margin-bottom: 15px;
+    padding: 0 !important;
+    width: calc(100% + 23px);
+    position: relative;
+    left: -13px;
+    border-bottom: 1px solid #C1BFC5;
+    border-top: 1px solid #C1BFC5;}
+  /*CUSTOMER*/
+  .fixed-customer-size{
+    min-width: inherit;
+    max-width: inherit;
+    padding-right: 23px;
+  }
+  .customer-info-card{
+    width: 100%;
+    background: red;
+  }
+  .cmb-containers{
+    padding: 5px 0;
+  }
+  .cmb-cardinfo-text{
+    text-align: right;
+    padding-right: 15px !important;
+    border-bottom:1px solid #ddd;
+    padding: 0 0 8px;
+    margin-bottom: 10px;
+  }
+  .cmb-cardinfo-text button{
+    color: white;
+    padding: 5px 0 0 0;
+    height: 30px;
+    width: 30px;
+    text-align: center;
+    margin: 0;
+  }
+  .cmb-cardinfo-text .editable-submit{
+    background: #3e6cc9;
+  }
+  .cmb-cardinfo-text .editable-cancel{
+    background: #d14836;
+  }
+  .cmb-cardinfo-text input{}
+
+  /*ICONOGRAFIA*/
+  /*
+  icon-version
+  iv-icon-container pull-left
+  iv-icon
+
+  iv-label-container pull-left b-b-ddd
+
+  */
+
+  .iv-icon-container{
+    width: 30px;
+    padding-right: 10px;
+  }
+  .iv-label-container{
+    width: calc(100% - 30px);
+    padding: 0 0 8px;
+    margin-bottom: 10px;
+  }
+  .iv-label-container.iv-end-container, .cmb-cardinfo-text.iv-end-container{
+    margin-bottom: 0;
+    border: none;
+  }
+  .icon-version .iv-icon{
+    color: white;
+    width: 20px;
+    height: 20px;
+    border-radius: 20%;
+    text-align: center;
+    vertical-align: middle;
+    display: table-cell;
+    font-size: 14px;
+    overflow: hidden;
+    max-width: 20px;
+    max-height: 20px;
+  }
+  .vip-class, .no-vip-class{
+    border-bottom:1px solid #ddd;
+  }
+  .vip-class a{
+    background: none;
+    color: #969697 !important;
+    text-shadow: none;
+    font-size: 16px;
+    font-family: 'Radikal-Light';
+  }
+  .icon-version .iv-vip{
+    font-size: 10px;
+  }
+
+  /*CUSTOMER PRODUCT*/
+  .m-c-product{
+    border-bottom: 1px solid #ddd;
+    height: 40px;
+    padding: 9px 26px 0 13px;
+    position: relative;
+  }
+  .m-c-product p{
+  }
+  .m-c-product.bg-payment-debt{
+    border-left: none;
+    border-top: none;
+  }
+  .m-c-product.bg-payment-debt:after{
+    position: absolute;
+    border: 1px solid crimson;
+    content: "Debt";
+    top: 11px;
+    font-size: 12px;
+    border-radius: 4px;
+    color: crimson;
+    font-weight: bold;
+    right: 40px;
+    padding: 0 5px;
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

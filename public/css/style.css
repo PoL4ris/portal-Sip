@@ -36,8 +36,17 @@
 .bg-royal {
   background: royalblue none repeat scroll 0 0;
 }
+.bg-blue {
+  background: #0071FF none repeat scroll 0 0;
+}
 .bg-violet {
   background: violet none repeat scroll 0 0;
+}
+.bg-purple {
+  background: #4D4CD0;
+}
+.bg-crimson {
+  background: crimson;
 }
 .bg-silverip{
   background: #0f94f6;
@@ -48,12 +57,21 @@
 .bg-gray {
   background: #f4f4f4 none repeat scroll 0 0;
 }
+.bg-dark {
+  background: #505050 none repeat scroll 0 0;
+}
 .white-shadow {
   border: 1px solid #ddd;
   box-shadow: 0 1px 1px #ececec;
 }
 .bg-black {
   background: black none repeat scroll 0 0;
+}
+.bg-green-iphone{
+  background: #46D259 none repeat scroll 0 0;
+}
+.bg-orange{
+  background: #FF8A06;
 }
 .old-gray {
   background: white none repeat scroll 0 0;
@@ -260,6 +278,9 @@
 }
 .no-padding-left {
   padding-left: 0;
+}
+.m-b-0{
+  margin-bottom: 0;
 }
 .bold-type {
   /*font-weight: bold;*/
@@ -636,7 +657,6 @@ table.dataTable tbody tr {
   background: rgb(245, 245, 245);
 }
 .vip-class i {
-  color: #fcc515;
   font-size: 17px;
   position: relative;
   top: -1px;
@@ -724,8 +744,8 @@ table.dataTable tbody tr {
 .ticket-timing-results .ttr-container div label b {
 }
 .vip-class {
-  position: relative;
-  top: -3px;
+  /*position: relative;*/
+  /*top: -3px;*/
 }
 .vip-class label, .vip-class a{
   background: crimson none repeat scroll 0 0;
@@ -1750,18 +1770,37 @@ table.dataTable tbody tr {
 
 
 
-#new-building-form input:invalid {
-  border-color: crimson;
+#new-building-form{}
+#new-building-form .has-feedback .form-control{
 }
-#new-building-form input:valid, #new-building-form input:valid.required {
-  border-color: green;
+#new-building-form .bv-tab-error:after{
+  background: rgba(237, 20, 61, 0.66);
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  content: "!";
+  top: -11px;
+  left: -10px;
+  border-radius: 50%;
+  text-align: center;
+  color: white;
+  transition: all .7s ease 0s;
 }
-#new-building-form input:placeholder-shown {
-  border-color: #ddd;
+#new-building-form .action-btn-submit{
+  display: none;
 }
-#new-building-form input.required{
-  border-color: crimson;
-}
+/*#new-building-form input:invalid {*/
+  /*border-color: crimson;*/
+/*}*/
+/*#new-building-form input:valid, #new-building-form input:valid.required {*/
+  /*border-color: green;*/
+/*}*/
+/*#new-building-form input:placeholder-shown {*/
+  /*border-color: #ddd;*/
+/*}*/
+/*#new-building-form input.required{*/
+  /*border-color: crimson;*/
+/*}*/
 
 
 
