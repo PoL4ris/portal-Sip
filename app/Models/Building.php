@@ -14,6 +14,13 @@ class Building extends Model {
             ->with('emailAddress');
     }
 
+    public function activeCustomersWithAddresses()
+    {
+        return $this->belongsToMany('App\Models\Customer', 'address', 'id_buildings', 'id_customers')
+            ->where('id_status', config('const.status.active'))
+            ->with(['emailAddress','address']);
+    }
+
     public function customers()
     {
         return $this->belongsToMany('App\Models\Customer', 'address', 'id_buildings', 'id_customers');

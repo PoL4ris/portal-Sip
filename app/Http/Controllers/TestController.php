@@ -47,7 +47,7 @@ use App\Http\Controllers\TechScheduleController;
 use App\Extensions\GoogleCalendar;
 use DateTime;
 use App\Http\Controllers\Lib\UtilsController;
-
+use Response;
 //use Storage;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
@@ -406,57 +406,119 @@ class TestController extends Controller {
         dd('done');
     }
 
-    protected function updateMtikHotspotTarget()
+
+
+    public function toddTest()
     {
 
-    }
 
-    protected function getAnnualChargeQuery()
-    {
-        return Charge::where('details', 'like', '%"product_frequency":"annual"%')
-            ->where('status', config('const.charge_status.invoiced'))
-            ->with('customer');
-    }
+//        $building = Building::where('code' , '1600W')->first();
+//        dd($building->getProperty(15));
 
-    public function getPendingAutopayInvoicesThatHaveUpdatedPaymentMethods()
-    {
-        $perPage = 15;
-        $totalInvoicesProcessed = 0;
-        $billingHelper = new BillingHelper();
+        // $active = $building->activeCustomersWithAddresses->pluck('address')->pluck('unit');
+        // dd($active);
+        $returnValues = [];
+        $unfilteredBuildings = Building::where('type', 'High-Rise')->get()->sortBy('code');
 
-        $paginatedInvoices = $billingHelper->paginatePendingFailedInvoices();
-        $lastProcessedInvoiceId = 0;
-
-        $invoiceTable = [];
-        while ($paginatedInvoices->count() > 0)
-        {
-            $invoices = $billingHelper->filterPendingInvoicesByUpdatedPaymentMethods($paginatedInvoices);
-
-            foreach ($invoices as $invoice)
+        $buildings = $unfilteredBuildings->filter(function ($building) {
+            $type = $building->getProperty(15);
+            if (stristr($type, 'Retail INT'))
             {
-                $totalInvoicesProcessed ++;
-                $invoiceTable[] = $invoice;
-                Log::info('getPendingAutopayInvoicesThatHaveUpdatedPaymentMethods(): processing invoice id=' . $invoice->id . ' amount=$' . $invoice->amount);
-
-//                $lastProcessedInvoiceId = $invoice->id;
+                return true;
             }
 
-            $lastInvoice = $paginatedInvoices->last();
-            $lastProcessedInvoiceId = $lastInvoice->id;
+            return false;
+        });
 
-            Log::info('getPendingAutopayInvoicesThatHaveUpdatedPaymentMethods(): Found ' . $invoices->count() . ' invoices that have updated payment methods. Last invoice checked was: '.$lastProcessedInvoiceId);
+//        dd($buildings->pluck('code'));
 
-            $paginatedInvoices = $billingHelper->paginatePendingFailedInvoices($perPage, $lastProcessedInvoiceId);
+        $largestNumberOfUnits = 0;
+        foreach ($buildings as $building)
+        {
+            //        $building = Building::where('code' , '111M')->first();
+            $activeUnitsCollection = $building->activeCustomersWithAddresses->pluck('address')->pluck('unit');
+
+
+            $allUnitsArray = $building->getunitnumbers();
+            $allUnits = [];
+            if ( ! $allUnitsArray)
+            {
+                Log::info('Failed to get unit numbers for ' . $building->code);
+                continue;
+            }
+            Log::info('Processing ' . $building->code);
+
+
+            foreach ($allUnitsArray as $addressId => $units)
+            {
+                $allUnits = array_merge($allUnits, $units);
+
+            }
+            $allUnitsCollection = collect($allUnits)->sort();
+
+
+            $inactiveUnits = $allUnitsCollection->diff($activeUnitsCollection);
+            //           $returnValues[$building->address->address] = $inactiveUnits->toArray();
+            $returnValues[$building->address->address] = $inactiveUnits->toArray();
+
         }
-//        echo 'Processed ' . $totalInvoicesProcessed . ' invoices.' . "\n";
-        return $invoiceTable;
+        foreach($returnValues as $value)
+        {
+            $largestNumberOfUnits = max([$largestNumberOfUnits, count($value)]);
+        }
+                $titleRow = array_keys($returnValues);
+                $csv = implode(',', $titleRow) . "\n";
+
+                while ($largestNumberOfUnits > 0)
+                {
+                    $line = '';
+                    foreach ($returnValues as $buildingAddress => &$buildingUnits)
+                    {
+
+                        $unit = array_shift($buildingUnits);
+                        //$returnValues[$buildingAddress] = $buildingUnits;
+                        if ($unit != null)
+                        {
+                            $line .= $unit . ',';
+                        } else
+                        {
+                            $line .= ',';
+                            continue;
+                        }
+                    }
+                    rtrim($line, ',');
+                    $csv .= $line . "\n";
+                    -- $largestNumberOfUnits;
+                }
+
+
+// return an string as a file to the user
+        return Response::make($csv, '200', array(
+            'Content-Type' => 'application/octet-stream',
+            'Content-Disposition' => 'attachment; filename="Inactive.csv"'
+        ));
+
+//return $csv;
+
+        /*
+                $addresses = Address::where('id_buildings', $building->id)
+                    ->whereIn('unit', $inactiveUnits->toArray())->get();
+
+                dd(['inactive' => $inactiveUnits,
+                    'addresses' => $addresses->pluck('unit')->sort()]);
+          */
     }
+
 
     public function generalTest(Request $request)
     {
         $ciscoSwitch = new CiscoSwitch();
         $serviceSwitch = $ciscoSwitch->loadFromDB(null, '00:1B:2A:94:A4:00');
 
+
+        $commandOptions = ['count'     => '5',
+                           'addresses' => ['www.google.com', 'www.yahoo.com', 'www.silverip.com'],
+                           'interval'  => '300ms'];
 //        dd($serviceSwitch);
 
         if ($serviceSwitch->selected == false)
@@ -540,6 +602,40 @@ class TestController extends Controller {
 //        $declinedInvoices = Invoice::where('processing_type',)
 
         /** Find chargeable items for manually added plans and create an invoice for them **/
+        $billingHelper = new BillingHelper();
+
+        $customerProducts = CustomerProduct::with([
+            'customer' => function ($query) {
+                $query->where('id_status', config('const.status.active'));
+            },
+            'product'  => function ($query) {
+                $query->where('amount', '>', 0)
+                    ->where('frequency', 'annual');
+            }])
+            ->where('id_users', '!=', 0)
+            ->where('charge_status', config('const.customer_product_charge_status.none'))
+            ->where('id_status', config('const.status.active'))
+            ->whereNotNull('expires')
+            ->orderBy('created_at', 'desc')
+            ->take(10)
+            ->get();
+
+//        dd($customerProducts);
+//        $customers = $customerProducts->pluck('customer');
+//        $filteredProducts = $customerProducts->where('product.amount', '>', 0);
+
+        $filteredProducts = $customerProducts->filter(function ($customerProduct, $key) {
+            $product = $customerProduct->product;
+            $customer = $customerProduct->customer;
+            if ($customer != null && $product != null)
+            {
+                return true;
+            }
+
+            return false;
+        });
+
+        dd($filteredProducts);
 //        $billingHelper = new BillingHelper();
 //
 //        $customerProducts = CustomerProduct::with([
@@ -709,30 +805,29 @@ class TestController extends Controller {
 
         /** Find pending invoices then check for ones that belong to disabled customers **/
 
-        $invoiceStatusArrayMap = array_flip(config('const.invoice_status'));
-
-        $invoices = Invoice::with('customer')
-            ->where('processing_type', config('const.type.auto_pay'))
-            ->where('status', config('const.invoice_status.pending'))
-//            ->where('status', '!=', config('const.invoice_status.cancelled'))
-//            ->where('failed_charges_count', '>', 0)
-//            ->where('due_date', '2017-08-01 00:00:00')
-//            ->where('amount', '<', 100)
-            ->get();
-
-        $invoices->transform(function ($invoice, $key) use ($invoiceStatusArrayMap) {
-            $invoice->status = $invoiceStatusArrayMap[$invoice->status];
-
-            return $invoice;
-        });
-
-//        dd($invoices);
-//        dd($invoices->count());
+//        $invoiceStatusArrayMap = array_flip(config('const.invoice_status'));
+//
+//        $invoices = Invoice::with('customer')
+//            ->where('processing_type', config('const.type.auto_pay'))
+//            ->where('status', config('const.invoice_status.pending'))
+////            ->where('status', '!=', config('const.invoice_status.cancelled'))
+////            ->where('failed_charges_count', '>', 0)
+////            ->where('due_date', '2017-08-01 00:00:00')
+////            ->where('amount', '<', 100)
+//            ->get();
+//
+//        $invoices->transform(function ($invoice, $key) use ($invoiceStatusArrayMap) {
+//            $invoice->status = $invoiceStatusArrayMap[$invoice->status];
+//
+//            return $invoice;
+//        });
+//
+////        dd($invoices->count());
 ////        dd('$'.$invoices->pluck('amount', 'id_customers')->sort()->sum());
 //
 //        /** Get the customer IDs that are disabled for the above invoices **/
-        $customers = $invoices->pluck('customer');
-        dd($customers->whereLoose('id_status', config('const.status.disabled'))->pluck('id_status', 'id'));
+//        $customers = $invoices->pluck('customer');
+//        dd($customers->whereLoose('id_status', config('const.status.disabled'))->pluck('id_status', 'id'));
 
 
         /** Check and disable one-time products that have been charged/invoiced **/
@@ -1812,6 +1907,18 @@ class TestController extends Controller {
         //        dd($customer);
         dd($customer->getNetworkInfo()->toArray());
 
+    }
+
+    protected function updateMtikHotspotTarget()
+    {
+
+    }
+
+    protected function getAnnualChargeQuery()
+    {
+        return Charge::where('details', 'like', '%"product_frequency":"annual"%')
+            ->where('status', config('const.charge_status.invoiced'))
+            ->with('customer');
     }
 
 }
