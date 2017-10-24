@@ -636,11 +636,6 @@ class GeneralTasks extends Command {
         $ipAddresses = ['108.160.198.204'];
         $sitesToPing = ['www.google.com', 'www.yahoo.com', 'www.silverip.com'];
 
-        $command = '/ping';
-        $commandOptions = ['count'    => '5',
-                           'address'  => '',
-                           'interval' => '300ms'];
-
         $results = [];
         foreach ($ipAddresses as $ip)
         {
@@ -649,21 +644,11 @@ class GeneralTasks extends Command {
             $serviceRouter = new MtikRouter(['ip_address' => $ip,
                                              'username'   => config('netmgmt.mikrotik.username'),
                                              'password'   => config('netmgmt.mikrotik.password')]);
-
             echo $ip . ' ... ';
-
-            foreach ($sitesToPing as $site)
-            {
-                $commandOptions['address'] = $site;
-                $response = $serviceRouter->runCommand($ip, $command, $commandOptions);
-                if (isset($response['error']))
-                {
-                    $results[$ip][$site] = 'Failed: ' . $response['error'] . "\n";
-                }
-
-                $results[$ip][$site] = collect($response['response'])->last(); //
+            $response = $serviceRouter->getPingStats($ip, $sitesToPing);
+            $results[$ip] = $response;
 //                $results[$ip][$site] =  $this->processPingStats(collect($response['response']));
-            }
+
         }
         dd($results);
     }
@@ -672,6 +657,7 @@ class GeneralTasks extends Command {
     {
         $pingStats = $results->last();
         $responsePercentage = ($pingStats['received'] > 0) ? $pingStats['sent'] * 100 / $pingStats['received'] : 0;
+
         return [$responsePercentage, isset($pingStats['avg-rtt']) ? $pingStats['avg-rtt'] : 'n/a'];
     }
 }

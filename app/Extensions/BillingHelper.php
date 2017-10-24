@@ -1034,24 +1034,31 @@ class BillingHelper {
 
         // Charge the invoice
         $billingService = new SIPBilling();
+
         $charges = $invoice->charges;
-        $details = $charges->pluck('details');
+        $filteredCharges = $charges->reject(function ($charge) {
+            return $charge->details == null;
+        });
 
-        $chargeDetailsArray = array();
-        foreach ($details as $chargeDetails)
-        {
-            $chargeDetailsArray[] = json_decode($chargeDetails, true);
+        $chargeDetails = null;
+        if($filteredCharges->isEmpty() == false){
+            $details = $filteredCharges->pluck('details');
+            $chargeDetailsArray = array();
+            foreach ($details as $chargeDetails)
+            {
+                $chargeDetailsArray[] = json_decode($chargeDetails, true);
+            }
+            $chargeDetails = json_encode($chargeDetailsArray);
         }
-
 
         $customer = Customer::find($invoice->id_customers);
 
         if ($invoice->amount > 0)
         {
-            $chargeResult = $billingService->chargeCustomer($customer, $invoice->amount, $invoice->description, $invoice->description, json_encode($chargeDetailsArray));
+            $chargeResult = $billingService->chargeCustomer($customer, $invoice->amount, $invoice->description, $invoice->description, $chargeDetails);
         } else
         {
-            $chargeResult = $billingService->refundCustomer($customer, - 1 * $invoice->amount, $invoice->description, json_encode($chargeDetailsArray));
+            $chargeResult = $billingService->refundCustomer($customer, - 1 * $invoice->amount, $invoice->description, $chargeDetails);
         }
 
         $transactionId = isset($chargeResult['TRANSACTIONID']) ? $chargeResult['TRANSACTIONID'] : null;

@@ -454,21 +454,33 @@ class TestController extends Controller {
 
     public function generalTest(Request $request)
     {
-        $ciscoSwitch = new CiscoSwitch();
-        $serviceSwitch = $ciscoSwitch->loadFromDB(null, '00:1B:2A:94:A4:00');
 
-//        dd($serviceSwitch);
+        $invoice = Invoice::find(6707);
+        $charges = $invoice->charges;
+        $filteredCharges = $charges->reject(function ($charge) {
+            return $charge->details == null;
+        });
 
-        if ($serviceSwitch->selected == false)
-        {
-            dd('Not found');
+        $chargeDetails = null;
+        if($filteredCharges->isEmpty() == false){
+            $details = $filteredCharges->pluck('details');
+            $chargeDetailsArray = array();
+            foreach ($details as $chargeDetails)
+            {
+                $chargeDetailsArray[] = json_decode($chargeDetails, true);
+            }
+            $chargeDetails = json_encode($chargeDetailsArray);
         }
 
-        dd('Found');
 
-        $building = Building::find(29);
+        dd($chargeDetails);
 
-        dd($building->activeParentProducts());
+        dd($chargeDetailsArray);
+
+
+//        $building = Building::find(29);
+//
+//        dd($building->activeParentProducts());
 //        $billingHelper = new BillingHelper();
 //        dd($billingHelper->paginatePendingFailedInvoices());
 
@@ -477,9 +489,9 @@ class TestController extends Controller {
 //            ->where('processing_type', config('const.type.manual_pay'))
 //            ->get());
 
-        $invoices = collect($this->getPendingAutopayInvoicesThatHaveUpdatedPaymentMethods());
-
-        dd($invoices->pluck('id_customers'));
+//        $invoices = collect($this->getPendingAutopayInvoicesThatHaveUpdatedPaymentMethods());
+//
+//        dd($invoices->pluck('id_customers'));
 
 //        $commandOptions = ['count'    => '5',
 //                           'addresses'  => ['www.google.com', 'www.yahoo.com', 'www.silverip.com'],
@@ -487,10 +499,13 @@ class TestController extends Controller {
 //
 //        dd(json_encode($commandOptions));
 //
-//        $ip = '108.160.198.204';
-//        $serviceRouter = new MtikRouter(['ip_address' => $ip,
-//                                         'username'   => config('netmgmt.mikrotik.username'),
-//                                         'password'   => config('netmgmt.mikrotik.password')]);
+        $ip = '108.160.198.204';
+        $serviceRouter = new MtikRouter(['ip_address' => $ip,
+                                         'username'   => config('netmgmt.mikrotik.username'),
+                                         'password'   => config('netmgmt.mikrotik.password')]);
+
+        dd($serviceRouter->getPingStats($ip, ['www.google.com', 'www.yahoo.com', 'www.silverip.com']));
+
 //        $command = '/ping';
 //        $commandOptions = ['count'    => '5',
 //                           'address'  => 'www.google.com',

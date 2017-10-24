@@ -222,7 +222,7 @@ class SIPBilling {
         return $pm;
     }
 
-    protected function storeXaction($xactionResult, Customer $customer = null, Address $address = null, PaymentMethod $pm = null, $details = false)
+    protected function storeXaction($xactionResult, Customer $customer = null, Address $address = null, PaymentMethod $pm = null, $details = null)
     {
 
         $xactionLog = new BillingTransactionLog;
@@ -239,7 +239,7 @@ class SIPBilling {
         $xactionLog->transaction_type = $xactionResult['TransactionType'];
         $xactionLog->order_number = isset($xactionResult['OrderNumber']) ? $xactionResult['OrderNumber'] : 'N/A';
         $xactionLog->charge_description = isset($xactionResult['UDField1']) ? $xactionResult['UDField1'] : 'N/A';
-        if ($details != false)
+        if ($details != null)
         {
             $xactionLog->charge_details = $details;
         }
@@ -500,7 +500,7 @@ class SIPBilling {
         return $response;
     }
 
-    public function chargeCustomer(Customer $customer, $amount = 0, $desc = 'SilverIP Comm', $orderNumber = false, $details = false)
+    public function chargeCustomer(Customer $customer, $amount = 0, $desc = 'SilverIP Comm', $orderNumber = false, $details = null)
     {
 
         if ($customer == null)
@@ -557,7 +557,7 @@ class SIPBilling {
         return $result;
     }
 
-    public function chargePaymentMethod($paymentMethodId, $amount = 0, $desc = 'SilverIP Comm', $orderNumber = false, $details = false)
+    public function chargePaymentMethod($paymentMethodId, $amount = 0, $desc = 'SilverIP Comm', $orderNumber = false, $details = null)
     {
 
         $paymentMethod = $this->getPaymentMethod($paymentMethodId);
@@ -613,7 +613,7 @@ class SIPBilling {
         return $result;
     }
 
-    public function chargeCreditCard($cardInfo, $amount = 0, $desc = 'SilverIP Comm', $orderNumber = false, $details = false, $address = null)
+    public function chargeCreditCard($cardInfo, $amount = 0, $desc = 'SilverIP Comm', $orderNumber = false, $details = null, $address = null)
     {
 
         if ($orderNumber != false)
@@ -629,7 +629,7 @@ class SIPBilling {
         return $result;
     }
 
-    public function authCreditCard($cardInfo, $amount = 0, $desc = 'SilverIP Comm', $orderNumber = false, $details = false, $address = null)
+    public function authCreditCard($cardInfo, $amount = 0, $desc = 'SilverIP Comm', $orderNumber = false, $details = null, $address = null)
     {
 
         if ($orderNumber != false)
@@ -645,7 +645,7 @@ class SIPBilling {
         return $result;
     }
 
-    public function refundCustomer(Customer $customer, $amount = 0, $desc = 'SilverIP Comm', $details = false)
+    public function refundCustomer(Customer $customer, $amount = 0, $desc = 'SilverIP Comm', $details = null)
     {
 
         if ($customer == null)
@@ -698,7 +698,7 @@ class SIPBilling {
         return $result;
     }
 
-    public function refundPaymentMethod($paymentMethodId, $amount, $desc = 'SilverIP Comm', $details = false)
+    public function refundPaymentMethod($paymentMethodId, $amount, $desc = 'SilverIP Comm', $details = null)
     {
 
         $paymentMethod = $this->getPaymentMethod($paymentMethodId);
@@ -750,7 +750,7 @@ class SIPBilling {
         return $result;
     }
 
-    public function refundCreditCard($cardInfo, $amount = 0, $desc = 'SilverIP Comm', $details = false, $address = null)
+    public function refundCreditCard($cardInfo, $amount = 0, $desc = 'SilverIP Comm', $details = null, $address = null)
     {
 
         $cardInfo['TransactionType'] = 'CREDIT';

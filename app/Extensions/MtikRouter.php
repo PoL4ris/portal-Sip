@@ -852,6 +852,43 @@ class MtikRouter {
         }
     }
 
+    public function getPingStats($routerIp = null, $destinations, $count = 5, $interval = 300)
+    {
+        if ( ! isset($routerIp))
+        {
+            if ($this->isSelected())
+            {
+                $routerIp = $this->router['ip_address'];
+            }
+        }
+
+        if (isset($routerIp))
+        {
+            $command = '/ping';
+            $commandOptions = ['count'    => $count,
+                               'address'  => '',
+                               'interval' => $interval . 'ms'];
+
+            $results = [];
+
+            foreach ($destinations as $site)
+            {
+                $commandOptions['address'] = $site;
+                $response = $this->runCommand($routerIp, $command, $commandOptions);
+                if (isset($response['error']))
+                {
+                    $results[$site] = 'Failed: ' . $response['error'] . "\n";
+                }
+
+                $results[$site] = collect($response['response'])->last(); //
+            }
+
+            return $results;
+        }
+
+        return null;
+    }
+
     public function runCommand($routerIp, $command, $commandOptions = [])
     {
         $apiCommandResult = ['response' => false];
