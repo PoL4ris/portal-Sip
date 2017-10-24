@@ -13,7 +13,8 @@
   <!-- Basic Styles -->
   {{--<link rel="stylesheet" type="text/css" media="screen" href="/css/smart/styles/css/bootstrap.min.css">--}}
   <link rel="stylesheet" type="text/css" media="screen" href="/css/smart/styles/css/bootstrap.css">
-  <link rel="stylesheet" type="text/css" media="screen" href="/css/smart/styles/css/font-awesome.min.css">
+  {{--<link rel="stylesheet" type="text/css" media="screen" href="/css/smart/styles/css/font-awesome.min.css">--}}
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
 
   <!-- SmartAdmin Styles : Caution! DO NOT change the order -->
   <link rel="stylesheet" type="text/css" media="screen" href="/css/smart/styles/css/smartadmin-production-plugins.min.css">

@@ -1,3 +1,72 @@
+@font-face {
+  font-family: 'Radikal-Black';
+  src: url('../fonts/Radikal-Black.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Radikal-BlackItalic';
+  src: url('../fonts/Radikal-BlackItalic.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Radikal-Bold';
+  src: url('../fonts/Radikal-Bold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Radikal-BoldItalic';
+  src: url('../fonts/Radikal-BoldItalic.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Radikal-Light';
+  src: url('../fonts/Radikal-Light.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Radikal-LightItalic';
+  src: url('../fonts/Radikal-LightItalic.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Radikal-Medium';
+  src: url('../fonts/Radikal-Medium.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Radikal-MediumItalic';
+  src: url('../fonts/Radikal-MediumItalic.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Radikal-Regular';
+  src: url('../fonts/Radikal-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Radikal-RegularItalic';
+  src: url('../fonts/Radikal-RegularItalic.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Radikal-Thin';
+  src: url('../fonts/Radikal-Thin.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Radikal-ThinItalic';
+  src: url('../fonts/Radikal-ThinItalic.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Radikal-UltraThin';
+  src: url('../fonts/Radikal-UltraThin.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Radikal-UltraThinItalic';
+  src: url('../fonts/Radikal-UltraThinItalic.ttf') format('truetype');
+}
 html {
   background: #f8f8f8 none repeat scroll 0 0;
 }
@@ -36,6 +105,78 @@ h2 {
 }
 
 .center-logo {
+}
+
+
+.btn-success, .status-dash-btn-1 {
+  background: #4caf50;
+  color: white;
+}
+.btn-dark, .status-dash-btn-2 {
+  background: #333;
+  color: white;
+}
+.btn-danger, .status-dash-btn-3 {
+  background: #d14836;
+  color: white;
+}
+.btn-warning, .status-dash-btn-4 {
+  background: #ffc107;
+  color: white;
+}
+.btn-primary, .status-dash-btn-5 {
+  background: #3e6cc9;
+  color: white;
+}
+.btn-info, .status-dash-btn-6{
+  background: #0aa699;
+  color: white;
+}
+.btn-default, .status-dash-btn-7{
+  background: #ddd;
+  color: #333;
+}
+
+.btn {
+  box-shadow: none;
+  font-size: 13px;
+  min-width: 30px;
+  border: none;
+  padding: 6px 15px;
+}
+.icon-version{
+  display: none;
+}
+/*.btn-primary:focus,*/
+/*.btn-primary.active,*/
+/*.btn-primary:active,*/
+/*.btn-primary:hover,*/
+/*.open > .dropdown-toggle.btn-primary {*/
+  /*background-image: linear-gradient(#3e6cc9, #2e51b6);*/
+/*}*/
+/*.btn-danger:focus,*/
+/*.btn-danger.active,*/
+/*.btn-danger:active,*/
+/*.btn-danger:hover,*/
+/*.open > .dropdown-toggle.btn-danger {*/
+  /*background-image: linear-gradient(#d14836, #bf4231);*/
+/*}*/
+
+
+
+.btn-danger:hover,
+.btn-success:hover,
+.btn-primary:hover,
+.btn-info:hover,
+.btn-dark:hover,
+.btn-warning:hover {
+  color: white;
+  opacity: .8;
+}
+.btn-default:hover
+{
+  color: black;
+  opacity: .8;
 }
 
 .fixed-header #header {
@@ -993,43 +1134,7 @@ nav ul li a {
   padding: 0 13px 5px;
 }
 
-.btn-primary:focus, .btn-primary.active, .btn-primary:active, .btn-primary:hover, .open > .dropdown-toggle.btn-primary {
-  background-color: #3e6cc9;
-  background-image: linear-gradient(#3e6cc9, #2e51b6);
-}
 
-.btn-primary, .status-dash-btn-5 {
-  background-color: #3e6cc9;
-  background-image: linear-gradient(#3e6cc9, #2e51b6);
-  color: white;
-}
-
-.btn-danger, .status-dash-btn-3 {
-  background: #d14836 linear-gradient(#dd4b39, #d14836) repeat scroll 0 0;
-  color: white;
-}
-
-.btn-danger:hover, .btn-success:hover, .btn-default:hover, .btn-primary:hover, .btn-warning:hover {
-  border-color: #ddd;
-  color: white;
-  opacity: 0.8;
-}
-
-.btn-dark, .status-dash-btn-2 {
-  background-color: #afafaf;
-  background-image: linear-gradient(#afafaf, #a8a8a8);
-  color: white;
-}
-
-.btn-warning, .status-dash-btn-4 {
-  background: #ffc107 linear-gradient(#ffc107, #c29306) repeat scroll 0 0;
-  color: white;
-}
-
-.btn-success, .status-dash-btn-1 {
-  background: #4caf50 linear-gradient(#4caf50, #66bb6a) repeat scroll 0 0;
-  color: white;
-}
 
 .btn {
   box-shadow: none;
@@ -1424,73 +1529,16 @@ nav ul li a {
 .customer-info-container {
   max-width: 280px;
 }
-
-@font-face {
-  font-family: 'Radikal-Black';
-  src: url('../fonts/Radikal-Black.ttf') format('truetype');
+#new-building-form .form-control{
+  padding: 0;
+  margin: 0;
+  font-size: inherit;
 }
-
-@font-face {
-  font-family: 'Radikal-BlackItalic';
-  src: url('../fonts/Radikal-BlackItalic.ttf') format('truetype');
+#new-building-form{}
+#new-building-form .form-control[disabled],#new-building-form  .form-control[readonly],#new-building-form  fieldset[disabled] .form-control{
+  background: none;
 }
-
-@font-face {
-  font-family: 'Radikal-Bold';
-  src: url('../fonts/Radikal-Bold.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'Radikal-BoldItalic';
-  src: url('../fonts/Radikal-BoldItalic.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'Radikal-Light';
-  src: url('../fonts/Radikal-Light.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'Radikal-LightItalic';
-  src: url('../fonts/Radikal-LightItalic.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'Radikal-Medium';
-  src: url('../fonts/Radikal-Medium.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'Radikal-MediumItalic';
-  src: url('../fonts/Radikal-MediumItalic.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'Radikal-Regular';
-  src: url('../fonts/Radikal-Regular.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'Radikal-RegularItalic';
-  src: url('../fonts/Radikal-RegularItalic.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'Radikal-Thin';
-  src: url('../fonts/Radikal-Thin.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'Radikal-ThinItalic';
-  src: url('../fonts/Radikal-ThinItalic.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'Radikal-UltraThin';
-  src: url('../fonts/Radikal-UltraThin.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'Radikal-UltraThinItalic';
-  src: url('../fonts/Radikal-UltraThinItalic.ttf') format('truetype');
+.fixed-customer-size{
+  min-width: 300px;
+  max-width: 300px;
 }
