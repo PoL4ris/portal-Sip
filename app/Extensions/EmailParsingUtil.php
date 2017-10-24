@@ -4,7 +4,7 @@ namespace App\Extensions;
 
 use App\Extensions\SIPCustomer;
 use App\Extensions\SIPTicket;
-use App\Models\issue_detection_phrases;
+use App\Models\issueDetection;
 use Log;
 use PhpMimeMailParser\Parser as Parser;
 use Html2Text\Html2Text;
@@ -373,7 +373,7 @@ class EmailParsingUtil {
         $maxresult = [];
         $result = [];
         $text = strtolower($text);
-        issue_detection::chunk(20, function ($phrases) use (&$text, &$result) {
+        issueDetection::chunk(20, function ($phrases) use (&$text, &$result) {
             foreach ($phrases as $phrase)
             {
                 $p = strtolower(trim($phrase['phrase']));
@@ -423,7 +423,6 @@ class EmailParsingUtil {
      */
     private function findPhraseInString($haystack, $needle)
     {
-
         if (preg_match('/\b' . $needle . '\b/', $haystack) === 1)
         {
             return true;
