@@ -8,7 +8,10 @@
                 </article>
             </div>
 
-            <div class="col-lg-8 col-md-12 col-xs-12 m-t-lg customer-dash-grid ">
+            <!--GraySpaceStyle-->
+            <div class="col-xs-12 {{mobDevice ? 'm-gray-space' : 'no-display'}}"></div>
+
+            <div class="col-lg-8 col-md-12 col-xs-12 {{mobDevice ? 'no-padding-sides' : 'm-t-lg'}} customer-dash-grid ">
                 <article class="null-article" ng-include="'/views/customer/product.html'"></article>
             </div>
         </div>

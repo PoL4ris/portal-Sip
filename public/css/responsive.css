@@ -2,7 +2,7 @@
   body{
     font-size: 16px;
   }
-  .icon-version{
+  .icon-version, .m-version{
     display: block;
   }
   #header, .desk-v{
@@ -17,8 +17,6 @@
     /*position: absolute;*/
     height: 100%;
     /*min-height: 1000px;*/
-
-
   }
   #content{
     padding: 0;
@@ -75,6 +73,21 @@
     padding: 0 0 8px;
     margin-bottom: 10px;
   }
+  .cmb-cardinfo-text button{
+    color: white;
+    padding: 5px 0 0 0;
+    height: 30px;
+    width: 30px;
+    text-align: center;
+    margin: 0;
+  }
+  .cmb-cardinfo-text .editable-submit{
+    background: #3e6cc9;
+  }
+  .cmb-cardinfo-text .editable-cancel{
+    background: #d14836;
+  }
+  .cmb-cardinfo-text input{}
 
   /*ICONOGRAFIA*/
   /*
@@ -126,7 +139,31 @@
     font-size: 10px;
   }
 
-
+  /*CUSTOMER PRODUCT*/
+  .m-c-product{
+    border-bottom: 1px solid #ddd;
+    height: 40px;
+    padding: 9px 26px 0 13px;
+    position: relative;
+  }
+  .m-c-product p{
+  }
+  .m-c-product.bg-payment-debt{
+    border-left: none;
+    border-top: none;
+  }
+  .m-c-product.bg-payment-debt:after{
+    position: absolute;
+    border: 1px solid crimson;
+    content: "Debt";
+    top: 11px;
+    font-size: 12px;
+    border-radius: 4px;
+    color: crimson;
+    font-weight: bold;
+    right: 40px;
+    padding: 0 5px;
+  }
 
 
 

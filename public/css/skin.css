@@ -144,7 +144,7 @@ h2 {
   border: none;
   padding: 6px 15px;
 }
-.icon-version{
+.icon-version, .m-version{
   display: none;
 }
 /*.btn-primary:focus,*/

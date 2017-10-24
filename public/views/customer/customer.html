@@ -47,7 +47,7 @@
                 <!--VIP-->
                 <div class="col-lg-12 col-md-12 col-xs-12 no-padding-sides m-t-lg ">
 
-                    <p class="col-lg-4 col-md-4 col-xs-6 no-padding-sides {{mobDevice ? 'no-display' : ''}}"><strong>VIP:</strong></p>
+                    <p class="col-lg-4 col-md-4  no-padding-sides {{mobDevice ? 'no-display' : ''}}"><strong>VIP:</strong></p>
                     <div class="col-xs-4 no-padding-sides icon-version">
                         <div class="iv-icon-container pull-left">
                             <span class="iv-vip iv-icon bg-black">VIP</span>
@@ -58,7 +58,7 @@
                     </div>
 
 
-                    <p class="col-lg-4 col-md-4 col-xs-6 no-padding-sides vip-class cmb-cardinfo-text" ng-if="customerServiceData[uniqueIdIndex].info.vip">
+                    <p class="col-lg-4 col-md-4 col-xs-8 no-padding-sides vip-class cmb-cardinfo-text" ng-if="customerServiceData[uniqueIdIndex].info.vip">
                         <a href=""
                            id="b-p-id-cvip"
                            record-table="Customers"
@@ -72,12 +72,12 @@
                            data-type="text"
                            record-idContainer="customers"
                            mode="inline"
-                           {{mobDevice ? data-placement="left" : data-placement="right"}}
+                           data-placement="right"
                            class="editable editable-click vip-class capital-first">
                             {{customerServiceData[uniqueIdIndex].info.vip ? customerServiceData[uniqueIdIndex].info.vip : 'Info'}}
                         </a>
                     </p>
-                    <p class="col-lg-4 col-md-4 col-xs-6 no-padding-sides no-vip-class cmb-cardinfo-text" ng-if="!customerServiceData[uniqueIdIndex].info.vip">
+                    <p class="col-lg-4 col-md-4 col-xs-8 no-padding-sides no-vip-class cmb-cardinfo-text" ng-if="!customerServiceData[uniqueIdIndex].info.vip">
                         <a href=""
                            id="b-p-id-cvip"
                            record-table="Customers"
@@ -154,7 +154,7 @@
                 </div>
 
                 <!--City State & Zip-->
-                <div class="col-lg-12 col-md-12 col-xs-12 no-padding-sides {{mobDevice ? 'no-display' : ''}}">
+                <div class="col-lg-12 col-md-12 col-xs-12 no-padding-sides {{mobDevice ? 'no-display' : ''}} ">
                     <p class="col-lg-4 col-md-4 no-padding-sides"></p>
                     <p class="col-lg-6 col-md-6 no-padding-sides">
                         {{customerServiceData[uniqueIdIndex].info.address.city ? customerServiceData[uniqueIdIndex].info.address.city : 'Not Set'}},
@@ -185,7 +185,7 @@
                 </div>
 
                 <!--Username-->
-                <div class="col-lg-12 col-md-12 col-xs-12 no-padding-sides {{mobDevice ? '' : 'm-t-lg'}}">
+                <div class="col-lg-12 col-md-12 col-xs-12 no-padding-sides {{mobDevice ? '' : 'm-t-lg'}} ">
                     <p class="col-lg-4 col-md-4 no-padding-sides {{mobDevice ? 'no-display' : ''}}"><strong>Username:</strong></p>
                     <div class="col-xs-4 no-padding-sides icon-version">
                         <div class="iv-icon-container pull-left">
@@ -221,7 +221,7 @@
                 <!--OLD CHANGE STATUS WITH XEDIT-->
 
                 <!--Status-->
-                <div class="col-lg-12 col-md-12 col-xs-12 no-padding-sides">
+                <div class="col-lg-12 col-md-12 col-xs-12 no-padding-sides ">
                     <p class="col-lg-4 col-md-4 no-padding-sides {{mobDevice ? 'no-display' : ''}}"><strong>Status:</strong></p>
 
                     <div class="col-xs-6 no-padding-sides icon-version">
@@ -259,7 +259,7 @@
                 </div>
 
                 <!--Location-->
-                <div class="col-lg-12 col-md-12 col-xs-12 no-padding-sides">
+                <div class="col-lg-12 col-md-12 col-xs-12 no-padding-sides ">
                     <p class="col-lg-4 col-md-4 no-padding-sides {{mobDevice ? 'no-display' : ''}}"><strong>Location:</strong></p>
 
                     <div class="col-xs-6 no-padding-sides icon-version">
@@ -278,7 +278,7 @@
                 </div>
 
                 <!--Contacts-->
-                <div ng-repeat="contacto in customerServiceData[uniqueIdIndex].info.contacts" class="col-xs-12 no-padding-sides">
+                <div ng-repeat="contacto in customerServiceData[uniqueIdIndex].info.contacts" class="col-xs-12 no-padding-sides ">
                     <!--<div class="col-lg-12 col-md-12 no-padding-sides">-->
 
 
@@ -306,7 +306,7 @@
                 <div class="col-xs-12 {{mobDevice ? 'm-gray-space' : 'no-display'}}"></div>
 
                 <!--Bld Units & Floors Description-->
-                <div class="col-lg-12 col-md-12 col-xs-12 no-padding-sides {{mobDevice ? '' : 'p-t-lg'}}">
+                <div class="col-lg-12 col-md-12 col-xs-12 no-padding-sides {{mobDevice ? '' : 'p-t-lg'}} ">
 
 
                     <div class="col-xs-12 no-padding-sides icon-version">
@@ -331,7 +331,7 @@
                 </div>
 
                 <!--Locations Found in Account-->
-                <div class="col-lg-12 col-md-12 col-xs-12 no-padding-sides">
+                <div class="col-lg-12 col-md-12 col-xs-12 no-padding-sides ">
                     <p class=" m-t-md m-b-lg {{mobDevice ? 'no-display' : ''}}">
                         <i class="fa fa-map-marker "></i> {{customerServiceData[uniqueIdIndex].info.addresses.length}}
                         <label ng-if="customerServiceData[uniqueIdIndex].info.addresses.length == 1"> address found on this account</label>
@@ -359,7 +359,7 @@
                 </div>
 
                 <!--Action Buttons-->
-                <div class="col-lg-12 col-md-12 col-xs-12 no-padding-sides">
+                <div class="col-lg-12 col-md-12 col-xs-12 no-padding-sides p-b-lg">
                     <div class="col-lg-5 col-md-5 col-xs-6 no-padding-sides">
                         <button id="c-c-i-e-{{uniqueIdIndex}}"
                                 class="float-left btn btn-success"
@@ -391,7 +391,7 @@
 
 <!--MODAL-->
 <div class="modal fade cus-add-mod" id="customerAddressesModal-{{uniqueIdIndex}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog fadeInRight animated modal-lg ">
         <div class="modal-content">
 
             <div class="modal-header">

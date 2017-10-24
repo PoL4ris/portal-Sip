@@ -585,22 +585,23 @@ angular.module('app.forms').controller('FormLayoutsCtrl', function($scope, $moda
 angular.module('app.forms').controller('FormPluginsCtrl', function($scope, $log){
 
 
-  if ($(window).width() < 600) {
-    $scope.editableOptions =  {
-      mode: 'inline',
-      disabled: true
-    };
-  } else {
-    $scope.editableOptions =  {
-      mode: 'popup',
-      disabled: true
-    };
-  }
+//  if ($(window).width() < 600) {
+//    $scope.editableOptions =  {
+//      mode: 'inline',
+//      disabled: true,
+//
+//    };
+//  } else {
+//    $scope.editableOptions =  {
+//      mode: 'popup',
+//      disabled: true
+//    };
+//  }
 
-//  $scope.editableOptions =  {
-//    mode: 'inline',
-//    disabled: true
-//  };
+  $scope.editableOptions =  {
+    mode: 'popup',
+    disabled: true
+  };
 
   $scope.toggleInline = function() {
     if($scope.editableOptions.mode == 'popup') {
