@@ -4,6 +4,7 @@ namespace App\Extensions;
 
 use App\Extensions\SIPCustomer;
 use App\Extensions\SIPTicket;
+use App\Models\issue_detection_phrases;
 use Log;
 use PhpMimeMailParser\Parser as Parser;
 use Html2Text\Html2Text;
@@ -88,14 +89,22 @@ class EmailParsingUtil {
                 $this->sipTicket->updateTicketByNumber($ticketMatchArr[0], config('const.ticket_status.escalated'), $cleanEmailBody, $adminUserId, false);
             } else
             {
+                $issue = $this->searchIssueKeyPhrases($ticketContents);
                 if ($customer != null)
                 {
                     Log::debug("parseSupportEmail(): Sender  " . $from . " is customer id=" . $customer->id . ". Creating a ticket for this customer ... ");
-                    $this->sipTicket->createTicket($customer->id, config('const.reason.other'), config('const.ticket_status.escalated'), $ticketContents, $adminUserId, false);
+
+                    $this->sipTicket->createTicket($customer->id, $issue, config('const.ticket_status.escalated'), $ticketContents, $adminUserId, false);
                 } else
                 {
-                    Log::debug("parseSupportEmail(): Sender  " . $from . " not found in the customer database. Creating a generic ticket ... ");
-                    $this->sipTicket->createTicket('1', config('const.reason.other'), config('const.ticket_status.escalated'), $ticketContents, $adminUserId, false);
+                    Log::debug("parseSupportEmail(): Sender  " . $from . " not found in the customer database. Creating a generic ticket ... " . "Detected issue: " . $issue);
+
+                    $this->sipTicket->createTicket('1', $issue, config('const.ticket_status.escalated'), $ticketContents, $adminUserId, false);
+                    if ($issue == 1)
+                    {
+                        // Log::info("Issue 1 Message Text: " . $text);
+                        // Log::info("Issue 1 Message HTML: " . $html);
+                    }
                 }
             }
 
@@ -120,6 +129,58 @@ class EmailParsingUtil {
             //echo $emailMessage;
             //exit;
         }
+    }  //does this contain that?
+
+    protected function shouldIgnoreSender($email, $subject)
+    {
+        /**  Email filters **
+         *
+         * @ip-echelon.com
+         * @radyn.com
+         * @intelpath.com
+         * @micronetcom.com
+         * @wacorp.net
+         * @copyright-compliance.com
+         * no-reply@asana.com
+         */
+        if (preg_match('/^.*\@ip-echelon\.com/', $email) ||
+            preg_match('/^.*\@radyn\.com/', $email) ||
+            preg_match('/^.*\@intelpath\.com/', $email) ||
+            preg_match('/^.*\@micronetcom\.com/', $email) ||
+            preg_match('/^.*\@wacorp\.com/', $email) ||
+            preg_match('/^.*\@copyright-compliance\.com/', $email) ||
+            preg_match('/^.*no-reply\@asana\.com/', $email) ||
+            preg_match('/^.*\@*gserviceaccount\.com/', $email) ||
+            preg_match('/\bmarline\@silverip\.com/', $email) ||
+            preg_match('/\bbrian.*?\@silverip\.com/', $email) ||
+            preg_match('/\bjames\@silverip\.com/', $email) ||
+            preg_match('/\btodd\@silverip\.com/', $email) ||
+            preg_match('/\bjon\@silverip\.com/', $email) ||
+            preg_match('/\bjuan\@silverip\.com/', $email) ||
+            preg_match('/\babe\@silverip\.com/', $email) ||
+            preg_match('/\bvan.*?\@silverip\.com/', $email) ||
+            preg_match('/^.*\@slack.com/', $email)
+        )
+        {
+            return true;
+        }
+
+        if ($email == 'help@silverip.com' && preg_match('/^Account Update Notification:/', $subject))
+        {
+            return true;
+        }
+
+        if ($email == 'noreply@silverip.net')
+        {
+            return true;
+        }
+
+        if ($email == 'MAILER-DAEMON@mail.silverip.net' && preg_match('/^Undelivered Mail Returned to Sender/', $subject))
+        {
+            return true;
+        }
+
+        return false;
     }
 
     protected function processFusedEmail($to, $from, $subject, $text, $html, $attachments)
@@ -166,8 +227,9 @@ class EmailParsingUtil {
                     $this->sipTicket->updateTicket($ticket, $ticket->id_reasons, $ticketStatus, $cleanEmailBody, 0, false);
                 } else
                 {
+                    $ticketIssue = $this->searchIssueKeyPhrases($text);
                     Log::debug("processFusedEmail(): Case ID is present but no existing ticket found. Creating a new ticket with customer id=" . $customerId . " ... ");
-                    $this->sipTicket->createTicket($customerId, config('const.reason.unknown'), config('const.ticket_status.escalated'), $caseNotes, 0);
+                    $this->sipTicket->createTicket($customerId, $ticketIssue, config('const.ticket_status.escalated'), $caseNotes, 0);
                 }
             }
             $this->saveEmailOnLocalDisk($to, $from, $subject, $text, $html, $attachments);
@@ -176,6 +238,59 @@ class EmailParsingUtil {
         {
             Log::debug("processFusedEmail(): Subject too short: should be 6 or more words long. Ignoring email with subject: " . $subject);
         }
+    }
+
+    protected function findVendorCaseIdInBody($body)
+    {
+        $caseId = '';
+        $caseIdMatchArr = array();
+        preg_match('/Case ID:\s+(.*)/', $body, $caseIdMatchArr);
+        if ( ! empty($caseIdMatchArr))
+        {
+            /*
+             * $caseIDMatchArr[0] will have the entire matched string
+             * $caseIDMatchArr[1] will have the first matched ()
+             *
+             */
+            $caseId = $caseIdMatchArr[1];
+        }
+
+        return $caseId;
+    }
+
+    protected function removeEmailHistory($emailBody)
+    {
+
+        $emailPattern = '[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,})';
+        $cleanedEmailBodyLines = array();
+        $emailBodyLines = preg_split("/\\r\\n|\\r|\\n/", $emailBody);
+
+        $line = array_shift($emailBodyLines);
+        while (isset($line) && preg_match('/^>+.*/', $line) !== 1 && (preg_match('/^[Oo]n.*wrote:\s*/', $line) !== 1 && preg_match('/^[Oo]n\s+.*<' . $emailPattern . '>\s*/', $line) !== 1))
+        {
+
+            $cleanedEmailBodyLines[] = $line;
+            $line = array_shift($emailBodyLines);
+        }
+
+        return implode("\n", $cleanedEmailBodyLines);
+    }
+
+    protected function saveEmailOnLocalDisk($to, $from, $subject, $text, $html, $attachments)
+    {
+        $emailMessage = 'to: ' . $to . "\n";
+        $emailMessage .= 'from: ' . $from . "\n";
+        $emailMessage .= 'subject: ' . $subject . "\n";
+        $emailMessage .= "text version:\n" . $text . "\n";
+        $emailMessage .= "html version:\n" . $html . "\n";
+        $emailMessage .= "attachements:\n" . print_r($attachments, true) . "\n";
+
+        $timeString = date('m-d-Y_H-i-s');
+        $myFile = config('mail.processed-email-directory') . '/email_' . $timeString . '.txt';
+        $fh = fopen($myFile, 'w') or die("can't open file");
+        fwrite($fh, "Email Header:\n" . $emailMessage);
+        fclose($fh);
+        chmod($myFile, 0755);
     }
 
     protected function processWebsiteEmail($to, $from, $subject, $text, $html, $attachments)
@@ -236,85 +351,8 @@ class EmailParsingUtil {
             Log::debug("processWebsiteEmail(): Found customer id=" . $customer->id . ". Creating a ticket for this customer ... ");
             $customerId = $customer->id;
         }
-
-        $this->sipTicket->createTicket($customerId, config('const.reason.unknown'), $text, $ticketStatus, 0, false);
-    }
-
-    protected function saveEmailOnLocalDisk($to, $from, $subject, $text, $html, $attachments)
-    {
-        $emailMessage = 'to: ' . $to . "\n";
-        $emailMessage .= 'from: ' . $from . "\n";
-        $emailMessage .= 'subject: ' . $subject . "\n";
-        $emailMessage .= "text version:\n" . $text . "\n";
-        $emailMessage .= "html version:\n" . $html . "\n";
-        $emailMessage .= "attachements:\n" . print_r($attachments, true) . "\n";
-
-        $timeString = date('m-d-Y_H-i-s');
-        $myFile = config('mail.processed-email-directory') . '/email_' . $timeString . '.txt';
-        $fh = fopen($myFile, 'w') or die("can't open file");
-        fwrite($fh, "Email Header:\n" . $emailMessage);
-        fclose($fh);
-        chmod($myFile, 0755);
-    }
-
-    protected function removeEmailHistory($emailBody)
-    {
-
-        $emailPattern = '[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,})';
-        $cleanedEmailBodyLines = array();
-        $emailBodyLines = preg_split("/\\r\\n|\\r|\\n/", $emailBody);
-
-        $line = array_shift($emailBodyLines);
-        while (isset($line) && preg_match('/^>+.*/', $line) !== 1 && (preg_match('/^[Oo]n.*wrote:\s*/', $line) !== 1 && preg_match('/^[Oo]n\s+.*<' . $emailPattern . '>\s*/', $line) !== 1))
-        {
-
-            $cleanedEmailBodyLines[] = $line;
-            $line = array_shift($emailBodyLines);
-        }
-
-        return implode("\n", $cleanedEmailBodyLines);
-    }
-
-    protected function shouldIgnoreSender($email, $subject)
-    {
-        /**  Email filters **
-         *
-         * @ip-echelon.com
-         * @radyn.com
-         * @intelpath.com
-         * @micronetcom.com
-         * @wacorp.net
-         * @copyright-compliance.com
-         * no-reply@asana.com
-         */
-        if (preg_match('/^.*\@ip-echelon\.com/', $email) ||
-            preg_match('/^.*\@radyn\.com/', $email) ||
-            preg_match('/^.*\@intelpath\.com/', $email) ||
-            preg_match('/^.*\@micronetcom\.com/', $email) ||
-            preg_match('/^.*\@wacorp\.com/', $email) ||
-            preg_match('/^.*\@copyright-compliance\.com/', $email) ||
-            preg_match('/^.*no-reply\@asana\.com/', $email)
-        )
-        {
-            return true;
-        }
-
-        if ($email == 'help@silverip.com' && preg_match('/^Account Update Notification:/', $subject))
-        {
-            return true;
-        }
-
-        if ($email == 'noreply@silverip.net')
-        {
-            return true;
-        }
-
-        if ($email == 'MAILER-DAEMON@mail.silverip.net' && preg_match('/^Undelivered Mail Returned to Sender/', $subject))
-        {
-            return true;
-        }
-
-        return false;
+        $issue = $this->searchIssueKeyPhrases($text);
+        $this->sipTicket->createTicket($customerId, $issue, $text, $ticketStatus, 0, false);
     }
 
     protected function findTicketInSubject($subject)
@@ -325,22 +363,75 @@ class EmailParsingUtil {
         return $ticketMatchArr;
     }
 
-    protected function findVendorCaseIdInBody($body)
+
+    /*
+     * takes email body and looks for phrases indicating potential issue.  If none are found return issue 0 (unknown) else returns corresponding issue.
+     */
+
+    protected function searchIssueKeyPhrases($text)
     {
-        $caseId = '';
-        $caseIdMatchArr = array();
-        preg_match('/Case ID:\s+(.*)/', $body, $caseIdMatchArr);
-        if ( ! empty($caseIdMatchArr))
+        $maxresult = [];
+        $result = [];
+        $text = strtolower($text);
+        issue_detection::chunk(20, function ($phrases) use (&$text, &$result) {
+            foreach ($phrases as $phrase)
+            {
+                $p = strtolower(trim($phrase['phrase']));
+
+                if ($this->findPhraseInString($text, $p))
+                {
+                    if (isset($result[$phrase['issue']]))
+                    {
+                        $result[$phrase['issue']] += $phrase['weight'];
+                        $phrase->count ++;
+                        $phrase->save();
+                    } else
+                    {
+                        $result[$phrase['issue']] = $phrase['weight'];
+                        $phrase->count ++;
+                        $phrase->save();
+
+                    }
+                }
+            }
+        });
+
+
+        //Log::info('result count ' . count($result) );
+        if (count($result) == 0)
         {
-            /*
-             * $caseIDMatchArr[0] will have the entire matched string
-             * $caseIDMatchArr[1] will have the first matched ()
-             *
-             */
-            $caseId = $caseIdMatchArr[1];
+            //log::info('text was: ' . $text);
+        }
+        if (count($result))
+        {
+            $maxresult = array_keys($result, max($result));
+
+        } else
+        {
+            return 1;
         }
 
-        return $caseId;
+        return $maxresult[0];
+
+    }
+
+    /**
+     * just a helper function, finds $needle in $haystack
+     * @param $haystack
+     * @param $needle
+     * @return bool
+     */
+    private function findPhraseInString($haystack, $needle)
+    {
+
+        if (preg_match('/\b' . $needle . '\b/', $haystack) === 1)
+        {
+            return true;
+        } else
+        {
+            return false;
+        }
+
     }
 
 }

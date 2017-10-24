@@ -47,7 +47,7 @@ use App\Http\Controllers\TechScheduleController;
 use App\Extensions\GoogleCalendar;
 use DateTime;
 use App\Http\Controllers\Lib\UtilsController;
-
+use Response;
 //use Storage;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
@@ -406,24 +406,117 @@ class TestController extends Controller {
         dd('done');
     }
 
-    protected function updateMtikHotspotTarget()
+
+
+    public function toddTest()
     {
 
+
+//        $building = Building::where('code' , '1600W')->first();
+//        dd($building->getProperty(15));
+
+        // $active = $building->activeCustomersWithAddresses->pluck('address')->pluck('unit');
+        // dd($active);
+        $returnValues = [];
+        $unfilteredBuildings = Building::where('type', 'High-Rise')->get()->sortBy('code');
+
+        $buildings = $unfilteredBuildings->filter(function ($building) {
+            $type = $building->getProperty(15);
+            if (stristr($type, 'Retail INT'))
+            {
+                return true;
+            }
+
+            return false;
+        });
+
+//        dd($buildings->pluck('code'));
+
+        $largestNumberOfUnits = 0;
+        foreach ($buildings as $building)
+        {
+            //        $building = Building::where('code' , '111M')->first();
+            $activeUnitsCollection = $building->activeCustomersWithAddresses->pluck('address')->pluck('unit');
+
+
+            $allUnitsArray = $building->getunitnumbers();
+            $allUnits = [];
+            if ( ! $allUnitsArray)
+            {
+                Log::info('Failed to get unit numbers for ' . $building->code);
+                continue;
+            }
+            Log::info('Processing ' . $building->code);
+
+
+            foreach ($allUnitsArray as $addressId => $units)
+            {
+                $allUnits = array_merge($allUnits, $units);
+
+            }
+            $allUnitsCollection = collect($allUnits)->sort();
+
+
+            $inactiveUnits = $allUnitsCollection->diff($activeUnitsCollection);
+            //           $returnValues[$building->address->address] = $inactiveUnits->toArray();
+            $returnValues[$building->address->address] = $inactiveUnits->toArray();
+
+        }
+        foreach($returnValues as $value)
+        {
+            $largestNumberOfUnits = max([$largestNumberOfUnits, count($value)]);
+        }
+                $titleRow = array_keys($returnValues);
+                $csv = implode(',', $titleRow) . "\n";
+
+                while ($largestNumberOfUnits > 0)
+                {
+                    $line = '';
+                    foreach ($returnValues as $buildingAddress => &$buildingUnits)
+                    {
+
+                        $unit = array_shift($buildingUnits);
+                        //$returnValues[$buildingAddress] = $buildingUnits;
+                        if ($unit != null)
+                        {
+                            $line .= $unit . ',';
+                        } else
+                        {
+                            $line .= ',';
+                            continue;
+                        }
+                    }
+                    rtrim($line, ',');
+                    $csv .= $line . "\n";
+                    -- $largestNumberOfUnits;
+                }
+
+
+// return an string as a file to the user
+        return Response::make($csv, '200', array(
+            'Content-Type' => 'application/octet-stream',
+            'Content-Disposition' => 'attachment; filename="Inactive.csv"'
+        ));
+
+//return $csv;
+
+        /*
+                $addresses = Address::where('id_buildings', $building->id)
+                    ->whereIn('unit', $inactiveUnits->toArray())->get();
+
+                dd(['inactive' => $inactiveUnits,
+                    'addresses' => $addresses->pluck('unit')->sort()]);
+          */
     }
 
-    protected function getAnnualChargeQuery()
-    {
-        return Charge::where('details', 'like', '%"product_frequency":"annual"%')
-            ->where('status', config('const.charge_status.invoiced'))
-            ->with('customer');
-    }
 
     public function generalTest(Request $request)
     {
 
-        $commandOptions = ['count'    => '5',
-                           'addresses'  => ['www.google.com', 'www.yahoo.com', 'www.silverip.com'],
-                           'interval' => '300ms'];
+
+        $commandOptions = ['count'     => '5',
+                           'addresses' => ['www.google.com', 'www.yahoo.com', 'www.silverip.com'],
+                           'interval'  => '300ms'];
 
         dd(json_encode($commandOptions));
 
@@ -488,7 +581,7 @@ class TestController extends Controller {
             },
             'product'  => function ($query) {
                 $query->where('amount', '>', 0)
-                ->where('frequency', 'annual');
+                    ->where('frequency', 'annual');
             }])
             ->where('id_users', '!=', 0)
             ->where('charge_status', config('const.customer_product_charge_status.none'))
@@ -1751,6 +1844,18 @@ class TestController extends Controller {
         //        dd($customer);
         dd($customer->getNetworkInfo()->toArray());
 
+    }
+
+    protected function updateMtikHotspotTarget()
+    {
+
+    }
+
+    protected function getAnnualChargeQuery()
+    {
+        return Charge::where('details', 'like', '%"product_frequency":"annual"%')
+            ->where('status', config('const.charge_status.invoiced'))
+            ->with('customer');
     }
 
 }
