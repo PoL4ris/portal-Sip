@@ -38,7 +38,8 @@ class SIPTicket {
     {
         $lastTicketId = Ticket::max('id');
 
-        if($lastTicketId == null) {
+        if ($lastTicketId == null)
+        {
             return 'ST-1';
         }
 
@@ -78,9 +79,12 @@ class SIPTicket {
         if ($ticketNumber != '' && $updateComment != '' && $updateStatus != '')
         {
             $ticket = $this->getSupportTicketByTicketNumber($ticketNumber);
-if($ticket == null) {
-    return false;
-}
+
+            if ($ticket == null)
+            {
+                return false;
+            }
+
             return $this->updateTicket($ticket, $ticket->id_reasons, $updateStatus, $updateComment, $adminUserId, $sendEmail);
         }
 
