@@ -111,7 +111,7 @@ class Building extends Model {
         $products = $this->products;
 
         return $products->whereLoose('id_status', config('const.status.active'))
-                        ->whereLoose('product.id_products', 0);
+            ->whereLoose('product.id_products', 0);
     }
 
     public function properties()
@@ -155,21 +155,43 @@ class Building extends Model {
         )->where('id_types', config('const.type.switch'));
     }
 
-    public function notes()
-    {
-        return $this->hasMany('App\Models\Note', 'id_buildings', 'id');
-    }
-    public function media()
-    {
-        return $this->hasMany('App\Models\Media', 'id_buildings', 'id');
-    }
-
     public function accessSwitches()
     {
         return $this->hasManyThrough(
             'App\Models\NetworkNode', 'App\Models\Address',
             'id_buildings', 'id_address', 'id'
         )->where('id_types', config('const.type.switch'))
-            ->where('host_name', 'not like', '%CORE%');
+            ->where('role', 'Access');
     }
+
+    public function coreSwitches()
+    {
+        return $this->hasManyThrough(
+            'App\Models\NetworkNode', 'App\Models\Address',
+            'id_buildings', 'id_address', 'id'
+        )->where('id_types', config('const.type.switch'))
+            ->where('role', 'Core');
+    }
+
+    public function userAccessSwitches()
+    {
+        return $this->hasManyThrough(
+            'App\Models\NetworkNode', 'App\Models\Address',
+            'id_buildings', 'id_address', 'id'
+        )->where('id_types', config('const.type.switch'))
+            ->where('properties', 'like', '%private vlan range%')
+            ->orderBy('host_name', 'asc');
+    }
+
+    public function notes()
+    {
+        return $this->hasMany('App\Models\Note', 'id_buildings', 'id');
+    }
+
+    public function media()
+    {
+        return $this->hasMany('App\Models\Media', 'id_buildings', 'id');
+    }
+
+
 }

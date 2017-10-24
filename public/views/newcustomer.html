@@ -139,7 +139,7 @@
                     <!-- SERVICE INFO -->
                     <div class="step-pane" data-step="3">
                         <h3><strong>Step 3 </strong> - Select a products or services</h3>
-                        <br><br>
+                        <!--<br><br>-->
                         <div class="col-lg-8">
 
                             <div class="col-lg-4 header-title">Name</div>
@@ -161,7 +161,7 @@
 
                         </div>
                         <div class="col-lg-4">
-                            <h2 class="text-center text-primary">Selected Service: </h2>
+                            <h2 class="text-center text-primary header-title">Selected Service: </h2>
                             <div class="selected-service-display" ng-if="selectedServiceDisplay">
                                 <p>{{selectedServiceDisplay.name}}</p>
                                 <p>{{ selectedServiceDisplay.amount | currency : "$" : 2 }},
@@ -191,9 +191,9 @@
                                 <small class="status-color-down-left-border"> Down</small>
                             </div>
                         </h3>
-                        <br><br><br><br>
+                        <!--<br><br><br><br>-->
                         <div class="col-lg-3">
-                            <h4>Switch List:</h4>
+                            <h4 class="header-title">Switch List:</h4>
                             <div ng-repeat="switch in buildingSwitches" class="switches-list ">
                                 <div ng-click="getavailablePorts()" class="select-switch-{{switch.id}} switches-list">
                                     {{switch.host_name}}, <b>{{switch.ip_address}}</b>
@@ -411,7 +411,7 @@
                     <td>{{customerData.address.code}} #{{customerData.address.unit}}</td>
                     <td>{{customerData.email_address.value}}</td>
                     <td>{{customerData.phone.value}}</td>
-                    <td>{{customerData.user.first_name}} {{customerData.user.first_name}}</td>
+                    <td>{{customerData.user.first_name}} {{customerData.user.last_name}}</td>
                     <td ng-init="signedup = convertDate(customerData.created_at)">{{ signedup | date : "MMM d, y h:mm a" }}</td>
                     <td ng-if="customerData.id_status == 1"><span class="label status-dash-btn-{{customerData.id_status}}">Active</span></td>
                     <td ng-if="customerData.id_status == 2"><span class="label status-dash-btn-{{customerData.id_status}}">Disabled</span></td>

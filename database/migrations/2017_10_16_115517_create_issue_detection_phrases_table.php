@@ -12,7 +12,7 @@ class CreateIssueDetectionPhrasesTable extends Migration
      */
     public function up()
     {
-        Schema::create('', function (Blueprint $table) {
+        Schema::create('issueDetection', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
             $table->longText('phrase');

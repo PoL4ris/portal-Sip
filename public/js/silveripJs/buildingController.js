@@ -38,25 +38,31 @@ app.controller('buildingCtl',             function ($scope, $http, $stateParams,
   if ($stateParams.id)
     $scope.idBuilding = $stateParams.id;
 
-  $http.get("buildingData", {params: {'id': $scope.idBuilding}})
-    .then(function (response) {
-      buildingService.building = response.data;
-      $scope.buildingData      = response.data;
-    });
+  if(generalService.stateRoute != 'newBuilding')
+  {
+    $http.get("buildingData", {params: {'id': $scope.idBuilding}})
+      .then(function (response) {
+        buildingService.building = response.data;
+        $scope.buildingData      = response.data;
+      });
 
-  $http.get("getBuildingsList")
-    .then(function (response) {
-      $scope.bldListResult = response.data;
-    });
+    $http.get("getBuildingsList")
+      .then(function (response) {
+        $scope.bldListResult = response.data;
+      });
+
+  }
 
   $http.get("getBuildingProperties")
     .then(function (response) {
       $scope.propValuesList = response.data;
     });
 
+
   $scope.dtOptions = DTOptionsBuilder.newOptions().withDisplayLength(5).withOption('order', [4, 'desc']);
   $scope.dtOptionsResult = DTOptionsBuilder.newOptions().withOption('order', [4, 'desc']);
   var checkoutSelectedProducts = {};
+  $scope.pArrayNewBld = {};
 
 
   $scope.displayBldData             = function (idBld) {
@@ -453,16 +459,53 @@ app.controller('buildingCtl',             function ($scope, $http, $stateParams,
 
 
 
+//newBuildingController actions
 
+$scope.propertyValue = function(){
+
+  if(!this.propertyIndex)
+    return;
+
+  if(this.propertyIndex[this.prop.id] == '')
+  {
+    delete $scope.pArrayNewBld[this.prop.id];
+    return;
+  }
+
+  $scope.pArrayNewBld[this.prop.id] = {'value'    : this.propertyIndex[this.prop.id], 'property' : this.prop.name};
+
+}
+
+$scope.validaFormaCompleta = function(){
+  console.log('this is the bush button red');
+  var tmpData = $('#new-building-form').find(":invalid");
+
+
+  tmpData.each(function(index, node){
+    console.log(node);
+    $(node).addClass('required');
+  });
+  return;
+}
+
+
+
+
+/*
+* RESET VALUES
+*
+* generalService.nBuildingImage = false;
+*
+* */
 
 })
-  .directive('getBuildingPropValues',     function () {
+.directive('getBuildingPropValues',     function () {
     return function (scope) {
       scope.getBuildingPropertyValues();
     }
 
   })
-  .directive('buildingContactForm',       function () {
+.directive('buildingContactForm',       function () {
     return {
       restrict: 'E',
       replace: true,
@@ -519,12 +562,63 @@ app.controller('buildingCtl',             function ($scope, $http, $stateParams,
                   message: 'The Comment must be less than 500 characters long'
                 }
               }
-            }
+            },
           }
         });
       }
     }
   })
+.directive('newBuildingForm', function () {
+  return {
+    restrict: 'E',
+    replace: true,
+    link: function (scope, form) {
+      form.bootstrapValidator({
+        container: '#messages',
+        feedbackIcons: {
+          valid:      'glyphicon glyphicon-ok',
+          invalid:    'glyphicon glyphicon-remove',
+          validating: 'glyphicon glyphicon-refresh'
+        },
+        fields: {
+
+
+          floor: {
+            validators: {
+              regexp: {
+                regexp: /^[0-9]+$/,
+                message: 'ERROR: SOLO NUMEROS AQUI'
+              },
+              stringLength: {
+                min: 2,
+                max: 10,
+                message: 'ERROR: STRINGLENGTH'
+              },
+//              notEmpty: {
+//                message: 'ERROR: ESTA VACIO'
+//              }
+              empty: {
+                message:'ERROR RUDO'
+              }
+            }
+          },
+
+
+          comments: {
+            validators: {
+              stringLength: {
+                max: 500,
+                message: 'The Comment must be less than 500 characters long'
+              }
+            }
+          },
+
+
+        }
+      });
+    }
+  }
+})
 app.controller('getBuildingPropertyCtl',  function ($scope, $http){
     $http.get("getBuildingProperty", {params: {'id': $scope.properData.id_building_properties}})
       .then(function (response) {

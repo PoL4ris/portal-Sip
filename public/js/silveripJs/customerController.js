@@ -11,17 +11,18 @@ app.controller('customerControllerList',            function ($scope, $http){
 
 app.controller('customerController',                function ($scope, $http, $stateParams, customerService, DTOptionsBuilder, generalService, $timeout) {
 
+
   if (!generalService.rightView) {
     generalService.rightView = true;
   }
   else
   {
-    //uncoment to apear the sideBar default
-    //    if(generalService.stateRoute == 'customers')
-    //      if(!generalService.sideBarFlag) {
-    //        $scope.sipTool(2);
-    //        generalService.sideBarFlag = true;
-    //      }
+    // uncoment to apear the sideBar default
+    //  if(generalService.stateRoute == 'customers')
+    //    if(!generalService.sideBarFlag) {
+    //      $scope.sipTool(2);
+    //      generalService.sideBarFlag = true;
+    //    }
 
     generalService.leftView   = true;
     $scope.customerFlag       = false;

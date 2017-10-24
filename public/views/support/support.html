@@ -25,9 +25,9 @@
 
                 <div class="ttr-container">
                     <div class="old-gray   float-left time-data"><label>Total:</label> {{ticketOpenTime.old}}</div>
-                    <div class="old-green  float-left time-data"><label><b>></b> 12Hrs.</label> {{ticketOpenTime.old12}}</div>
-                    <div class="old-yellow float-left time-data"><label><b>></b> 24Hrs.</label> {{ticketOpenTime.old24}}</div>
-                    <div class="old-red    float-left time-data"><label><b>></b> 48Hrs.</label> {{ticketOpenTime.old48}}</div>
+                    <div class="old-green  float-left time-data"><label><b>></b> 12 Hrs: </label> {{ticketOpenTime.old12}}</div>
+                    <div class="old-yellow float-left time-data"><label><b>></b> 24 Hrs: </label> {{ticketOpenTime.old24}}</div>
+                    <div class="old-red    float-left time-data"><label><b>></b> 48 Hrs: </label> {{ticketOpenTime.old48}}</div>
                 </div>
             </div>
 
@@ -45,19 +45,20 @@
     <div class="row">
         <!--SUPPORT TABLE-->
         <article class="col-lg-12 tickets-history-table m-t-lg table-container">
-            <table id="myTable" class="tablesorter table table-striped" datatable="ng" dt-options="dtOptions">
+            <table class="tablesorter table table-striped" datatable="ng" dt-options="dtOptions">
                 <thead>
                 <tr>
                     <th>Ticket</th>
-                    <th>Status</th>
+                    <!--<th>Status</th>-->
                     <th>Name</th>
                     <th>Address</th>
-                    <th>Tel</th>
+                    <th>Contact</th>
                     <th>Issue</th>
                     <th>Comments</th>
                     <th>Owner</th>
+                    <th>Created</th>
                     <th>Updated</th>
-                    <th>Modified</th>
+                    <th>Updated-Hidden</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -70,9 +71,10 @@
                         {{data.ticket_number}}
                     </td>
 
-                    <td class="capital-first">{{data.status}}</a></td>
-                    <td><a href="#/customer?id={{data.customer.id}}">{{data.customer.first_name}} {{data.customer.last_name}}</a></td>
-                    <td>{{data.address.code}} #{{data.address.unit}}</td>
+                    <!--<td class="capital-first">{{data.status}}</a></td>-->
+                    <td><a ng-if="data.customer.id > 1" href="#/customer?id={{data.customer.id}}">{{data.customer.first_name}} {{data.customer.last_name}}</a></td>
+                    <td ng-if="data.customer.id > 1">{{data.address.code}} #{{data.address.unit}}</td>
+                    <td ng-if="data.customer.id <= 1"></td>
                     <td>{{data.contacts.value}}</td>
                     <td>{{data.reason.short_description}}</td>
 
@@ -95,17 +97,24 @@
                         </div>
                     </td>
 
-                    <td>{{data.user_assigned.first_name ? (data.user_assigned.first_name) : 'AUTO' }}</td>
+                    <td>{{ (data.user_assigned != null) ? data.user_assigned.first_name : '' }}</td>
                     <!--<td >{{data.updated_at | date: "shortDate"}}</td>-->
-                    <td ng-init="resultDate = convertDate(data.updated_at)">{{resultDate | date : "shortDate" }}</td>
+                    <td ng-init="resultDate = convertDate(data.created_at)">{{resultDate | date : "shortDate" }}</td>
 
+                    <td ng-class="{'old-red': data.old == 'old-red', 'old-yellow': data.old == 'old-yellow', 'old-green': data.old == 'old-green'}">
+                        <label ng-init="updatedAtDate = convertDate(data.updated_at)" title="{{updatedAtDate | date : 'MM/dd/yyyy hh:mm a'}}" class="capital-first tooltip-black">{{ data.updated_at |  relativeDate }}</label>
+                    </td>
 
-                    <td class="{{data.old}}">
-                        <!--{{data.updated_at | limitTo : 10}}-->
-                        <label ng-if="data.old == 'old-red'">> 48Hrs</label>
-                        <label ng-if="data.old == 'old-yellow'">> 24Hrs.</label>
-                        <label ng-if="data.old == 'old-green'">> 12Hrs</label>
-                        <label ng-if="data.old == 'old'">{{data.old_by ? data.old_by : 'Minutes ago'}}</label>
+                    <!--<td class="{{data.old}}">-->
+                        <!--&lt;!&ndash;{{data.updated_at | limitTo : 10}}&ndash;&gt;-->
+                        <!--<label ng-if="data.old == 'old-red'">> 48 Hours</label>-->
+                        <!--<label ng-if="data.old == 'old-yellow'">> 24 Hours</label>-->
+                        <!--<label ng-if="data.old == 'old-green'">> 12 Hours</label>-->
+                        <!--&lt;!&ndash;<label ng-if="data.old == 'old'">{{data.old_by ? data.old_by : 'Minutes ago'}}</label>&ndash;&gt;-->
+                        <!--<label ng-if="data.old == 'old'" class="capital-first">{{data.updated_at | relativeDate }}</label>-->
+                    <!--</td>-->
+                    <td>
+                        {{data.updated_at}}
                     </td>
                 </tr>
                 </tbody>

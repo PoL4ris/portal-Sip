@@ -163,6 +163,7 @@ var app = angular.module('app', [
   'restangular',
   'ui.router',
   'ui.bootstrap',
+  'relativeDate',
 
   // Smartadmin Angular Common Module
   'SmartAdmin',

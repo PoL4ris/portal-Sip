@@ -5,6 +5,7 @@ namespace App\Extensions;
 use App\Models\Building;
 use App\Models\RetailRevenue;
 use Carbon\Carbon;
+use \DateTimeZone;
 use DB;
 use Log;
 
@@ -48,6 +49,43 @@ class SIPReporting {
         $query .= "ORDER BY ";
         $query .= "YEAR(b.date_time), ";
         $query .= "MONTH(b.date_time), ";
+        $query .= "b.transaction_type ";
+
+        return DB::select($query);
+    }
+
+    public function getBuildingMrrDataByMonth($buildingId, $month, $year, $timeZone = 'America/Chicago')
+    {
+
+        $carbonDate = $this->getCarbonDate('d/m/Y H:i:s', '01/' . $month . '/' . $year . ' 00:00:00', $timeZone);
+        $startTimestamp = $carbonDate->format('Y-m-d H:i:s');
+        $endTimestamp = $carbonDate->copy()->addMonth()->subMinute()->format('Y-m-d H:i:s');
+
+        $query = "SELECT ";
+        $query .= "MONTH(b.date_time)    as Month, ";
+        $query .= "YEAR(b.date_time)     as Year, ";
+        $query .= "b.date_time           as Date, ";
+        $query .= "c.id                  as CustomerID, ";
+        $query .= "c.first_name          as First, ";
+        $query .= "c.last_name           as Last, ";
+        $query .= "a.unit                as Unit, ";
+        $query .= "b.charge_description  as Description, ";
+        $query .= "b.transaction_type    as TransactionType, ";
+        $query .= "b.amount              as Amount, ";
+        $query .= "b.charge_details      as ChargeDetails, ";
+        $query .= "a.code                as Code ";
+        $query .= "FROM billing_transaction_logs b ";
+        $query .= "INNER JOIN customers c ";
+        $query .= "ON c.id = b.id_customers ";
+        $query .= "INNER JOIN address a ";
+        $query .= "ON c.id = a.id_customers ";
+        $query .= "WHERE a.id_buildings like '%" . $buildingId . "%' ";
+        $query .= "AND (b.transaction_type = 'SALE'  OR b.transaction_type = 'CREDIT') ";
+        $query .= "AND (b.response_text = 'APPROVED' OR b.response_text = 'RETURN ACCEPTED') ";
+        $query .= "AND (b.date_time >= '".$startTimestamp."' AND b.date_time <= '".$endTimestamp."') ";
+        $query .= "ORDER BY ";
+//        $query .= "YEAR(b.date_time), ";
+//        $query .= "MONTH(b.date_time), ";
         $query .= "b.transaction_type ";
 
         return DB::select($query);
@@ -98,7 +136,7 @@ class SIPReporting {
 
         $key = $mrr->Month . '-' . $mrr->Year;
         $decodedChargeDetails = json_decode($mrr->ChargeDetails, true);
-        if ( ! isset($decodedChargeDetails) || ! $decodedChargeDetails)
+        if ($decodedChargeDetails == null)
         {
             Log::debug('addSale(): received empty mrr record. skipping.');
 
@@ -110,14 +148,14 @@ class SIPReporting {
         $prodName = '';
         $prodType = '';
 
-        if (array_key_exists('ProdName', $chargeDetailArr) == false && count($chargeDetailArr) == 6)
+        if (array_key_exists('product_name', $chargeDetailArr) == false && count($chargeDetailArr) == 6)
         {
             $prodName = $chargeDetailArr[0];
             $prodType = ucfirst($chargeDetailArr[3]) . ' ' . $chargeDetailArr[2];
         } else
         {
-            $prodName = $chargeDetailArr['ProdName'];
-            $prodType = ucfirst($chargeDetailArr['ChargeFrequency']) . ' ' . $chargeDetailArr['ProdType'];
+            $prodName = $chargeDetailArr['product_name'];
+            $prodType = ucfirst($chargeDetailArr['product_frequency']) . ' ' . $chargeDetailArr['product_type']['name'];
         }
 
         if (array_key_exists($key, $buildingMrrTable))
@@ -270,6 +308,60 @@ class SIPReporting {
 
     }
 
+    public function generateMrrReportByMonth($month, $year)
+    {
+        //mrr process
+        $buildings = Building::where('type', '!=', 'commercial')
+//            ->where('alias', '125J')
+//                ->take(3)
+            ->get();
+        Log::info('Generating MRR report for: ');
+        foreach ($buildings as $building)
+        {
+            $buildingId = $building->id;
+            $buildingCode = $building->code;
+            Log::info($buildingCode.' '.$month.'/'.$year);
+            $retailMrr = $this->getBuildingMrrDataByMonth($buildingId, $month, $year);
+
+            $buildingMrrTable = array();
+            foreach ($retailMrr as $mrr)
+            {
+                $trimmedChargeDetails = trim($mrr->ChargeDetails);
+
+                if (strcasecmp($mrr->TransactionType, 'SALE') == 0 && ($trimmedChargeDetails == null || $trimmedChargeDetails == ''))
+                {
+                    continue;
+                }
+
+                if ($mrr->TransactionType == 'CREDIT')
+                {
+                    $buildingMrrTable = $this->subtractCredit($buildingMrrTable, $mrr);
+                } else
+                {
+                    $buildingMrrTable = $this->addSale($buildingMrrTable, $mrr);
+                }
+            }
+
+            $this->updateRetailRevenueDBTable($buildingId, $buildingCode, $buildingMrrTable);
+        }
+
+        Log::info('COMPLETE');
+
+    }
+
+    /**
+     **
+     **
+     **  MISC Helper functions
+     **
+     **
+     **/
+
+    protected function getCarbonDate($format, $dateString, $timeZone = '')
+    {
+        return ($timeZone == '') ? Carbon::createFromFormat($format, $dateString) :
+            Carbon::createFromFormat($format, $dateString, new DateTimeZone($timeZone));
+    }
 }
 
 ?>

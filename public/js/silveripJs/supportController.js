@@ -62,8 +62,8 @@ app.controller('supportController',                 function ($scope, $http, DTO
       });
   }
   $scope.letterLimit  = 40;
-  $scope.dtOptions    = DTOptionsBuilder.newOptions().withPaginationType('full_numbers').withDisplayLength(50).withOption('order', [8, 'desc']);
-
+  $scope.dtOptions    = DTOptionsBuilder.newOptions().withPaginationType('full_numbers').withDisplayLength(50).withOption('order', [9, 'desc']).withOption('columnDefs', [{ "visible": false, "targets": 9 }]);
+  $('.tooltip-black').tooltip();
   $scope.showFullComment                = function (id) {
     $('#ticket-' + id).fadeIn('slow');
   };

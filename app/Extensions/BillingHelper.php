@@ -412,6 +412,12 @@ class BillingHelper {
                 continue;
             }
             $resultsArray[$chargeId] = $this->denyManualCharge($charge);
+
+            $invoice = $charge->invoice;
+            if($invoice != null){
+                $this->cancelInvoice($invoice);
+            }
+
         }
 
         return $resultsArray;
@@ -945,24 +951,26 @@ class BillingHelper {
         $perPage = 15;
         $totalInvoicesProcessed = 0;
 
+        // Get the first batch of pending invoices
         $paginatedInvoices = $this->paginatePendingFailedInvoices();
-        $lastProcessedInvoiceId = 0;
 
         while ($paginatedInvoices->count() > 0)
         {
-            // TODO: Uncomment the line below when ready to run this in production or test it in dev
-            // $invoices = $this->filterPendingInvoicesByUpdatedPaymentMethods($paginatedInvoices);
-            $invoices = $paginatedInvoices;
+            // Get the last invoice in this batch for record keeping
+            $lastInvoice = $paginatedInvoices->last();
+            $lastProcessedInvoiceId = $lastInvoice->id;
+
+            // Find the invoices that have updated pament methods so we can just process them
+            $invoices = $this->filterPendingInvoicesByUpdatedPaymentMethods($paginatedInvoices);
 
             foreach ($invoices as $invoice)
             {
                 $totalInvoicesProcessed ++;
                 Log::info('BillingHelper::processPendingAutopayInvoicesThatHaveUpdatedPaymentMethods(): processing invoice id=' . $invoice->id . ' amount=$' . $invoice->amount);
-                // TODO: Uncomment the line below when ready to run this in production or test it in dev
-                // $this->processInvoice($invoice, true, true, false);
-                $lastProcessedInvoiceId = $invoice->id;
+                $this->processInvoice($invoice, true, true, false);
             }
 
+            // Get the next batch of pending invoices
             $paginatedInvoices = $this->paginatePendingFailedInvoices($perPage, $lastProcessedInvoiceId);
         }
 
@@ -1026,24 +1034,31 @@ class BillingHelper {
 
         // Charge the invoice
         $billingService = new SIPBilling();
+
         $charges = $invoice->charges;
-        $details = $charges->pluck('details');
+        $filteredCharges = $charges->reject(function ($charge) {
+            return $charge->details == null;
+        });
 
-        $chargeDetailsArray = array();
-        foreach ($details as $chargeDetails)
-        {
-            $chargeDetailsArray[] = json_decode($chargeDetails, true);
+        $chargeDetails = null;
+        if($filteredCharges->isEmpty() == false){
+            $details = $filteredCharges->pluck('details');
+            $chargeDetailsArray = array();
+            foreach ($details as $chargeDetails)
+            {
+                $chargeDetailsArray[] = json_decode($chargeDetails, true);
+            }
+            $chargeDetails = json_encode($chargeDetailsArray);
         }
-
 
         $customer = Customer::find($invoice->id_customers);
 
         if ($invoice->amount > 0)
         {
-            $chargeResult = $billingService->chargeCustomer($customer, $invoice->amount, $invoice->description, $invoice->description, json_encode($chargeDetailsArray));
+            $chargeResult = $billingService->chargeCustomer($customer, $invoice->amount, $invoice->description, $invoice->description, $chargeDetails);
         } else
         {
-            $chargeResult = $billingService->refundCustomer($customer, - 1 * $invoice->amount, $invoice->description, json_encode($chargeDetailsArray));
+            $chargeResult = $billingService->refundCustomer($customer, - 1 * $invoice->amount, $invoice->description, $chargeDetails);
         }
 
         $transactionId = isset($chargeResult['TRANSACTIONID']) ? $chargeResult['TRANSACTIONID'] : null;

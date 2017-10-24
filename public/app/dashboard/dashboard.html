@@ -1,7 +1,7 @@
 
 <div ng-if="!mobDevice">
     <div class="col-lg-12">
-        <h1 class="">Welcome to Silver<i>IP</i> Portal</h1>
+        <h1 class="">Welcome to the <strong>SILVER</strong>IP Portal</h1>
     </div>
 
     <div ng-controller="libController">
@@ -38,7 +38,7 @@
             <div class="cdg-block col-lg-12 m-b-md no-padding-sides">
                 <div class="cdg-status cdg-color-missing float-left"></div>
                 <div class="cdg-content float-right">
-                    <label>Average time to close ticket (hours)</label>
+                    <label>Average time to close tickets (in hours)</label>
                     <span ng-if="!dash1"><i class="fa fa-spinner loading-anim" aria-hidden="true"></i></span>
                     <span><div id="t4"></div></span>
                     <!--<i class="fa fa-angle-right"></i>-->
@@ -48,7 +48,7 @@
             <div class="cdg-block col-lg-12 m-b-md no-padding-sides">
                 <div class="cdg-status cdg-color-ok float-left"></div>
                 <div class="cdg-content float-right">
-                    <label>Average time to close ticket (days)</label>
+                    <label>Average time to close tickets (in days)</label>
                     <span ng-if="!dash1"><i class="fa fa-spinner loading-anim" aria-hidden="true"></i></span>
                     <span><div id="t5"></div></span>
                     <!--<i class="fa fa-angle-right"></i>-->
@@ -59,7 +59,7 @@
             <div class="cdg-block col-lg-12 m-b-md no-padding-sides">
                 <div class="cdg-status cdg-color-up float-left"></div>
                 <div class="cdg-content float-right">
-                    <label>Tech Schedule Events</label>
+                    <label>Scheduled Tech Appointments</label>
                     <span ng-if="!calendarData"><i class="fa fa-spinner loading-anim" aria-hidden="true"></i></span>
                     <span><div id="t6"></div></span>
                 </div>
@@ -67,7 +67,7 @@
             <div class="cdg-block col-lg-12 m-b-md no-padding-sides">
                 <div class="cdg-status cdg-color-ok float-left"></div>
                 <div class="cdg-content float-right">
-                    <label>Tech Schedule Complete Appointments </label>
+                    <label>Completed Tech Appointments </label>
                     <span ng-if="!calendarData"><i class="fa fa-spinner loading-anim" aria-hidden="true"></i></span>
                     <span><div id="t7"></div></span>
                 </div>
@@ -75,7 +75,7 @@
             <div class="cdg-block col-lg-12 m-b-md no-padding-sides">
                 <div class="cdg-status cdg-color-down float-left"></div>
                 <div class="cdg-content float-right">
-                    <label>Tech Schedule Pending Appointments</label>
+                    <label>Pending Tech Appointments</label>
                     <span ng-if="!calendarData"><i class="fa fa-spinner loading-anim" aria-hidden="true"></i></span>
                     <span><div id="t8"></div></span>
                 </div>
@@ -83,7 +83,7 @@
             <div class="cdg-block col-lg-12 m-b-md no-padding-sides">
                 <div class="cdg-status cdg-color-t1 float-left"></div>
                 <div class="cdg-content float-right">
-                    <label>Tech Schedule On-Site Appointments</label>
+                    <label>Techs Currently On-Site</label>
                     <span ng-if="!calendarData"><i class="fa fa-spinner loading-anim" aria-hidden="true"></i></span>
                     <span><div id="t9"></div></span>
                 </div>

@@ -9,6 +9,7 @@ app.controller('globalToolsCtl',                    function ($scope, $http, $co
   $scope.cacheClear     = generalService.cacheClear;
   $scope.customerById   = false;
 
+
   $scope.statusArrayConstant = generalService.statusArrayConstant;
 
   //Get Constants from constantConfig
@@ -357,8 +358,10 @@ app.controller('globalToolsCtl',                    function ($scope, $http, $co
   $scope.convertDate          = function (valor){
     return new Date(valor);
   }
-  $scope.copyClipboard        = function (id){
-    document.querySelector("#"+id).select();
+  $scope.copyClipboard        = function (id, cId){
+    //id  = string id
+    //cId = CustomerId
+    document.querySelector("#" + id + cId).select();
     // Copy to the clipboard
     document.execCommand('copy');
   }

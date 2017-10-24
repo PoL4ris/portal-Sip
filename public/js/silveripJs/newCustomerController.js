@@ -1,7 +1,5 @@
 app.controller('newcustomerAppController', function ($scope, $http, customerService, $state, generalService) {
 
-//  console.log('this is the newcustomerAppController');
-
   if (generalService.sideBarFlag){
     $scope.sipTool(2);
     generalService.sideBarFlag = false;
@@ -86,7 +84,7 @@ app.controller('newcustomerAppController', function ($scope, $http, customerServ
   }
   $scope.getSwitchInfo              = function (idBuilding){
 
-    $http.get("getBuildingSwitches", {params: {'id': idBuilding}})
+    $http.get("getBuildingUserAccessSwitches", {params: {'id': idBuilding}})
       .then(function (response) {
         $scope.buildingSwitches = response.data;
       });
