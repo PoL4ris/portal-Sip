@@ -218,7 +218,7 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('getDisplayRetailRevenueDetails',        'ReportController@getDisplayRetailRevenueDetails');//new
     Route::get('getDisplayRetailRevenueUnitDetails',    'ReportController@getDisplayRetailRevenueUnitDetails');//new
     Route::get('getDisplayLocationStats',               'ReportController@getDisplayLocationStats');//new
-
+    Route::get('getUnsubscribedUnits',                  'ReportController@findUnoccupiedUnitsInAllBuildings');
 
     Route::get('email/template_support_new_ticket',     'TestController@supportTest');//new
 

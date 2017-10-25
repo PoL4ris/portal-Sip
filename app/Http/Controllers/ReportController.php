@@ -475,4 +475,95 @@ class ReportController extends Controller {
     {
         dd('aaa');
     }
+
+
+    //creates a data dump of all unocupied units in retail properties.
+    public function findUnoccupiedUnitsInAllBuildings()
+    {
+
+
+        $returnValues = [];
+        $unfilteredBuildings = Building::where('type', 'High-Rise')->get()->sortBy('code');
+
+        $buildings = $unfilteredBuildings->filter(function ($building) {
+            $type = $building->getProperty(15);
+            if (stristr($type, 'Retail INT'))
+            {
+                return true;
+            }
+
+            return false;
+        });
+
+
+        $largestNumberOfUnits = 0;
+        foreach ($buildings as $building)
+        {
+            //        $building = Building::where('code' , '111M')->first();
+            $activeUnitsCollection = $building->activeCustomersWithAddresses->pluck('address')->pluck('unit');
+
+
+            $allUnitsArray = $building->getunitnumbers();
+            $allUnits = [];
+            if ( ! $allUnitsArray)
+            {
+                Log::info('Failed to get unit numbers for ' . $building->code);
+                continue;
+            }
+            Log::info('Processing ' . $building->code);
+
+
+            foreach ($allUnitsArray as $addressId => $units)
+            {
+                $allUnits = array_merge($allUnits, $units);
+
+            }
+            $allUnitsCollection = collect($allUnits)->sort();
+
+
+            $inactiveUnits = $allUnitsCollection->diff($activeUnitsCollection);
+            //           $returnValues[$building->address->address] = $inactiveUnits->toArray();
+            $returnValues[$building->address->address] = $inactiveUnits->toArray();
+
+        }
+        foreach($returnValues as $value)
+        {
+            $largestNumberOfUnits = max([$largestNumberOfUnits, count($value)]);
+        }
+        $titleRow = array_keys($returnValues);
+        $csv = implode(',', $titleRow) . "\n";
+
+        while ($largestNumberOfUnits > 0)
+        {
+            $line = '';
+            foreach ($returnValues as $buildingAddress => &$buildingUnits)
+            {
+
+                $unit = array_shift($buildingUnits);
+                //$returnValues[$buildingAddress] = $buildingUnits;
+                if ($unit != null)
+                {
+                    $line .= $unit . ',';
+                } else
+                {
+                    $line .= ',';
+                    continue;
+                }
+            }
+            rtrim($line, ',');
+            $csv .= $line . "\n";
+            -- $largestNumberOfUnits;
+        }
+
+
+// return a string as a file to the user
+        return Response::make($csv, '200', array(
+            'Content-Type' => 'application/octet-stream',
+            'Content-Disposition' => 'attachment; filename="Inactive.csv"'
+        ));
+
+    }
+
+
+
 }
