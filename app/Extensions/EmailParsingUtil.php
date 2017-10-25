@@ -149,17 +149,7 @@ class EmailParsingUtil {
             preg_match('/^.*\@micronetcom\.com/', $email) ||
             preg_match('/^.*\@wacorp\.com/', $email) ||
             preg_match('/^.*\@copyright-compliance\.com/', $email) ||
-            preg_match('/^.*no-reply\@asana\.com/', $email) ||
-            preg_match('/^.*\@*gserviceaccount\.com/', $email) ||
-            preg_match('/\bmarline\@silverip\.com/', $email) ||
-            preg_match('/\bbrian.*?\@silverip\.com/', $email) ||
-            preg_match('/\bjames\@silverip\.com/', $email) ||
-            preg_match('/\btodd\@silverip\.com/', $email) ||
-            preg_match('/\bjon\@silverip\.com/', $email) ||
-            preg_match('/\bjuan\@silverip\.com/', $email) ||
-            preg_match('/\babe\@silverip\.com/', $email) ||
-            preg_match('/\bvan.*?\@silverip\.com/', $email) ||
-            preg_match('/^.*\@slack.com/', $email)
+            preg_match('/^.*no-reply\@asana\.com/', $email)
         )
         {
             return true;

@@ -407,16 +407,11 @@ class TestController extends Controller {
     }
 
 
-
+//creates a data dump of all unocupied units in retail properties.
     public function toddTest()
     {
 
 
-//        $building = Building::where('code' , '1600W')->first();
-//        dd($building->getProperty(15));
-
-        // $active = $building->activeCustomersWithAddresses->pluck('address')->pluck('unit');
-        // dd($active);
         $returnValues = [];
         $unfilteredBuildings = Building::where('type', 'High-Rise')->get()->sortBy('code');
 
@@ -430,7 +425,6 @@ class TestController extends Controller {
             return false;
         });
 
-//        dd($buildings->pluck('code'));
 
         $largestNumberOfUnits = 0;
         foreach ($buildings as $building)
@@ -492,21 +486,12 @@ class TestController extends Controller {
                 }
 
 
-// return an string as a file to the user
+// return a string as a file to the user
         return Response::make($csv, '200', array(
             'Content-Type' => 'application/octet-stream',
             'Content-Disposition' => 'attachment; filename="Inactive.csv"'
         ));
 
-//return $csv;
-
-        /*
-                $addresses = Address::where('id_buildings', $building->id)
-                    ->whereIn('unit', $inactiveUnits->toArray())->get();
-
-                dd(['inactive' => $inactiveUnits,
-                    'addresses' => $addresses->pluck('unit')->sort()]);
-          */
     }
 
     public function getPendingAutopayInvoicesThatHaveUpdatedPaymentMethods()
