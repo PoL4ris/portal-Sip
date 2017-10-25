@@ -507,12 +507,12 @@ class BuildingController extends Controller {
 
         dd('Got it');
 
-        Log::info('insertNewCustomer called', $request->all());
+        Log::info('insertNewBuilding called', $request->all());
 
         // Add the customer
         $response = $this->sipCustomer->addNewCustomer($request->customers_first_name, $request->customers_last_name, $request->customers_email, $request->customers_vip);
 
-        Log::info('insertNewCustomer: ' . json_encode($response));
+        Log::info('insertNewBuilding: ' . json_encode($response));
 
         if (isset($response['error']))
         {
@@ -570,7 +570,7 @@ class BuildingController extends Controller {
             return $response;
         }
 
-        ActivityLogs::add($this->logType, $customer->id, 'insert', 'insertNewCustomer', '', $customer, json_encode(['customer_id' => $customer->id]), 'insert-customer');
+        ActivityLogs::add($this->logType, $customer->id, 'insert', 'insertNewBuilding', '', $customer, json_encode(['customer_id' => $customer->id]), 'insert-customer');
 
         return ['ok' => $this->sipCustomer->getRecentManuallyAddedCustomers()];
     }
