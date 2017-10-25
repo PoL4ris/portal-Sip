@@ -36,6 +36,8 @@ use Config;
 use Auth;
 use View;
 use Carbon\Carbon;
+use Log;
+use Response;
 
 //use ActivityLogs;
 use Symfony\Component\Console\Helper\ProgressBar;

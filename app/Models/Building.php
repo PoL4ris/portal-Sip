@@ -165,4 +165,12 @@ class Building extends Model {
         )->where('id_types', config('const.type.switch'))
             ->where('host_name', 'not like', '%CORE%');
     }
+
+    public function activeCustomersWithAddresses()
+    {
+        return $this->belongsToMany('App\Models\Customer', 'address', 'id_buildings', 'id_customers')
+            ->where('id_status', config('const.status.active'))
+            ->with(['emailAddress','address']);
+    }
+
 }
