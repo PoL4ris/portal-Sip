@@ -25,10 +25,18 @@
         <div class="building-list-side">
             <div ng-repeat="building in bldListResult" class="bld-list-side" ng-click="displayBldData(building.id)">
                 <p alt="{{building.name}}" title="{{building.name}}">
-                    {{building.code +':'+ building.name | limitTo : 20 }}...
+                    <b>{{building.code}}</b><small class="font-size: 9px;">&nbsp;&nbsp;({{building.type}})</small>
                     <br>
-                    {{building.type}}
+                    <span class="txt-color-blueDark">
+                            {{building.name | limitTo : 20 }}
+                        </span>
                 </p>
+
+                <!--<p alt="{{building.name}}" title="{{building.name}}">-->
+                    <!--{{building.code +':'+ building.name | limitTo : 20 }}...-->
+                    <!--<br>-->
+                    <!--{{building.type}}-->
+                <!--</p>-->
             </div>
 
         </div>

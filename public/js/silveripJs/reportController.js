@@ -1,4 +1,4 @@
-app.controller('reportController', function ($scope, $http, customerService, $stateParams, generalService) {
+app.controller('reportController', function ($scope, $http, customerService, $stateParams, generalService, DTOptionsBuilder) {
 
 
 
@@ -153,5 +153,8 @@ app.controller('reportController', function ($scope, $http, customerService, $st
     var containerName = '#content';
     loadURLGet(ajax_url, $(containerName), {"salesid": salesid}); //, containerName, "Loading Page");
   });
+
+    $scope.dtOptions        = DTOptionsBuilder.newOptions().withDisplayLength(25).withOption('order', [1, 'asc']);
+    $scope.dtOptionsBreakdown        = DTOptionsBuilder.newOptions().withDisplayLength(25).withOption('order', [0, 'desc']);
 
 });

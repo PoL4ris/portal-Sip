@@ -52,7 +52,7 @@
                             <tbody>
                                 <tr ng-repeat="prod_details in products">
                                     <td>{{ prod_details.name }}</td>
-                                    <td>{{ '$' + prod_details.amount }}</td>
+                                    <td>{{ prod_details.amount | currency : "$" : 2 }}</td>
                                     <td>{{ prod_details.Total }}</td>
                                 </tr>
                             </tbody>
@@ -95,15 +95,15 @@
                             </tr>
                             <tr>
                                 <td><b>Total Charged</b></td>
-                                <td>{{ '$'+ detailsArr.amount +'.'+detailsArr.credits }}</td>
+                                <td>{{ (detailsArr.amount + detailsArr.credits) | currency : "$" : 2 }}</td>
                             </tr>
                             <tr>
                                 <td><b>Credit Issued</b></td>
-                                <td>{{ '$'+ detailsArr.credits }}</td>
+                                <td>{{ detailsArr.credits  | currency : "$" : 2 }}</td>
                             </tr>
                             <tr>
                                 <td><b>Revenue</b></td>
-                                <td>{{ '$'+ detailsArr.amount }}</td>
+                                <td>{{ detailsArr.amount  | currency : "$" : 2 }}</td>
                             </tr>
                             </tbody>
                         </table>
@@ -122,7 +122,7 @@
 
                     <h5 class="text-primary text-left padding-bottom-3">Breakdown for <strong>{{ monthDos }} {{ yearDos }}</strong></h5>
                     <div class="well filters-fixed-size padding-10">
-                        <table id="retail-revenue-unit-details" class="tablesorter table table-striped " datatable="ng" dt-options="dtOptions">
+                        <table id="retail-revenue-unit-details" class="tablesorter table table-striped " datatable="ng" dt-options="dtOptionsBreakdown">
                             <thead>
                             <tr>
                                 <th>Date</th>
@@ -135,11 +135,12 @@
                             <tbody>
                             <tr ng-repeat="tDetails in detailsArrDos.details">
 
-                                <td ng-init="resultDate = convertDate(tDetails[0])" ng-if="tDetails">{{resultDate | date : "MMM d, y h:mm a" }}</td>
+                                <!--<td ng-init="resultDate = convertDate(tDetails[0])" ng-if="tDetails">{{resultDate | date : "MMM d, y h:mm a" }}</td>-->
+                                <td ng-init="resultDate = convertDate(tDetails[0])" ng-if="tDetails">{{resultDate | date : "MM/d/y" }}</td>
                                 <td>{{ tDetails[1] }}</td>
                                 <td>{{ tDetails[2] }}</td>
                                 <td>{{ tDetails[3] }}</td>
-                                <td>{{ '$' + tDetails[4] }}</td>
+                                <td>{{ tDetails[4]  | currency : "$" : 2 }}</td>
                             </tr>
 
 
