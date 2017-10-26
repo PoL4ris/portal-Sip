@@ -1770,40 +1770,26 @@ table.dataTable tbody tr {
 
 
 
-#new-building-form{}
-#new-building-form .has-feedback .form-control{
+.error-notif-alert .notif-alert, .action-btn-submit{
+  display: none;
 }
-#new-building-form .bv-tab-error:after{
-  background: rgba(237, 20, 61, 0.66);
-  width: 20px;
-  height: 20px;
-  position: absolute;
-  content: "!";
-  top: -11px;
-  left: -10px;
-  border-radius: 50%;
+
+.bv-hidden-submit:disabled + form .error-notif-alert .notif-alert{
+  display: block;
+}
+.error-notif-alert .notif-alert .admiracion{
+  background: crimson;
   text-align: center;
+  width: 20px;
+  margin: 0 auto;
+  border-radius: 50%;
+  height: 20px;
   color: white;
   transition: all .7s ease 0s;
 }
-#new-building-form .action-btn-submit{
-  display: none;
+.error-notif-alert .notif-alert .admiracion-texto{
+  text-align: center;
 }
-/*#new-building-form input:invalid {*/
-  /*border-color: crimson;*/
-/*}*/
-/*#new-building-form input:valid, #new-building-form input:valid.required {*/
-  /*border-color: green;*/
-/*}*/
-/*#new-building-form input:placeholder-shown {*/
-  /*border-color: #ddd;*/
-/*}*/
-/*#new-building-form input.required{*/
-  /*border-color: crimson;*/
-/*}*/
-
-
-
 
 
 pre {

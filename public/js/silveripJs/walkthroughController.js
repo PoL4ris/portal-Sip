@@ -5,7 +5,7 @@ app.controller('walkthroughController', function ($scope, $http, customerService
 
 
   //This is the checkMobileDevice
-  console.log($.browser.mobile);
+//  console.log($.browser.mobile);
   $scope.mobDevice = $.browser.mobile;
   $scope.flagTab = 'general';
   $scope.notesArray = [];

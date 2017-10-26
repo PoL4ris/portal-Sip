@@ -3,6 +3,8 @@
 
 angular.module('SmartAdmin.Forms').directive('bootstrapMovieForm', function(){
 
+console.log('este no se usa');
+
     return {
         restrict: 'E',
         replace: true,

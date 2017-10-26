@@ -1,6 +1,6 @@
 //Building Controllers
 app.controller('buildingCtl',             function ($scope, $http, $stateParams, customerService, buildingService, DTOptionsBuilder, generalService) {
-  console.log('bldContrl');
+//  console.log('bldContrl');
 
   //TMP HIDE AND SHOW SIDEBAR
   $scope.fedeINbtn  = function () {
@@ -482,41 +482,13 @@ $scope.validaFormaCompleta = function(){
 
 
 
-
-
-  console.log('this is the bush button red');
-
-
-
-
-  $('#new-building-form')
-    .on('success.form.bv', function(e) {
-
-      console.log('como');
+  var validator = $( "#myform" ).bootstrapValidator();
+  console.log(validator);
 
 
 
-      $('#success_message').slideDown({ opacity: "show" }, "slow") // Do something ...
-      $('#contact_form').data('bootstrapValidator').resetForm();
-
-      // Prevent form submission
-      e.preventDefault();
-
-      // Get the form instance
-      var $form = $(e.target);
-
-      // Get the BootstrapValidator instance
-      var bv = $form.data('bootstrapValidator');
-
-      // Use Ajax to submit form data
-      $.post($form.attr('action'), $form.serialize(), function(result) {
-        console.log(result);
-      }, 'json');
-    });
-  return;
-
-
-
+//  validator.resetForm();
+//  console.log(validator);
 
 
 
@@ -527,6 +499,7 @@ $scope.validaFormaCompleta = function(){
 
 
 }
+
 
 
 
@@ -608,113 +581,143 @@ $scope.validaFormaCompleta = function(){
       }
     }
   })
-.directive('newBuildingForm', function () {
 
-  return {
-    restrict: 'E',
-    replace: true,
-    link: function (scope, form, attrs) {
-//    console.log(attrs);
-//    console.log(attrs.msgid);
-      form.bootstrapValidator({
-        container: '#' + attrs.msgid,
-        feedbackIcons: {
-          valid:      'glyphicon glyphicon-ok',
-          invalid:    'glyphicon glyphicon-remove',
-          validating: 'glyphicon glyphicon-refresh'
-        },
-        fields: {
-          //Building Main Info
-          'building[name]':   {
-            validators: {
-              stringLength: {
-                min: 2,
-                message: 'Name'
-              },
-              notEmpty: {
-                message: 'This cant be empty'
+
+
+
+
+
+
+angular.module('SmartAdmin.Forms').directive('newBuildingForm', function () {
+  console.log('hola');
+    return {
+      restrict: 'E',
+      replace: true,
+      link: function (scope, form, attrs, ngModel) {
+//      var original = $(form).bootstrapValidator()[0];
+        form.bootstrapValidator({
+          feedbackIcons: {
+            valid:      'glyphicon glyphicon-ok',
+            invalid:    'glyphicon glyphicon-remove',
+            validating: 'glyphicon glyphicon-refresh'
+          },
+          fields: {
+            //Building Main Info
+            'building[name]':   {
+              container: '#bld-block-1',
+              validators: {
+                stringLength: {
+                  min: 2,
+                  message: 'Name'
+                },
+                notEmpty: {
+                  message: 'Name cant be empty'
+                }
               }
-            }
-          },
-          'building[code]':   {
-            validators: {
-              regexp: {
-                regexp: /^[a-z0-9]+$/,
-                message: 'No signs allowed ( !@#$ )...',
+            },
+            'building[code]':   {
+              container: '#bld-block-1',
+              validators: {
+                regexp: {
+                  regexp: /^[a-z0-9]+$/,
+                  message: 'No signs allowed ( !@#$ )...',
+                },
+                notEmpty: {
+                  message: 'Code cant be empty'
+                }
               }
-            }
-          },
-          'building[floors]': {
-            validators: {
-              numeric: {
-                message: 'Floors value needs to be numeric',
+            },
+            'building[status]': {
+              container: '#bld-block-1',
+              validators : {
+                notEmpty : {
+                  message : 'The status is required'
+                }
               }
-            }
-          },
-          'building[units]':  {
-            validators: {
-              numeric: {
-                message: 'Unit value needs to be number',
+            },
+            'building[floors]': {
+              container: '#bld-block-1',
+              validators: {
+                numeric: {
+                  message: 'Floors needs to be numeric',
+                }
               }
-            }
-          },
-          //END Building Main Info.
-
-          //Address info
-          'address[address]': {
-            validators: {
-              stringLength: {
-                min: 2,
-                message: 'Address'
-              },
-              notEmpty: {
-                message: 'Address cant be empty'
-              },
-            }
-          },
-          'address[zip]': {
-            validators: {
-              regexp: {
-                regexp: /^\d{5}$/,
-                message: 'The US zipcode must contain 5 digits'
+            },
+            'building[units]':  {
+              container: '#bld-block-1',
+              validators: {
+                numeric: {
+                  message: 'Units needs to be number',
+                }
               }
+            },
+            //END Building Main Info.
+
+
+
+
+
+            //Address info
+            'address[address]': {
+              container: '#bld-block-2',
+              validators: {
+                stringLength: {
+                  min: 2,
+                  message: 'Address'
+                },
+                notEmpty: {
+                  message: 'Address cant be empty'
+                },
+              }
+            },
+            'address[zip]': {
+              container: '#bld-block-2',
+              validators: {
+                regexp: {
+                  regexp: /^\d{5}$/,
+                  message: 'Zipcode must contain 5 digits'
+                }
+              }
+            },
+            //END Address info
+
+
+          }
+        })
+          .on('submit', function (e) {
+          console.log('a');
+          console.log(e);
+            if (e.isDefaultPrevented()) {
+              // handle the invalid form...
+              console.log('B');
+            } else {
+              // everything looks good!
+              var buildingDataObject = scope.prepareBuildingData();
+              console.log('C');
             }
-          },
-          //END Address info
+          });
+        scope.prepareBuildingData = function (){
+          var objects = getFormValues('new-building-form');
 
-
-
-
+          console.log(objects);
         }
-      })
-        .on('success.form.bv', function(e) {
-          $('#'+attrs.msgid).slideDown({ opacity: "show" }, "slow") // Do something ...
-          $('#contact_form').data('bootstrapValidator').resetForm();
+        scope.resetNewBuildingForm = function(){
+//          $(form).bootstrapValidator().data('bootstrapValidator').resetForm();
+//          $(form).bootstrapValidator('resetForm', true);
+            scope.address  = false;
+            scope.building = false;
+//          $('#new-building-form').trigger('reset');
 
-          // Prevent form submission
-          e.preventDefault();
 
-          // Get the form instance
-          var $form = $(e.target);
+//          console.log($(form).bootstrapValidator().data());
+        }
+      }
 
-          // Get the BootstrapValidator instance
-          var bv = $form.data('bootstrapValidator');
-
-          // Use Ajax to submit form data
-//          $.post($form.attr('action'), $form.serialize(), function(result) {
-//            console.log(result);
-//          }, 'json');
-        });
+}
+  });
 
 
 
-
-
-
-
-    }
-  }
-});
 app.controller('getBuildingPropertyCtl',  function ($scope, $http){
     $http.get("getBuildingProperty", {params: {'id': $scope.properData.id_building_properties}})
       .then(function (response) {
