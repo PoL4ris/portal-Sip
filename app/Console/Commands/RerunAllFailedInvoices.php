@@ -12,7 +12,7 @@ class RerunAllFailedInvoices extends Command
      *
      * @var string
      */
-    protected $signature = 'billing:rerun-all-pending-invoices';
+    protected $signature = 'billing:rerun-all-failed-invoices';
 
     /**
      * The console command description.
