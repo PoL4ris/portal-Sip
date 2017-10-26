@@ -19,7 +19,7 @@
 
         </div>
 
-        <div class="row" ng-if="productLoading">
+        <div class="row" ng-if="productLoading && flagExistSearchProd">
 
             <div class="col-lg-12 col-sm-12 col-xs-12 b-b-ddd p-b-md m-b-md">
                 <b>
@@ -60,8 +60,10 @@
 
         </div>
 
-        <div ng-if="!productLoading">
-            <img src="/img/loading.gif" alt="" class="loading-gif-support m-r-lg">
+        <div ng-if="flagExistSearchProd">
+            <div ng-if="!productLoading">
+                <img src="/img/loading.gif" alt="" class="loading-gif-support m-r-lg">
+            </div>
         </div>
 
         <hr>

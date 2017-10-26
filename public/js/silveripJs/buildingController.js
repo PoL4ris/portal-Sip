@@ -366,11 +366,13 @@ app.controller('buildingCtl',             function ($scope, $http, $stateParams,
 
 
   $scope.productSearch              = function () {
+    $scope.flagExistSearchProd = true;
     $scope.productLoading = false;
     if(!this.productSearchModel || this.productSearchModel.length === 0)
     {
       $scope.productResultSearch = true;
       $scope.productLoading = $scope.productResult = false;
+      $scope.flagExistSearchProd = false;
       return;
     }
 
@@ -477,16 +479,53 @@ $scope.propertyValue = function(){
 }
 
 $scope.validaFormaCompleta = function(){
+
+
+
+
+
   console.log('this is the bush button red');
-  var tmpData = $('#new-building-form').find(":invalid");
 
 
-  tmpData.each(function(index, node){
-    console.log(node);
-    $(node).addClass('required');
-    $(node).focus();
-  });
+
+
+  $('#new-building-form')
+    .on('success.form.bv', function(e) {
+
+      console.log('como');
+
+
+
+      $('#success_message').slideDown({ opacity: "show" }, "slow") // Do something ...
+      $('#contact_form').data('bootstrapValidator').resetForm();
+
+      // Prevent form submission
+      e.preventDefault();
+
+      // Get the form instance
+      var $form = $(e.target);
+
+      // Get the BootstrapValidator instance
+      var bv = $form.data('bootstrapValidator');
+
+      // Use Ajax to submit form data
+      $.post($form.attr('action'), $form.serialize(), function(result) {
+        console.log(result);
+      }, 'json');
+    });
   return;
+
+
+
+
+
+
+
+
+
+
+
+
 }
 
 
@@ -586,39 +625,36 @@ $scope.validaFormaCompleta = function(){
         },
         fields: {
           //Building Main Info
-          'building[name]': {
+          'building[name]':   {
             validators: {
               stringLength: {
                 min: 2,
-                message: 'Error: Invalid Name'
+                message: 'Name'
               },
               notEmpty: {
-                message: 'Error: This cant be empty'
-              },
-              callback:{
-                
+                message: 'This cant be empty'
               }
             }
           },
-          'building[code]': {
+          'building[code]':   {
             validators: {
               regexp: {
                 regexp: /^[a-z0-9]+$/,
-                message: 'Error: No signs allowed !@#$...',
+                message: 'No signs allowed ( !@#$ )...',
               }
             }
           },
           'building[floors]': {
             validators: {
               numeric: {
-                message: 'Error: The value needs to be a number',
+                message: 'Floors value needs to be numeric',
               }
             }
           },
-          'building[units]': {
+          'building[units]':  {
             validators: {
               numeric: {
-                message: 'Error: The value needs to be a number',
+                message: 'Unit value needs to be number',
               }
             }
           },
@@ -629,10 +665,10 @@ $scope.validaFormaCompleta = function(){
             validators: {
               stringLength: {
                 min: 2,
-                message: 'Error: Invalid Name'
+                message: 'Address'
               },
               notEmpty: {
-                message: 'Error: This cant be empty'
+                message: 'Address cant be empty'
               },
             }
           },
@@ -647,41 +683,35 @@ $scope.validaFormaCompleta = function(){
           //END Address info
 
 
-          floor: {
-            validators: {
-
-              regexp: {
-                regexp: /^[0-9]+$/,
-                message: 'ERROR: SOLO NUMEROS AQUI'
-              },
-              stringLength: {
-                min: 2,
-                max: 10,
-                message: 'ERROR: STRINGLENGTH'
-              },
-              notEmpty: {
-                message: 'ERROR: ESTA VACIO'
-              },
-              empty: {
-                message:'ERROR RUDO'
-              }
-
-            }
-          },
-
-
-          comments: {
-            validators: {
-              stringLength: {
-                max: 500,
-                message: 'The Comment must be less than 500 characters long'
-              }
-            }
-          },
 
 
         }
-      });
+      })
+        .on('success.form.bv', function(e) {
+          $('#'+attrs.msgid).slideDown({ opacity: "show" }, "slow") // Do something ...
+          $('#contact_form').data('bootstrapValidator').resetForm();
+
+          // Prevent form submission
+          e.preventDefault();
+
+          // Get the form instance
+          var $form = $(e.target);
+
+          // Get the BootstrapValidator instance
+          var bv = $form.data('bootstrapValidator');
+
+          // Use Ajax to submit form data
+//          $.post($form.attr('action'), $form.serialize(), function(result) {
+//            console.log(result);
+//          }, 'json');
+        });
+
+
+
+
+
+
+
     }
   }
 });

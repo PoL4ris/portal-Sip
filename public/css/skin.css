@@ -1500,24 +1500,22 @@ nav ul li a {
   text-align: center;
   width: 10%;
 }
-
 .customer-dash-grid .cdg-block .cdg-content i.fa-spinner {
   padding-top: 0;
   width: 100%;
 }
-
 #paymentmethodform {
-}
 
+}
 #paymentmethodform span {
-}
 
+}
 #paymentmethodform label {
-}
 
+}
 #paymentmethodform input {
-}
 
+}
 .bld-search .search-content {
   width: 95%;
 }
@@ -1541,4 +1539,7 @@ nav ul li a {
 .fixed-customer-size{
   min-width: 300px;
   max-width: 300px;
+}
+.bv-form .help-block{
+  color: #888;
 }
