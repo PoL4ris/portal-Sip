@@ -5,21 +5,21 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use App\Extensions\BillingHelper;
 
-class ProcessPendingInvoicesWithUpdatedPaymentMethods extends Command
+class ShowPendingInvoicesWithUpdatedPaymentMethods extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'billing:process-pending-invoices-with-updated-payments';
+    protected $signature = 'billing:show-pending-invoices-with-updated-payments';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Rerun the pending invoices that updated their payment methods.';
+    protected $description = 'Display list of pending invoices that updated their payment methods.';
 
     /**
      * Create a new command instance.
@@ -38,9 +38,10 @@ class ProcessPendingInvoicesWithUpdatedPaymentMethods extends Command
      */
     public function handle()
     {
-        $this->info('Rerunning pending auto-pay invoices that have updated payment methods');
+        $this->info('Getting pending auto-pay invoices that have updated payment methods');
         $billingHelper = new BillingHelper();
-        $billingHelper->processPendingAutopayInvoicesThatHaveUpdatedPaymentMethods();
+        $pendingInvoices = collect($billingHelper->getPendingAutopayInvoicesThatHaveUpdatedPaymentMethods());
+        dd($pendingInvoices->pluck('amount', 'id'));
         $this->info('Done');
     }
 }

@@ -23,6 +23,7 @@ class Kernel extends ConsoleKernel {
         Commands\InvoicePendingCharges::class,
         Commands\ProcessPendingAutoPayInvoices::class,
         Commands\ProcessPendingInvoicesWithUpdatedPaymentMethods::class,
+        Commands\ShowPendingInvoicesWithUpdatedPaymentMethods::class,
         Commands\RerunAllPendingInvoices::class,
         Commands\GenerateMrrReport::class,
         Commands\ParseSupportEmail::class,

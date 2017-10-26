@@ -979,6 +979,37 @@ class BillingHelper {
         return true;
     }
 
+    public function getPendingAutopayInvoicesThatHaveUpdatedPaymentMethods()
+    {
+        $perPage = 15;
+        $totalInvoicesProcessed = 0;
+        $billingHelper = new BillingHelper();
+
+        $paginatedInvoices = $billingHelper->paginatePendingFailedInvoices();
+        $lastProcessedInvoiceId = 0;
+
+        $invoiceTable = [];
+        while ($paginatedInvoices->count() > 0)
+        {
+            $invoices = $billingHelper->filterPendingInvoicesByUpdatedPaymentMethods($paginatedInvoices);
+
+            foreach ($invoices as $invoice)
+            {
+                $totalInvoicesProcessed ++;
+                $invoiceTable[] = $invoice;
+            }
+
+            $lastInvoice = $paginatedInvoices->last();
+            $lastProcessedInvoiceId = $lastInvoice->id;
+
+//            Log::info('getPendingAutopayInvoicesThatHaveUpdatedPaymentMethods(): Found ' . $invoices->count() . ' invoices that have updated payment methods. Last invoice checked was: '.$lastProcessedInvoiceId);
+
+            $paginatedInvoices = $billingHelper->paginatePendingFailedInvoices($perPage, $lastProcessedInvoiceId);
+        }
+
+        return $invoiceTable;
+    }
+
     public function rerunPendingAutopayInvoices()
     {
 
