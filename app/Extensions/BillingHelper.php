@@ -414,7 +414,8 @@ class BillingHelper {
             $resultsArray[$chargeId] = $this->denyManualCharge($charge);
 
             $invoice = $charge->invoice;
-            if($invoice != null){
+            if ($invoice != null)
+            {
                 $this->cancelInvoice($invoice);
             }
 
@@ -946,8 +947,102 @@ class BillingHelper {
         return true;
     }
 
-    public function processPendingAutopayInvoicesThatHaveUpdatedPaymentMethods()
+//    public function processFailedAutopayInvoicesThatHaveUpdatedPaymentMethods()
+//    {
+//        $perPage = 15;
+//        $totalInvoicesProcessed = 0;
+//
+//        // Get the first batch of pending invoices
+//        $paginatedInvoices = $this->paginatePendingFailedInvoices();
+//
+//        while ($paginatedInvoices->count() > 0)
+//        {
+//            // Get the last invoice in this batch for record keeping
+//            $lastInvoice = $paginatedInvoices->last();
+//            $lastProcessedInvoiceId = $lastInvoice->id;
+//
+//            // Find the invoices that have updated pament methods so we can just process them
+//            $invoices = $this->filterPendingInvoicesByUpdatedPaymentMethods($paginatedInvoices);
+//
+//            foreach ($invoices as $invoice)
+//            {
+//                $totalInvoicesProcessed ++;
+//                Log::info('BillingHelper::processPendingAutopayInvoicesThatHaveUpdatedPaymentMethods(): processing invoice id=' . $invoice->id . ' amount=$' . $invoice->amount);
+//                $this->processInvoice($invoice, true, true, false);
+//            }
+//
+//            // Get the next batch of pending invoices
+//            $paginatedInvoices = $this->paginatePendingFailedInvoices($perPage, $lastProcessedInvoiceId);
+//        }
+//
+//        echo 'Processed ' . $totalInvoicesProcessed . ' invoices.' . "\n";
+//
+//        return true;
+//    }
+
+//    public function getFailedAutopayInvoicesThatHaveUpdatedPaymentMethods()
+//    {
+//        $perPage = 15;
+//        $totalInvoicesProcessed = 0;
+//        $billingHelper = new BillingHelper();
+//
+//        $paginatedInvoices = $billingHelper->paginatePendingFailedInvoices();
+//        $lastProcessedInvoiceId = 0;
+//
+//        $invoiceTable = [];
+//        while ($paginatedInvoices->count() > 0)
+//        {
+//            $invoices = $billingHelper->filterPendingInvoicesByUpdatedPaymentMethods($paginatedInvoices);
+//
+//            foreach ($invoices as $invoice)
+//            {
+//                $totalInvoicesProcessed ++;
+//                $invoiceTable[] = $invoice;
+//            }
+//
+//            $lastInvoice = $paginatedInvoices->last();
+//            $lastProcessedInvoiceId = $lastInvoice->id;
+//            $paginatedInvoices = $billingHelper->paginatePendingFailedInvoices($perPage, $lastProcessedInvoiceId);
+//        }
+//
+//        return $invoiceTable;
+//    }
+
+    public function getFailedAutopayInvoices($rerunUpdatedPaymentMethodsOnly = false)
     {
+        $perPage = 15;
+        $totalInvoicesProcessed = 0;
+        $billingHelper = new BillingHelper();
+
+        $paginatedInvoices = $billingHelper->paginatePendingFailedInvoices();
+        $lastProcessedInvoiceId = 0;
+
+        $invoiceTable = [];
+        while ($paginatedInvoices->count() > 0)
+        {
+            $invoices = $paginatedInvoices;
+            if($rerunUpdatedPaymentMethodsOnly){
+                // Find the invoices that have updated pament methods so we can just process them
+                $invoices = $this->filterPendingInvoicesByUpdatedPaymentMethods($paginatedInvoices);
+            }
+
+            foreach ($invoices as $invoice)
+            {
+                $totalInvoicesProcessed ++;
+                $invoiceTable[] = $invoice;
+            }
+
+            $lastInvoice = $paginatedInvoices->last();
+            $lastProcessedInvoiceId = $lastInvoice->id;
+            $paginatedInvoices = $billingHelper->paginatePendingFailedInvoices($perPage, $lastProcessedInvoiceId);
+        }
+
+        return $invoiceTable;
+    }
+
+    public function rerunFailedAutopayInvoices($rerunUpdatedPaymentMethodsOnly = false)
+    {
+
         $perPage = 15;
         $totalInvoicesProcessed = 0;
 
@@ -960,13 +1055,16 @@ class BillingHelper {
             $lastInvoice = $paginatedInvoices->last();
             $lastProcessedInvoiceId = $lastInvoice->id;
 
-            // Find the invoices that have updated pament methods so we can just process them
-            $invoices = $this->filterPendingInvoicesByUpdatedPaymentMethods($paginatedInvoices);
+            $invoices = $paginatedInvoices;
+            if($rerunUpdatedPaymentMethodsOnly){
+                // Find the invoices that have updated pament methods so we can just process them
+                $invoices = $this->filterPendingInvoicesByUpdatedPaymentMethods($paginatedInvoices);
+            }
 
             foreach ($invoices as $invoice)
             {
                 $totalInvoicesProcessed ++;
-                Log::info('BillingHelper::processPendingAutopayInvoicesThatHaveUpdatedPaymentMethods(): processing invoice id=' . $invoice->id . ' amount=$' . $invoice->amount);
+                Log::info('BillingHelper::rerunFailedAutopayInvoices('.$rerunUpdatedPaymentMethodsOnly.'): processing invoice id=' . $invoice->id . ' amount=$' . $invoice->amount);
                 $this->processInvoice($invoice, true, true, false);
             }
 
@@ -977,60 +1075,34 @@ class BillingHelper {
         echo 'Processed ' . $totalInvoicesProcessed . ' invoices.' . "\n";
 
         return true;
-    }
 
-    public function getPendingAutopayInvoicesThatHaveUpdatedPaymentMethods()
-    {
-        $perPage = 15;
-        $totalInvoicesProcessed = 0;
-        $billingHelper = new BillingHelper();
 
-        $paginatedInvoices = $billingHelper->paginatePendingFailedInvoices();
-        $lastProcessedInvoiceId = 0;
-
-        $invoiceTable = [];
-        while ($paginatedInvoices->count() > 0)
-        {
-            $invoices = $billingHelper->filterPendingInvoicesByUpdatedPaymentMethods($paginatedInvoices);
-
-            foreach ($invoices as $invoice)
-            {
-                $totalInvoicesProcessed ++;
-                $invoiceTable[] = $invoice;
-            }
-
-            $lastInvoice = $paginatedInvoices->last();
-            $lastProcessedInvoiceId = $lastInvoice->id;
-
-//            Log::info('getPendingAutopayInvoicesThatHaveUpdatedPaymentMethods(): Found ' . $invoices->count() . ' invoices that have updated payment methods. Last invoice checked was: '.$lastProcessedInvoiceId);
-
-            $paginatedInvoices = $billingHelper->paginatePendingFailedInvoices($perPage, $lastProcessedInvoiceId);
-        }
-
-        return $invoiceTable;
-    }
-
-    public function rerunPendingAutopayInvoices()
-    {
-
-        $nowMysql = date("Y-m-d H:i:s");
-        Invoice::where('status', config('const.invoice_status.pending'))
-            ->where('processing_type', config('const.type.auto_pay'))
-            ->where(function ($query) use ($nowMysql) {
-                $query->whereNull('due_date')
-                    ->orWhere('due_date', '<=', $nowMysql)
-                    ->orWhere('due_date', '');
-            })
-            ->where('updated_at', '<', '2017-10-03 13:00:00')
-            ->chunk(200, function ($invoices) {
-                foreach ($invoices as $invoice)
-                {
-                    Log::info('BillingHelper::rerunPendingAutopayInvoices(): processing invoice id=' . $invoice->id . ' amount=$' . $invoice->amount);
-                    $this->processInvoice($invoice, true, false, false);
-//                    break;
-                }
-                dd('Done');
-            });
+//        $nowMysql = date("Y-m-d H:i:s");
+//        $pendingInvoices = Invoice::where('status', config('const.invoice_status.pending'))
+//            ->where('processing_type', config('const.type.auto_pay'))
+//            ->where(function ($query) use ($nowMysql) {
+//                $query->whereNull('due_date')
+//                    ->orWhere('due_date', '<=', $nowMysql)
+//                    ->orWhere('due_date', '');
+//            });
+//
+//        if ($updatedBefore != null)
+//        {
+//            $pendingInvoices = $pendingInvoices->where('updated_at', '<', $updatedBefore);
+//        } else
+//        {
+//            $pendingInvoices = $pendingInvoices->where('updated_at', '<', $nowMysql);
+//        }
+//
+//        $pendingInvoices->chunk(200, function ($invoices) {
+//                foreach ($invoices as $invoice)
+//                {
+//                    Log::info('BillingHelper::rerunPendingAutopayInvoices(): processing invoice id=' . $invoice->id . ' amount=$' . $invoice->amount);
+//                    $this->processInvoice($invoice, true, true, false);
+////                    break;
+//                }
+////                dd('Done');
+//            });
     }
 
     public function processInvoice(Invoice $invoice, $notifyViaEmail = true, $notifyViaEmailOnlyIfPassed = false, $createTicketOnFailure = true)
@@ -1072,7 +1144,8 @@ class BillingHelper {
         });
 
         $chargeDetails = null;
-        if($filteredCharges->isEmpty() == false){
+        if ($filteredCharges->isEmpty() == false)
+        {
             $details = $filteredCharges->pluck('details');
             $chargeDetailsArray = array();
             foreach ($details as $chargeDetails)

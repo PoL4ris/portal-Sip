@@ -5,8 +5,8 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use App\Extensions\BillingHelper;
 
-class ProcessPendingInvoicesWithUpdatedPaymentMethods extends Command
-{
+class ProcessPendingInvoicesWithUpdatedPaymentMethods extends Command {
+
     /**
      * The name and signature of the console command.
      *
@@ -40,7 +40,8 @@ class ProcessPendingInvoicesWithUpdatedPaymentMethods extends Command
     {
         $this->info('Rerunning pending auto-pay invoices that have updated payment methods');
         $billingHelper = new BillingHelper();
-        $billingHelper->processPendingAutopayInvoicesThatHaveUpdatedPaymentMethods();
+//        $billingHelper->processFailedAutopayInvoicesThatHaveUpdatedPaymentMethods();
+        $billingHelper->rerunFailedAutopayInvoices(true);
         $this->info('Done');
     }
 }

@@ -40,7 +40,8 @@ class ShowPendingInvoicesWithUpdatedPaymentMethods extends Command
     {
         $this->info('Getting pending auto-pay invoices that have updated payment methods');
         $billingHelper = new BillingHelper();
-        $pendingInvoices = collect($billingHelper->getPendingAutopayInvoicesThatHaveUpdatedPaymentMethods());
+//        $pendingInvoices = collect($billingHelper->getFailedAutopayInvoicesThatHaveUpdatedPaymentMethods());
+        $pendingInvoices = collect($billingHelper->getFailedAutopayInvoices(true));
         dd($pendingInvoices->pluck('amount', 'id'));
         $this->info('Done');
     }

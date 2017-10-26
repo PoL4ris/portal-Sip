@@ -40,7 +40,7 @@ class RerunAllPendingInvoices extends Command
     {
         $this->info('Rerunning all pending invoices');
         $billingHelper = new BillingHelper();
-        $billingHelper->rerunPendingAutopayInvoices();
+        $billingHelper->rerunFailedAutopayInvoices();
         $this->info('Done');
     }
 }
