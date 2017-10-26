@@ -5,7 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use App\Extensions\BillingHelper;
 
-class RerunAllPendingInvoices extends Command
+class RerunAllFailedInvoices extends Command
 {
     /**
      * The name and signature of the console command.
