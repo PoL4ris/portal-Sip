@@ -1527,19 +1527,21 @@ nav ul li a {
 .customer-info-container {
   max-width: 280px;
 }
-#new-building-form .form-control{
-  padding: 0;
-  margin: 0;
-  font-size: inherit;
-}
-#new-building-form{}
-#new-building-form .form-control[disabled],#new-building-form  .form-control[readonly],#new-building-form  fieldset[disabled] .form-control{
-  background: none;
-}
+
+
 .fixed-customer-size{
   min-width: 300px;
   max-width: 300px;
 }
-.bv-form .help-block{
-  color: #888;
-}
+/*.bv-form .help-block{*/
+  /*color: #888;*/
+/*}*/
+/*#new-building-form .form-control{*/
+  /*padding: 0;*/
+  /*margin: 0;*/
+  /*font-size: inherit;*/
+/*}*/
+/*#new-building-form{}*/
+/*#new-building-form .form-control[disabled],#new-building-form  .form-control[readonly],#new-building-form  fieldset[disabled] .form-control{*/
+  /*background: none;*/
+/*}*/

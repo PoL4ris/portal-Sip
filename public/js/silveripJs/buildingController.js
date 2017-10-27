@@ -480,10 +480,16 @@ $scope.propertyValue = function(){
 
 $scope.validaFormaCompleta = function(){
 
+  $('#main-info-bld').trigger('click');
+
+  return;
 
 
-  var validator = $( "#myform" ).bootstrapValidator();
-  console.log(validator);
+
+
+
+//  var validator = $( "#myform" ).bootstrapValidator();
+//  console.log(validator);
 
 
 
@@ -500,7 +506,38 @@ $scope.validaFormaCompleta = function(){
 
 }
 
+$scope.validateNewBuildingForm = function() {
 
+
+//  console.log('this is the alidateForm');
+  var objects =  getFormValues('new-building-form');
+
+
+//  if(!objects['building[name]'] || !objects['building[code]'] || !objects['address[address]'])
+//    console.log('return aqui');
+//  else
+//    console.log('esto es chido');
+
+//  $('#tab-r0').trigger('click');
+//  return;
+
+  var warp =  $('new-building-form');
+
+
+//  console.log(warp.checkValidity());
+  if($("#bname").is(":valid") && $("#bcode").is(":valid") && $("#aadress").is(":valid")) {
+    console.log('es valido');
+    $('#new-building-form').trigger('reset');
+  }
+  else{
+    $('#main-info-bld').trigger('click');
+//    $('input:invalid').css('border','1px solid red')
+//    $('.notif-alert').fadeIn();
+    console.log('ERROR');
+//    return
+  }
+
+}
 
 
 
@@ -703,10 +740,8 @@ angular.module('SmartAdmin.Forms').directive('newBuildingForm', function () {
         }
         scope.resetNewBuildingForm = function(){
 //          $(form).bootstrapValidator().data('bootstrapValidator').resetForm();
-//          $(form).bootstrapValidator('resetForm', true);
-            scope.address  = false;
-            scope.building = false;
-//          $('#new-building-form').trigger('reset');
+          $(form).bootstrapValidator('resetForm', true);
+          $('#new-building-form').trigger('reset');
 
 
 //          console.log($(form).bootstrapValidator().data());

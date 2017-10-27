@@ -3,120 +3,123 @@
 
         <header role="heading" class="ui-sortable-handle">
             <ul id="widget-tab-1" class="nav pull-left nav-tabs size-100">
-                <li class="tab-eval-tab active"><a data-toggle="tab" href="#tab-r0" aria-expanded="false"><span>Main Information</span></a></li>
-                <!--<li class="tab-eval-tab "><a data-toggle="tab" href="#tab-r1" aria-expanded="false"><span>Address</span></a></li>-->
+                <li class="tab-eval-tab active"><a data-toggle="tab" href="#tab-r0" aria-expanded="false" id="main-info-bld"><span>Main Information</span></a></li>
                 <li class="tab-eval-tab "><a data-toggle="tab" href="#tab-r2" aria-expanded="false"><span>Products</span></a></li>
                 <li class="tab-eval-tab "><a data-toggle="tab" href="#tab-r3" aria-expanded="false"><span>Properties</span></a></li>
             </ul>
         </header>
 
 
-        <new-building-form msgid="bld-block-1">
-            <form id="new-building-form">
+        <form id="new-building-form">
             <div class="col-lg-12 m-t-lg">
                 <div class="tab-content input-contect-forms">
                     <div class="tab-pane active" id="tab-r0">
 
+
                         <h3>Building main information</h3>
-                        <div class="col-lg-6 form-group">
-                            <label class="control-label">Name<span class="down-status">*</span></label>
+
+                        <div class="col-lg-6">
+                            <label class="">Name: <span class="down-status">*</span></label>
                             <input type="text"
                                    placeholder="Name"
-                                   name="building[name]"
-
-                                   class="form-control">
+                                   name="building.name"
+                                   ng-model="building.name"
+                                   required
+                                   pattern="[a-zA-Z0-9\s]{2,}"
+                                   title="Name cant be empty"
+                                   id="bname"
+                                   class="">
+                            <i class="fa fa-check up-status validation-status-icon"></i>
+                            <i class="fa fa-times down-status validation-status-icon"></i>
                         </div>
-                        <div class="col-lg-6 form-group">
-                            <label class="control-label">Code<span class="down-status">*</span></label>
+                        <div class="col-lg-6 ">
+                            <label class="">Code: <span class="down-status">*</span></label>
                             <input type="text"
                                    placeholder="Code"
-                                   name="building[code]"
-
-                                   class="form-control">
+                                   name="building.code"
+                                   ng-model="building.code"
+                                   required
+                                   pattern="[a-zA-Z0-9]{2,}"
+                                   title="No signs allowed ( !@#$ )..."
+                                   id="bcode"
+                                   class="">
+                            <i class="fa fa-check up-status validation-status-icon"></i>
+                            <i class="fa fa-times down-status validation-status-icon"></i>
                         </div>
 
-                        <div class="col-lg-6 form-group">
-                            <label class="control-label">Address<span class="down-status">*</span></label>
+                        <div class="col-lg-6 ">
+                            <label class="">Address: <span class="down-status">*</span></label>
                             <input type="text"
                                    placeholder="Address"
-                                   name="address[address]"
-
-                                   class="form-control">
+                                   name="address.address"
+                                   ng-model="address.address"
+                                   required
+                                   pattern="[a-zA-Z0-9\s]{2,}"
+                                   title="Name cant be empty"
+                                   id="aadress"
+                                   class="">
+                            <i class="fa fa-check up-status validation-status-icon"></i>
+                            <i class="fa fa-times down-status validation-status-icon"></i>
                         </div>
-                        <div class="col-lg-6 form-group">
-                            <label class="control-label">Zip</label>
+                        <div class="col-lg-6 ">
+                            <label class="">Zip: </label>
                             <input type="text"
                                    placeholder="Zip"
                                    name="address[zip]"
-
-                                   class="form-control">
+                                   class="">
                         </div>
 
-                        <div class="col-lg-6 form-group">
-                            <label class="control-label">Status</label>
+                        <div class="col-lg-6 ">
+                            <label class="">Status: </label>
                             <br>
-                            <select name="building[status]" class="form-control">
+                            <select name="building[status]" class="">
                                 <option value="prospect">Prospect</option>
                                 <option value="new">Client</option>
                             </select>
                         </div>
-                        <div class="col-lg-6 form-group">
-                            <label class="control-label">Units</label>
+                        <div class="col-lg-6 ">
+                            <label class="">Units: </label>
                             <input type="text"
                                    placeholder="Units"
                                    name="building[units]"
-                                   class="form-control">
+                                   class="">
                         </div>
-                        <div class="col-lg-6 form-group">
-                            <labe class="control-label">Floors</labe>
+                        <div class="col-lg-6 ">
+                            <labe class="">Floors:</labe>
                             <input type="text"
                                    placeholder="Floors"
                                    name="building[floors]"
-                                   class="form-control">
+                                   class="">
                         </div>
-                        <div class="col-lg-6 form-group">
+                        <div class="col-lg-6 ">
 
-                            <label for="building-image" class="control-label">Profile Image</label>
+                            <label for="building-image" class="">Profile Image: </label>
 
                             <div drop-zone ng-model="app.data.upload" class="one drop-zone-box p-t-lg" ng-if="filesControl.length <= 0">
-                                <span class="font-lg">Drop files to upload<span>(Or Click)</span></span>
+                                <span class="font-lg">Drop file to upload<span>(Or Click)</span></span>
                             </div>
 
                             <div ng-if="filesControl.length > 0" class="down-status cursor-pointer m-b-md" ng-click="removeImage(0)">Change <i class="fa fa-times"></i></div>
 
-                                <div ng-repeat="file in app.data.upload">
+                            <div ng-repeat="file in app.data.upload">
                                 {{file.data}}
-                                    <img src="{{file.data}}" class="" style="max-height: 150px; max-width: 100%;" ng-if="filesControl.length > 0"/>
-                                </div>
+                                <img src="{{file.data}}" class="" style="max-height: 150px; max-width: 100%;" ng-if="filesControl.length > 0"/>
+                            </div>
 
                         </div>
 
 
                         <div class="col-lg-6" id="bld-block-1">
                             <div class="req-div">Missing building info:</div>
+
+                            <p ng-if="!building.name" class="required-fields-p">Name</p>
+                            <p ng-if="!building.code" class="required-fields-p">Code</p>
+                            <p ng-if="!address.address" class="required-fields-p">Address</p>
                         </div>
-                        <div class="col-lg-6" id="bld-block-2">
-                            <div class="req-div">Missing building info:</div>
-                        </div>
+
 
                     </div>
 
-                    <!--<div class="tab-pane" id="tab-r1">-->
-
-                            <!--<h3>Building Address</h3>-->
-                            <!--<div class="col-lg-6 form-group">-->
-                                <!--<label class="control-label">Address<span class="down-status">*</span></label>-->
-                                <!--<input type="text"-->
-                                       <!--placeholder="Address"-->
-                                       <!--name="address[address]"-->
-                                       <!--class="form-control">-->
-                            <!--</div>-->
-                            <!---->
-                            <!--<div class="col-lg-12 m-t-lg" id="bld-block-2">-->
-                                <!--<div class="req-div">Missing building info:</div>-->
-                            <!--</div>-->
-
-                    <!--</div>-->
 
                     <div class="tab-pane" id="tab-r2">
                         <article class="null-article" ng-include="'/views/building/product.html'"></article>
@@ -131,17 +134,179 @@
                     </div>
 
 
-
                 </div>
             </div>
 
-            <div class="col-lg-12"><hr></div>
 
-            <div class="col-lg-4 m-b-lg"><div class="btn btn-danger pull-left" ng-click="resetNewBuildingForm()">Start Over</div></div>
-            <div class="col-lg-4 error-notif-alert">
-                <div class="notif-alert"><div class="admiracion">!</div><div class="admiracion-texto">Verify required fields</div></div>
+            <div class="col-lg-12">
+                <hr>
             </div>
-            <div class="col-lg-4 m-b-lg"><button class="btn btn-success pull-right" type="submit" >Submit</button></div>
+
+            <div class="col-lg-6 m-b-lg">
+                <div class="btn btn-danger pull-left" ng-click="validaFormaCompleta()">Start Over</div>
+            </div>
+
+            <div class="col-lg-6 m-b-lg">
+                <button class="btn btn-success pull-right" type="submit" ng-click="validateNewBuildingForm()">Submit</button>
+            </div>
+
+            <div class="col-lg-12 m-t-lg"></div>
+
+
+        </form>
+
+
+    </div>
+</article>
+
+
+
+<!--
+
+<article class="container m-t-lg bg-white white-shadow" ng-controller="walkthroughController as app" id="">
+    <div class="row">
+
+        <header role="heading" class="ui-sortable-handle">
+            <ul id="widget-tab-1" class="nav pull-left nav-tabs size-100">
+                <li class="tab-eval-tab active"><a data-toggle="tab" href="#tab-r0" aria-expanded="false"><span>Main Information</span></a></li>
+                <li class="tab-eval-tab "><a data-toggle="tab" href="#tab-r1" aria-expanded="false"><span>Address</span></a></li>
+                <li class="tab-eval-tab "><a data-toggle="tab" href="#tab-r2" aria-expanded="false"><span>Products</span></a></li>
+                <li class="tab-eval-tab "><a data-toggle="tab" href="#tab-r3" aria-expanded="false"><span>Properties</span></a></li>
+            </ul>
+        </header>
+
+
+        <new-building-form msgid="bld-block-1">
+            <form id="new-building-form">
+                <div class="col-lg-12 m-t-lg">
+                    <div class="tab-content input-contect-forms">
+                        <div class="tab-pane active" id="tab-r0">
+
+                            <h3>Building main information</h3>
+                            <div class="col-lg-6 ">
+                                <label class="">Name<span class="down-status">*</span></label>
+                                <input type="text"
+                                       placeholder="Name"
+                                       name="building[name]"
+
+                                       class="">
+                            </div>
+                            <div class="col-lg-6 ">
+                                <label class="">Code<span class="down-status">*</span></label>
+                                <input type="text"
+                                       placeholder="Code"
+                                       name="building[code]"
+
+                                       class="">
+                            </div>
+
+                            <div class="col-lg-6 ">
+                                <label class="">Address<span class="down-status">*</span></label>
+                                <input type="text"
+                                       placeholder="Address"
+                                       name="address[address]"
+
+                                       class="">
+                            </div>
+                            <div class="col-lg-6 ">
+                                <label class="">Zip</label>
+                                <input type="text"
+                                       placeholder="Zip"
+                                       name="address[zip]"
+
+                                       class="">
+                            </div>
+
+                            <div class="col-lg-6 ">
+                                <label class="">Status</label>
+                                <br>
+                                <select name="building[status]" class="">
+                                    <option value="prospect">Prospect</option>
+                                    <option value="new">Client</option>
+                                </select>
+                            </div>
+                            <div class="col-lg-6 ">
+                                <label class="">Units</label>
+                                <input type="text"
+                                       placeholder="Units"
+                                       name="building[units]"
+                                       class="">
+                            </div>
+                            <div class="col-lg-6 ">
+                                <labe class="">Floors</labe>
+                                <input type="text"
+                                       placeholder="Floors"
+                                       name="building[floors]"
+                                       class="">
+                            </div>
+                            <div class="col-lg-6 ">
+
+                                <label for="building-image" class="">Profile Image</label>
+
+                                <div drop-zone ng-model="app.data.upload" class="one drop-zone-box p-t-lg" ng-if="filesControl.length <= 0">
+                                    <span class="font-lg">Drop files to upload<span>(Or Click)</span></span>
+                                </div>
+
+                                <div ng-if="filesControl.length > 0" class="down-status cursor-pointer m-b-md" ng-click="removeImage(0)">Change <i class="fa fa-times"></i></div>
+
+                                <div ng-repeat="file in app.data.upload">
+                                    {{file.data}}
+                                    <img src="{{file.data}}" class="" style="max-height: 150px; max-width: 100%;" ng-if="filesControl.length > 0"/>
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-lg-6" id="bld-block-1">
+                                <div class="req-div">Missing building info:</div>
+                            </div>
+                            <div class="col-lg-6" id="bld-block-2">
+                                <div class="req-div">Missing building info:</div>
+                            </div>
+
+                        </div>
+
+                        <div class="tab-pane" id="tab-r1">
+
+                        <h3>Building Address</h3>
+                        <div class="col-lg-6 ">
+                        <label class="">Address<span class="down-status">*</span></label>
+                        <input type="text"
+                        placeholder="Address"
+                        name="address[address]"
+                        class="">
+                        </div>
+
+                        <div class="col-lg-12 m-t-lg" id="bld-block-2">
+                        <div class="req-div">Missing building info:</div>
+                        </div>
+
+                        </div>
+
+                        <div class="tab-pane" id="tab-r2">
+                            <article class="null-article" ng-include="'/views/building/product.html'"></article>
+                        </div>
+
+                        <div class="tab-pane" id="tab-r3">
+                            <h3>Properties</h3>
+                            <p ng-repeat="prop in propValuesList" class="col-lg-3">
+                                <label for="prop-{{prop.name}}">{{prop.name}}</label>
+                                <input type="text" placeholder="{{prop.name}}" name="property[{{prop.name}}]" ng-keyup="propertyValue()" ng-model="propertyIndex[prop.id]">
+                            </p>
+                        </div>
+
+
+
+                    </div>
+                </div>
+
+                <div class="col-lg-12"><hr></div>
+
+                <div class="col-lg-4 m-b-lg"><div class="btn btn-danger pull-left" ng-click="resetNewBuildingForm()">Start Over</div></div>
+                <div class="col-lg-4 error-notif-alert">
+                    <div class="notif-alert"><div class="admiracion">!</div><div class="admiracion-texto">Verify required fields</div></div>
+                </div>
+                <div class="col-lg-4 m-b-lg"><button class="btn btn-success pull-right" type="submit" >Submit</button></div>
 
                 <div class="col-lg-12 m-t-lg"></div>
 
@@ -155,3 +320,4 @@
 
 
 
+-->
