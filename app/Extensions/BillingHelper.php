@@ -947,67 +947,6 @@ class BillingHelper {
         return true;
     }
 
-//    public function processFailedAutopayInvoicesThatHaveUpdatedPaymentMethods()
-//    {
-//        $perPage = 15;
-//        $totalInvoicesProcessed = 0;
-//
-//        // Get the first batch of pending invoices
-//        $paginatedInvoices = $this->paginatePendingFailedInvoices();
-//
-//        while ($paginatedInvoices->count() > 0)
-//        {
-//            // Get the last invoice in this batch for record keeping
-//            $lastInvoice = $paginatedInvoices->last();
-//            $lastProcessedInvoiceId = $lastInvoice->id;
-//
-//            // Find the invoices that have updated pament methods so we can just process them
-//            $invoices = $this->filterPendingInvoicesByUpdatedPaymentMethods($paginatedInvoices);
-//
-//            foreach ($invoices as $invoice)
-//            {
-//                $totalInvoicesProcessed ++;
-//                Log::info('BillingHelper::processPendingAutopayInvoicesThatHaveUpdatedPaymentMethods(): processing invoice id=' . $invoice->id . ' amount=$' . $invoice->amount);
-//                $this->processInvoice($invoice, true, true, false);
-//            }
-//
-//            // Get the next batch of pending invoices
-//            $paginatedInvoices = $this->paginatePendingFailedInvoices($perPage, $lastProcessedInvoiceId);
-//        }
-//
-//        echo 'Processed ' . $totalInvoicesProcessed . ' invoices.' . "\n";
-//
-//        return true;
-//    }
-
-//    public function getFailedAutopayInvoicesThatHaveUpdatedPaymentMethods()
-//    {
-//        $perPage = 15;
-//        $totalInvoicesProcessed = 0;
-//        $billingHelper = new BillingHelper();
-//
-//        $paginatedInvoices = $billingHelper->paginatePendingFailedInvoices();
-//        $lastProcessedInvoiceId = 0;
-//
-//        $invoiceTable = [];
-//        while ($paginatedInvoices->count() > 0)
-//        {
-//            $invoices = $billingHelper->filterPendingInvoicesByUpdatedPaymentMethods($paginatedInvoices);
-//
-//            foreach ($invoices as $invoice)
-//            {
-//                $totalInvoicesProcessed ++;
-//                $invoiceTable[] = $invoice;
-//            }
-//
-//            $lastInvoice = $paginatedInvoices->last();
-//            $lastProcessedInvoiceId = $lastInvoice->id;
-//            $paginatedInvoices = $billingHelper->paginatePendingFailedInvoices($perPage, $lastProcessedInvoiceId);
-//        }
-//
-//        return $invoiceTable;
-//    }
-
     public function getFailedAutopayInvoices($rerunUpdatedPaymentMethodsOnly = false)
     {
         $perPage = 15;
@@ -1075,34 +1014,6 @@ class BillingHelper {
         echo 'Processed ' . $totalInvoicesProcessed . ' invoices.' . "\n";
 
         return true;
-
-
-//        $nowMysql = date("Y-m-d H:i:s");
-//        $pendingInvoices = Invoice::where('status', config('const.invoice_status.pending'))
-//            ->where('processing_type', config('const.type.auto_pay'))
-//            ->where(function ($query) use ($nowMysql) {
-//                $query->whereNull('due_date')
-//                    ->orWhere('due_date', '<=', $nowMysql)
-//                    ->orWhere('due_date', '');
-//            });
-//
-//        if ($updatedBefore != null)
-//        {
-//            $pendingInvoices = $pendingInvoices->where('updated_at', '<', $updatedBefore);
-//        } else
-//        {
-//            $pendingInvoices = $pendingInvoices->where('updated_at', '<', $nowMysql);
-//        }
-//
-//        $pendingInvoices->chunk(200, function ($invoices) {
-//                foreach ($invoices as $invoice)
-//                {
-//                    Log::info('BillingHelper::rerunPendingAutopayInvoices(): processing invoice id=' . $invoice->id . ' amount=$' . $invoice->amount);
-//                    $this->processInvoice($invoice, true, true, false);
-////                    break;
-//                }
-////                dd('Done');
-//            });
     }
 
     public function processInvoice(Invoice $invoice, $notifyViaEmail = true, $notifyViaEmailOnlyIfPassed = false, $createTicketOnFailure = true)

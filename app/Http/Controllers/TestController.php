@@ -456,6 +456,13 @@ class TestController extends Controller {
     public function generalTest(Request $request)
     {
 
+        /** Find chargeable items for manually added plans and create an invoice for them **/
+        $billingHelper = new BillingHelper();
+        $pendingFailedInvoices = collect($billingHelper->getFailedAutopayInvoices());
+
+        dd($pendingFailedInvoices->sum('amount'));
+
+
         /**
          * User port information processing (info from a Mikrotik for signup)
          */
