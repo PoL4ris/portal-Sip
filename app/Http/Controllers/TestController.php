@@ -456,101 +456,94 @@ class TestController extends Controller {
     public function generalTest(Request $request)
     {
 
-        $ip = '10.11.188.102';
-        $mac = 'DC:9F:DB:8C:DC:5E';
-        $serviceRouter = new MtikRouter(['host_name' => 'test-signup-rtr',
-                                         'username'  => config('netmgmt.mikrotik.username'),
-                                         'password'  => config('netmgmt.mikrotik.password')]);
+        /** Find chargeable items for manually added plans and create an invoice for them **/
+        $billingHelper = new BillingHelper();
+        $pendingFailedInvoices = collect($billingHelper->getFailedAutopayInvoices());
 
-        if ($serviceRouter->isSelected() == false)
-        {
-            dd('ERROR: Router test-signup-rtr not found');
-        }
-
-        $userPortInfo = $serviceRouter->getUserPortInfo(null, $ip, $mac);
-
-        dd($userPortInfo);
+        dd($pendingFailedInvoices->sum('amount'));
 
 
-        $sipReporting = new SIPReporting();
-        $building = Building::where('type', '!=', 'commercial')
-            ->where('alias', '900C')
-            ->first();
-
-        $retailMrr = collect($sipReporting->getBuildingMrrDataByMonth($building->id, '07', '2017'));
-
-        $mrr = $retailMrr->first();
-//        $key = $mrr->Month . '-' . $mrr->Year;
-        $decodedChargeDetails = json_decode($mrr->ChargeDetails, true);
-//        dd($decodedChargeDetails);
-        if ($decodedChargeDetails == null)
-        {
-            dd('addSale(): received empty mrr record. skipping.');
-        }
-        dd('mrr record is good!');
-
-        dd($retailMrr->pluck('ChargeDetails'));
-
-
-            $invoice = Invoice::find(6707);
-        $charges = $invoice->charges;
-        $filteredCharges = $charges->reject(function ($charge) {
-            return $charge->details == null;
-        });
-
-        $chargeDetails = null;
-        if($filteredCharges->isEmpty() == false){
-            $details = $filteredCharges->pluck('details');
-            $chargeDetailsArray = array();
-            foreach ($details as $chargeDetails)
-            {
-                $chargeDetailsArray[] = json_decode($chargeDetails, true);
-            }
-            $chargeDetails = json_encode($chargeDetailsArray);
-        }
-
-
-        dd($chargeDetails);
-
-        dd($chargeDetailsArray);
-
-
-//        $building = Building::find(29);
+        /**
+         * User port information processing (info from a Mikrotik for signup)
+         */
+//        $ip = '10.11.188.102';
+//        $mac = 'DC:9F:DB:8C:DC:5E';
+//        $serviceRouter = new MtikRouter(['host_name' => 'test-signup-rtr',
+//                                         'username'  => config('netmgmt.mikrotik.username'),
+//                                         'password'  => config('netmgmt.mikrotik.password')]);
 //
-//        dd($building->activeParentProducts());
-//        $billingHelper = new BillingHelper();
-//        dd($billingHelper->paginatePendingFailedInvoices());
+//        if ($serviceRouter->isSelected() == false)
+//        {
+//            dd('ERROR: Router test-signup-rtr not found');
+//        }
+//
+//        $userPortInfo = $serviceRouter->getUserPortInfo(null, $ip, $mac);
+//
+//        dd($userPortInfo);
+//
 
-//        dd(Charge::with(['customer', 'address'])
-//            ->where('status', config('const.charge_status.pending_approval'))
-//            ->where('processing_type', config('const.type.manual_pay'))
-//            ->get());
 
-//        $invoices = collect($this->getPendingAutopayInvoicesThatHaveUpdatedPaymentMethods());
+        /**
+         *  Reporting tests
+         */
+//        $sipReporting = new SIPReporting();
+//        $building = Building::where('type', '!=', 'commercial')
+//            ->where('alias', '900C')
+//            ->first();
+//
+//        $retailMrr = collect($sipReporting->getBuildingMrrDataByMonth($building->id, '07', '2017'));
+//
+//        $mrr = $retailMrr->first();
+////        $key = $mrr->Month . '-' . $mrr->Year;
+//        $decodedChargeDetails = json_decode($mrr->ChargeDetails, true);
+////        dd($decodedChargeDetails);
+//        if ($decodedChargeDetails == null)
+//        {
+//            dd('addSale(): received empty mrr record. skipping.');
+//        }
+//        dd('mrr record is good!');
+//
+//        dd($retailMrr->pluck('ChargeDetails'));
+//
+//
+//            $invoice = Invoice::find(6707);
+//        $charges = $invoice->charges;
+//        $filteredCharges = $charges->reject(function ($charge) {
+//            return $charge->details == null;
+//        });
+//
+//        $chargeDetails = null;
+//        if($filteredCharges->isEmpty() == false){
+//            $details = $filteredCharges->pluck('details');
+//            $chargeDetailsArray = array();
+//            foreach ($details as $chargeDetails)
+//            {
+//                $chargeDetailsArray[] = json_decode($chargeDetails, true);
+//            }
+//            $chargeDetails = json_encode($chargeDetailsArray);
+//        }
+//
+//        dd($chargeDetails);
+//        dd($chargeDetailsArray);
+
+
+        /**
+         *  Get pending invoices that have updated payments
+         */
+    //        $invoices = collect($this->getPendingAutopayInvoicesThatHaveUpdatedPaymentMethods());
 //
 //        dd($invoices->pluck('id_customers'));
 
-//        $commandOptions = ['count'    => '5',
-//                           'addresses'  => ['www.google.com', 'www.yahoo.com', 'www.silverip.com'],
-//                           'interval' => '300ms'];
+        /**
+         *  Mikrotik ping tests
+         */
+//        $ip = '108.160.198.204';
+//        $serviceRouter = new MtikRouter(['ip_address' => $ip,
+//                                         'username'   => config('netmgmt.mikrotik.username'),
+//                                         'password'   => config('netmgmt.mikrotik.password')]);
 //
-//        dd(json_encode($commandOptions));
-//
-        $ip = '108.160.198.204';
-        $serviceRouter = new MtikRouter(['ip_address' => $ip,
-                                         'username'   => config('netmgmt.mikrotik.username'),
-                                         'password'   => config('netmgmt.mikrotik.password')]);
+//        dd($serviceRouter->getPingStats($ip, ['www.google.com', 'www.yahoo.com', 'www.silverip.com']));
 
-        dd($serviceRouter->getPingStats($ip, ['www.google.com', 'www.yahoo.com', 'www.silverip.com']));
-
-//        $command = '/ping';
-//        $commandOptions = ['count'    => '5',
-//                           'address'  => 'www.google.com',
-//                           'interval' => '300ms'];
-//        dd($serviceRouter->runCommand($ip, $command, $commandOptions));
-
-
-        //        dd('done');
 
         /** Get recently added manual registrations **/
 //        $sipCustomer = new SIPCustomer();
