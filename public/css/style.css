@@ -1340,21 +1340,21 @@ table.dataTable tbody tr {
 .cn-customer .cn-spacer-containers {
   height: 20px;
 }
-.cn-customer .cn-containers label , .input-contect-forms label{
+.cn-customer .cn-containers label , .input-contact-forms label{
   color: #7d7d7d;
   font-size: 14px;
   /*font-weight: inherit;*/
   font-family: 'Radikal-Bold';
   margin-bottom: 10px;
 }
-.cn-customer .cn-containers input , .input-contect-forms input{
+.cn-customer .cn-containers input , .input-contact-forms input{
   border:none;
   border-bottom: 1px solid #ddd;
   margin-bottom: 10px;
   width: 100%;
   color: #006eb9;
 }
-.input-contect-forms input::placeholder,
+.input-contact-forms input::placeholder,
 .cn-customer .cn-containers input::placeholder,
 .preview-images .img-box div.texto textarea::placeholder,
 .search-subnav-nc input::placeholder{

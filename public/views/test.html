@@ -12,16 +12,15 @@
 
         <form id="new-building-form">
             <div class="col-lg-12 m-t-lg">
-                <div class="tab-content input-contect-forms">
+                <div class="tab-content input-contact-forms">
                     <div class="tab-pane active" id="tab-r0">
 
-
-                        <h3>Building main information</h3>
+                        <h3>Building Profile Information</h3>
 
                         <div class="col-lg-6">
                             <label class="">Name: <span class="down-status">*</span></label>
                             <input type="text"
-                                   placeholder="Name"
+                                   placeholder="Building name"
                                    name="building.name"
                                    ng-model="building.name"
                                    required
@@ -33,24 +32,9 @@
                             <i class="fa fa-times down-status validation-status-icon"></i>
                         </div>
                         <div class="col-lg-6 ">
-                            <label class="">Code: <span class="down-status">*</span></label>
-                            <input type="text"
-                                   placeholder="Code"
-                                   name="building.code"
-                                   ng-model="building.code"
-                                   required
-                                   pattern="[a-zA-Z0-9]{2,}"
-                                   title="No signs allowed ( !@#$ )..."
-                                   id="bcode"
-                                   class="">
-                            <i class="fa fa-check up-status validation-status-icon"></i>
-                            <i class="fa fa-times down-status validation-status-icon"></i>
-                        </div>
-
-                        <div class="col-lg-6 ">
                             <label class="">Address: <span class="down-status">*</span></label>
                             <input type="text"
-                                   placeholder="Address"
+                                   placeholder="Street address"
                                    name="address.address"
                                    ng-model="address.address"
                                    required
@@ -62,13 +46,26 @@
                             <i class="fa fa-times down-status validation-status-icon"></i>
                         </div>
                         <div class="col-lg-6 ">
+                            <label class="">Code: <span class="down-status">*</span></label>
+                            <input type="text"
+                                   placeholder="e.g. 1335P"
+                                   name="building.code"
+                                   ng-model="building.code"
+                                   required
+                                   pattern="[a-zA-Z0-9]{2,}"
+                                   title="No signs allowed ( !@#$ )..."
+                                   id="bcode"
+                                   class="">
+                            <i class="fa fa-check up-status validation-status-icon"></i>
+                            <i class="fa fa-times down-status validation-status-icon"></i>
+                        </div>
+                        <div class="col-lg-6 ">
                             <label class="">Zip: </label>
                             <input type="text"
-                                   placeholder="Zip"
+                                   placeholder="Zip code"
                                    name="address[zip]"
                                    class="">
                         </div>
-
                         <div class="col-lg-6 ">
                             <label class="">Status: </label>
                             <br>
@@ -80,14 +77,14 @@
                         <div class="col-lg-6 ">
                             <label class="">Units: </label>
                             <input type="text"
-                                   placeholder="Units"
+                                   placeholder="Number of units"
                                    name="building[units]"
                                    class="">
                         </div>
                         <div class="col-lg-6 ">
-                            <labe class="">Floors:</labe>
+                            <label class="">Floors: </label>
                             <input type="text"
-                                   placeholder="Floors"
+                                   placeholder="Number of floors"
                                    name="building[floors]"
                                    class="">
                         </div>
@@ -179,7 +176,7 @@
         <new-building-form msgid="bld-block-1">
             <form id="new-building-form">
                 <div class="col-lg-12 m-t-lg">
-                    <div class="tab-content input-contect-forms">
+                    <div class="tab-content input-contact-forms">
                         <div class="tab-pane active" id="tab-r0">
 
                             <h3>Building main information</h3>
