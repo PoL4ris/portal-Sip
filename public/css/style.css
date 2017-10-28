@@ -1770,26 +1770,47 @@ table.dataTable tbody tr {
 
 
 
-.error-notif-alert .notif-alert, .action-btn-submit{
-  display: none;
-}
 
-.bv-hidden-submit:disabled + form .error-notif-alert .notif-alert{
-  display: block;
-}
-.error-notif-alert .notif-alert .admiracion{
-  background: crimson;
-  text-align: center;
-  width: 20px;
-  margin: 0 auto;
-  border-radius: 50%;
-  height: 20px;
-  color: white;
+
+#new-building-form .validation-status-icon{
+  opacity: 0;
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
   transition: all .7s ease 0s;
 }
-.error-notif-alert .notif-alert .admiracion-texto{
-  text-align: center;
+#new-building-form input:invalid,
+#new-building-form input.required {
+  border-color: crimson;
 }
+#new-building-form input:invalid ~ .down-status,
+#new-building-form input:invalid.required ~ .down-status
+{
+  opacity: 1;
+}
+
+#new-building-form input:valid,
+#new-building-form input:valid.required {
+  border-color: green;
+}
+#new-building-form input:valid ~ .up-status,
+#new-building-form input:valid.required ~ .up-status{
+  opacity: 1;
+}
+#new-building-form input:placeholder-shown {
+  border-color: #ddd;
+}
+
+#new-building-form input:placeholder-shown  ~ .up-status,
+#new-building-form input:placeholder-shown  ~ .down-status{
+  opacity: 0;
+}
+
+
+
+
+
+
 
 
 pre {
