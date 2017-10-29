@@ -598,7 +598,7 @@ app.controller('customerNetworkController',         function ($scope, $http, cus
 
   function networkServices (service, flagService) {
 
-    var routes = ['networkCheckStatus',
+      var routes = ['networkCheckStatus',
                   'netwokAdvancedInfo',
                   'networkAdvanceIPs',
                   'networkRecyclePort',
@@ -627,22 +627,30 @@ app.controller('customerNetworkController',         function ($scope, $http, cus
         if (response.data == 'ERROR')
           alert(response.data);
 
+        var isPortUp = false;
+
         $.each(response.data,function(i, item) {
 
           $('#' + i + '-' + $scope.idCustomer).html(item);
-//          console.log('#' + i + '-' + $scope.idCustomer + ' -----> ' + item);
+         console.log('#' + i + '-' + $scope.idCustomer + ' -----> ' + item);
+            if(service == 0 && i == 'oper-status' && item == 'up'){
+                isPortUp = true;
+            }
         });
 
-        service = 1;
+        if(isPortUp){
+            service = 1;
 
-        $http.get(routes[service], {params : dataSend})
-          .then(function (response) {
-            $.each(response.data,function(i, item)
-            {
-              $('#' + i + '-' + $scope.idCustomer).html(item);
+            $http.get(routes[service], {params : dataSend})
+                .then(function (response) {
+                    $.each(response.data,function(i, item)
+                    {
+                        $('#' + i + '-' + $scope.idCustomer).html(item);
 //              console.log('#' + i + '-' + $scope.idCustomer + ' -----> ' + item);
-            });
-          });
+                    });
+                });
+        }
+
 
 
 

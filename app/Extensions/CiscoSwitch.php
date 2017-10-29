@@ -763,7 +763,7 @@ class CiscoSwitch {
         return $portIndexList;
     }
 
-    protected function getPortNamePrefix($ip, $switchModel = false)
+    public function getPortNamePrefix($ip, $switchModel = false)
     {
         if (isset($ip) && $ip != null)
         {
@@ -989,10 +989,12 @@ class CiscoSwitch {
             $this->bridgePortIndexList = array_flip($this->bridgePortIndexList);
             $this->bridgePortIndexList = preg_replace('/^.+\./', '', $this->bridgePortIndexList);
 
-            return ['response' => $this->bridgePortIndexList[$ifIndex]];
+            if(isset($this->bridgePortIndexList[$ifIndex])){
+                return ['response' => $this->bridgePortIndexList[$ifIndex]];
+            }
         }
 
-        return ['error' => 'no vlans found on port'];
+        return ['error' => 'no active vlans found on port'];
     }
 
     public function setSnmpSysLocation($ip, $sysLocation)
@@ -1341,7 +1343,7 @@ class CiscoSwitch {
         return $this->snmp2_set($ip, $this->writeCommunity, $oid, $type, $value, $timeout, $retries);
     }
 
-    protected function snmp2_real_walk($ipAddress, $snmpCommunity, $oid, $callSnmp2Get = false)
+    public function snmp2_real_walk($ipAddress, $snmpCommunity, $oid, $callSnmp2Get = false)
     {
 
         $responseArray = ['response' => false];

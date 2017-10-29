@@ -457,10 +457,10 @@ class TestController extends Controller {
     {
 
         /** Find chargeable items for manually added plans and create an invoice for them **/
-        $billingHelper = new BillingHelper();
-        $pendingFailedInvoices = collect($billingHelper->getFailedAutopayInvoices());
-
-        dd($pendingFailedInvoices->sum('amount'));
+//        $billingHelper = new BillingHelper();
+//        $pendingFailedInvoices = collect($billingHelper->getFailedAutopayInvoices());
+//
+//        dd($pendingFailedInvoices->sum('amount'));
 
 
         /**
@@ -551,15 +551,35 @@ class TestController extends Controller {
 
 
         /** Switch port info filtering test **/
-//        $ciscoSwitch = new CiscoSwitch(['readCommunity'  => 'oomoomee',
-//                                        'writeCommunity' => 'BigSeem']);
-////
-//////        $switchModel = $ciscoSwitch->getSnmpModelNumber('10.15.215.254');
-////        $switchModel = $ciscoSwitch->getSnmpModelNumber('10.11.51.47');
-//////        $portType = $ciscoSwitch->getSwitchPortType('10.11.51.40');
-//        $portFastMode = $ciscoSwitch->getSnmpPortfastStatus('10.11.51.47', '1/24');
+        $ciscoSwitch = new CiscoSwitch(['readCommunity'  => 'oomoomee',
+                                        'writeCommunity' => 'BigSeem']);
+//        $ip = '10.11.188.10';
+//        $port = '1/20';
+        $ip = '10.11.174.26';
+        $port = '20';
+        $isIdx = false;
+
+////        $switchModel = $ciscoSwitch->getSnmpModelNumber('10.15.215.254');
+//        $switchModel = $ciscoSwitch->getSnmpModelNumber('10.11.51.47');
+////        $portType = $ciscoSwitch->getSwitchPortType('10.11.51.40');
+///
+
+        $portVlan = $ciscoSwitch->getSnmpPortVlanAssignment($ip, $port, $isIdx);
+//        $modelNumber = $ciscoSwitch->getSnmpModelNumber($ip);
+//        $portNumberPrefix = $ciscoSwitch->getPortNamePrefix($ip, $modelNumber['response']);
+//        $portIndexList = $ciscoSwitch->getSnmpPortIndexList($ip);
+        $portIndex = $ciscoSwitch->getPortIndex($ip, $port, $isIdx);
+        $portFastMode = $ciscoSwitch->getSnmpPortfastStatus($ip, $port);
+
+        dd($portVlan);
+//        dd($modelNumber);
+//        dd($portNumberPrefix);
+//        dd($portIndexList);
+//        dd($portIndex);
 //        dd($portFastMode);
 
+        $bridgePortIndexResponse = $ciscoSwitch->snmp2_real_walk($ip, 'oomoomee' . '@' . $portVlan['response'][0], '1.3.6.1.2.1.17.1.4.1.2');
+        dd($bridgePortIndexResponse);
 
 ////        dd($portType);
 //        dd([$switchModel, $portFastMode]);

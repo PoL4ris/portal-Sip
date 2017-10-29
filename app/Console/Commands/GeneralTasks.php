@@ -619,10 +619,13 @@ class GeneralTasks extends Command {
     protected function registerSwitches()
     {
 
-        $switchIpList = ['10.15.208.10' => '[{"private vlan range":"2001-2048"}]',
-                         '10.15.208.20' => '[{"private vlan range":"2049-2096"}]',
-                         '10.15.208.30' => '[{"private vlan range":"2097-2144"}]',
-                         '10.15.208.40' => '[{"private vlan range":"2145-2192"}]'];
+//        $switchIpList = ['10.15.208.10' => '[{"private vlan range":"2001-2048"}]',
+//                         '10.15.208.20' => '[{"private vlan range":"2049-2096"}]',
+//                         '10.15.208.30' => '[{"private vlan range":"2097-2144"}]',
+//                         '10.15.208.40' => '[{"private vlan range":"2145-2192"}]'];
+
+        $switchIpList = ['10.11.188.10' => '[{"private vlan range":"2001-2048"}]'];
+
 
         $ciscoSwitch = new CiscoSwitch(['readCommunity'  => 'oomoomee',
                                         'writeCommunity' => 'BigSeem']);
